@@ -6,6 +6,8 @@ import commonjs from 'rollup-plugin-commonjs'
 import replace from 'rollup-plugin-replace'
 import { uglify } from 'rollup-plugin-uglify'
 import { terser } from 'rollup-plugin-terser'
+// import builtins from 'rollup-plugin-node-builtins'
+// import globals from 'rollup-plugin-node-globals'
 import { getIfUtils, removeEmpty } from 'webpack-config-utils'
 
 import pkg from '../package.json'
@@ -69,6 +71,9 @@ const plugins = /** @type {Plugin[]} */ ([
     exclude: 'node_modules/**',
     'process.env.NODE_ENV': JSON.stringify(env),
   }),
+
+  // globals(),
+  // builtins(),
 ])
 
 /**
@@ -76,7 +81,19 @@ const plugins = /** @type {Plugin[]} */ ([
  */
 const CommonConfig = {
   input: {},
-  output: {},
+  output: {
+    globals: {
+      http: 'http',
+      https: 'https',
+      url: 'url',
+      assert: 'assert',
+      stream: 'stream',
+      tty: 'tty',
+      util: 'util',
+      os: 'os',
+      zlib: 'zlib',
+    },
+  },
   inlineDynamicImports: true,
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
   external,
@@ -97,9 +114,7 @@ const UMDconfig = {
     name: LIB_NAME,
     sourcemap: true,
   },
-  plugins: removeEmpty(
-    /** @type {Plugin[]} */ ([...plugins, ifProduction(uglify())])
-  ),
+  plugins: removeEmpty(/** @type {Plugin[]} */ (plugins)),
 }
 
 /**

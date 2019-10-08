@@ -74,6 +74,9 @@
       "options": "never"
     }
   },
+  "linterOptions": {
+    "exclude": ["config", "dist", "script"]
+  },
   // apply the same rules for any JS if allowJS is gonna be used
   "jsRules": true
 }

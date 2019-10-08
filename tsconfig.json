@@ -3,10 +3,7 @@
     "moduleResolution": "node",
     "module": "esnext",
     "target": "es5",
-    "lib": [
-      "dom",
-      "es2018"
-    ],
+    "lib": ["dom", "es2018"],
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -26,8 +23,6 @@
       }
     ]
   },
-  "include": [
-    "./src"
-  ],
+  "include": ["./src"],
   "compileOnSave": false
 }
