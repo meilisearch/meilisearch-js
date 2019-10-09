@@ -1,7 +1,7 @@
-import { Config, Meili } from '../'
+import Meili from '../'
 
 test('sample', () => {
-  const config: Config = {
+  const config = {
     applicationId: '675b1990',
     apiKey: 'f45t6djs2wswgoVJTWmPax72',
   }

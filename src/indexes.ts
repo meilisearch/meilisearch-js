@@ -7,7 +7,7 @@
 
 'use strict'
 
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosInstance, CancelTokenSource } from 'axios'
 
 import { Documents } from './documents'
 import { Settings } from './settings'
@@ -16,10 +16,12 @@ import { Synonyms } from './synonyms'
 class Indexes {
   instance: AxiosInstance
   indexId: string
+  cancelTokenSource: CancelTokenSource
 
   constructor(instance: AxiosInstance, indexId: string) {
     this.instance = instance
     this.indexId = indexId
+    this.cancelTokenSource = axios.CancelToken.source()
   }
 
   /**
@@ -76,11 +78,7 @@ class Indexes {
    * @memberof Meili
    * @method search
    */
-  search(
-    queryParams: object,
-    clientId: string,
-    queryId: string
-  ): Promise<object> {
+  search(queryParams: object): Promise<object> {
     if (!queryParams.hasOwnProperty('q')) {
       throw new Error('Meili, search: param should contain a "q" attribute')
     }
@@ -91,10 +89,7 @@ class Indexes {
 
     return axios.get(url, {
       params: queryParams,
-      headers: {
-        'X-Meili-Client-ID': clientId,
-        'X-Meili-Query-ID': queryId,
-      },
+      cancelToken: this.cancelTokenSource.token,
     })
   }
 
