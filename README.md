@@ -3,8 +3,8 @@
 > A js library to wrap the meili api
 
 [![Build Status](https://travis-ci.org/qdequele/meili-api.svg?branch=master)](https://travis-ci.org/qdequele/meili-api)
-[![NPM version](https://img.shields.io/npm/v/@meili/meili-api.svg)](https://www.npmjs.com/package/@meili/meili-api)
-![Downloads](https://img.shields.io/npm/dm/@meili/meili-api.svg)
+[![NPM version](https://img.shields.io/npm/v/@meilisearch/meili-api.svg)](https://www.npmjs.com/package/@meilisearch/meili-api)
+![Downloads](https://img.shields.io/npm/dm/@meilisearch/meili-api.svg)
 [![Standard Version](https://img.shields.io/badge/release-standard%20version-brightgreen.svg)](https://github.com/conventional-changelog/standard-version)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
@@ -19,27 +19,19 @@
 ## 🔧 Installation
 
 ```sh
-yarn add @meili/meili-api
+npm install @meilisearch/meili-api
+```
+
+```sh
+yarn add @meilisearch/meili-api
 ```
 
 ## 🎬 Getting started
 
 Let's demonstrate simple usage with ... example:
 
-```ts
-// your code example
-```
-
-## 🎭 Examples
-
-Go checkout [examples](./examples) !
-
-## 📜 API
-
-### Create a new Meili client
-
 ```js
-var Meili = require('../dist')
+var Meili = require('@meilisearch/meili-api')
 
 var config = {
   applicationId: 'xxx',
@@ -47,6 +39,12 @@ var config = {
 }
 var meili = new Meili(config)
 ```
+
+## 🎭 Examples
+
+Go checkout [examples](./examples) !
+
+## 📜 API
 
 ### `listIndexes(): Promise<string[]>`
 
