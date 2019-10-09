@@ -83,11 +83,9 @@ class Indexes {
       throw new Error('Meili, search: param should contain a "q" attribute')
     }
 
-    const url = `${this.instance.defaults.baseURL}/indexes/${
-      this.indexId
-    }/search`
+    const url = `/indexes/${this.indexId}/search`
 
-    return axios.get(url, {
+    return this.instance.get(url, {
       params: queryParams,
       cancelToken: this.cancelTokenSource.token,
     })

@@ -36,17 +36,93 @@ Go checkout [examples](./examples) !
 
 ## 📜 API
 
-> Document your API here
+### Create a new Meili client
 
-### `publicMethodOne(value:string): string`
+```js
+var Meili = require('../dist')
 
-This methods does foo bar moo...
+var config = {
+  applicationId: 'xxx',
+  apiKey: 'xxx',
+}
+var meili = new Meili(config)
+```
+
+### `listIndexes(): Promise<string[]>`
+
+This methods list all indexes of a database
 
 **Example:**
 
-```ts
-// example
+```js
+meili.listIndexes().then((indexes) => {
+  console.log(indexes) // ["movies"]
+})
 ```
+
+### `createIndex(indexId: string, schema: Schema): Promise<void>`
+
+This methods create a new index
+
+**Example:**
+
+```js
+meili.createIndex('movies', {
+  id: ['identifier', 'indexed', 'displayed'],
+  title: ['displayed', 'indexed'],
+  poster: ['indexed', 'displayed'],
+})
+```
+
+### `Index(indexId: string).search(queryParams: object): Promise<object>`
+
+**Example:**
+
+```js
+meili
+  .Index('xxx')
+  .search({
+    q: 'batman',
+  })
+  .then((response) => {
+    console.log(response.hits)
+  })
+```
+
+### `Index(indexId: string).browse(queryParams: object): Promise<object[]>`
+
+**Example:**
+
+```js
+meili
+  .Index('xxx')
+  .browse()
+  .then((response) => {
+    console.log(response)
+  })
+```
+
+### `Index(indexId: string).updateInfo(updateId: number): Promise<object>`
+
+### `Index(indexId: string).getSchema(): Promise<object>`
+
+### `Index(indexId: string).Documents().addDocuments(documents: object[]): Promise<object>`
+
+### `Index(indexId: string).Documents().getDocument(documentId: string): Promise<object>`
+
+### `Index(indexId: string).Documents().deleteDocument(documentId: string): Promise<object>`
+
+### `Index(indexId: string).Documents().deleteDocuments(documents: object[]): Promise<object>`
+
+### `Index(indexId: string).Documents().batchWrite(documentsToInsert: object[], documentsToDelete: object[]): Promise<object>`
+
+### `Index(indexId: string).Settings().get(): Promise<object>`
+
+### `Index(indexId: string).Settings().set(settings: object): Promise<void>`
+
+### `Index(indexId: string).Synonyms().list(): Promise<object[]>`
+
+### `Index(indexId: string).Synonyms().create(input: string, synonyms: string[]): Promise<object>`
 
 ## 🎓 Guides
 
