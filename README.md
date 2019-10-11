@@ -1,6 +1,9 @@
 # meili-api
 
-> A js library to wrap the meili api
+> This is the javascript wrapper to the meili API
+> Meili provides a instant search engine as a service, you can register on [meilisearch.com](https://www.meilisearch.com/) to get your credentials. You can also try it on your own by installing [MeiliDB](https://github.com/meilisearch/MeiliDB) on your computer.
+
+> 👷🏾‍♂️This is a work in progress, if you need more information on the meili API, you should visit the [API documentation](https://docs.meilisearch.com/)
 
 [![Build Status](https://travis-ci.org/qdequele/meili-api.svg?branch=master)](https://travis-ci.org/qdequele/meili-api)
 [![NPM version](https://img.shields.io/npm/v/@meilisearch/meili-api.svg)](https://www.npmjs.com/package/@meilisearch/meili-api)
@@ -13,8 +16,8 @@
 
 ## ✨ Features
 
-- feature one
-- feature two
+- Search documents in meili API
+- Index documents in meili API
 
 ## 🔧 Installation
 
@@ -28,16 +31,27 @@ yarn add @meilisearch/meili-api
 
 ## 🎬 Getting started
 
-Let's demonstrate simple usage with ... example:
+Here is a quickstart for a search request
 
 ```js
 const Meili = require('@meilisearch/meili-api')
 
+// Get your applicationId and apiKey on meilisearch.com
 const config = {
   applicationId: 'xxx',
   apiKey: 'xxx',
 }
+
 const meili = new Meili(config)
+
+meili
+  .Index('indexUid')
+  .search(
+    { q: 'batman' }
+  )
+  .then((response) => {
+    console.log(response.hits)
+  })
 ```
 
 ## 🎭 Examples
@@ -45,6 +59,21 @@ const meili = new Meili(config)
 Go checkout [examples](./examples) !
 
 ## 📜 API
+
+### `Index(indexId: string).search(queryParams: object): Promise<object>`
+
+**Example:**
+
+```js
+meili
+  .Index('xxx')
+  .search({
+    q: 'batman',
+  })
+  .then((response) => {
+    console.log(response.hits)
+  })
+```
 
 ### `listIndexes(): Promise<string[]>`
 
@@ -72,22 +101,9 @@ meili.createIndex('movies', {
 })
 ```
 
-### `Index(indexId: string).search(queryParams: object): Promise<object>`
-
-**Example:**
-
-```js
-meili
-  .Index('xxx')
-  .search({
-    q: 'batman',
-  })
-  .then((response) => {
-    console.log(response.hits)
-  })
-```
-
 ### `Index(indexId: string).browse(queryParams: object): Promise<object[]>`
+
+Browse is a method to get defaults documents without search. This method is usually used to display results when you have no input in the search bar.
 
 **Example:**
 
