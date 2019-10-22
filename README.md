@@ -31,13 +31,13 @@ yarn add @meilisearch/meili-api
 Let's demonstrate simple usage with ... example:
 
 ```js
-var Meili = require('@meilisearch/meili-api')
+const Meili = require('@meilisearch/meili-api')
 
-var config = {
+const config = {
   applicationId: 'xxx',
   apiKey: 'xxx',
 }
-var meili = new Meili(config)
+const meili = new Meili(config)
 ```
 
 ## 🎭 Examples
