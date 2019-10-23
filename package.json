@@ -27,29 +27,29 @@
   },
   "scripts": {
     "cleanup": "shx rm -rf dist",
-    "prebuild": "npm run cleanup && npm run verify",
+    "prebuild": "yarn cleanup && yarn verify",
     "build": "tsc && tsc --target es2018 --outDir dist/esm2015 && rollup -c config/rollup.config.js && rollup -c config/rollup.config.js --environment NODE_ENV:production",
-    "postbuild": "node scripts/copy && npm run size",
+    "postbuild": "node scripts/copy && yarn size",
     "docs": "typedoc -p . --theme minimal --target 'es6' --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude \"**/src/**/__tests__/*.*\" --out docs src/",
     "test": "jest -c ./config/jest.config.js",
-    "test:watch": "npm t -- --watch",
-    "test:coverage": "npm t -- --coverage",
-    "test:ci": "npm t -- --ci",
+    "test:watch": "yarn test --watch",
+    "test:coverage": "yarn test --coverage",
+    "test:ci": "yarn test --ci",
     "validate-js": "tsc -p ./config && tsc -p ./scripts",
-    "verify": "npm run validate-js && npm run style && npm run test:ci",
+    "verify": "yarn validate-js && yarn style && yarn test:ci",
     "commit": "git-cz",
-    "style": "npm run format -- --list-different && npm run lint",
-    "style:fix": "npm run format:fix && npm run lint:fix",
+    "style": "yarn format --list-different && yarn lint",
+    "style:fix": "yarn format:fix && yarn lint:fix",
     "format": "prettier \"**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}\"",
-    "format:fix": "npm run format -- --write",
+    "format:fix": "yarn format -- --write",
     "lint": "tslint --project tsconfig.json --format codeFrame",
-    "lint:fix": "npm run lint -- --fix",
-    "prerelease": "npm run build",
+    "lint:fix": "yarn lint -- --fix",
+    "prerelease": "yarn build",
     "release": "standard-version",
-    "postrelease": "node scripts/copy && node scripts/build && npm run release:github && npm run release:npm",
+    "postrelease": "node scripts/copy && node scripts/build && yarn release:github && yarn release:npm",
     "release:github": "git push --no-verify --follow-tags origin master",
-    "release:npm": "npm publish dist",
-    "release:preflight": "npm pack ./dist --dry-run",
+    "release:npm": "yarn publish dist",
+    "release:preflight": "yarn pack ./dist --dry-run",
     "size": "node scripts/file-size ./dist/bundles/index.umd.min.js ./dist/bundles/index.esm.min.js"
   },
   "config": {
@@ -61,7 +61,7 @@
     "hooks": {
       "commit-msg": "commitlint --config config/commitlint.config.js -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged",
-      "pre-push": "npm run style && npm test -- --bail --onlyChanged"
+      "pre-push": "yarn style && yarn test --bail --onlyChanged"
     }
   },
   "lint-staged": {
@@ -70,7 +70,7 @@
       "git add"
     ],
     "src/**/*.{ts,tsx}": [
-      "npm run lint:fix",
+      "yarn lint:fix",
       "git add"
     ]
   },
@@ -97,7 +97,7 @@
     "jest-watch-typeahead": "0.2.0",
     "kleur": "3.0.1",
     "lint-staged": "8.1.0",
-    "prettier": "1.15.3",
+    "prettier": "^1.15.3",
     "pretty-bytes": "5.1.0",
     "rollup": "0.68.2",
     "rollup-plugin-commonjs": "9.2.0",
