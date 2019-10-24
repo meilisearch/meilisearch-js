@@ -91,7 +91,7 @@
     "commitizen": "4.0.3",
     "cross-var": "1.1.0",
     "cz-conventional-changelog": "3.0.2",
-    "gzip-size": "5.0.0",
+    "gzip-size": "5.1.1",
     "husky": "3.0.9",
     "jest": "25.0.0",
     "jest-watch-typeahead": "0.2.0",
