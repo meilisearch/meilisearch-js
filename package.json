@@ -114,7 +114,7 @@
     "ts-jest": "23.10.5",
     "tslib": "1.9.3",
     "tslint": "5.12.0",
-    "tslint-config-prettier": "1.17.0",
+    "tslint-config-prettier": "1.18.0",
     "tslint-config-standard": "8.0.1",
     "tslint-etc": "1.2.12",
     "tslint-react": "3.6.0",
