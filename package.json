@@ -83,7 +83,7 @@
   "devDependencies": {
     "@commitlint/cli": "8.2.0",
     "@commitlint/config-conventional": "7.1.2",
-    "@types/jest": "23.3.10",
+    "@types/jest": "24.0.19",
     "@types/node": "8.10.*",
     "@types/prettier": "1.15.2",
     "@types/webpack-config-utils": "2.3.0",
