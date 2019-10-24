@@ -5,7 +5,7 @@
 
 > 👷🏾‍♂️This is a work in progress, if you need more information on the meili API, you should visit the [API documentation](https://docs.meilisearch.com/)
 
-[![Build Status](https://travis-ci.org/qdequele/meili-api.svg?branch=master)](https://travis-ci.org/qdequele/meili-api)
+[![CircleCI](https://circleci.com/gh/meilisearch/js-meili-api.svg?style=svg)](https://circleci.com/gh/meilisearch/js-meili-api)
 [![NPM version](https://img.shields.io/npm/v/@meilisearch/meili-api.svg)](https://www.npmjs.com/package/@meilisearch/meili-api)
 ![Downloads](https://img.shields.io/npm/dm/@meilisearch/meili-api.svg)
 [![Standard Version](https://img.shields.io/badge/release-standard%20version-brightgreen.svg)](https://github.com/conventional-changelog/standard-version)
