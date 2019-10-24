@@ -46,9 +46,7 @@ const meili = new Meili(config)
 
 meili
   .Index('indexUid')
-  .search(
-    { q: 'batman' }
-  )
+  .search({ q: 'batman' })
   .then((response) => {
     console.log(response.hits)
   })
