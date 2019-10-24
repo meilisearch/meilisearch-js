@@ -100,7 +100,7 @@
     "prettier": "^1.15.3",
     "pretty-bytes": "5.1.0",
     "rollup": "1.25.2",
-    "rollup-plugin-commonjs": "9.3.4",
+    "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-json": "4.0.0",
     "rollup-plugin-node-builtins": "2.1.2",
     "rollup-plugin-node-globals": "1.4.0",
