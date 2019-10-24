@@ -119,7 +119,7 @@
     "tslint-etc": "1.2.12",
     "tslint-react": "3.6.0",
     "typedoc": "0.15.0",
-    "typescript": "3.2.2",
+    "typescript": "3.6.4",
     "typescript-tslint-plugin": "0.2.1",
     "uglify": "0.1.5",
     "webpack-config-utils": "2.3.1"
