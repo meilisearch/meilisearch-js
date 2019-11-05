@@ -113,7 +113,7 @@
     "standard-version": "7.0.0",
     "ts-jest": "24.1.0",
     "tslib": "1.10.0",
-    "tslint": "5.20.0",
+    "tslint": "5.20.1",
     "tslint-config-prettier": "1.18.0",
     "tslint-config-standard": "9.0.0",
     "tslint-etc": "1.9.2",
