@@ -94,7 +94,7 @@
     "gzip-size": "5.1.1",
     "husky": "3.0.9",
     "jest": "25.0.0",
-    "jest-watch-typeahead": "0.4.0",
+    "jest-watch-typeahead": "0.4.2",
     "kleur": "3.0.3",
     "lint-staged": "9.4.2",
     "prettier": "^1.15.3",
