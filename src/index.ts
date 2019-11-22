@@ -13,11 +13,8 @@ import { Admin } from './admin'
 import { Indexes } from './indexes'
 import { Keys } from './keys'
 
-const DEFAULT_HOST_BASE = 'getmeili.com'
-
 interface Config {
-  applicationId: string
-  host?: string
+  host: string
   apiKey?: string
 }
 
@@ -31,9 +28,7 @@ class Meili {
   instance: AxiosInstance
 
   constructor(config: Config) {
-    this.baseURL = `https://${config.applicationId}.${config.host ||
-      DEFAULT_HOST_BASE}`
-
+    this.baseURL = config.host
     this.apiKey = config.apiKey
 
     this.instance = instance.create({
