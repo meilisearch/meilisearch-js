@@ -15,9 +15,12 @@ function main() {
   const distPath = resolve(projectRoot, 'dist')
   const distPackageJson = createDistPackageJson(packageJson)
 
-  const cpFiles = ['README.md', 'CHANGELOG.md', 'LICENSE.md', '.npmignore'].map(
-    (file) => resolve(projectRoot, file)
-  )
+  const cpFiles = [
+    'README.md',
+    'CHANGELOG.md',
+    'LICENSE.md',
+    '.npmignore',
+  ].map((file) => resolve(projectRoot, file))
 
   cp(cpFiles, distPath)
 
@@ -59,7 +62,6 @@ function createDistPackageJson(packageConfig) {
     scripts,
     engines,
     config,
-    husky,
     'lint-staged': lintStaged,
     ...distPackageJson
   } = packageConfig

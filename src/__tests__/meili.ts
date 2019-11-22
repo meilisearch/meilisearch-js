@@ -1,15 +1,33 @@
 import Meili from '../'
 
-test('sample', () => {
+test('sample', async () => {
   const config = {
-    applicationId: '675b1990',
-    apiKey: 'f45t6djs2wswgoVJTWmPax72',
+    host: 'http://127.0.0.1:8080',
   }
   const meili = new Meili(config)
-  meili
+  let indexes = await meili
     .listIndexes()
-    .then((response) => {
-      expect(response.length).toBe(1)
+    .then((response: any) => {
+      return response.map((elem: any) => elem.uid)
+    })
+    .catch((err) => {
+      expect(err).toBe(null)
+    })
+
+  for (let indexUid of indexes) {
+    await meili
+      .Index(indexUid)
+      .deleteIndex()
+      .catch((err) => {
+        console.log(err)
+        expect(err).toBe(null)
+      })
+  }
+
+  await meili
+    .listIndexes()
+    .then((response: any) => {
+      expect(response.length).toBe(0)
     })
     .catch((err) => {
       expect(err).toBe(null)

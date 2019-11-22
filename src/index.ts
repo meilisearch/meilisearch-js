@@ -12,14 +12,11 @@ import instance, { AxiosInstance } from 'axios'
 import { Admin } from './admin'
 import { Indexes } from './indexes'
 import { Keys } from './keys'
+import * as Types from './types'
 
 interface Config {
   host: string
   apiKey?: string
-}
-
-export interface Schema {
-  [field: string]: string[]
 }
 
 class Meili {
@@ -31,13 +28,21 @@ class Meili {
     this.baseURL = config.host
     this.apiKey = config.apiKey
 
-    this.instance = instance.create({
-      baseURL: this.baseURL,
-      timeout: 1000,
-      headers: {
-        'X-Meili-API-Key': config.apiKey,
-      },
-    })
+    if (config.apiKey) {
+      this.instance = instance.create({
+        baseURL: this.baseURL,
+        timeout: 1000,
+        headers: {
+          'X-Meili-API-Key': config.apiKey,
+        },
+      })
+    } else {
+      this.instance = instance.create({
+        baseURL: this.baseURL,
+        timeout: 1000,
+      })
+    }
+
     this.instance.interceptors.response.use((response) => response.data)
   }
 
@@ -73,7 +78,7 @@ class Meili {
    * @memberof Meili
    * @method listIndexes
    */
-  listIndexes(): Promise<string[]> {
+  listIndexes(): Promise<object[]> {
     const url = '/indexes'
 
     return this.instance.get(url)
@@ -84,10 +89,12 @@ class Meili {
    * @memberof Meili
    * @method createIndex
    */
-  createIndex(indexUid: string, schema: Schema): Promise<void> {
-    const url = `/indexes/${indexUid}`
+  createIndex(
+    data: Types.CreateIndexRequest
+  ): Promise<Types.CreateIndexResponse> {
+    const url = `/indexes`
 
-    return this.instance.post(url, schema)
+    return this.instance.post(url, data)
   }
 }
 
