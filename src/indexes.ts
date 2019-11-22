@@ -15,12 +15,12 @@ import { Synonyms } from './synonyms'
 
 class Indexes {
   instance: AxiosInstance
-  indexId: string
+  indexUid: string
   cancelTokenSource: CancelTokenSource
 
-  constructor(instance: AxiosInstance, indexId: string) {
+  constructor(instance: AxiosInstance, indexUid: string) {
     this.instance = instance
-    this.indexId = indexId
+    this.indexUid = indexUid
     this.cancelTokenSource = axios.CancelToken.source()
   }
 
@@ -30,7 +30,7 @@ class Indexes {
    * @method Documents
    */
   Documents(): Documents {
-    return new Documents(this.instance, this.indexId)
+    return new Documents(this.instance, this.indexUid)
   }
 
   /**
@@ -39,7 +39,7 @@ class Indexes {
    * @method Settings
    */
   Settings(): Settings {
-    return new Settings(this.instance, this.indexId)
+    return new Settings(this.instance, this.indexUid)
   }
 
   /**
@@ -48,7 +48,7 @@ class Indexes {
    * @method Synonyms
    */
   Synonyms(): Synonyms {
-    return new Synonyms(this.instance, this.indexId)
+    return new Synonyms(this.instance, this.indexUid)
   }
 
   /**
@@ -57,7 +57,7 @@ class Indexes {
    * @method search
    */
   updateInfo(updateId: number): Promise<object> {
-    const url = `/indexes/${this.indexId}/updates/${updateId}`
+    const url = `/indexes/${this.indexUid}/updates/${updateId}`
 
     return this.instance.get(url)
   }
@@ -68,7 +68,7 @@ class Indexes {
    * @method search
    */
   getSchema(): Promise<object> {
-    const url = `/indexes/${this.indexId}`
+    const url = `/indexes/${this.indexUid}`
 
     return this.instance.get(url)
   }
@@ -83,7 +83,7 @@ class Indexes {
       throw new Error('Meili, search: param should contain a "q" attribute')
     }
 
-    const url = `/indexes/${this.indexId}/search`
+    const url = `/indexes/${this.indexUid}/search`
 
     return this.instance.get(url, {
       params: queryParams,
@@ -97,7 +97,7 @@ class Indexes {
    * @method browse
    */
   browse(queryParams: object): Promise<object[]> {
-    const url = `/indexes/${this.indexId}/documents`
+    const url = `/indexes/${this.indexUid}/documents`
 
     return this.instance.get(url, {
       params: queryParams,

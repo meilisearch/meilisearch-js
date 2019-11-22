@@ -11,10 +11,10 @@ import { AxiosInstance } from 'axios'
 
 class Settings {
   instance: AxiosInstance
-  indexId: string
+  indexUid: string
 
-  constructor(instance: AxiosInstance, indexId: string) {
-    this.indexId = indexId
+  constructor(instance: AxiosInstance, indexUid: string) {
+    this.indexUid = indexUid
     this.instance = instance
   }
 

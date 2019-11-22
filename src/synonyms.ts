@@ -11,11 +11,11 @@ import { AxiosInstance } from 'axios'
 
 class Synonyms {
   instance: AxiosInstance
-  indexId: string
+  indexUid: string
 
-  constructor(instance: AxiosInstance, indexId: string) {
+  constructor(instance: AxiosInstance, indexUid: string) {
     this.instance = instance
-    this.indexId = indexId
+    this.indexUid = indexUid
   }
 
   /**

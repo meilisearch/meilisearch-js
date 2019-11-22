@@ -39,7 +39,7 @@ const Meili = require('@meilisearch/meili-api')
 
 // Get your applicationId and apiKey on meilisearch.com
 const config = {
-  applicationId: 'xxx',
+  host: 'xxx',
   apiKey: 'xxx',
 }
 
@@ -59,7 +59,7 @@ Go checkout [examples](./examples) !
 
 ## 📜 API
 
-### `Index(indexId: string).search(queryParams: object): Promise<object>`
+### Make a search
 
 **Example:**
 
@@ -74,7 +74,7 @@ meili
   })
 ```
 
-### `listIndexes(): Promise<string[]>`
+### List existing indexes
 
 This methods list all indexes of a database
 
@@ -86,7 +86,7 @@ meili.listIndexes().then((indexes) => {
 })
 ```
 
-### `createIndex(indexId: string, schema: Schema): Promise<void>`
+### Create new index
 
 This methods create a new index
 
@@ -100,7 +100,7 @@ meili.createIndex('movies', {
 })
 ```
 
-### `Index(indexId: string).browse(queryParams: object): Promise<object[]>`
+### Get some documents
 
 Browse is a method to get defaults documents without search. This method is usually used to display results when you have no input in the search bar.
 
@@ -115,27 +115,27 @@ meili
   })
 ```
 
-### `Index(indexId: string).updateInfo(updateId: number): Promise<object>`
+### `Index(indexUid: string).updateInfo(updateId: number): Promise<object>`
 
-### `Index(indexId: string).getSchema(): Promise<object>`
+### `Index(indexUid: string).getSchema(): Promise<object>`
 
-### `Index(indexId: string).Documents().addDocuments(documents: object[]): Promise<object>`
+### `Index(indexUid: string).Documents().addDocuments(documents: object[]): Promise<object>`
 
-### `Index(indexId: string).Documents().getDocument(documentId: string): Promise<object>`
+### `Index(indexUid: string).Documents().getDocument(documentId: string): Promise<object>`
 
-### `Index(indexId: string).Documents().deleteDocument(documentId: string): Promise<object>`
+### `Index(indexUid: string).Documents().deleteDocument(documentId: string): Promise<object>`
 
-### `Index(indexId: string).Documents().deleteDocuments(documents: object[]): Promise<object>`
+### `Index(indexUid: string).Documents().deleteDocuments(documents: object[]): Promise<object>`
 
-### `Index(indexId: string).Documents().batchWrite(documentsToInsert: object[], documentsToDelete: object[]): Promise<object>`
+### `Index(indexUid: string).Documents().batchWrite(documentsToInsert: object[], documentsToDelete: object[]): Promise<object>`
 
-### `Index(indexId: string).Settings().get(): Promise<object>`
+### `Index(indexUid: string).Settings().get(): Promise<object>`
 
-### `Index(indexId: string).Settings().set(settings: object): Promise<void>`
+### `Index(indexUid: string).Settings().set(settings: object): Promise<void>`
 
-### `Index(indexId: string).Synonyms().list(): Promise<object[]>`
+### `Index(indexUid: string).Synonyms().list(): Promise<object[]>`
 
-### `Index(indexId: string).Synonyms().create(input: string, synonyms: string[]): Promise<object>`
+### `Index(indexUid: string).Synonyms().create(input: string, synonyms: string[]): Promise<object>`
 
 ## 🎓 Guides
 

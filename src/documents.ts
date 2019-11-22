@@ -11,11 +11,11 @@ import { AxiosInstance } from 'axios'
 
 class Documents {
   instance: AxiosInstance
-  indexId: string
+  indexUid: string
 
-  constructor(instance: AxiosInstance, indexId: string) {
+  constructor(instance: AxiosInstance, indexUid: string) {
     this.instance = instance
-    this.indexId = indexId
+    this.indexUid = indexUid
   }
 
   /**
@@ -24,7 +24,7 @@ class Documents {
    * @method addDocuments
    */
   addDocuments(documents: object[]): Promise<object> {
-    const url = `/indexes/${this.indexId}/documents`
+    const url = `/indexes/${this.indexUid}/documents`
 
     return this.instance.post(url, documents)
   }
@@ -35,7 +35,7 @@ class Documents {
    * @method getDocument
    */
   getDocument(documentId: string): Promise<object> {
-    const url = `/indexes/${this.indexId}/documents/' + documentI`
+    const url = `/indexes/${this.indexUid}/documents/' + documentI`
 
     return this.instance.get(url)
   }
@@ -46,7 +46,7 @@ class Documents {
    * @method deleteDocument
    */
   deleteDocument(documentId: string): Promise<object> {
-    const url = `/indexes/${this.indexId}/documents/' + documentI`
+    const url = `/indexes/${this.indexUid}/documents/' + documentI`
 
     return this.instance.delete(url)
   }
@@ -57,7 +57,7 @@ class Documents {
    * @method deleteDocuments
    */
   deleteDocuments(documents: object[]): Promise<object> {
-    const url = `/indexes/${this.indexId}/documents/delete`
+    const url = `/indexes/${this.indexUid}/documents/delete`
 
     return this.instance.post(url, documents)
   }
@@ -71,7 +71,7 @@ class Documents {
     documentsToInsert: object[],
     documentsToDelete: object[]
   ): Promise<object> {
-    const url = `/indexes/${this.indexId}/documents/batch`
+    const url = `/indexes/${this.indexUid}/documents/batch`
 
     return this.instance.post(url, {
       insert: documentsToInsert,

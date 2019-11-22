@@ -51,8 +51,8 @@ class Meili {
    * @memberof Meili
    * @method Index
    */
-  Index(indexId: string): Indexes {
-    return new Indexes(this.instance, indexId)
+  Index(indexUid: string): Indexes {
+    return new Indexes(this.instance, indexUid)
   }
 
   /**
@@ -89,8 +89,8 @@ class Meili {
    * @memberof Meili
    * @method createIndex
    */
-  createIndex(indexId: string, schema: Schema): Promise<void> {
-    const url = `/indexes/${indexId}`
+  createIndex(indexUid: string, schema: Schema): Promise<void> {
+    const url = `/indexes/${indexUid}`
 
     return this.instance.post(url, schema)
   }
