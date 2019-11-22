@@ -22,17 +22,6 @@ class Admin {
   }
 
   /**
-   * Will make a backup and respond 200 when the backup is succeeded. Used to rollout restart into the k8s cluser.
-   * @memberof Admin
-   * @method prepareRollout
-   */
-  prepareRollout(): Promise<void> {
-    const url = '/prepare/rollout'
-
-    return this.instance.put(url)
-  }
-
-  /**
    * Check if the server is healhty
    * @memberof Admin
    * @method isHealthy
@@ -94,8 +83,8 @@ class Admin {
    * @memberof Admin
    * @method indexStats
    */
-  indexStats(indexId: string): Promise<object> {
-    const url = `/stats/${indexId}`
+  indexStats(indexUid: string): Promise<object> {
+    const url = `/stats/${indexUid}`
 
     return this.instance.get(url)
   }
