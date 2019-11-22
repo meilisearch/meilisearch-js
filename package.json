@@ -57,12 +57,6 @@
       "path": "cz-conventional-changelog"
     }
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint --config config/commitlint.config.js -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}": [
       "prettier --write",
@@ -80,8 +74,6 @@
     "axios": "0.19.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "8.2.0",
-    "@commitlint/config-conventional": "8.2.0",
     "@types/jest": "24.0.23",
     "@types/node": "12.12.*",
     "@types/prettier": "1.18.4",
@@ -91,7 +83,6 @@
     "cross-var": "1.1.0",
     "cz-conventional-changelog": "3.0.2",
     "gzip-size": "5.1.1",
-    "husky": "3.1.0",
     "jest": "25.0.0",
     "jest-watch-typeahead": "0.4.2",
     "kleur": "3.0.3",
