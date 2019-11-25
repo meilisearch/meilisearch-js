@@ -70,7 +70,7 @@ export interface SearchParams {
   attributesToHighlight?: string[]
   filters?: string
   timeoutMs?: number
-  matches?: bool
+  matches?: boolean
 }
 
 export interface SearchRequest {
@@ -84,7 +84,7 @@ export interface SearchRequest {
   attributesToHighlight?: string
   filters?: string
   timeoutMs?: number
-  matches?: bool
+  matches?: boolean
 }
 
 export interface SearchResponse {
