@@ -27,7 +27,7 @@ class Indexes {
   ///
 
   /**
-   * Search for documents into an index
+   * Get the informations about on update
    * @memberof Indexes
    * @method getOneUpdateInfo
    */
@@ -38,7 +38,7 @@ class Indexes {
   }
 
   /**
-   * Search for documents into an index
+   * Get the list of all updates
    * @memberof Indexes
    * @method getAllUpdatesInfos
    */
@@ -178,7 +178,7 @@ class Indexes {
    * @method getDocument
    */
   getDocument(documentId: string): Promise<object> {
-    const url = `/indexes/${this.indexUid}/documents/ + ${documentId}`
+    const url = `/indexes/${this.indexUid}/documents/${documentId}`
 
     return this.instance.get(url)
   }
