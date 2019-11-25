@@ -1,6 +1,6 @@
 {
   "name": "@meilisearch/meili-api",
-  "version": "0.0.9",
+  "version": "0.8.0",
   "description": "A js library to wrap the meili api ",
   "keywords": [
     "meili",
