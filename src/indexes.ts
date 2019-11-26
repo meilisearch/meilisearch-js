@@ -65,7 +65,7 @@ class Indexes {
     }
 
     if (options.offset) {
-      params['offset'] = options.offset
+      params.offset = options.offset
     }
     if (options.limit) {
       params.limit = options.limit

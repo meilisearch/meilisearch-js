@@ -143,17 +143,6 @@ class Meili {
   }
 
   /**
-   * Get the stats of one index
-   * @memberof Admin
-   * @method indexStats
-   */
-  indexStats(indexUid: string): Promise<object> {
-    const url = `/stats/${indexUid}`
-
-    return this.instance.get(url)
-  }
-
-  /**
    * Get the version of the server
    * @memberof Admin
    * @method version
