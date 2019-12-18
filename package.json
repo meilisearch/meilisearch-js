@@ -74,7 +74,7 @@
     "axios": "0.19.0"
   },
   "devDependencies": {
-    "@types/jest": "24.0.23",
+    "@types/jest": "24.0.24",
     "@types/node": "12.12.*",
     "@types/prettier": "1.18.4",
     "@types/webpack-config-utils": "2.3.0",
