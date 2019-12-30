@@ -75,7 +75,7 @@
   },
   "devDependencies": {
     "@types/jest": "24.0.23",
-    "@types/node": "12.12.*",
+    "@types/node": "13.1.*",
     "@types/prettier": "1.18.4",
     "@types/webpack-config-utils": "2.3.0",
     "brotli-size": "4.0.0",
