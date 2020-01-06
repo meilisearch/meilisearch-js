@@ -1,19 +1,18 @@
-# meili-api
+# MeiliSearch Javascript Client
 
-> This is the javascript wrapper to the meili API
-> Meili provides a instant search engine as a service, you can register on [meilisearch.com](https://www.meilisearch.com/) to get your credentials. You can also try it on your own by installing [MeiliDB](https://github.com/meilisearch/MeiliDB) on your computer.
-
-> 👷🏾‍♂️This is a work in progress, if you need more information on the meili API, you should visit the [API documentation](https://docs.meilisearch.com/)
-
-[![CircleCI](https://circleci.com/gh/meilisearch/js-meili-api.svg?style=svg)](https://circleci.com/gh/meilisearch/js-meili-api)
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=meilisearch/js-meili-api)](https://dependabot.com)
 [![NPM version](https://img.shields.io/npm/v/@meilisearch/meili-api.svg)](https://www.npmjs.com/package/@meilisearch/meili-api)
-![Downloads](https://img.shields.io/npm/dm/@meilisearch/meili-api.svg)
 [![Standard Version](https://img.shields.io/badge/release-standard%20version-brightgreen.svg)](https://github.com/conventional-changelog/standard-version)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+![Downloads](https://img.shields.io/npm/dm/@meilisearch/meili-api.svg)
 
----
+The Javascript client for MeiliSearch API.
+
+MeiliSearch provides an ultra relevant and instant full-text search. Our solution is open-source and you can check out [our repository here](https://github.com/meilisearch/MeiliDB).
+
+Here is the [MeiliSearch documentation](https://docs.meilisearch.com/) 📖
+
+> 👷🏾‍♂️ This client is a work in progress, if you need more information don't hesitate to contact us to bonjour@meilisearch.com or to open an issue.
 
 ## ✨ Features
 
