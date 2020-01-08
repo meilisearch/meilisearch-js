@@ -2,7 +2,7 @@ import Meili from '../'
 import dataset from '../../examples/movies.json'
 
 const config = {
-  host: 'http://127.0.0.1:8080',
+  host: 'http://127.0.0.1:7700',
 }
 
 const meili = new Meili(config)

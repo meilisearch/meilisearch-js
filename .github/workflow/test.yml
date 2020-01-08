@@ -1,0 +1,17 @@
+name: Jest
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker setup
+        run: docker run -d -p 7700:7700 getmeili/meilisearch:v0.8.4 ./meilisearch --no-analytics=true
+      - name: Install dependencies
+        run: yarn install --dev
+      - name: Run tests
+        run: yarn test
+

@@ -1,7 +1,7 @@
 import Meili from '../'
 
 const config = {
-  host: 'http://127.0.0.1:8080',
+  host: 'http://127.0.0.1:7700',
 }
 
 const wrongConfig = {
@@ -43,20 +43,25 @@ const clearAllIndexes = async () => {
 }
 test('connexion without API key', async () => {
   const meili = new Meili({
-    host: 'http://127.0.0.1:8080',
+    host: 'http://127.0.0.1:7700',
   })
   expect(meili).toBeInstanceOf(Meili);
 })
 
 test('connexion with API key', async () => {
   const meili = new Meili({
-    host: 'http://127.0.0.1:8080',
+    host: 'http://127.0.0.1:7700',
     apiKey: '123'
   })
   expect(meili).toBeInstanceOf(Meili);
 })
 
 test('Health', async() => {
+  await expect(wrongMeili.isHealthy()).rejects.toThrow()
+  await expect(meili.isHealthy()).resolves.toBe(true);
+})
+
+test('Sys-info', async() => {
   await expect(wrongMeili.isHealthy()).rejects.toThrow()
   await expect(meili.isHealthy()).resolves.toBe(true);
 })
