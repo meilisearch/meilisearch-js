@@ -16,18 +16,18 @@ function sleep(ms: number) {
 }
 
 test('connexion without API key', () => {
-  const meili = new Meili({
+  const meiliNoApi = new Meili({
     host: 'http://127.0.0.1:7700',
   })
-  expect(meili).toBeInstanceOf(Meili);
+  expect(meiliNoApi).toBeInstanceOf(Meili);
 })
 
 test('connexion with API key', () => {
-  const meili = new Meili({
+  const meiliApi = new Meili({
     host: 'http://127.0.0.1:7700',
     apiKey: '123'
   })
-  expect(meili).toBeInstanceOf(Meili);
+  expect(meiliApi).toBeInstanceOf(Meili);
 })
 
 test('Health', async() => {
@@ -43,10 +43,27 @@ test('Health', async() => {
   await expect(meili.setHealthy()).resolves.toBe("");
 })
 
-test('Sys-info', async() => {
+test('System information', async () => {
+  await meili.systemInformation().catch((err) => {
+    expect(err).toBe(null)
+  })
 
+  await meili.systemInformationPretty().catch((err) => {
+    expect(err).toBe(null)
+  })
 })
 
+test('Version', async () => {
+  await meili.version().catch((err) => {
+    expect(err).toBe(null)
+  })
+})
+
+test('Database stats', async () => {
+  await meili.databaseStats().catch((err) => {
+    expect(err).toBe(null)
+  })
+})
 
 // test('reset-start', async () => {
 //   await clearAllIndexes()
