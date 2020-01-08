@@ -86,10 +86,9 @@ class Meili {
    * @memberof Admin
    * @method isHealthy
    */
-  isHealthy(): Promise<void> {
+  isHealthy(): Promise<boolean> {
     const url = '/health'
-
-    return this.instance.get(url)
+    return this.instance.get(url).then((res) => true)
   }
 
   /**
