@@ -86,10 +86,10 @@ class Meili {
    * @memberof Admin
    * @method isHealthy
    */
-  isHealthy(): Promise<void> {
+  isHealthy(): Promise<boolean> {
     const url = '/health'
 
-    return this.instance.get(url)
+    return this.instance.get(url).then((res) => true)
   }
 
   /**
@@ -100,7 +100,9 @@ class Meili {
   setHealthy(): Promise<void> {
     const url = '/health'
 
-    return this.instance.post(url)
+    return this.instance.put(url, {
+      health: true
+    })
   }
 
   /**
@@ -111,7 +113,9 @@ class Meili {
   setUnhealthy(): Promise<void> {
     const url = '/health'
 
-    return this.instance.delete(url)
+    return this.instance.put(url, {
+      health: false
+    })
   }
 
   /**
@@ -123,7 +127,7 @@ class Meili {
     const url = '/health'
 
     return this.instance.put(url, {
-      health,
+      health
     })
   }
 
