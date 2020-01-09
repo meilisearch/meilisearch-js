@@ -173,13 +173,6 @@ class Indexes {
       attr = params.attributesToRetrieve.join(',')
     }
 
-    console.log({
-      params : {
-        ...params,
-        ...((attr) ? { attributesToRetrieve: attr } : {})
-      }
-    });
-
     return this.instance.get(url, {
       params : {
         ...params,
