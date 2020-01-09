@@ -207,6 +207,7 @@ test('delete-all-documents', async () => {
   await expect(meili.Index(index.uid).deleteAllDocuments())
     .resolves
     .toHaveProperty('updateId');
+  await sleep(5000);
   await expect(meili.Index(index.uid).getDocuments())
     .resolves
     .toHaveLength(0);
