@@ -65,11 +65,6 @@ export interface GetDocumentsParams{
   attributesToRetrieve?: string[]
 }
 
-
-export interface PostDocumentParams{
-
-}
-
 export interface SearchParams {
   q: string
   offset?: number
