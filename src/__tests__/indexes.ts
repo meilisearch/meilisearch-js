@@ -188,6 +188,7 @@ test('delete-document', async () => {
   await expect(meili.Index(index.uid).deleteDocument(randomDocument))
     .resolves
     .toHaveProperty('updateId');
+  await sleep(3000);
   await expect(meili.Index(index.uid).getDocument(randomDocument))
     .rejects
     .toThrow();
