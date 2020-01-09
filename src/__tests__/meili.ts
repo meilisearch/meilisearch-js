@@ -72,13 +72,9 @@ const clearAllIndexes = async () => {
   let indexes = await meili
     .listIndexes()
     .then((response: any) => {
-      console.log({ response });
-
       return response.map((elem: any) => elem.uid)
     })
     .catch((err) => {
-      console.log(err.code);
-
       expect(err).toBe(null)
     })
 
@@ -218,4 +214,3 @@ test('create-index-with-uid', async () => {
 test('reset-end', async () => {
   await clearAllIndexes()
 })
-

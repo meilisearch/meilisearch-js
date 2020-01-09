@@ -158,13 +158,13 @@ class Indexes {
   ): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/schema`
     if (schema.identifier) {
-      return this.instance.post(url, schema, {
+      return this.instance.put(url, schema, {
         params: {
           raw: true,
         },
       })
     } else {
-      return this.instance.post(url, schema)
+      return this.instance.put(url, schema)
     }
   }
 
