@@ -12,75 +12,43 @@ const index = {
   uid: 'movies',
 }
 
-const schema = {
-  identifier: 'id',
-  attributes: {
-    id: {
-      displayed: true,
-      indexed: true,
-      ranked: false,
-    },
-    title: {
-      displayed: true,
-      indexed: true,
-      ranked: false,
-    },
-    poster: {
-      displayed: true,
-      indexed: true,
-      ranked: false,
-    },
-    overview: {
-      displayed: true,
-      indexed: true,
-      ranked: false,
-    },
-    release_date: {
-      displayed: true,
-      indexed: true,
-      ranked: false,
-    },
-  },
-}
+const randomDocument = '287947';
+const offsetDocumentId = '157433';
+const firstDocumentId = '299537';
+const defaultNumberOfDocuments = 20;
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 const clearAllIndexes = async () => {
-  let indexes = await meili
+  const indexes = await meili
     .listIndexes()
     .then((response: any) => {
       return response.map((elem: any) => elem.uid)
     })
     .catch((err) => {
       expect(err).toBe(null)
-    })
+    });
 
-  for (let indexUid of indexes) {
+  for (const indexUid of indexes) {
     await meili
       .Index(indexUid)
       .deleteIndex()
       .catch((err) => {
         expect(err).toBe(null)
-      })
+      });
   }
 
-  await meili
-    .listIndexes()
-    .then((response: any) => {
-      expect(response.length).toBe(0)
-    })
-    .catch((err) => {
-      expect(err).toBe(null)
-    })
+  await expect(meili.listIndexes())
+    .resolves
+    .toHaveLength(0);
 }
 
 
 test('reset-start', async () => {
-  await clearAllIndexes()
+  await clearAllIndexes();
 })
-// jest.setTimeout(15 * 1000)
 
 ///
 /// INDEXES
@@ -95,7 +63,7 @@ test('create-index', async () => {
     })
     .catch((err) => {
       expect(err).toBe(null)
-    })
+    });
 })
 
 test('get-index', async () => {
@@ -110,28 +78,22 @@ test('get-index', async () => {
       expect(err).toBe(null)
     })
 
-  await meili
-    .listIndexes()
-    .then((response: any) => {
-      expect(response.length).toBe(1)
-    })
-    .catch((err) => {
-      expect(err).toBe(null)
-    })
+    await expect(meili.listIndexes())
+    .resolves
+    .toHaveLength(1);
 })
-
 
 test('update-index', async () => {
   await meili
-  .Index(index.uid)
-  .updateIndex({ name: 'new name' })
-  .then((response: any) => {
-    expect(response.name).toBe('new name')
-    expect(response.uid).toBe(index.uid)
-  })
-  .catch((err) => {
-    expect(err).toBe(null)
-  })
+    .Index(index.uid)
+    .updateIndex({ name: 'new name' })
+    .then((response: any) => {
+      expect(response.name).toBe('new name')
+      expect(response.uid).toBe(index.uid)
+    })
+    .catch((err) => {
+      expect(err).toBe(null)
+    });
   await meili
     .Index(index.uid)
     .getIndex()
@@ -141,7 +103,7 @@ test('update-index', async () => {
     })
     .catch((err) => {
       expect(err).toBe(null)
-    })
+    });
   await meili
     .Index(index.uid)
     .updateIndex({ name: index.name })
@@ -151,119 +113,120 @@ test('update-index', async () => {
     })
     .catch((err) => {
       expect(err).toBe(null)
-    })
+    });
 })
-
-
 
 ///
 /// SCHEMA
 ///
 test('update-schema', async () => {
-    await meili
-      .Index(index.uid)
+  await expect(meili.Index(index.uid)
       .updateSchema({
         'id': ['indexed','displayed','identifier'],
         'title':['displayed','indexed'],
         'poster':['displayed','indexed'],
         'overview':['indexed','displayed'],
         'release_date':['indexed','displayed']
-      }).then((response: any) => {
-        expect(response).toHaveProperty('updateId')
-      })
-      .catch((err) => {
-        expect(err).toBe(null)
-      })
-
+      }))
+      .resolves
+      .toHaveProperty('updateId');
 })
 
 test('get-schema', async () => {
-  await meili
-    .Index(index.uid)
-    .getSchema()
-    .then((response: any) => {
-      expect(response)
-      .toBeDefined()
-    })
-    .catch((err) => {
-      expect(err).toBe(null)
-    })
+  await expect(meili.Index(index.uid).getSchema())
+  .resolves
+  .toBeDefined();
 })
 
 
-// test('add-documents', async () => {
-//   await meili
-//     .Index(index.uid)
-//     .addDocuments(dataset)
-//     .then((response: any) => {
-//       expect(response.updateId).toBeDefined()
-//     })
-//     .catch((err) => {
-//       expect(err).toBe(null)
-//     })
-// })
+test('add-documents', async () => {
+  await expect(meili.Index(index.uid).addDocuments(dataset))
+    .resolves
+    .toHaveProperty('updateId');
+})
+jest.setTimeout(20 * 1000)
 
-// test('get-document', async () => {
-//   await sleep(3 * 1000)
-//   await meili
-//     .Index(index.uid)
-//     .getDocument('287947')
-//     .then((response: any) => {
-//       expect(response).toEqual(dataset[0])
-//     })
-//     .catch((err) => {
-//       expect(err).toBe(null)
-//     })
-// })
+test('get-document', async () => {
+  await sleep(15 * 1000)
+  await expect(meili.Index(index.uid).getDocument(randomDocument))
+  .resolves
+  .toEqual(dataset[0]);
+})
 
-test('delete-index', async () => {
+test('get-documents', async () => {
   await meili
     .Index(index.uid)
-    .deleteIndex()
+    .getDocuments()
     .then((response: any) => {
-      expect(response)
-      .toBeDefined()
+      expect(response.length).toBe(defaultNumberOfDocuments);
+      expect(response[0].id).toEqual(firstDocumentId);
+    });
+
+  await meili
+    .Index(index.uid)
+    .getDocuments({
+        offset: 1
     })
-    .catch((err) => {
-      expect(err).toBe(null)
-    })
-    await meili
-    .listIndexes()
     .then((response: any) => {
-      expect(response.length).toBe(0)
+      expect(response.length).toBe(defaultNumberOfDocuments);
+      expect(response[0].id).toEqual(offsetDocumentId);
+    });
+
+  await meili
+    .Index(index.uid)
+    .getDocuments({
+        offset: 1,
+        limit: 1
     })
-    .catch((err) => {
-      expect(err).toBe(null)
-    })
+    .then((response: any) => {
+      expect(response.length).toBe(1);
+      expect(response[0].id).toEqual(offsetDocumentId);
+    });
+})
+
+test('delete-document', async () => {
+  await expect(meili.Index(index.uid).deleteDocument(randomDocument))
+    .resolves
+    .toHaveProperty('updateId');
+  await sleep(3000);
+  await expect(meili.Index(index.uid).getDocument(randomDocument))
+    .rejects
+    .toThrow();
+})
+
+test('delete-documents', async () => {
+    await expect(meili.Index(index.uid)
+    .deleteDocuments([firstDocumentId, offsetDocumentId]))
+    .resolves
+    .toHaveProperty('updateId');
+    await sleep(3000);
+    await expect(meili.Index(index.uid).getDocument(firstDocumentId)).rejects.toThrow();
+    await expect(meili.Index(index.uid).getDocument(offsetDocumentId)).rejects.toThrow();
+})
+
+test('delete-all-documents', async () => {
+  await expect(meili.Index(index.uid).deleteAllDocuments())
+    .resolves
+    .toHaveProperty('updateId');
+  await sleep(3000);
+  await expect(meili.Index(index.uid).getDocuments())
+    .resolves
+    .toHaveLength(0);
+})
+
+
+
+test('delete-index', async () => {
+  await expect(meili.Index(index.uid).deleteIndex())
+    .resolves
+    .toBeDefined();
+  await expect(meili.listIndexes())
+    .resolves
+    .toHaveLength(0);
 })
 
 
 
 test('reset-stop', async () => {
-  let indexes = await meili
-    .listIndexes()
-    .then((response: any) => {
-      return response.map((elem: any) => elem.uid)
-    })
-    .catch((err) => {
-      expect(err).toBe(null)
-    })
-
-  for (let indexUid of indexes) {
-    await meili
-      .Index(indexUid)
-      .deleteIndex()
-      .catch((err) => {
-        expect(err).toBe(null)
-      })
-  }
-
-  await meili
-    .listIndexes()
-    .then((response: any) => {
-      expect(response.length).toBe(0)
-    })
-    .catch((err) => {
-      expect(err).toBe(null)
-    })
+  await clearAllIndexes();
 })

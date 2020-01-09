@@ -101,18 +101,7 @@ class Indexes {
     })
   }
 
-  /**
-   * Browse for documents into an index
-   * @memberof Indexes
-   * @method browse
-   */
-  browse(params: Types.BrowseParams): Promise<object[]> {
-    const url = `/indexes/${this.indexUid}/documents`
 
-    return this.instance.get(url, {
-      params,
-    })
-  }
 
   ///
   /// INDEX
@@ -173,6 +162,19 @@ class Indexes {
   ///
 
   /**
+   * Browse for documents into an index
+   * @memberof Indexes
+   * @method browse
+   */
+  getDocuments(params?: Types.GetDocumentsParams): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/documents`
+
+    return this.instance.get(url, {
+      params,
+    })
+  }
+
+  /**
    * Get one document
    * @memberof Documents
    * @method getDocument
@@ -200,7 +202,7 @@ class Indexes {
    * @method deleteDocument
    */
   deleteDocument(documentId: string): Promise<Types.AsyncUpdateId> {
-    const url = `/indexes/${this.indexUid}/documents/ + ${documentId}`
+    const url = `/indexes/${this.indexUid}/documents/${documentId}`
 
     return this.instance.delete(url)
   }
@@ -216,24 +218,8 @@ class Indexes {
     return this.instance.post(url, documentsIds)
   }
 
-  /**
-   * Add, update or delete multiples document in one time
-   * @memberof Documents
-   * @method batchWrite
-   */
-  batchWriteDocuments(
-    documentsToInsert: object[],
-    documentsToDelete: object[]
-  ): Promise<Types.AsyncUpdateId> {
-    const url = `/indexes/${this.indexUid}/documents/batch`
 
-    return this.instance.post(url, {
-      insert: documentsToInsert,
-      delete: documentsToDelete,
-    })
-  }
-
-  clearAllDocuments(): Promise<Types.AsyncUpdateId> {
+  deleteAllDocuments(): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents`
 
     return this.instance.delete(url)
