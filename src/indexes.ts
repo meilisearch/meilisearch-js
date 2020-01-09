@@ -168,9 +168,16 @@ class Indexes {
    */
   getDocuments(params?: Types.GetDocumentsParams): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/documents`
+    let attr;
+    if (params && Array.isArray(params.attributesToRetrieve)) {
+      attr = params.attributesToRetrieve.join(',')
+    }
 
     return this.instance.get(url, {
-      params,
+      params : {
+        ...params,
+        ...((attr) ? { attributesToRetrieve: attr } : {})
+      }
     })
   }
 
