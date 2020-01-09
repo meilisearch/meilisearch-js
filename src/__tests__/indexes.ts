@@ -17,6 +17,7 @@ const offsetDocumentId = '157433';
 const firstDocumentId = '299537';
 const defaultNumberOfDocuments = 20;
 
+jest.setTimeout(20 * 1000)
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -120,6 +121,7 @@ test('update-index', async () => {
 /// SCHEMA
 ///
 test('update-schema', async () => {
+  await sleep(3 * 1000)
   await expect(meili.Index(index.uid)
       .updateSchema({
         'id': ['indexed','displayed','identifier'],
@@ -144,7 +146,7 @@ test('add-documents', async () => {
     .resolves
     .toHaveProperty('updateId');
 })
-jest.setTimeout(20 * 1000)
+
 
 test('get-document', async () => {
   await sleep(15 * 1000)
@@ -182,6 +184,31 @@ test('get-documents', async () => {
       expect(response.length).toBe(1);
       expect(response[0].id).toEqual(offsetDocumentId);
     });
+  // TODO: wait for fix
+    await meili
+      .Index(index.uid)
+      .getDocuments({
+        offset: 1,
+        attributesToRetrieve: ['id', 'title']
+      })
+      .then((response: any) => {
+        expect(response.length).toBe(20);
+        expect(response[0].id).toEqual('157433');
+        expect(response[0]).not.toHaveProperty("poster");
+      })
+
+    await meili
+      .Index(index.uid)
+      .getDocuments({
+        offset: 1,
+        limit: 2,
+        attributesToRetrieve: ['id', 'title']
+      })
+      .then((response: any) => {
+        expect(response.length).toBe(2);
+        expect(response[0].id).toEqual('157433');
+        expect(response[0]).not.toHaveProperty("poster");
+      })
 })
 
 test('delete-document', async () => {
