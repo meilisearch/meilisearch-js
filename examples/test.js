@@ -1,9 +1,9 @@
 var Meili = require('../dist')
 
-var config = {
-  applicationId: '675b1990',
-  apiKey: 'f45t6djs2wswgoVJTWmPax72',
+const config = {
+  host: 'http://127.0.0.1:7700',
 }
+
 var meili = new Meili(config)
 
 meili

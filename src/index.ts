@@ -101,7 +101,7 @@ class Meili {
     const url = '/health'
 
     return this.instance.put(url, {
-      health: true
+      health: true,
     })
   }
 
@@ -114,7 +114,7 @@ class Meili {
     const url = '/health'
 
     return this.instance.put(url, {
-      health: false
+      health: false,
     })
   }
 
@@ -127,7 +127,7 @@ class Meili {
     const url = '/health'
 
     return this.instance.put(url, {
-      health
+      health,
     })
   }
 

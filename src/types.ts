@@ -59,7 +59,7 @@ export interface UpdateIndexRequest {
   name: string
 }
 
-export interface GetDocumentsParams{
+export interface GetDocumentsParams {
   offset?: number
   limit?: number
   attributesToRetrieve?: string[]
@@ -100,4 +100,3 @@ export interface SearchResponse {
   processingTimeMs: number
   query: string
 }
-
