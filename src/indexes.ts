@@ -101,8 +101,6 @@ class Indexes {
     })
   }
 
-
-
   ///
   /// INDEX
   ///
@@ -168,16 +166,16 @@ class Indexes {
    */
   getDocuments(params?: Types.GetDocumentsParams): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/documents`
-    let attr;
+    let attr
     if (params && Array.isArray(params.attributesToRetrieve)) {
       attr = params.attributesToRetrieve.join(',')
     }
 
     return this.instance.get(url, {
-      params : {
+      params: {
         ...params,
-        ...((attr) ? { attributesToRetrieve: attr } : {})
-      }
+        ...(attr ? { attributesToRetrieve: attr } : {}),
+      },
     })
   }
 
@@ -224,7 +222,6 @@ class Indexes {
 
     return this.instance.post(url, documentsIds)
   }
-
 
   deleteAllDocuments(): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents`
