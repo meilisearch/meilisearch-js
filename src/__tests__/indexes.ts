@@ -204,6 +204,146 @@ test('get-documents', async () => {
     })
 })
 
+test('search', async () => {
+  await meili
+    .Index(index.uid)
+    .search({
+      q: 'Escape',
+    })
+    .then((response: any) => {
+      expect(response.hits).toHaveLength(2)
+      expect(response.hits[0]).toHaveProperty('id', '522681')
+    })
+  await meili
+    .Index(index.uid)
+    .search({
+      q: 'Escape',
+      offset: 1,
+    })
+    .then((response: any) => {
+      expect(response.hits).toHaveLength(1)
+      expect(response.hits[0]).toHaveProperty('id', '338952')
+    })
+  await meili
+    .Index(index.uid)
+    .search({
+      q: 'The',
+      offset: 1,
+      limit: 5,
+    })
+    .then((response: any) => {
+      expect(response.hits).toHaveLength(5)
+      expect(response.hits[0]).toHaveProperty('id', '504172')
+    })
+  await meili
+    .Index(index.uid)
+    .search({
+      q: 'The',
+      offset: 1,
+      limit: 5,
+      attributesToRetrieve: ['title', 'id'],
+    })
+    .then((response: any) => {
+      expect(response.hits).toHaveLength(5)
+      expect(response.hits[0]).toHaveProperty('id', '504172')
+      expect(response.hits[0]).not.toHaveProperty('poster')
+    })
+  await meili
+    .Index(index.uid)
+    .search({
+      q: 'The',
+      offset: 1,
+      limit: 5,
+      attributesToRetrieve: ['title', 'id'],
+      attributesToSearchIn: ['overview'],
+    })
+    .then((response: any) => {
+      expect(response.hits).toHaveLength(5)
+      expect(response.hits[0]).toHaveProperty('id', '390634')
+      expect(response.hits[0]).not.toHaveProperty('poster')
+    })
+  await meili
+    .Index(index.uid)
+    .search({
+      q: 'scientist',
+      offset: 0,
+      limit: 5,
+      attributesToRetrieve: ['overview', 'id'],
+      attributesToSearchIn: ['overview'],
+      attributesToCrop: ['overview'],
+    })
+    .then((response: any) => {
+      expect(response.hits).toHaveLength(1)
+      expect(response.hits[0]).toHaveProperty('id', '485811')
+      expect(response.hits[0].overview).not.toEqual(
+        response.hits[0]._formatted.overview
+      )
+    })
+  await meili
+    .Index(index.uid)
+    .search({
+      q: 'scientist',
+      offset: 0,
+      limit: 5,
+      attributesToRetrieve: ['overview', 'id'],
+      attributesToSearchIn: ['overview'],
+      attributesToCrop: ['overview'],
+      cropLength: 1,
+    })
+    .then((response: any) => {
+      expect(response.hits).toHaveLength(1)
+      expect(response.hits[0]).toHaveProperty('id', '485811')
+      expect(response.hits[0]._formatted.overview).toEqual(' s')
+    })
+
+  await meili
+    .Index(index.uid)
+    .search({
+      q: 'scientist',
+      offset: 0,
+      limit: 5,
+      attributesToRetrieve: ['overview', 'id'],
+      attributesToSearchIn: ['overview'],
+      attributesToCrop: ['overview'],
+      attributesToHighlight: ['overview'],
+    })
+    .then((response: any) => {
+      expect(response.hits).toHaveLength(1)
+      expect(response.hits[0]).toHaveProperty('id', '485811')
+      expect(response.hits[0]._formatted.overview).toMatch(
+        /\<em\>scientist\<\/em\>/
+      )
+    })
+  await meili
+    .Index(index.uid)
+    .search({
+      q: 'The',
+      offset: 0,
+      limit: 5,
+      filters: 'title:The Mule',
+      attributesToHighlight: ['overview'],
+    })
+    .then((response: any) => {
+      expect(response.hits).toHaveLength(1)
+      expect(response.hits[0]).toHaveProperty('id', '504172')
+      expect(response.hits[0]._formatted.overview).toMatch(/\<em\>the\<\/em\>/)
+    })
+  await meili
+    .Index(index.uid)
+    .search({
+      q: 'woman',
+      filters: 'title:After',
+      matches: true,
+    })
+    .then((response: any) => {
+      expect(response.hits).toHaveLength(1)
+      expect(response.hits[0]).toHaveProperty('id', '537915')
+      expect(response.hits[0]._matchesInfo.overview).toEqual([
+        { start: 8, length: 5 },
+      ])
+    })
+})
+
 test('delete-document', async () => {
   await expect(
     meili.Index(index.uid).deleteDocument(randomDocument)

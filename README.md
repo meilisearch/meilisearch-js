@@ -35,6 +35,7 @@ There are many ways to run a MeiliSearch instance.
 All of them are detailed in the [documentation](https://docs.meilisearch.com/advanced_guides/binary.html).
 
 For example, if you use Docker:
+
 ```bash
 $ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest --api-key=apiKey
 ```
