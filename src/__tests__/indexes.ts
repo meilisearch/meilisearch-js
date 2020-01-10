@@ -140,9 +140,19 @@ test('add-documents', async () => {
   ).resolves.toHaveProperty('updateId')
 })
 
+test('updates', async () => {
+  await expect(
+    meili.Index(index.uid).getOneUpdateInfo(1)
+  ).resolves.toHaveProperty('status')
+
+  await expect(
+    meili.Index(index.uid).getAllUpdatesInfos()
+  ).resolves.toHaveLength(2)
+})
+
 jest.setTimeout(10 * 1000)
 test('get-document', async () => {
-  await sleep(5 * 1000)
+  await sleep(3 * 1000)
   await expect(
     meili.Index(index.uid).getDocument(randomDocument)
   ).resolves.toEqual(dataset[0])
