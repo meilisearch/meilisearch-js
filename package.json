@@ -38,7 +38,7 @@
     "validate-js": "tsc -p ./config && tsc -p ./scripts",
     "verify": "yarn validate-js && yarn style && yarn test:ci",
     "commit": "git-cz",
-    "style": "yarn format --list-different && yarn lint",
+    "style": "yarn format:fix && yarn lint",
     "style:fix": "yarn format:fix && yarn lint:fix",
     "format": "prettier \"**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}\"",
     "format:fix": "yarn format -- --write",

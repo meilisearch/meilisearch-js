@@ -17,7 +17,6 @@ const offsetDocumentId = '157433'
 const firstDocumentId = '299537'
 const defaultNumberOfDocuments = 20
 
-
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
