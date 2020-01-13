@@ -181,7 +181,10 @@ Will push to the indexing queue documents on body
 ```js
 meili
   .Index('movies')
-  .addDocuments([...])
+  .addDocuments([{
+    id: 1,
+    title: 'My awesome movie'
+  }])
   .then((indexes) => {
     console.log(indexes)
   })
