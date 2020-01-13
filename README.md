@@ -29,10 +29,13 @@ npm install @meilisearch/meili-api
 yarn add @meilisearch/meili-api
 ```
 
-### Run MeiliSearch
+### Requirement
 
-There are many ways to run a MeiliSearch instance.
-All of them are detailed in the [documentation](https://docs.meilisearch.com/advanced_guides/binary.html).
+You need access to a running MeiliSearch instance.
+
+#### Run MeiliSearch
+
+There are many ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/getting_started/download.html).
 
 For example, if you use Docker:
 
@@ -323,6 +326,10 @@ meili
 - Add a synonyms:
 
 `meili.Index('xxx').createSynonym(input: string, synonyms: string[]): Promise<object>`
+
+#### Stop-words
+
+Waiting on MeiliSearch v0.9.0
 
 ### Healthy
 
