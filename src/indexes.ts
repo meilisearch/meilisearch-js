@@ -156,13 +156,28 @@ class Indexes {
   }
 
   ///
+  /// STATS
+  ///
+
+  /**
+   * get stats of an index
+   * @memberof Indexes
+   * @method getStats
+   */
+
+  getStats(): Promise<object[]> {
+    const url = `/stats/${this.indexUid}`
+
+    return this.instance.get(url)
+  }
+  ///
   /// DOCUMENTS
   ///
 
   /**
-   * Browse for documents into an index
+   * get documents of an index
    * @memberof Indexes
-   * @method browse
+   * @method getDocuments
    */
   getDocuments(params?: Types.GetDocumentsParams): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/documents`
