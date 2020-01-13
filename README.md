@@ -166,7 +166,6 @@ meili
 {
   "name": "Movies",
   "uid": "movies",
-  "schema": null,
   "createdAt": "2019-11-25T14:38:49.846352Z",
   "updatedAt": "2019-11-25T14:38:49.846353Z"
 }
