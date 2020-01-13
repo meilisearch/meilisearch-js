@@ -258,9 +258,21 @@ meili
 
 `meili.createIndex(data: Types.CreateIndexRequest): Promise<Types.CreateIndexResponse>`
 
+- Get Index:
+
+`meili.Index('xxx').getIndex(): Promise<Types.index>`
+
+- Update Index:
+
+`meili.Index('xxx').updateIndex(data: Types.UpdateIndexRequest): Promise<Types.index>`
+
+- Delete Index:
+
+`meili.Index('xxx').deleteIndex(): Promise<void>`
+
 - Get specific index stats
 
-`meili.indexStats(indexUid: string): Promise<object>`
+`meili.Index('xxx').getStats(): Promise<object>`
 
 #### Updates
 
@@ -278,7 +290,7 @@ meili
 
 `meili.Index('xxx').addDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
 
-- Get Documents request:
+- Get Documents:
 
 `meili.Index('xxx').getDocuments(params: Types.getDocumentsParams): Promise<object[]>`
 
