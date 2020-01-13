@@ -50,8 +50,8 @@ const Meili = require('@meilisearch/meili-api')
 
 // Get your applicationId and apiKey on meilisearch.com
 const config = {
-  host: 'xxx',
-  apiKey: 'xxx',
+  host: 'http://127.0.0.1:7700',
+  apiKey: 'masterKey',
 }
 
 const meili = new Meili(config)
