@@ -164,7 +164,7 @@ meili
 
 ```json
 {
-  "name": "Movie",
+  "name": "Movies",
   "uid": "movies",
   "schema": null,
   "createdAt": "2019-11-25T14:38:49.846352Z",
