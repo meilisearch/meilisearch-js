@@ -47,7 +47,7 @@ Here is a quickstart for a search request
 ```js
 const Meili = require('@meilisearch/meili-api')
 
-// Get your applicationId and apiKey on meilisearch.com
+// Credentials of your MeiliSearch Instance
 const config = {
   host: 'http://127.0.0.1:7700',
   apiKey: 'masterKey',
