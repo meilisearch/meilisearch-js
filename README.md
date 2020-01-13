@@ -3,21 +3,13 @@
 [![NPM version](https://img.shields.io/npm/v/@meilisearch/meili-api.svg)](https://www.npmjs.com/package/@meilisearch/meili-api)
 [![Standard Version](https://img.shields.io/badge/release-standard%20version-brightgreen.svg)](https://github.com/conventional-changelog/standard-version)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
-![Downloads](https://img.shields.io/npm/dm/@meilisearch/meili-api.svg)
+[![Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://img.shields.io/badge/licence-MIT-blue.svg)
 
 The Javascript client for MeiliSearch API.
 
 MeiliSearch provides an ultra relevant and instant full-text search. Our solution is open-source and you can check out [our repository here](https://github.com/meilisearch/MeiliDB).
 
 Here is the [MeiliSearch documentation](https://docs.meilisearch.com/) 📖
-
-> 👷🏾‍♂️ This client is a work in progress, if you need more information don't hesitate to contact us to bonjour@meilisearch.com or to open an issue.
-
-## ✨ Features
-
-- Search documents in meili API
-- Index documents in meili API
 
 ## 🔧 Installation
 
@@ -65,7 +57,7 @@ meili
 
 ## 🎭 Examples
 
-Go checkout [examples](./examples) !
+Go checkout [examples](./examples)!
 
 ## 📜 API Examples
 
@@ -367,16 +359,3 @@ Waiting on MeiliSearch v0.9.0
 - Get system information (pretty mode)
 
 `meili.systemInformationPretty(): Promise<object>`
-
-## 🎓 Guides
-
-<details>
-<summary>How to do Foo</summary>
-Today we're gonna build Foo....
-</details>
-
-### 🕵️ Troubleshooting
-
-## 🥂 License
-
-[MIT](./LICENSE.md) as always
