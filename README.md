@@ -242,14 +242,12 @@ meili
 
 ## 📜 API Ressources
 
-### Main ressources
-
-#### Search
+### Search
 - Make a search request:
 
 `meili.Index('xxx').search(options: Types.SearchParams): Promise<Types.SearchResponse>`
 
-####  Indexes
+###  Indexes
 - List all indexes:
 
 `meili.listIndexes(): Promise<object[]>`
@@ -274,7 +272,7 @@ meili
 
 `meili.Index('xxx').getStats(): Promise<object>`
 
-#### Updates
+### Updates
 
 - Get One update info:
 
@@ -284,7 +282,7 @@ meili
 
 `meili.Index('xxx').getAllUpdates(): Promise<object[]>`
 
-#### Documents
+### Documents
 
 - Add or update multiples documents:
 
@@ -306,7 +304,7 @@ meili
 
 `meili.Index('xxx').deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId>`
 
-#### Settings
+### Settings
 
 - Get settings:
 
@@ -316,7 +314,7 @@ meili
 
 `meili.Index('xxx').updateSettings(settings: object): Promise<void>`
 
-#### Synonyms
+### Synonyms
 
 - List all synonyms:
 
@@ -326,7 +324,7 @@ meili
 
 `meili.Index('xxx').createSynonym(input: string, synonyms: string[]): Promise<object>`
 
-#### Healthy
+### Healthy
 
 - Check if the server is healthy
 
@@ -344,18 +342,18 @@ meili
 
 `meili.changeHealthTo(health: boolean): Promise<void>`
 
-#### Stats
+### Stats
 
 - Get database stats
 
 `meili.databaseStats(): Promise<object>`
 
-#### Version
+### Version
 - Get binary version
 
 `meili.version(): Promise<object>`
 
-#### System
+### System
 - Get system information
 
 `meili.systemInformation(): Promise<object>`
