@@ -244,6 +244,12 @@ meili
 
 ### Main ressources
 
+#### Search
+- Make a search request:
+
+`meili.Index('xxx').search(options: Types.SearchParams): Promise<Types.SearchResponse>`
+
+####  Indexes
 - List all indexes:
 
 `meili.listIndexes(): Promise<object[]>`
@@ -251,6 +257,12 @@ meili
 - Create new index:
 
 `meili.createIndex(data: Types.CreateIndexRequest): Promise<Types.CreateIndexResponse>`
+
+- Get specific index stats
+
+`meili.indexStats(indexUid: string): Promise<object>`
+
+#### Updates
 
 - Get One update info:
 
@@ -260,23 +272,21 @@ meili
 
 `meili.Index('xxx').getAllUpdatesInfos(): Promise<object[]>`
 
-- Make a search request:
-
-`meili.Index('xxx').search(options: Types.SearchParams): Promise<Types.SearchResponse>`
-
-- Make a browse request:
-
-`meili.Index('xxx').browse(params: Types.BrowseParams): Promise<object[]>`
-
-- Get one document:
-
-`meili.Index('xxx').getDocument(documentId: string): Promise<object>`
+#### Documents
 
 - Add or update multiples documents:
 
 `meili.Index('xxx').addDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
 
-- Delete one docuemnt:
+- Get Documents request:
+
+`meili.Index('xxx').getDocuments(params: Types.getDocumentsParams): Promise<object[]>`
+
+- Get one document:
+
+`meili.Index('xxx').getDocument(documentId: string): Promise<object>`
+
+- Delete one document:
 
 `meili.Index('xxx').deleteDocument(documentId: string): Promise<Types.AsyncUpdateId>`
 
@@ -284,9 +294,7 @@ meili
 
 `meili.Index('xxx').deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId>`
 
-- Add, update or delete multiples documents:
-
-`meili.Index('xxx').batchWriteDocuments(documentsToInsert: object[], documentsToDelete: object[]): Promise<Types.AsyncUpdateId>`
+#### Settings
 
 - Get settings:
 
@@ -296,6 +304,8 @@ meili
 
 `meili.Index('xxx').updateSettings(settings: object): Promise<void>`
 
+#### Synonyms
+
 - List all synonyms:
 
 `meili.Index('xxx').listSynonyms(): Promise<object[]>`
@@ -304,7 +314,7 @@ meili
 
 `meili.Index('xxx').createSynonym(input: string, synonyms: string[]): Promise<object>`
 
-### Secondary ressources
+#### Healthy
 
 - Check if the server is healthy
 
@@ -322,18 +332,18 @@ meili
 
 `meili.changeHealthTo(health: boolean): Promise<void>`
 
+#### Stats
+
 - Get database stats
 
 `meili.databaseStats(): Promise<object>`
 
-- Get specific index stats
-
-`meili.indexStats(indexUid: string): Promise<object>`
-
+#### Version
 - Get binary version
 
 `meili.version(): Promise<object>`
 
+#### System
 - Get system information
 
 `meili.systemInformation(): Promise<object>`
