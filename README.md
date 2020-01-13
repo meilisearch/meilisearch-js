@@ -29,19 +29,17 @@ npm install @meilisearch/meili-api
 yarn add @meilisearch/meili-api
 ```
 
-### Requirement
+### 🏃‍♀️Run MeiliSearch
 
-You need access to a running MeiliSearch instance.
-
-#### Run MeiliSearch
-
-There are many ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/getting_started/download.html).
+There are many easy ways to download and run a MeiliSearch instance.</br>
+**Here is the [documentation about downloading MeiliSearch](https://docs.meilisearch.com/getting_started/download.html).**
 
 For example, if you use Docker:
-
 ```bash
 $ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest --api-key=apiKey
 ```
+
+NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 
 ## 🎬 Getting started
 
