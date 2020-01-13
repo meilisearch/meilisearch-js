@@ -152,7 +152,7 @@ meili
   })
 ```
 
-** Response: **
+**Response:**
 
 ```json
 {
