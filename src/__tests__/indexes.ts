@@ -78,6 +78,20 @@ test('get-index', async () => {
   await expect(meili.listIndexes()).resolves.toHaveLength(1)
 })
 
+test('get-stats', async () => {
+  await meili
+    .Index(index.uid)
+    .getStats()
+    .then((response: any) => {
+      expect(response.numberOfDocuments).toBe(0)
+    })
+    .catch((err) => {
+      expect(err).toBe(null)
+    })
+
+  await expect(meili.listIndexes()).resolves.toHaveLength(1)
+})
+
 test('update-index', async () => {
   await meili
     .Index(index.uid)
