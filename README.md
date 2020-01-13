@@ -84,7 +84,7 @@ meili
   })
 ```
 
-** Response: **
+**Response:**
 
 ```json
 {
@@ -106,7 +106,7 @@ meili
     {
       "id": "29751",
       "title": "Batman Unmasked: The Psychology of the Dark Knight",
-      "poster": "https://image.tmdb.org/t/p/w1280/jjHu128XLARc2k4cJrblAvZe0HE.jpg",
+      "poster": "https:/0/image.tmdb.org/t/p/w1280/jjHu128XLARc2k4cJrblAvZe0HE.jpg",
       "overview": "Delve into the world of Batman and the vigilante justice that he brought to the city of Gotham. Batman is a man who, after experiencing great tragedy, devotes his life to an ideal--but what happens when one man takes on the evil underworld alone? Examine why Batman is who he is--and explore how a boy scarred by tragedy becomes a symbol of hope to everyone else.",
       "release_date": 1216083600
     }
