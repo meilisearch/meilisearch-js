@@ -241,7 +241,7 @@ meili
 
 `meili.Index('xxx').search(options: Types.SearchParams): Promise<Types.SearchResponse>`
 
-###  Indexes
+### Indexes
 - List all indexes:
 
 `meili.listIndexes(): Promise<object[]>`
