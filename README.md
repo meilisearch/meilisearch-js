@@ -153,7 +153,7 @@ This methods create a new index
 meili
   .createIndex({
     name: 'Movie',
-    uid: 'Movie',
+    uid: 'movies',
   })
   .then((indexes) => {
     console.log(indexes)
@@ -165,7 +165,7 @@ meili
 ```json
 {
   "name": "Movie",
-  "uid": "Movie",
+  "uid": "movies",
   "schema": null,
   "createdAt": "2019-11-25T14:38:49.846352Z",
   "updatedAt": "2019-11-25T14:38:49.846353Z"
@@ -206,7 +206,7 @@ Browse is a method to get defaults documents without search. This method is usua
 
 ```js
 meili
-  .Index('xxx')
+  .Index('movies')
   .browse({
     limit: 3,
   })
