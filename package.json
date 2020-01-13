@@ -1,13 +1,15 @@
 {
   "name": "@meilisearch/meili-api",
   "version": "0.8.2",
-  "description": "A js library to wrap the meili api ",
+  "description": "The MeiliSearch JS client for Node.js and the browser.",
   "keywords": [
-    "meili",
+    "meilisearch",
     "search",
     "instant",
     "relevant",
-    "meilidb"
+    "client",
+    "wrapper",
+    "meili"
   ],
   "main": "./bundles/index.umd.js",
   "module": "./esm5/index.js",
