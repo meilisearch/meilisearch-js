@@ -21,7 +21,7 @@ npm install @meilisearch/meili-api
 yarn add @meilisearch/meili-api
 ```
 
-### 🏃‍♀️  Run MeiliSearch
+### 🏃‍♀️ Run MeiliSearch
 
 There are many easy ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/getting_started/download.html).
 
