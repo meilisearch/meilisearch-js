@@ -156,11 +156,11 @@ test('add-documents', async () => {
 
 test('updates', async () => {
   await expect(
-    meili.Index(index.uid).getOneUpdateInfo(1)
+    meili.Index(index.uid).getUpdate(1)
   ).resolves.toHaveProperty('status')
 
   await expect(
-    meili.Index(index.uid).getAllUpdatesInfos()
+    meili.Index(index.uid).getAllUpdates()
   ).resolves.toHaveLength(2)
 })
 

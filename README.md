@@ -3,21 +3,13 @@
 [![NPM version](https://img.shields.io/npm/v/@meilisearch/meili-api.svg)](https://www.npmjs.com/package/@meilisearch/meili-api)
 [![Standard Version](https://img.shields.io/badge/release-standard%20version-brightgreen.svg)](https://github.com/conventional-changelog/standard-version)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
-![Downloads](https://img.shields.io/npm/dm/@meilisearch/meili-api.svg)
+[![Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://img.shields.io/badge/licence-MIT-blue.svg)
 
 The Javascript client for MeiliSearch API.
 
 MeiliSearch provides an ultra relevant and instant full-text search. Our solution is open-source and you can check out [our repository here](https://github.com/meilisearch/MeiliDB).
 
 Here is the [MeiliSearch documentation](https://docs.meilisearch.com/) 📖
-
-> 👷🏾‍♂️ This client is a work in progress, if you need more information don't hesitate to contact us to bonjour@meilisearch.com or to open an issue.
-
-## ✨ Features
-
-- Search documents in meili API
-- Index documents in meili API
 
 ## 🔧 Installation
 
@@ -29,16 +21,16 @@ npm install @meilisearch/meili-api
 yarn add @meilisearch/meili-api
 ```
 
-### Run MeiliSearch
+### 🏃‍♀️ Run MeiliSearch
 
-There are many ways to run a MeiliSearch instance.
-All of them are detailed in the [documentation](https://docs.meilisearch.com/advanced_guides/binary.html).
+There are many easy ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/getting_started/download.html).
 
 For example, if you use Docker:
-
 ```bash
 $ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest --api-key=apiKey
 ```
+
+NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 
 ## 🎬 Getting started
 
@@ -47,10 +39,10 @@ Here is a quickstart for a search request
 ```js
 const Meili = require('@meilisearch/meili-api')
 
-// Get your applicationId and apiKey on meilisearch.com
+// Credentials of your MeiliSearch Instance
 const config = {
-  host: 'xxx',
-  apiKey: 'xxx',
+  host: 'http://127.0.0.1:7700',
+  apiKey: 'masterKey',
 }
 
 const meili = new Meili(config)
@@ -65,7 +57,7 @@ meili
 
 ## 🎭 Examples
 
-Go checkout [examples](./examples) !
+Go checkout [examples](./examples)!
 
 ## 📜 API Examples
 
@@ -84,7 +76,7 @@ meili
   })
 ```
 
-** Response: **
+**Response:**
 
 ```json
 {
@@ -106,7 +98,7 @@ meili
     {
       "id": "29751",
       "title": "Batman Unmasked: The Psychology of the Dark Knight",
-      "poster": "https://image.tmdb.org/t/p/w1280/jjHu128XLARc2k4cJrblAvZe0HE.jpg",
+      "poster": "https:/0/image.tmdb.org/t/p/w1280/jjHu128XLARc2k4cJrblAvZe0HE.jpg",
       "overview": "Delve into the world of Batman and the vigilante justice that he brought to the city of Gotham. Batman is a man who, after experiencing great tragedy, devotes his life to an ideal--but what happens when one man takes on the evil underworld alone? Examine why Batman is who he is--and explore how a boy scarred by tragedy becomes a symbol of hope to everyone else.",
       "release_date": 1216083600
     }
@@ -153,7 +145,7 @@ This methods create a new index
 meili
   .createIndex({
     name: 'Movie',
-    uid: 'Movie',
+    uid: 'movies',
   })
   .then((indexes) => {
     console.log(indexes)
@@ -164,9 +156,8 @@ meili
 
 ```json
 {
-  "name": "Movie",
-  "uid": "Movie",
-  "schema": null,
+  "name": "Movies",
+  "uid": "movies",
   "createdAt": "2019-11-25T14:38:49.846352Z",
   "updatedAt": "2019-11-25T14:38:49.846353Z"
 }
@@ -181,13 +172,16 @@ Will push to the indexing queue documents on body
 ```js
 meili
   .Index('movies')
-  .addDocuments([...])
+  .addDocuments([{
+    id: 1,
+    title: 'My awesome movie'
+  }])
   .then((indexes) => {
     console.log(indexes)
   })
 ```
 
-** Response: **
+**Response:**
 
 ```json
 {
@@ -203,7 +197,7 @@ Browse is a method to get defaults documents without search. This method is usua
 
 ```js
 meili
-  .Index('xxx')
+  .Index('movies')
   .browse({
     limit: 3,
   })
@@ -212,7 +206,7 @@ meili
   })
 ```
 
-** Reponse: **
+**Reponse:**
 
 ```json
 [
@@ -242,14 +236,12 @@ meili
 
 ## 📜 API Ressources
 
-### Main ressources
-
-#### Search
+### Search
 - Make a search request:
 
 `meili.Index('xxx').search(options: Types.SearchParams): Promise<Types.SearchResponse>`
 
-####  Indexes
+### Indexes
 - List all indexes:
 
 `meili.listIndexes(): Promise<object[]>`
@@ -258,27 +250,39 @@ meili
 
 `meili.createIndex(data: Types.CreateIndexRequest): Promise<Types.CreateIndexResponse>`
 
+- Get Index:
+
+`meili.Index('xxx').getIndex(): Promise<Types.index>`
+
+- Update Index:
+
+`meili.Index('xxx').updateIndex(data: Types.UpdateIndexRequest): Promise<Types.index>`
+
+- Delete Index:
+
+`meili.Index('xxx').deleteIndex(): Promise<void>`
+
 - Get specific index stats
 
-`meili.indexStats(indexUid: string): Promise<object>`
+`meili.Index('xxx').getStats(): Promise<object>`
 
-#### Updates
+### Updates
 
 - Get One update info:
 
-`meili.Index('xxx').getOneUpdateInfo(updateId: number): Promise<object>`
+`meili.Index('xxx').getUpdate(updateId: number): Promise<object>`
 
 - Get all updates info:
 
-`meili.Index('xxx').getAllUpdatesInfos(): Promise<object[]>`
+`meili.Index('xxx').getAllUpdates(): Promise<object[]>`
 
-#### Documents
+### Documents
 
 - Add or update multiples documents:
 
 `meili.Index('xxx').addDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
 
-- Get Documents request:
+- Get Documents:
 
 `meili.Index('xxx').getDocuments(params: Types.getDocumentsParams): Promise<object[]>`
 
@@ -294,7 +298,7 @@ meili
 
 `meili.Index('xxx').deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId>`
 
-#### Settings
+### Settings
 
 - Get settings:
 
@@ -304,7 +308,7 @@ meili
 
 `meili.Index('xxx').updateSettings(settings: object): Promise<void>`
 
-#### Synonyms
+### Synonyms
 
 - List all synonyms:
 
@@ -314,7 +318,11 @@ meili
 
 `meili.Index('xxx').createSynonym(input: string, synonyms: string[]): Promise<object>`
 
-#### Healthy
+#### Stop-words
+
+Waiting on MeiliSearch v0.9.0
+
+### Healthy
 
 - Check if the server is healthy
 
@@ -332,18 +340,18 @@ meili
 
 `meili.changeHealthTo(health: boolean): Promise<void>`
 
-#### Stats
+### Stats
 
 - Get database stats
 
 `meili.databaseStats(): Promise<object>`
 
-#### Version
+### Version
 - Get binary version
 
 `meili.version(): Promise<object>`
 
-#### System
+### System
 - Get system information
 
 `meili.systemInformation(): Promise<object>`
@@ -351,16 +359,3 @@ meili
 - Get system information (pretty mode)
 
 `meili.systemInformationPretty(): Promise<object>`
-
-## 🎓 Guides
-
-<details>
-<summary>How to do Foo</summary>
-Today we're gonna build Foo....
-</details>
-
-### 🕵️ Troubleshooting
-
-## 🥂 License
-
-[MIT](./LICENSE.md) as always

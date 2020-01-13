@@ -29,9 +29,9 @@ class Indexes {
   /**
    * Get the informations about on update
    * @memberof Indexes
-   * @method getOneUpdateInfo
+   * @method getUpdate
    */
-  getOneUpdateInfo(updateId: number): Promise<object> {
+  getUpdate(updateId: number): Promise<object> {
     const url = `/indexes/${this.indexUid}/updates/${updateId}`
 
     return this.instance.get(url)
@@ -40,9 +40,9 @@ class Indexes {
   /**
    * Get the list of all updates
    * @memberof Indexes
-   * @method getAllUpdatesInfos
+   * @method getAllUpdates
    */
-  getAllUpdatesInfos(): Promise<object[]> {
+  getAllUpdates(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/updates`
 
     return this.instance.get(url)
