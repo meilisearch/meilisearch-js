@@ -1,12 +1,12 @@
 import { resolve } from 'path'
-import sourceMaps from 'rollup-plugin-sourcemaps'
-import nodeResolve from 'rollup-plugin-node-resolve'
-import json from '@rollup/plugin-json';
+import nodeResolve from '@rollup/plugin-node-resolve'
+import json from '@rollup/plugin-json'
 import commonjs from '@rollup/plugin-commonjs'
-import replace from 'rollup-plugin-replace'
+import replace from '@rollup/plugin-replace'
+import sourceMaps from 'rollup-plugin-sourcemaps'
 import { terser } from 'rollup-plugin-terser'
-// import builtins from 'rollup-plugin-node-builtins'
-// import globals from 'rollup-plugin-node-globals'
+import builtins from 'rollup-plugin-node-builtins'
+import globals from 'rollup-plugin-node-globals'
 import { getIfUtils, removeEmpty } from 'webpack-config-utils'
 
 import pkg from '../package.json'
@@ -56,6 +56,10 @@ const plugins = /** @type {Plugin[]} */ ([
 
   // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
   commonjs(),
+
+  // builtins({
+  //   http: true,
+  // }),
 
   // Allow node_modules resolution, so you can use 'external' to control
   // which external modules to include in the bundle

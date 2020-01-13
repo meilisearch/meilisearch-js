@@ -14,40 +14,24 @@ type RollupPluginImpl<O extends object = object> = import('rollup').PluginImpl<
   O
 >
 
-declare module 'rollup-plugin-json' {
-  export interface Options {
-    /**
-     *  All JSON files will be parsed by default, but you can also specifically include/exclude files
-     */
-    include?: string | string[]
-    exclude?: string | string[]
-    /**
-     *  for tree-shaking, properties will be declared as variables, using either `var` or `const`
-     *  @default false
-     */
-    preferConst?: boolean
-    /**
-     * specify indentation for the generated default export — defaults to '\t'
-     * @default '\t'
-     */
-    indent?: string
-  }
-  const plugin: RollupPluginImpl<Options>
-  export default plugin
-}
 declare module 'rollup-plugin-sourcemaps' {
   const plugin: RollupPluginImpl
   export default plugin
 }
-declare module 'rollup-plugin-node-resolve' {
+declare module 'rollup-plugin-node-builtins' {
   const plugin: RollupPluginImpl
   export default plugin
 }
-declare module 'rollup-plugin-commonjs' {
+
+declare module '@rollup/plugin-node-resolve' {
   const plugin: RollupPluginImpl
   export default plugin
 }
-declare module 'rollup-plugin-replace' {
+declare module '@rollup/plugin-commonjs' {
+  const plugin: RollupPluginImpl
+  export default plugin
+}
+declare module '@rollup/plugin-replace' {
   const plugin: RollupPluginImpl
   export default plugin
 }

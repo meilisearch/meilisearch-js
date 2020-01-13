@@ -17,27 +17,24 @@ const index = {
 }
 
 const addDataset = async () => {
-    let resp
-    resp = await meili.listIndexes()
-    if (resp.length === 0) {
-      resp = await meili.createIndex(index)
-    }
-    resp = await meili.Index(index.uid).getDocuments()
-    if (resp.length === 0) {
-      resp = await meili.Index('movies').addDocuments(dataset)
-      await sleep(1000); // This is to give time to MeiliSearch to index the dataset
-      // If you have no results it means it took more than 1 second to index.
-    }
+  let resp
+  resp = await meili.listIndexes()
+  if (resp.length === 0) {
+    resp = await meili.createIndex(index)
+  }
+  resp = await meili.Index(index.uid).getDocuments()
+  if (resp.length === 0) {
+    resp = await meili.Index('movies').addDocuments(dataset)
+    await sleep(1000) // This is to give time to MeiliSearch to index the dataset
+    // If you have no results it means it took more than 1 second to index.
+  }
 }
 
-(async () => {
+;(async () => {
   await addDataset()
-
   let resp
   resp = await meili.Index('movies').search({
     q: 'Avengers',
   })
-  console.log({ resp, hits: resp.hits })
-
+  console.log({ resp })
 })()
-
