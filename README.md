@@ -190,7 +190,6 @@ meili
 ```
 
 The method `add_documents` is **[asynchronous](https://docs.meilisearch.com/advanced_guides/asynchronous_updates.html)**.<br/>
-It sends back an `updateId` which with you can track your [operation status](#update-status).
 
 ### Get some documents
 
