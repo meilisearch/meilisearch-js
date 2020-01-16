@@ -117,7 +117,7 @@
     "tslint-etc": "1.10.0",
     "tslint-react": "4.1.0",
     "tsutils": "^3.17.1",
-    "typedoc": "0.15.6",
+    "typedoc": "0.16.6",
     "typescript": "3.7.4",
     "typescript-tslint-plugin": "0.5.5",
     "webpack-config-utils": "2.3.1"
