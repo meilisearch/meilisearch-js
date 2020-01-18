@@ -26,6 +26,7 @@ yarn add @meilisearch/meili-api
 There are many easy ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/getting_started/download.html).
 
 For example, if you use Docker:
+
 ```bash
 $ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest --api-key=apiKey
 ```
@@ -172,10 +173,12 @@ Will push to the indexing queue documents on body
 ```js
 meili
   .Index('movies')
-  .addDocuments([{
-    id: 1,
-    title: 'My awesome movie'
-  }])
+  .addDocuments([
+    {
+      id: 1,
+      title: 'My awesome movie',
+    },
+  ])
   .then((indexes) => {
     console.log(indexes)
   })
@@ -239,11 +242,13 @@ meili
 ## 📜 API Ressources
 
 ### Search
+
 - Make a search request:
 
 `meili.Index('xxx').search(options: Types.SearchParams): Promise<Types.SearchResponse>`
 
 ### Indexes
+
 - List all indexes:
 
 `meili.listIndexes(): Promise<object[]>`
@@ -349,11 +354,13 @@ Waiting on MeiliSearch v0.9.0
 `meili.databaseStats(): Promise<object>`
 
 ### Version
+
 - Get binary version
 
 `meili.version(): Promise<object>`
 
 ### System
+
 - Get system information
 
 `meili.systemInformation(): Promise<object>`
