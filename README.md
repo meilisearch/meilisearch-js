@@ -1,6 +1,6 @@
 # MeiliSearch Javascript Client
 
-[![NPM version](https://img.shields.io/npm/v/@meilisearch/meili-api.svg)](https://www.npmjs.com/package/@meilisearch/meili-api)
+[![NPM version](https://img.shields.io/npm/v/meilisearch.svg)](https://www.npmjs.com/package/meilisearch)
 [![Standard Version](https://img.shields.io/badge/release-standard%20version-brightgreen.svg)](https://github.com/conventional-changelog/standard-version)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://img.shields.io/badge/licence-MIT-blue.svg)
@@ -14,11 +14,11 @@ Here is the [MeiliSearch documentation](https://docs.meilisearch.com/) 📖
 ## 🔧 Installation
 
 ```sh
-npm install @meilisearch/meili-api
+npm install meilisearch
 ```
 
 ```sh
-yarn add @meilisearch/meili-api
+yarn add meilisearch
 ```
 
 ### 🏃‍♀️ Run MeiliSearch
@@ -38,7 +38,7 @@ NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 Here is a quickstart for a search request
 
 ```js
-const Meili = require('@meilisearch/meili-api')
+const Meili = require('meilisearch')
 
 // Credentials of your MeiliSearch Instance
 const config = {
