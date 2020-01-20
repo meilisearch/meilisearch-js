@@ -1,6 +1,6 @@
 {
-  "name": "@meilisearch/meili-api",
-  "version": "0.8.2",
+  "name": "meilisearch",
+  "version": "0.8.1",
   "description": "The MeiliSearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -18,7 +18,7 @@
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/qdequele/meili-api"
+    "url": "https://github.com/meilisearch/meilisearch-js"
   },
   "author": "qdequele <quentin@meilisearch.com>",
   "license": "MIT",
