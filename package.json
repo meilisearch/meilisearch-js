@@ -115,7 +115,7 @@
     "tslint-config-prettier": "1.18.0",
     "tslint-config-standard": "9.0.0",
     "tslint-etc": "1.10.0",
-    "tslint-react": "4.1.0",
+    "tslint-react": "4.2.0",
     "tsutils": "^3.17.1",
     "typedoc": "0.16.7",
     "typescript": "3.7.5",
