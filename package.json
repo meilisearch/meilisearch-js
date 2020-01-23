@@ -77,7 +77,7 @@
     "tslib": ">=1.10.0"
   },
   "dependencies": {
-    "axios": "0.19.1"
+    "axios": "0.19.2"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.1",
