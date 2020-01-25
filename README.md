@@ -23,7 +23,7 @@ yarn add meilisearch
 
 ### 🏃‍♀️ Run MeiliSearch
 
-There are many easy ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/getting_started/download.html).
+There are many easy ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/guides/advanced_guides/binary.html#download-and-launch).
 
 For example, if you use Docker:
 
