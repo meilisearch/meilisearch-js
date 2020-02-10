@@ -162,7 +162,7 @@ test('updates', async () => {
   await expect(meili.Index(index.uid).getAllUpdates()).resolves.toHaveLength(2)
 })
 
-jest.setTimeout(10 * 1000)
+jest.setTimeout(20 * 1000)
 test('get-document', async () => {
   await sleep(3 * 1000)
   await expect(
