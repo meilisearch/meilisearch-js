@@ -228,17 +228,14 @@ test('get-documents', async () => {
 test('search', async () => {
   await meili
     .Index(index.uid)
-    .search({
-      q: 'Escape',
-    })
+    .search('Escape')
     .then((response: any) => {
       expect(response.hits).toHaveLength(2)
       expect(response.hits[0]).toHaveProperty('id', '522681')
     })
   await meili
     .Index(index.uid)
-    .search({
-      q: 'Escape',
+    .search('Escape', {
       offset: 1,
     })
     .then((response: any) => {
@@ -247,8 +244,7 @@ test('search', async () => {
     })
   await meili
     .Index(index.uid)
-    .search({
-      q: 'The',
+    .search('The', {
       offset: 1,
       limit: 5,
     })
@@ -258,8 +254,7 @@ test('search', async () => {
     })
   await meili
     .Index(index.uid)
-    .search({
-      q: 'The',
+    .search('The', {
       offset: 1,
       limit: 5,
       attributesToRetrieve: ['title', 'id'],
@@ -271,8 +266,7 @@ test('search', async () => {
     })
   await meili
     .Index(index.uid)
-    .search({
-      q: 'The',
+    .search('The', {
       offset: 1,
       limit: 5,
       attributesToRetrieve: ['title', 'id'],
@@ -285,8 +279,7 @@ test('search', async () => {
     })
   await meili
     .Index(index.uid)
-    .search({
-      q: 'scientist',
+    .search('scientist', {
       offset: 0,
       limit: 5,
       attributesToRetrieve: ['overview', 'id'],
@@ -302,8 +295,7 @@ test('search', async () => {
     })
   await meili
     .Index(index.uid)
-    .search({
-      q: 'scientist',
+    .search('scientist', {
       offset: 0,
       limit: 5,
       attributesToRetrieve: ['overview', 'id'],
@@ -319,8 +311,7 @@ test('search', async () => {
 
   await meili
     .Index(index.uid)
-    .search({
-      q: 'scientist',
+    .search('scientist', {
       offset: 0,
       limit: 5,
       attributesToRetrieve: ['overview', 'id'],
@@ -337,8 +328,7 @@ test('search', async () => {
     })
   await meili
     .Index(index.uid)
-    .search({
-      q: 'The',
+    .search('The', {
       offset: 0,
       limit: 5,
       filters: 'title:The Mule',
@@ -351,8 +341,7 @@ test('search', async () => {
     })
   await meili
     .Index(index.uid)
-    .search({
-      q: 'woman',
+    .search('woman', {
       filters: 'title:After',
       matches: true,
     })

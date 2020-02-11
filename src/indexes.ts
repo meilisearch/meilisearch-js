@@ -57,42 +57,46 @@ class Indexes {
    * @memberof Meili
    * @method search
    */
-  search(options: Types.SearchParams): Promise<Types.SearchResponse> {
+  search(
+    query: string,
+    options?: Types.SearchParams
+  ): Promise<Types.SearchResponse> {
     const url = `/indexes/${this.indexUid}/search`
 
     const params: Types.SearchRequest = {
-      q: options.q,
+      q: query,
     }
-
-    if (options.offset) {
-      params.offset = options.offset
-    }
-    if (options.limit) {
-      params.limit = options.limit
-    }
-    if (options.attributesToRetrieve) {
-      params.attributesToRetrieve = options.attributesToRetrieve.join()
-    }
-    if (options.attributesToSearchIn) {
-      params.attributesToSearchIn = options.attributesToSearchIn.join()
-    }
-    if (options.attributesToCrop) {
-      params.attributesToCrop = options.attributesToCrop.join()
-    }
-    if (options.cropLength) {
-      params.cropLength = options.cropLength
-    }
-    if (options.attributesToHighlight) {
-      params.attributesToHighlight = options.attributesToHighlight.join()
-    }
-    if (options.filters) {
-      params.filters = options.filters
-    }
-    if (options.timeoutMs) {
-      params.timeoutMs = options.timeoutMs
-    }
-    if (options.matches) {
-      params.matches = options.matches
+    if (options) {
+      if (options.offset) {
+        params.offset = options.offset
+      }
+      if (options.limit) {
+        params.limit = options.limit
+      }
+      if (options.attributesToRetrieve) {
+        params.attributesToRetrieve = options.attributesToRetrieve.join()
+      }
+      if (options.attributesToSearchIn) {
+        params.attributesToSearchIn = options.attributesToSearchIn.join()
+      }
+      if (options.attributesToCrop) {
+        params.attributesToCrop = options.attributesToCrop.join()
+      }
+      if (options.cropLength) {
+        params.cropLength = options.cropLength
+      }
+      if (options.attributesToHighlight) {
+        params.attributesToHighlight = options.attributesToHighlight.join()
+      }
+      if (options.filters) {
+        params.filters = options.filters
+      }
+      if (options.timeoutMs) {
+        params.timeoutMs = options.timeoutMs
+      }
+      if (options.matches) {
+        params.matches = options.matches
+      }
     }
 
     return this.instance.get(url, {

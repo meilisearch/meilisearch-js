@@ -66,7 +66,6 @@ export interface GetDocumentsParams {
 }
 
 export interface SearchParams {
-  q: string
   offset?: number
   limit?: number
   attributesToRetrieve?: string[]

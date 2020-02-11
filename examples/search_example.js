@@ -33,8 +33,6 @@ const addDataset = async () => {
 ;(async () => {
   await addDataset()
   let resp
-  resp = await meili.Index('movies').search({
-    q: 'Avengers',
-  })
+  resp = await meili.Index('movies').search('Avengers')
   console.log({ resp })
 })()
