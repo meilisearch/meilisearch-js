@@ -368,16 +368,12 @@ test('search', async () => {
 test('delete-document', async () => {
   console.log(await meili.Index(index.uid).getAllUpdates())
   await sleep(60000)
-  try {
-    await expect(
-      meili.Index(index.uid).deleteDocument(randomDocument)
-    ).resolves.toHaveProperty('updateId')
-    await expect(
-      meili.Index(index.uid).getDocument(randomDocument)
-    ).rejects.toThrow()
-  } catch (e) {
-    console.log({ msg: e.message, stack: e.stack })
-  }
+  await expect(
+    meili.Index(index.uid).deleteDocument(randomDocument)
+  ).resolves.toHaveProperty('updateId')
+  await expect(
+    meili.Index(index.uid).getDocument(randomDocument)
+  ).rejects.toThrow()
 })
 
 test('delete-documents', async () => {
