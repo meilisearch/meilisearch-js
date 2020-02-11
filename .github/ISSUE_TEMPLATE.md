@@ -4,7 +4,7 @@
 
 ## Bug report
 
-- @meili/meili-api version: _x.x.x_ (<!-- (run `npm list @meili/meili-api` from a terminal/cmd prompt): -->)
+- meilisearch version: _x.x.x_ (<!-- (run `npm list meilisearch` from a terminal/cmd prompt): -->)
 - Affected browsers (and versions): _IE 10_
 
 ### Current behaviour
