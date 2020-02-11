@@ -29,7 +29,7 @@ class Meili {
     if (config.apiKey) {
       this.instance = instance.create({
         baseURL: this.baseURL,
-        timeout: 1000,
+
         headers: {
           'X-Meili-API-Key': config.apiKey,
         },
@@ -37,7 +37,6 @@ class Meili {
     } else {
       this.instance = instance.create({
         baseURL: this.baseURL,
-        timeout: 1000,
       })
     }
 
