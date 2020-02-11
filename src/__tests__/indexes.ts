@@ -163,7 +163,7 @@ test('updates', async () => {
 })
 
 test('get-document', async () => {
-  // await sleep(3 * 1000)
+  await sleep(3 * 1000)
   await expect(
     meili.Index(index.uid).getDocument(randomDocument)
   ).resolves.toEqual(dataset[0])
