@@ -50,7 +50,7 @@ const meili = new Meili(config)
 
 meili
   .Index('movies')
-  .search({ q: 'batman' })
+  .search('batman')
   .then((response) => {
     console.log(response.hits)
   })
@@ -69,9 +69,7 @@ Go checkout [examples](./examples)!
 ```js
 meili
   .Index('movies')
-  .search({
-    q: 'batman',
-  })
+  .search('batman')
   .then((response) => {
     console.log(response.hits)
   })
@@ -196,14 +194,14 @@ The method `add_documents` is **[asynchronous](https://docs.meilisearch.com/adva
 
 ### Get some documents
 
-Browse is a method to get defaults documents without search. This method is usually used to display results when you have no input in the search bar.
+getDocuments is a method to get defaults documents without search. This method is usually used to display results when you have no input in the search bar.
 
 **Example:**
 
 ```js
 meili
   .Index('movies')
-  .browse({
+  .getDocuments({
     limit: 3,
   })
   .then((response) => {
@@ -245,7 +243,7 @@ meili
 
 - Make a search request:
 
-`meili.Index('xxx').search(options: Types.SearchParams): Promise<Types.SearchResponse>`
+`meili.Index('xxx').search(query: string, options?: Types.SearchParams): Promise<Types.SearchResponse>`
 
 ### Indexes
 

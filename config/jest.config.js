@@ -1,6 +1,3 @@
-/**
- * @type {Partial<jest.InitialOptions>}
- */
 const config = {
   preset: 'ts-jest',
   rootDir: '..',
