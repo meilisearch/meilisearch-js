@@ -366,7 +366,7 @@ test('search', async () => {
 })
 
 test('delete-document', async () => {
-  await sleep(10000)
+  // await sleep(10000)
   await expect(
     meili.Index(index.uid).deleteDocument(randomDocument)
   ).resolves.toHaveProperty('updateId')
