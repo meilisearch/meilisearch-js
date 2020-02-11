@@ -40,7 +40,6 @@ const clearAllIndexes = async () => {
         expect(err).toBe(null)
       })
   }
-
   await expect(meili.listIndexes()).resolves.toHaveLength(0)
 }
 
@@ -368,16 +367,12 @@ test('search', async () => {
 
 test('delete-document', async () => {
   await sleep(60000)
-  try {
-    await expect(
-      meili.Index(index.uid).deleteDocument(randomDocument)
-    ).resolves.toHaveProperty('updateId')
-    await expect(
-      meili.Index(index.uid).getDocument(randomDocument)
-    ).rejects.toThrow()
-  } catch (e) {
-    console.log({ msg: e.message, stack: e.stack })
-  }
+  await expect(
+    meili.Index(index.uid).deleteDocument(randomDocument)
+  ).resolves.toHaveProperty('updateId')
+  await expect(
+    meili.Index(index.uid).getDocument(randomDocument)
+  ).rejects.toThrow()
 })
 
 test('delete-documents', async () => {
