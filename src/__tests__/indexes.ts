@@ -366,10 +366,10 @@ test('search', async () => {
 })
 
 test('delete-document', async () => {
-  // await sleep(10000)
   await expect(
     meili.Index(index.uid).deleteDocument(randomDocument)
   ).resolves.toHaveProperty('updateId')
+  await sleep(2000)
   await expect(
     meili.Index(index.uid).getDocument(randomDocument)
   ).rejects.toThrow()
@@ -379,6 +379,7 @@ test('delete-documents', async () => {
   await expect(
     meili.Index(index.uid).deleteDocuments([firstDocumentId, offsetDocumentId])
   ).resolves.toHaveProperty('updateId')
+  await sleep(2000)
   await expect(
     meili.Index(index.uid).getDocument(firstDocumentId)
   ).rejects.toThrow()
@@ -391,6 +392,7 @@ test('delete-all-documents', async () => {
   await expect(
     meili.Index(index.uid).deleteAllDocuments()
   ).resolves.toHaveProperty('updateId')
+  await sleep(2000)
   await expect(meili.Index(index.uid).getDocuments()).resolves.toHaveLength(0)
 })
 
