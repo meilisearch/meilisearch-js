@@ -9,9 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Docker setup
-        run: docker run -d -p 7700:7700 getmeili/meilisearch:v0.8.4 ./meilisearch --no-analytics=true
+        run: docker run -d -p 7700:7700 getmeili/meilisearch ./meilisearch --no-analytics=true
       - name: Install dependencies
         run: yarn install
       - name: Run tests
         run: yarn test
-
