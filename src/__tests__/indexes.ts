@@ -16,6 +16,7 @@ const randomDocument = '287947'
 const offsetDocumentId = '157433'
 const firstDocumentId = '299537'
 const defaultNumberOfDocuments = 20
+jest.setTimeout(100 * 1000)
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -162,7 +163,6 @@ test('updates', async () => {
   await expect(meili.Index(index.uid).getAllUpdates()).resolves.toHaveLength(2)
 })
 
-jest.setTimeout(10 * 1000)
 test('get-document', async () => {
   await sleep(3 * 1000)
   await expect(
@@ -367,20 +367,23 @@ test('search', async () => {
 })
 
 test('delete-document', async () => {
-  await expect(
-    meili.Index(index.uid).deleteDocument(randomDocument)
-  ).resolves.toHaveProperty('updateId')
-  await sleep(1000)
-  await expect(
-    meili.Index(index.uid).getDocument(randomDocument)
-  ).rejects.toThrow()
+  await sleep(60000)
+  try {
+    await expect(
+      meili.Index(index.uid).deleteDocument(randomDocument)
+    ).resolves.toHaveProperty('updateId')
+    await expect(
+      meili.Index(index.uid).getDocument(randomDocument)
+    ).rejects.toThrow()
+  } catch (e) {
+    console.log({ msg: e.message, stack: e.stack })
+  }
 })
 
 test('delete-documents', async () => {
   await expect(
     meili.Index(index.uid).deleteDocuments([firstDocumentId, offsetDocumentId])
   ).resolves.toHaveProperty('updateId')
-  await sleep(1000)
   await expect(
     meili.Index(index.uid).getDocument(firstDocumentId)
   ).rejects.toThrow()
@@ -393,11 +396,11 @@ test('delete-all-documents', async () => {
   await expect(
     meili.Index(index.uid).deleteAllDocuments()
   ).resolves.toHaveProperty('updateId')
-  await sleep(1000)
   await expect(meili.Index(index.uid).getDocuments()).resolves.toHaveLength(0)
 })
 
 test('delete-index', async () => {
+  await sleep(2000)
   await expect(meili.Index(index.uid).deleteIndex()).resolves.toBeDefined()
   await expect(meili.listIndexes()).resolves.toHaveLength(0)
 })
