@@ -40,7 +40,6 @@ const clearAllIndexes = async () => {
         expect(err).toBe(null)
       })
   }
-
   await expect(meili.listIndexes()).resolves.toHaveLength(0)
 }
 
@@ -164,7 +163,7 @@ test('updates', async () => {
 })
 
 test('get-document', async () => {
-  await sleep(3 * 1000)
+  // await sleep(3 * 1000)
   await expect(
     meili.Index(index.uid).getDocument(randomDocument)
   ).resolves.toEqual(dataset[0])
@@ -367,6 +366,7 @@ test('search', async () => {
 })
 
 test('delete-document', async () => {
+  console.log(await meili.Index(index.uid).getAllUpdates())
   await sleep(60000)
   try {
     await expect(
