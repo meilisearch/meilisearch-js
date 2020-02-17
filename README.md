@@ -190,7 +190,7 @@ meili
 }
 ```
 
-The method `add_documents` is **[asynchronous](https://docs.meilisearch.com/advanced_guides/asynchronous_updates.html)**.<br/>
+The method `add_documents` is **[asynchronous](https://docs.meilisearch.com/guides/advanced_guides/asynchronous_updates.html)**.<br/>
 
 ### Get some documents
 
