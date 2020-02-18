@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.8.9",
+  "version": "0.8.11",
   "description": "The MeiliSearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -78,7 +78,8 @@
     "tslib": ">=1.10.0"
   },
   "dependencies": {
-    "axios": "0.19.2"
+    "axios": "0.19.2",
+    "tslib": "1.10.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.1",
@@ -111,7 +112,6 @@
     "shx": "0.3.2",
     "standard-version": "7.1.0",
     "ts-jest": "25.2.0",
-    "tslib": "1.10.0",
     "tslint": "5.20.1",
     "tslint-config-prettier": "1.18.0",
     "tslint-config-standard": "9.0.0",
