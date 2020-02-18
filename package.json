@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.8.6",
+  "version": "0.8.8",
   "description": "The MeiliSearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -35,7 +35,7 @@
     "cleanup": "shx rm -rf dist",
     "prebuild": "yarn cleanup && yarn verify",
     "build": "tsc && tsc --target es2018 --outDir dist/esm2015 && rollup -c config/rollup.config.js && rollup -c config/rollup.config.js --environment NODE_ENV:production",
-    "build-ci": "yarn cleanup && tsc && tsc --target es2018 --outDir dist/esm2015 && rollup -c config/rollup.config.js && rollup -c config/rollup.config.js --environment NODE_ENV:production",
+    "build-ci": "yarn cleanup && tsc && tsc --target es2018 --outDir dist/esm2015 && rollup -c config/rollup.config.js && rollup -c config/rollup.config.js --environment NODE_ENV:production && node scripts/copy",
     "postbuild": "node scripts/copy && yarn size",
     "docs": "typedoc -p . --theme minimal --target 'es6' --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude \"**/src/**/__tests__/*.*\" --out docs src/",
     "test": "jest -c ./config/jest.config.js --runInBand",
