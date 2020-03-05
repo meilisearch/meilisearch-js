@@ -13,8 +13,13 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-      - run: yarn install
-      - run: yarn build-ci
-      - run: npm publish dist/
+      - name: Install dependencies
+        run: yarn install
+      - name: Build
+        run: yarn build-ci
+      - name: Check release validity
+        run: sh scripts/check-release.sh
+      - name: Publish
+        run: npm publish dist/
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
