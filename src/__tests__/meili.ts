@@ -1,4 +1,5 @@
-import Meili from '../'
+import Meili from '..'
+import * as Types from '../types'
 
 const config = {
   host: 'http://127.0.0.1:7700',
@@ -73,41 +74,23 @@ test('reset-start', async () => {
   await clearAllIndexes()
 })
 
-test('create-index-with-name', async () => {
-  const index = {
-    name: 'ABABABABA',
-  }
-  await expect(meili.listIndexes()).resolves.toHaveLength(0)
-
-  await expect(meili.createIndex(index)).resolves.toHaveProperty(
-    'name',
-    index.name
-  )
-
-  await expect(meili.listIndexes()).resolves.toHaveLength(1)
-
-  await expect(meili.createIndex(index)).resolves.toHaveProperty(
-    'name',
-    index.name
-  )
-
-  await expect(meili.listIndexes()).resolves.toHaveLength(2)
-
-  await clearAllIndexes()
-})
-
 test('create-index-with-uid', async () => {
   const index = {
-    name: 'ABABABABA',
     uid: 'abababa',
+  }
+  const indexIndentifier = {
+    uid: 'bebebebe',
+    identifier: 'movie_id',
+  }
+  const noUid = {
+    uid: '',
   }
 
   await expect(meili.listIndexes()).resolves.toHaveLength(0)
 
   await meili
     .createIndex(index)
-    .then((response: any) => {
-      expect(response.name).toBe(index.name)
+    .then((response: Types.CreateIndexResponse) => {
       expect(response.uid).toBe(index.uid)
     })
     .catch((err) => {
@@ -115,11 +98,18 @@ test('create-index-with-uid', async () => {
     })
 
   await expect(meili.listIndexes()).resolves.toHaveLength(1)
-
   await expect(meili.createIndex(index)).rejects.toThrow()
-
   await expect(meili.listIndexes()).resolves.toHaveLength(1)
-
+  await expect(meili.createIndex(noUid)).rejects.toThrow()
+  await meili
+    .createIndex(indexIndentifier)
+    .then((response: Types.CreateIndexResponse) => {
+      expect(response.uid).toBe(indexIndentifier.uid)
+    })
+    .catch((err) => {
+      expect(err).toBe(null)
+    })
+  await expect(meili.listIndexes()).resolves.toHaveLength(2)
   await clearAllIndexes()
 })
 

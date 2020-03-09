@@ -40,9 +40,9 @@ class Indexes {
   /**
    * Get the list of all updates
    * @memberof Indexes
-   * @method getAllUpdates
+   * @method getUpdates
    */
-  getAllUpdates(): Promise<object[]> {
+  getUpdates(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/updates`
 
     return this.instance.get(url)
@@ -128,38 +128,6 @@ class Indexes {
   }
 
   ///
-  /// SCHEMA
-  ///
-
-  getSchema(raw?: boolean): Promise<Types.Schema | Types.SchemaRaw> {
-    const url = `/indexes/${this.indexUid}/schema`
-    if (raw) {
-      return this.instance.get(url, {
-        params: {
-          raw: true,
-        },
-      })
-    } else {
-      return this.instance.get(url)
-    }
-  }
-
-  updateSchema(
-    schema: Types.Schema | Types.SchemaRaw
-  ): Promise<Types.AsyncUpdateId> {
-    const url = `/indexes/${this.indexUid}/schema`
-    if (schema.identifier) {
-      return this.instance.put(url, schema, {
-        params: {
-          raw: true,
-        },
-      })
-    } else {
-      return this.instance.put(url, schema)
-    }
-  }
-
-  ///
   /// STATS
   ///
 
@@ -183,16 +151,16 @@ class Indexes {
    * @memberof Indexes
    * @method getDocuments
    */
-  getDocuments(params?: Types.GetDocumentsParams): Promise<object[]> {
+  getDocuments(options?: Types.GetDocumentsParams): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/documents`
     let attr
-    if (params && Array.isArray(params.attributesToRetrieve)) {
-      attr = params.attributesToRetrieve.join(',')
+    if (options && Array.isArray(options.attributesToRetrieve)) {
+      attr = options.attributesToRetrieve.join(',')
     }
 
     return this.instance.get(url, {
       params: {
-        ...params,
+        ...options,
         ...(attr ? { attributesToRetrieve: attr } : {}),
       },
     })
@@ -214,10 +182,15 @@ class Indexes {
    * @memberof Documents
    * @method addDocuments
    */
-  addDocuments(documents: object[]): Promise<Types.AsyncUpdateId> {
+  addDocuments(
+    documents: object[],
+    options?: Types.addDocumentParams
+  ): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents`
 
-    return this.instance.post(url, documents)
+    return this.instance.post(url, documents, {
+      params: options,
+    })
   }
 
   /**

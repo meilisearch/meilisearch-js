@@ -279,7 +279,7 @@ meili
 
 - Get all updates info:
 
-`meili.Index('xxx').getAllUpdates(): Promise<object[]>`
+`meili.Index('xxx').getUpdates(): Promise<object[]>`
 
 ### Documents
 
