@@ -138,7 +138,7 @@ class Indexes {
    */
 
   getStats(): Promise<object[]> {
-    const url = `/stats/${this.indexUid}`
+    const url = `/indexes/${this.indexUid}/stats`
 
     return this.instance.get(url)
   }
@@ -184,7 +184,7 @@ class Indexes {
    */
   addDocuments(
     documents: object[],
-    options?: Types.addDocumentParams
+    options?: Types.AddDocumentParams
   ): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents`
 
@@ -210,7 +210,7 @@ class Indexes {
    * @method deleteDocuments
    */
   deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId> {
-    const url = `/indexes/${this.indexUid}/documents/delete`
+    const url = `/indexes/${this.indexUid}/documents/delete-batch`
 
     return this.instance.post(url, documentsIds)
   }
@@ -231,7 +231,7 @@ class Indexes {
    * @method get
    */
   getSettings(): Promise<object> {
-    const url = '/settings'
+    const url = `/indexes/${this.indexUid}/settings`
 
     return this.instance.get(url)
   }
@@ -239,12 +239,23 @@ class Indexes {
   /**
    * Update all settings
    * @memberof Settings
-   * @method set
+   * @method update
    */
-  updateSettings(settings: object): Promise<void> {
-    const url = '/settings'
+  updateSettings(settings: Types.Settings): Promise<void> {
+    const url = `/indexes/${this.indexUid}/settings`
 
     return this.instance.post(url, settings)
+  }
+
+  /**
+   * Update all settings. Any parameters not provided will be left unchanged.
+   * @memberof Settings
+   * @method reset
+   */
+  resetSettings(): Promise<void> {
+    const url = `/indexes/${this.indexUid}/settings`
+
+    return this.instance.delete(url)
   }
 
   ///
@@ -256,24 +267,180 @@ class Indexes {
    * @memberof Synonyms
    * @method list
    */
-  listSynonyms(): Promise<object[]> {
-    const url = '/synonym'
+  getSynonyms(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/synonyms`
 
     return this.instance.get(url)
   }
 
   /**
-   * Add a new relation between an input and equivalents synonyms
+   * Update the list of synonyms. Overwrite the old list.
    * @memberof Synonyms
-   * @method create
+   * @method update
    */
-  createSynonym(input: string, synonyms: string[]): Promise<object> {
-    const url = '/synonym'
+  updateSynonyms(synonyms: object): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/synonyms`
 
-    return this.instance.post(url, {
-      input,
-      synonyms,
-    })
+    return this.instance.post(url, synonyms)
+  }
+
+  /**
+   * Reset the synonym list to be empty again
+   * @memberof Synonyms
+   * @method reset
+   */
+  resetSynonyms(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/synonyms`
+
+    return this.instance.delete(url)
+  }
+
+  ///
+  /// STOP WORDS
+  ///
+
+  /**
+   * Get the list of all stop-words
+   * @memberof StopWords
+   * @method list
+   */
+  getStopWords(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/stop-words`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the list of stop-words. Overwrite the old list.
+   * @memberof StopWords
+   * @method update
+   */
+  updateStopWords(stopWords: string[]): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/stop-words`
+
+    return this.instance.post(url, stopWords)
+  }
+
+  /**
+   * Reset the stop-words list to be empty again
+   * @memberof StopWords
+   * @method reset
+   */
+  resetStopWords(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/stop-words`
+
+    return this.instance.delete(url)
+  }
+
+  ///
+  /// RANKING RULES
+  ///
+
+  /**
+   * Get the list of all ranking-rules
+   * @memberof RankingRules
+   * @method get
+   */
+  getRankingRules(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/ranking-rules`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the list of ranking-rules. Overwrite the old list.
+   * @memberof RankingRules
+   * @method update
+   */
+  updateRankingRules(rankingRules: string[]): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/ranking-rules`
+
+    return this.instance.post(url, rankingRules)
+  }
+
+  /**
+   * Reset the ranking rules list to its default value
+   * @memberof RankingRules
+   * @method reset
+   */
+  resetRankingRules(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/ranking-rules`
+
+    return this.instance.delete(url)
+  }
+
+  ///
+  /// DISTINCT ATTRIBUTE
+  ///
+
+  /**
+   * Get the distinct-attribute
+   * @memberof DistinctAttribute
+   * @method get
+   */
+  getDistinctAttribute(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the distinct-attribute.
+   * @memberof DistinctAttribute
+   * @method update
+   */
+  updateDistinctAttribute(distinctAttribute: string): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
+
+    return this.instance.post(url, distinctAttribute)
+  }
+
+  /**
+   * Reset the distinct-attribute.
+   * @memberof DistinctAttribute
+   * @method reset
+   */
+  resetDistinctAttribute(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
+
+    return this.instance.delete(url)
+  }
+
+  ///
+  /// SEARCHABLE ATTRIBUTE
+  ///
+
+  /**
+   * Get the searchable-attributes
+   * @memberof SearchableAttributes
+   * @method get
+   */
+  getSearchableAttributes(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the searchable-attributes.
+   * @memberof SearchableAttributes
+   * @method update
+   */
+  updateSearchableAttributes(searchableAttributes: string[]): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
+
+    return this.instance.post(url, searchableAttributes)
+  }
+
+  /**
+   * Reset the searchable-attributes.
+   * @memberof SearchableAttributes
+   * @method reset
+   */
+  resetSearchableAttributes(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
+
+    return this.instance.delete(url)
   }
 }
 

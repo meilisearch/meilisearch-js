@@ -15,11 +15,18 @@ export interface AsyncUpdateId {
 }
 
 export interface Settings {
-  rankingOrder?: string[]
+  rankingDistinct?: string
+  searchableAttributes?: string[]
+  displayedAttributes?: string[]
   distinctField?: string
   rankingRules?: {
     [field: string]: string
   }
+  stopWords?: string[]
+  synonyms?: {
+    [field: string]: string[]
+  }
+  indexNewFields?: boolean
 }
 
 ///
@@ -49,7 +56,7 @@ export interface GetDocumentsParams {
   attributesToRetrieve?: string[]
 }
 
-export interface addDocumentParams {
+export interface AddDocumentParams {
   identifier?: string
 }
 
@@ -80,8 +87,15 @@ export interface SearchRequest {
   matches?: boolean
 }
 
+// export interface Hits {
+
+//   [field: string]?: string[]
+//   _formatted?: Hits
+// }
+
 export interface SearchResponse {
   hits: any[]
+
   offset: number
   limit: number
   processingTimeMs: number

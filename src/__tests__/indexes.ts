@@ -63,6 +63,7 @@ test('create-index', async () => {
       expect(response.identifier).toBe(null)
     })
     .catch((err) => {
+      console.log({ msg: err.response.data.message })
       expect(err).toBe(null)
     })
 
@@ -92,19 +93,19 @@ test('get-index', async () => {
   await expect(meili.listIndexes()).resolves.toHaveLength(2)
 })
 
-// test('get-stats', async () => {
-//   await meili
-//     .Index(index.uid)
-//     .getStats()
-//     .then((response: any) => {
-//       expect(response.numberOfDocuments).toBe(0)
-//     })
-//     .catch((err) => {
-//       expect(err).toBe(null)
-//     })
+test('get-stats', async () => {
+  await meili
+    .Index(index.uid)
+    .getStats()
+    .then((response: any) => {
+      expect(response.numberOfDocuments).toBe(0)
+    })
+    .catch((err) => {
+      expect(err).toBe(null)
+    })
 
-//   await expect(meili.listIndexes()).resolves.toHaveLength(1)
-// })
+  await expect(meili.listIndexes()).resolves.toHaveLength(2)
+})
 
 test('update-index', async () => {
   await meili
@@ -339,45 +340,164 @@ test('search', async () => {
   }
 })
 
-// test('delete-document', async () => {
-//   await sleep(1000)
-//   await expect(
-//     meili.Index(index.uid).deleteDocument(randomDocument)
-//   ).resolves.toHaveProperty('updateId')
-//   await sleep(1000)
-//   await expect(
-//     meili.Index(index.uid).getDocument(randomDocument)
-//   ).rejects.toThrow()
-// })
+/*
+ * SETTINGS
+ */
+test('add-settings', async () => {
+  await expect(
+    meili.Index(index.uid).updateSettings({
+      synonyms: {
+        wolverine: ['xmen', 'logan'],
+        logan: ['wolverine', 'xmen'],
+      },
+    })
+  ).resolves.toHaveProperty('updateId')
+})
+test('get-settings', async () => {
+  await expect(meili.Index(index.uid).getSettings()).resolves.toBeDefined()
+})
+test('reset-settings', async () => {
+  await expect(meili.Index(index.uid).resetSettings()).resolves.toHaveProperty(
+    'updateId'
+  )
+})
 
-// test('delete-documents', async () => {
-//   await expect(
-//     meili.Index(index.uid).deleteDocuments([firstDocumentId, offsetDocumentId])
-//   ).resolves.toHaveProperty('updateId')
-//   await sleep(1000)
-//   await expect(
-//     meili.Index(index.uid).getDocument(firstDocumentId)
-//   ).rejects.toThrow()
-//   await sleep(1000)
-//   await expect(
-//     meili.Index(index.uid).getDocument(offsetDocumentId)
-//   ).rejects.toThrow()
-// })
+/*
+ * SETTINGS SYNONYMS
+ */
 
-// test('delete-all-documents', async () => {
-//   await sleep(1000)
-//   await expect(
-//     meili.Index(index.uid).deleteAllDocuments()
-//   ).resolves.toHaveProperty('updateId')
-//   await sleep(1000)
-//   await expect(meili.Index(index.uid).getDocuments()).resolves.toHaveLength(0)
-// })
+test('add-synonyms', async () => {
+  await expect(
+    meili.Index(index.uid).updateSynonyms({
+      wolverine: ['xmen', 'logan'],
+      logan: ['wolverine', 'xmen'],
+    })
+  ).resolves.toHaveProperty('updateId')
+})
+test('get-synonyms', async () => {
+  await expect(meili.Index(index.uid).getSynonyms()).resolves.toBeDefined()
+})
+test('reset-synonyms', async () => {
+  await sleep(1000)
+  await expect(meili.Index(index.uid).resetSynonyms()).resolves.toHaveProperty(
+    'updateId'
+  )
+})
 
-// test('delete-index', async () => {
-//   await sleep(2000)
-//   await expect(meili.Index(index.uid).deleteIndex()).resolves.toBeDefined()
-//   await expect(meili.listIndexes()).resolves.toHaveLength(0)
-// })
+/*
+ * SETTINGS STOPWORDS
+ */
+
+test('add-stop-words', async () => {
+  await expect(
+    meili.Index(index.uid).updateStopWords(['the', 'of'])
+  ).resolves.toHaveProperty('updateId')
+})
+test('get-stop-words', async () => {
+  await expect(meili.Index(index.uid).getStopWords()).resolves.toBeDefined()
+})
+test('reset-stop-words', async () => {
+  await expect(meili.Index(index.uid).resetStopWords()).resolves.toHaveProperty(
+    'updateId'
+  )
+})
+
+/*
+ * SETTINGS RANKING-RULES
+ */
+
+test('add-ranking-rules', async () => {
+  await expect(
+    meili.Index(index.uid).updateRankingRules(['typo', 'asc(release_date)'])
+  ).resolves.toHaveProperty('updateId')
+})
+test('get-ranking-rules', async () => {
+  await expect(meili.Index(index.uid).getRankingRules()).resolves.toBeDefined()
+})
+test('reset-ranking-rules', async () => {
+  await expect(
+    meili.Index(index.uid).resetRankingRules()
+  ).resolves.toHaveProperty('updateId')
+})
+
+/*
+ * SETTINGS DISTINCT ATTRIBUTE
+ */
+
+test('add-distinct-attribute', async () => {
+  await expect(
+    meili.Index(index.uid).updateDistinctAttribute('id')
+  ).resolves.toHaveProperty('updateId')
+})
+test('get-distinct-attribute', async () => {
+  await expect(
+    meili.Index(index.uid).getDistinctAttribute()
+  ).resolves.toBeDefined()
+})
+test('reset-distinct-attribute', async () => {
+  await expect(
+    meili.Index(index.uid).resetDistinctAttribute()
+  ).resolves.toHaveProperty('updateId')
+})
+
+/*
+ * SETTINGS SEARCHABLE ATTRIBUTES
+ */
+
+test('add-searchable-attributes', async () => {
+  await expect(
+    meili.Index(index.uid).updateSearchableAttributes(['title', 'overview'])
+  ).resolves.toHaveProperty('updateId')
+})
+test('get-searchable-attributes', async () => {
+  await expect(
+    meili.Index(index.uid).getSearchableAttributes()
+  ).resolves.toBeDefined()
+})
+test('reset-searchable-attributes', async () => {
+  await expect(
+    meili.Index(index.uid).resetSearchableAttributes()
+  ).resolves.toHaveProperty('updateId')
+})
+
+test('delete-document', async () => {
+  await sleep(1000)
+  await expect(
+    meili.Index(index.uid).deleteDocument(randomDocument)
+  ).resolves.toHaveProperty('updateId')
+  await sleep(1000)
+  await expect(
+    meili.Index(index.uid).getDocument(randomDocument)
+  ).rejects.toThrow()
+})
+
+test('delete-documents', async () => {
+  await expect(
+    meili.Index(index.uid).deleteDocuments([firstDocumentId, offsetDocumentId])
+  ).resolves.toHaveProperty('updateId')
+  await sleep(1000)
+  await expect(
+    meili.Index(index.uid).getDocument(firstDocumentId)
+  ).rejects.toThrow()
+  await sleep(1000)
+  await expect(
+    meili.Index(index.uid).getDocument(offsetDocumentId)
+  ).rejects.toThrow()
+})
+
+test('delete-all-documents', async () => {
+  await sleep(1000)
+  await expect(
+    meili.Index(index.uid).deleteAllDocuments()
+  ).resolves.toHaveProperty('updateId')
+  await sleep(1000)
+  await expect(meili.Index(index.uid).getDocuments()).resolves.toHaveLength(0)
+})
+
+test('delete-index', async () => {
+  await sleep(2000)
+  await expect(meili.Index(index.uid).deleteIndex()).resolves.toBeDefined()
+})
 
 test('reset-stop', async () => {
   // await clearAllIndexes()

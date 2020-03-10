@@ -38,8 +38,17 @@ class Meili {
         baseURL: this.baseURL,
       })
     }
-
     this.instance.interceptors.response.use((response) => response.data)
+    this.instance.interceptors.request.use((request) => {
+      if (request.data) {
+        return {
+          ...request,
+          data: JSON.stringify(request.data),
+        }
+      }
+
+      return request
+    })
   }
 
   /**
