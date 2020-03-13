@@ -19,6 +19,7 @@ const config = {
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
   ],
+  testEnvironment: 'node',
 }
 
 module.exports = config

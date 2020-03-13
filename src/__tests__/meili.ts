@@ -3,6 +3,7 @@ import * as Types from '../types'
 
 const config = {
   host: 'http://127.0.0.1:7700',
+  apiKey: '123',
 }
 
 // TODO: do test with two meili servers, one with api key one without
@@ -45,6 +46,10 @@ test('connexion with API key', () => {
   expect(meiliApi).toBeInstanceOf(Meili)
 })
 
+test('get different keys', async () => {
+  await expect(meili.getKeys()).resolves.toHaveProperty('public')
+})
+
 test('health', async () => {
   await expect(meili.setHealthy()).resolves.toBe('')
   await expect(meili.isHealthy()).resolves.toBe(true)
@@ -80,7 +85,7 @@ test('create-index-with-uid', async () => {
   }
   const indexIndentifier = {
     uid: 'bebebebe',
-    identifier: 'movie_id',
+    primaryKey: 'movie_id',
   }
   const noUid = {
     uid: '',
@@ -110,9 +115,9 @@ test('create-index-with-uid', async () => {
       expect(err).toBe(null)
     })
   await expect(meili.listIndexes()).resolves.toHaveLength(2)
-  await clearAllIndexes()
+  // await clearAllIndexes()
 })
 
 test('reset-end', async () => {
-  await clearAllIndexes()
+  // await clearAllIndexes()
 })

@@ -40,7 +40,7 @@ class Meili {
     }
     this.instance.interceptors.response.use((response) => response.data)
     this.instance.interceptors.request.use((request) => {
-      if (request.data) {
+      if (request.data !== undefined) {
         return {
           ...request,
           data: JSON.stringify(request.data),
@@ -82,6 +82,21 @@ class Meili {
     const url = `/indexes`
 
     return this.instance.post(url, data)
+  }
+
+  ///
+  /// KEYS
+  ///
+
+  /**
+   * Get private and public key
+   * @memberof Admin
+   * @method getKey
+   */
+  getKeys(): Promise<boolean> {
+    const url = '/keys'
+
+    return this.instance.get(url)
   }
 
   ///

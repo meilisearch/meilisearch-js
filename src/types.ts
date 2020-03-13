@@ -4,7 +4,7 @@
 
 export interface Index {
   name: string
-  identifier?: string
+  primaryKey?: string
   uid: string
   createdAt: Date
   updatedAt: Date
@@ -35,19 +35,19 @@ export interface Settings {
 
 export interface CreateIndexRequest {
   uid: string
-  identifier?: string
+  primaryKey?: string
 }
 
 export interface CreateIndexResponse {
   uid: string
-  identifier?: string
+  primaryKey?: string
   updateId?: number
   createdAt: Date
   updatedAt: Date
 }
 
 export interface UpdateIndexRequest {
-  identifier?: string
+  primaryKey?: string
 }
 
 export interface GetDocumentsParams {
@@ -57,7 +57,7 @@ export interface GetDocumentsParams {
 }
 
 export interface AddDocumentParams {
-  identifier?: string
+  primaryKey?: string
 }
 
 export interface SearchParams {
@@ -95,7 +95,6 @@ export interface SearchRequest {
 
 export interface SearchResponse {
   hits: any[]
-
   offset: number
   limit: number
   processingTimeMs: number

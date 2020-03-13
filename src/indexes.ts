@@ -108,18 +108,33 @@ class Indexes {
   ///
   /// INDEX
   ///
-
+  /**
+   * Get an index.
+   * @memberof Indexes
+   * @method getIndex
+   */
   getIndex(): Promise<Types.Index> {
     const url = `/indexes/${this.indexUid}`
 
     return this.instance.get(url)
   }
 
+  /**
+   * Upate an index.
+   * @memberof Indexes
+   * @method updateIndex
+   */
   updateIndex(data: Types.UpdateIndexRequest): Promise<Types.Index> {
     const url = `/indexes/${this.indexUid}`
 
     return this.instance.put(url, data)
   }
+
+  /**
+   * Delete an index.
+   * @memberof Indexes
+   * @method deleteIndex
+   */
 
   deleteIndex(): Promise<void> {
     const url = `/indexes/${this.indexUid}`
@@ -136,7 +151,6 @@ class Indexes {
    * @memberof Indexes
    * @method getStats
    */
-
   getStats(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/stats`
 
@@ -205,7 +219,7 @@ class Indexes {
   }
 
   /**
-   * Delete multiples documents to an index
+   * Delete multiples documents of an index
    * @memberof Documents
    * @method deleteDocuments
    */
@@ -215,6 +229,11 @@ class Indexes {
     return this.instance.post(url, documentsIds)
   }
 
+  /**
+   * Delete all documents of an index
+   * @memberof Documents
+   * @method deleteAllDocuments
+   */
   deleteAllDocuments(): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents`
 
@@ -228,7 +247,7 @@ class Indexes {
   /**
    * Retrieve all settings
    * @memberof Settings
-   * @method get
+   * @method getSettings
    */
   getSettings(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings`
@@ -239,7 +258,7 @@ class Indexes {
   /**
    * Update all settings
    * @memberof Settings
-   * @method update
+   * @method updateSettings
    */
   updateSettings(settings: Types.Settings): Promise<void> {
     const url = `/indexes/${this.indexUid}/settings`
@@ -250,7 +269,7 @@ class Indexes {
   /**
    * Update all settings. Any parameters not provided will be left unchanged.
    * @memberof Settings
-   * @method reset
+   * @method resetSettings
    */
   resetSettings(): Promise<void> {
     const url = `/indexes/${this.indexUid}/settings`
@@ -264,8 +283,8 @@ class Indexes {
 
   /**
    * Get the list of all synonyms
-   * @memberof Synonyms
-   * @method list
+   * @memberof Settings
+   * @method getSynonyms
    */
   getSynonyms(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/synonyms`
@@ -275,8 +294,8 @@ class Indexes {
 
   /**
    * Update the list of synonyms. Overwrite the old list.
-   * @memberof Synonyms
-   * @method update
+   * @memberof Settings
+   * @method updateSynonyms
    */
   updateSynonyms(synonyms: object): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/synonyms`
@@ -286,8 +305,8 @@ class Indexes {
 
   /**
    * Reset the synonym list to be empty again
-   * @memberof Synonyms
-   * @method reset
+   * @memberof Settings
+   * @method resetSynonyms
    */
   resetSynonyms(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/synonyms`
@@ -301,8 +320,8 @@ class Indexes {
 
   /**
    * Get the list of all stop-words
-   * @memberof StopWords
-   * @method list
+   * @memberof Settings
+   * @method getStopWords
    */
   getStopWords(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/stop-words`
@@ -312,8 +331,8 @@ class Indexes {
 
   /**
    * Update the list of stop-words. Overwrite the old list.
-   * @memberof StopWords
-   * @method update
+   * @memberof Settings
+   * @method updateStopWords
    */
   updateStopWords(stopWords: string[]): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/stop-words`
@@ -323,8 +342,8 @@ class Indexes {
 
   /**
    * Reset the stop-words list to be empty again
-   * @memberof StopWords
-   * @method reset
+   * @memberof Settings
+   * @method resetStopWords
    */
   resetStopWords(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/stop-words`
@@ -338,8 +357,8 @@ class Indexes {
 
   /**
    * Get the list of all ranking-rules
-   * @memberof RankingRules
-   * @method get
+   * @memberof Settings
+   * @method getRankingRules
    */
   getRankingRules(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/ranking-rules`
@@ -349,8 +368,8 @@ class Indexes {
 
   /**
    * Update the list of ranking-rules. Overwrite the old list.
-   * @memberof RankingRules
-   * @method update
+   * @memberof Settings
+   * @method updateRankingRules
    */
   updateRankingRules(rankingRules: string[]): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/ranking-rules`
@@ -360,8 +379,8 @@ class Indexes {
 
   /**
    * Reset the ranking rules list to its default value
-   * @memberof RankingRules
-   * @method reset
+   * @memberof Settings
+   * @method resetRankingRules
    */
   resetRankingRules(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/ranking-rules`
@@ -375,8 +394,8 @@ class Indexes {
 
   /**
    * Get the distinct-attribute
-   * @memberof DistinctAttribute
-   * @method get
+   * @memberof Settings
+   * @method getDistinctAttribute
    */
   getDistinctAttribute(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
@@ -386,8 +405,8 @@ class Indexes {
 
   /**
    * Update the distinct-attribute.
-   * @memberof DistinctAttribute
-   * @method update
+   * @memberof Settings
+   * @method updateDistinctAttribute
    */
   updateDistinctAttribute(distinctAttribute: string): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
@@ -397,8 +416,8 @@ class Indexes {
 
   /**
    * Reset the distinct-attribute.
-   * @memberof DistinctAttribute
-   * @method reset
+   * @memberof Settings
+   * @method resetDistinctAttribute
    */
   resetDistinctAttribute(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
@@ -412,8 +431,8 @@ class Indexes {
 
   /**
    * Get the searchable-attributes
-   * @memberof SearchableAttributes
-   * @method get
+   * @memberof Settings
+   * @method getSearchableAttributes
    */
   getSearchableAttributes(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
@@ -423,8 +442,8 @@ class Indexes {
 
   /**
    * Update the searchable-attributes.
-   * @memberof SearchableAttributes
-   * @method update
+   * @memberof Settings
+   * @method updateSearchableAttributes
    */
   updateSearchableAttributes(searchableAttributes: string[]): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
@@ -434,13 +453,76 @@ class Indexes {
 
   /**
    * Reset the searchable-attributes.
-   * @memberof SearchableAttributes
-   * @method reset
+   * @memberof Settings
+   * @method resetSearchableAttributes
    */
   resetSearchableAttributes(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
 
     return this.instance.delete(url)
+  }
+
+  ///
+  /// DISPLAYED ATTRIBUTE
+  ///
+
+  /**
+   * Get the displayed-attributes
+   * @memberof Settings
+   * @method getDisplayedAttributes
+   */
+  getDisplayedAttributes(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the displayed-attributes.
+   * @memberof Settings
+   * @method updateDisplayedAttributes
+   */
+  updateDisplayedAttributes(displayedAttributes: string[]): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
+
+    return this.instance.post(url, displayedAttributes)
+  }
+
+  /**
+   * Reset the displayed-attributes.
+   * @memberof Settings
+   * @method resetDisplayedAttributes
+   */
+  resetDisplayedAttributes(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
+
+    return this.instance.delete(url)
+  }
+
+  ///
+  /// ACCEPT NEW FIELDS
+  ///
+
+  /**
+   * Get the accept-new-fields value.
+   * @memberof Settings
+   * @method getAcceptNewFields
+   */
+  getAcceptNewFields(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/accept-new-fields`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the accept-new-fields value.
+   * @memberof Settings
+   * @method updateAcceptNewFields
+   */
+  updateAcceptNewFields(acceptNewFields: boolean): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/accept-new-fields`
+
+    return this.instance.post(url, acceptNewFields)
   }
 }
 

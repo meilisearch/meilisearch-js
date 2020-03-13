@@ -4,6 +4,7 @@ import dataset from '../../examples/small_movies.json'
 
 const config = {
   host: 'http://127.0.0.1:7700',
+  apiKey: '123',
 }
 
 const meili = new Meili(config)
@@ -13,7 +14,7 @@ const index = {
 }
 const indexAndIndentifier = {
   uid: 'movies2',
-  identifier: 'id',
+  primaryKey: 'id',
 }
 
 const randomDocument = '287947'
@@ -60,10 +61,9 @@ test('create-index', async () => {
     .createIndex(index)
     .then((response: Types.CreateIndexResponse) => {
       expect(response.uid).toBe(index.uid)
-      expect(response.identifier).toBe(null)
+      expect(response.primaryKey).toBe(null)
     })
     .catch((err) => {
-      console.log({ msg: err.response.data.message })
       expect(err).toBe(null)
     })
 
@@ -71,10 +71,9 @@ test('create-index', async () => {
     .createIndex(indexAndIndentifier)
     .then((response: Types.CreateIndexResponse) => {
       expect(response.uid).toBe(indexAndIndentifier.uid)
-      expect(response.identifier).toBe(indexAndIndentifier.identifier)
+      expect(response.primaryKey).toBe(indexAndIndentifier.primaryKey)
     })
     .catch((err) => {
-      console.log({ msg: err.response.data.message })
       expect(err).toBe(null)
     })
 })
@@ -85,7 +84,7 @@ test('get-index', async () => {
     .getIndex()
     .then((response: Types.CreateIndexResponse) => {
       expect(response.uid).toBe(index.uid)
-      expect(response.identifier).toBe(null)
+      expect(response.primaryKey).toBe(null)
     })
     .catch((err) => {
       expect(err).toBe(null)
@@ -110,13 +109,12 @@ test('get-stats', async () => {
 test('update-index', async () => {
   await meili
     .Index(index.uid)
-    .updateIndex({ identifier: 'id' })
+    .updateIndex({ primaryKey: 'id' })
     .then((response: any) => {
       expect(response.uid).toBe(index.uid)
-      expect(response.identifier).toBe('id')
+      expect(response.primaryKey).toBe('id')
     })
     .catch((err) => {
-      // console.log({ ...err.response })
       expect(err).toBe(null)
     })
 })
@@ -128,7 +126,7 @@ test('update-index', async () => {
 test('add-documents', async () => {
   await expect(
     meili.Index(index.uid).addDocuments(dataset, {
-      identifier: 'id',
+      primaryKey: 'id',
     })
   ).resolves.toHaveProperty('updateId')
   await expect(
@@ -136,14 +134,14 @@ test('add-documents', async () => {
   ).resolves.toHaveProperty('updateId')
 })
 
-test('get-index-identifier', async () => {
+test('get-index-primary-key', async () => {
   await sleep(3 * 1000)
   await meili
     .Index(index.uid)
     .getIndex()
     .then((response: Types.CreateIndexResponse) => {
       expect(response.uid).toBe(index.uid)
-      expect(response.identifier).toBe('id')
+      expect(response.primaryKey).toBe('id')
     })
     .catch((err) => {
       expect(err).toBe(null)
@@ -458,6 +456,41 @@ test('reset-searchable-attributes', async () => {
   await expect(
     meili.Index(index.uid).resetSearchableAttributes()
   ).resolves.toHaveProperty('updateId')
+})
+
+/*
+ * SETTINGS DISPLAYED ATTRIBUTES
+ */
+
+test('add-displayed-attributes', async () => {
+  await expect(
+    meili.Index(index.uid).updateDisplayedAttributes(['title', 'overview'])
+  ).resolves.toHaveProperty('updateId')
+})
+test('get-displayed-attributes', async () => {
+  await expect(
+    meili.Index(index.uid).getDisplayedAttributes()
+  ).resolves.toBeDefined()
+})
+test('reset-displayed-attributes', async () => {
+  await expect(
+    meili.Index(index.uid).resetDisplayedAttributes()
+  ).resolves.toHaveProperty('updateId')
+})
+
+/*
+ * SETTINGS ACCEPT NEW FIELDS
+ */
+
+test('update-accept-new-fields', async () => {
+  await expect(
+    meili.Index(index.uid).updateAcceptNewFields(false)
+  ).resolves.toHaveProperty('updateId')
+})
+test('get-accept-new-fields', async () => {
+  await expect(
+    meili.Index(index.uid).getAcceptNewFields()
+  ).resolves.toBeDefined()
 })
 
 test('delete-document', async () => {
