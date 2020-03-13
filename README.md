@@ -146,8 +146,8 @@ meili
     name: 'Movie',
     uid: 'movies',
   })
-  .then((indexes) => {
-    console.log(indexes)
+  .then((index) => {
+    console.log(index)
   })
 ```
 
@@ -177,8 +177,8 @@ meili
       title: 'My awesome movie',
     },
   ])
-  .then((indexes) => {
-    console.log(indexes)
+  .then((response) => {
+    console.log(response)
   })
 ```
 
