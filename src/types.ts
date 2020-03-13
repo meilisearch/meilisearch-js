@@ -87,18 +87,10 @@ export interface SearchRequest {
   matches?: boolean
 }
 
-// export interface Hits {
-
-//   [field: string]?: string[]
-//   _formatted?: Hits
-// }
-
 export interface SearchResponse {
-  hits: any[]
+  hits: object[]
   offset: number
   limit: number
   processingTimeMs: number
   query: string
-  // _formatted?: SearchResponse
-  // _matchesInfo?: Object
 }

@@ -224,7 +224,7 @@ test('search', async () => {
     await meili
       .Index(index.uid)
       .search('Escape')
-      .then((response: Types.SearchResponse) => {
+      .then((response: any) => {
         expect(response.hits).toHaveLength(2)
         expect(response.hits[0]).toHaveProperty('id', '522681')
       })
@@ -233,7 +233,7 @@ test('search', async () => {
       .search('Escape', {
         offset: 1,
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response: any) => {
         expect(response.hits).toHaveLength(1)
         expect(response.hits[0]).toHaveProperty('id', '338952')
       })
@@ -243,7 +243,7 @@ test('search', async () => {
         offset: 1,
         limit: 5,
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response: any) => {
         expect(response.hits).toHaveLength(5)
         expect(response.hits[0]).toHaveProperty('id', '504172')
       })
@@ -254,7 +254,7 @@ test('search', async () => {
         limit: 5,
         attributesToRetrieve: ['title', 'id'],
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response: any) => {
         expect(response.hits).toHaveLength(5)
         expect(response.hits[0]).toHaveProperty('id', '504172')
         expect(response.hits[0]).not.toHaveProperty('poster')
@@ -267,11 +267,11 @@ test('search', async () => {
         attributesToRetrieve: ['overview', 'id'],
         attributesToCrop: ['overview'],
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response: any) => {
         expect(response.hits).toHaveLength(1)
         expect(response.hits[0]).toHaveProperty('id', '485811')
-        expect(response.hits[0].overview).not.toEqual(
-          response.hits[0]._formatted.overview
+        expect(response.hits[0]['overview']).not.toEqual(
+          response.hits[0]['_formatted']['overview']
         )
       })
     await meili
@@ -283,7 +283,7 @@ test('search', async () => {
         attributesToCrop: ['overview'],
         cropLength: 1,
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response: any) => {
         expect(response.hits).toHaveLength(1)
         expect(response.hits[0]).toHaveProperty('id', '485811')
         expect(response.hits[0]._formatted.overview).toEqual(' s')
@@ -298,7 +298,7 @@ test('search', async () => {
         attributesToCrop: ['overview'],
         attributesToHighlight: ['overview'],
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response: any) => {
         expect(response.hits).toHaveLength(1)
         expect(response.hits[0]).toHaveProperty('id', '485811')
         expect(response.hits[0]._formatted.overview).toMatch(
@@ -313,7 +313,7 @@ test('search', async () => {
         filters: 'title:The Mule',
         attributesToHighlight: ['overview'],
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response: any) => {
         expect(response.hits).toHaveLength(1)
         expect(response.hits[0]).toHaveProperty('id', '504172')
         expect(response.hits[0]._formatted.overview).toMatch(
@@ -326,7 +326,7 @@ test('search', async () => {
         filters: 'title:After',
         matches: true,
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response: any) => {
         expect(response.hits).toHaveLength(1)
         expect(response.hits[0]).toHaveProperty('id', '537915')
         expect(response.hits[0]._matchesInfo.overview).toEqual([

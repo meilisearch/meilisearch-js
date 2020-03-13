@@ -258,8 +258,6 @@ $ yarn test
 $ yarn style
 # Linter with fixing
 $ yarn style:fix
-# Format with fixing
-$ yarn format:fix
 ```
 
 ### Release
