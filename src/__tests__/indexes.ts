@@ -533,5 +533,5 @@ test('delete-index', async () => {
 })
 
 test('reset-stop', async () => {
-  // await clearAllIndexes()
+  await clearAllIndexes()
 })

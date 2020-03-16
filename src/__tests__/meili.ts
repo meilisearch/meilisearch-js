@@ -115,9 +115,9 @@ test('create-index-with-uid', async () => {
       expect(err).toBe(null)
     })
   await expect(meili.listIndexes()).resolves.toHaveLength(2)
-  // await clearAllIndexes()
+  await clearAllIndexes()
 })
 
 test('reset-end', async () => {
-  // await clearAllIndexes()
+  await clearAllIndexes()
 })
