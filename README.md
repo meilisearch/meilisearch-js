@@ -79,7 +79,7 @@ With the `updateId`, you can check the status (`processed` of `failed`) of your 
 
 ```javascript
 // MeiliSearch is typo-tolerant:
-await meili.Index('books').search('hary pottre')
+await meili.Index('books').search('harry pottre')
 ```
 
 Output:
@@ -95,7 +95,7 @@ Output:
   "offset": 0,
   "limit": 20,
   "processingTimeMs": 1,
-  "query": "hary pottre"
+  "query": "harry pottre"
 }
 ```
 
@@ -112,21 +112,21 @@ Go checkout [examples](./examples)!
 
 ```javascript
 // Create an index
-meili.createIndex({ uid: 'books'}) // if your index does not exist
-# Create an index and give the primary-key
-meili.createIndex({ uid: 'books', primaryKey: "book_id"}) // if your index does not exist
+meili.createIndex({ uid: 'books' }) // if your index does not exist
+// Create an index and give the primary-key
+meili.createIndex({ uid: 'books', primaryKey: 'book_id' }) // if your index does not exist
 ```
 
 #### List all indexes <!-- omit in toc -->
 
 ```javascript
-meili.listIndexes()
+await meili.listIndexes()
 ```
 
 #### Get an index <!-- omit in toc -->
 
 ```javascript
-meili.Index('books').getIndex()
+await meili.Index('books').getIndex()
 ```
 
 ### Documents
@@ -140,13 +140,13 @@ let myDocument = await meili.Index('books').getDocument(123)
 // Get documents by batch
 let myDocuments = await meili
   .Index('books')
-  .getDocument({ offset: 10, limit: 20 })
+  .getDocuments({ offset: 4, limit: 20 })
 ```
 
 #### Add documents <!-- omit in toc -->
 
 ```javascript
-meili.Index('books').addDocuments([{ id: 2, title: 'Madame Bovary' }])
+meili.Index('books').addDocuments([{ book_id: 2, title: 'Madame Bovary' }])
 ```
 
 Response:
@@ -185,7 +185,7 @@ await meili.Index('books').getUpdates()
 #### Basic search <!-- omit in toc -->
 
 ```javascript
-await meili.Index('books').search('hary pottre')
+await meili.Index('books').search('prince')
 ```
 
 ```json
@@ -214,7 +214,7 @@ All the supported options are described in [this documentation section](https://
 ```javascript
 await meili
   .Index('books')
-  .search('hary pottre', { limit: 1, attributesToHighlight: '*' })
+  .search('prince', { limit: 1, attributesToHighlight: '*' })
 ```
 
 ```json
@@ -258,6 +258,8 @@ $ yarn test
 $ yarn style
 # Linter with fixing
 $ yarn style:fix
+# Build the project
+$ yarn build
 ```
 
 ### Release

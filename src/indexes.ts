@@ -86,7 +86,13 @@ class Indexes {
         params.cropLength = options.cropLength
       }
       if (options.attributesToHighlight) {
-        params.attributesToHighlight = options.attributesToHighlight.join()
+        let attributesToHighlight: string[]
+        if (!Array.isArray(options.attributesToHighlight)) {
+          attributesToHighlight = ['*']
+        } else {
+          attributesToHighlight = options.attributesToHighlight
+        }
+        params.attributesToHighlight = attributesToHighlight.join()
       }
       if (options.filters) {
         params.filters = options.filters
