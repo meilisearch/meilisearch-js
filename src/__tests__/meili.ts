@@ -81,10 +81,10 @@ test('reset-start', async () => {
 
 test('create-index-with-uid', async () => {
   const index = {
-    uid: 'abababa',
+    uid: 'random_uid_1',
   }
   const indexIndentifier = {
-    uid: 'bebebebe',
+    uid: 'random_uid_2',
     primaryKey: 'movie_id',
   }
   const noUid = {
