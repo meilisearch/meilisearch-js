@@ -88,7 +88,7 @@ class Indexes {
       if (options.attributesToHighlight) {
         let attributesToHighlight: string[]
         if (!Array.isArray(options.attributesToHighlight)) {
-          attributesToHighlight = ['*']
+          attributesToHighlight = [options.attributesToHighlight]
         } else {
           attributesToHighlight = options.attributesToHighlight
         }
