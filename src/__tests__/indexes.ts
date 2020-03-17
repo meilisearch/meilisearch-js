@@ -133,6 +133,16 @@ test('add-documents', async () => {
     meili.Index(indexAndIndentifier.uid).addDocuments(dataset)
   ).resolves.toHaveProperty('updateId')
 })
+test('update-documents', async () => {
+  await expect(
+    meili.Index(index.uid).updateDocuments(dataset, {
+      primaryKey: 'id',
+    })
+  ).resolves.toHaveProperty('updateId')
+  await expect(
+    meili.Index(indexAndIndentifier.uid).addDocuments(dataset)
+  ).resolves.toHaveProperty('updateId')
+})
 
 test('get-index-primary-key', async () => {
   await sleep(3 * 1000)
@@ -153,7 +163,7 @@ test('updates', async () => {
   await expect(meili.Index(index.uid).getUpdateStatus(0)).resolves.toHaveProperty(
     'status'
   )
-  await expect(meili.Index(index.uid).getAllUpdateStatus()).resolves.toHaveLength(1)
+  await expect(meili.Index(index.uid).getAllUpdateStatus()).resolves.toHaveLength(2)
 })
 
 test('get-document', async () => {
@@ -508,7 +518,7 @@ test('delete-documents', async () => {
   await expect(
     meili.Index(index.uid).deleteDocuments([firstDocumentId, offsetDocumentId])
   ).resolves.toHaveProperty('updateId')
-  await sleep(1000)
+  await sleep(2000)
   await expect(
     meili.Index(index.uid).getDocument(firstDocumentId)
   ).rejects.toThrow()

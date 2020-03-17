@@ -198,7 +198,7 @@ class Indexes {
   }
 
   /**
-   * Add or update multiples documents to an index
+   * Add or replace multiples documents to an index
    * @memberof Documents
    * @method addDocuments
    */
@@ -209,6 +209,22 @@ class Indexes {
     const url = `/indexes/${this.indexUid}/documents`
 
     return this.instance.post(url, documents, {
+      params: options,
+    })
+  }
+
+  /**
+   * Add or update multiples documents to an index
+   * @memberof Documents
+   * @method updateDocuments
+   */
+  updateDocuments(
+    documents: object[],
+    options?: Types.AddDocumentParams
+  ): Promise<Types.AsyncUpdateId> {
+    const url = `/indexes/${this.indexUid}/documents`
+
+    return this.instance.put(url, documents, {
       params: options,
     })
   }

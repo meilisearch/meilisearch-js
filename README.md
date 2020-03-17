@@ -70,7 +70,7 @@ let documents = [
   { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
 ]
 
-await meili.Index('books').addDocuments(documents) // { "updateId": 0 }
+await meili.Index('books').addOrReplaceDocuments(documents) // { "updateId": 0 }
 ```
 
 With the `updateId`, you can check the status (`processed` of `failed`) of your documents addition thanks to this [method](#update-status).
@@ -146,7 +146,7 @@ let myDocuments = await meili
 #### Add documents <!-- omit in toc -->
 
 ```javascript
-meili.Index('books').addDocuments([{ book_id: 2, title: 'Madame Bovary' }])
+meili.Index('books').addOrReplaceDocuments([{ book_id: 2, title: 'Madame Bovary' }])
 ```
 
 Response:
@@ -333,9 +333,13 @@ This package works for MeiliSearch `v0.9.x`.
 
 ### Documents
 
-- Add or update multiples documents:
+- Add or replace multiple documents:
 
 `meili.Index('xxx').addDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
+
+- Add or update multiple documents:
+
+`meili.Index('xxx').updateDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
 
 - Get Documents:
 
@@ -349,7 +353,7 @@ This package works for MeiliSearch `v0.9.x`.
 
 `meili.Index('xxx').deleteDocument(documentId: string): Promise<Types.AsyncUpdateId>`
 
-- Delete multiples documents:
+- Delete multiple documents:
 
 `meili.Index('xxx').deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId>`
 
