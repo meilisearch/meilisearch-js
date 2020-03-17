@@ -3,6 +3,7 @@ const dataset = require('./small_movies.json')
 
 const config = {
   host: 'http://127.0.0.1:7700',
+  apiKey: 123,
 }
 
 var meili = new MeiliSearch(config)
@@ -33,6 +34,9 @@ const addDataset = async () => {
 ;(async () => {
   await addDataset()
   let resp
-  resp = await meili.Index('movies').search('Avengers')
+  resp = await meili
+    .Index('movies')
+    .search('Avengers', { limit: 1, attributesToHighlight: 'title' })
   console.log({ resp })
+  console.log({ r: resp.hits[0]._formatted })
 })()
