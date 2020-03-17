@@ -175,9 +175,9 @@ await meili.Index('books').deleteAllDocuments()
 ```javascript
 // Get one update
 // Parameter: the updateId got after an asynchronous request (e.g. documents addition)
-await meili.Index('books').getUpdate(1)
+await meili.Index('books').getUpdateStatus(1)
 // Get all update satus
-await meili.Index('books').getUpdates()
+await meili.Index('books').getAllUpdateStatus()
 ```
 
 ### Search
@@ -325,11 +325,11 @@ This package works for MeiliSearch `v0.9.x`.
 
 - Get One update info:
 
-`meili.Index('xxx').getUpdate(updateId: number): Promise<object>`
+`meili.Index('xxx').getUpdateStatus(updateId: number): Promise<object>`
 
 - Get all updates info:
 
-`meili.Index('xxx').getUpdates(): Promise<object[]>`
+`meili.Index('xxx').getAllUpdateStatus(): Promise<object[]>`
 
 ### Documents
 
