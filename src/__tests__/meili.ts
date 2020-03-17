@@ -2,7 +2,7 @@ import Meili from '..'
 import * as Types from '../types'
 
 const config = {
-  host: 'http://127.0.0.1:7700',
+  host: 'http://localhost:7700',
   apiKey: '123',
 }
 
