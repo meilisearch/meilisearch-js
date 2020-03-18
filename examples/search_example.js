@@ -23,9 +23,9 @@ const addDataset = async () => {
   if (resp.length === 0) {
     resp = await meili.createIndex(index)
   }
-  resp = await meili.Index(index.uid).getDocuments()
+  resp = await meili.getIndex(index.uid).getDocuments()
   if (resp.length === 0) {
-    resp = await meili.Index('movies').addDocuments(dataset)
+    resp = await meili.getIndex(index.uid).addDocuments(dataset)
     await sleep(1000) // This is to give time to MeiliSearch to index the dataset
     // If you have no results it means it took more than 1 second to index.
   }
@@ -33,10 +33,12 @@ const addDataset = async () => {
 
 ;(async () => {
   await addDataset()
+  let index = await meili.getIndex('movies')
   let resp
-  resp = await meili
-    .Index('movies')
-    .search('Avengers', { limit: 1, attributesToHighlight: 'title' })
+  resp = await index.search('Avengers', {
+    limit: 1,
+    attributesToHighlight: 'title',
+  })
   console.log({ resp })
   console.log({ r: resp.hits[0]._formatted })
 })()

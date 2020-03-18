@@ -21,7 +21,7 @@ const clearAllIndexes = async () => {
 
   for (const indexUid of indexes) {
     await meili
-      .Index(indexUid)
+      .getIndex(indexUid)
       .deleteIndex()
       .catch((err) => {
         expect(err).toBe(null)
