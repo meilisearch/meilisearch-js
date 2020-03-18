@@ -234,7 +234,7 @@ class Indexes {
    * @memberof Documents
    * @method deleteDocument
    */
-  deleteDocument(documentId: string): Promise<Types.AsyncUpdateId> {
+  deleteDocument(documentId: string | number): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents/${documentId}`
 
     return this.instance.delete(url)
@@ -245,7 +245,9 @@ class Indexes {
    * @memberof Documents
    * @method deleteDocuments
    */
-  deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId> {
+  deleteDocuments(
+    documentsIds: string[] | number[]
+  ): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents/delete-batch`
 
     return this.instance.post(url, documentsIds)
@@ -289,7 +291,8 @@ class Indexes {
   }
 
   /**
-   * Update all settings. Any parameters not provided will be left unchanged.
+   * Update all settings.
+   * Any parameters not provided will be left unchanged.
    * @memberof Settings
    * @method resetSettings
    */
