@@ -56,7 +56,7 @@ class Meili {
    * @memberof Meili
    * @method Index
    */
-  Index(indexUid: string): Indexes {
+  getIndex(indexUid: string): Indexes {
     return new Indexes(this.instance, indexUid)
   }
 
