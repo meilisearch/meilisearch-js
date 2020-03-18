@@ -160,10 +160,12 @@ test('get-index-primary-key', async () => {
 })
 
 test('updates', async () => {
-  await expect(meili.Index(index.uid).getUpdateStatus(0)).resolves.toHaveProperty(
-    'status'
-  )
-  await expect(meili.Index(index.uid).getAllUpdateStatus()).resolves.toHaveLength(2)
+  await expect(
+    meili.Index(index.uid).getUpdateStatus(0)
+  ).resolves.toHaveProperty('status')
+  await expect(
+    meili.Index(index.uid).getAllUpdateStatus()
+  ).resolves.toHaveLength(2)
 })
 
 test('get-document', async () => {
