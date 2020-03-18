@@ -15,10 +15,9 @@ export interface AsyncUpdateId {
 }
 
 export interface Settings {
-  rankingDistinct?: string
+  distinctAttribute?: string
   searchableAttributes?: string[]
   displayedAttributes?: string[]
-  distinctField?: string
   rankingRules?: {
     [field: string]: string
   }
