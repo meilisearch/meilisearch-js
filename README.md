@@ -60,7 +60,7 @@ const config = {
 const meili = new MeiliSearch(config)
 
 await meili.createIndex({ uid: 'books' }) // if your index does not exist
-let index = await meili.getIndex('books'); // If you already created your index
+let index = await meili.getIndex('books') // If you already created your index
 
 let documents = [
   { book_id: 123, title: 'Pride and Prejudice' },
