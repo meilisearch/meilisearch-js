@@ -60,9 +60,9 @@ const config = {
 const meili = new MeiliSearch(config)
 
 await meili.createIndex({ uid: 'books' }) // if your index does not exist
-let index = await meili.getIndex('books') // If you already created your index
+const index = await meili.getIndex('books');
 
-let documents = [
+const documents = [
   { book_id: 123, title: 'Pride and Prejudice' },
   { book_id: 456, title: 'Le Petit Prince' },
   { book_id: 1, title: 'Alice In Wonderland' },
@@ -80,7 +80,7 @@ With the `updateId`, you can check the status (`processed` of `failed`) of your 
 
 ```javascript
 // MeiliSearch is typo-tolerant:
-await meili.getIndex('books').search('harry pottre')
+await index.search('harry pottre')
 ```
 
 Output:
@@ -124,10 +124,10 @@ meili.createIndex({ uid: 'books', primaryKey: 'book_id' }) // if your index does
 await meili.listIndexes()
 ```
 
-#### Get an index <!-- omit in toc -->
+#### Get an index object <!-- omit in toc -->
 
 ```javascript
-await meili.getIndex('books').getIndex()
+const index = await meili.getIndex('books')
 ```
 
 ### Documents
@@ -136,20 +136,16 @@ await meili.getIndex('books').getIndex()
 
 ```javascript
 // Get one document
-let myDocument = await meili.getIndex('books').getDocument(123)
+let myDocument = await index.getDocument(123)
 
 // Get documents by batch
-let myDocuments = await meili
-  .getIndex('books')
-  .getDocuments({ offset: 4, limit: 20 })
+let myDocuments = await index.getDocuments({ offset: 4, limit: 20 })
 ```
 
 #### Add documents <!-- omit in toc -->
 
 ```javascript
-meili
-  .getIndex('books')
-  .addOrReplaceDocuments([{ book_id: 2, title: 'Madame Bovary' }])
+index.addOrReplaceDocuments([{ book_id: 2, title: 'Madame Bovary' }])
 ```
 
 Response:
@@ -166,11 +162,11 @@ With this `updateId` you can track your [operation update](#update-status).
 
 ```javascript
 // Delete one document
-await meili.getIndex('books').deleteDocument(2)
+index.deleteDocument(2)
 // Delete several documents
-await meili.getIndex('books').deleteDocuments([1, 42])
+index.deleteDocuments([1, 42])
 // Delete all documents /!\
-await meili.getIndex('books').deleteAllDocuments()
+index.deleteAllDocuments()
 ```
 
 ### Update status
@@ -178,9 +174,9 @@ await meili.getIndex('books').deleteAllDocuments()
 ```javascript
 // Get one update
 // Parameter: the updateId got after an asynchronous request (e.g. documents addition)
-await meili.getIndex('books').getUpdateStatus(1)
+await index.getUpdateStatus(1)
 // Get all update satus
-await meili.getIndex('books').getAllUpdateStatus()
+await index.getAllUpdateStatus()
 ```
 
 ### Search
@@ -188,7 +184,7 @@ await meili.getIndex('books').getAllUpdateStatus()
 #### Basic search <!-- omit in toc -->
 
 ```javascript
-await meili.getIndex('books').search('prince')
+await index.search('prince')
 ```
 
 ```json
@@ -215,9 +211,7 @@ await meili.getIndex('books').search('prince')
 All the supported options are described in [this documentation section](https://docs.meilisearch.com/references/search.html#search-in-an-index).
 
 ```javascript
-await meili
-  .getIndex('books')
-  .search('prince', { limit: 1, attributesToHighlight: '*' })
+await index.search('prince', { limit: 1, attributesToHighlight: '*' })
 ```
 
 ```json
@@ -308,77 +302,81 @@ This package works for MeiliSearch `v0.9.x`.
 
 `meili.createIndex(data: Types.CreateIndexRequest): Promise<Types.CreateIndexResponse>`
 
-- Get Index:
+- Get index object:
 
-`meili.getIndex('xxx').getIndex(): Promise<Types.index>`
+`meili.getIndex(uid: string)`
+
+- Show Index information:
+
+`index.show(): Promise<Types.index>`
 
 - Update Index:
 
-`meili.getIndex('xxx').updateIndex(data: Types.UpdateIndexRequest): Promise<Types.index>`
+`index.updateIndex(data: Types.UpdateIndexRequest): Promise<Types.index>`
 
 - Delete Index:
 
-`meili.getIndex('xxx').deleteIndex(): Promise<void>`
+`index.deleteIndex(): Promise<void>`
 
 - Get specific index stats
 
-`meili.getIndex('xxx').getStats(): Promise<object>`
+`index.getStats(): Promise<object>`
 
 ### Updates
 
 - Get One update info:
 
-`meili.getIndex('xxx').getUpdateStatus(updateId: number): Promise<object>`
+`index.getUpdateStatus(updateId: number): Promise<object>`
 
 - Get all updates info:
 
-`meili.getIndex('xxx').getAllUpdateStatus(): Promise<object[]>`
+`index.getAllUpdateStatus(): Promise<object[]>`
 
 ### Documents
 
 - Add or replace multiple documents:
 
-`meili.getIndex('xxx').addDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
+`index.addDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
 
 - Add or update multiple documents:
 
-`meili.getIndex('xxx').updateDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
+`index.updateDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
 
 - Get Documents:
 
-`meili.getIndex('xxx').getDocuments(params: Types.getDocumentsParams): Promise<object[]>`
+`index.getDocuments(params: Types.getDocumentsParams): Promise<object[]>`
 
 - Get one document:
 
-`meili.getIndex('xxx').getDocument(documentId: string): Promise<object>`
+`index.getDocument(documentId: string): Promise<object>`
 
 - Delete one document:
 
-`meili.getIndex('xxx').deleteDocument(documentId: string): Promise<Types.AsyncUpdateId>`
+`index.deleteDocument(documentId: string): Promise<Types.AsyncUpdateId>`
 
 - Delete multiple documents:
 
-`meili.getIndex('xxx').deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId>`
+`index.deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId>`
 
 ### Settings
 
 - Get settings:
 
-`meili.getIndex('xxx').getSettings(): Promise<object>`
+`index.getSettings(): Promise<object>`
 
 - Update settings:
 
-`meili.getIndex('xxx').updateSettings(settings: object): Promise<void>`
+`index.updateSettings(settings: object): Promise<void>`
 
 ### Synonyms
 
 - List all synonyms:
 
-`meili.getIndex('xxx').listSynonyms(): Promise<object[]>`
+`index.listSynonyms(): Promise<object[]>`
 
 - Add a synonyms:
 
-`meili.getIndex('xxx').createSynonym(input: string, synonyms: string[]): Promise<object>`
+`index.createSynonym(input: string, synonyms: string[]): Promise<object>`
 
 #### Stop-words
 

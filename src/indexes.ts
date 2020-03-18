@@ -54,7 +54,7 @@ class Indexes {
 
   /**
    * Search for documents into an index
-   * @memberof Meili
+   * @memberof Indexes
    * @method search
    */
   search(
@@ -115,18 +115,18 @@ class Indexes {
   /// INDEX
   ///
   /**
-   * Get an index.
+   * Show index information.
    * @memberof Indexes
    * @method getIndex
    */
-  getIndex(): Promise<Types.Index> {
+  show(): Promise<Types.Index> {
     const url = `/indexes/${this.indexUid}`
 
     return this.instance.get(url)
   }
 
   /**
-   * Upate an index.
+   * Update an index.
    * @memberof Indexes
    * @method updateIndex
    */
@@ -188,7 +188,7 @@ class Indexes {
 
   /**
    * Get one document
-   * @memberof Documents
+   * @memberof Indexes
    * @method getDocument
    */
   getDocument(documentId: string): Promise<object> {
@@ -199,7 +199,7 @@ class Indexes {
 
   /**
    * Add or replace multiples documents to an index
-   * @memberof Documents
+   * @memberof Indexes
    * @method addDocuments
    */
   addDocuments(
@@ -215,7 +215,7 @@ class Indexes {
 
   /**
    * Add or update multiples documents to an index
-   * @memberof Documents
+   * @memberof Indexes
    * @method updateDocuments
    */
   updateDocuments(
@@ -231,7 +231,7 @@ class Indexes {
 
   /**
    * Delete one document
-   * @memberof Documents
+   * @memberof Indexes
    * @method deleteDocument
    */
   deleteDocument(documentId: string | number): Promise<Types.AsyncUpdateId> {
@@ -242,7 +242,7 @@ class Indexes {
 
   /**
    * Delete multiples documents of an index
-   * @memberof Documents
+   * @memberof Indexes
    * @method deleteDocuments
    */
   deleteDocuments(
@@ -255,7 +255,7 @@ class Indexes {
 
   /**
    * Delete all documents of an index
-   * @memberof Documents
+   * @memberof Indexes
    * @method deleteAllDocuments
    */
   deleteAllDocuments(): Promise<Types.AsyncUpdateId> {
@@ -270,7 +270,7 @@ class Indexes {
 
   /**
    * Retrieve all settings
-   * @memberof Settings
+   * @memberof Indexes
    * @method getSettings
    */
   getSettings(): Promise<object> {
@@ -281,7 +281,8 @@ class Indexes {
 
   /**
    * Update all settings
-   * @memberof Settings
+   * Any parameters not provided will be left unchanged.
+   * @memberof Indexes
    * @method updateSettings
    */
   updateSettings(settings: Types.Settings): Promise<void> {
@@ -291,9 +292,8 @@ class Indexes {
   }
 
   /**
-   * Update all settings.
-   * Any parameters not provided will be left unchanged.
-   * @memberof Settings
+   * Reset settings.
+   * @memberof Indexes
    * @method resetSettings
    */
   resetSettings(): Promise<void> {
@@ -308,7 +308,7 @@ class Indexes {
 
   /**
    * Get the list of all synonyms
-   * @memberof Settings
+   * @memberof Indexes
    * @method getSynonyms
    */
   getSynonyms(): Promise<object[]> {
@@ -319,7 +319,7 @@ class Indexes {
 
   /**
    * Update the list of synonyms. Overwrite the old list.
-   * @memberof Settings
+   * @memberof Indexes
    * @method updateSynonyms
    */
   updateSynonyms(synonyms: object): Promise<object> {
@@ -330,7 +330,7 @@ class Indexes {
 
   /**
    * Reset the synonym list to be empty again
-   * @memberof Settings
+   * @memberof Indexes
    * @method resetSynonyms
    */
   resetSynonyms(): Promise<object> {
@@ -345,7 +345,7 @@ class Indexes {
 
   /**
    * Get the list of all stop-words
-   * @memberof Settings
+   * @memberof Indexes
    * @method getStopWords
    */
   getStopWords(): Promise<object[]> {
@@ -356,7 +356,7 @@ class Indexes {
 
   /**
    * Update the list of stop-words. Overwrite the old list.
-   * @memberof Settings
+   * @memberof Indexes
    * @method updateStopWords
    */
   updateStopWords(stopWords: string[]): Promise<object> {
@@ -367,7 +367,7 @@ class Indexes {
 
   /**
    * Reset the stop-words list to be empty again
-   * @memberof Settings
+   * @memberof Indexes
    * @method resetStopWords
    */
   resetStopWords(): Promise<object> {
@@ -382,7 +382,7 @@ class Indexes {
 
   /**
    * Get the list of all ranking-rules
-   * @memberof Settings
+   * @memberof Indexes
    * @method getRankingRules
    */
   getRankingRules(): Promise<object[]> {
@@ -393,7 +393,7 @@ class Indexes {
 
   /**
    * Update the list of ranking-rules. Overwrite the old list.
-   * @memberof Settings
+   * @memberof Indexes
    * @method updateRankingRules
    */
   updateRankingRules(rankingRules: string[]): Promise<object> {
@@ -404,7 +404,7 @@ class Indexes {
 
   /**
    * Reset the ranking rules list to its default value
-   * @memberof Settings
+   * @memberof Indexes
    * @method resetRankingRules
    */
   resetRankingRules(): Promise<object> {
@@ -419,7 +419,7 @@ class Indexes {
 
   /**
    * Get the distinct-attribute
-   * @memberof Settings
+   * @memberof Indexes
    * @method getDistinctAttribute
    */
   getDistinctAttribute(): Promise<object[]> {
@@ -430,7 +430,7 @@ class Indexes {
 
   /**
    * Update the distinct-attribute.
-   * @memberof Settings
+   * @memberof Indexes
    * @method updateDistinctAttribute
    */
   updateDistinctAttribute(distinctAttribute: string): Promise<object> {
@@ -441,7 +441,7 @@ class Indexes {
 
   /**
    * Reset the distinct-attribute.
-   * @memberof Settings
+   * @memberof Indexes
    * @method resetDistinctAttribute
    */
   resetDistinctAttribute(): Promise<object> {
@@ -456,7 +456,7 @@ class Indexes {
 
   /**
    * Get the searchable-attributes
-   * @memberof Settings
+   * @memberof Indexes
    * @method getSearchableAttributes
    */
   getSearchableAttributes(): Promise<object[]> {
@@ -467,7 +467,7 @@ class Indexes {
 
   /**
    * Update the searchable-attributes.
-   * @memberof Settings
+   * @memberof Indexes
    * @method updateSearchableAttributes
    */
   updateSearchableAttributes(searchableAttributes: string[]): Promise<object> {
@@ -478,7 +478,7 @@ class Indexes {
 
   /**
    * Reset the searchable-attributes.
-   * @memberof Settings
+   * @memberof Indexes
    * @method resetSearchableAttributes
    */
   resetSearchableAttributes(): Promise<object> {
@@ -493,7 +493,7 @@ class Indexes {
 
   /**
    * Get the displayed-attributes
-   * @memberof Settings
+   * @memberof Indexes
    * @method getDisplayedAttributes
    */
   getDisplayedAttributes(): Promise<object[]> {
@@ -504,7 +504,7 @@ class Indexes {
 
   /**
    * Update the displayed-attributes.
-   * @memberof Settings
+   * @memberof Indexes
    * @method updateDisplayedAttributes
    */
   updateDisplayedAttributes(displayedAttributes: string[]): Promise<object> {
@@ -515,7 +515,7 @@ class Indexes {
 
   /**
    * Reset the displayed-attributes.
-   * @memberof Settings
+   * @memberof Indexes
    * @method resetDisplayedAttributes
    */
   resetDisplayedAttributes(): Promise<object> {
@@ -530,7 +530,7 @@ class Indexes {
 
   /**
    * Get the accept-new-fields value.
-   * @memberof Settings
+   * @memberof Indexes
    * @method getAcceptNewFields
    */
   getAcceptNewFields(): Promise<object[]> {
@@ -541,7 +541,7 @@ class Indexes {
 
   /**
    * Update the accept-new-fields value.
-   * @memberof Settings
+   * @memberof Indexes
    * @method updateAcceptNewFields
    */
   updateAcceptNewFields(acceptNewFields: boolean): Promise<object> {

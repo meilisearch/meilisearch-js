@@ -72,7 +72,7 @@ class Meili {
   }
 
   /**
-   * Create a new index with am optional schema
+   * Create a new index
    * @memberof Meili
    * @method createIndex
    */
@@ -90,7 +90,7 @@ class Meili {
 
   /**
    * Get private and public key
-   * @memberof Admin
+   * @memberof Meili
    * @method getKey
    */
   getKeys(): Promise<boolean> {
@@ -105,7 +105,7 @@ class Meili {
 
   /**
    * Check if the server is healhty
-   * @memberof Admin
+   * @memberof Meili
    * @method isHealthy
    */
   isHealthy(): Promise<boolean> {
@@ -116,7 +116,7 @@ class Meili {
 
   /**
    * Change the healthyness to healthy
-   * @memberof Admin
+   * @memberof Meili
    * @method setHealthy
    */
   setHealthy(): Promise<void> {
@@ -129,7 +129,7 @@ class Meili {
 
   /**
    * Change the healthyness to unhealthy
-   * @memberof Admin
+   * @memberof Meili
    * @method setUnhealthy
    */
   setUnhealthy(): Promise<void> {
@@ -142,7 +142,7 @@ class Meili {
 
   /**
    * Change the healthyness to unhealthy
-   * @memberof Admin
+   * @memberof Meili
    * @method setUnhealthy
    */
   changeHealthTo(health: boolean): Promise<void> {
@@ -159,7 +159,7 @@ class Meili {
 
   /**
    * Get the stats of all the database
-   * @memberof Admin
+   * @memberof Meili
    * @method databaseStats
    */
   databaseStats(): Promise<object> {
@@ -169,8 +169,8 @@ class Meili {
   }
 
   /**
-   * Get the version of the server
-   * @memberof Admin
+   * Get the version of MeiliSearch
+   * @memberof Meili
    * @method version
    */
   version(): Promise<object> {
@@ -181,7 +181,7 @@ class Meili {
 
   /**
    * Get the server consuption, RAM / CPU / Network
-   * @memberof Admin
+   * @memberof Meili
    * @method systemInformation
    */
   systemInformation(): Promise<object> {
@@ -192,7 +192,7 @@ class Meili {
 
   /**
    * Get the server consuption, RAM / CPU / Network. All information as human readable
-   * @memberof Admin
+   * @memberof Meili
    * @method systemInformationPretty
    */
   systemInformationPretty(): Promise<object> {
