@@ -60,6 +60,7 @@ const config = {
 const meili = new MeiliSearch(config)
 
 await meili.createIndex({ uid: 'books' }) // if your index does not exist
+let index = await meili.getIndex('books'); // If you already created your index
 
 let documents = [
   { book_id: 123, title: 'Pride and Prejudice' },
@@ -70,7 +71,7 @@ let documents = [
   { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
 ]
 
-await meili.Index('books').addOrReplaceDocuments(documents) // { "updateId": 0 }
+await index.addOrReplaceDocuments(documents) // { "updateId": 0 }
 ```
 
 With the `updateId`, you can check the status (`processed` of `failed`) of your documents addition thanks to this [method](#update-status).
@@ -79,7 +80,7 @@ With the `updateId`, you can check the status (`processed` of `failed`) of your 
 
 ```javascript
 // MeiliSearch is typo-tolerant:
-await meili.Index('books').search('harry pottre')
+await meili.getIndex('books').search('harry pottre')
 ```
 
 Output:
@@ -126,7 +127,7 @@ await meili.listIndexes()
 #### Get an index <!-- omit in toc -->
 
 ```javascript
-await meili.Index('books').getIndex()
+await meili.getIndex('books').getIndex()
 ```
 
 ### Documents
@@ -135,11 +136,11 @@ await meili.Index('books').getIndex()
 
 ```javascript
 // Get one document
-let myDocument = await meili.Index('books').getDocument(123)
+let myDocument = await meili.getIndex('books').getDocument(123)
 
 // Get documents by batch
 let myDocuments = await meili
-  .Index('books')
+  .getIndex('books')
   .getDocuments({ offset: 4, limit: 20 })
 ```
 
@@ -147,7 +148,7 @@ let myDocuments = await meili
 
 ```javascript
 meili
-  .Index('books')
+  .getIndex('books')
   .addOrReplaceDocuments([{ book_id: 2, title: 'Madame Bovary' }])
 ```
 
@@ -165,11 +166,11 @@ With this `updateId` you can track your [operation update](#update-status).
 
 ```javascript
 // Delete one document
-await meili.Index('books').deleteDocument(2)
+await meili.getIndex('books').deleteDocument(2)
 // Delete several documents
-await meili.Index('books').deleteDocuments([1, 42])
+await meili.getIndex('books').deleteDocuments([1, 42])
 // Delete all documents /!\
-await meili.Index('books').deleteAllDocuments()
+await meili.getIndex('books').deleteAllDocuments()
 ```
 
 ### Update status
@@ -177,9 +178,9 @@ await meili.Index('books').deleteAllDocuments()
 ```javascript
 // Get one update
 // Parameter: the updateId got after an asynchronous request (e.g. documents addition)
-await meili.Index('books').getUpdateStatus(1)
+await meili.getIndex('books').getUpdateStatus(1)
 // Get all update satus
-await meili.Index('books').getAllUpdateStatus()
+await meili.getIndex('books').getAllUpdateStatus()
 ```
 
 ### Search
@@ -187,7 +188,7 @@ await meili.Index('books').getAllUpdateStatus()
 #### Basic search <!-- omit in toc -->
 
 ```javascript
-await meili.Index('books').search('prince')
+await meili.getIndex('books').search('prince')
 ```
 
 ```json
@@ -215,7 +216,7 @@ All the supported options are described in [this documentation section](https://
 
 ```javascript
 await meili
-  .Index('books')
+  .getIndex('books')
   .search('prince', { limit: 1, attributesToHighlight: '*' })
 ```
 
@@ -295,7 +296,7 @@ This package works for MeiliSearch `v0.9.x`.
 
 - Make a search request:
 
-`meili.Index('xxx').search(query: string, options?: Types.SearchParams): Promise<Types.SearchResponse>`
+`meili.getIndex('xxx').search(query: string, options?: Types.SearchParams): Promise<Types.SearchResponse>`
 
 ### Indexes
 
@@ -309,75 +310,75 @@ This package works for MeiliSearch `v0.9.x`.
 
 - Get Index:
 
-`meili.Index('xxx').getIndex(): Promise<Types.index>`
+`meili.getIndex('xxx').getIndex(): Promise<Types.index>`
 
 - Update Index:
 
-`meili.Index('xxx').updateIndex(data: Types.UpdateIndexRequest): Promise<Types.index>`
+`meili.getIndex('xxx').updateIndex(data: Types.UpdateIndexRequest): Promise<Types.index>`
 
 - Delete Index:
 
-`meili.Index('xxx').deleteIndex(): Promise<void>`
+`meili.getIndex('xxx').deleteIndex(): Promise<void>`
 
 - Get specific index stats
 
-`meili.Index('xxx').getStats(): Promise<object>`
+`meili.getIndex('xxx').getStats(): Promise<object>`
 
 ### Updates
 
 - Get One update info:
 
-`meili.Index('xxx').getUpdateStatus(updateId: number): Promise<object>`
+`meili.getIndex('xxx').getUpdateStatus(updateId: number): Promise<object>`
 
 - Get all updates info:
 
-`meili.Index('xxx').getAllUpdateStatus(): Promise<object[]>`
+`meili.getIndex('xxx').getAllUpdateStatus(): Promise<object[]>`
 
 ### Documents
 
 - Add or replace multiple documents:
 
-`meili.Index('xxx').addDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
+`meili.getIndex('xxx').addDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
 
 - Add or update multiple documents:
 
-`meili.Index('xxx').updateDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
+`meili.getIndex('xxx').updateDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
 
 - Get Documents:
 
-`meili.Index('xxx').getDocuments(params: Types.getDocumentsParams): Promise<object[]>`
+`meili.getIndex('xxx').getDocuments(params: Types.getDocumentsParams): Promise<object[]>`
 
 - Get one document:
 
-`meili.Index('xxx').getDocument(documentId: string): Promise<object>`
+`meili.getIndex('xxx').getDocument(documentId: string): Promise<object>`
 
 - Delete one document:
 
-`meili.Index('xxx').deleteDocument(documentId: string): Promise<Types.AsyncUpdateId>`
+`meili.getIndex('xxx').deleteDocument(documentId: string): Promise<Types.AsyncUpdateId>`
 
 - Delete multiple documents:
 
-`meili.Index('xxx').deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId>`
+`meili.getIndex('xxx').deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId>`
 
 ### Settings
 
 - Get settings:
 
-`meili.Index('xxx').getSettings(): Promise<object>`
+`meili.getIndex('xxx').getSettings(): Promise<object>`
 
 - Update settings:
 
-`meili.Index('xxx').updateSettings(settings: object): Promise<void>`
+`meili.getIndex('xxx').updateSettings(settings: object): Promise<void>`
 
 ### Synonyms
 
 - List all synonyms:
 
-`meili.Index('xxx').listSynonyms(): Promise<object[]>`
+`meili.getIndex('xxx').listSynonyms(): Promise<object[]>`
 
 - Add a synonyms:
 
-`meili.Index('xxx').createSynonym(input: string, synonyms: string[]): Promise<object>`
+`meili.getIndex('xxx').createSynonym(input: string, synonyms: string[]): Promise<object>`
 
 #### Stop-words
 
