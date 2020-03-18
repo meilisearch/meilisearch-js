@@ -146,7 +146,9 @@ let myDocuments = await meili
 #### Add documents <!-- omit in toc -->
 
 ```javascript
-meili.Index('books').addOrReplaceDocuments([{ book_id: 2, title: 'Madame Bovary' }])
+meili
+  .Index('books')
+  .addOrReplaceDocuments([{ book_id: 2, title: 'Madame Bovary' }])
 ```
 
 Response:
