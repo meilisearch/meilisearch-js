@@ -11,6 +11,17 @@ MeiliSearch provides an ultra relevant and instant full-text search. Our solutio
 
 Here is the [MeiliSearch documentation](https://docs.meilisearch.com/) 📖
 
+## Table of Contents <!-- omit in toc -->
+
+- [🔧 Installation](#-installation)
+- [🚀 Getting started](#-getting-started)
+- [🎬 Examples](#-examples)
+  - [Indexes](#indexes)
+  - [Documents](#documents)
+  - [Update status](#update-status)
+  - [Search](#search)
+- [🤖 Compatibility with MeiliSearch](#-compatibility-with-meilisearch)
+
 ## 🔧 Installation
 
 ```sh
@@ -38,7 +49,7 @@ NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 Here is a quickstart for a search request
 
 ```js
-const Meili = require('meilisearch')
+const MeiliSearch = require('meilisearch') // import MeiliSearch from 'meilisearch'
 
 // Credentials of your MeiliSearch Instance
 const config = {
@@ -46,143 +57,98 @@ const config = {
   apiKey: 'masterKey',
 }
 
-const meili = new Meili(config)
+const meili = new MeiliSearch(config)
 
-meili
-  .Index('movies')
-  .search('batman')
-  .then((response) => {
-    console.log(response.hits)
-  })
+await meili.createIndex({ uid: 'books' }) // if your index does not exist
+const index = await meili.getIndex('books');
+
+const documents = [
+  { book_id: 123, title: 'Pride and Prejudice' },
+  { book_id: 456, title: 'Le Petit Prince' },
+  { book_id: 1, title: 'Alice In Wonderland' },
+  { book_id: 1344, title: 'The Hobbit' },
+  { book_id: 4, title: 'Harry Potter and the Half-Blood Prince' },
+  { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
+]
+
+await index.addOrReplaceDocuments(documents) // { "updateId": 0 }
 ```
 
-## 🎭 Examples
+With the `updateId`, you can check the status (`processed` of `failed`) of your documents addition thanks to this [method](#update-status).
 
-Go checkout [examples](./examples)!
+#### Search in index
 
-## 📜 API Examples
-
-### Make a search
-
-**Example:**
-
-```js
-meili
-  .Index('movies')
-  .search('batman')
-  .then((response) => {
-    console.log(response.hits)
-  })
+```javascript
+// MeiliSearch is typo-tolerant:
+await index.search('harry pottre')
 ```
 
-**Response:**
+Output:
 
 ```json
 {
   "hits": [
     {
-      "id": "2661",
-      "title": "Batman",
-      "poster": "https://image.tmdb.org/t/p/w1280/udDVJXtAFsQ8DimrXkVFqy4DGEQ.jpg",
-      "overview": "The Dynamic Duo faces four super-villains who plan to hold the world for ransom with the help of a secret invention that instantly dehydrates people.",
-      "release_date": -108086400
-    },
-    {
-      "id": "268",
-      "title": "Batman",
-      "poster": "https://image.tmdb.org/t/p/w1280/kBf3g9crrADGMc2AMAMlLBgSm2h.jpg",
-      "overview": "The Dark Knight of Gotham City begins his war on crime with his first major enemy being the clownishly homicidal Joker, who has seized control of Gotham's underworld.",
-      "release_date": 614566800
-    },
-    {
-      "id": "29751",
-      "title": "Batman Unmasked: The Psychology of the Dark Knight",
-      "poster": "https:/0/image.tmdb.org/t/p/w1280/jjHu128XLARc2k4cJrblAvZe0HE.jpg",
-      "overview": "Delve into the world of Batman and the vigilante justice that he brought to the city of Gotham. Batman is a man who, after experiencing great tragedy, devotes his life to an ideal--but what happens when one man takes on the evil underworld alone? Examine why Batman is who he is--and explore how a boy scarred by tragedy becomes a symbol of hope to everyone else.",
-      "release_date": 1216083600
+      "book_id": 4,
+      "title": "Harry Potter and the Half-Blood Prince"
     }
   ],
   "offset": 0,
-  "limit": 3,
-  "processingTimeMs": 4,
-  "query": "batman"
+  "limit": 20,
+  "processingTimeMs": 1,
+  "query": "harry pottre"
 }
 ```
 
-### List existing indexes
+## 🎬 Examples
 
-This methods list all indexes of a database
+All HTTP routes of MeiliSearch are accessible via methods in this SDK.</br>
+You can check out [the API documentation](https://docs.meilisearch.com/references/).
 
-**Example:**
+Go checkout [examples](./examples)!
 
-```js
-meili.listIndexes().then((indexes) => {
-  console.log(indexes)
-})
+### Indexes
+
+#### Create an index <!-- omit in toc -->
+
+```javascript
+// Create an index
+meili.createIndex({ uid: 'books' }) // if your index does not exist
+// Create an index and give the primary-key
+meili.createIndex({ uid: 'books', primaryKey: 'book_id' }) // if your index does not exist
 ```
 
-**Response:**
+#### List all indexes <!-- omit in toc -->
 
-```json
-[
-  {
-    "name": "Movies",
-    "uid": "movies",
-    "createdAt": "2019-11-25T14:06:54.340482Z",
-    "updatedAt": "2019-11-25T14:07:00.736937Z"
-  }
-]
+```javascript
+await meili.listIndexes()
 ```
 
-### Create new index
+#### Get an index object <!-- omit in toc -->
 
-This methods create a new index
-
-**Example:**
-
-```js
-meili
-  .createIndex({
-    name: 'Movie',
-    uid: 'movies',
-  })
-  .then((index) => {
-    console.log(index)
-  })
+```javascript
+const index = await meili.getIndex('books')
 ```
 
-**Response:**
+### Documents
 
-```json
-{
-  "name": "Movies",
-  "uid": "movies",
-  "createdAt": "2019-11-25T14:38:49.846352Z",
-  "updatedAt": "2019-11-25T14:38:49.846353Z"
-}
+#### Fetch documents <!-- omit in toc -->
+
+```javascript
+// Get one document
+let myDocument = await index.getDocument(123)
+
+// Get documents by batch
+let myDocuments = await index.getDocuments({ offset: 4, limit: 20 })
 ```
 
-### Push some documents
+#### Add documents <!-- omit in toc -->
 
-Will push to the indexing queue documents on body
-
-**Example:**
-
-```js
-meili
-  .Index('movies')
-  .addDocuments([
-    {
-      id: 1,
-      title: 'My awesome movie',
-    },
-  ])
-  .then((response) => {
-    console.log(response)
-  })
+```javascript
+index.addOrReplaceDocuments([{ book_id: 2, title: 'Madame Bovary' }])
 ```
 
-**Response:**
+Response:
 
 ```json
 {
@@ -190,52 +156,135 @@ meili
 }
 ```
 
-The method `add_documents` is **[asynchronous](https://docs.meilisearch.com/guides/advanced_guides/asynchronous_updates.html)**.<br/>
+With this `updateId` you can track your [operation update](#update-status).
 
-### Get some documents
+#### Delete documents <!-- omit in toc -->
 
-getDocuments is a method to get defaults documents without search. This method is usually used to display results when you have no input in the search bar.
-
-**Example:**
-
-```js
-meili
-  .Index('movies')
-  .getDocuments({
-    limit: 3,
-  })
-  .then((response) => {
-    console.log(response)
-  })
+```javascript
+// Delete one document
+index.deleteDocument(2)
+// Delete several documents
+index.deleteDocuments([1, 42])
+// Delete all documents /!\
+index.deleteAllDocuments()
 ```
 
-**Reponse:**
+### Update status
+
+```javascript
+// Get one update
+// Parameter: the updateId got after an asynchronous request (e.g. documents addition)
+await index.getUpdateStatus(1)
+// Get all update satus
+await index.getAllUpdateStatus()
+```
+
+### Search
+
+#### Basic search <!-- omit in toc -->
+
+```javascript
+await index.search('prince')
+```
 
 ```json
-[
-  {
-    "id": "279664",
-    "title": "Green Chair 2013 - Love Conceptually",
-    "poster": "https://image.tmdb.org/t/p/w1280/9H8vACDBSBs8NXO6NfLH3i9ZsYq.jpg",
-    "overview": "Moon-hee is an attractive woman who runs an art academy after returning from the States. She lives apart from her husband who won't divorce her and enjoys a free relationship with In-gyu, her lover of long time and Professor Yoon whom she's been privately involved with for a long time. On the other hand, her young student Joo Won only draws her face during class. He fell in love with her when he saw Moon-hee as a bride at the wedding his grandma took him too. He started art because of her and started attending the academy. He thinks it's destiny. Moon-hee is attracted to Joo Won's pure heart until they share love in in a studio where it's just them....",
-    "release_date": 1383177600
-  },
-  {
-    "id": "13342",
-    "title": "Fast Times at Ridgemont High",
-    "poster": "https://image.tmdb.org/t/p/w1280/9y5rSeO0xH3m5oRJmhBusDkiS0j.jpg",
-    "overview": "Follows a group of high school students growing up in southern California, based on the real-life adventures chronicled by Cameron Crowe. Stacy Hamilton and Mark Ratner are looking for a love interest, and are helped along by their older classmates, Linda Barrett and Mike Damone, respectively. The center of the film is held by Jeff Spicoli, a perpetually stoned surfer dude who faces off with the resolute Mr. Hand, who is convinced that everyone is on dope.",
-    "release_date": 398048400
-  },
-  {
-    "id": "25087",
-    "title": "Bloodsport II",
-    "poster": "https://image.tmdb.org/t/p/w1280/xVfSGAbOK4FucTwkYrXJjeBFqv4.jpg",
-    "overview": "After thief Alex Cardo gets caught while stealing an ancient katana in East Asia, he soon finds himself imprisoned and beaten up by the crowd there. One of the guards, Demon, feels upset by Alex appearance and tortures him as often as he gets the opportunity. Alex finds a friend and mentor in the jailhouse, Master Sun, who teaches him a superior fighting style called Iron Hand. When a 'best of the best kumite' is to take place, Demon gets an invitation. Now Master Sun and Alex need to find a way to let Alex take part in the kumite too.",
-    "release_date": 825638400
-  }
-]
+{
+  "hits": [
+    {
+      "book_id": 456,
+      "title": "Le Petit Prince"
+    },
+    {
+      "book_id": 4,
+      "title": "Harry Potter and the Half-Blood Prince"
+    }
+  ],
+  "offset": 0,
+  "limit": 20,
+  "processingTimeMs": 13,
+  "query": "prince"
+}
 ```
+
+#### Custom search <!-- omit in toc -->
+
+All the supported options are described in [this documentation section](https://docs.meilisearch.com/references/search.html#search-in-an-index).
+
+```javascript
+await index.search('prince', { limit: 1, attributesToHighlight: '*' })
+```
+
+```json
+{
+  "hits": [
+    {
+      "book_id": 456,
+      "title": "Le Petit Prince",
+      "_formatted": {
+        "book_id": 456,
+        "title": "Le Petit <em>Prince</em>"
+      }
+    }
+  ],
+  "offset": 0,
+  "limit": 1,
+  "processingTimeMs": 0,
+  "query": "prince"
+}
+```
+
+## ⚙️ Development Workflow
+
+If you want to contribute, this sections describes the steps to follow.
+
+Thank you for your interest in a MeiliSearch tool! ♥️
+
+### Install dependencies
+
+```bash
+$ yarn --dev
+```
+
+### Tests and Linter
+
+Each PR should pass the tests and the linter to be accepted.
+
+```bash
+# Tests
+$ docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics
+$ yarn test
+# Linter
+$ yarn style
+# Linter with fixing
+$ yarn style:fix
+# Build the project
+$ yarn build
+```
+
+### Release
+
+MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
+
+You must do a PR modifying the file `package.json` with the right version.<br>
+
+```javascript
+"version": X.X.X
+```
+
+Once the changes are merged on `master`, in your terminal, you must be on the `master` branch and push a new tag with the right version:
+
+```bash
+$ git checkout master
+$ git pull origin master
+$ git tag vX.X.X
+$ git push --tag origin master
+```
+
+A GitHub Action will be triggered and push the package on [npm](https://www.npmjs.com/package/meilisearch).
+
+## 🤖 Compatibility with MeiliSearch
+
+This package works for MeiliSearch `v0.9.x`.
 
 ## 📜 API Ressources
 
@@ -243,7 +292,7 @@ meili
 
 - Make a search request:
 
-`meili.Index('xxx').search(query: string, options?: Types.SearchParams): Promise<Types.SearchResponse>`
+`meili.getIndex('xxx').search(query: string, options?: Types.SearchParams): Promise<Types.SearchResponse>`
 
 ### Indexes
 
@@ -255,73 +304,81 @@ meili
 
 `meili.createIndex(data: Types.CreateIndexRequest): Promise<Types.CreateIndexResponse>`
 
-- Get Index:
+- Get index object:
 
-`meili.Index('xxx').getIndex(): Promise<Types.index>`
+`meili.getIndex(uid: string)`
+
+- Show Index information:
+
+`index.show(): Promise<Types.index>`
 
 - Update Index:
 
-`meili.Index('xxx').updateIndex(data: Types.UpdateIndexRequest): Promise<Types.index>`
+`index.updateIndex(data: Types.UpdateIndexRequest): Promise<Types.index>`
 
 - Delete Index:
 
-`meili.Index('xxx').deleteIndex(): Promise<void>`
+`index.deleteIndex(): Promise<void>`
 
 - Get specific index stats
 
-`meili.Index('xxx').getStats(): Promise<object>`
+`index.getStats(): Promise<object>`
 
 ### Updates
 
 - Get One update info:
 
-`meili.Index('xxx').getUpdate(updateId: number): Promise<object>`
+`index.getUpdateStatus(updateId: number): Promise<object>`
 
 - Get all updates info:
 
-`meili.Index('xxx').getAllUpdates(): Promise<object[]>`
+`index.getAllUpdateStatus(): Promise<object[]>`
 
 ### Documents
 
-- Add or update multiples documents:
+- Add or replace multiple documents:
 
-`meili.Index('xxx').addDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
+`index.addDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
+
+- Add or update multiple documents:
+
+`index.updateDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
 
 - Get Documents:
 
-`meili.Index('xxx').getDocuments(params: Types.getDocumentsParams): Promise<object[]>`
+`index.getDocuments(params: Types.getDocumentsParams): Promise<object[]>`
 
 - Get one document:
 
-`meili.Index('xxx').getDocument(documentId: string): Promise<object>`
+`index.getDocument(documentId: string): Promise<object>`
 
 - Delete one document:
 
-`meili.Index('xxx').deleteDocument(documentId: string): Promise<Types.AsyncUpdateId>`
+`index.deleteDocument(documentId: string): Promise<Types.AsyncUpdateId>`
 
-- Delete multiples documents:
+- Delete multiple documents:
 
-`meili.Index('xxx').deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId>`
+`index.deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId>`
 
 ### Settings
 
 - Get settings:
 
-`meili.Index('xxx').getSettings(): Promise<object>`
+`index.getSettings(): Promise<object>`
 
 - Update settings:
 
-`meili.Index('xxx').updateSettings(settings: object): Promise<void>`
+`index.updateSettings(settings: object): Promise<void>`
 
 ### Synonyms
 
 - List all synonyms:
 
-`meili.Index('xxx').listSynonyms(): Promise<object[]>`
+`index.listSynonyms(): Promise<object[]>`
 
 - Add a synonyms:
 
-`meili.Index('xxx').createSynonym(input: string, synonyms: string[]): Promise<object>`
+`index.createSynonym(input: string, synonyms: string[]): Promise<object>`
 
 #### Stop-words
 

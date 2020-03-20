@@ -27,11 +27,11 @@ class Indexes {
   ///
 
   /**
-   * Get the informations about on update
+   * Get the informations about an update status
    * @memberof Indexes
-   * @method getUpdate
+   * @method getUpdateStatus
    */
-  getUpdate(updateId: number): Promise<object> {
+  getUpdateStatus(updateId: number): Promise<object> {
     const url = `/indexes/${this.indexUid}/updates/${updateId}`
 
     return this.instance.get(url)
@@ -40,9 +40,9 @@ class Indexes {
   /**
    * Get the list of all updates
    * @memberof Indexes
-   * @method getAllUpdates
+   * @method getAllUpdateStatus
    */
-  getAllUpdates(): Promise<object[]> {
+  getAllUpdateStatus(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/updates`
 
     return this.instance.get(url)
@@ -54,7 +54,7 @@ class Indexes {
 
   /**
    * Search for documents into an index
-   * @memberof Meili
+   * @memberof Indexes
    * @method search
    */
   search(
@@ -86,7 +86,13 @@ class Indexes {
         params.cropLength = options.cropLength
       }
       if (options.attributesToHighlight) {
-        params.attributesToHighlight = options.attributesToHighlight.join()
+        let attributesToHighlight: string[]
+        if (!Array.isArray(options.attributesToHighlight)) {
+          attributesToHighlight = [options.attributesToHighlight]
+        } else {
+          attributesToHighlight = options.attributesToHighlight
+        }
+        params.attributesToHighlight = attributesToHighlight.join()
       }
       if (options.filters) {
         params.filters = options.filters
@@ -108,55 +114,38 @@ class Indexes {
   ///
   /// INDEX
   ///
-
-  getIndex(): Promise<Types.Index> {
+  /**
+   * Show index information.
+   * @memberof Indexes
+   * @method getIndex
+   */
+  show(): Promise<Types.Index> {
     const url = `/indexes/${this.indexUid}`
 
     return this.instance.get(url)
   }
 
+  /**
+   * Update an index.
+   * @memberof Indexes
+   * @method updateIndex
+   */
   updateIndex(data: Types.UpdateIndexRequest): Promise<Types.Index> {
     const url = `/indexes/${this.indexUid}`
 
     return this.instance.put(url, data)
   }
 
+  /**
+   * Delete an index.
+   * @memberof Indexes
+   * @method deleteIndex
+   */
+
   deleteIndex(): Promise<void> {
     const url = `/indexes/${this.indexUid}`
 
     return this.instance.delete(url)
-  }
-
-  ///
-  /// SCHEMA
-  ///
-
-  getSchema(raw?: boolean): Promise<Types.Schema | Types.SchemaRaw> {
-    const url = `/indexes/${this.indexUid}/schema`
-    if (raw) {
-      return this.instance.get(url, {
-        params: {
-          raw: true,
-        },
-      })
-    } else {
-      return this.instance.get(url)
-    }
-  }
-
-  updateSchema(
-    schema: Types.Schema | Types.SchemaRaw
-  ): Promise<Types.AsyncUpdateId> {
-    const url = `/indexes/${this.indexUid}/schema`
-    if (schema.identifier) {
-      return this.instance.put(url, schema, {
-        params: {
-          raw: true,
-        },
-      })
-    } else {
-      return this.instance.put(url, schema)
-    }
   }
 
   ///
@@ -168,9 +157,8 @@ class Indexes {
    * @memberof Indexes
    * @method getStats
    */
-
   getStats(): Promise<object[]> {
-    const url = `/stats/${this.indexUid}`
+    const url = `/indexes/${this.indexUid}/stats`
 
     return this.instance.get(url)
   }
@@ -183,16 +171,16 @@ class Indexes {
    * @memberof Indexes
    * @method getDocuments
    */
-  getDocuments(params?: Types.GetDocumentsParams): Promise<object[]> {
+  getDocuments(options?: Types.GetDocumentsParams): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/documents`
     let attr
-    if (params && Array.isArray(params.attributesToRetrieve)) {
-      attr = params.attributesToRetrieve.join(',')
+    if (options && Array.isArray(options.attributesToRetrieve)) {
+      attr = options.attributesToRetrieve.join(',')
     }
 
     return this.instance.get(url, {
       params: {
-        ...params,
+        ...options,
         ...(attr ? { attributesToRetrieve: attr } : {}),
       },
     })
@@ -200,7 +188,7 @@ class Indexes {
 
   /**
    * Get one document
-   * @memberof Documents
+   * @memberof Indexes
    * @method getDocument
    */
   getDocument(documentId: string): Promise<object> {
@@ -210,38 +198,66 @@ class Indexes {
   }
 
   /**
-   * Add or update multiples documents to an index
-   * @memberof Documents
+   * Add or replace multiples documents to an index
+   * @memberof Indexes
    * @method addDocuments
    */
-  addDocuments(documents: object[]): Promise<Types.AsyncUpdateId> {
+  addDocuments(
+    documents: object[],
+    options?: Types.AddDocumentParams
+  ): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents`
 
-    return this.instance.post(url, documents)
+    return this.instance.post(url, documents, {
+      params: options,
+    })
+  }
+
+  /**
+   * Add or update multiples documents to an index
+   * @memberof Indexes
+   * @method updateDocuments
+   */
+  updateDocuments(
+    documents: object[],
+    options?: Types.AddDocumentParams
+  ): Promise<Types.AsyncUpdateId> {
+    const url = `/indexes/${this.indexUid}/documents`
+
+    return this.instance.put(url, documents, {
+      params: options,
+    })
   }
 
   /**
    * Delete one document
-   * @memberof Documents
+   * @memberof Indexes
    * @method deleteDocument
    */
-  deleteDocument(documentId: string): Promise<Types.AsyncUpdateId> {
+  deleteDocument(documentId: string | number): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents/${documentId}`
 
     return this.instance.delete(url)
   }
 
   /**
-   * Delete multiples documents to an index
-   * @memberof Documents
+   * Delete multiples documents of an index
+   * @memberof Indexes
    * @method deleteDocuments
    */
-  deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId> {
-    const url = `/indexes/${this.indexUid}/documents/delete`
+  deleteDocuments(
+    documentsIds: string[] | number[]
+  ): Promise<Types.AsyncUpdateId> {
+    const url = `/indexes/${this.indexUid}/documents/delete-batch`
 
     return this.instance.post(url, documentsIds)
   }
 
+  /**
+   * Delete all documents of an index
+   * @memberof Indexes
+   * @method deleteAllDocuments
+   */
   deleteAllDocuments(): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents`
 
@@ -254,24 +270,36 @@ class Indexes {
 
   /**
    * Retrieve all settings
-   * @memberof Settings
-   * @method get
+   * @memberof Indexes
+   * @method getSettings
    */
   getSettings(): Promise<object> {
-    const url = '/settings'
+    const url = `/indexes/${this.indexUid}/settings`
 
     return this.instance.get(url)
   }
 
   /**
    * Update all settings
-   * @memberof Settings
-   * @method set
+   * Any parameters not provided will be left unchanged.
+   * @memberof Indexes
+   * @method updateSettings
    */
-  updateSettings(settings: object): Promise<void> {
-    const url = '/settings'
+  updateSettings(settings: Types.Settings): Promise<void> {
+    const url = `/indexes/${this.indexUid}/settings`
 
     return this.instance.post(url, settings)
+  }
+
+  /**
+   * Reset settings.
+   * @memberof Indexes
+   * @method resetSettings
+   */
+  resetSettings(): Promise<void> {
+    const url = `/indexes/${this.indexUid}/settings`
+
+    return this.instance.delete(url)
   }
 
   ///
@@ -280,27 +308,246 @@ class Indexes {
 
   /**
    * Get the list of all synonyms
-   * @memberof Synonyms
-   * @method list
+   * @memberof Indexes
+   * @method getSynonyms
    */
-  listSynonyms(): Promise<object[]> {
-    const url = '/synonym'
+  getSynonyms(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/synonyms`
 
     return this.instance.get(url)
   }
 
   /**
-   * Add a new relation between an input and equivalents synonyms
-   * @memberof Synonyms
-   * @method create
+   * Update the list of synonyms. Overwrite the old list.
+   * @memberof Indexes
+   * @method updateSynonyms
    */
-  createSynonym(input: string, synonyms: string[]): Promise<object> {
-    const url = '/synonym'
+  updateSynonyms(synonyms: object): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/synonyms`
 
-    return this.instance.post(url, {
-      input,
-      synonyms,
-    })
+    return this.instance.post(url, synonyms)
+  }
+
+  /**
+   * Reset the synonym list to be empty again
+   * @memberof Indexes
+   * @method resetSynonyms
+   */
+  resetSynonyms(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/synonyms`
+
+    return this.instance.delete(url)
+  }
+
+  ///
+  /// STOP WORDS
+  ///
+
+  /**
+   * Get the list of all stop-words
+   * @memberof Indexes
+   * @method getStopWords
+   */
+  getStopWords(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/stop-words`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the list of stop-words. Overwrite the old list.
+   * @memberof Indexes
+   * @method updateStopWords
+   */
+  updateStopWords(stopWords: string[]): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/stop-words`
+
+    return this.instance.post(url, stopWords)
+  }
+
+  /**
+   * Reset the stop-words list to be empty again
+   * @memberof Indexes
+   * @method resetStopWords
+   */
+  resetStopWords(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/stop-words`
+
+    return this.instance.delete(url)
+  }
+
+  ///
+  /// RANKING RULES
+  ///
+
+  /**
+   * Get the list of all ranking-rules
+   * @memberof Indexes
+   * @method getRankingRules
+   */
+  getRankingRules(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/ranking-rules`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the list of ranking-rules. Overwrite the old list.
+   * @memberof Indexes
+   * @method updateRankingRules
+   */
+  updateRankingRules(rankingRules: string[]): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/ranking-rules`
+
+    return this.instance.post(url, rankingRules)
+  }
+
+  /**
+   * Reset the ranking rules list to its default value
+   * @memberof Indexes
+   * @method resetRankingRules
+   */
+  resetRankingRules(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/ranking-rules`
+
+    return this.instance.delete(url)
+  }
+
+  ///
+  /// DISTINCT ATTRIBUTE
+  ///
+
+  /**
+   * Get the distinct-attribute
+   * @memberof Indexes
+   * @method getDistinctAttribute
+   */
+  getDistinctAttribute(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the distinct-attribute.
+   * @memberof Indexes
+   * @method updateDistinctAttribute
+   */
+  updateDistinctAttribute(distinctAttribute: string): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
+
+    return this.instance.post(url, distinctAttribute)
+  }
+
+  /**
+   * Reset the distinct-attribute.
+   * @memberof Indexes
+   * @method resetDistinctAttribute
+   */
+  resetDistinctAttribute(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
+
+    return this.instance.delete(url)
+  }
+
+  ///
+  /// SEARCHABLE ATTRIBUTE
+  ///
+
+  /**
+   * Get the searchable-attributes
+   * @memberof Indexes
+   * @method getSearchableAttributes
+   */
+  getSearchableAttributes(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the searchable-attributes.
+   * @memberof Indexes
+   * @method updateSearchableAttributes
+   */
+  updateSearchableAttributes(searchableAttributes: string[]): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
+
+    return this.instance.post(url, searchableAttributes)
+  }
+
+  /**
+   * Reset the searchable-attributes.
+   * @memberof Indexes
+   * @method resetSearchableAttributes
+   */
+  resetSearchableAttributes(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
+
+    return this.instance.delete(url)
+  }
+
+  ///
+  /// DISPLAYED ATTRIBUTE
+  ///
+
+  /**
+   * Get the displayed-attributes
+   * @memberof Indexes
+   * @method getDisplayedAttributes
+   */
+  getDisplayedAttributes(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the displayed-attributes.
+   * @memberof Indexes
+   * @method updateDisplayedAttributes
+   */
+  updateDisplayedAttributes(displayedAttributes: string[]): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
+
+    return this.instance.post(url, displayedAttributes)
+  }
+
+  /**
+   * Reset the displayed-attributes.
+   * @memberof Indexes
+   * @method resetDisplayedAttributes
+   */
+  resetDisplayedAttributes(): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
+
+    return this.instance.delete(url)
+  }
+
+  ///
+  /// ACCEPT NEW FIELDS
+  ///
+
+  /**
+   * Get the accept-new-fields value.
+   * @memberof Indexes
+   * @method getAcceptNewFields
+   */
+  getAcceptNewFields(): Promise<object[]> {
+    const url = `/indexes/${this.indexUid}/settings/accept-new-fields`
+
+    return this.instance.get(url)
+  }
+
+  /**
+   * Update the accept-new-fields value.
+   * @memberof Indexes
+   * @method updateAcceptNewFields
+   */
+  updateAcceptNewFields(acceptNewFields: boolean): Promise<object> {
+    const url = `/indexes/${this.indexUid}/settings/accept-new-fields`
+
+    return this.instance.post(url, acceptNewFields)
   }
 }
 

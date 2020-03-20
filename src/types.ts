@@ -2,23 +2,9 @@
 /// Global interfaces
 ///
 
-export interface SchemaRaw {
-  identifier: string
-  attributes: {
-    [field: string]: {
-      displayed?: boolean
-      indexed?: boolean
-      ranked?: boolean
-    }
-  }
-}
-
-export interface Schema {
-  [field: string]: string[]
-}
-
 export interface Index {
   name: string
+  primaryKey?: string
   uid: string
   createdAt: Date
   updatedAt: Date
@@ -29,11 +15,17 @@ export interface AsyncUpdateId {
 }
 
 export interface Settings {
-  rankingOrder?: string[]
-  distinctField?: string
+  distinctAttribute?: string
+  searchableAttributes?: string[]
+  displayedAttributes?: string[]
   rankingRules?: {
     [field: string]: string
   }
+  stopWords?: string[]
+  synonyms?: {
+    [field: string]: string[]
+  }
+  indexNewFields?: boolean
 }
 
 ///
@@ -41,28 +33,30 @@ export interface Settings {
 ///
 
 export interface CreateIndexRequest {
-  name: string
-  uid?: string
-  schema?: Schema
+  uid: string
+  primaryKey?: string
 }
 
 export interface CreateIndexResponse {
-  name: string
   uid: string
-  schema?: Schema
+  primaryKey?: string
   updateId?: number
   createdAt: Date
   updatedAt: Date
 }
 
 export interface UpdateIndexRequest {
-  name: string
+  primaryKey?: string
 }
 
 export interface GetDocumentsParams {
   offset?: number
   limit?: number
   attributesToRetrieve?: string[]
+}
+
+export interface AddDocumentParams {
+  primaryKey?: string
 }
 
 export interface SearchParams {
