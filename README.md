@@ -220,6 +220,7 @@ await index.search('prince', { limit: 1, attributesToHighlight: '*' })
     {
       "title": "Le Petit Prince",
       "_formatted": {
+        "book_id": 456,
         "title": "Le Petit <em>Prince</em>"
       }
     }
