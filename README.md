@@ -34,7 +34,7 @@ yarn add meilisearch
 
 ### 🏃‍♀️ Run MeiliSearch
 
-There are many easy ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/guides/advanced_guides/binary.html#download-and-launch).
+There are many easy ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/guides/advanced_guides/installation.html#download-and-launch).
 
 For example, if you use Docker:
 
@@ -218,8 +218,10 @@ await index.search('prince', { limit: 1, attributesToHighlight: '*' })
 {
   "hits": [
     {
+      "book_id": 456,
       "title": "Le Petit Prince",
       "_formatted": {
+        "book_id": 456,
         "title": "Le Petit <em>Prince</em>"
       }
     }
