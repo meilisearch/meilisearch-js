@@ -204,7 +204,7 @@ test('get-documents', async () => {
       expect(response.length).toBe(1)
       expect(response[0].id).toEqual(offsetDocumentId)
     })
-  // TODO: wait for fix
+
   await meili
     .getIndex(index.uid)
     .getDocuments({
