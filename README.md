@@ -39,7 +39,7 @@ There are many easy ways to [download and run a MeiliSearch instance](https://do
 For example, if you use Docker:
 
 ```bash
-$ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest --api-key=apiKey
+$ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest --master-key=masterKey
 ```
 
 NB: you can also download MeiliSearch from **Homebrew** or **APT**.
@@ -74,7 +74,7 @@ const documents = [
 await index.addOrReplaceDocuments(documents) // { "updateId": 0 }
 ```
 
-With the `updateId`, you can check the status (`processed` of `failed`) of your documents addition thanks to this [method](#update-status).
+With the `updateId`, you can check the status (`processed` or `failed`) of your documents addition thanks to this [method](#update-status).
 
 #### Search in index
 
