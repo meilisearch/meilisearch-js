@@ -251,7 +251,7 @@ Each PR should pass the tests and the linter to be accepted.
 
 ```bash
 # Tests
-$ docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics
+$ docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=123 --no-analytics
 $ yarn test
 # Linter
 $ yarn style
