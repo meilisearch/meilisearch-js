@@ -71,7 +71,7 @@ const documents = [
   { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
 ]
 
-await index.addOrReplaceDocuments(documents) // { "updateId": 0 }
+await index.addDocuments(documents) // { "updateId": 0 }
 ```
 
 With the `updateId`, you can check the status (`processed` of `failed`) of your documents addition thanks to this [method](#update-status).
@@ -145,7 +145,7 @@ let myDocuments = await index.getDocuments({ offset: 4, limit: 20 })
 #### Add documents <!-- omit in toc -->
 
 ```javascript
-index.addOrReplaceDocuments([{ book_id: 2, title: 'Madame Bovary' }])
+index.addDocuments([{ book_id: 2, title: 'Madame Bovary' }])
 ```
 
 Response:
