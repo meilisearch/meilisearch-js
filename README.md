@@ -49,29 +49,29 @@ NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 Here is a quickstart for a search request
 
 ```js
-const MeiliSearch = require('meilisearch') // import MeiliSearch from 'meilisearch'
+const MeiliSearch = require('meilisearch');
 
-// Credentials of your MeiliSearch Instance
-const config = {
-  host: 'http://127.0.0.1:7700',
-  apiKey: 'masterKey',
-}
+(async () => {
+    const client = new MeiliSearch({
+        host: 'http://127.0.0.1:7700',
+        apiKey: 'masterKey'
+    })
 
-const meili = new MeiliSearch(config)
+    await client.createIndex({ uid: 'books' }) // only if your index does not exist
+    const index = client.getIndex('books')
 
-await meili.createIndex({ uid: 'books' }) // if your index does not exist
-const index = await meili.getIndex('books');
+   const documents = [
+       { book_id: 123,  title: 'Pride and Prejudice' },
+       { book_id: 456,  title: 'Le Petit Prince' },
+       { book_id: 1,    title: 'Alice In Wonderland' },
+       { book_id: 1344, title: 'The Hobbit' },
+       { book_id: 4,    title: 'Harry Potter and the Half-Blood Prince' },
+       { book_id: 42,   title: "The Hitchhiker's Guide to the Galaxy" },
+    ]
 
-const documents = [
-  { book_id: 123, title: 'Pride and Prejudice' },
-  { book_id: 456, title: 'Le Petit Prince' },
-  { book_id: 1, title: 'Alice In Wonderland' },
-  { book_id: 1344, title: 'The Hobbit' },
-  { book_id: 4, title: 'Harry Potter and the Half-Blood Prince' },
-  { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
-]
-
-await index.addDocuments(documents) // { "updateId": 0 }
+    let response = await index.addDocuments(documents)
+    console.log(response) // => { "updateId": 0 }
+})()
 ```
 
 With the `updateId`, you can check the status (`processed` or `failed`) of your documents addition thanks to this [method](#update-status).
@@ -80,7 +80,8 @@ With the `updateId`, you can check the status (`processed` or `failed`) of your 
 
 ```javascript
 // MeiliSearch is typo-tolerant:
-await index.search('harry pottre')
+const search = await index.search('harry pottre')
+console.log(search)
 ```
 
 Output:
@@ -107,27 +108,30 @@ You can check out [the API documentation](https://docs.meilisearch.com/reference
 
 Go checkout [examples](./examples)!
 
+In this section, the examples contain the [`await` keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await). This operator is used to wait for a `Promise`.<br>
+Despite it is not detailled in the examples above, it can only be used inside an `async` function.
+
 ### Indexes
 
 #### Create an index <!-- omit in toc -->
 
 ```javascript
 // Create an index
-meili.createIndex({ uid: 'books' }) // if your index does not exist
+const index = await client.createIndex({ uid: 'books' })
 // Create an index and give the primary-key
-meili.createIndex({ uid: 'books', primaryKey: 'book_id' }) // if your index does not exist
+const index = await client.createIndex({ uid: 'books', primaryKey: 'book_id' })
 ```
 
 #### List all indexes <!-- omit in toc -->
 
 ```javascript
-await meili.listIndexes()
+const indexes = await client.listIndexes()
 ```
 
 #### Get an index object <!-- omit in toc -->
 
 ```javascript
-const index = await meili.getIndex('books')
+const index = await client.getIndex('books')
 ```
 
 ### Documents
@@ -136,16 +140,16 @@ const index = await meili.getIndex('books')
 
 ```javascript
 // Get one document
-let myDocument = await index.getDocument(123)
+const document = await index.getDocument(123)
 
 // Get documents by batch
-let myDocuments = await index.getDocuments({ offset: 4, limit: 20 })
+const documents = await index.getDocuments({ offset: 4, limit: 20 })
 ```
 
 #### Add documents <!-- omit in toc -->
 
 ```javascript
-index.addDocuments([{ book_id: 2, title: 'Madame Bovary' }])
+await index.addDocuments([{ book_id: 2, title: 'Madame Bovary' }])
 ```
 
 Response:
@@ -162,11 +166,11 @@ With this `updateId` you can track your [operation update](#update-status).
 
 ```javascript
 // Delete one document
-index.deleteDocument(2)
+await index.deleteDocument(2)
 // Delete several documents
-index.deleteDocuments([1, 42])
+await index.deleteDocuments([1, 42])
 // Delete all documents /!\
-index.deleteAllDocuments()
+await index.deleteAllDocuments()
 ```
 
 ### Update status
@@ -184,7 +188,7 @@ await index.getAllUpdateStatus()
 #### Basic search <!-- omit in toc -->
 
 ```javascript
-await index.search('prince')
+const search = await index.search('prince')
 ```
 
 ```json
@@ -292,21 +296,21 @@ This package works for MeiliSearch `v0.9.x`.
 
 - Make a search request:
 
-`meili.getIndex('xxx').search(query: string, options?: Types.SearchParams): Promise<Types.SearchResponse>`
+`client.getIndex('xxx').search(query: string, options?: Types.SearchParams): Promise<Types.SearchResponse>`
 
 ### Indexes
 
 - List all indexes:
 
-`meili.listIndexes(): Promise<object[]>`
+`client.listIndexes(): Promise<object[]>`
 
 - Create new index:
 
-`meili.createIndex(data: Types.CreateIndexRequest): Promise<Types.CreateIndexResponse>`
+`client.createIndex(data: Types.CreateIndexRequest): Promise<Types.CreateIndexResponse>`
 
 - Get index object:
 
-`meili.getIndex(uid: string)`
+`client.getIndex(uid: string)`
 
 - Show Index information:
 
@@ -388,38 +392,38 @@ Waiting on MeiliSearch v0.9.0
 
 - Check if the server is healthy
 
-`meili.isHealthy(): Promise<void>`
+`client.isHealthy(): Promise<void>`
 
 - Set the server healthy
 
-`meili.setHealthy(): Promise<void>`
+`client.setHealthy(): Promise<void>`
 
 - Set the server unhealthy
 
-`meili.setUnhealthy(): Promise<void>`
+`client.setUnhealthy(): Promise<void>`
 
 - Change the server healthyness
 
-`meili.changeHealthTo(health: boolean): Promise<void>`
+`client.changeHealthTo(health: boolean): Promise<void>`
 
 ### Stats
 
 - Get database stats
 
-`meili.databaseStats(): Promise<object>`
+`client.databaseStats(): Promise<object>`
 
 ### Version
 
 - Get binary version
 
-`meili.version(): Promise<object>`
+`client.version(): Promise<object>`
 
 ### System
 
 - Get system information
 
-`meili.systemInformation(): Promise<object>`
+`client.systemInformation(): Promise<object>`
 
 - Get system information (pretty mode)
 
-`meili.systemInformationPretty(): Promise<object>`
+`client.systemInformationPretty(): Promise<object>`
