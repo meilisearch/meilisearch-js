@@ -117,7 +117,7 @@ Despite it is not detailled in the examples above, it can only be used inside an
 
 ```javascript
 // Create an index
-const index = await client.createIndex({ uid: 'books' })
+await client.createIndex({ uid: 'books' })
 // Create an index and give the primary-key
 const index = await client.createIndex({ uid: 'books', primaryKey: 'book_id' })
 ```
