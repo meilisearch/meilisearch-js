@@ -110,8 +110,7 @@ You can check out [the API documentation](https://docs.meilisearch.com/reference
 
 Go checkout [examples](./examples)!
 
-In this section, the examples contain the [`await` keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await). This operator is used to wait for a `Promise`.<br>
-Despite it is not detailled in the examples above, it can only be used inside an `async` function.
+In this section, the examples contain the [`await` keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await).
 
 ### Indexes
 
@@ -119,7 +118,7 @@ Despite it is not detailled in the examples above, it can only be used inside an
 
 ```javascript
 // Create an index
-const index = await client.createIndex({ uid: 'books' })
+await client.createIndex({ uid: 'books' })
 // Create an index and give the primary-key
 const index = await client.createIndex({ uid: 'books', primaryKey: 'book_id' })
 ```
