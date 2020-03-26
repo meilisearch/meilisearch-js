@@ -50,6 +50,8 @@ Here is a quickstart for a search request
 
 ```js
 const MeiliSearch = require('meilisearch');
+// Or if you are on a front-end environment:
+import MeiliSearch from 'meilisearch';
 
 (async () => {
     const client = new MeiliSearch({
