@@ -93,3 +93,8 @@ export interface SearchResponse {
   processingTimeMs: number
   query: string
 }
+
+export interface Config {
+  host: string
+  apiKey?: string
+}

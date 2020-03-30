@@ -1,25 +1,21 @@
 /*
- * Bundle: Meili / Indexes
- * Project: Meili - Javascript API
+ * Bundle: Meilisearch / Indexes
+ * Project: Meilisearch - Javascript API
  * Author: Quentin de Quelen <quentin@meilisearch.com>
- * Copyright: 2019, Meili
+ * Copyright: 2019, Meilisearch
  */
 
 'use strict'
 
-import axios, { AxiosInstance, CancelTokenSource } from 'axios'
+import MeiliAxiosWrapper from './meili-axios-wrapper'
 
 import * as Types from './types'
 
-class Indexes {
-  instance: AxiosInstance
+class Indexes extends MeiliAxiosWrapper {
   indexUid: string
-  cancelTokenSource: CancelTokenSource
-
-  constructor(instance: AxiosInstance, indexUid: string) {
-    this.instance = instance
+  constructor(config: Types.Config, indexUid: string) {
+    super(config)
     this.indexUid = indexUid
-    this.cancelTokenSource = axios.CancelToken.source()
   }
 
   ///
@@ -34,7 +30,7 @@ class Indexes {
   getUpdateStatus(updateId: number): Promise<object> {
     const url = `/indexes/${this.indexUid}/updates/${updateId}`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   /**
@@ -45,7 +41,7 @@ class Indexes {
   getAllUpdateStatus(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/updates`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   ///
@@ -105,7 +101,7 @@ class Indexes {
       }
     }
 
-    return this.instance.get(url, {
+    return this.get(url, {
       params,
       cancelToken: this.cancelTokenSource.token,
     })
@@ -122,7 +118,7 @@ class Indexes {
   show(): Promise<Types.Index> {
     const url = `/indexes/${this.indexUid}`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   /**
@@ -133,7 +129,7 @@ class Indexes {
   updateIndex(data: Types.UpdateIndexRequest): Promise<Types.Index> {
     const url = `/indexes/${this.indexUid}`
 
-    return this.instance.put(url, data)
+    return this.put(url, data)
   }
 
   /**
@@ -145,7 +141,7 @@ class Indexes {
   deleteIndex(): Promise<void> {
     const url = `/indexes/${this.indexUid}`
 
-    return this.instance.delete(url)
+    return this.delete(url)
   }
 
   ///
@@ -160,7 +156,7 @@ class Indexes {
   getStats(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/stats`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
   ///
   /// DOCUMENTS
@@ -178,7 +174,7 @@ class Indexes {
       attr = options.attributesToRetrieve.join(',')
     }
 
-    return this.instance.get(url, {
+    return this.get(url, {
       params: {
         ...options,
         ...(attr ? { attributesToRetrieve: attr } : {}),
@@ -194,7 +190,7 @@ class Indexes {
   getDocument(documentId: string): Promise<object> {
     const url = `/indexes/${this.indexUid}/documents/${documentId}`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   /**
@@ -208,7 +204,7 @@ class Indexes {
   ): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents`
 
-    return this.instance.post(url, documents, {
+    return this.post(url, documents, {
       params: options,
     })
   }
@@ -224,7 +220,7 @@ class Indexes {
   ): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents`
 
-    return this.instance.put(url, documents, {
+    return this.put(url, documents, {
       params: options,
     })
   }
@@ -237,7 +233,7 @@ class Indexes {
   deleteDocument(documentId: string | number): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents/${documentId}`
 
-    return this.instance.delete(url)
+    return this.delete(url)
   }
 
   /**
@@ -250,7 +246,7 @@ class Indexes {
   ): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents/delete-batch`
 
-    return this.instance.post(url, documentsIds)
+    return this.post(url, documentsIds)
   }
 
   /**
@@ -261,7 +257,7 @@ class Indexes {
   deleteAllDocuments(): Promise<Types.AsyncUpdateId> {
     const url = `/indexes/${this.indexUid}/documents`
 
-    return this.instance.delete(url)
+    return this.delete(url)
   }
 
   ///
@@ -276,7 +272,7 @@ class Indexes {
   getSettings(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   /**
@@ -288,7 +284,7 @@ class Indexes {
   updateSettings(settings: Types.Settings): Promise<void> {
     const url = `/indexes/${this.indexUid}/settings`
 
-    return this.instance.post(url, settings)
+    return this.post(url, settings)
   }
 
   /**
@@ -299,7 +295,7 @@ class Indexes {
   resetSettings(): Promise<void> {
     const url = `/indexes/${this.indexUid}/settings`
 
-    return this.instance.delete(url)
+    return this.delete(url)
   }
 
   ///
@@ -314,7 +310,7 @@ class Indexes {
   getSynonyms(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/synonyms`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   /**
@@ -325,7 +321,7 @@ class Indexes {
   updateSynonyms(synonyms: object): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/synonyms`
 
-    return this.instance.post(url, synonyms)
+    return this.post(url, synonyms)
   }
 
   /**
@@ -336,7 +332,7 @@ class Indexes {
   resetSynonyms(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/synonyms`
 
-    return this.instance.delete(url)
+    return this.delete(url)
   }
 
   ///
@@ -351,7 +347,7 @@ class Indexes {
   getStopWords(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/stop-words`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   /**
@@ -362,7 +358,7 @@ class Indexes {
   updateStopWords(stopWords: string[]): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/stop-words`
 
-    return this.instance.post(url, stopWords)
+    return this.post(url, stopWords)
   }
 
   /**
@@ -373,7 +369,7 @@ class Indexes {
   resetStopWords(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/stop-words`
 
-    return this.instance.delete(url)
+    return this.delete(url)
   }
 
   ///
@@ -388,7 +384,7 @@ class Indexes {
   getRankingRules(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/ranking-rules`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   /**
@@ -399,7 +395,7 @@ class Indexes {
   updateRankingRules(rankingRules: string[]): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/ranking-rules`
 
-    return this.instance.post(url, rankingRules)
+    return this.post(url, rankingRules)
   }
 
   /**
@@ -410,7 +406,7 @@ class Indexes {
   resetRankingRules(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/ranking-rules`
 
-    return this.instance.delete(url)
+    return this.delete(url)
   }
 
   ///
@@ -425,7 +421,7 @@ class Indexes {
   getDistinctAttribute(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   /**
@@ -436,7 +432,7 @@ class Indexes {
   updateDistinctAttribute(distinctAttribute: string): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
 
-    return this.instance.post(url, distinctAttribute)
+    return this.post(url, distinctAttribute)
   }
 
   /**
@@ -447,7 +443,7 @@ class Indexes {
   resetDistinctAttribute(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
 
-    return this.instance.delete(url)
+    return this.delete(url)
   }
 
   ///
@@ -462,7 +458,7 @@ class Indexes {
   getSearchableAttributes(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   /**
@@ -473,7 +469,7 @@ class Indexes {
   updateSearchableAttributes(searchableAttributes: string[]): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
 
-    return this.instance.post(url, searchableAttributes)
+    return this.post(url, searchableAttributes)
   }
 
   /**
@@ -484,7 +480,7 @@ class Indexes {
   resetSearchableAttributes(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
 
-    return this.instance.delete(url)
+    return this.delete(url)
   }
 
   ///
@@ -499,7 +495,7 @@ class Indexes {
   getDisplayedAttributes(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   /**
@@ -510,7 +506,7 @@ class Indexes {
   updateDisplayedAttributes(displayedAttributes: string[]): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
 
-    return this.instance.post(url, displayedAttributes)
+    return this.post(url, displayedAttributes)
   }
 
   /**
@@ -521,7 +517,7 @@ class Indexes {
   resetDisplayedAttributes(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
 
-    return this.instance.delete(url)
+    return this.delete(url)
   }
 
   ///
@@ -536,7 +532,7 @@ class Indexes {
   getAcceptNewFields(): Promise<object[]> {
     const url = `/indexes/${this.indexUid}/settings/accept-new-fields`
 
-    return this.instance.get(url)
+    return this.get(url)
   }
 
   /**
@@ -547,7 +543,7 @@ class Indexes {
   updateAcceptNewFields(acceptNewFields: boolean): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/accept-new-fields`
 
-    return this.instance.post(url, acceptNewFields)
+    return this.post(url, acceptNewFields)
   }
 }
 

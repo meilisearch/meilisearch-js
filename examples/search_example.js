@@ -1,4 +1,4 @@
-var MeiliSearch = require('../dist')
+var MeiliSearch = require('../')
 const dataset = require('./small_movies.json')
 
 const config = {
@@ -33,9 +33,8 @@ const addDataset = async () => {
 
 ;(async () => {
   await addDataset()
-  let index = await meili.getIndex('movies')
-  let resp
-  resp = await index.search('Avengers', {
+  const index = await meili.getIndex('movies')
+  const resp = await index.search('Avengers', {
     limit: 1,
     attributesToHighlight: 'title',
   })

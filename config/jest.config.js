@@ -1,13 +1,13 @@
 const config = {
   preset: 'ts-jest',
   rootDir: '..',
-  testMatch: [
-    '<rootDir>/src/**/__tests__/**/*.ts?(x)',
-    '<rootDir>/src/**/?(*.)+(spec|test).ts?(x)',
-  ],
+  testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
   testPathIgnorePatterns: ['dist'],
   coverageThreshold: {
     global: {
+      'ts-jest': {
+        tsConfig: '<rootDir>/config/tsconfig.json',
+      },
       branches: 80,
       functions: 80,
       lines: 80,

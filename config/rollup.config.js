@@ -1,144 +1,76 @@
-import { resolve } from 'path'
 import nodeResolve from '@rollup/plugin-node-resolve'
-import json from '@rollup/plugin-json'
+import { resolve } from 'path'
 import commonjs from '@rollup/plugin-commonjs'
-import replace from '@rollup/plugin-replace'
-import sourceMaps from 'rollup-plugin-sourcemaps'
-import { terser } from 'rollup-plugin-terser'
-import builtins from 'rollup-plugin-node-builtins'
-import globals from 'rollup-plugin-node-globals'
-import { getIfUtils, removeEmpty } from 'webpack-config-utils'
-
+import json from '@rollup/plugin-json'
 import pkg from '../package.json'
+import { terser } from 'rollup-plugin-terser'
+
 const {
-  pascalCase,
   normalizePackageName,
+  pascalCase,
   getOutputFileName,
 } = require('./helpers')
 
-/**
- * @typedef {import('./types').RollupConfig} Config
- */
-/**
- * @typedef {import('./types').RollupPlugin} Plugin
- */
-
 const env = process.env.NODE_ENV || 'development'
-const { ifProduction } = getIfUtils(env)
-
 const LIB_NAME = pascalCase(normalizePackageName(pkg.name))
 const ROOT = resolve(__dirname, '..')
-const DIST = resolve(ROOT, 'dist')
 
-/**
- * Object literals are open-ended for js checking, so we need to be explicit
- * @type {{entry:{esm5: string, esm2015: string},bundles:string}}
- */
-const PATHS = {
-  entry: {
-    esm5: resolve(DIST, 'esm5'),
-    esm2015: resolve(DIST, 'esm2015'),
-  },
-  bundles: resolve(DIST, 'bundles'),
-}
-
-/**
- * @type {string[]}
- */
-const external = Object.keys(pkg.peerDependencies) || []
-
-/**
- *  @type {Plugin[]}
- */
-const plugins = /** @type {Plugin[]} */ ([
-  // Allow json resolution
-  json(),
-
-  // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
-  commonjs(),
-
-  // builtins({
-  //   http: true,
-  // }),
-
-  // Allow node_modules resolution, so you can use 'external' to control
-  // which external modules to include in the bundle
-  // https://github.com/rollup/rollup-plugin-node-resolve#usage
-  nodeResolve(),
-
-  // Resolve source maps to the original source
-  sourceMaps(),
-
-  // properly set process.env.NODE_ENV within `./environment.ts`
-  replace({
-    exclude: 'node_modules/**',
-    'process.env.NODE_ENV': JSON.stringify(env),
-  }),
-
-  // globals(),
-  // builtins(),
-])
-
-/**
- * @type {Config}
- */
-const CommonConfig = {
-  input: {},
-  output: {
-    globals: {
-      http: 'http',
-      https: 'https',
-      url: 'url',
-      assert: 'assert',
-      stream: 'stream',
-      tty: 'tty',
-      util: 'util',
-      os: 'os',
-      zlib: 'zlib',
-    },
-  },
-  inlineDynamicImports: true,
-  // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-  external,
-}
-
-/**
- * @type {Config}
- */
-const UMDconfig = {
-  ...CommonConfig,
-  input: resolve(PATHS.entry.esm5, 'index.js'),
-  output: {
-    file: getOutputFileName(
-      resolve(PATHS.bundles, 'index.umd.js'),
-      ifProduction()
-    ),
-    format: 'umd',
-    name: LIB_NAME,
-    sourcemap: true,
-  },
-  plugins: removeEmpty(/** @type {Plugin[]} */ (plugins)),
-}
-
-/**
- * @type {Config}
- */
-const FESMconfig = {
-  ...CommonConfig,
-  input: resolve(PATHS.entry.esm2015, 'index.js'),
-  output: [
-    {
+module.exports = [
+  // browser-friendly UMD build
+  {
+    input: pkg['jsnext:main'], // directory to transpilation of typescript
+    output: {
+      name: LIB_NAME,
       file: getOutputFileName(
-        resolve(PATHS.bundles, 'index.esm.js'),
-        ifProduction()
+        // will add .min. in filename if in production env
+        resolve(ROOT, pkg.browser),
+        env === 'production'
       ),
-      format: 'es',
-      sourcemap: true,
+      format: 'umd',
+      sourcemap: env === 'production', // create sourcemap for error reporting in production mode
+      globals: {
+        axios: 'axios',
+      },
     },
-  ],
-  plugins: removeEmpty(
-    /** @type {Plugin[]} */ ([...plugins, ifProduction(terser())])
-  ),
-}
+    plugins: [
+      nodeResolve({ jsnext: true, preferBuiltins: true, browser: true }),
+      commonjs(),
+      json(),
+      env === 'production' ? terser() : {}, // will minify the file in production mode
+    ],
+    external: ['axios'],
+  },
 
-export default [UMDconfig, FESMconfig]
+  // CommonJS (for Node) and ES module (for bundlers) build.
+  // (We could have three entries in the configuration array
+  // instead of two, but it's quicker to generate multiple
+  // builds from a single configuration where possible, using
+  // an array for the `output` option, where we can specify
+  // `file` and `format` for each target)
+  {
+    input: pkg['jsnext:main'],
+    external: ['axios'],
+    output: [
+      {
+        file: getOutputFileName(
+          // will add .min. in filename if in production env
+          resolve(ROOT, pkg.main),
+          env === 'production'
+        ),
+        format: 'cjs',
+        sourcemap: env === 'production', // create sourcemap for error reporting in production mode
+      },
+      {
+        file: getOutputFileName(
+          resolve(ROOT, pkg.module),
+          env === 'production'
+        ),
+        format: 'es',
+        sourcemap: env === 'production', // create sourcemap for error reporting in production mode
+      },
+    ],
+    plugins: [
+      env === 'production' ? terser() : {}, // will minify the file in production mode
+    ],
+  },
+]
