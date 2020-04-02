@@ -33,7 +33,7 @@ class MeiliAxiosWrapper {
         baseURL: config.host,
       })
     }
-
+    this.cancelTokenSource = instance.CancelToken.source()
     this.instance.interceptors.response.use((response) => response.data)
     this.instance.interceptors.request.use((request) => {
       if (request.data !== undefined) {
@@ -42,7 +42,6 @@ class MeiliAxiosWrapper {
           data: JSON.stringify(request.data),
         }
       }
-      this.cancelTokenSource = axios.CancelToken.source()
 
       return request
     })
