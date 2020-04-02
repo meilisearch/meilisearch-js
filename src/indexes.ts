@@ -8,7 +8,6 @@
 'use strict'
 
 import MeiliAxiosWrapper from './meili-axios-wrapper'
-
 import * as Types from './types'
 
 class Indexes extends MeiliAxiosWrapper {
@@ -153,7 +152,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getStats
    */
-  getStats(): Promise<object[]> {
+  getStats(): Promise<Types.IndexStats> {
     const url = `/indexes/${this.indexUid}/stats`
 
     return this.get(url)

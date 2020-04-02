@@ -7,8 +7,8 @@
 
 'use strict'
 
-import MeiliAxiosWrapper from './meili-axios-wrapper'
 import { Indexes } from './indexes'
+import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
 
 class Meilisearch extends MeiliAxiosWrapper {
@@ -32,7 +32,7 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method listIndexes
    */
-  listIndexes(): Promise<object[]> {
+  listIndexes(): Promise<Types.IndexResponse[]> {
     const url = '/indexes'
 
     return this.get(url)
@@ -43,9 +43,7 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method createIndex
    */
-  createIndex(
-    data: Types.CreateIndexRequest
-  ): Promise<Types.CreateIndexResponse> {
+  createIndex(data: Types.IndexRequest): Promise<Types.IndexResponse> {
     const url = `/indexes`
 
     return this.post(url, data)
@@ -60,7 +58,7 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method getKey
    */
-  getKeys(): Promise<boolean> {
+  getKeys(): Promise<Types.Keys> {
     const url = '/keys'
 
     return this.get(url)
@@ -78,7 +76,7 @@ class Meilisearch extends MeiliAxiosWrapper {
   isHealthy(): Promise<boolean> {
     const url = '/health'
 
-    return this.get(url).then((res) => true)
+    return this.get(url).then((_) => true)
   }
 
   /**
@@ -127,9 +125,9 @@ class Meilisearch extends MeiliAxiosWrapper {
   /**
    * Get the stats of all the database
    * @memberof Meilisearch
-   * @method databaseStats
+   * @method stats
    */
-  databaseStats(): Promise<object> {
+  stats(): Promise<Types.Stats> {
     const url = '/stats'
 
     return this.get(url)
@@ -140,7 +138,7 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method version
    */
-  version(): Promise<object> {
+  version(): Promise<Types.Version> {
     const url = '/version'
 
     return this.get(url)
