@@ -13,19 +13,20 @@ function sleep(ms) {
 }
 
 const index = {
-  name: 'Movies',
   uid: 'movies',
 }
 
 const addDataset = async () => {
-  let resp
-  resp = await meili.listIndexes()
-  if (resp.length === 0) {
-    resp = await meili.createIndex(index)
+  const indexes = await meili.listIndexes()
+  const indexFound = indexes.find((i) => i.uid === index.uid)
+  console.log({ indexes, indexFound })
+
+  if (!indexFound) {
+    await meili.createIndex(index)
   }
-  resp = await meili.getIndex(index.uid).getDocuments()
-  if (resp.length === 0) {
-    resp = await meili.getIndex(index.uid).addDocuments(dataset)
+  const documents = await meili.getIndex(index.uid).getDocuments()
+  if (documents.length === 0) {
+    await meili.getIndex(index.uid).addDocuments(dataset)
     await sleep(1000) // This is to give time to MeiliSearch to index the dataset
     // If you have no results it means it took more than 1 second to index.
   }
