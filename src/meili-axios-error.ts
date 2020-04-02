@@ -7,15 +7,15 @@ interface MeiliAxiosErrorInterface extends Error {
 }
 interface MeiliAxiosErrorResponse {
   status?: number
-  statusText?: String
-  path?: String
-  method?: String
-  body? : object
+  statusText?: string
+  path?: string
+  method?: string
+  body?: object
 }
 interface MeiliAxiosErrorRequest {
-  url?: String
-  path?: String
-  method?: String
+  url?: string
+  path?: string
+  method?: string
 }
 
 type MeiliAxiosErrorConstructor = new (
@@ -23,18 +23,19 @@ type MeiliAxiosErrorConstructor = new (
   cachedStack?: string
 ) => void
 
-const MeiliAxiosError: MeiliAxiosErrorConstructor = class MeiliAxiosError
-  extends Error
+const MeiliAxiosError: MeiliAxiosErrorConstructor = class extends Error
   implements MeiliAxiosErrorInterface {
-    response?: MeiliAxiosErrorResponse
-    request?: MeiliAxiosErrorRequest
+  response?: MeiliAxiosErrorResponse
+  request?: MeiliAxiosErrorRequest
 
   constructor(error: AxiosError, cachedStack?: string) {
     super(error.message)
 
     this.name = 'MeiliSearch Error'
-    this.message = `${this.name}: ${this.message}`
 
+    // Fetch the native error message but add our application name in front of it.
+    // This means slicing the "Error" string at the start of the message.
+    this.message = `${this.message}\n`
     if (error.response) {
       // If MeiliSearch answered
       this.response = {
@@ -47,7 +48,7 @@ const MeiliAxiosError: MeiliAxiosErrorConstructor = class MeiliAxiosError
       // If a custom message was sent back by our API
       // We change the error message to be more explicit
       if (error.response.data && error.response.data.message) {
-        this.message = `${this.name}: ${error.response.data.message}`
+        this.message = `${error.response.data.message}\n`
       }
     } else {
       // If MeiliSearch did not answered
@@ -55,25 +56,13 @@ const MeiliAxiosError: MeiliAxiosErrorConstructor = class MeiliAxiosError
         this.request = {
           url: error.request._currentUrl,
           path: error.config.url,
-          method: error.config.method
+          method: error.config.method,
         }
       }
-      // Fetch the native error message but add our application name in front of it.
-      // This means slicing the "Error" string at the start of the message.
-      this.message = `${this.name}: ${this.message}`
     }
-    // Add custom message at the start, only takes first stack call of the axios error and then add the cached stack
-    // while also removing the first line of the axios stack and the cached stack because it starts with "Error:"
-    // Since we added our own MeiliSearch Error: we do not need the redundancy.
-    const firstLineNumber = 1
-    const numberOfErrorLinesToKeep = 2
+    // use cached Stack on error object to keep the call stack
     if (cachedStack && error.stack) {
-      this.stack = `${this.message}
-${error.stack
-  .split('\n')
-  .slice(firstLineNumber, numberOfErrorLinesToKeep)
-  .join('\n')}
-${cachedStack.split('\n').slice(firstLineNumber).join('\n')}`
+      this.stack = cachedStack
     }
   }
 }
