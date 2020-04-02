@@ -15,6 +15,7 @@
   "module": "./dist/bundles/meilisearch.esm.js",
   "browser": "./dist/bundles/meilisearch.umd.js",
   "typings": "./dist/types/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "jsnext:main": "./dist/esnext/index.js",
   "sideEffects": false,
   "repository": {
