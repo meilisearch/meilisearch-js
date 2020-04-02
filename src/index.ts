@@ -48,7 +48,7 @@ class Meilisearch extends MeiliAxiosWrapper {
   ): Promise<Types.CreateIndexResponse> {
     const url = `/indexes`
 
-    return this.post(url, data).then((res: any) => res)
+    return this.post(url, data)
   }
 
   ///
