@@ -307,7 +307,7 @@ This package works for MeiliSearch `v0.9.x`.
 
 - Create new index:
 
-`client.createIndex(data: Types.CreateIndexRequest): Promise<Types.CreateIndexResponse>`
+`client.createIndex(data: Types.IndexRequest): Promise<Types.IndexResponse>`
 
 - Get index object:
 
@@ -411,7 +411,7 @@ Waiting on MeiliSearch v0.9.0
 
 - Get database stats
 
-`client.databaseStats(): Promise<object>`
+`client.stats(): Promise<object>`
 
 ### Version
 

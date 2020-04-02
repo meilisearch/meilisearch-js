@@ -149,9 +149,9 @@ class Meilisearch extends MeiliAxiosWrapper {
   /**
    * Get the server consuption, RAM / CPU / Network
    * @memberof Meilisearch
-   * @method systemInformation
+   * @method sysInfo
    */
-  systemInformation(): Promise<object> {
+  sysInfo(): Promise<Types.SysInfo> {
     const url = '/sys-info'
 
     return this.get(url)
@@ -160,9 +160,9 @@ class Meilisearch extends MeiliAxiosWrapper {
   /**
    * Get the server consuption, RAM / CPU / Network. All information as human readable
    * @memberof Meilisearch
-   * @method systemInformationPretty
+   * @method prettySysInfo
    */
-  systemInformationPretty(): Promise<object> {
+  prettySysInfo(): Promise<Types.SysInfoPretty> {
     const url = '/sys-info/pretty'
 
     return this.get(url)
