@@ -13,6 +13,7 @@ interface MeiliAxiosErrorResponse {
   body? : object
 }
 interface MeiliAxiosErrorRequest {
+  url?: String
   path?: String
   method?: String
 }
@@ -50,8 +51,9 @@ const MeiliAxiosError: MeiliAxiosErrorConstructor = class MeiliAxiosError
       }
     } else {
       // If MeiliSearch did not answered
-      if (error.config) {
+      if (error.config && error.request) {
         this.request = {
+          url: error.request._currentUrl,
           path: error.config.url,
           method: error.config.method
         }
