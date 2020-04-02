@@ -7,7 +7,6 @@
   ],
   "rules": {
     "no-inferrable-types": true,
-
     "no-namespace": {
       "options": [
         "allow-declarations"
