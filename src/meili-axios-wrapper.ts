@@ -11,7 +11,7 @@ import instance, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
-  CancelTokenSource
+  CancelTokenSource,
 } from 'axios'
 import MeiliAxiosError from './meili-axios-error'
 import * as Types from './types'
