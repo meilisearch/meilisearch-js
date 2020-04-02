@@ -31,11 +31,8 @@ function sleep(ms: number) {
 const clearAllIndexes = async () => {
   const indexes = await meili
     .listIndexes()
-    .then((response: any) => {
-      return response.map((elem: any) => elem.uid)
-    })
-    .catch((err) => {
-      expect(err).toBe(null)
+    .then((response: Types.IndexResponse[]): string[] => {
+      return response.map((elem: Types.IndexResponse) => elem.uid)
     })
 
   for (const indexUid of indexes) {
@@ -57,25 +54,19 @@ test('reset-start', async () => {
 /// INDEXES
 ///
 
-test('create-index', async () => {
-  await meili
-    .createIndex(index)
-    .then((response: Types.CreateIndexResponse) => {
-      expect(response.uid).toBe(index.uid)
-      expect(response.primaryKey).toBe(null)
-    })
-    .catch((err) => {
-      expect(err).toBe(null)
-    })
+test('Create an index without primary key', async () => {
+  await meili.createIndex(index).then((response: Types.IndexResponse) => {
+    expect(response.uid).toBe(index.uid)
+    expect(response.primaryKey).toBe(null)
+  })
+})
 
+test('Create an index with a Primary Key', async () => {
   await meili
     .createIndex(indexAndIndentifier)
-    .then((response: Types.CreateIndexResponse) => {
+    .then((response: Types.IndexResponse) => {
       expect(response.uid).toBe(indexAndIndentifier.uid)
       expect(response.primaryKey).toBe(indexAndIndentifier.primaryKey)
-    })
-    .catch((err) => {
-      expect(err).toBe(null)
     })
 })
 
@@ -83,12 +74,14 @@ test('get-index', async () => {
   await meili
     .getIndex(index.uid)
     .show()
-    .then((response: Types.CreateIndexResponse) => {
+    .then((response: Types.IndexResponse) => {
+      // TYPE CHECK
+      expect(response).toHaveProperty('primaryKey', null)
+      expect(response).toHaveProperty('uid', expect.any(String))
+      expect(response).toHaveProperty('createdAt', expect.any(String))
+      expect(response).toHaveProperty('updatedAt', expect.any(String))
       expect(response.uid).toBe(index.uid)
       expect(response.primaryKey).toBe(null)
-    })
-    .catch((err) => {
-      expect(err).toBe(null)
     })
   await expect(meili.listIndexes()).resolves.toHaveLength(2)
 })
@@ -97,8 +90,13 @@ test('get-stats', async () => {
   await meili
     .getIndex(index.uid)
     .getStats()
-    .then((response: any) => {
-      expect(response.numberOfDocuments).toBe(0)
+    .then((response: Types.IndexStats) => {
+      expect(response).toHaveProperty('numberOfDocuments', expect.any(Number))
+      expect(response).toHaveProperty('numberOfDocuments', 0)
+      expect(response).toHaveProperty('isIndexing', expect.any(Boolean))
+      expect(response).toHaveProperty('isIndexing', false)
+      expect(response).toHaveProperty('fieldsFrequency', expect.any(Object))
+      expect(response).toHaveProperty('fieldsFrequency', {})
     })
     .catch((err) => {
       expect(err).toBe(null)
@@ -150,7 +148,7 @@ test('get-index-primary-key', async () => {
   await meili
     .getIndex(index.uid)
     .show()
-    .then((response: Types.CreateIndexResponse) => {
+    .then((response: Types.IndexResponse) => {
       expect(response.uid).toBe(index.uid)
       expect(response.primaryKey).toBe('id')
     })
