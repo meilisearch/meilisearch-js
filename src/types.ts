@@ -3,7 +3,7 @@
 ///
 
 export interface Index {
-  name: string
+  name?: string
   primaryKey?: string
   uid: string
   createdAt: Date
@@ -32,12 +32,12 @@ export interface Settings {
 /// Request specific interfaces
 ///
 
-export interface CreateIndexRequest {
+export interface IndexRequest {
   uid: string
   primaryKey?: string
 }
 
-export interface CreateIndexResponse {
+export interface IndexResponse {
   uid: string
   primaryKey?: string
   updateId?: number
@@ -86,8 +86,10 @@ export interface SearchRequest {
   matches?: boolean
 }
 
-export interface SearchResponse {
-  hits: object[]
+export type Hit<T> = T & { _formatted?: T }
+
+export interface SearchResponse<T = any> {
+  hits: Hit<T>[]
   offset: number
   limit: number
   processingTimeMs: number
@@ -97,4 +99,85 @@ export interface SearchResponse {
 export interface Config {
   host: string
   apiKey?: string
+}
+
+export interface FieldFrequency {
+  [field: string]: number
+}
+
+/*
+ *** STATS
+ */
+
+export interface IndexStats {
+  numberOfDocuments: number
+  isIndexing: boolean
+  fieldsFrequency: FieldFrequency
+}
+
+export interface Stats {
+  databaseSize: number
+  lastUpdate: string
+  indexes: {
+    [index: string]: IndexStats
+  }
+}
+
+/*
+ ** Keys
+ */
+
+export interface Keys {
+  private: string | null
+  public: string | null
+}
+
+/*
+ ** version
+ */
+export interface Version {
+  commitSha: string
+  buildDate: string
+  pkgVersion: string
+}
+
+export interface Update {
+  updateId: number
+}
+
+/*
+ ** SYS-INFO
+ */
+export interface SysInfo {
+  memoryUsage: number
+  processorUsage: number[]
+  global: {
+    totalMemory: number
+    usedMemory: number
+    totalSwap: number
+    usedSwap: number
+    inputData: number
+    outputData: number
+  }
+  process: {
+    memory: number
+    cpu: number
+  }
+}
+
+export interface SysInfoPretty {
+  memoryUsage: string
+  processorUsage: string[]
+  global: {
+    totalMemory: string
+    usedMemory: string
+    totalSwap: string
+    usedSwap: string
+    inputData: string
+    outputData: string
+  }
+  process: {
+    memory: string
+    cpu: string
+  }
 }
