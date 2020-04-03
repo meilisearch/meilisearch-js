@@ -35,7 +35,7 @@ const MeiliAxiosError: MeiliAxiosErrorConstructor = class extends Error
 
     // Fetch the native error message but add our application name in front of it.
     // This means slicing the "Error" string at the start of the message.
-    this.message = `${this.message}\n`
+    this.message = `${this.message}`
     if (error.response) {
       // If MeiliSearch answered
       this.response = {
@@ -48,7 +48,7 @@ const MeiliAxiosError: MeiliAxiosErrorConstructor = class extends Error
       // If a custom message was sent back by our API
       // We change the error message to be more explicit
       if (error.response.data && error.response.data.message) {
-        this.message = `${error.response.data.message}\n`
+        this.message = `${error.response.data.message}`
       }
     } else {
       // If MeiliSearch did not answered
