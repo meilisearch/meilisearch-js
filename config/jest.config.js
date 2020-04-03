@@ -4,7 +4,7 @@ const config = {
   preset: 'ts-jest',
   rootDir: '..',
   testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
-  testPathIgnorePatterns: ['dist', 'utils', 'setup-keys', 'context-helper'],
+  testPathIgnorePatterns: ['dist', 'utils'],
   coverageThreshold: {
     global: {
       'ts-jest': {
