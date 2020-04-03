@@ -40,7 +40,6 @@ export interface IndexRequest {
 export interface IndexResponse {
   uid: string
   primaryKey?: string
-  updateId?: number
   createdAt: Date
   updatedAt: Date
 }
