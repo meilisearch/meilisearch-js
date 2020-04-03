@@ -137,7 +137,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @method deleteIndex
    */
 
-  deleteIndex(): Promise<void> {
+  deleteIndex(): Promise<string> {
     const url = `/indexes/${this.indexUid}`
 
     return this.delete(url)
