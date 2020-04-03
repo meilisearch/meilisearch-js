@@ -64,6 +64,7 @@
     "@types/jest": "^25.1.4",
     "@types/prettier": "^1.19.1",
     "brotli-size": "^4.0.0",
+    "dotenv": "^8.2.0",
     "gzip-size": "^5.1.1",
     "jest": "^25.2.4",
     "jest-watch-typeahead": "^0.4.2",
