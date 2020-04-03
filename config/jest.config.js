@@ -1,4 +1,4 @@
-require('dotenv').config() // TODO: add env to github actions
+require('dotenv').config() // TODO: Create env file in github actions
 
 const config = {
   preset: 'ts-jest',
