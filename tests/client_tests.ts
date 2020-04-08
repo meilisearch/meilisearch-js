@@ -104,7 +104,7 @@ describe.each([
       })
     })
 
-    test(`${permission} key: update primary key index on an index that has no primary key already`, async () => {
+    test(`${permission} key: update primary key on an index that has no primary key already`, async () => {
       const index = client.getIndex(uidNoPrimaryKey.uid)
       await index
         .updateIndex({ primaryKey: 'newPrimaryKey' })
@@ -114,7 +114,7 @@ describe.each([
         })
     })
 
-    test(`${permission} key: update primary key index on an index that has already a primary key and fail`, async () => {
+    test(`${permission} key: update primary key on an index that has already a primary key and fail`, async () => {
       const index = client.getIndex(uidAndPrimaryKey.uid)
       await expect(
         index.updateIndex({ primaryKey: 'newPrimaryKey' })
