@@ -48,14 +48,14 @@ describe.each([
     beforeAll(() => {
       return clearAllIndexes(config)
     })
-    test(`${permission} key: Get all indexes when empty`, async () => {
+    test(`${permission} key: get all indexes when empty`, async () => {
       const expected = []
       await client.listIndexes().then((response: Types.IndexResponse[]) => {
         expect(response).toEqual(expected)
       })
       await expect(client.listIndexes()).resolves.toHaveLength(0)
     })
-    test(`${permission} key: Create with no primary key`, async () => {
+    test(`${permission} key: create with no primary key`, async () => {
       await client
         .createIndex(uidNoPrimaryKey)
         .then((response: Types.IndexResponse) => {
@@ -65,7 +65,7 @@ describe.each([
           expect(response).toHaveProperty('updatedAt', expect.any(String))
         })
     })
-    test(`${permission} key: Create with primary key`, async () => {
+    test(`${permission} key: create with primary key`, async () => {
       await client
         .createIndex(uidAndPrimaryKey)
         .then((response: Types.IndexResponse) => {
@@ -78,7 +78,7 @@ describe.each([
           expect(response).toHaveProperty('updatedAt', expect.any(String))
         })
     })
-    test(`${permission} key: Get all indexes when not empty`, async () => {
+    test(`${permission} key: get all indexes when not empty`, async () => {
       await client.listIndexes().then((response: Types.IndexResponse[]) => {
         const indexes = response.map((index) => index.uid)
         expect(indexes).toEqual(expect.arrayContaining([uidAndPrimaryKey.uid]))
@@ -341,12 +341,12 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
           `Invalid API key: Need a token`
         )
       })
-      test(`${permission} key: try to create Index with primary key and be denied`, async () => {
+      test(`${permission} key: try to create an index with primary key and be denied`, async () => {
         await expect(client.createIndex(uidAndPrimaryKey)).rejects.toThrowError(
           `Invalid API key: Need a token`
         )
       })
-      test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
+      test(`${permission} key: try to create an index with NO primary key and be denied`, async () => {
         await expect(client.createIndex(uidNoPrimaryKey)).rejects.toThrowError(
           `Invalid API key: Need a token`
         )
