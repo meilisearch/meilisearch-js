@@ -365,6 +365,29 @@ describe.each([
         expect(response).toHaveProperty('primaryKey', 'unique')
       })
   })
+  test(`${permission} key: Try to Add documents from index with no primary key with NO valid primary key and fail`, async () => {
+    const docs = [
+      {
+        unique: 2,
+        title: 'Le Rouge et le Noir',
+      },
+    ]
+    await client
+      .getIndex(uidNoPrimaryKey.uid)
+      .addDocuments(docs)
+      .then((response: Types.EnqueuedUpdate) => {
+        expect(response).toHaveProperty('updateId', expect.any(Number))
+      })
+    await sleep(100)
+    await client
+      .getIndex(uidNoPrimaryKey.uid)
+      .getAllUpdateStatus()
+      .then((response: Types.Update[]) => {
+        const lastUpdate = response[response.length - 1]
+        expect(lastUpdate).toHaveProperty('error', 'document id is missing')
+        expect(lastUpdate).toHaveProperty('status', 'failed')
+      })
+  })
 })
 
 describe.each([{ client: publicClient, permission: 'Public' }])(
