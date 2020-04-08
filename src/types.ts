@@ -14,20 +14,6 @@ export interface AsyncUpdateId {
   updateId: number
 }
 
-export interface Settings {
-  distinctAttribute?: string
-  searchableAttributes?: string[]
-  displayedAttributes?: string[]
-  rankingRules?: {
-    [field: string]: string
-  }
-  stopWords?: string[]
-  synonyms?: {
-    [field: string]: string[]
-  }
-  indexNewFields?: boolean
-}
-
 ///
 /// Request specific interfaces
 ///
@@ -46,12 +32,6 @@ export interface IndexResponse {
 
 export interface UpdateIndexRequest {
   primaryKey?: string
-}
-
-export interface GetDocumentsParams {
-  offset?: number
-  limit?: number
-  attributesToRetrieve?: string[]
 }
 
 export interface AddDocumentParams {
@@ -105,6 +85,56 @@ export interface FieldFrequency {
 }
 
 /*
+ ** Documents
+ */
+export interface GetDocumentsParams {
+  offset?: number
+  limit?: number
+  attributesToRetrieve?: string[]
+}
+
+export interface Document<T = any> {
+  [attribute: string]: T
+}
+
+/*
+ ** Settings
+ */
+export interface Settings {
+  distinctAttribute?: string
+  searchableAttributes?: string[]
+  displayedAttributes?: string[]
+  rankingRules?: {
+    [field: string]: string
+  }
+  stopWords?: string[]
+  synonyms?: {
+    [field: string]: string[]
+  }
+  indexNewFields?: boolean
+}
+
+/*
+ ** UPDATE
+ */
+
+export interface EnqueuedUpdate {
+  updateId: number
+}
+
+export interface Update {
+  status: string
+  updateId: number
+  type: {
+    name: string
+    number: number
+  }
+  duration: number
+  enqueuedAt: string
+  processedAt: string
+}
+
+/*
  *** STATS
  */
 
@@ -138,10 +168,6 @@ export interface Version {
   commitSha: string
   buildDate: string
   pkgVersion: string
-}
-
-export interface Update {
-  updateId: number
 }
 
 /*
