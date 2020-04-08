@@ -258,7 +258,7 @@ describe.each([
       })
   })
 
-  test(`${permission} key: Delete some document from index that has NO primary key`, async () => {
+  test(`${permission} key: Delete some documents from index that has NO primary key`, async () => {
     const ids = [1, 2]
     await client
       .getIndex(uidNoPrimaryKey.uid)
