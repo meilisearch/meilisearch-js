@@ -83,6 +83,7 @@ describe.each([
         const indexes = response.map((index) => index.uid)
         expect(indexes).toEqual(expect.arrayContaining([uidAndPrimaryKey.uid]))
         expect(indexes).toEqual(expect.arrayContaining([uidNoPrimaryKey.uid]))
+        expect(indexes.length).toEqual(2)
       })
     })
     test(`${permission} key: show index with primary key`, async () => {
