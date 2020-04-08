@@ -277,7 +277,7 @@ describe.each([
         expect(returnedIds).not.toContain(ids[1])
       })
   })
-  test(`${permission} key: Delete some document from index that has a primary key`, async () => {
+  test(`${permission} key: Delete some documents from index that has a primary key`, async () => {
     const ids = [1, 2]
     await client
       .getIndex(uidAndPrimaryKey.uid)
