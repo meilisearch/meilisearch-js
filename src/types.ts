@@ -10,10 +10,6 @@ export interface Index {
   updatedAt: Date
 }
 
-export interface AsyncUpdateId {
-  updateId: number
-}
-
 ///
 /// Request specific interfaces
 ///

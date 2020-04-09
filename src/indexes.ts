@@ -26,7 +26,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getUpdateStatus
    */
-  getUpdateStatus(updateId: number): Promise<object> {
+  getUpdateStatus(updateId: number): Promise<Types.Update> {
     const url = `/indexes/${this.indexUid}/updates/${updateId}`
 
     return this.get(url)
@@ -37,7 +37,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getAllUpdateStatus
    */
-  getAllUpdateStatus(): Promise<object[]> {
+  getAllUpdateStatus(): Promise<Types.Update[]> {
     const url = `/indexes/${this.indexUid}/updates`
 
     return this.get(url)
@@ -168,7 +168,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getDocuments
    */
-  getDocuments(options?: Types.GetDocumentsParams): Promise<object[]> {
+  getDocuments(options?: Types.GetDocumentsParams): Promise<Types.Document[]> {
     const url = `/indexes/${this.indexUid}/documents`
     let attr
     if (options && Array.isArray(options.attributesToRetrieve)) {
@@ -188,7 +188,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getDocument
    */
-  getDocument(documentId: string | number): Promise<object> {
+  getDocument(documentId: string | number): Promise<Types.Document> {
     const url = `/indexes/${this.indexUid}/documents/${documentId}`
 
     return this.get(url)
@@ -200,9 +200,9 @@ class Indexes extends MeiliAxiosWrapper {
    * @method addDocuments
    */
   addDocuments(
-    documents: object[],
+    documents: Types.Document[],
     options?: Types.AddDocumentParams
-  ): Promise<Types.AsyncUpdateId> {
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/documents`
 
     return this.post(url, documents, {
@@ -216,9 +216,9 @@ class Indexes extends MeiliAxiosWrapper {
    * @method updateDocuments
    */
   updateDocuments(
-    documents: object[],
+    documents: Types.Document[],
     options?: Types.AddDocumentParams
-  ): Promise<Types.AsyncUpdateId> {
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/documents`
 
     return this.put(url, documents, {
@@ -231,7 +231,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method deleteDocument
    */
-  deleteDocument(documentId: string | number): Promise<Types.AsyncUpdateId> {
+  deleteDocument(documentId: string | number): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/documents/${documentId}`
 
     return this.delete(url)
@@ -244,7 +244,7 @@ class Indexes extends MeiliAxiosWrapper {
    */
   deleteDocuments(
     documentsIds: string[] | number[]
-  ): Promise<Types.AsyncUpdateId> {
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/documents/delete-batch`
 
     return this.post(url, documentsIds)
@@ -255,7 +255,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method deleteAllDocuments
    */
-  deleteAllDocuments(): Promise<Types.AsyncUpdateId> {
+  deleteAllDocuments(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/documents`
 
     return this.delete(url)
@@ -270,7 +270,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getSettings
    */
-  getSettings(): Promise<object> {
+  getSettings(): Promise<Types.Settings> {
     const url = `/indexes/${this.indexUid}/settings`
 
     return this.get(url)
@@ -282,7 +282,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method updateSettings
    */
-  updateSettings(settings: Types.Settings): Promise<void> {
+  updateSettings(settings: Types.Settings): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings`
 
     return this.post(url, settings)
@@ -293,7 +293,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method resetSettings
    */
-  resetSettings(): Promise<void> {
+  resetSettings(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings`
 
     return this.delete(url)
@@ -308,7 +308,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getSynonyms
    */
-  getSynonyms(): Promise<object[]> {
+  getSynonyms(): Promise<object> {
     const url = `/indexes/${this.indexUid}/settings/synonyms`
 
     return this.get(url)
@@ -345,7 +345,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getStopWords
    */
-  getStopWords(): Promise<object[]> {
+  getStopWords(): Promise<string[]> {
     const url = `/indexes/${this.indexUid}/settings/stop-words`
 
     return this.get(url)
@@ -356,7 +356,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method updateStopWords
    */
-  updateStopWords(stopWords: string[]): Promise<object> {
+  updateStopWords(stopWords: string[]): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/stop-words`
 
     return this.post(url, stopWords)
@@ -367,7 +367,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method resetStopWords
    */
-  resetStopWords(): Promise<object> {
+  resetStopWords(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/stop-words`
 
     return this.delete(url)
@@ -382,7 +382,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getRankingRules
    */
-  getRankingRules(): Promise<object[]> {
+  getRankingRules(): Promise<string[]> {
     const url = `/indexes/${this.indexUid}/settings/ranking-rules`
 
     return this.get(url)
@@ -393,7 +393,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method updateRankingRules
    */
-  updateRankingRules(rankingRules: string[]): Promise<object> {
+  updateRankingRules(rankingRules: string[]): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/ranking-rules`
 
     return this.post(url, rankingRules)
@@ -404,7 +404,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method resetRankingRules
    */
-  resetRankingRules(): Promise<object> {
+  resetRankingRules(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/ranking-rules`
 
     return this.delete(url)
@@ -419,7 +419,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getDistinctAttribute
    */
-  getDistinctAttribute(): Promise<object[]> {
+  getDistinctAttribute(): Promise<string | void> {
     const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
 
     return this.get(url)
@@ -430,7 +430,9 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method updateDistinctAttribute
    */
-  updateDistinctAttribute(distinctAttribute: string): Promise<object> {
+  updateDistinctAttribute(
+    distinctAttribute: string
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
 
     return this.post(url, distinctAttribute)
@@ -441,7 +443,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method resetDistinctAttribute
    */
-  resetDistinctAttribute(): Promise<object> {
+  resetDistinctAttribute(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/distinct-attribute`
 
     return this.delete(url)
@@ -456,7 +458,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getSearchableAttributes
    */
-  getSearchableAttributes(): Promise<object[]> {
+  getSearchableAttributes(): Promise<string[]> {
     const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
 
     return this.get(url)
@@ -467,7 +469,9 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method updateSearchableAttributes
    */
-  updateSearchableAttributes(searchableAttributes: string[]): Promise<object> {
+  updateSearchableAttributes(
+    searchableAttributes: string[]
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
 
     return this.post(url, searchableAttributes)
@@ -478,7 +482,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method resetSearchableAttributes
    */
-  resetSearchableAttributes(): Promise<object> {
+  resetSearchableAttributes(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/searchable-attributes`
 
     return this.delete(url)
@@ -493,7 +497,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getDisplayedAttributes
    */
-  getDisplayedAttributes(): Promise<object[]> {
+  getDisplayedAttributes(): Promise<string[]> {
     const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
 
     return this.get(url)
@@ -504,7 +508,9 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method updateDisplayedAttributes
    */
-  updateDisplayedAttributes(displayedAttributes: string[]): Promise<object> {
+  updateDisplayedAttributes(
+    displayedAttributes: string[]
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
 
     return this.post(url, displayedAttributes)
@@ -515,7 +521,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method resetDisplayedAttributes
    */
-  resetDisplayedAttributes(): Promise<object> {
+  resetDisplayedAttributes(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/displayed-attributes`
 
     return this.delete(url)
@@ -530,7 +536,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getAcceptNewFields
    */
-  getAcceptNewFields(): Promise<object[]> {
+  getAcceptNewFields(): Promise<boolean> {
     const url = `/indexes/${this.indexUid}/settings/accept-new-fields`
 
     return this.get(url)
@@ -541,7 +547,9 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method updateAcceptNewFields
    */
-  updateAcceptNewFields(acceptNewFields: boolean): Promise<object> {
+  updateAcceptNewFields(
+    acceptNewFields: boolean
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/accept-new-fields`
 
     return this.post(url, acceptNewFields)
