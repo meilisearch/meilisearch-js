@@ -198,6 +198,9 @@ describe.each([
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(1)
+        expect(response.hits[0]).toHaveProperty('id', 456)
+        expect(response.hits[0]).toHaveProperty('title', 'Le Petit Prince')
+        expect(response.hits[0]).not.toHaveProperty('comment')
         expect(response.hits[0]).toHaveProperty(
           '_formatted',
           expect.any(Object)
@@ -210,7 +213,7 @@ describe.each([
           'title',
           'Petit <em>Prince</em>'
         )
-        expect(response.hits[0]._formatted).not.toHaveProperty('description')
+        expect(response.hits[0]._formatted).not.toHaveProperty('comment')
         expect(response.hits[0]).toHaveProperty(
           '_matchesInfo',
           expect.any(Object)
