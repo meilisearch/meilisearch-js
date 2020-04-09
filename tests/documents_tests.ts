@@ -145,7 +145,7 @@ describe.each([
     const title = 'The Little Prince'
     await client
       .getIndex(uidNoPrimaryKey.uid)
-      .addDocuments([{ id, title }])
+      .updateDocuments([{ id, title }])
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
       })
@@ -163,7 +163,7 @@ describe.each([
     const title = 'The Little Prince'
     await client
       .getIndex(uidAndPrimaryKey.uid)
-      .addDocuments([{ id, title }])
+      .updateDocuments([{ id, title }])
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
       })
@@ -177,12 +177,12 @@ describe.each([
       })
   })
 
-  test(`${permission} key: Add document with Update documents fct from index that has NO primary key`, async () => {
+  test(`${permission} key: Add document with update documents function from index that has NO primary key`, async () => {
     const id = 9
     const title = '1984'
     await client
       .getIndex(uidNoPrimaryKey.uid)
-      .addDocuments([{ id, title }])
+      .updateDocuments([{ id, title }])
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
       })
@@ -201,12 +201,12 @@ describe.each([
         expect(response.length).toEqual(dataset.length + 1)
       })
   })
-  test(`${permission} key: Add document with Update documents fct from index that has a primary key`, async () => {
+  test(`${permission} key: Add document with update documents function from index that has a primary key`, async () => {
     const id = 9
     const title = '1984'
     await client
       .getIndex(uidAndPrimaryKey.uid)
-      .addDocuments([{ id, title }])
+      .updateDocuments([{ id, title }])
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
       })
