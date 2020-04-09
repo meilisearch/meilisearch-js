@@ -83,7 +83,7 @@ describe.each([
     await masterClient.getIndex(index.uid).addDocuments(dataset)
     await sleep(500)
   })
-  test(`${permission} key: Get default settings on index`, async () => {
+  test(`${permission} key: Get default settings of an index`, async () => {
     await client
       .getIndex(index.uid)
       .getSettings()
