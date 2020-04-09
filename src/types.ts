@@ -61,13 +61,11 @@ export interface AddDocumentParams {
 export interface SearchParams {
   offset?: number
   limit?: number
-  attributesToRetrieve?: string[]
-  attributesToSearchIn?: string[]
-  attributesToCrop?: string[]
+  attributesToRetrieve?: string[] | string
+  attributesToCrop?: string[] | string
   cropLength?: number
-  attributesToHighlight?: string[]
+  attributesToHighlight?: string[] | string
   filters?: string
-  timeoutMs?: number
   matches?: boolean
 }
 
@@ -76,12 +74,10 @@ export interface SearchRequest {
   offset?: number
   limit?: number
   attributesToRetrieve?: string
-  attributesToSearchIn?: string
   attributesToCrop?: string
   cropLength?: number
   attributesToHighlight?: string
   filters?: string
-  timeoutMs?: number
   matches?: boolean
 }
 
