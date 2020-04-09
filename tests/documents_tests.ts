@@ -365,7 +365,7 @@ describe.each([
         expect(response).toHaveProperty('primaryKey', 'unique')
       })
   })
-  test(`${permission} key: Try to Add documents from index with no primary key with NO valid primary key and fail`, async () => {
+  test(`${permission} key: Try to add documents from index with no primary key with NO valid primary key and fail`, async () => {
     const docs = [
       {
         unique: 2,
