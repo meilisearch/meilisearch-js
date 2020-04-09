@@ -48,7 +48,7 @@ function sleep(ms: number) {
 
 jest.setTimeout(100 * 1000)
 
-beforeAll(async() => {
+beforeAll(async () => {
   await clearAllIndexes(config)
   await masterClient.createIndex(index)
 })
@@ -61,7 +61,7 @@ describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
 ])('Test on updates', ({ client, permission }) => {
-  beforeAll(async() => {
+  beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index)
   })
@@ -71,10 +71,10 @@ describe.each([
       .addDocuments(dataset)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response;
+        return response
       })
-      await sleep(500)
-      await client
+    await sleep(500)
+    await client
       .getIndex(index.uid)
       .getUpdateStatus(updateObj.updateId)
       .then((response: Types.Update) => {
@@ -90,7 +90,7 @@ describe.each([
   })
 
   test(`${permission} key: Get all updates`, async () => {
-      await client
+    await client
       .getIndex(index.uid)
       .getAllUpdateStatus()
       .then((response: Types.Update[]) => {
@@ -106,40 +106,38 @@ describe.each([
       })
   })
   test(`${permission} key: Try to get update that does not exist`, async () => {
-    await expect(client.getIndex(index.uid)
-    .getUpdateStatus(2545)).rejects.toThrowError(
-      `unknown update id`
-      )
+    await expect(
+      client.getIndex(index.uid).getUpdateStatus(2545)
+    ).rejects.toThrowError(`unknown update id`)
   })
-
 })
 
 describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on updates',
   ({ client, permission }) => {
-    beforeAll(async() => {
+    beforeAll(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index)
     })
     test(`${permission} key: Try to get a update and be denied`, async () => {
-      await expect(client.getIndex(index.uid).getUpdateStatus(0)).rejects.toThrowError(
-        `Invalid API key: ${PUBLIC_KEY}`
-      )
+      await expect(
+        client.getIndex(index.uid).getUpdateStatus(0)
+      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
     })
   }
-);
+)
 
 describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on updates',
   ({ client, permission }) => {
-    beforeAll(async() => {
+    beforeAll(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index)
     })
     test(`${permission} key: Try to get a update and be denied`, async () => {
-      await expect(client.getIndex(index.uid).getUpdateStatus(0)).rejects.toThrowError(
-        `Invalid API key: Need a token`
-      )
+      await expect(
+        client.getIndex(index.uid).getUpdateStatus(0)
+      ).rejects.toThrowError(`Invalid API key: Need a token`)
     })
   }
-);
+)
