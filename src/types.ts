@@ -96,9 +96,7 @@ export interface Settings {
   distinctAttribute?: string
   searchableAttributes?: string[]
   displayedAttributes?: string[]
-  rankingRules?: {
-    [field: string]: string
-  }
+  rankingRules?: string[]
   stopWords?: string[]
   synonyms?: {
     [field: string]: string[]
