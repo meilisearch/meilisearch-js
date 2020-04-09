@@ -7,7 +7,7 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY
+  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -39,7 +39,6 @@ const defaultRankingRules = [
 
 jest.setTimeout(100 * 1000)
 
-
 beforeAll(async () => {
   await clearAllIndexes(config)
 })
@@ -55,90 +54,98 @@ describe.each([
   beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index)
-    await masterClient.getIndex(index.uid).addDocuments(dataset);
+    await masterClient.getIndex(index.uid).addDocuments(dataset)
     await sleep(500)
   })
   test(`${permission} key: Get default ranking rules`, async () => {
-    await client.getIndex(index.uid).getRankingRules()
+    await client
+      .getIndex(index.uid)
+      .getRankingRules()
       .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules);
+        expect(response).toEqual(defaultRankingRules)
       })
   })
   test(`${permission} key: Update ranking rules`, async () => {
-    const new_rr = [
-      'asc(title)',
-      'typo',
-      'desc(description)',
-  ]
-    await client.getIndex(index.uid).updateRankingRules(new_rr)
+    const new_rr = ['asc(title)', 'typo', 'desc(description)']
+    await client
+      .getIndex(index.uid)
+      .updateRankingRules(new_rr)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response.updateId
       })
     await sleep(500)
-    await client.getIndex(index.uid).getRankingRules()
-    .then((response: string[]) => {
-      expect(response).toEqual(new_rr);
-    })
+    await client
+      .getIndex(index.uid)
+      .getRankingRules()
+      .then((response: string[]) => {
+        expect(response).toEqual(new_rr)
+      })
   })
   test(`${permission} key: Reset ranking rules`, async () => {
-    await client.getIndex(index.uid).resetRankingRules()
+    await client
+      .getIndex(index.uid)
+      .resetRankingRules()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response.updateId
       })
     await sleep(500)
-    await client.getIndex(index.uid).getRankingRules()
-    .then((response: string[]) => {
-      expect(response).toEqual(defaultRankingRules);
+    await client
+      .getIndex(index.uid)
+      .getRankingRules()
+      .then((response: string[]) => {
+        expect(response).toEqual(defaultRankingRules)
+      })
+  })
+})
+
+describe.each([{ client: publicClient, permission: 'Public' }])(
+  'Test on ranking rules',
+  ({ client, permission }) => {
+    beforeAll(async () => {
+      await clearAllIndexes(config)
+      await masterClient.createIndex(index)
     })
-  })
-})
+    test(`${permission} key: try to get ranking rules and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).getRankingRules()
+      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+    })
+    test(`${permission} key: try to update ranking rules and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).updateRankingRules([])
+      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+    })
+    test(`${permission} key: try to reset ranking rules and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).resetRankingRules()
+      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+    })
+  }
+)
 
-describe.each([
-  { client: publicClient, permission: 'Public' }
-])('Test on ranking rules', ({ client, permission }) => {
-  beforeAll(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index)
-  })
-  test(`${permission} key: try to get ranking rules and be denied`, async () => {
-    await expect(client.getIndex(index.uid).getRankingRules()).rejects.toThrowError(
-      `Invalid API key: ${PUBLIC_KEY}`
-    )
-  })
-  test(`${permission} key: try to update ranking rules and be denied`, async () => {
-    await expect(client.getIndex(index.uid).updateRankingRules([])).rejects.toThrowError(
-      `Invalid API key: ${PUBLIC_KEY}`
-    )
-  })
-  test(`${permission} key: try to reset ranking rules and be denied`, async () => {
-    await expect(client.getIndex(index.uid).resetRankingRules()).rejects.toThrowError(
-      `Invalid API key: ${PUBLIC_KEY}`
-    )
-  })
-})
-
-describe.each([
-  { client: anonymousClient, permission: 'No' }
-])('Test on ranking rules', ({ client, permission }) => {
-  beforeAll(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index)
-  })
-  test(`${permission} key: try to get ranking rules and be denied`, async () => {
-    await expect(client.getIndex(index.uid).getRankingRules()).rejects.toThrowError(
-        `Invalid API key: Need a token`
-    )
-  })
-  test(`${permission} key: try to update ranking rules and be denied`, async () => {
-    await expect(client.getIndex(index.uid).updateRankingRules([])).rejects.toThrowError(
-        `Invalid API key: Need a token`
-    )
-  })
-  test(`${permission} key: try to reset ranking rules and be denied`, async () => {
-    await expect(client.getIndex(index.uid).resetRankingRules()).rejects.toThrowError(
-        `Invalid API key: Need a token`
-    )
-  })
-})
+describe.each([{ client: anonymousClient, permission: 'No' }])(
+  'Test on ranking rules',
+  ({ client, permission }) => {
+    beforeAll(async () => {
+      await clearAllIndexes(config)
+      await masterClient.createIndex(index)
+    })
+    test(`${permission} key: try to get ranking rules and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).getRankingRules()
+      ).rejects.toThrowError(`Invalid API key: Need a token`)
+    })
+    test(`${permission} key: try to update ranking rules and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).updateRankingRules([])
+      ).rejects.toThrowError(`Invalid API key: Need a token`)
+    })
+    test(`${permission} key: try to reset ranking rules and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).resetRankingRules()
+      ).rejects.toThrowError(`Invalid API key: Need a token`)
+    })
+  }
+)

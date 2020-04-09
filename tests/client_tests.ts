@@ -1,4 +1,3 @@
-
 import * as Types from '../src/types'
 import {
   clearAllIndexes,
@@ -8,7 +7,7 @@ import {
   publicClient,
   anonymousClient,
   PUBLIC_KEY,
-  PRIVATE_KEY
+  PRIVATE_KEY,
 } from './meilisearch-test-utils'
 
 const uidNoPrimaryKey = {

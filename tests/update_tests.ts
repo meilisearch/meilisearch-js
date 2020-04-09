@@ -7,7 +7,7 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY
+  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const index = {

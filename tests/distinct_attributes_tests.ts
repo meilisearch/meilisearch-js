@@ -7,7 +7,7 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY
+  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -30,7 +30,6 @@ const dataset = [
 
 jest.setTimeout(100 * 1000)
 
-
 beforeAll(async () => {
   await clearAllIndexes(config)
 })
@@ -46,86 +45,98 @@ describe.each([
   beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index)
-    await masterClient.getIndex(index.uid).addDocuments(dataset);
+    await masterClient.getIndex(index.uid).addDocuments(dataset)
     await sleep(500)
   })
   test(`${permission} key: Get default distinct attribute`, async () => {
-    await client.getIndex(index.uid).getDistinctAttribute()
-      .then((response: string | void ) => {
-        expect(response).toEqual(null);
+    await client
+      .getIndex(index.uid)
+      .getDistinctAttribute()
+      .then((response: string | void) => {
+        expect(response).toEqual(null)
       })
   })
   test(`${permission} key: Update distinct attribute`, async () => {
     const new_da = 'title'
-    await client.getIndex(index.uid).updateDistinctAttribute(new_da)
+    await client
+      .getIndex(index.uid)
+      .updateDistinctAttribute(new_da)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response.updateId
       })
     await sleep(500)
-    await client.getIndex(index.uid).getDistinctAttribute()
-    .then((response: string | void) => {
-      expect(response).toEqual(new_da);
-    })
+    await client
+      .getIndex(index.uid)
+      .getDistinctAttribute()
+      .then((response: string | void) => {
+        expect(response).toEqual(new_da)
+      })
   })
   test(`${permission} key: Reset distinct attribute`, async () => {
-    await client.getIndex(index.uid).resetDistinctAttribute()
+    await client
+      .getIndex(index.uid)
+      .resetDistinctAttribute()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response.updateId
       })
     await sleep(500)
-    await client.getIndex(index.uid).getDistinctAttribute()
-    .then((response: string | void) => {
-      expect(response).toEqual(null);
+    await client
+      .getIndex(index.uid)
+      .getDistinctAttribute()
+      .then((response: string | void) => {
+        expect(response).toEqual(null)
+      })
+  })
+})
+
+describe.each([{ client: publicClient, permission: 'Public' }])(
+  'Test on distinct attribute',
+  ({ client, permission }) => {
+    beforeAll(async () => {
+      await clearAllIndexes(config)
+      await masterClient.createIndex(index)
     })
-  })
-})
+    test(`${permission} key: try to get distinct attribute and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).getDistinctAttribute()
+      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+    })
+    test(`${permission} key: try to update distinct attribute and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).updateDistinctAttribute('title')
+      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+    })
+    test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).resetDistinctAttribute()
+      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+    })
+  }
+)
 
-describe.each([
-  { client: publicClient, permission: 'Public' }
-])('Test on distinct attribute', ({ client, permission }) => {
-  beforeAll(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index)
-  })
-  test(`${permission} key: try to get distinct attribute and be denied`, async () => {
-    await expect(client.getIndex(index.uid).getDistinctAttribute()).rejects.toThrowError(
-      `Invalid API key: ${PUBLIC_KEY}`
-    )
-  })
-  test(`${permission} key: try to update distinct attribute and be denied`, async () => {
-    await expect(client.getIndex(index.uid).updateDistinctAttribute('title')).rejects.toThrowError(
-      `Invalid API key: ${PUBLIC_KEY}`
-    )
-  })
-  test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
-    await expect(client.getIndex(index.uid).resetDistinctAttribute()).rejects.toThrowError(
-      `Invalid API key: ${PUBLIC_KEY}`
-    )
-  })
-})
-
-describe.each([
-  { client: anonymousClient, permission: 'No' }
-])('Test on distinct attribute', ({ client, permission }) => {
-  beforeAll(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index)
-  })
-  test(`${permission} key: try to get distinct attribute and be denied`, async () => {
-    await expect(client.getIndex(index.uid).getDistinctAttribute()).rejects.toThrowError(
-        `Invalid API key: Need a token`
-    )
-  })
-  test(`${permission} key: try to update distinct attribute and be denied`, async () => {
-    await expect(client.getIndex(index.uid).updateDistinctAttribute('title')).rejects.toThrowError(
-        `Invalid API key: Need a token`
-    )
-  })
-  test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
-    await expect(client.getIndex(index.uid).resetDistinctAttribute()).rejects.toThrowError(
-        `Invalid API key: Need a token`
-    )
-  })
-})
+describe.each([{ client: anonymousClient, permission: 'No' }])(
+  'Test on distinct attribute',
+  ({ client, permission }) => {
+    beforeAll(async () => {
+      await clearAllIndexes(config)
+      await masterClient.createIndex(index)
+    })
+    test(`${permission} key: try to get distinct attribute and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).getDistinctAttribute()
+      ).rejects.toThrowError(`Invalid API key: Need a token`)
+    })
+    test(`${permission} key: try to update distinct attribute and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).updateDistinctAttribute('title')
+      ).rejects.toThrowError(`Invalid API key: Need a token`)
+    })
+    test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).resetDistinctAttribute()
+      ).rejects.toThrowError(`Invalid API key: Need a token`)
+    })
+  }
+)

@@ -7,7 +7,7 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY
+  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -15,7 +15,6 @@ const index = {
 }
 
 jest.setTimeout(100 * 1000)
-
 
 beforeAll(async () => {
   await clearAllIndexes(config)
@@ -36,41 +35,49 @@ describe.each([
     await masterClient.createIndex(index)
   })
   test(`${permission} key: Get accept new fields to be true`, async () => {
-    await client.getIndex(index.uid).getAcceptNewFields()
+    await client
+      .getIndex(index.uid)
+      .getAcceptNewFields()
       .then((response: Boolean) => {
         expect(response).toEqual(true)
       })
   })
   test(`${permission} key: Update accept new fields to false`, async () => {
-    await client.getIndex(index.uid).updateAcceptNewFields(false)
+    await client
+      .getIndex(index.uid)
+      .updateAcceptNewFields(false)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response.updateId
       })
     await sleep(500)
-    await client.getIndex(index.uid).getAcceptNewFields()
-    .then((response: Boolean) => {
-      expect(response).toEqual(false)
+    await client
+      .getIndex(index.uid)
+      .getAcceptNewFields()
+      .then((response: Boolean) => {
+        expect(response).toEqual(false)
+      })
+  })
+})
+
+describe.each([{ client: publicClient, permission: 'Public' }])(
+  'Test on accept-new-fields',
+  ({ client, permission }) => {
+    test(`${permission} key: try to get accept-new-fields and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).getAcceptNewFields()
+      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
     })
-  })
-})
+  }
+)
 
-describe.each([
-  { client: publicClient, permission: 'Public' }
-])('Test on accept-new-fields', ({ client, permission }) => {
-  test(`${permission} key: try to get accept-new-fields and be denied`, async () => {
-    await expect(client.getIndex(index.uid).getAcceptNewFields()).rejects.toThrowError(
-      `Invalid API key: ${PUBLIC_KEY}`
-    )
-  })
-})
-
-describe.each([
-  { client: anonymousClient, permission: 'No' }
-])('Test on accept-new-fields', ({ client, permission }) => {
-  test(`${permission} key: try to get accept-new-fields and be denied`, async () => {
-    await expect(client.getIndex(index.uid).getAcceptNewFields()).rejects.toThrowError(
-      `Invalid API key: Need a token`
-    )
-  })
-})
+describe.each([{ client: anonymousClient, permission: 'No' }])(
+  'Test on accept-new-fields',
+  ({ client, permission }) => {
+    test(`${permission} key: try to get accept-new-fields and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).getAcceptNewFields()
+      ).rejects.toThrowError(`Invalid API key: Need a token`)
+    })
+  }
+)

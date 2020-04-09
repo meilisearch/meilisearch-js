@@ -68,26 +68,26 @@ afterAll(() => {
 describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
-])('Test on search', ({ client, permission }) => {
+])('Test on search', ({ client, permission }) => {})
 
-})
+describe.each([{ client: publicClient, permission: 'Public' }])(
+  'Test on search',
+  ({ client, permission }) => {
+    test(`${permission} key: try to  and be denied`, async () => {
+      await expect(client.stats()).rejects.toThrowError(
+        `Invalid API key: ${PUBLIC_KEY}`
+      )
+    })
+  }
+)
 
-describe.each([
-  { client: publicClient, permission: 'Public' }
-])('Test on search', ({ client, permission }) => {
-  test(`${permission} key: try to  and be denied`, async () => {
-    await expect(client.stats()).rejects.toThrowError(
-      `Invalid API key: ${PUBLIC_KEY}`
-    )
-  })
-})
-
-describe.each([
-  { client: anonymousClient, permission: 'No' }
-])('Test on search', ({ client, permission }) => {
-  test(`${permission} key: try  and be denied`, async () => {
-    await expect(client.listIndexes()).rejects.toThrowError(
-      `Invalid API key: Need a token`
-    )
-  })
-})
+describe.each([{ client: anonymousClient, permission: 'No' }])(
+  'Test on search',
+  ({ client, permission }) => {
+    test(`${permission} key: try  and be denied`, async () => {
+      await expect(client.listIndexes()).rejects.toThrowError(
+        `Invalid API key: Need a token`
+      )
+    })
+  }
+)

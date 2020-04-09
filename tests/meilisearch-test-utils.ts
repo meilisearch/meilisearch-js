@@ -56,5 +56,5 @@ export {
   publicClient,
   anonymousClient,
   PUBLIC_KEY,
-  PRIVATE_KEY
+  PRIVATE_KEY,
 }

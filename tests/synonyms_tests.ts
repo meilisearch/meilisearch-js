@@ -7,7 +7,7 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY
+  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -30,7 +30,6 @@ const dataset = [
 
 jest.setTimeout(100 * 1000)
 
-
 beforeAll(async () => {
   await clearAllIndexes(config)
 })
@@ -46,88 +45,100 @@ describe.each([
   beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index)
-    await masterClient.getIndex(index.uid).addDocuments(dataset);
+    await masterClient.getIndex(index.uid).addDocuments(dataset)
     await sleep(500)
   })
   test(`${permission} key: Get default synonyms`, async () => {
-    await client.getIndex(index.uid).getSynonyms()
+    await client
+      .getIndex(index.uid)
+      .getSynonyms()
       .then((response: object) => {
-        expect(response).toEqual({});
+        expect(response).toEqual({})
       })
   })
   test(`${permission} key: Update synonyms`, async () => {
     const new_sy = {
-      'hp': ['harry potter']
-    };
-    await client.getIndex(index.uid).updateSynonyms(new_sy)
+      hp: ['harry potter'],
+    }
+    await client
+      .getIndex(index.uid)
+      .updateSynonyms(new_sy)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response.updateId
       })
     await sleep(500)
-    await client.getIndex(index.uid).getSynonyms()
-    .then((response: String[]) => {
-      expect(response).toEqual(new_sy);
-    })
+    await client
+      .getIndex(index.uid)
+      .getSynonyms()
+      .then((response: String[]) => {
+        expect(response).toEqual(new_sy)
+      })
   })
   test(`${permission} key: Reset synonyms`, async () => {
-    await client.getIndex(index.uid).resetSynonyms()
+    await client
+      .getIndex(index.uid)
+      .resetSynonyms()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response.updateId
       })
     await sleep(500)
-    await client.getIndex(index.uid).getSynonyms()
-    .then((response: object) => {
-      expect(response).toEqual({});
+    await client
+      .getIndex(index.uid)
+      .getSynonyms()
+      .then((response: object) => {
+        expect(response).toEqual({})
+      })
+  })
+})
+
+describe.each([{ client: publicClient, permission: 'Public' }])(
+  'Test on synonyms',
+  ({ client, permission }) => {
+    beforeAll(async () => {
+      await clearAllIndexes(config)
+      await masterClient.createIndex(index)
     })
-  })
-})
+    test(`${permission} key: try to get synonyms and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).getSynonyms()
+      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+    })
+    test(`${permission} key: try to update synonyms and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).updateSynonyms({})
+      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+    })
+    test(`${permission} key: try to reset synonyms and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).resetSynonyms()
+      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+    })
+  }
+)
 
-describe.each([
-  { client: publicClient, permission: 'Public' }
-])('Test on synonyms', ({ client, permission }) => {
-  beforeAll(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index)
-  })
-  test(`${permission} key: try to get synonyms and be denied`, async () => {
-    await expect(client.getIndex(index.uid).getSynonyms()).rejects.toThrowError(
-      `Invalid API key: ${PUBLIC_KEY}`
-    )
-  })
-  test(`${permission} key: try to update synonyms and be denied`, async () => {
-    await expect(client.getIndex(index.uid).updateSynonyms({})).rejects.toThrowError(
-      `Invalid API key: ${PUBLIC_KEY}`
-    )
-  })
-  test(`${permission} key: try to reset synonyms and be denied`, async () => {
-    await expect(client.getIndex(index.uid).resetSynonyms()).rejects.toThrowError(
-      `Invalid API key: ${PUBLIC_KEY}`
-    )
-  })
-})
-
-describe.each([
-  { client: anonymousClient, permission: 'No' }
-])('Test on synonyms', ({ client, permission }) => {
-  beforeAll(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index)
-  })
-  test(`${permission} key: try to get synonyms and be denied`, async () => {
-    await expect(client.getIndex(index.uid).getSynonyms()).rejects.toThrowError(
-        `Invalid API key: Need a token`
-    )
-  })
-  test(`${permission} key: try to update synonyms and be denied`, async () => {
-    await expect(client.getIndex(index.uid).updateSynonyms({})).rejects.toThrowError(
-        `Invalid API key: Need a token`
-    )
-  })
-  test(`${permission} key: try to reset synonyms and be denied`, async () => {
-    await expect(client.getIndex(index.uid).resetSynonyms()).rejects.toThrowError(
-        `Invalid API key: Need a token`
-    )
-  })
-})
+describe.each([{ client: anonymousClient, permission: 'No' }])(
+  'Test on synonyms',
+  ({ client, permission }) => {
+    beforeAll(async () => {
+      await clearAllIndexes(config)
+      await masterClient.createIndex(index)
+    })
+    test(`${permission} key: try to get synonyms and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).getSynonyms()
+      ).rejects.toThrowError(`Invalid API key: Need a token`)
+    })
+    test(`${permission} key: try to update synonyms and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).updateSynonyms({})
+      ).rejects.toThrowError(`Invalid API key: Need a token`)
+    })
+    test(`${permission} key: try to reset synonyms and be denied`, async () => {
+      await expect(
+        client.getIndex(index.uid).resetSynonyms()
+      ).rejects.toThrowError(`Invalid API key: Need a token`)
+    })
+  }
+)
