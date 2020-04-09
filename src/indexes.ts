@@ -186,7 +186,7 @@ class Indexes extends MeiliAxiosWrapper {
    * @memberof Indexes
    * @method getDocument
    */
-  getDocument(documentId: string): Promise<object> {
+  getDocument(documentId: string | number): Promise<object> {
     const url = `/indexes/${this.indexUid}/documents/${documentId}`
 
     return this.get(url)
