@@ -70,7 +70,7 @@ class Indexes extends MeiliAxiosWrapper {
       }
       if (options.attributesToRetrieve) {
         if (Array.isArray(options.attributesToRetrieve)) {
-          params.attributesToRetrieve = options.attributesToRetrieve.join()
+          params.attributesToRetrieve = options.attributesToRetrieve.join(',')
         } else {
           params.attributesToRetrieve = options.attributesToRetrieve
         }
@@ -78,7 +78,7 @@ class Indexes extends MeiliAxiosWrapper {
 
       if (options.attributesToCrop) {
         if (Array.isArray(options.attributesToCrop)) {
-          params.attributesToCrop = options.attributesToCrop.join()
+          params.attributesToCrop = options.attributesToCrop.join(',')
         } else {
           params.attributesToCrop = options.attributesToCrop
         }
@@ -88,7 +88,7 @@ class Indexes extends MeiliAxiosWrapper {
       }
       if (options.attributesToHighlight) {
         if (Array.isArray(options.attributesToHighlight)) {
-          params.attributesToHighlight = options.attributesToHighlight.join()
+          params.attributesToHighlight = options.attributesToHighlight.join(',')
         } else {
           params.attributesToHighlight = options.attributesToHighlight
         }
