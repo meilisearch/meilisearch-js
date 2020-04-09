@@ -134,7 +134,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await clearAllIndexes(config)
       await masterClient.createIndex(index)
     })
-    test(`${permission} key: Try to get a update and be denied`, async () => {
+    test(`${permission} key: Try to get an update and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getUpdateStatus(0)
       ).rejects.toThrowError(`Invalid API key: Need a token`)
