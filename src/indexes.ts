@@ -69,32 +69,34 @@ class Indexes extends MeiliAxiosWrapper {
         params.limit = options.limit
       }
       if (options.attributesToRetrieve) {
-        params.attributesToRetrieve = options.attributesToRetrieve.join()
+        if (Array.isArray(options.attributesToRetrieve)) {
+          params.attributesToRetrieve = options.attributesToRetrieve.join()
+        } else {
+          params.attributesToRetrieve = options.attributesToRetrieve
+        }
       }
-      if (options.attributesToSearchIn) {
-        params.attributesToSearchIn = options.attributesToSearchIn.join()
-      }
+
       if (options.attributesToCrop) {
-        params.attributesToCrop = options.attributesToCrop.join()
+        if (Array.isArray(options.attributesToCrop)) {
+          params.attributesToCrop = options.attributesToCrop.join()
+        } else {
+          params.attributesToCrop = options.attributesToCrop
+        }
       }
       if (options.cropLength) {
         params.cropLength = options.cropLength
       }
       if (options.attributesToHighlight) {
-        let attributesToHighlight: string[]
-        if (!Array.isArray(options.attributesToHighlight)) {
-          attributesToHighlight = [options.attributesToHighlight]
+        if (Array.isArray(options.attributesToHighlight)) {
+          params.attributesToHighlight = options.attributesToHighlight.join()
         } else {
-          attributesToHighlight = options.attributesToHighlight
+          params.attributesToHighlight = options.attributesToHighlight
         }
-        params.attributesToHighlight = attributesToHighlight.join()
       }
       if (options.filters) {
         params.filters = options.filters
       }
-      if (options.timeoutMs) {
-        params.timeoutMs = options.timeoutMs
-      }
+
       if (options.matches) {
         params.matches = options.matches
       }
