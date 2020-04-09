@@ -11,6 +11,11 @@
     "wrapper",
     "meili"
   ],
+  "author": "qdequele <quentin@meilisearch.com>",
+  "contributors": [
+    "cvermand <charlotte@meilisearch.com>"
+  ],
+  "license": "MIT",
   "main": "./dist/bundles/meilisearch.cjs.js",
   "module": "./dist/bundles/meilisearch.esm.js",
   "browser": "./dist/bundles/meilisearch.umd.js",
@@ -40,10 +45,6 @@
     "lint:fix": "yarn lint --fix",
     "typingsheader": "node scripts/build.js"
   },
-  "author": "qdequele <quentin@meilisearch.com>",
-  "contributors": [
-    "cvermand <charlotte@meilisearch.com>"
-  ],
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}": [
       "prettier --write",
@@ -54,7 +55,6 @@
       "git add"
     ]
   },
-  "license": "MIT",
   "dependencies": {
     "axios": "^0.19.2"
   },
