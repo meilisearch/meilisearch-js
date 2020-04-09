@@ -4,7 +4,7 @@ const config = {
   preset: 'ts-jest',
   rootDir: '..',
   testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
-  testPathIgnorePatterns: ['dist', 'utils'],
+  testPathIgnorePatterns: ['meilisearch-test-utils'],
   coverageThreshold: {
     global: {
       'ts-jest': {
