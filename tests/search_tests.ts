@@ -1,27 +1,13 @@
-import MeiliSearch from '../src'
 import * as Types from '../src/types'
-import { clearAllIndexes } from './utils'
-
-const { HOST: host, MASTER_KEY, PRIVATE_KEY, PUBLIC_KEY } = process.env
-const config = {
-  host,
-  apiKey: MASTER_KEY,
-}
-const masterClient = new MeiliSearch({
-  host,
-  apiKey: MASTER_KEY,
-})
-const privateClient = new MeiliSearch({
-  host,
-  apiKey: PRIVATE_KEY,
-})
-const publicClient = new MeiliSearch({
-  host,
-  apiKey: PUBLIC_KEY,
-})
-const anonymousClient = new MeiliSearch({
-  host,
-})
+import {
+  clearAllIndexes,
+  sleep,
+  config,
+  masterClient,
+  privateClient,
+  publicClient,
+  anonymousClient
+} from './meilisearch-test-utils'
 
 const index = {
   uid: 'movies_test',
@@ -49,10 +35,6 @@ const dataset = [
 ]
 
 jest.setTimeout(100 * 1000)
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
 
 beforeAll(async () => {
   await clearAllIndexes(config)
