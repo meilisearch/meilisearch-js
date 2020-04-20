@@ -1,3 +1,5 @@
+import { AxiosError, AxiosInstance, CancelTokenSource, AxiosRequestConfig, AxiosResponse } from 'axios'
+
 ///
 /// Global interfaces
 ///
@@ -8,6 +10,11 @@ export interface Index {
   uid: string
   createdAt: Date
   updatedAt: Date
+}
+
+export interface Config {
+  host: string
+  apiKey?: string
 }
 
 ///
@@ -65,11 +72,6 @@ export interface SearchResponse<T = any> {
   limit: number
   processingTimeMs: number
   query: string
-}
-
-export interface Config {
-  host: string
-  apiKey?: string
 }
 
 export interface FieldFrequency {
@@ -196,3 +198,132 @@ export interface SysInfoPretty {
     cpu: string
   }
 }
+
+/*
+ ** MeiliSearch Class
+ */
+
+
+export interface Indexes extends MeiliAxiosWrapper{
+  indexUid: string;
+  getUpdateStatus(updateId: number): Promise<Update>;
+  getAllUpdateStatus(): Promise<Update[]>;
+  search(query: string, options?: SearchParams): Promise<SearchResponse>;
+  show(): Promise<Index>;
+  updateIndex(data: UpdateIndexRequest): Promise<Index>;
+  deleteIndex(): Promise<string>;
+  getStats(): Promise<IndexStats>;
+  getDocuments(options?: GetDocumentsParams): Promise<Document[]>;
+  getDocument(documentId: string | number): Promise<Document>;
+  addDocuments(
+    documents: Document[],
+    options?: AddDocumentParams
+  ): Promise<EnqueuedUpdate>;
+  updateDocuments(
+    documents: Document[],
+    options?: AddDocumentParams
+  ): Promise<EnqueuedUpdate>;
+  deleteDocument(documentId: string | number): Promise<EnqueuedUpdate>;
+  deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedUpdate>;
+  deleteAllDocuments(): Promise<EnqueuedUpdate>;
+  getSettings(): Promise<Settings>;
+  updateSettings(settings: Settings): Promise<EnqueuedUpdate>;
+  resetSettings(): Promise<EnqueuedUpdate>;
+  getSynonyms(): Promise<object>;
+  updateSynonyms(synonyms: object): Promise<object>;
+  resetSynonyms(): Promise<object>;
+  getStopWords(): Promise<string[]>;
+  updateStopWords(stopWords: string[]): Promise<EnqueuedUpdate>;
+  resetStopWords(): Promise<EnqueuedUpdate>;
+  getRankingRules(): Promise<string[]>;
+  updateRankingRules(rankingRules: string[]): Promise<EnqueuedUpdate>;
+  resetRankingRules(): Promise<EnqueuedUpdate>;
+  getDistinctAttribute(): Promise<string | void>;
+  updateDistinctAttribute(distinctAttribute: string): Promise<EnqueuedUpdate>;
+  resetDistinctAttribute(): Promise<EnqueuedUpdate>;
+  getSearchableAttributes(): Promise<string[]>;
+  updateSearchableAttributes(
+    searchableAttributes: string[]
+  ): Promise<EnqueuedUpdate>;
+  resetSearchableAttributes(): Promise<EnqueuedUpdate>;
+  getDisplayedAttributes(): Promise<string[]>;
+  updateDisplayedAttributes(
+    displayedAttributes: string[]
+  ): Promise<EnqueuedUpdate>;
+  resetDisplayedAttributes(): Promise<EnqueuedUpdate>;
+  getAcceptNewFields(): Promise<boolean>;
+  updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>;
+}
+
+export interface Meilisearch extends MeiliAxiosErrorInterface {
+  config: Config;
+  getIndex(indexUid: string): Indexes;
+  listIndexes(): Promise<IndexResponse[]>;
+  createIndex(data: IndexRequest): Promise<IndexResponse>;
+  getKeys(): Promise<Keys>;
+  isHealthy(): Promise<boolean>;
+  setHealthy(): Promise<void>;
+  setUnhealthy(): Promise<void>;
+  changeHealthTo(health: boolean): Promise<void>;
+  stats(): Promise<Stats>;
+  version(): Promise<Version>;
+  sysInfo(): Promise<SysInfo>;
+  prettySysInfo(): Promise<SysInfoPretty>;
+}
+
+export interface MeiliAxiosWrapper {
+  instance: AxiosInstance;
+  cancelTokenSource: CancelTokenSource;
+  get<T = any, R = AxiosResponse<T>>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<R>;
+  post<T = any, R = AxiosResponse<T>>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<R>;
+  put<T = any, R = AxiosResponse<T>>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<R>;
+  patch<T = any, R = AxiosResponse<T>>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<R>;
+  delete<T = any, R = AxiosResponse<T>>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<R>;
+}
+
+/*
+ ** ERROR HANDLER
+ */
+
+export interface MeiliAxiosErrorInterface extends Error {
+  name: string
+  message: string
+  stack?: string
+}
+export interface MeiliAxiosErrorResponse {
+  status?: number
+  statusText?: string
+  path?: string
+  method?: string
+  body?: object
+}
+export interface MeiliAxiosErrorRequest {
+  url?: string
+  path?: string
+  method?: string
+}
+
+export type MeiliAxiosErrorConstructor = new (
+  error: AxiosError,
+  cachedStack?: string
+) => void
+
+export default Indexes;
