@@ -10,7 +10,7 @@
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
 
-class Indexes extends MeiliAxiosWrapper {
+class Indexes extends MeiliAxiosWrapper implements Types.Indexes{
   indexUid: string
   constructor(config: Types.Config, indexUid: string) {
     super(config)
@@ -114,7 +114,7 @@ class Indexes extends MeiliAxiosWrapper {
   /**
    * Show index information.
    * @memberof Indexes
-   * @method getIndex
+   * @method show
    */
   show(): Promise<Types.Index> {
     const url = `/indexes/${this.indexUid}`
