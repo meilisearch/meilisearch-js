@@ -1,15 +1,29 @@
-# MeiliSearch Javascript Client
+<p align="center">
+  <img src="https://res.cloudinary.com/meilisearch/image/upload/v1587402338/SDKs/meilisearch_js.svg" alt="MeiliSearch-JavaScript" width="200" height="200" />
+</p>
 
-[![NPM version](https://img.shields.io/npm/v/meilisearch.svg)](https://www.npmjs.com/package/meilisearch)
-[![Standard Version](https://img.shields.io/badge/release-standard%20version-brightgreen.svg)](https://github.com/conventional-changelog/standard-version)
-[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://img.shields.io/badge/licence-MIT-blue.svg)
+<h1 align="center">MeiliSearch JavaScript</h1>
 
-The Javascript client for MeiliSearch API.
+<h4 align="center">
+  <a href="https://github.com/meilisearch/MeiliSearch">MeiliSearch</a> |
+  <a href="https://www.meilisearch.com">Website</a> |
+  <a href="https://blog.meilisearch.com">Blog</a> |
+  <a href="https://twitter.com/meilisearch">Twitter</a> |
+  <a href="https://docs.meilisearch.com">Documentation</a> |
+  <a href="https://docs.meilisearch.com/resources/faq.html">FAQ</a>
+</h4>
 
-MeiliSearch provides an ultra relevant and instant full-text search. Our solution is open-source and you can check out [our repository here](https://github.com/meilisearch/MeiliSearch).
+<p align="center">
+  <a href="https://www.npmjs.com/package/meilisearch"><img src="https://img.shields.io/npm/v/meilisearch.svg" alt="NPM version"></a>
+  <a href="https://github.com/conventional-changelog/standard-version"><img src="https://img.shields.io/badge/release-standard%20version-brightgreen.svg" alt="Standard Version"></a>
+  <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/styled_with-prettier-ff69b4.svg" alt="Prettier"></a>
+  <a href="https://github.com/meilisearch/meilisearch-js/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
+  <a href="https://slack.meilisearch.com"><img src="https://img.shields.io/badge/slack-MeiliSearch-blue.svg?logo=slack" alt="Slack"></a>
+</p>
 
-Here is the [MeiliSearch documentation](https://docs.meilisearch.com/) 📖
+<p align="center">⚡ Lightning Fast, Ultra Relevant, and Typo-Tolerant Search Engine MeiliSearch client written in JavaScript</p>
+
+**MeiliSearch JavaScript** is a client for **MeiliSearch** written in JavaScript. **MeiliSearch** is a powerful, fast, open-source, easy to use and deploy search engine. Both searching and indexing are highly customizable. Features such as typo-tolerance, filters, and synonyms are provided out-of-the-box.
 
 ## Table of Contents <!-- omit in toc -->
 
