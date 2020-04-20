@@ -1,32 +1,10 @@
 import { AxiosError } from 'axios'
+import * as Types from './types'
 
-interface MeiliAxiosErrorInterface extends Error {
-  name: string
-  message: string
-  stack?: string
-}
-interface MeiliAxiosErrorResponse {
-  status?: number
-  statusText?: string
-  path?: string
-  method?: string
-  body?: object
-}
-interface MeiliAxiosErrorRequest {
-  url?: string
-  path?: string
-  method?: string
-}
-
-type MeiliAxiosErrorConstructor = new (
-  error: AxiosError,
-  cachedStack?: string
-) => void
-
-const MeiliAxiosError: MeiliAxiosErrorConstructor = class extends Error
-  implements MeiliAxiosErrorInterface {
-  response?: MeiliAxiosErrorResponse
-  request?: MeiliAxiosErrorRequest
+const MeiliAxiosError: Types.MeiliAxiosErrorConstructor = class extends Error
+  implements Types.MeiliAxiosErrorInterface {
+  response?: Types.MeiliAxiosErrorResponse
+  request?: Types.MeiliAxiosErrorRequest
 
   constructor(error: AxiosError, cachedStack?: string) {
     super(error.message)
