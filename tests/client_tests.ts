@@ -164,7 +164,7 @@ describe.each([{ client: masterClient, permission: 'Master' }])(
       })
       test(`${permission} key: get system info`, async () => {
         await client.sysInfo().then((response: Types.SysInfo) => {
-          expect(response).toHaveProperty('memoryUsage', expect.any(Number))
+          expect(response).toHaveProperty('memoryUsage', null)
           expect(response).toHaveProperty('processorUsage', expect.any(Array))
           expect(response.global).toHaveProperty(
             'totalMemory',

@@ -127,7 +127,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .search('prince', {
-        filters: 'title:Le Petit Prince',
+        filters: 'title = "Le Petit Prince"',
         attributesToCrop: '*',
         cropLength: 5,
         matches: true,
@@ -139,7 +139,10 @@ describe.each([
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(1)
-        expect(response.hits[0]).toHaveProperty('_matchesInfo', {})
+        expect(response.hits[0]).toHaveProperty('_matchesInfo', {
+          comment: [{ start: 3, length: 6 }],
+          title: [{ start: 1, length: 6 }],
+        })
       })
   })
 
@@ -153,7 +156,7 @@ describe.each([
         attributesToCrop: '*',
         cropLength: 6,
         attributesToHighlight: '*',
-        filters: 'title:Le Petit Prince',
+        filters: 'title = "Le Petit Prince"',
         matches: true,
       })
       .then((response: Types.SearchResponse) => {
@@ -188,7 +191,7 @@ describe.each([
         attributesToCrop: ['id', 'title'],
         cropLength: 6,
         attributesToHighlight: ['id', 'title'],
-        filters: 'title:Le Petit Prince',
+        filters: 'title = "Le Petit Prince"',
         matches: true,
       })
       .then((response: Types.SearchResponse) => {
