@@ -72,8 +72,7 @@
     "no-unused-declaration": true,
     "no-dtslint-typo": true,
     "no-assign-mutated-array": true,
-    "no-any": false,
-    "no-magic-numbers": true
+    "no-any": false
   },
   "linterOptions": {
     "exclude": [
