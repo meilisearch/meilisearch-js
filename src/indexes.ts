@@ -12,8 +12,6 @@ import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
 import { sleep } from './utils'
 
-
-
 class Indexes extends MeiliAxiosWrapper implements Types.Indexes {
   indexUid: string
   constructor(config: Types.Config, indexUid: string) {
