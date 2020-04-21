@@ -7,10 +7,14 @@
 
 'use strict'
 
+import { MeiliSearchTimeOutError } from './errors/meilisearch-timeout-error'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
+import { sleep } from './utils'
 
-class Indexes extends MeiliAxiosWrapper implements Types.Indexes{
+
+
+class Indexes extends MeiliAxiosWrapper implements Types.Indexes {
   indexUid: string
   constructor(config: Types.Config, indexUid: string) {
     super(config)
@@ -30,6 +34,24 @@ class Indexes extends MeiliAxiosWrapper implements Types.Indexes{
     const url = `/indexes/${this.indexUid}/updates/${updateId}`
 
     return this.get(url)
+  }
+
+  async waitForPendingUpdate(
+    updateId: number,
+    {
+      timeOutMs = 5000,
+      intervalMs = 50,
+    }: { timeOutMs?: number; intervalMs?: number } = {}
+  ) {
+    const startingTime = Date.now()
+    while (Date.now() - startingTime < timeOutMs) {
+      const response = await this.getUpdateStatus(updateId)
+      if (response.status !== 'enqueued') return response
+      await sleep(intervalMs)
+    }
+    throw new MeiliSearchTimeOutError(
+      `timeout of ${timeOutMs}ms has exceeded on process ${updateId} when waiting for pending update to resolve.`
+    )
   }
 
   /**
@@ -319,7 +341,7 @@ class Indexes extends MeiliAxiosWrapper implements Types.Indexes{
    * @memberof Indexes
    * @method updateSynonyms
    */
-  updateSynonyms(synonyms: object): Promise<object> {
+  updateSynonyms(synonyms: object): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/synonyms`
 
     return this.post(url, synonyms)
@@ -330,7 +352,7 @@ class Indexes extends MeiliAxiosWrapper implements Types.Indexes{
    * @memberof Indexes
    * @method resetSynonyms
    */
-  resetSynonyms(): Promise<object> {
+  resetSynonyms(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.indexUid}/settings/synonyms`
 
     return this.delete(url)
