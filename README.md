@@ -297,29 +297,29 @@ This package works for MeiliSearch `v0.9.x`.
 
 - Make a search request:
 
-`client.getIndex('xxx').search(query: string, options?: Types.SearchParams): Promise<Types.SearchResponse>`
+`client.getIndex('xxx').search(query: string, options?: SearchParams): Promise<SearchResponse>`
 
 ### Indexes
 
 - List all indexes:
 
-`client.listIndexes(): Promise<object[]>`
+`client.listIndexes(): Promise<IndexResponse[]>`
 
 - Create new index:
 
-`client.createIndex(data: Types.IndexRequest): Promise<Types.IndexResponse>`
+`client.createIndex(data: IndexRequest): Promise<IndexResponse>`
 
 - Get index object:
 
-`client.getIndex(uid: string)`
+`client.getIndex(uid: string): Indexes`
 
 - Show Index information:
 
-`index.show(): Promise<Types.index>`
+`index.show(): Promise<IndexResponse>`
 
 - Update Index:
 
-`index.updateIndex(data: Types.UpdateIndexRequest): Promise<Types.index>`
+`index.updateIndex(data: UpdateIndexRequest): Promise<IndexResponse>`
 
 - Delete Index:
 
@@ -327,31 +327,35 @@ This package works for MeiliSearch `v0.9.x`.
 
 - Get specific index stats
 
-`index.getStats(): Promise<object>`
+`index.getStats(): Promise<IndexStats>`
 
 ### Updates
 
 - Get One update info:
 
-`index.getUpdateStatus(updateId: number): Promise<object>`
+`index.getUpdateStatus(updateId: number): Promise<Update>`
 
 - Get all updates info:
 
-`index.getAllUpdateStatus(): Promise<object[]>`
+`index.getAllUpdateStatus(): Promise<Update[]>`
+
+- Wait for pending update:
+
+`index.waitForPendingUpdate(updateId: number, { timeOutMs?: number, intervalMs?: number }): Promise<Update>`
 
 ### Documents
 
 - Add or replace multiple documents:
 
-`index.addDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
+`index.addDocuments(documents: object[]): Promise<EnqueuedUpdate>`
 
 - Add or update multiple documents:
 
-`index.updateDocuments(documents: object[]): Promise<Types.AsyncUpdateId>`
+`index.updateDocuments(documents: object[]): Promise<EnqueuedUpdate>`
 
 - Get Documents:
 
-`index.getDocuments(params: Types.getDocumentsParams): Promise<object[]>`
+`index.getDocuments(params: getDocumentsParams): Promise<object[]>`
 
 - Get one document:
 
@@ -359,35 +363,103 @@ This package works for MeiliSearch `v0.9.x`.
 
 - Delete one document:
 
-`index.deleteDocument(documentId: string): Promise<Types.AsyncUpdateId>`
+`index.deleteDocument(documentId: string): Promise<EnqueuedUpdate>`
 
 - Delete multiple documents:
 
-`index.deleteDocuments(documentsIds: string[]): Promise<Types.AsyncUpdateId>`
+`index.deleteDocuments(documentsIds: string[]): Promise<EnqueuedUpdate>`
 
 ### Settings
 
 - Get settings:
 
-`index.getSettings(): Promise<object>`
+`index.getSettings(): Promise<Settings>`
 
 - Update settings:
 
-`index.updateSettings(settings: object): Promise<void>`
+`index.updateSettings(settings: Settings): Promise<EnqueuedUpdate>`
+
+- Reset settings:
+
+`index.resetSettings(): Promise<EnqueuedUpdate>`
+
 
 ### Synonyms
 
-- List all synonyms:
+- Get synonyms:
 
-`index.listSynonyms(): Promise<object[]>`
+`index.getSynonyms(): Promise<object>`
 
-- Add a synonyms:
+- Update synonyms:
 
-`index.createSynonym(input: string, synonyms: string[]): Promise<object>`
+`index.updateSynonym(synonyms: object): Promise<EnqueuedUpdate>`
 
-#### Stop-words
+- Reset synonyms:
 
-Waiting on MeiliSearch v0.9.0
+`index.resetSynonym(): Promise<EnqueuedUpdate>`
+
+### Stop-words
+
+- Get Stop Words
+  `index.getStopWords(): Promise<string[]>`
+
+- Update Stop Words
+  `index.updateStopWords(string[]): Promise<EnqueuedUpdate>`
+
+- Reset Stop Words
+  `index.updateStopWords(): Promise<EnqueuedUpdate>`
+
+### Ranking rules
+
+- Get Ranking Rules
+`index.getRankingRules(): Promise<string[]>`
+
+- Update Ranking Rules
+`index.updateRankingRules(rankingRules: string[]): Promise<EnqueuedUpdate>`
+
+- Reset Ranking Rules
+`index.resetRankingRules(): Promise<EnqueuedUpdate>`
+
+### Distinct Attribute
+
+- Get Distinct Attribute
+`index.getDistinctAttribute(): Promise<string | void>`
+
+- Update Distinct Attribute
+`index.updateDistinctAttribute(distinctAttribute: string): Promise<EnqueuedUpdate>`
+
+- Reset Distinct Attribute
+`index.resetDistinctAttribute(): Promise<EnqueuedUpdate>`
+
+### Searchable Attributes
+
+- Get Searchable Attributes
+`index.getSearchableAttributes(): Promise<string[]>`
+
+- Update Searchable Attributes
+`index.updateSearchableAttributes(searchableAttributes: string[]): Promise<EnqueuedUpdate>`
+
+- Reset Searchable Attributes
+`index.resetSearchableAttributes(): Promise<EnqueuedUpdate>`
+
+### Displayed Attributes
+
+- Get Displayed Attributes
+`index.getDisplayedAttributes(): Promise<string[]>`
+
+- Update Displayed Attributes
+`index.updateDisplayedAttributes(displayedAttributes: string[]): Promise<EnqueuedUpdate>`
+
+- Reset Displayed Attributes
+`index.resetDisplayedAttributes(): Promise<EnqueuedUpdate>`
+
+### Accept new fields
+
+- Get Accept new fields
+`index.getAcceptNewFields(): Promise<boolean>`
+
+- Update Accept new fields
+`index.updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>`
 
 ### Healthy
 
@@ -395,36 +467,24 @@ Waiting on MeiliSearch v0.9.0
 
 `client.isHealthy(): Promise<void>`
 
-- Set the server healthy
-
-`client.setHealthy(): Promise<void>`
-
-- Set the server unhealthy
-
-`client.setUnhealthy(): Promise<void>`
-
-- Change the server healthyness
-
-`client.changeHealthTo(health: boolean): Promise<void>`
-
 ### Stats
 
 - Get database stats
 
-`client.stats(): Promise<object>`
+`client.stats(): Promise<Stats>`
 
 ### Version
 
 - Get binary version
 
-`client.version(): Promise<object>`
+`client.version(): Promise<Version>`
 
 ### System
 
 - Get system information
 
-`client.systemInformation(): Promise<object>`
+`client.systemInformation(): Promise<SysInfo>`
 
 - Get system information (pretty mode)
 
-`client.systemInformationPretty(): Promise<object>`
+`client.systemInformationPretty(): Promise<SysInfoPretty>`
