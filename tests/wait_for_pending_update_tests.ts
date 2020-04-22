@@ -1,9 +1,9 @@
-import * as Types from '../src/types'
 import {
   clearAllIndexes,
   sleep,
   config,
   masterClient,
+  privateClient
 } from './meilisearch-test-utils'
 
 const index = {
