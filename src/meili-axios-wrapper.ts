@@ -13,7 +13,7 @@ import instance, {
   AxiosResponse,
   CancelTokenSource,
 } from 'axios'
-import MeiliAxiosError from './meili-axios-error'
+import MeiliSearchApiError from './errors/meilisearch-error'
 import * as Types from './types'
 
 class MeiliAxiosWrapper {
@@ -57,7 +57,7 @@ class MeiliAxiosWrapper {
       .get(url, config)
       .then((response: any) => response)
       .catch((e) => {
-        const meiliError = new MeiliAxiosError(e, cachedStack)
+        const meiliError = new MeiliSearchApiError(e, cachedStack)
         throw meiliError
       })
   }
@@ -73,7 +73,7 @@ class MeiliAxiosWrapper {
       .post(url, data, config)
       .then((response: any) => response)
       .catch((e) => {
-        throw new MeiliAxiosError(e, cachedStack)
+        throw new MeiliSearchApiError(e, cachedStack)
       })
   }
 
@@ -88,7 +88,7 @@ class MeiliAxiosWrapper {
       .put(url, data, config)
       .then((response: any) => response)
       .catch((e) => {
-        const meiliError = new MeiliAxiosError(e, cachedStack)
+        const meiliError = new MeiliSearchApiError(e, cachedStack)
         throw meiliError
       })
   }
@@ -103,7 +103,7 @@ class MeiliAxiosWrapper {
       .patch(url, data, config)
       .then((response: any) => response)
       .catch((e) => {
-        const meiliError = new MeiliAxiosError(e, cachedStack)
+        const meiliError = new MeiliSearchApiError(e, cachedStack)
         throw meiliError
       })
   }
@@ -117,7 +117,7 @@ class MeiliAxiosWrapper {
       .delete(url, config)
       .then((response: any) => response)
       .catch((e) => {
-        const meiliError = new MeiliAxiosError(e, cachedStack)
+        const meiliError = new MeiliSearchApiError(e, cachedStack)
         throw meiliError
       })
   }

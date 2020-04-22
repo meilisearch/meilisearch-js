@@ -1,15 +1,17 @@
 import { AxiosError } from 'axios'
-import * as Types from './types'
+import * as Types from '../types'
 
-const MeiliAxiosError: Types.MeiliAxiosErrorConstructor = class extends Error
-  implements Types.MeiliAxiosErrorInterface {
-  response?: Types.MeiliAxiosErrorResponse
-  request?: Types.MeiliAxiosErrorRequest
+const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
+  extends Error
+  implements Types.MeiliSearchApiErrorInterface {
+  response?: Types.MeiliSearchApiErrorResponse
+  request?: Types.MeiliSearchApiErrorRequest
+  type: string
 
   constructor(error: AxiosError, cachedStack?: string) {
     super(error.message)
-
-    this.name = 'MeiliSearch Error'
+    this.type = this.constructor.name
+    this.name = 'MeiliSearchApiError'
 
     // Fetch the native error message but add our application name in front of it.
     // This means slicing the "Error" string at the start of the message.
@@ -40,8 +42,11 @@ const MeiliAxiosError: Types.MeiliAxiosErrorConstructor = class extends Error
     }
     // use cached Stack on error object to keep the call stack
     if (cachedStack && error.stack) {
-      this.stack = cachedStack
+      this.stack = `${this.name}: ${this.message}\n${cachedStack
+        .split('\n')
+        .slice(1)
+        .join('\n')}`
     }
   }
 }
-export default MeiliAxiosError
+export default MeiliSearchApiError
