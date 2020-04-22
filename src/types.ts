@@ -11,9 +11,9 @@ import {
 ///
 
 export interface Index {
+  uid: string
   name?: string
   primaryKey?: string
-  uid: string
   createdAt: Date
   updatedAt: Date
 }
@@ -34,6 +34,7 @@ export interface IndexRequest {
 
 export interface IndexResponse {
   uid: string
+  name?: string
   primaryKey?: string
   createdAt: Date
   updatedAt: Date
