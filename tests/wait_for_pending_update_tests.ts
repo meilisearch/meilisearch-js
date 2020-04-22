@@ -38,7 +38,7 @@ afterAll(() => {
 
 describe.each([
   { client: masterClient, permission: 'Master' },
-  // { client: privateClient, permission: 'Private' },
+  { client: privateClient, permission: 'Private' },
 ])('Test on wait-for-pending-update', ({ client, permission }) => {
   beforeEach(async () => {
     await clearAllIndexes(config)
