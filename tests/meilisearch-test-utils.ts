@@ -23,10 +23,6 @@ const anonymousClient = new MeiliSearch({
   host,
 })
 
-const sleep = function (ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 const clearAllIndexes = async (config) => {
   const client = new MeiliSearch(config)
   const indexes = await client
@@ -49,7 +45,6 @@ const clearAllIndexes = async (config) => {
 
 export {
   clearAllIndexes,
-  sleep,
   config,
   masterClient,
   privateClient,

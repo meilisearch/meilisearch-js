@@ -1,7 +1,6 @@
 import * as Types from '../src/types'
 import {
   clearAllIndexes,
-  sleep,
   config,
   masterClient,
   privateClient,
@@ -45,8 +44,10 @@ describe.each([
   beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index)
-    await masterClient.getIndex(index.uid).addDocuments(dataset)
-    await sleep(500)
+    const { updateId } = await masterClient
+      .getIndex(index.uid)
+      .addDocuments(dataset)
+    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Get default displayed attributes`, async () => {
     await client
@@ -58,14 +59,14 @@ describe.each([
   })
   test(`${permission} key: Update displayed attributes`, async () => {
     const new_da = ['title']
-    await client
+    const { updateId } = await client
       .getIndex(index.uid)
       .updateDisplayedAttributes(new_da)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response.updateId
+        return response
       })
-    await sleep(500)
+    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(index.uid)
       .getDisplayedAttributes()
@@ -74,14 +75,14 @@ describe.each([
       })
   })
   test(`${permission} key: Reset displayed attributes`, async () => {
-    await client
+    const { updateId } = await client
       .getIndex(index.uid)
       .resetDisplayedAttributes()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response.updateId
+        return response
       })
-    await sleep(500)
+    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(index.uid)
       .getDisplayedAttributes()

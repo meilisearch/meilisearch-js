@@ -1,7 +1,6 @@
 import * as Types from '../src/types'
 import {
   clearAllIndexes,
-  sleep,
   config,
   masterClient,
   privateClient,
@@ -19,7 +18,6 @@ jest.setTimeout(100 * 1000)
 beforeAll(async () => {
   await clearAllIndexes(config)
   await masterClient.createIndex(index)
-  await sleep(500)
 })
 
 afterAll(() => {
@@ -43,14 +41,14 @@ describe.each([
       })
   })
   test(`${permission} key: Update accept new fields to false`, async () => {
-    await client
+    const { updateId } = await client
       .getIndex(index.uid)
       .updateAcceptNewFields(false)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response.updateId
+        return response
       })
-    await sleep(500)
+    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(index.uid)
       .getAcceptNewFields()

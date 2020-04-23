@@ -1,7 +1,6 @@
 import * as Types from '../src/types'
 import {
   clearAllIndexes,
-  sleep,
   config,
   masterClient,
   privateClient,
@@ -48,17 +47,17 @@ describe.each([
     await masterClient.createIndex(index)
   })
   test(`${permission} key: Get one update`, async () => {
-    let updateObj = await client
+    const { updateId } = await client
       .getIndex(index.uid)
       .addDocuments(dataset)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await sleep(500)
+    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(index.uid)
-      .getUpdateStatus(updateObj.updateId)
+      .getUpdateStatus(updateId)
       .then((response: Types.Update) => {
         expect(response).toHaveProperty('status', 'processed')
         expect(response).toHaveProperty('updateId', expect.any(Number))

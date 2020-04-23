@@ -1,9 +1,8 @@
 import {
   clearAllIndexes,
-  sleep,
   config,
   masterClient,
-  privateClient
+  privateClient,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -29,7 +28,6 @@ jest.setTimeout(100 * 1000)
 beforeAll(async () => {
   await clearAllIndexes(config)
   await masterClient.createIndex(index)
-  await sleep(500)
 })
 
 afterAll(() => {

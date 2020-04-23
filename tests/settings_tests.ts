@@ -1,7 +1,6 @@
 import * as Types from '../src/types'
 import {
   clearAllIndexes,
-  sleep,
   config,
   masterClient,
   privateClient,
@@ -79,9 +78,10 @@ describe.each([
     await clearAllIndexes(config)
     await masterClient.createIndex(index)
     await masterClient.createIndex(indexAndPK)
-    await masterClient.getIndex(index.uid).addDocuments(dataset)
-    await masterClient.getIndex(index.uid).addDocuments(dataset)
-    await sleep(500)
+    const { updateId } = await masterClient
+      .getIndex(index.uid)
+      .addDocuments(dataset)
+    await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Get default settings of an index`, async () => {
     await client
@@ -129,14 +129,14 @@ describe.each([
       rankingRules: ['asc(title)', 'typo'],
       stopWords: ['the'],
     }
-    await client
+    const { updateId } = await client
       .getIndex(index.uid)
       .updateSettings(newSettings)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response.updateId
+        return response
       })
-    await sleep(500)
+    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(index.uid)
       .getSettings()
@@ -169,14 +169,14 @@ describe.each([
       rankingRules: ['asc(title)', 'typo'],
       stopWords: ['the'],
     }
-    await client
+    const { updateId } = await client
       .getIndex(indexAndPK.uid)
       .updateSettings(newSettings)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response.updateId
+        return response
       })
-    await sleep(500)
+    await client.getIndex(indexAndPK.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(indexAndPK.uid)
       .getSettings()
@@ -201,14 +201,14 @@ describe.each([
   })
 
   test(`${permission} key: Reset settings`, async () => {
-    await client
+    const { updateId } = await client
       .getIndex(index.uid)
       .resetSettings()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response.updateId
+        return response
       })
-    await sleep(500)
+    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(index.uid)
       .getSettings()
@@ -236,14 +236,14 @@ describe.each([
   })
 
   test(`${permission} key: Reset settings of empty index`, async () => {
-    await client
+    const { updateId } = await client
       .getIndex(indexAndPK.uid)
       .resetSettings()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response.updateId
+        return response
       })
-    await sleep(500)
+    await client.getIndex(indexAndPK.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(indexAndPK.uid)
       .getSettings()
@@ -274,14 +274,14 @@ describe.each([
     const newSettings = {
       searchableAttributes: ['title'],
     }
-    await client
+    const { updateId } = await client
       .getIndex(index.uid)
       .updateSettings(newSettings)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response.updateId
+        return response
       })
-    await sleep(500)
+    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(index.uid)
       .getSettings()
@@ -309,14 +309,14 @@ describe.each([
     const newSettings = {
       searchableAttributes: ['title'],
     }
-    await client
+    const { updateId } = await client
       .getIndex(indexAndPK.uid)
       .updateSettings(newSettings)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response.updateId
+        return response
       })
-    await sleep(500)
+    await client.getIndex(indexAndPK.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(indexAndPK.uid)
       .getSettings()
