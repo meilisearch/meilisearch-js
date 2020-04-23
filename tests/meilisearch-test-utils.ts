@@ -1,4 +1,4 @@
-import MeiliSearch from '../src'
+import MeiliSearch from '../src/meilisearch'
 import * as Types from '../src/types'
 
 const { HOST: host, MASTER_KEY, PRIVATE_KEY, PUBLIC_KEY } = process.env
