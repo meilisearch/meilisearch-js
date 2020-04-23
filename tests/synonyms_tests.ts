@@ -1,7 +1,6 @@
 import * as Types from '../src/types'
 import {
   clearAllIndexes,
-  sleep,
   config,
   masterClient,
   privateClient,
@@ -45,8 +44,10 @@ describe.each([
   beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index)
-    await masterClient.getIndex(index.uid).addDocuments(dataset)
-    await sleep(500)
+    const { updateId } = await masterClient
+      .getIndex(index.uid)
+      .addDocuments(dataset)
+    await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Get default synonyms`, async () => {
     await client
@@ -60,14 +61,14 @@ describe.each([
     const new_sy = {
       hp: ['harry potter'],
     }
-    await client
+    const { updateId } = await client
       .getIndex(index.uid)
       .updateSynonyms(new_sy)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response.updateId
+        return response
       })
-    await sleep(500)
+    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(index.uid)
       .getSynonyms()
@@ -76,14 +77,14 @@ describe.each([
       })
   })
   test(`${permission} key: Reset synonyms`, async () => {
-    await client
+    const { updateId } = await client
       .getIndex(index.uid)
       .resetSynonyms()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response.updateId
+        return response
       })
-    await sleep(500)
+    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(index.uid)
       .getSynonyms()

@@ -1,7 +1,6 @@
 import * as Types from '../src/types'
 import {
   clearAllIndexes,
-  sleep,
   config,
   masterClient,
   privateClient,
@@ -39,8 +38,10 @@ jest.setTimeout(100 * 1000)
 beforeAll(async () => {
   await clearAllIndexes(config)
   await masterClient.createIndex(index)
-  await masterClient.getIndex(index.uid).addDocuments(dataset)
-  await sleep(500)
+  const { updateId } = await masterClient
+    .getIndex(index.uid)
+    .addDocuments(dataset)
+  await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
 })
 
 afterAll(() => {
@@ -56,8 +57,10 @@ describe.each([
     await clearAllIndexes(config)
     await masterClient.createIndex(index)
     await masterClient.createIndex(emptyIndex)
-    await masterClient.getIndex(index.uid).addDocuments(dataset)
-    await sleep(500)
+    const { updateId } = await masterClient
+      .getIndex(index.uid)
+      .addDocuments(dataset)
+    await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Basic search`, async () => {
     await client
@@ -239,7 +242,6 @@ describe.each([
   })
   test(`${permission} key: Try to Search on deleted index and fail`, async () => {
     await masterClient.getIndex(index.uid).deleteIndex()
-    sleep(500)
     await expect(
       client.getIndex(index.uid).search('prince')
     ).rejects.toThrowError(`Index movies_test not found`)
