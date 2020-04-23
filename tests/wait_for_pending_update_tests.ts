@@ -3,7 +3,7 @@ import {
   sleep,
   config,
   masterClient,
-  privateClient
+  privateClient,
 } from './meilisearch-test-utils'
 
 const index = {
