@@ -2,6 +2,7 @@ import nodeResolve from '@rollup/plugin-node-resolve'
 import { resolve } from 'path'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
+import typescript from 'rollup-plugin-typescript2';
 import pkg from '../package.json'
 import { terser } from 'rollup-plugin-terser'
 
@@ -15,10 +16,19 @@ const env = process.env.NODE_ENV || 'development'
 const LIB_NAME = pascalCase(normalizePackageName(pkg.name))
 const ROOT = resolve(__dirname, '..')
 
+const PLUGINS = [
+  typescript({
+    tsconfigDefaults: './config/tsconfig.json',
+    tsconfigOverride: {
+      exclude: ['**/*.test.ts']
+    }
+  })
+];
+
 module.exports = [
   // browser-friendly UMD build
   {
-    input: pkg['jsnext:main'], // directory to transpilation of typescript
+    input: 'src/meilisearch.ts', // directory to transpilation of typescript
     output: {
       name: LIB_NAME,
       file: getOutputFileName(
@@ -37,6 +47,7 @@ module.exports = [
       commonjs(),
       json(),
       env === 'production' ? terser() : {}, // will minify the file in production mode
+      ...PLUGINS
     ],
     external: ['axios'],
   },
@@ -48,7 +59,7 @@ module.exports = [
   // an array for the `output` option, where we can specify
   // `file` and `format` for each target)
   {
-    input: pkg['jsnext:main'],
+    input: 'src/meilisearch.ts',
     external: ['axios'],
     output: [
       {
@@ -71,6 +82,7 @@ module.exports = [
     ],
     plugins: [
       env === 'production' ? terser() : {}, // will minify the file in production mode
+      ...PLUGINS
     ],
   },
 ]
