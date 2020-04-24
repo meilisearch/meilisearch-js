@@ -63,7 +63,6 @@
     "@rollup/plugin-json": "^4.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
     "@typescript-eslint/eslint-plugin": "2",
-    "@typescript-eslint/eslint-plugin-tslint": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
     "brotli-size": "^4.0.0",
     "dotenv": "^8.2.0",

@@ -16,8 +16,7 @@
     },
     "plugins": [
         "jsdoc",
-        "@typescript-eslint",
-        "@typescript-eslint/tslint"
+        "@typescript-eslint"
     ],
     "rules": {
         "jsdoc/check-alignment": "error",
