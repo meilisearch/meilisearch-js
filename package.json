@@ -21,7 +21,7 @@
   "browser": "./dist/bundles/meilisearch.umd.js",
   "typings": "./dist/types/types.d.ts",
   "types": "./dist/types/types.d.ts",
-  "jsnext:main": "./dist/esnext/index.js",
+  "jsnext:main": "./dist/esnext/meilisearch.js",
   "sideEffects": false,
   "repository": {
     "type": "git",

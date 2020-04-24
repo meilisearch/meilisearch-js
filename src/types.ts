@@ -10,14 +10,6 @@ import {
 /// Global interfaces
 ///
 
-export interface Index {
-  uid: string
-  name?: string
-  primaryKey?: string
-  createdAt: Date
-  updatedAt: Date
-}
-
 export interface Config {
   host: string
   apiKey?: string
@@ -210,13 +202,13 @@ export interface SysInfoPretty {
  ** MeiliSearch Class
  */
 
-export interface Indexes extends MeiliAxiosWrapper {
-  indexUid: string
+export interface Index extends MeiliAxiosWrapper {
+  uid: string
   getUpdateStatus(updateId: number): Promise<Update>
   getAllUpdateStatus(): Promise<Update[]>
   search(query: string, options?: SearchParams): Promise<SearchResponse>
-  show(): Promise<Index>
-  updateIndex(data: UpdateIndexRequest): Promise<Index>
+  show(): Promise<IndexResponse>
+  updateIndex(data: UpdateIndexRequest): Promise<IndexResponse>
   deleteIndex(): Promise<string>
   getStats(): Promise<IndexStats>
   getDocuments(options?: GetDocumentsParams): Promise<Document[]>
@@ -261,9 +253,9 @@ export interface Indexes extends MeiliAxiosWrapper {
   updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>
 }
 
-export interface Meilisearch extends MeiliSearchApiErrorInterface {
+export interface Meilisearch extends MeiliAxiosWrapper {
   config: Config
-  getIndex(indexUid: string): Indexes
+  getIndex(indexUid: string): Index
   listIndexes(): Promise<IndexResponse[]>
   createIndex(data: IndexRequest): Promise<IndexResponse>
   getKeys(): Promise<Keys>
@@ -284,9 +276,14 @@ export interface MeiliAxiosWrapper {
     url: string,
     config?: AxiosRequestConfig
   ): Promise<R>
-  post<T = any, R = AxiosResponse<T>>(
+  post(
     url: string,
-    data?: any,
+    data: IndexRequest,
+    config?: AxiosRequestConfig
+  ): Promise<IndexResponse>
+  post<T = any, R = AxiosResponse<EnqueuedUpdate>>(
+    url: string,
+    data?: T,
     config?: AxiosRequestConfig
   ): Promise<R>
   put<T = any, R = AxiosResponse<T>>(
@@ -332,4 +329,4 @@ export type MeiliSearchApiErrorConstructor = new (
   cachedStack?: string
 ) => void
 
-export default Indexes
+export default meilisearch

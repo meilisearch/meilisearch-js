@@ -16,7 +16,7 @@ import instance, {
 import MeiliSearchApiError from './errors/meilisearch-error'
 import * as Types from './types'
 
-class MeiliAxiosWrapper {
+class MeiliAxiosWrapper implements Types.MeiliAxiosWrapper {
   instance: AxiosInstance
   cancelTokenSource: CancelTokenSource
 
@@ -62,11 +62,18 @@ class MeiliAxiosWrapper {
       })
   }
 
-  post<T = any, R = AxiosResponse<T>>(
+  //  Overloads functions
+  post(
     url: string,
-    data?: any,
+    data: Types.IndexRequest,
     config?: AxiosRequestConfig
-  ): Promise<R> {
+  ): Promise<Types.IndexResponse>
+  post<T = any, R = AxiosResponse<Types.EnqueuedUpdate>>(
+    url: string,
+    data?: T,
+    config?: AxiosRequestConfig
+  ): Promise<R>
+  post(url: string, data?: any, config?: AxiosRequestConfig): Promise<any> {
     const { stack: cachedStack }: { stack?: string } = new Error()
 
     return this.instance

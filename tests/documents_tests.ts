@@ -343,7 +343,7 @@ describe.each([
 
     await client
       .createIndex({ uid: 'updateUid' })
-      .then((response: Types.IndexResponse) => {
+      .then((response: Types.Index) => {
         expect(response).toHaveProperty('uid', 'updateUid')
       })
     const { updateId } = await client
