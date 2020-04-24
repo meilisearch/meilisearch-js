@@ -86,11 +86,6 @@
     "rollup-plugin-typescript2": "^0.27.0",
     "shx": "^0.3.2",
     "ts-jest": "^25.3.0",
-    "tslint": "^6.1.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-config-standard": "^9.0.0",
-    "tslint-etc": "^1.10.1",
-    "typescript": "^3.8.3",
-    "typescript-tslint-plugin": "^0.5.5"
+    "typescript": "^3.8.3"
   }
 }
