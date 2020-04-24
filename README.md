@@ -383,7 +383,6 @@ This package works for MeiliSearch `v0.9.x`.
 
 `index.resetSettings(): Promise<EnqueuedUpdate>`
 
-
 ### Synonyms
 
 - Get synonyms:
