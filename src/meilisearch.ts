@@ -32,10 +32,10 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method listIndexes
    */
-  listIndexes(): Promise<Types.IndexResponse[]> {
+  async listIndexes(): Promise<Types.IndexResponse[]> {
     const url = '/indexes'
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -44,7 +44,7 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @method createIndex
    */
   async createIndex(data: Types.IndexRequest): Promise<Index> {
-    const url = `/indexes`
+    const url = '/indexes'
 
     const index = await this.post(url, data)
 
@@ -59,10 +59,10 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method getKey
    */
-  getKeys(): Promise<Types.Keys> {
+  async getKeys(): Promise<Types.Keys> {
     const url = '/keys'
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   ///
@@ -74,10 +74,10 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method isHealthy
    */
-  isHealthy(): Promise<boolean> {
+  async isHealthy(): Promise<boolean> {
     const url = '/health'
 
-    return this.get(url).then((_) => true)
+    return await this.get(url).then((_) => true)
   }
 
   /**
@@ -85,10 +85,10 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method setHealthy
    */
-  setHealthy(): Promise<void> {
+  async setHealthy(): Promise<void> {
     const url = '/health'
 
-    return this.put(url, {
+    return await this.put(url, {
       health: true,
     })
   }
@@ -98,10 +98,10 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method setUnhealthy
    */
-  setUnhealthy(): Promise<void> {
+  async setUnhealthy(): Promise<void> {
     const url = '/health'
 
-    return this.put(url, {
+    return await this.put(url, {
       health: false,
     })
   }
@@ -111,10 +111,10 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method setUnhealthy
    */
-  changeHealthTo(health: boolean): Promise<void> {
+  async changeHealthTo(health: boolean): Promise<void> {
     const url = '/health'
 
-    return this.put(url, {
+    return await this.put(url, {
       health,
     })
   }
@@ -128,10 +128,10 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method stats
    */
-  stats(): Promise<Types.Stats> {
+  async stats(): Promise<Types.Stats> {
     const url = '/stats'
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -139,10 +139,10 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method version
    */
-  version(): Promise<Types.Version> {
+  async version(): Promise<Types.Version> {
     const url = '/version'
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -150,10 +150,10 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method sysInfo
    */
-  sysInfo(): Promise<Types.SysInfo> {
+  async sysInfo(): Promise<Types.SysInfo> {
     const url = '/sys-info'
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -161,10 +161,10 @@ class Meilisearch extends MeiliAxiosWrapper {
    * @memberof Meilisearch
    * @method prettySysInfo
    */
-  prettySysInfo(): Promise<Types.SysInfoPretty> {
+  async prettySysInfo(): Promise<Types.SysInfoPretty> {
     const url = '/sys-info/pretty'
 
-    return this.get(url)
+    return await this.get(url)
   }
 }
 

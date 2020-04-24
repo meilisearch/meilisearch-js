@@ -28,10 +28,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getUpdateStatus
    */
-  getUpdateStatus(updateId: number): Promise<Types.Update> {
+  async getUpdateStatus(updateId: number): Promise<Types.Update> {
     const url = `/indexes/${this.uid}/updates/${updateId}`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   async waitForPendingUpdate(
@@ -39,8 +39,8 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
     {
       timeOutMs = 5000,
       intervalMs = 50,
-    }: { timeOutMs?: number; intervalMs?: number } = {}
-  ) {
+    }: { timeOutMs?: number, intervalMs?: number } = {}
+  ): Promise<Types.Update> {
     const startingTime = Date.now()
     while (Date.now() - startingTime < timeOutMs) {
       const response = await this.getUpdateStatus(updateId)
@@ -57,10 +57,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getAllUpdateStatus
    */
-  getAllUpdateStatus(): Promise<Types.Update[]> {
+  async getAllUpdateStatus(): Promise<Types.Update[]> {
     const url = `/indexes/${this.uid}/updates`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   ///
@@ -72,7 +72,7 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method search
    */
-  search(
+  async search(
     query: string,
     options?: Types.SearchParams
   ): Promise<Types.SearchResponse> {
@@ -81,14 +81,14 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
     const params: Types.SearchRequest = {
       q: query,
     }
-    if (options) {
-      if (options.offset) {
+    if (options !== undefined) {
+      if (options.offset !== undefined) {
         params.offset = options.offset
       }
-      if (options.limit) {
+      if (options.limit !== undefined) {
         params.limit = options.limit
       }
-      if (options.attributesToRetrieve) {
+      if (options.attributesToRetrieve !== undefined) {
         if (Array.isArray(options.attributesToRetrieve)) {
           params.attributesToRetrieve = options.attributesToRetrieve.join(',')
         } else {
@@ -96,33 +96,33 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
         }
       }
 
-      if (options.attributesToCrop) {
+      if (options.attributesToCrop !== undefined) {
         if (Array.isArray(options.attributesToCrop)) {
           params.attributesToCrop = options.attributesToCrop.join(',')
         } else {
           params.attributesToCrop = options.attributesToCrop
         }
       }
-      if (options.cropLength) {
+      if (options.cropLength !== undefined) {
         params.cropLength = options.cropLength
       }
-      if (options.attributesToHighlight) {
+      if (options.attributesToHighlight !== undefined) {
         if (Array.isArray(options.attributesToHighlight)) {
           params.attributesToHighlight = options.attributesToHighlight.join(',')
         } else {
           params.attributesToHighlight = options.attributesToHighlight
         }
       }
-      if (options.filters) {
+      if (options.filters !== undefined) {
         params.filters = options.filters
       }
 
-      if (options.matches) {
+      if (options.matches !== undefined) {
         params.matches = options.matches
       }
     }
 
-    return this.get(url, {
+    return await this.get(url, {
       params,
       cancelToken: this.cancelTokenSource.token,
     })
@@ -136,10 +136,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method show
    */
-  show(): Promise<Types.IndexResponse> {
+  async show(): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -147,10 +147,12 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method updateIndex
    */
-  updateIndex(data: Types.UpdateIndexRequest): Promise<Types.IndexResponse> {
+  async updateIndex(
+    data: Types.UpdateIndexRequest
+  ): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
-    return this.put(url, data)
+    return await this.put(url, data)
   }
 
   /**
@@ -159,10 +161,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @method deleteIndex
    */
 
-  deleteIndex(): Promise<string> {
+  async deleteIndex(): Promise<string> {
     const url = `/indexes/${this.uid}`
 
-    return this.delete(url)
+    return await this.delete(url)
   }
 
   ///
@@ -174,10 +176,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getStats
    */
-  getStats(): Promise<Types.IndexStats> {
+  async getStats(): Promise<Types.IndexStats> {
     const url = `/indexes/${this.uid}/stats`
 
-    return this.get(url)
+    return await this.get(url)
   }
   ///
   /// DOCUMENTS
@@ -188,17 +190,19 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getDocuments
    */
-  getDocuments(options?: Types.GetDocumentsParams): Promise<Types.Document[]> {
+  async getDocuments(
+    options?: Types.GetDocumentsParams
+  ): Promise<Types.Document[]> {
     const url = `/indexes/${this.uid}/documents`
     let attr
-    if (options && Array.isArray(options.attributesToRetrieve)) {
+    if (options !== undefined && Array.isArray(options.attributesToRetrieve)) {
       attr = options.attributesToRetrieve.join(',')
     }
 
-    return this.get(url, {
+    return await this.get(url, {
       params: {
         ...options,
-        ...(attr ? { attributesToRetrieve: attr } : {}),
+        ...(attr !== undefined ? { attributesToRetrieve: attr } : {}),
       },
     })
   }
@@ -208,10 +212,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getDocument
    */
-  getDocument(documentId: string | number): Promise<Types.Document> {
+  async getDocument(documentId: string | number): Promise<Types.Document> {
     const url = `/indexes/${this.uid}/documents/${documentId}`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -219,13 +223,13 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method addDocuments
    */
-  addDocuments(
+  async addDocuments(
     documents: Types.Document[],
     options?: Types.AddDocumentParams
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents`
 
-    return this.post(url, documents, {
+    return await this.post(url, documents, {
       params: options,
     })
   }
@@ -235,13 +239,13 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method updateDocuments
    */
-  updateDocuments(
+  async updateDocuments(
     documents: Types.Document[],
     options?: Types.AddDocumentParams
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents`
 
-    return this.put(url, documents, {
+    return await this.put(url, documents, {
       params: options,
     })
   }
@@ -251,10 +255,12 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method deleteDocument
    */
-  deleteDocument(documentId: string | number): Promise<Types.EnqueuedUpdate> {
+  async deleteDocument(
+    documentId: string | number
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents/${documentId}`
 
-    return this.delete(url)
+    return await this.delete(url)
   }
 
   /**
@@ -262,12 +268,12 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method deleteDocuments
    */
-  deleteDocuments(
+  async deleteDocuments(
     documentsIds: string[] | number[]
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents/delete-batch`
 
-    return this.post(url, documentsIds)
+    return await this.post(url, documentsIds)
   }
 
   /**
@@ -275,10 +281,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method deleteAllDocuments
    */
-  deleteAllDocuments(): Promise<Types.EnqueuedUpdate> {
+  async deleteAllDocuments(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents`
 
-    return this.delete(url)
+    return await this.delete(url)
   }
 
   ///
@@ -290,10 +296,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getSettings
    */
-  getSettings(): Promise<Types.Settings> {
+  async getSettings(): Promise<Types.Settings> {
     const url = `/indexes/${this.uid}/settings`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -302,10 +308,12 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method updateSettings
    */
-  updateSettings(settings: Types.Settings): Promise<Types.EnqueuedUpdate> {
+  async updateSettings(
+    settings: Types.Settings
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings`
 
-    return this.post(url, settings)
+    return await this.post(url, settings)
   }
 
   /**
@@ -313,10 +321,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method resetSettings
    */
-  resetSettings(): Promise<Types.EnqueuedUpdate> {
+  async resetSettings(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings`
 
-    return this.delete(url)
+    return await this.delete(url)
   }
 
   ///
@@ -328,10 +336,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getSynonyms
    */
-  getSynonyms(): Promise<object> {
+  async getSynonyms(): Promise<object> {
     const url = `/indexes/${this.uid}/settings/synonyms`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -339,10 +347,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method updateSynonyms
    */
-  updateSynonyms(synonyms: object): Promise<Types.EnqueuedUpdate> {
+  async updateSynonyms(synonyms: object): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/synonyms`
 
-    return this.post(url, synonyms)
+    return await this.post(url, synonyms)
   }
 
   /**
@@ -350,10 +358,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method resetSynonyms
    */
-  resetSynonyms(): Promise<Types.EnqueuedUpdate> {
+  async resetSynonyms(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/synonyms`
 
-    return this.delete(url)
+    return await this.delete(url)
   }
 
   ///
@@ -365,10 +373,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getStopWords
    */
-  getStopWords(): Promise<string[]> {
+  async getStopWords(): Promise<string[]> {
     const url = `/indexes/${this.uid}/settings/stop-words`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -376,10 +384,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method updateStopWords
    */
-  updateStopWords(stopWords: string[]): Promise<Types.EnqueuedUpdate> {
+  async updateStopWords(stopWords: string[]): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/stop-words`
 
-    return this.post(url, stopWords)
+    return await this.post(url, stopWords)
   }
 
   /**
@@ -387,10 +395,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method resetStopWords
    */
-  resetStopWords(): Promise<Types.EnqueuedUpdate> {
+  async resetStopWords(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/stop-words`
 
-    return this.delete(url)
+    return await this.delete(url)
   }
 
   ///
@@ -402,10 +410,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getRankingRules
    */
-  getRankingRules(): Promise<string[]> {
+  async getRankingRules(): Promise<string[]> {
     const url = `/indexes/${this.uid}/settings/ranking-rules`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -413,10 +421,12 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method updateRankingRules
    */
-  updateRankingRules(rankingRules: string[]): Promise<Types.EnqueuedUpdate> {
+  async updateRankingRules(
+    rankingRules: string[]
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/ranking-rules`
 
-    return this.post(url, rankingRules)
+    return await this.post(url, rankingRules)
   }
 
   /**
@@ -424,10 +434,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method resetRankingRules
    */
-  resetRankingRules(): Promise<Types.EnqueuedUpdate> {
+  async resetRankingRules(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/ranking-rules`
 
-    return this.delete(url)
+    return await this.delete(url)
   }
 
   ///
@@ -439,10 +449,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getDistinctAttribute
    */
-  getDistinctAttribute(): Promise<string | void> {
+  async getDistinctAttribute(): Promise<string | void> {
     const url = `/indexes/${this.uid}/settings/distinct-attribute`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -450,12 +460,12 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method updateDistinctAttribute
    */
-  updateDistinctAttribute(
+  async updateDistinctAttribute(
     distinctAttribute: string
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/distinct-attribute`
 
-    return this.post(url, distinctAttribute)
+    return await this.post(url, distinctAttribute)
   }
 
   /**
@@ -463,10 +473,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method resetDistinctAttribute
    */
-  resetDistinctAttribute(): Promise<Types.EnqueuedUpdate> {
+  async resetDistinctAttribute(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/distinct-attribute`
 
-    return this.delete(url)
+    return await this.delete(url)
   }
 
   ///
@@ -478,10 +488,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getSearchableAttributes
    */
-  getSearchableAttributes(): Promise<string[]> {
+  async getSearchableAttributes(): Promise<string[]> {
     const url = `/indexes/${this.uid}/settings/searchable-attributes`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -489,12 +499,12 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method updateSearchableAttributes
    */
-  updateSearchableAttributes(
+  async updateSearchableAttributes(
     searchableAttributes: string[]
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/searchable-attributes`
 
-    return this.post(url, searchableAttributes)
+    return await this.post(url, searchableAttributes)
   }
 
   /**
@@ -502,10 +512,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method resetSearchableAttributes
    */
-  resetSearchableAttributes(): Promise<Types.EnqueuedUpdate> {
+  async resetSearchableAttributes(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/searchable-attributes`
 
-    return this.delete(url)
+    return await this.delete(url)
   }
 
   ///
@@ -517,10 +527,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getDisplayedAttributes
    */
-  getDisplayedAttributes(): Promise<string[]> {
+  async getDisplayedAttributes(): Promise<string[]> {
     const url = `/indexes/${this.uid}/settings/displayed-attributes`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -528,12 +538,12 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method updateDisplayedAttributes
    */
-  updateDisplayedAttributes(
+  async updateDisplayedAttributes(
     displayedAttributes: string[]
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/displayed-attributes`
 
-    return this.post(url, displayedAttributes)
+    return await this.post(url, displayedAttributes)
   }
 
   /**
@@ -541,10 +551,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method resetDisplayedAttributes
    */
-  resetDisplayedAttributes(): Promise<Types.EnqueuedUpdate> {
+  async resetDisplayedAttributes(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/displayed-attributes`
 
-    return this.delete(url)
+    return await this.delete(url)
   }
 
   ///
@@ -556,10 +566,10 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method getAcceptNewFields
    */
-  getAcceptNewFields(): Promise<boolean> {
+  async getAcceptNewFields(): Promise<boolean> {
     const url = `/indexes/${this.uid}/settings/accept-new-fields`
 
-    return this.get(url)
+    return await this.get(url)
   }
 
   /**
@@ -567,12 +577,12 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
    * @memberof Index
    * @method updateAcceptNewFields
    */
-  updateAcceptNewFields(
+  async updateAcceptNewFields(
     acceptNewFields: boolean
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/accept-new-fields`
 
-    return this.post(url, acceptNewFields)
+    return await this.post(url, acceptNewFields)
   }
 }
 

@@ -21,7 +21,7 @@ class MeiliAxiosWrapper implements Types.MeiliAxiosWrapper {
   cancelTokenSource: CancelTokenSource
 
   constructor(config: Types.Config) {
-    if (config.apiKey) {
+    if (config.apiKey !== undefined) {
       this.instance = instance.create({
         baseURL: config.host,
         headers: {
@@ -47,86 +47,80 @@ class MeiliAxiosWrapper implements Types.MeiliAxiosWrapper {
     })
   }
 
-  get<T = any, R = AxiosResponse<T>>(
+  async get<T = any, R = AxiosResponse<T>>(
     url: string,
     config?: AxiosRequestConfig
   ): Promise<R> {
     const { stack: cachedStack }: { stack?: string } = new Error()
-
-    return this.instance
-      .get(url, config)
-      .then((response: any) => response)
-      .catch((e) => {
-        const meiliError = new MeiliSearchApiError(e, cachedStack)
-        throw meiliError
-      })
+    try {
+      return await this.instance.get(url, config)
+    } catch (e) {
+      throw new MeiliSearchApiError(e, cachedStack)
+    }
   }
 
   //  Overloads functions
-  post(
+  async post(
     url: string,
     data: Types.IndexRequest,
     config?: AxiosRequestConfig
   ): Promise<Types.IndexResponse>
-  post<T = any, R = AxiosResponse<Types.EnqueuedUpdate>>(
+
+  async post<T = any, R = AxiosResponse<Types.EnqueuedUpdate>>(
     url: string,
     data?: T,
     config?: AxiosRequestConfig
   ): Promise<R>
-  post(url: string, data?: any, config?: AxiosRequestConfig): Promise<any> {
-    const { stack: cachedStack }: { stack?: string } = new Error()
 
-    return this.instance
-      .post(url, data, config)
-      .then((response: any) => response)
-      .catch((e) => {
-        throw new MeiliSearchApiError(e, cachedStack)
-      })
+  async post(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<any> {
+    const { stack: cachedStack }: { stack?: string } = new Error()
+    try {
+      return await this.instance.post(url, data, config)
+    } catch (e) {
+      throw new MeiliSearchApiError(e, cachedStack)
+    }
   }
 
-  put<T = any, R = AxiosResponse<T>>(
+  async put<T = any, R = AxiosResponse<T>>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
   ): Promise<R> {
     const { stack: cachedStack }: { stack?: string } = new Error()
-
-    return this.instance
-      .put(url, data, config)
-      .then((response: any) => response)
-      .catch((e) => {
-        const meiliError = new MeiliSearchApiError(e, cachedStack)
-        throw meiliError
-      })
+    try {
+      return await this.instance.put(url, data, config)
+    } catch (e) {
+      throw new MeiliSearchApiError(e, cachedStack)
+    }
   }
-  patch<T = any, R = AxiosResponse<T>>(
+
+  async patch<T = any, R = AxiosResponse<T>>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
   ): Promise<R> {
     const { stack: cachedStack }: { stack?: string } = new Error()
-
-    return this.instance
-      .patch(url, data, config)
-      .then((response: any) => response)
-      .catch((e) => {
-        const meiliError = new MeiliSearchApiError(e, cachedStack)
-        throw meiliError
-      })
+    try {
+      return await this.instance.patch(url, data, config)
+    } catch (e) {
+      throw new MeiliSearchApiError(e, cachedStack)
+    }
   }
-  delete<T = any, R = AxiosResponse<T>>(
+
+  async delete<T = any, R = AxiosResponse<T>>(
     url: string,
     config?: AxiosRequestConfig
   ): Promise<R> {
     const { stack: cachedStack }: { stack?: string } = new Error()
-
-    return this.instance
-      .delete(url, config)
-      .then((response: any) => response)
-      .catch((e) => {
-        const meiliError = new MeiliSearchApiError(e, cachedStack)
-        throw meiliError
-      })
+    try {
+      return await this.instance.delete(url, config)
+    } catch (e) {
+      throw new MeiliSearchApiError(e, cachedStack)
+    }
   }
 }
 

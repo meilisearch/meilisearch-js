@@ -16,7 +16,7 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
     // Fetch the native error message but add our application name in front of it.
     // This means slicing the "Error" string at the start of the message.
     this.message = `${this.message}`
-    if (error.response) {
+    if (error.response !== undefined) {
       // If MeiliSearch answered
       this.response = {
         status: error.response.status,
@@ -27,21 +27,20 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
       }
       // If a custom message was sent back by our API
       // We change the error message to be more explicit
-      if (error.response.data && error.response.data.message) {
-        this.message = `${error.response.data.message}`
+      if (error.response.data?.message !== undefined) {
+        this.message = error.response.data.message
       }
     } else {
       // If MeiliSearch did not answered
-      if (error.config && error.request) {
-        this.request = {
-          url: error.request._currentUrl,
-          path: error.config.url,
-          method: error.config.method,
-        }
+      this.request = {
+        url: error.request._currentUrl,
+        path: error.config.url,
+        method: error.config.method,
       }
     }
+
     // use cached Stack on error object to keep the call stack
-    if (cachedStack && error.stack) {
+    if (cachedStack !== undefined && error.stack !== undefined) {
       this.stack = `${this.name}: ${this.message}\n${cachedStack
         .split('\n')
         .slice(1)
