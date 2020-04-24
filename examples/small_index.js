@@ -2,7 +2,7 @@ var MeiliSearch = require('../')
 
 const config = {
   host: 'http://127.0.0.1:7700',
-  apiKey: 123,
+  apiKey: 'masterKey',
 }
 
 var meili = new MeiliSearch(config)

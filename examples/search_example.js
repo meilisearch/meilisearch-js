@@ -1,12 +1,12 @@
-var MeiliSearch = require('../')
+const MeiliSearch = require('../')
 const dataset = require('./small_movies.json')
 
 const config = {
   host: 'http://127.0.0.1:7700',
-  apiKey: 123,
+  apiKey: 'masterKey',
 }
 
-var meili = new MeiliSearch(config)
+const meili = new MeiliSearch(config)
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
