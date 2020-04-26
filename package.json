@@ -29,9 +29,9 @@
   },
   "scripts": {
     "cleanup": "shx rm -rf dist/",
-    "build": "yarn cleanup && rollup -c config/rollup.config.js && rollup -c config/rollup.config.js --environment NODE_ENV:production",
+    "build": "yarn cleanup && rollup -c && rollup -c --environment NODE_ENV:production",
     "postbuild": "yarn size",
-    "test": "jest -c ./config/jest.config.js --runInBand",
+    "test": "jest --runInBand",
     "test:watch": "yarn test --watch",
     "test:coverage": "yarn test --coverage",
     "test:ci": "yarn test --ci",
@@ -41,7 +41,7 @@
     "prettier": "prettier \"**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}\"",
     "format": "yarn prettier --debug-check",
     "format:fix": "yarn prettier --write",
-    "lint": "eslint --config config/.eslintrc.json '{src,types}/**/*.{ts,js}'",
+    "lint": "eslint '{src,types}/**/*.{ts,js}'",
     "lint:fix": "yarn lint --fix",
     "typingsheader": "node scripts/build.js"
   },
@@ -59,6 +59,7 @@
     "axios": "^0.19.2"
   },
   "devDependencies": {
+    "@types/jest": "^25.2.1",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-json": "^4.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
