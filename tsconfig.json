@@ -1,21 +1,18 @@
 {
-    "compilerOptions": {
-        "module": "esnext",
-        "moduleResolution": "node",
-        // "outDir": "./dist/types",
-        // "rootDir": "./dist",
-        "noEmit": true,
-        "allowJs": false,
-        "removeComments": false,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "resolveJsonModule": true, // To import json
-        "declaration": true,
-        "declarationMap": true,
-        "declarationDir": "./dist/types",
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
-    },
-    "include": ["src"], // files to include during transpilation
+  "compilerOptions": {
+      "module": "esnext",
+      "moduleResolution": "node",
+      "noEmit": true,
+      "allowJs": false,
+      "removeComments": false,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "resolveJsonModule": true, // To import json
+      "declaration": true,
+      "declarationMap": true,
+      "declarationDir": "./dist/types",
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true
+  },
+  "include": ["src"], // files to include during transpilation
 }
-
