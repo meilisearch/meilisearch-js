@@ -8,6 +8,14 @@ tslint.json
 **/webpack.config.js
 **/jest.config.js
 **/prettier.config.js
+.eslintrc.json
+.prettierignore
+.prettierrc
+.gitignore
+.eslintignore
+.editorconfig
+.env
+.github/
 
 # build scripts
 config/
@@ -20,6 +28,7 @@ scripts/
 **/*.spec.d.ts
 __tests__
 coverage
+tests/
 
 # Sources
 node_modules
@@ -31,14 +40,6 @@ examples
 *.tgz
 package
 
-.prettierignore
-.prettierrc
-.gitignore
-.eslintignore
-.env
-.editorconfig
-tests/
-scripts/
+## Misc
 examples/
-config/
-.github/
+

@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const config = {
   preset: 'ts-jest',
-  rootDir: '..',
+  rootDir: '.',
   testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
   testPathIgnorePatterns: ['meilisearch-test-utils'],
   coverageThreshold: {

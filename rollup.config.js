@@ -3,24 +3,24 @@ import { resolve } from 'path'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import typescript from 'rollup-plugin-typescript2'
-import pkg from '../package.json'
+import pkg from './package.json'
 import { terser } from 'rollup-plugin-terser'
 
 const {
   normalizePackageName,
   pascalCase,
   getOutputFileName,
-} = require('./helpers')
+} = require('./config/helpers')
 
 const env = process.env.NODE_ENV || 'development'
 const LIB_NAME = pascalCase(normalizePackageName(pkg.name))
-const ROOT = resolve(__dirname, '..')
+const ROOT = resolve(__dirname, '.')
 
 const PLUGINS = [
   typescript({
-    tsconfigDefaults: './config/tsconfig.json',
+    useTsconfigDeclarationDir: true,
     tsconfigOverride: {
-      exclude: ['**/*.test.ts'],
+      exclude: ['tests'],
     },
   }),
 ]
