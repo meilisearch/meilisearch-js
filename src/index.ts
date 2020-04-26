@@ -7,12 +7,12 @@
 
 'use strict'
 
-import { MeiliSearchTimeOutError } from './errors/meilisearch-timeout-error'
+import MeiliSearchTimeOutError from './custom-errors/meilisearch-timeout-error'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
 import { sleep } from './utils'
 
-class Index extends MeiliAxiosWrapper implements Types.Index {
+class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
   uid: string
   constructor(config: Types.Config, uid: string) {
     super(config)
@@ -39,7 +39,7 @@ class Index extends MeiliAxiosWrapper implements Types.Index {
     {
       timeOutMs = 5000,
       intervalMs = 50,
-    }: { timeOutMs?: number, intervalMs?: number } = {}
+    }: { timeOutMs?: number; intervalMs?: number } = {}
   ): Promise<Types.Update> {
     const startingTime = Date.now()
     while (Date.now() - startingTime < timeOutMs) {

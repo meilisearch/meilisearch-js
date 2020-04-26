@@ -15,9 +15,7 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
 
     // Fetch the native error message but add our application name in front of it.
     // This means slicing the "Error" string at the start of the message.
-    this.message = `${this.message}`
     if (error.response !== undefined) {
-      // If MeiliSearch answered
       this.response = {
         status: error.response.status,
         statusText: error.response.statusText,

@@ -13,10 +13,10 @@ import instance, {
   AxiosResponse,
   CancelTokenSource,
 } from 'axios'
-import MeiliSearchApiError from './errors/meilisearch-error'
+import MeiliSearchApiError from './custom-errors/meilisearch-error'
 import * as Types from './types'
 
-class MeiliAxiosWrapper implements Types.MeiliAxiosWrapper {
+class MeiliAxiosWrapper implements Types.MeiliAxiosWrapperInterface {
   instance: AxiosInstance
   cancelTokenSource: CancelTokenSource
 
