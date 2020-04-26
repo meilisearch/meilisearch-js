@@ -72,7 +72,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getSynonyms()
-      .then((response: String[]) => {
+      .then((response: object) => {
         expect(response).toEqual(new_sy)
       })
   })

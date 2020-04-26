@@ -35,7 +35,7 @@ describe.each([
       return clearAllIndexes(config)
     })
     test(`${permission} key: get all indexes when empty`, async () => {
-      const expected = []
+      const expected: Types.IndexResponse[] = []
       await client.listIndexes().then((response: Types.IndexResponse[]) => {
         expect(response).toEqual(expected)
       })
@@ -142,6 +142,7 @@ describe.each([
     })
 
     test(`${permission} key: create index with missing uid should fail`, async () => {
+      // @ts-ignore
       await expect(client.createIndex({ uid: null })).rejects.toThrowError(
         `Index creation must have an uid`
       )

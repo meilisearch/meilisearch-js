@@ -149,13 +149,54 @@ describe.each([
       })
   })
 
-  test(`${permission} key: Search with all options and all fields`, async () => {
+  test(`${permission} key: Search with all options but not all fields`, async () => {
     await client
       .getIndex(index.uid)
       .search('prince', {
         limit: 5,
         offset: 0,
         attributesToRetrieve: ['id', 'title'],
+        attributesToCrop: '*',
+        cropLength: 6,
+        attributesToHighlight: '*',
+        filters: 'title = "Le Petit Prince"',
+        matches: true,
+      })
+      .then((response: Types.SearchResponse) => {
+        expect(response).toHaveProperty('hits', expect.any(Array))
+        expect(response).toHaveProperty('offset', 0)
+        expect(response).toHaveProperty('limit', 5)
+        expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
+        expect(response).toHaveProperty('query', 'prince')
+        expect(response.hits[0]._formatted).toHaveProperty('title')
+        expect(response.hits[0]._formatted).toHaveProperty('id')
+        expect(response.hits[0]).not.toHaveProperty('comment')
+        expect(response.hits[0]).not.toHaveProperty('description')
+        expect(response.hits[0]._formatted).not.toHaveProperty('comment')
+        expect(response.hits[0]._formatted).not.toHaveProperty('description')
+        expect(response.hits.length).toEqual(1)
+        expect(response.hits[0]).toHaveProperty(
+          '_formatted',
+          expect.any(Object)
+        )
+        expect(response.hits[0]._formatted).toHaveProperty(
+          'title',
+          'Petit <em>Prince</em>'
+        )
+        expect(response.hits[0]).toHaveProperty(
+          '_matchesInfo',
+          expect.any(Object)
+        )
+      })
+  })
+
+  test(`${permission} key: Search with all options and all fields`, async () => {
+    await client
+      .getIndex(index.uid)
+      .search('prince', {
+        limit: 5,
+        offset: 0,
+        attributesToRetrieve: '*',
         attributesToCrop: '*',
         cropLength: 6,
         attributesToHighlight: '*',

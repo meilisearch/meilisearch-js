@@ -99,9 +99,10 @@ describe.each([
           'displayedAttributes',
           expect.any(Array)
         )
-        expect(response.displayedAttributes.sort()).toEqual(
-          ['id', 'title', 'comment'].sort()
-        )
+        const sortedAttributes = response.displayedAttributes
+          ? response.displayedAttributes.sort()
+          : undefined
+        expect(sortedAttributes).toEqual(['id', 'title', 'comment'].sort())
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
         expect(response).toHaveProperty('acceptNewFields', true)
@@ -219,16 +220,18 @@ describe.each([
           'searchableAttributes',
           expect.any(Array)
         )
-        expect(response.searchableAttributes.sort()).toEqual(
-          ['id', 'title', 'comment'].sort()
-        )
+        const sortedSearchable = response.searchableAttributes
+          ? response.searchableAttributes.sort()
+          : undefined
+        expect(sortedSearchable).toEqual(['id', 'title', 'comment'].sort())
         expect(response).toHaveProperty(
           'displayedAttributes',
           expect.any(Array)
         )
-        expect(response.displayedAttributes.sort()).toEqual(
-          ['id', 'title', 'comment'].sort()
-        )
+        const sortedDisplayed = response.displayedAttributes
+          ? response.displayedAttributes.sort()
+          : undefined
+        expect(sortedDisplayed).toEqual(['id', 'title', 'comment'].sort())
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
         expect(response).toHaveProperty('acceptNewFields', true)
@@ -254,16 +257,18 @@ describe.each([
           'searchableAttributes',
           expect.any(Array)
         )
-        expect(response.searchableAttributes.sort()).toEqual(
-          ['id', 'title'].sort()
-        )
+        const sortedSearchable = response.searchableAttributes
+          ? response.searchableAttributes.sort()
+          : undefined
+        expect(sortedSearchable).toEqual(['id', 'title'].sort())
         expect(response).toHaveProperty(
           'displayedAttributes',
           expect.any(Array)
         )
-        expect(response.displayedAttributes.sort()).toEqual(
-          ['id', 'title'].sort()
-        )
+        const sortedDisplayed = response.displayedAttributes
+          ? response.displayedAttributes.sort()
+          : undefined
+        expect(sortedDisplayed).toEqual(['id', 'title'].sort())
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
         expect(response).toHaveProperty('acceptNewFields', true)

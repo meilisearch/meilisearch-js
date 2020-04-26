@@ -4,26 +4,26 @@ import * as Types from '../src/types'
 const { HOST: host, MASTER_KEY, PRIVATE_KEY, PUBLIC_KEY } = process.env
 
 const config = {
-  host,
+  host: host ? host : 'no-host-provided',
   apiKey: MASTER_KEY,
 }
 const masterClient = new MeiliSearch({
-  host,
+  host: host ? host : 'no-host-provided',
   apiKey: MASTER_KEY,
 })
 const privateClient = new MeiliSearch({
-  host,
+  host: host ? host : 'no-host-provided',
   apiKey: PRIVATE_KEY,
 })
 const publicClient = new MeiliSearch({
-  host,
+  host: host ? host : 'no-host-provided',
   apiKey: PUBLIC_KEY,
 })
 const anonymousClient = new MeiliSearch({
-  host,
+  host: host ? host : 'no-host-provided',
 })
 
-const clearAllIndexes = async (config) => {
+const clearAllIndexes = async (config: Types.Config) => {
   const client = new MeiliSearch(config)
   const indexes = await client
     .listIndexes()

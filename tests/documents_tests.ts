@@ -186,7 +186,7 @@ describe.each([
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.IndexResponse[]) => {
+      .then((response: Types.Document[]) => {
         expect(response.length).toEqual(dataset.length + 1)
       })
   })
@@ -211,7 +211,7 @@ describe.each([
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.IndexResponse[]) => {
+      .then((response: Types.Document[]) => {
         expect(response.length).toEqual(dataset.length + 1)
       })
   })
@@ -228,7 +228,7 @@ describe.each([
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.IndexResponse[]) => {
+      .then((response: Types.Document[]) => {
         expect(response.length).toEqual(dataset.length)
       })
   })
@@ -245,7 +245,7 @@ describe.each([
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.IndexResponse[]) => {
+      .then((response: Types.Document[]) => {
         expect(response.length).toEqual(dataset.length)
       })
   })
@@ -263,7 +263,7 @@ describe.each([
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.IndexResponse[]) => {
+      .then((response: Types.Document[]) => {
         expect(response.length).toEqual(dataset.length - 2)
         const returnedIds = response.map((x: Types.Document) => x.id)
         expect(returnedIds).not.toContain(ids[0])
@@ -283,7 +283,7 @@ describe.each([
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.IndexResponse[]) => {
+      .then((response: Types.Document[]) => {
         expect(response.length).toEqual(dataset.length - 2)
         const returnedIds = response.map((x: Types.Document) => x.id)
         expect(returnedIds).not.toContain(ids[0])
@@ -302,7 +302,7 @@ describe.each([
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.IndexResponse[]) => {
+      .then((response: Types.Document[]) => {
         expect(response.length).toEqual(0)
       })
   })
@@ -318,7 +318,7 @@ describe.each([
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.IndexResponse[]) => {
+      .then((response: Types.Document[]) => {
         expect(response.length).toEqual(0)
       })
   })
