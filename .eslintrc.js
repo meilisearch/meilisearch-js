@@ -20,8 +20,6 @@ module.exports = {
     'jsdoc/check-alignment': 'error',
     'jsdoc/check-indentation': 'error',
     '@typescript-eslint/space-before-function-paren': 0,
-    '@typescript-eslint/no-namespace': 'off',
-    '@typescript-eslint/no-redeclare': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-throw-literal': 'off',
     '@typescript-eslint/member-delimiter-style': [
