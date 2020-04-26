@@ -12,9 +12,14 @@ import {
   CancelTokenSource,
 } from 'axios'
 
-///
-/// Global interfaces
-///
+import { Index } from './index'
+import MeiliAxiosWrapper from './meili-axios-wrapper'
+import MeiliSearch from './meilisearch'
+import MeiliSearchApiError from './custom-errors/meilisearch-error'
+import MeiliSearchTimeOutError from './custom-errors/meilisearch-timeout-error'
+export { Index }
+export { MeiliSearchApiError }
+export { MeiliSearchTimeOutError }
 
 export interface Config {
   host: string
@@ -205,10 +210,26 @@ export interface SysInfoPretty {
 }
 
 /*
- ** MeiliSearch Class
+ ** MeiliSearch Class Interfaces
  */
 
-export interface Index extends MeiliAxiosWrapper {
+export interface MeiliSearchInterface extends MeiliAxiosWrapper {
+  config: Config
+  getIndex(indexUid: string): Index
+  listIndexes(): Promise<IndexResponse[]>
+  createIndex(data: IndexRequest): Promise<Index>
+  getKeys(): Promise<Keys>
+  isHealthy(): Promise<boolean>
+  setHealthy(): Promise<void>
+  setUnhealthy(): Promise<void>
+  changeHealthTo(health: boolean): Promise<void>
+  stats(): Promise<Stats>
+  version(): Promise<Version>
+  sysInfo(): Promise<SysInfo>
+  prettySysInfo(): Promise<SysInfoPretty>
+}
+
+export interface IndexInterface extends MeiliAxiosWrapperInterface {
   uid: string
   getUpdateStatus(updateId: number): Promise<Update>
   getAllUpdateStatus(): Promise<Update[]>
@@ -259,23 +280,7 @@ export interface Index extends MeiliAxiosWrapper {
   updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>
 }
 
-export interface Meilisearch extends MeiliAxiosWrapper {
-  config: Config
-  getIndex(indexUid: string): Index
-  listIndexes(): Promise<IndexResponse[]>
-  createIndex(data: IndexRequest): Promise<IndexResponse>
-  getKeys(): Promise<Keys>
-  isHealthy(): Promise<boolean>
-  setHealthy(): Promise<void>
-  setUnhealthy(): Promise<void>
-  changeHealthTo(health: boolean): Promise<void>
-  stats(): Promise<Stats>
-  version(): Promise<Version>
-  sysInfo(): Promise<SysInfo>
-  prettySysInfo(): Promise<SysInfoPretty>
-}
-
-export interface MeiliAxiosWrapper {
+export interface MeiliAxiosWrapperInterface {
   instance: AxiosInstance
   cancelTokenSource: CancelTokenSource
   get<T = any, R = AxiosResponse<T>>(
@@ -335,4 +340,4 @@ export type MeiliSearchApiErrorConstructor = new (
   cachedStack?: string
 ) => void
 
-export default meilisearch
+export default MeiliSearch

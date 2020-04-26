@@ -19,8 +19,8 @@
   "main": "./dist/bundles/meilisearch.cjs.js",
   "module": "./dist/bundles/meilisearch.esm.js",
   "browser": "./dist/bundles/meilisearch.umd.js",
-  "typings": "./src/types.d.ts",
-  "types": "./src/types.d.ts",
+  "typings": "./dist/types/types.d.ts",
+  "types": "./dist/types/types.d.ts",
   "jsnext:main": "./dist/bundles/meilisearch.esm.js",
   "sideEffects": false,
   "repository": {
