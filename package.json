@@ -11,9 +11,9 @@
     "wrapper",
     "meili"
   ],
-  "author": "qdequele <quentin@meilisearch.com>",
+  "author": "cvermand <charlotte@meilisearch.com>",
   "contributors": [
-    "cvermand <charlotte@meilisearch.com>"
+    "qdequele <quentin@meilisearch.com>"
   ],
   "license": "MIT",
   "main": "./dist/bundles/meilisearch.cjs.js",
@@ -30,7 +30,7 @@
   "scripts": {
     "cleanup": "shx rm -rf dist/",
     "build": "yarn cleanup && rollup -c && rollup -c --environment NODE_ENV:production",
-    "postbuild": "yarn size",
+    "postbuild": "yarn size && yarn typingsheader",
     "test": "jest --runInBand",
     "test:watch": "yarn test --watch",
     "test:coverage": "yarn test --coverage",
