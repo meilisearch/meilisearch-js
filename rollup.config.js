@@ -6,11 +6,28 @@ import typescript from 'rollup-plugin-typescript2'
 import pkg from './package.json'
 import { terser } from 'rollup-plugin-terser'
 
-const {
-  normalizePackageName,
-  pascalCase,
-  getOutputFileName,
-} = require('./config/helpers')
+function pascalCase(myStr) {
+  return toUpperCase(dashToCamelCase(myStr))
+}
+
+function normalizePackageName(rawPackageName) {
+  const scopeEnd = rawPackageName.indexOf('/') + 1
+
+  return rawPackageName.substring(scopeEnd)
+}
+
+function getOutputFileName(fileName, isProd = false) {
+  return isProd ? fileName.replace(/\.js$/, '.min.js') : fileName
+}
+
+function toUpperCase(myStr) {
+  return `${myStr.charAt(0).toUpperCase()}${myStr.substr(1)}`
+}
+
+function dashToCamelCase(myStr) {
+  return myStr.replace(/-([a-z])/g, (g) => g[1].toUpperCase())
+}
+
 
 const env = process.env.NODE_ENV || 'development'
 const LIB_NAME = pascalCase(normalizePackageName(pkg.name))
