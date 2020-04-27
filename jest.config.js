@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 const config = {
   preset: 'ts-jest',
   rootDir: '.',
