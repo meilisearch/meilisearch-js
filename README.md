@@ -10,7 +10,7 @@
   <a href="https://blog.meilisearch.com">Blog</a> |
   <a href="https://twitter.com/meilisearch">Twitter</a> |
   <a href="https://docs.meilisearch.com">Documentation</a> |
-  <a href="https://docs.meilisearch.com/resources/faq.html">FAQ</a>
+  <a href="https://docs.meilisearch.com/faq">FAQ</a>
 </h4>
 
 <p align="center">
