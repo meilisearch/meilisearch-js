@@ -63,31 +63,30 @@ NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 Here is a quickstart for a search request
 
 ```js
-const MeiliSearch = require('meilisearch');
+const MeiliSearch = require('meilisearch')
 // Or if you are on a front-end environment:
-import MeiliSearch from 'meilisearch';
-
-(async () => {
-    const client = new MeiliSearch({
-        host: 'http://127.0.0.1:7700',
-        apiKey: 'masterKey'
-    })
+import MeiliSearch from 'meilisearch'
+;(async () => {
+  const client = new MeiliSearch({
+    host: 'http://127.0.0.1:7700',
+    apiKey: 'masterKey',
+  })
 
   const index = await client.createIndex({ uid: 'books' }) // If your index does not exists
   // OR
   const index = client.getIndex('books') // If your index exists
 
-   const documents = [
-       { book_id: 123,  title: 'Pride and Prejudice' },
-       { book_id: 456,  title: 'Le Petit Prince' },
-       { book_id: 1,    title: 'Alice In Wonderland' },
-       { book_id: 1344, title: 'The Hobbit' },
-       { book_id: 4,    title: 'Harry Potter and the Half-Blood Prince' },
-       { book_id: 42,   title: "The Hitchhiker's Guide to the Galaxy" },
-    ]
+  const documents = [
+    { book_id: 123, title: 'Pride and Prejudice' },
+    { book_id: 456, title: 'Le Petit Prince' },
+    { book_id: 1, title: 'Alice In Wonderland' },
+    { book_id: 1344, title: 'The Hobbit' },
+    { book_id: 4, title: 'Harry Potter and the Half-Blood Prince' },
+    { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
+  ]
 
-    let response = await index.addDocuments(documents)
-    console.log(response) // => { "updateId": 0 }
+  let response = await index.addDocuments(documents)
+  console.log(response) // => { "updateId": 0 }
 })()
 ```
 
@@ -304,7 +303,7 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 ## 🤖 Compatibility with MeiliSearch
 
-This package works for MeiliSearch `v0.10.x`.
+This package works for MeiliSearch `>=0.10.x`.
 
 ## 📜 API Ressources
 
@@ -426,54 +425,54 @@ This package works for MeiliSearch `v0.10.x`.
 ### Ranking rules
 
 - Get Ranking Rules
-`index.getRankingRules(): Promise<string[]>`
+  `index.getRankingRules(): Promise<string[]>`
 
 - Update Ranking Rules
-`index.updateRankingRules(rankingRules: string[]): Promise<EnqueuedUpdate>`
+  `index.updateRankingRules(rankingRules: string[]): Promise<EnqueuedUpdate>`
 
 - Reset Ranking Rules
-`index.resetRankingRules(): Promise<EnqueuedUpdate>`
+  `index.resetRankingRules(): Promise<EnqueuedUpdate>`
 
 ### Distinct Attribute
 
 - Get Distinct Attribute
-`index.getDistinctAttribute(): Promise<string | void>`
+  `index.getDistinctAttribute(): Promise<string | void>`
 
 - Update Distinct Attribute
-`index.updateDistinctAttribute(distinctAttribute: string): Promise<EnqueuedUpdate>`
+  `index.updateDistinctAttribute(distinctAttribute: string): Promise<EnqueuedUpdate>`
 
 - Reset Distinct Attribute
-`index.resetDistinctAttribute(): Promise<EnqueuedUpdate>`
+  `index.resetDistinctAttribute(): Promise<EnqueuedUpdate>`
 
 ### Searchable Attributes
 
 - Get Searchable Attributes
-`index.getSearchableAttributes(): Promise<string[]>`
+  `index.getSearchableAttributes(): Promise<string[]>`
 
 - Update Searchable Attributes
-`index.updateSearchableAttributes(searchableAttributes: string[]): Promise<EnqueuedUpdate>`
+  `index.updateSearchableAttributes(searchableAttributes: string[]): Promise<EnqueuedUpdate>`
 
 - Reset Searchable Attributes
-`index.resetSearchableAttributes(): Promise<EnqueuedUpdate>`
+  `index.resetSearchableAttributes(): Promise<EnqueuedUpdate>`
 
 ### Displayed Attributes
 
 - Get Displayed Attributes
-`index.getDisplayedAttributes(): Promise<string[]>`
+  `index.getDisplayedAttributes(): Promise<string[]>`
 
 - Update Displayed Attributes
-`index.updateDisplayedAttributes(displayedAttributes: string[]): Promise<EnqueuedUpdate>`
+  `index.updateDisplayedAttributes(displayedAttributes: string[]): Promise<EnqueuedUpdate>`
 
 - Reset Displayed Attributes
-`index.resetDisplayedAttributes(): Promise<EnqueuedUpdate>`
+  `index.resetDisplayedAttributes(): Promise<EnqueuedUpdate>`
 
 ### Accept new fields
 
 - Get Accept new fields
-`index.getAcceptNewFields(): Promise<boolean>`
+  `index.getAcceptNewFields(): Promise<boolean>`
 
 - Update Accept new fields
-`index.updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>`
+  `index.updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>`
 
 ### Healthy
 
