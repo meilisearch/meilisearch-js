@@ -9,17 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org/
       - name: Install dependencies
         run: yarn install
       - name: Build
-        run: yarn build-ci
+        run: yarn build
       - name: Check release validity
         run: sh scripts/check-release.sh
       - name: Publish
-        run: npm publish dist/
+        run: npm publish .
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
