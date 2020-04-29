@@ -305,7 +305,7 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 This package works for MeiliSearch `>=0.10.x`.
 
-## 📜 API Ressources
+## 📜 API Resources
 
 ### Search
 
