@@ -73,8 +73,9 @@ import MeiliSearch from 'meilisearch';
         apiKey: 'masterKey'
     })
 
-    await client.createIndex({ uid: 'books' }) // only if your index does not exist
-    const index = client.getIndex('books')
+  const index = await client.createIndex({ uid: 'books' }) // If your index does not exists
+  // OR
+  const index = client.getIndex('books') // If your index exists
 
    const documents = [
        { book_id: 123,  title: 'Pride and Prejudice' },
@@ -132,7 +133,7 @@ In this section, the examples contain the [`await` keyword](https://developer.mo
 
 ```javascript
 // Create an index
-await client.createIndex({ uid: 'books' })
+const index = await client.createIndex({ uid: 'books' })
 // Create an index and give the primary-key
 const index = await client.createIndex({ uid: 'books', primaryKey: 'book_id' })
 ```
@@ -270,7 +271,7 @@ Each PR should pass the tests and the linter to be accepted.
 
 ```bash
 # Tests
-$ docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=123 --no-analytics
+$ docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics
 $ yarn test
 # Linter
 $ yarn style
@@ -303,7 +304,7 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 ## 🤖 Compatibility with MeiliSearch
 
-This package works for MeiliSearch `v0.9.x`.
+This package works for MeiliSearch `v0.10.x`.
 
 ## 📜 API Ressources
 
@@ -321,7 +322,7 @@ This package works for MeiliSearch `v0.9.x`.
 
 - Create new index:
 
-`client.createIndex(data: IndexRequest): Promise<IndexResponse>`
+`client.createIndex(data: IndexRequest): Promise<Index>`
 
 - Get index object:
 
