@@ -16,10 +16,10 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Build
-        run: yarn build-ci
+        run: yarn build
       - name: Check release validity
         run: sh scripts/check-release.sh
       - name: Publish
-        run: npm publish dist/
+        run: npm publish .
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

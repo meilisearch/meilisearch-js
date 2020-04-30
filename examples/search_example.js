@@ -1,31 +1,32 @@
-var MeiliSearch = require('../dist')
+const MeiliSearch = require('../')
 const dataset = require('./small_movies.json')
 
 const config = {
   host: 'http://127.0.0.1:7700',
-  apiKey: 123,
+  apiKey: 'masterKey',
 }
 
-var meili = new MeiliSearch(config)
+const meili = new MeiliSearch(config)
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 const index = {
-  name: 'Movies',
   uid: 'movies',
 }
 
 const addDataset = async () => {
-  let resp
-  resp = await meili.listIndexes()
-  if (resp.length === 0) {
-    resp = await meili.createIndex(index)
+  const indexes = await meili.listIndexes()
+  const indexFound = indexes.find((i) => i.uid === index.uid)
+  console.log({ indexes, indexFound })
+
+  if (!indexFound) {
+    await meili.createIndex(index)
   }
-  resp = await meili.getIndex(index.uid).getDocuments()
-  if (resp.length === 0) {
-    resp = await meili.getIndex(index.uid).addDocuments(dataset)
+  const documents = await meili.getIndex(index.uid).getDocuments()
+  if (documents.length === 0) {
+    await meili.getIndex(index.uid).addDocuments(dataset)
     await sleep(1000) // This is to give time to MeiliSearch to index the dataset
     // If you have no results it means it took more than 1 second to index.
   }
@@ -33,9 +34,8 @@ const addDataset = async () => {
 
 ;(async () => {
   await addDataset()
-  let index = await meili.getIndex('movies')
-  let resp
-  resp = await index.search('Avengers', {
+  const index = await meili.getIndex('movies')
+  const resp = await index.search('Avengers', {
     limit: 1,
     attributesToHighlight: 'title',
   })

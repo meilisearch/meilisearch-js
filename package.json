@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "The MeiliSearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -11,58 +11,39 @@
     "wrapper",
     "meili"
   ],
-  "main": "./bundles/index.umd.js",
-  "module": "./esm5/index.js",
-  "es2015": "./esm2015/index.js",
-  "typings": "./types/index.d.ts",
+  "author": "cvermand <charlotte@meilisearch.com>",
+  "contributors": [
+    "qdequele <quentin@meilisearch.com>"
+  ],
+  "license": "MIT",
+  "main": "./dist/bundles/meilisearch.cjs.js",
+  "module": "./dist/bundles/meilisearch.esm.js",
+  "browser": "./dist/bundles/meilisearch.umd.js",
+  "typings": "./dist/types/types.d.ts",
+  "types": "./dist/types/types.d.ts",
+  "jsnext:main": "./dist/bundles/meilisearch.esm.js",
   "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/meilisearch/meilisearch-js"
   },
-  "author": "qdequele <quentin@meilisearch.com>",
-  "license": "MIT",
-  "engines": {
-    "node": ">=10.0",
-    "npm": ">=6.0",
-    "yarn": "^1.0"
-  },
-  "resolutions": {
-    "rollup-plugin-node-builtins/browserify-fs/levelup/semver": "^6.0.0",
-    "rollup-plugin-node-builtins/browserify-fs/levelup/bl": "^4.0.0"
-  },
   "scripts": {
-    "cleanup": "shx rm -rf dist",
-    "prebuild": "yarn cleanup && yarn verify",
-    "build": "tsc && tsc --target es2018 --outDir dist/esm2015 && rollup -c config/rollup.config.js && rollup -c config/rollup.config.js --environment NODE_ENV:production",
-    "build-ci": "yarn cleanup && tsc && tsc --target es2018 --outDir dist/esm2015 && rollup -c config/rollup.config.js && rollup -c config/rollup.config.js --environment NODE_ENV:production && node scripts/copy",
-    "postbuild": "node scripts/copy && yarn size",
-    "docs": "typedoc -p . --theme minimal --target 'es6' --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude \"**/src/**/__tests__/*.*\" --out docs src/",
-    "test": "jest -c ./config/jest.config.js --runInBand",
+    "cleanup": "shx rm -rf dist/",
+    "build": "yarn cleanup && rollup -c && rollup -c --environment NODE_ENV:production",
+    "postbuild": "yarn size && yarn typingsheader",
+    "test": "jest --runInBand",
     "test:watch": "yarn test --watch",
     "test:coverage": "yarn test --coverage",
     "test:ci": "yarn test --ci",
-    "validate-js": "tsc -p ./config && tsc -p ./scripts",
-    "verify": "yarn validate-js && yarn style && yarn test:ci",
-    "commit": "git-cz",
+    "size": "node scripts/file-size ./dist/bundles/meilisearch.umd.min.js ./dist/bundles/meilisearch.esm.min.js",
     "style": "yarn format:fix && yarn lint",
     "style:fix": "yarn format:fix && yarn lint:fix",
-    "format": "prettier \"**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}\"",
-    "format:fix": "yarn format --write",
-    "lint": "tslint --project tsconfig.json --format codeFrame",
+    "prettier": "prettier \"**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}\"",
+    "format": "yarn prettier --debug-check",
+    "format:fix": "yarn prettier --write",
+    "lint": "eslint '{src,types}/**/*.{ts,js}'",
     "lint:fix": "yarn lint --fix",
-    "prerelease": "yarn build",
-    "release": "standard-version",
-    "postrelease": "node scripts/copy && node scripts/build && yarn release:github && yarn release:npm",
-    "release:github": "git push --no-verify --follow-tags origin master",
-    "release:npm": "yarn publish dist",
-    "release:preflight": "yarn pack ./dist --dry-run",
-    "size": "node scripts/file-size ./dist/bundles/index.umd.min.js ./dist/bundles/index.esm.min.js"
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
+    "typingsheader": "node scripts/build.js"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}": [
@@ -74,53 +55,37 @@
       "git add"
     ]
   },
-  "peerDependencies": {
-    "tslib": ">=1.10.0"
-  },
   "dependencies": {
-    "axios": "0.19.2",
-    "tslib": "1.11.1"
+    "axios": "^0.19.2"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^11.0.1",
-    "@rollup/plugin-json": "^4.0.1",
-    "@rollup/plugin-node-resolve": "7.1.1",
-    "@rollup/plugin-replace": "2.3.1",
-    "@types/jest": "25.1.4",
-    "@types/node": "13.9.*",
-    "@types/prettier": "1.19.0",
-    "@types/rollup-plugin-json": "^3.0.2",
-    "@types/rollup-plugin-node-globals": "^1.4.0",
-    "@types/webpack-config-utils": "2.3.0",
-    "brotli-size": "4.0.0",
-    "canvas": "^2.6.1",
-    "commitizen": "4.0.3",
-    "cross-var": "1.1.0",
-    "cz-conventional-changelog": "3.1.0",
-    "gzip-size": "5.1.1",
-    "jest": "^25.0.0",
-    "jest-watch-typeahead": "0.4.2",
-    "kleur": "3.0.3",
-    "lint-staged": "10.0.8",
-    "prettier": "^1.19.1",
-    "pretty-bytes": "5.3.0",
-    "rollup": "1.32.1",
-    "rollup-plugin-node-builtins": "2.1.2",
-    "rollup-plugin-node-globals": "1.4.0",
-    "rollup-plugin-sourcemaps": "0.5.0",
-    "rollup-plugin-terser": "5.3.0",
-    "shx": "0.3.2",
-    "standard-version": "7.1.0",
-    "ts-jest": "25.2.0",
-    "tslint": "5.20.1",
-    "tslint-config-prettier": "1.18.0",
-    "tslint-config-standard": "9.0.0",
-    "tslint-etc": "1.10.1",
-    "tslint-react": "4.2.0",
-    "tsutils": "^3.17.1",
-    "typedoc": "0.17.1",
-    "typescript": "3.8.3",
-    "typescript-tslint-plugin": "0.5.5",
-    "webpack-config-utils": "2.3.1"
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-json": "^4.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@types/jest": "^25.2.1",
+    "@types/prettier": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "2",
+    "@typescript-eslint/parser": "^2.29.0",
+    "brotli-size": "^4.0.0",
+    "eslint": "6",
+    "eslint-config-standard-with-typescript": "^16.0.0",
+    "eslint-plugin-import": "2",
+    "eslint-plugin-jsdoc": "^24.0.0",
+    "eslint-plugin-node": "11",
+    "eslint-plugin-promise": "4",
+    "eslint-plugin-standard": "4",
+    "gzip-size": "^5.1.1",
+    "jest": "^25.2.4",
+    "jest-watch-typeahead": "^0.5.0",
+    "kleur": "^3.0.3",
+    "lint-staged": "^10.1.0",
+    "prettier": "^2.0.2",
+    "pretty-bytes": "^5.3.0",
+    "rollup": "^2.2.0",
+    "rollup-plugin-terser": "^5.3.0",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "shx": "^0.3.2",
+    "ts-jest": "^25.3.0",
+    "typescript": "^3.8.3"
   }
 }
