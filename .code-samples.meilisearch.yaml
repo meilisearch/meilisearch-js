@@ -1,0 +1,342 @@
+get_one_index_1: |-
+  client.getIndex('movies').show()
+list_all_indexes_1: |-
+  client.listIndexes()
+create_an_index_1: |-
+  client.createIndex({ uid: 'movies' })
+update_an_index_1: |-
+  client.updateIndex({ uid: 'movies' })
+delete_an_index_1: |-
+  client.getIndex('movies').deleteIndex()
+get_one_document_1: |-
+  client.getDocument(25684)
+get_documents_1: |-
+  client.getindex('movies').getDocuments({ limit: 2 })
+add_or_replace_documents_1: |-
+  client.getindex('movies').addDocuments([{
+      id: 287947,
+      title: 'Shazam',
+      poster: 'https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg',
+      overview: 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
+      release_date: '2019-03-23'
+  }])
+add_or_update_documents_1: |-
+  client.getindex('movies').updateDocuments([{
+      movieskud: 287947,
+      title: 'Shazam ⚡️'
+  }])
+delete_all_documents_1: |-
+  client.getindex('movies').deleteAllDocuments()
+delete_one_document_1: |-
+  client.getindex('movies').deleteDocument(25684)
+delete_documents_1: |-
+  client.getindex('movies').deleteDocuments([23488, 153738, 437035, 363869])
+search_1: |-
+  client.getIndex('movies').search('American ninja')
+get_update_1: |-
+  client.getindex('movies').getUpdateStatus(1)
+get_all_updates_1: |-
+  client.getindex('movies').getAllUpdateStatus()
+get_keys: |-
+  client.getKeys()
+get_settings_1: |-
+  client.getindex('movies').getSettings()
+update_settings_1: |-
+  client.getindex('movies').updateSettings({
+      rankingRules: [
+          'typo',
+          'words',
+          'proximity',
+          'attribute',
+          'wordsPosition',
+          'exactness',
+          'desc(release_date)',
+          'desc(rank)'
+      ],
+      distinctAttribute: 'movie_id',
+      searchableAttributes: [
+          'uid',
+          'movie_id',
+          'title',
+          'description',
+          'poster',
+          'release_date',
+          'rank'
+      ],
+      displayedAttributes: [
+          'title',
+          'description',
+          'poster',
+          'release_date',
+          'rank'
+      ],
+      stopWords: [
+          'the',
+          'a',
+          'an'
+      ],
+      synonyms: {
+          'wolverine': ['xmen', 'logan'],
+          'logan': ['wolverine']
+      },
+      acceptNewFields: false
+  })
+reset_settings_1: |-
+  client.getindex('movies').resetSettings()
+get_synonyms_1: |-
+  client.getindex('movies').getSynonyms()
+update_synonyms_1: |-
+  client.getindex('movies').updateSynonym({
+    wolverine: ['xmen', 'logan'],
+    logan: ['wolverine', 'xmen'],
+    wow: ['world of warcraft']
+  })
+reset_synonyms_1: |-
+  client.getindex('movies').resetSynonym()
+get_stop_words_1: |-
+  client.getindex('movies').getStopWords()
+update_stop_words_1: |-
+  client.getindex('movies').updateStopWords(['of', 'the', 'to'])
+reset_stop_words_1: |-
+  client.getindex('movies').resetStopWords()
+get_ranking_rules_1: |-
+  client.getindex('movies').getRankingRules()
+update_ranking_rules_1: |-
+  client.getindex('movies').updateRankingRules([
+      'typo',
+      'words',
+      'proximity',
+      'attribute',
+      'wordsPosition',
+      'exactness',
+      'asc(release_date)',
+      'desc(rank)'
+  ])
+reset_ranking_rules_1: |-
+  client.getindex('movies').resetRankingRules()
+get_distinct_attribute_1: |-
+  client.getindex('movies').getDistinctAttribute()
+update_distinct_attribute_1: |-
+  client.getindex('movies').updateDistinctAttribute('movie_id')
+reset_distinct_attribute_1: |-
+  client.getindex('movies').resetDistinctAttribute()
+get_searchable_attributes_1: |-
+  client.getindex('movies').getSearchableAttributes()
+update_searchable_attributes_1: |-
+  client.getindex('movies').updateSearchableAttributes([
+      'title',
+      'description',
+      'uid'
+  ])
+reset_searchable_attributes_1: |-
+  client.getindex('movies').resetSearchableAttributes()
+get_displayed_attributes_1: |-
+  client.getindex('movies').getDisplayedAttributes()
+update_displayed_attributes_1: |-
+  client.getindex('movies').updateDisplayedAttributes([
+      'title',
+      'description',
+      'release_date',
+      'rank',
+      'poster'
+  ])
+reset_displayed_attributes_1: |-
+  client.getindex('movies').resetDisplayedAttributes()
+get_accept_new_fields_1: |-
+  client.getindex('movies').getAcceptNewFields()
+update_accept_new_fields_1: |-
+  client.getindex('movies').updateAcceptNewFields(false)
+get_index_stats_1: |-
+  client.getindex('movies').getStats()
+get_indexes_stats_1: |-
+  client.stats()
+get_health_1: |-
+  client.isHealthy()
+update_health_1: |-
+get_version_1: |-
+  client.version()
+get_pretty_sys_info_1: |-
+  client.systemInformationPretty()
+get_sys_info_1: |-
+  client.systemInformation()
+distinct_attribute_guide_1: |-
+  client.getindex('jackets').settings({ distinctAttribute: 'product_id' })
+field_properties_guide_searchable_1: |-
+  client.getindex('movies').settings({
+        searchableAttributes: [
+            'uid',
+            'movie_id',
+            'title',
+            'description',
+            'poster',
+            'release_date',
+            'rank'
+        ]
+    })
+field_properties_guide_displayed_1: |-
+  client.getindex('movies').settings({
+      displayedAttributes: [
+          'title',
+          'description',
+          'poster',
+          'release_date',
+          'rank'
+      ]
+  })
+filtering_guide_1: |-
+  client.getIndex('movies').search('Avengers', {
+    filters: 'release_date > 795484800'
+  })
+filtering_guide_2: |-
+  client.getIndex('movies').search('Batman', {
+    filters: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan"'
+  })
+filtering_guide_3: |-
+  client.getIndex('movies').search('horror', {
+    filters: 'director = "Jordan Peele"'
+  })
+filtering_guide_4: |-
+  client.getIndex('movies').search('Planet of the Apes', {
+    filters: 'rating >= 3 AND (NOT director = "Tim Burton"'
+  })
+search_parameter_guide_query_1: |-
+  client.getIndex('movies').search('shifu')
+search_parameter_guide_offset_1: |-
+  client.getIndex('movies').search('shifu', {
+    offset: 1
+  })
+search_parameter_guide_limit_1: |-
+  client.getIndex('movies').search('shifu', {
+    limit: 2
+  })
+search_parameter_guide_retrieve_1: |-
+  client.getIndex('movies').search('shifu', {
+    attributesToRetrieve: ['overview', 'title']
+  })
+search_parameter_guide_crop_1: |-
+  client.getIndex('movies').search('shifu', {
+    attributesToCrop: 'overview',
+    cropLength: 10
+  })
+search_parameter_guide_highlight_1: |-
+  client.getIndex('movies').search('shifu', {
+    attributesToHighlight: ['overview']
+  })
+search_parameter_guide_filter_1: |-
+  client.getIndex('movies').search('n', {
+    filters: 'title = Nightshift'
+  })
+search_parameter_guide_filter_2: |-
+  client.getIndex('movies').search('n', {
+    filters: 'title="Kung Fu Panda"'
+  })
+search_parameter_guide_matches_1: |-
+  client.getIndex('movies').search('n', {
+    filters: 'title="Kung Fu Panda"',
+    attributesToHighlight: ['overview'],
+    matches: true
+  })
+settings_guide_synonyms_1: |-
+  client.getindex('tops').settings({
+    synonyms: {
+      sweater: ['jumper'],
+      jumper: ['sweater']
+  })
+settings_guide_stop_words_1: |-
+  client.getindex('movies').settings({
+    stopWords: [
+      'the',
+      'a',
+      'an'
+    ]
+  })
+settings_guide_ranking_rules_1: |-
+  client.getindex('movies').settings({
+    rankingRules: [
+        'typo',
+        'words',
+        'proximity',
+        'attribute',
+        'wordsPosition',
+        'exactness',
+        'asc(release_date)',
+        'desc(rank)'
+    ]
+  })
+settings_guide_distinct_1: |-
+  client.getindex('movies').settings({
+    distinctAttribute: 'product_id'
+  })
+settings_guide_searchable_1: |-
+  client.getindex('movies').settings({
+    searchableAttributes: [
+      'uid',
+      'movie_id',
+      'title',
+      'description',
+      'poster',
+      'release_date',
+      'rank'
+    ]
+  })
+settings_guide_displayed_1: |-
+  client.getindex('movies').settings({
+    displayedAttributes: [
+      'title',
+      'description',
+      'poster',
+      'release_date',
+      'rank'
+    ]
+  })
+settings_guide_accept_new_fields_1: |-
+  client.getindex('movies').settings({
+    acceptNewFields: false
+  })
+add_movies_json_1: |-
+  const movies = require('./movies.json')
+  index.addDocuments(movies).then((res) => console.log(res))
+documents_guide_add_movie_1: |-
+  index.addDocuments([{
+    movie_id: '123sq178',
+    title: 'Amélie Poulain'
+  }])
+search_guide_1: |-
+  client.getIndex('movies').search('shifu', {
+    limit: 5,
+    offset: 10
+  })
+search_guide_2: |-
+  client.getIndex('movies').search('Avengers', {
+    filters: 'release_date > 795484800',
+  })
+getting_started_create_index_md: |-
+  ```bash
+    $ npm install meilisearch
+    # or
+    $ yarn add meilisearch
+  ```
+
+  ```javascript
+    const MeiliSearch = require('meilisearch')
+
+    var client = new MeiliSearch({ host: 'http://127.0.0.1:7700' })
+    const index = client
+      .createIndex({ uid: 'movies' })
+      .then((res) => console.log(res))
+  ```
+
+  [About this package](https://github.com/meilisearch/meilisearch-js/)
+getting_started_add_documents_md: |-
+  ```js
+    const movies = require('./movies.json')
+    index.addDocuments(movies).then((res) => console.log(res))
+  ```
+
+  [About this package](https://github.com/meilisearch/meilisearch-js/)
+getting_started_search_md: |-
+  ```js
+    index.search('botman').then((res) => console.log(res))
+  ```
+
+  [About this package](https://github.com/meilisearch/meilisearch-js/)

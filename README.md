@@ -377,11 +377,14 @@ This package works for MeiliSearch `>=0.10.x`.
 
 - Delete one document:
 
-`index.deleteDocument(documentId: string): Promise<EnqueuedUpdate>`
+`index.deleteDocument(documentId: string | number): Promise<EnqueuedUpdate>`
 
 - Delete multiple documents:
 
-`index.deleteDocuments(documentsIds: string[]): Promise<EnqueuedUpdate>`
+`index.deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedUpdate>`
+
+- Delete all documents: 
+`index.deleteAllDocuments(): Promise<Types.EnqueuedUpdate>`
 
 ### Settings
 
@@ -420,7 +423,7 @@ This package works for MeiliSearch `>=0.10.x`.
   `index.updateStopWords(string[]): Promise<EnqueuedUpdate>`
 
 - Reset Stop Words
-  `index.updateStopWords(): Promise<EnqueuedUpdate>`
+  `index.resetStopWords(): Promise<EnqueuedUpdate>`
 
 ### Ranking rules
 
@@ -473,6 +476,12 @@ This package works for MeiliSearch `>=0.10.x`.
 
 - Update Accept new fields
   `index.updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>`
+
+### Keys
+
+- Get keys
+
+`client.getKeys(): Promise<Keys>`
 
 ### Healthy
 
