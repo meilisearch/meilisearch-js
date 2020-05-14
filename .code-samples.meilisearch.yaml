@@ -11,72 +11,143 @@ delete_an_index_1: |-
 get_one_document_1: |-
   client.getDocument(1)
 get_documents_1: |-
-  index.getDocuments(params: getDocumentsParams)
+  client.getindex('movie').getDocuments({ limit: 2 })
 add_or_replace_documents_1: |-
-  index.addDocuments(documents: object[])
+  client.getindex('movie').addDocuments([{
+      id: 287947,
+      title: 'Shazam',
+      poster: 'https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg',
+      overview: 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
+      release_date: '2019-03-23'
+  }])
 add_or_update_documents_1: |-
-  index.updateDocuments(documents: object[]
+  client.getindex('movie').updateDocuments([{
+      movieskud: 287947,
+      title: 'Shazam ⚡️'
+  }])
 delete_all_documents_1: |-
+  client.getindex('movie').deleteAllDocuments()
 delete_one_document_1: |-
-  index.deleteDocument(documentId: string)
+  client.getindex('movie').deleteDocument(25684)
 delete_documents_1: |-
-  index.deleteDocuments(documentsIds: string[])
+  client.getindex('movie').deleteDocuments([23488, 153738, 437035, 363869])
 search_1: |-
-  client.getIndex('xxx').search(query: string, options?: SearchParams)
+  client.getIndex('movie').search('American ninja')
 get_update_1: |-
-  index.getUpdateStatus(updateId: number)
+  client.getindex('movie').getUpdateStatus(1)
 get_all_updates_1: |-
-  index.getAllUpdateStatus()
+  client.getindex('movie').getAllUpdateStatus()
 get_keys: |-
   client.getKeys()
 get_settings_1: |-
-  index.getSettings()
+  client.getindex('movie').getSettings()
 update_settings_1: |-
-  index.updateSettings(settings: Settings)
+  client.getindex('movie').updateSettings({
+      rankingRules: [
+          'typo',
+          'words',
+          'proximity',
+          'attribute',
+          'wordsPosition',
+          'exactness',
+          'desc(release_date)',
+          'desc(rank)'
+      ],
+      distinctAttribute: 'movie_id',
+      searchableAttributes: [
+          'uid',
+          'movie_id',
+          'title',
+          'description',
+          'poster',
+          'release_date',
+          'rank'
+      ],
+      displayedAttributes: [
+          'title',
+          'description',
+          'poster',
+          'release_date',
+          'rank'
+      ],
+      stopWords: [
+          'the',
+          'a',
+          'an'
+      ],
+      synonyms: {
+          'wolverine': ['xmen', 'logan'],
+          'logan': ['wolverine']
+      },
+      acceptNewFields: false
+  })
 reset_settings_1: |-
-  index.resetSettings()
+  client.getindex('movie').resetSettings()
 get_synonyms_1: |-
-  index.getSynonyms()
+  client.getindex('movie').getSynonyms()
 update_synonyms_1: |-
-  index.updateSynonym(synonyms: object)
+  client.getindex('movie').updateSynonym({
+    wolverine: ['xmen', 'logan'],
+    logan: ['wolverine', 'xmen'],
+    wow: ['world of warcraft']
+  })
 reset_synonyms_1: |-
-  index.resetSynonym()
+  client.getindex('movie').resetSynonym()
 get_stop_words_1: |-
-  index.getStopWords()
+  client.getindex('movie').getStopWords()
 update_stop_words_1: |-
-  index.updateStopWords(string[])
+  client.getindex('movie').updateStopWords(['of', 'the', 'to'])
 reset_stop_words_1: |-
-  index.resetStopWords()
+  client.getindex('movie').resetStopWords()
 get_ranking_rules_1: |-
-  index.getRankingRules()
+  client.getindex('movie').getRankingRules()
 update_ranking_rules_1: |-
-  index.updateRankingRules(rankingRules: string[])
+  client.getindex('movie').updateRankingRules([
+      'typo',
+      'words',
+      'proximity',
+      'attribute',
+      'wordsPosition',
+      'exactness',
+      'asc(release_date)',
+      'desc(rank)'
+  ])
 reset_ranking_rules_1: |-
-  index.resetRankingRules()
+  client.getindex('movie').resetRankingRules()
 get_distinct_attribute_1: |-
-  index.getDistinctAttribute()
+  client.getindex('movie').getDistinctAttribute()
 update_distinct_attribute_1: |-
-  index.updateDistinctAttribute(distinctAttribute: string)
+  client.getindex('movie').updateDistinctAttribute('movie_id')
 reset_distinct_attribute_1: |-
-  index.resetDistinctAttribute()
+  client.getindex('movie').resetDistinctAttribute()
 get_searchable_attributes_1: |-
-  index.getSearchableAttributes()
+  client.getindex('movie').getSearchableAttributes()
 update_searchable_attributes_1: |-
-  index.updateSearchableAttributes(searchableAttributes: string[])
+  client.getindex('movie').updateSearchableAttributes([
+      'title',
+      'description',
+      'uid'
+  ])
 reset_searchable_attributes_1: |-
-  index.resetSearchableAttributes()
+  client.getindex('movie').resetSearchableAttributes()
 get_displayed_attributes_1: |-
-  index.getDisplayedAttributes()
+  client.getindex('movie').getDisplayedAttributes()
 update_displayed_attributes_1: |-
-  index.updateDisplayedAttributes(displayedAttributes: string[])
+  client.getindex('movie').updateDisplayedAttributes([
+      'title',
+      'description',
+      'release_date',
+      'rank',
+      'poster'
+  ])
 reset_displayed_attributes_1: |-
-  index.resetDisplayedAttributes()
+  client.getindex('movie').resetDisplayedAttributes()
 get_accept_new_fields_1: |-
-  index.getAcceptNewFields()
+  client.getindex('movie').getAcceptNewFields()
 update_accept_new_fields_1: |-
-  index.updateAcceptNewFields(acceptNewFields: boolean)
+  client.getindex('movie').updateAcceptNewFields(false)
 get_index_stats_1: |-
-  index.getStats()
+  client.getindex('movie').getStats()
 get_indexes_stats_1: |-
   client.stats()
 get_health_1: |-
