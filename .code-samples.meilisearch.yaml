@@ -9,43 +9,82 @@ update_an_index_1: |-
 delete_an_index_1: |-
   client.getIndex('movie').deleteIndex()
 get_one_document_1: |-
+  client.getDocument(1)
 get_documents_1: |-
+  index.getDocuments(params: getDocumentsParams)
 add_or_replace_documents_1: |-
+  index.addDocuments(documents: object[])
 add_or_update_documents_1: |-
+  index.updateDocuments(documents: object[]
 delete_all_documents_1: |-
 delete_one_document_1: |-
+  index.deleteDocument(documentId: string)
 delete_documents_1: |-
+  index.deleteDocuments(documentsIds: string[])
 search_1: |-
+  client.getIndex('xxx').search(query: string, options?: SearchParams)
 get_update_1: |-
+  index.getUpdateStatus(updateId: number)
 get_all_updates_1: |-
+  index.getAllUpdateStatus()
 get_keys: |-
+  client.getKeys()
 get_settings_1: |-
+  index.getSettings()
 update_settings_1: |-
+  index.updateSettings(settings: Settings)
 reset_settings_1: |-
+  index.resetSettings()
 get_synonyms_1: |-
+  index.getSynonyms()
 update_synonyms_1: |-
+  index.updateSynonym(synonyms: object)
 reset_synonyms_1: |-
+  index.resetSynonym()
 get_stop_words_1: |-
+  index.getStopWords()
 update_stop_words_1: |-
+  index.updateStopWords(string[])
 reset_stop_words_1: |-
+  index.resetStopWords()
 get_ranking_rules_1: |-
+  index.getRankingRules()
 update_ranking_rules_1: |-
+  index.updateRankingRules(rankingRules: string[])
 reset_ranking_rules_1: |-
+  index.resetRankingRules()
 get_distinct_attribute_1: |-
+  index.getDistinctAttribute()
 update_distinct_attribute_1: |-
+  index.updateDistinctAttribute(distinctAttribute: string)
 reset_distinct_attribute_1: |-
+  index.resetDistinctAttribute()
 get_searchable_attributes_1: |-
+  index.getSearchableAttributes()
 update_searchable_attributes_1: |-
+  index.updateSearchableAttributes(searchableAttributes: string[])
 reset_searchable_attributes_1: |-
+  index.resetSearchableAttributes()
 get_displayed_attributes_1: |-
+  index.getDisplayedAttributes()
 update_displayed_attributes_1: |-
+  index.updateDisplayedAttributes(displayedAttributes: string[])
 reset_displayed_attributes_1: |-
+  index.resetDisplayedAttributes()
 get_accept_new_fields_1: |-
+  index.getAcceptNewFields()
 update_accept_new_fields_1: |-
+  index.updateAcceptNewFields(acceptNewFields: boolean)
 get_index_stats_1: |-
+  index.getStats()
 get_indexes_stats_1: |-
+  client.stats()
 get_health_1: |-
+  client.isHealthy()
 update_health_1: |-
 get_version_1: |-
+  client.version()
 get_pretty_sys_info_1: |-
+  client.systemInformationPretty()
 get_sys_info_1: |-
+  client.systemInformation()

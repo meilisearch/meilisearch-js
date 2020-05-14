@@ -420,7 +420,7 @@ This package works for MeiliSearch `>=0.10.x`.
   `index.updateStopWords(string[]): Promise<EnqueuedUpdate>`
 
 - Reset Stop Words
-  `index.updateStopWords(): Promise<EnqueuedUpdate>`
+  `index.resetStopWords(): Promise<EnqueuedUpdate>`
 
 ### Ranking rules
 
@@ -473,6 +473,12 @@ This package works for MeiliSearch `>=0.10.x`.
 
 - Update Accept new fields
   `index.updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>`
+
+### Keys
+
+- Get keys
+
+`client.getKeys(): Promise<Keys>`
 
 ### Healthy
 
