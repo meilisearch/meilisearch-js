@@ -377,11 +377,14 @@ This package works for MeiliSearch `>=0.10.x`.
 
 - Delete one document:
 
-`index.deleteDocument(documentId: string): Promise<EnqueuedUpdate>`
+`index.deleteDocument(documentId: string | number): Promise<EnqueuedUpdate>`
 
 - Delete multiple documents:
 
-`index.deleteDocuments(documentsIds: string[]): Promise<EnqueuedUpdate>`
+`index.deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedUpdate>`
+
+- Delete all documents: 
+`index.deleteAllDocuments(): Promise<Types.EnqueuedUpdate>`
 
 ### Settings
 
