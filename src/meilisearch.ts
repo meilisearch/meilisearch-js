@@ -108,9 +108,9 @@ class Meilisearch extends MeiliAxiosWrapper
   }
 
   /**
-   * Change the healthyness to unhealthy
+   * Set the healthyness to health value
    * @memberof Meilisearch
-   * @method setUnhealthy
+   * @method changeHealthTo
    */
   async changeHealthTo(health: boolean): Promise<void> {
     const url = '/health'
