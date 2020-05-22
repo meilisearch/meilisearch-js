@@ -215,102 +215,106 @@ export interface SysInfoPretty {
 
 export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   config: Config
-  getIndex(indexUid: string): Index
-  listIndexes(): Promise<IndexResponse[]>
-  createIndex(data: IndexRequest): Promise<Index>
-  getKeys(): Promise<Keys>
-  isHealthy(): Promise<boolean>
-  setHealthy(): Promise<void>
-  setUnhealthy(): Promise<void>
-  changeHealthTo(health: boolean): Promise<void>
-  stats(): Promise<Stats>
-  version(): Promise<Version>
-  sysInfo(): Promise<SysInfo>
-  prettySysInfo(): Promise<SysInfoPretty>
+  getIndex: (indexUid: string) => Index
+  listIndexes: () => Promise<IndexResponse[]>
+  createIndex: (data: IndexRequest) => Promise<Index>
+  getKeys: () => Promise<Keys>
+  isHealthy: () => Promise<boolean>
+  setHealthy: () => Promise<void>
+  setUnhealthy: () => Promise<void>
+  changeHealthTo: (health: boolean) => Promise<void>
+  stats: () => Promise<Stats>
+  version: () => Promise<Version>
+  sysInfo: () => Promise<SysInfo>
+  prettySysInfo: () => Promise<SysInfoPretty>
 }
 
 export interface IndexInterface extends MeiliAxiosWrapperInterface {
   uid: string
-  getUpdateStatus(updateId: number): Promise<Update>
-  getAllUpdateStatus(): Promise<Update[]>
-  search(query: string, options?: SearchParams): Promise<SearchResponse>
-  show(): Promise<IndexResponse>
-  updateIndex(data: UpdateIndexRequest): Promise<IndexResponse>
-  deleteIndex(): Promise<string>
-  getStats(): Promise<IndexStats>
-  getDocuments(options?: GetDocumentsParams): Promise<Document[]>
-  getDocument(documentId: string | number): Promise<Document>
-  addDocuments(
+  getUpdateStatus: (updateId: number) => Promise<Update>
+  getAllUpdateStatus: () => Promise<Update[]>
+  search: (query: string, options?: SearchParams) => Promise<SearchResponse>
+  show: () => Promise<IndexResponse>
+  updateIndex: (data: UpdateIndexRequest) => Promise<IndexResponse>
+  deleteIndex: () => Promise<string>
+  getStats: () => Promise<IndexStats>
+  getDocuments: (options?: GetDocumentsParams) => Promise<Document[]>
+  getDocument: (documentId: string | number) => Promise<Document>
+  addDocuments: (
     documents: Document[],
     options?: AddDocumentParams
-  ): Promise<EnqueuedUpdate>
-  updateDocuments(
+  ) => Promise<EnqueuedUpdate>
+  updateDocuments: (
     documents: Document[],
     options?: AddDocumentParams
-  ): Promise<EnqueuedUpdate>
-  deleteDocument(documentId: string | number): Promise<EnqueuedUpdate>
-  deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedUpdate>
-  deleteAllDocuments(): Promise<EnqueuedUpdate>
-  getSettings(): Promise<Settings>
-  updateSettings(settings: Settings): Promise<EnqueuedUpdate>
-  resetSettings(): Promise<EnqueuedUpdate>
-  getSynonyms(): Promise<object>
-  updateSynonyms(synonyms: object): Promise<object>
-  resetSynonyms(): Promise<object>
-  getStopWords(): Promise<string[]>
-  updateStopWords(stopWords: string[]): Promise<EnqueuedUpdate>
-  resetStopWords(): Promise<EnqueuedUpdate>
-  getRankingRules(): Promise<string[]>
-  updateRankingRules(rankingRules: string[]): Promise<EnqueuedUpdate>
-  resetRankingRules(): Promise<EnqueuedUpdate>
-  getDistinctAttribute(): Promise<string | void>
-  updateDistinctAttribute(distinctAttribute: string): Promise<EnqueuedUpdate>
-  resetDistinctAttribute(): Promise<EnqueuedUpdate>
-  getSearchableAttributes(): Promise<string[]>
-  updateSearchableAttributes(
+  ) => Promise<EnqueuedUpdate>
+  deleteDocument: (documentId: string | number) => Promise<EnqueuedUpdate>
+  deleteDocuments: (
+    documentsIds: string[] | number[]
+  ) => Promise<EnqueuedUpdate>
+  deleteAllDocuments: () => Promise<EnqueuedUpdate>
+  getSettings: () => Promise<Settings>
+  updateSettings: (settings: Settings) => Promise<EnqueuedUpdate>
+  resetSettings: () => Promise<EnqueuedUpdate>
+  getSynonyms: () => Promise<object>
+  updateSynonyms: (synonyms: object) => Promise<object>
+  resetSynonyms: () => Promise<object>
+  getStopWords: () => Promise<string[]>
+  updateStopWords: (stopWords: string[]) => Promise<EnqueuedUpdate>
+  resetStopWords: () => Promise<EnqueuedUpdate>
+  getRankingRules: () => Promise<string[]>
+  updateRankingRules: (rankingRules: string[]) => Promise<EnqueuedUpdate>
+  resetRankingRules: () => Promise<EnqueuedUpdate>
+  getDistinctAttribute: () => Promise<string | null>
+  updateDistinctAttribute: (
+    distinctAttribute: string
+  ) => Promise<EnqueuedUpdate>
+  resetDistinctAttribute: () => Promise<EnqueuedUpdate>
+  getSearchableAttributes: () => Promise<string[]>
+  updateSearchableAttributes: (
     searchableAttributes: string[]
-  ): Promise<EnqueuedUpdate>
-  resetSearchableAttributes(): Promise<EnqueuedUpdate>
-  getDisplayedAttributes(): Promise<string[]>
-  updateDisplayedAttributes(
+  ) => Promise<EnqueuedUpdate>
+  resetSearchableAttributes: () => Promise<EnqueuedUpdate>
+  getDisplayedAttributes: () => Promise<string[]>
+  updateDisplayedAttributes: (
     displayedAttributes: string[]
-  ): Promise<EnqueuedUpdate>
-  resetDisplayedAttributes(): Promise<EnqueuedUpdate>
-  getAcceptNewFields(): Promise<boolean>
-  updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>
+  ) => Promise<EnqueuedUpdate>
+  resetDisplayedAttributes: () => Promise<EnqueuedUpdate>
+  getAcceptNewFields: () => Promise<boolean>
+  updateAcceptNewFields: (acceptNewFields: boolean) => Promise<EnqueuedUpdate>
 }
 
 export interface MeiliAxiosWrapperInterface {
   instance: AxiosInstance
   cancelTokenSource: CancelTokenSource
-  get<T = any, R = AxiosResponse<T>>(
+  get: <T = any, R = AxiosResponse<T>>(
     url: string,
     config?: AxiosRequestConfig
-  ): Promise<R>
-  post(
+  ) => Promise<R>
+  post: ((
     url: string,
     data: IndexRequest,
     config?: AxiosRequestConfig
-  ): Promise<IndexResponse>
-  post<T = any, R = AxiosResponse<EnqueuedUpdate>>(
+  ) => Promise<IndexResponse>) &
+  (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
     url: string,
     data?: T,
     config?: AxiosRequestConfig
-  ): Promise<R>
-  put<T = any, R = AxiosResponse<T>>(
+  ) => Promise<R>)
+  put: <T = any, R = AxiosResponse<T>>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
-  ): Promise<R>
-  patch<T = any, R = AxiosResponse<T>>(
+  ) => Promise<R>
+  patch: <T = any, R = AxiosResponse<T>>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
-  ): Promise<R>
-  delete<T = any, R = AxiosResponse<T>>(
+  ) => Promise<R>
+  delete: <T = any, R = AxiosResponse<T>>(
     url: string,
     config?: AxiosRequestConfig
-  ): Promise<R>
+  ) => Promise<R>
 }
 
 /*
