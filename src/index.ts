@@ -449,7 +449,7 @@ class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
    * @memberof Index
    * @method getDistinctAttribute
    */
-  async getDistinctAttribute(): Promise<string | void> {
+  async getDistinctAttribute(): Promise<string | null> {
     const url = `/indexes/${this.uid}/settings/distinct-attribute`
 
     return await this.get(url)
