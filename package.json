@@ -68,7 +68,7 @@
     "@typescript-eslint/parser": "^2.29.0",
     "brotli-size": "^4.0.0",
     "eslint": "6",
-    "eslint-config-standard-with-typescript": "^16.0.0",
+    "eslint-config-standard-with-typescript": "^17.0.0",
     "eslint-plugin-import": "2",
     "eslint-plugin-jsdoc": "^25.2.0",
     "eslint-plugin-node": "11",
