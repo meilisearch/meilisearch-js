@@ -53,7 +53,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getDistinctAttribute()
-      .then((response: string | void) => {
+      .then((response: string | null) => {
         expect(response).toEqual(null)
       })
   })
@@ -70,7 +70,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getDistinctAttribute()
-      .then((response: string | void) => {
+      .then((response: string | null) => {
         expect(response).toEqual(new_da)
       })
   })
@@ -86,7 +86,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getDistinctAttribute()
-      .then((response: string | void) => {
+      .then((response: string | null) => {
         expect(response).toEqual(null)
       })
   })
