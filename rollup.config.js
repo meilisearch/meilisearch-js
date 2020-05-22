@@ -28,7 +28,6 @@ function dashToCamelCase(myStr) {
   return myStr.replace(/-([a-z])/g, (g) => g[1].toUpperCase())
 }
 
-
 const env = process.env.NODE_ENV || 'development'
 const LIB_NAME = pascalCase(normalizePackageName(pkg.name))
 const ROOT = resolve(__dirname, '.')
