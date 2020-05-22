@@ -36,7 +36,7 @@
     "test:coverage": "yarn test --coverage",
     "test:ci": "yarn test --ci",
     "size": "node scripts/file-size ./dist/bundles/meilisearch.umd.min.js ./dist/bundles/meilisearch.esm.min.js",
-    "style": "yarn format:fix && yarn lint",
+    "style": "yarn format && yarn lint",
     "style:fix": "yarn format:fix && yarn lint:fix",
     "prettier": "prettier \"**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}\"",
     "format": "yarn prettier --debug-check",
