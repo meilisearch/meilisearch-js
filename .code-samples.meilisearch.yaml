@@ -298,8 +298,8 @@ add_movies_json_1: |-
   index.addDocuments(movies).then((res) => console.log(res))
 documents_guide_add_movie_1: |-
   index.addDocuments([{
-    "movie_id": "123sq178",
-    "title": "Amelie Poulain"
+    movie_id: '123sq178',
+    title: 'Amélie Poulain'
   }])
 search_guide_1: |-
   client.getIndex('movies').search('shifu', {
