@@ -11,9 +11,9 @@ delete_an_index_1: |-
 get_one_document_1: |-
   client.getDocument(25684)
 get_documents_1: |-
-  client.getindex('movies').getDocuments({ limit: 2 })
+  client.getIndex('movies').getDocuments({ limit: 2 })
 add_or_replace_documents_1: |-
-  client.getindex('movies').addDocuments([{
+  client.getIndex('movies').addDocuments([{
       id: 287947,
       title: 'Shazam',
       poster: 'https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg',
@@ -21,28 +21,28 @@ add_or_replace_documents_1: |-
       release_date: '2019-03-23'
   }])
 add_or_update_documents_1: |-
-  client.getindex('movies').updateDocuments([{
+  client.getIndex('movies').updateDocuments([{
       movieskud: 287947,
       title: 'Shazam ⚡️'
   }])
 delete_all_documents_1: |-
-  client.getindex('movies').deleteAllDocuments()
+  client.getIndex('movies').deleteAllDocuments()
 delete_one_document_1: |-
-  client.getindex('movies').deleteDocument(25684)
+  client.getIndex('movies').deleteDocument(25684)
 delete_documents_1: |-
-  client.getindex('movies').deleteDocuments([23488, 153738, 437035, 363869])
+  client.getIndex('movies').deleteDocuments([23488, 153738, 437035, 363869])
 search_1: |-
   client.getIndex('movies').search('American ninja')
 get_update_1: |-
-  client.getindex('movies').getUpdateStatus(1)
+  client.getIndex('movies').getUpdateStatus(1)
 get_all_updates_1: |-
-  client.getindex('movies').getAllUpdateStatus()
+  client.getIndex('movies').getAllUpdateStatus()
 get_keys: |-
   client.getKeys()
 get_settings_1: |-
-  client.getindex('movies').getSettings()
+  client.getIndex('movies').getSettings()
 update_settings_1: |-
-  client.getindex('movies').updateSettings({
+  client.getIndex('movies').updateSettings({
       rankingRules: [
           'typo',
           'words',
@@ -82,27 +82,27 @@ update_settings_1: |-
       acceptNewFields: false
   })
 reset_settings_1: |-
-  client.getindex('movies').resetSettings()
+  client.getIndex('movies').resetSettings()
 get_synonyms_1: |-
-  client.getindex('movies').getSynonyms()
+  client.getIndex('movies').getSynonyms()
 update_synonyms_1: |-
-  client.getindex('movies').updateSynonym({
+  client.getIndex('movies').updateSynonym({
     wolverine: ['xmen', 'logan'],
     logan: ['wolverine', 'xmen'],
     wow: ['world of warcraft']
   })
 reset_synonyms_1: |-
-  client.getindex('movies').resetSynonym()
+  client.getIndex('movies').resetSynonym()
 get_stop_words_1: |-
-  client.getindex('movies').getStopWords()
+  client.getIndex('movies').getStopWords()
 update_stop_words_1: |-
-  client.getindex('movies').updateStopWords(['of', 'the', 'to'])
+  client.getIndex('movies').updateStopWords(['of', 'the', 'to'])
 reset_stop_words_1: |-
-  client.getindex('movies').resetStopWords()
+  client.getIndex('movies').resetStopWords()
 get_ranking_rules_1: |-
-  client.getindex('movies').getRankingRules()
+  client.getIndex('movies').getRankingRules()
 update_ranking_rules_1: |-
-  client.getindex('movies').updateRankingRules([
+  client.getIndex('movies').updateRankingRules([
       'typo',
       'words',
       'proximity',
@@ -113,27 +113,27 @@ update_ranking_rules_1: |-
       'desc(rank)'
   ])
 reset_ranking_rules_1: |-
-  client.getindex('movies').resetRankingRules()
+  client.getIndex('movies').resetRankingRules()
 get_distinct_attribute_1: |-
-  client.getindex('movies').getDistinctAttribute()
+  client.getIndex('movies').getDistinctAttribute()
 update_distinct_attribute_1: |-
-  client.getindex('movies').updateDistinctAttribute('movie_id')
+  client.getIndex('movies').updateDistinctAttribute('movie_id')
 reset_distinct_attribute_1: |-
-  client.getindex('movies').resetDistinctAttribute()
+  client.getIndex('movies').resetDistinctAttribute()
 get_searchable_attributes_1: |-
-  client.getindex('movies').getSearchableAttributes()
+  client.getIndex('movies').getSearchableAttributes()
 update_searchable_attributes_1: |-
-  client.getindex('movies').updateSearchableAttributes([
+  client.getIndex('movies').updateSearchableAttributes([
       'title',
       'description',
       'uid'
   ])
 reset_searchable_attributes_1: |-
-  client.getindex('movies').resetSearchableAttributes()
+  client.getIndex('movies').resetSearchableAttributes()
 get_displayed_attributes_1: |-
-  client.getindex('movies').getDisplayedAttributes()
+  client.getIndex('movies').getDisplayedAttributes()
 update_displayed_attributes_1: |-
-  client.getindex('movies').updateDisplayedAttributes([
+  client.getIndex('movies').updateDisplayedAttributes([
       'title',
       'description',
       'release_date',
@@ -141,13 +141,13 @@ update_displayed_attributes_1: |-
       'poster'
   ])
 reset_displayed_attributes_1: |-
-  client.getindex('movies').resetDisplayedAttributes()
+  client.getIndex('movies').resetDisplayedAttributes()
 get_accept_new_fields_1: |-
-  client.getindex('movies').getAcceptNewFields()
+  client.getIndex('movies').getAcceptNewFields()
 update_accept_new_fields_1: |-
-  client.getindex('movies').updateAcceptNewFields(false)
+  client.getIndex('movies').updateAcceptNewFields(false)
 get_index_stats_1: |-
-  client.getindex('movies').getStats()
+  client.getIndex('movies').getStats()
 get_indexes_stats_1: |-
   client.stats()
 get_health_1: |-
@@ -160,9 +160,9 @@ get_pretty_sys_info_1: |-
 get_sys_info_1: |-
   client.systemInformation()
 distinct_attribute_guide_1: |-
-  client.getindex('jackets').settings({ distinctAttribute: 'product_id' })
+  client.getIndex('jackets').settings({ distinctAttribute: 'product_id' })
 field_properties_guide_searchable_1: |-
-  client.getindex('movies').settings({
+  client.getIndex('movies').settings({
         searchableAttributes: [
             'uid',
             'movie_id',
@@ -174,7 +174,7 @@ field_properties_guide_searchable_1: |-
         ]
     })
 field_properties_guide_displayed_1: |-
-  client.getindex('movies').settings({
+  client.getIndex('movies').settings({
       displayedAttributes: [
           'title',
           'description',
@@ -237,13 +237,13 @@ search_parameter_guide_matches_1: |-
     matches: true
   })
 settings_guide_synonyms_1: |-
-  client.getindex('tops').settings({
+  client.getIndex('tops').settings({
     synonyms: {
       sweater: ['jumper'],
       jumper: ['sweater']
   })
 settings_guide_stop_words_1: |-
-  client.getindex('movies').settings({
+  client.getIndex('movies').settings({
     stopWords: [
       'the',
       'a',
@@ -251,7 +251,7 @@ settings_guide_stop_words_1: |-
     ]
   })
 settings_guide_ranking_rules_1: |-
-  client.getindex('movies').settings({
+  client.getIndex('movies').settings({
     rankingRules: [
         'typo',
         'words',
@@ -264,11 +264,11 @@ settings_guide_ranking_rules_1: |-
     ]
   })
 settings_guide_distinct_1: |-
-  client.getindex('movies').settings({
+  client.getIndex('movies').settings({
     distinctAttribute: 'product_id'
   })
 settings_guide_searchable_1: |-
-  client.getindex('movies').settings({
+  client.getIndex('movies').settings({
     searchableAttributes: [
       'uid',
       'movie_id',
@@ -280,7 +280,7 @@ settings_guide_searchable_1: |-
     ]
   })
 settings_guide_displayed_1: |-
-  client.getindex('movies').settings({
+  client.getIndex('movies').settings({
     displayedAttributes: [
       'title',
       'description',
@@ -290,7 +290,7 @@ settings_guide_displayed_1: |-
     ]
   })
 settings_guide_accept_new_fields_1: |-
-  client.getindex('movies').settings({
+  client.getIndex('movies').settings({
     acceptNewFields: false
   })
 add_movies_json_1: |-
@@ -298,8 +298,8 @@ add_movies_json_1: |-
   index.addDocuments(movies).then((res) => console.log(res))
 documents_guide_add_movie_1: |-
   index.addDocuments([{
-    movie_id: '123sq178',
-    title: 'Amélie Poulain'
+    "movie_id": "123sq178",
+    "title": "Amelie Poulain"
   }])
 search_guide_1: |-
   client.getIndex('movies').search('shifu', {
