@@ -28,13 +28,15 @@
 ## Table of Contents <!-- omit in toc -->
 
 - [🔧 Installation](#-installation)
-- [🚀 Getting started](#-getting-started)
+- [🎬 Getting started](#-getting-started)
+- [🤖 Compatibility with MeiliSearch](#-compatibility-with-meilisearch)
 - [🎬 Examples](#-examples)
   - [Indexes](#indexes)
   - [Documents](#documents)
   - [Update status](#update-status)
   - [Search](#search)
-- [🤖 Compatibility with MeiliSearch](#-compatibility-with-meilisearch)
+- [⚙️ Development Workflow](#️-development-workflow)
+- [📜 API Resources](#-api-resources)
 
 ## 🔧 Installation
 
@@ -46,7 +48,7 @@ npm install meilisearch
 yarn add meilisearch
 ```
 
-### 🏃‍♀️ Run MeiliSearch
+### 🏃‍♀️ Run MeiliSearch <!-- omit in toc -->
 
 There are many easy ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/guides/advanced_guides/installation.html#download-and-launch).
 
@@ -92,7 +94,7 @@ import MeiliSearch from 'meilisearch'
 
 With the `updateId`, you can check the status (`processed` or `failed`) of your documents addition thanks to this [method](#update-status).
 
-#### Search in index
+#### Search in index <!-- omit in toc -->
 
 ```javascript
 // MeiliSearch is typo-tolerant:
@@ -116,6 +118,11 @@ Output:
   "query": "harry pottre"
 }
 ```
+
+## 🤖 Compatibility with MeiliSearch
+
+This package is compatible with the following MeiliSearch versions:
+- `v0.10.X`
 
 ## 🎬 Examples
 
@@ -258,13 +265,13 @@ If you want to contribute, this sections describes the steps to follow.
 
 Thank you for your interest in a MeiliSearch tool! ♥️
 
-### Install dependencies
+### Install dependencies <!-- omit in toc -->
 
 ```bash
 $ yarn --dev
 ```
 
-### Tests and Linter
+### Tests and Linter <!-- omit in toc -->
 
 Each PR should pass the tests and the linter to be accepted.
 
@@ -280,7 +287,7 @@ $ yarn style:fix
 $ yarn build
 ```
 
-### Release
+### Release <!-- omit in toc -->
 
 MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
 
@@ -301,19 +308,15 @@ $ git push --tag origin master
 
 A GitHub Action will be triggered and push the package on [npm](https://www.npmjs.com/package/meilisearch).
 
-## 🤖 Compatibility with MeiliSearch
-
-This package works for MeiliSearch `>=0.10.x`.
-
 ## 📜 API Resources
 
-### Search
+### Search <!-- omit in toc -->
 
 - Make a search request:
 
 `client.getIndex('xxx').search(query: string, options?: SearchParams): Promise<SearchResponse>`
 
-### Indexes
+### Indexes <!-- omit in toc -->
 
 - List all indexes:
 
@@ -343,7 +346,7 @@ This package works for MeiliSearch `>=0.10.x`.
 
 `index.getStats(): Promise<IndexStats>`
 
-### Updates
+### Updates <!-- omit in toc -->
 
 - Get One update info:
 
@@ -357,7 +360,7 @@ This package works for MeiliSearch `>=0.10.x`.
 
 `index.waitForPendingUpdate(updateId: number, { timeOutMs?: number, intervalMs?: number }): Promise<Update>`
 
-### Documents
+### Documents <!-- omit in toc -->
 
 - Add or replace multiple documents:
 
@@ -383,10 +386,10 @@ This package works for MeiliSearch `>=0.10.x`.
 
 `index.deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedUpdate>`
 
-- Delete all documents: 
+- Delete all documents:
 `index.deleteAllDocuments(): Promise<Types.EnqueuedUpdate>`
 
-### Settings
+### Settings <!-- omit in toc -->
 
 - Get settings:
 
@@ -400,7 +403,7 @@ This package works for MeiliSearch `>=0.10.x`.
 
 `index.resetSettings(): Promise<EnqueuedUpdate>`
 
-### Synonyms
+### Synonyms <!-- omit in toc -->
 
 - Get synonyms:
 
@@ -414,7 +417,7 @@ This package works for MeiliSearch `>=0.10.x`.
 
 `index.resetSynonym(): Promise<EnqueuedUpdate>`
 
-### Stop-words
+### Stop-words <!-- omit in toc -->
 
 - Get Stop Words
   `index.getStopWords(): Promise<string[]>`
@@ -425,7 +428,7 @@ This package works for MeiliSearch `>=0.10.x`.
 - Reset Stop Words
   `index.resetStopWords(): Promise<EnqueuedUpdate>`
 
-### Ranking rules
+### Ranking rules <!-- omit in toc -->
 
 - Get Ranking Rules
   `index.getRankingRules(): Promise<string[]>`
@@ -436,7 +439,7 @@ This package works for MeiliSearch `>=0.10.x`.
 - Reset Ranking Rules
   `index.resetRankingRules(): Promise<EnqueuedUpdate>`
 
-### Distinct Attribute
+### Distinct Attribute <!-- omit in toc -->
 
 - Get Distinct Attribute
   `index.getDistinctAttribute(): Promise<string | void>`
@@ -447,7 +450,7 @@ This package works for MeiliSearch `>=0.10.x`.
 - Reset Distinct Attribute
   `index.resetDistinctAttribute(): Promise<EnqueuedUpdate>`
 
-### Searchable Attributes
+### Searchable Attributes <!-- omit in toc -->
 
 - Get Searchable Attributes
   `index.getSearchableAttributes(): Promise<string[]>`
@@ -458,7 +461,7 @@ This package works for MeiliSearch `>=0.10.x`.
 - Reset Searchable Attributes
   `index.resetSearchableAttributes(): Promise<EnqueuedUpdate>`
 
-### Displayed Attributes
+### Displayed Attributes <!-- omit in toc -->
 
 - Get Displayed Attributes
   `index.getDisplayedAttributes(): Promise<string[]>`
@@ -469,7 +472,7 @@ This package works for MeiliSearch `>=0.10.x`.
 - Reset Displayed Attributes
   `index.resetDisplayedAttributes(): Promise<EnqueuedUpdate>`
 
-### Accept new fields
+### Accept new fields <!-- omit in toc -->
 
 - Get Accept new fields
   `index.getAcceptNewFields(): Promise<boolean>`
@@ -477,31 +480,31 @@ This package works for MeiliSearch `>=0.10.x`.
 - Update Accept new fields
   `index.updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>`
 
-### Keys
+### Keys <!-- omit in toc -->
 
 - Get keys
 
 `client.getKeys(): Promise<Keys>`
 
-### Healthy
+### Healthy <!-- omit in toc -->
 
 - Check if the server is healthy
 
 `client.isHealthy(): Promise<void>`
 
-### Stats
+### Stats <!-- omit in toc -->
 
 - Get database stats
 
 `client.stats(): Promise<Stats>`
 
-### Version
+### Version <!-- omit in toc -->
 
 - Get binary version
 
 `client.version(): Promise<Version>`
 
-### System
+### System <!-- omit in toc -->
 
 - Get system information
 
