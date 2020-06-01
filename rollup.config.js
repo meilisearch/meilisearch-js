@@ -37,6 +37,7 @@ const PLUGINS = [
     useTsconfigDeclarationDir: true,
     tsconfigOverride: {
       exclude: ['tests'],
+      esModuleInterop: true,
     },
   }),
 ]
