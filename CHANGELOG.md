@@ -1,5 +1,9 @@
 ## V0.10 (released)
 
+- Fix bug where you could not import the CJS package from a ES6 node environment. #410
+
+## V0.10 (released)
+
 - Build is done 100% with rollup, tsc has been removed #318. Rollup has been updated #283
 - Moved tests to own folder at root #283
 - Error handled created with two new custom errors: `MeiliSearchApiError` `MeiliSearchTimeoutError` #283 & #311 & #318
