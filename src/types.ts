@@ -229,6 +229,10 @@ export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   prettySysInfo: () => Promise<SysInfoPretty>
 }
 
+export interface MeilisearchConstructor {
+  new (config: Config): MeiliSearchInterface;
+}
+
 export interface IndexInterface extends MeiliAxiosWrapperInterface {
   uid: string
   getUpdateStatus: (updateId: number) => Promise<Update>

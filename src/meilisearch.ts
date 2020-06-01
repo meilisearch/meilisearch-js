@@ -11,7 +11,9 @@ import { Index } from './index'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
 
-class Meilisearch extends MeiliAxiosWrapper
+
+
+const Meilisearch: Types.MeilisearchConstructor = class Meilisearch extends MeiliAxiosWrapper
   implements Types.MeiliSearchInterface {
   config: Types.Config
   constructor(config: Types.Config) {
