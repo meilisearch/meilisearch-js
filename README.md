@@ -122,6 +122,7 @@ Output:
 ## 🤖 Compatibility with MeiliSearch
 
 This package is compatible with the following MeiliSearch versions:
+
 - `v0.10.X`
 
 ## 🎬 Examples
@@ -387,7 +388,7 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 `index.deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedUpdate>`
 
 - Delete all documents:
-`index.deleteAllDocuments(): Promise<Types.EnqueuedUpdate>`
+  `index.deleteAllDocuments(): Promise<Types.EnqueuedUpdate>`
 
 ### Settings <!-- omit in toc -->
 
