@@ -123,7 +123,7 @@ Output:
 
 This package is compatible with the following MeiliSearch versions:
 
-- `v0.10.X`
+- `v0.11.X`
 
 ## 🎬 Examples
 
@@ -262,7 +262,7 @@ await index.search('prince', { limit: 1, attributesToHighlight: '*' })
 
 ## ⚙️ Development Workflow
 
-If you want to contribute, this sections describes the steps to follow.
+If you want to contribute, this section describes the steps to follow.
 
 Thank you for your interest in a MeiliSearch tool! ♥️
 
