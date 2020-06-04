@@ -340,3 +340,13 @@ getting_started_search_md: |-
   ```
 
   [About this package](https://github.com/meilisearch/meilisearch-js/)
+get_attributes_for_faceting_1: |-
+  client.getIndex('movies').getAttributesForFaceting()
+update_attributes_for_faceting_1: |-
+  client.getIndex('movies')
+    .getAttributesForFaceting([
+      'genre',
+      'director'
+    ])
+reset_attributes_for_faceting_1: |-
+  client.getIndex('movies').resetAttributesForFaceting()
