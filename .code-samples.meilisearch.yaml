@@ -350,3 +350,37 @@ update_attributes_for_faceting_1: |-
     ])
 reset_attributes_for_faceting_1: |-
   client.getIndex('movies').resetAttributesForFaceting()
+faceted_search_update_settings_1: |-
+  client.getIndex('movies')
+    .updateAttributesForFaceting([
+      'genre',
+      'director'
+    ])
+faceted_search_facet_filters_1: |-
+  client.getIndex('movies')
+    .search('thriller', {
+      facetFilters: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
+    }) 
+faceted_search_facets_distribution_1: |-
+  client.getIndex('movies')
+    .search('Batman', {
+      facetsDistribution: ['genres']
+    }) 
+faceted_search_walkthrough_attributes_for_faceting_1: |-
+  client.getIndex('movies')
+    .updateAttributesForFaceting([
+      'director',
+      'producer',
+      'genres',
+      'production_companies'
+    ])
+faceted_search_walkthrough_facet_filters_1: |-
+  client.getIndex('movies')
+    .search('thriller', {
+      facetFilters: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
+    })
+faceted_search_walkthrough_facets_distribution_1: |-
+  client.getIndex('movies')
+    .search('Batman', {
+      facetsDistribution: ['genres']
+    })
