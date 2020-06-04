@@ -29,10 +29,6 @@ const dataset = [
 
 jest.setTimeout(100 * 1000)
 
-beforeAll(async () => {
-  await clearAllIndexes(config)
-})
-
 afterAll(() => {
   return clearAllIndexes(config)
 })
@@ -127,17 +123,17 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getSearchableAttributes()
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
     test(`${permission} key: try to update searchable attributes and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateSearchableAttributes([])
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
     test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetSearchableAttributes()
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
   }
 )

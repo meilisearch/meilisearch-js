@@ -62,10 +62,6 @@ const defaultSettings = {
 
 jest.setTimeout(100 * 1000)
 
-beforeAll(async () => {
-  await clearAllIndexes(config)
-})
-
 afterAll(() => {
   return clearAllIndexes(config)
 })
@@ -381,17 +377,17 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     test(`${permission} key: try to get settings and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getSettings()
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
     test(`${permission} key: try to update settings and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateSettings({})
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
     test(`${permission} key: try to reset settings and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetSettings()
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
   }
 )
