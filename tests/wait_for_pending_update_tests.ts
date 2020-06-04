@@ -25,11 +25,6 @@ const dataset = [
 
 jest.setTimeout(100 * 1000)
 
-beforeAll(async () => {
-  await clearAllIndexes(config)
-  await masterClient.createIndex(index)
-})
-
 afterAll(() => {
   return clearAllIndexes(config)
 })

@@ -57,23 +57,6 @@ const dataset = [
 
 jest.setTimeout(100 * 1000)
 
-beforeAll(async () => {
-  await clearAllIndexes(config)
-  await masterClient.createIndex(index)
-  const new_attributes_for_faceting = ['genre']
-  const { updateId: settingUpdateId } = await masterClient
-    .getIndex(index.uid)
-    .updateAttributesForFaceting(new_attributes_for_faceting)
-    .then((response: Types.EnqueuedUpdate) => {
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      return response
-    })
-  const { updateId } = await masterClient
-    .getIndex(index.uid)
-    .addDocuments(dataset)
-  await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
-})
-
 afterAll(() => {
   return clearAllIndexes(config)
 })
@@ -182,8 +165,8 @@ describe.each([
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(1)
         expect(response.hits[0]).toHaveProperty('_matchesInfo', {
-          comment: [{ start: 3, length: 6 }],
-          title: [{ start: 1, length: 6 }],
+          comment: [{ start: 2, length: 6 }],
+          title: [{ start: 0, length: 6 }],
         })
       })
   })
@@ -318,11 +301,38 @@ describe.each([
       .then((response: Types.SearchResponse) => {
         expect(response).toHaveProperty('facetsDistribution', {
           genre: { adventure: 0, fantasy: 0, romance: 2 },
-  })
+        })
         expect(response).toHaveProperty('exhaustiveFacetsCount', true)
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response.hits.length).toEqual(2)
       })
+  })
+
+  test(`${permission} key: Search on index with no documents and no primary key`, async () => {
+    await client
+      .getIndex(emptyIndex.uid)
+      .search('prince')
+      .then((response: Types.SearchResponse) => {
+        expect(response).toHaveProperty('hits', [])
+        expect(response).toHaveProperty('offset', 0)
+        expect(response).toHaveProperty('limit', 20)
+        expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
+        expect(response).toHaveProperty('query', 'prince')
+        expect(response.hits.length).toEqual(0)
+      })
+  })
+  test(`${permission} key: Try to Search on deleted index and fail`, async () => {
+    await masterClient.getIndex(index.uid).deleteIndex()
+    await expect(
+      client.getIndex(index.uid).search('prince')
+    ).rejects.toThrowError(`Index movies_test not found`)
+  })
+  test(`${permission} key: Try to use asterix in attributes to retrieve and fail`, async () => {
+    await expect(
+      client.getIndex(index.uid).search('prince', {
+        attributesToRetrieve: '*',
+      })
+    ).rejects.toThrowError(/not found/)
   })
 })
 
@@ -336,7 +346,7 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
     test(`${permission} key: Try Basic search and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).search('prince')
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
   }
 )
