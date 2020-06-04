@@ -344,7 +344,7 @@ get_attributes_for_faceting_1: |-
   client.getIndex('movies').getAttributesForFaceting()
 update_attributes_for_faceting_1: |-
   client.getIndex('movies')
-    .getAttributesForFaceting([
+    .updateAttributesForFaceting([
       'genre',
       'director'
     ])
