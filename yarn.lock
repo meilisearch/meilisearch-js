@@ -1617,9 +1617,9 @@ eslint-plugin-import@2:
     resolve "^1.12.0"
 
 eslint-plugin-jsdoc@^27.0.2:
-  version "27.0.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-27.0.2.tgz#5f518b23b1bd932e6ead55defa620a1999c138a2"
-  integrity sha512-Oa5khI+ZuokO4CW9TddcOLzd8IHn1LdHAM3XgmPiZ4FZX6gi/R4swySXPx5mRvBb4y4sSqB09li/qpjE7aHjHA==
+  version "27.0.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-27.0.3.tgz#8dade43cc61cf220c72709477456c6437a7bcf8e"
+  integrity sha512-TWagiFwWFAq1rkl4cuoh6JHD7qAYCuYEinZe6Rxnfu7FvoxRnAMAu6zswADIzQXHoK2c+ueTDOKAQSHII0ttHg==
   dependencies:
     comment-parser "^0.7.4"
     debug "^4.1.1"
