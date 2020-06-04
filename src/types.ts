@@ -59,6 +59,8 @@ export interface SearchParams {
   cropLength?: number
   attributesToHighlight?: string[] | string
   filters?: string
+  facetFilters?: string[]
+  facetsDistribution?: string[]
   matches?: boolean
 }
 
@@ -70,6 +72,8 @@ export interface SearchRequest {
   attributesToCrop?: string
   cropLength?: number
   attributesToHighlight?: string
+  facetFilters?: string
+  facetsDistribution?: string
   filters?: string
   matches?: boolean
 }
@@ -81,6 +85,8 @@ export interface SearchResponse<T = any> {
   offset: number
   limit: number
   processingTimeMs: number
+  facetsDistribution?: object
+  exhaustiveFacetsCount?: boolean
   query: string
 }
 
@@ -270,6 +276,11 @@ export interface IndexInterface extends MeiliAxiosWrapperInterface {
     distinctAttribute: string
   ) => Promise<EnqueuedUpdate>
   resetDistinctAttribute: () => Promise<EnqueuedUpdate>
+  getAttributesForFaceting: () => Promise<string[]>
+  updateAttributesForFaceting: (
+    attributesForFaceting: string[]
+  ) => Promise<EnqueuedUpdate>
+  resetAttributesForFaceting: () => Promise<EnqueuedUpdate>
   getSearchableAttributes: () => Promise<string[]>
   updateSearchableAttributes: (
     searchableAttributes: string[]
