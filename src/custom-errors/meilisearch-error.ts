@@ -10,7 +10,8 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
 
   constructor(error: AxiosError, cachedStack?: string) {
     super(error.message)
-    this.type = this.constructor.name
+
+    this.type = 'MeiliSearchApiError'
     this.name = 'MeiliSearchApiError'
 
     // Fetch the native error message but add our application name in front of it.
@@ -22,6 +23,12 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
         path: error.response.config.url,
         method: error.response.config.method,
         body: error.response.data,
+      }
+
+      this.request = {
+        url: error.request._currentUrl,
+        path: error.config.url,
+        method: error.config.method,
       }
       // If a custom message was sent back by our API
       // We change the error message to be more explicit
