@@ -155,7 +155,7 @@ describe.each([
         filters: 'title = "Le Petit Prince"',
         attributesToCrop: '*',
         cropLength: 5,
-        matches: true,
+        matches: true
       })
       .then((response: Types.SearchResponse) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
@@ -296,7 +296,6 @@ describe.each([
       .search('a', {
         facetFilters: ['genre:romance'],
         facetsDistribution: ['genre'],
-        matches: true,
       })
       .then((response: Types.SearchResponse) => {
         expect(response).toHaveProperty('facetsDistribution', {

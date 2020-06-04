@@ -208,35 +208,6 @@ describe.each([
   })
 })
 
-describe.each([{ client: masterClient, permission: 'Master' }])(
-  'Test on routes where only master key has access',
-  ({ client, permission }) => {
-    describe('Test on base routes', () => {})
-  }
-)
-
-describe.each([{ client: privateClient, permission: 'Private' }])(
-  'Test on routes where private key should not have access',
-  ({ client, permission }) => {
-    describe('Test on base routes', () => {
-      // test(`${permission} key: try to get system info and be denied`, async () => {
-      //   await expect(client.sysInfo()).rejects.toThrowError(
-      //     `Invalid API key: ${PRIVATE_KEY}`
-      //   )
-      // })
-      // test(`${permission} key: try to get pretty system info and be denied`, async () => {
-      //   await expect(client.prettySysInfo()).rejects.toThrowError(
-      //     `Invalid API key: ${PRIVATE_KEY}`
-      //   )
-      // })
-      // test(`${permission} key: try to get /stats information and be denied`, async () => {
-      //   await expect(client.stats()).rejects.toThrowError(
-      //     `Invalid API key: ${PRIVATE_KEY}`
-      //   )
-      // })
-    })
-  }
-)
 
 describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on routes where public key should not have access',
