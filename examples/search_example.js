@@ -26,9 +26,8 @@ const addDataset = async () => {
   }
   const documents = await meili.getIndex(index.uid).getDocuments()
   if (documents.length === 0) {
-    await meili.getIndex(index.uid).addDocuments(dataset)
-    await sleep(1000) // This is to give time to MeiliSearch to index the dataset
-    // If you have no results it means it took more than 1 second to index.
+    const { updateId } = await meili.getIndex(index.uid).addDocuments(dataset)
+    await meili.getIndex(index.uid).waitForPendingUpdate(updateId)
   }
 }
 
@@ -40,5 +39,5 @@ const addDataset = async () => {
     attributesToHighlight: 'title',
   })
   console.log({ resp })
-  console.log({ r: resp.hits[0]._formatted })
+  console.log({ hit: resp.hits[0] })
 })()

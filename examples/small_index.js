@@ -30,6 +30,9 @@ const dataset = [
 ]
 
 ;(async () => {
+  // This examples creates an index with 7 documents
   await meili.createIndex(index)
-  await meili.getIndex(index.uid).addDocuments(dataset)
+  const { updateId } = await meili.getIndex(index.uid).addDocuments(dataset)
+  const res = await meili.getIndex(index.uid).waitForPendingUpdate(updateId)
+  console.log({ res });
 })()
