@@ -222,6 +222,7 @@ export interface SysInfoPretty {
 export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   config: Config
   getIndex: (indexUid: string) => Index
+  getOrCreateIndex(indexUid: string): Promise<Index>
   listIndexes: () => Promise<IndexResponse[]>
   createIndex: (data: IndexRequest) => Promise<Index>
   getKeys: () => Promise<Keys>
@@ -360,4 +361,5 @@ export type MeiliSearchApiErrorConstructor = new (
   cachedStack?: string
 ) => void
 
+// export fu errorHandler (e)
 export default MeiliSearch
