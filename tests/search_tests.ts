@@ -16,33 +16,46 @@ const emptyIndex = {
 }
 
 const dataset = [
-  { id: 123, title: 'Pride and Prejudice', comment: 'A great book' },
+  {
+    id: 123,
+    title: 'Pride and Prejudice',
+    comment: 'A great book',
+    genre: 'romance',
+  },
   {
     id: 456,
     title: 'Le Petit Prince',
     comment: 'A french book about a prince that walks on little cute planets',
+    genre: 'adventure',
   },
-  { id: 2, title: 'Le Rouge et le Noir', comment: 'Another french book' },
-  { id: 1, title: 'Alice In Wonderland', comment: 'A weird book' },
-  { id: 1344, title: 'The Hobbit', comment: 'An awesome book' },
+  {
+    id: 2,
+    title: 'Le Rouge et le Noir',
+    comment: 'Another french book',
+    genre: 'romance',
+  },
+  {
+    id: 1,
+    title: 'Alice In Wonderland',
+    comment: 'A weird book',
+    genre: 'adventure',
+  },
+  {
+    id: 1344,
+    title: 'The Hobbit',
+    comment: 'An awesome book',
+    genre: 'adventure',
+  },
   {
     id: 4,
     title: 'Harry Potter and the Half-Blood Prince',
     comment: 'The best book',
+    genre: 'fantasy',
   },
-  { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
+  { id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: 'fantasy' },
 ]
 
 jest.setTimeout(100 * 1000)
-
-beforeAll(async () => {
-  await clearAllIndexes(config)
-  await masterClient.createIndex(index)
-  const { updateId } = await masterClient
-    .getIndex(index.uid)
-    .addDocuments(dataset)
-  await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
-})
 
 afterAll(() => {
   return clearAllIndexes(config)
@@ -57,6 +70,15 @@ describe.each([
     await clearAllIndexes(config)
     await masterClient.createIndex(index)
     await masterClient.createIndex(emptyIndex)
+    const new_attributes_for_faceting = ['genre']
+    const { updateId: settingUpdateId } = await masterClient
+      .getIndex(index.uid)
+      .updateAttributesForFaceting(new_attributes_for_faceting)
+      .then((response: Types.EnqueuedUpdate) => {
+        expect(response).toHaveProperty('updateId', expect.any(Number))
+        return response
+      })
+    await masterClient.getIndex(index.uid).waitForPendingUpdate(settingUpdateId)
     const { updateId } = await masterClient
       .getIndex(index.uid)
       .addDocuments(dataset)
@@ -133,7 +155,7 @@ describe.each([
         filters: 'title = "Le Petit Prince"',
         attributesToCrop: '*',
         cropLength: 5,
-        matches: true,
+        matches: true
       })
       .then((response: Types.SearchResponse) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
@@ -143,8 +165,8 @@ describe.each([
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(1)
         expect(response.hits[0]).toHaveProperty('_matchesInfo', {
-          comment: [{ start: 3, length: 6 }],
-          title: [{ start: 1, length: 6 }],
+          comment: [{ start: 2, length: 6 }],
+          title: [{ start: 0, length: 6 }],
         })
       })
   })
@@ -268,6 +290,23 @@ describe.each([
       })
   })
 
+  test(`${permission} key: Search with facetFilters and facetDistribution`, async () => {
+    await client
+      .getIndex(index.uid)
+      .search('a', {
+        facetFilters: ['genre:romance'],
+        facetsDistribution: ['genre'],
+      })
+      .then((response: Types.SearchResponse) => {
+        expect(response).toHaveProperty('facetsDistribution', {
+          genre: { adventure: 0, fantasy: 0, romance: 2 },
+        })
+        expect(response).toHaveProperty('exhaustiveFacetsCount', true)
+        expect(response).toHaveProperty('hits', expect.any(Array))
+        expect(response.hits.length).toEqual(2)
+      })
+  })
+
   test(`${permission} key: Search on index with no documents and no primary key`, async () => {
     await client
       .getIndex(emptyIndex.uid)
@@ -306,7 +345,7 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
     test(`${permission} key: Try Basic search and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).search('prince')
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
   }
 )
