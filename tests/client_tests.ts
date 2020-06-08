@@ -123,14 +123,12 @@ describe.each([
       await expect(client.listIndexes()).resolves.toHaveLength(1)
     })
     test(`${permission} key: bad host should raise CommunicationError`, async () => {
-      const client = new MeiliSearch({host: 'badHost'})
+      const client = new MeiliSearch({ host: 'badHost' })
       try {
-        await client.version();
-      }
-      catch(e) {
+        await client.version()
+      } catch (e) {
         expect(e.type).toEqual('MeiliSearchCommunicationError')
       }
-
     })
     test(`${permission} key: show deleted index should fail`, async () => {
       const index = client.getIndex(uidNoPrimaryKey.uid)
@@ -215,7 +213,6 @@ describe.each([
     })
   })
 })
-
 
 describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on routes where public key should not have access',
