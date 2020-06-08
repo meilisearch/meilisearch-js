@@ -1,4 +1,4 @@
-import * as Types from '../src/types'
+import MeiliSearch, * as Types from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -7,7 +7,6 @@ import {
   publicClient,
   anonymousClient,
   PUBLIC_KEY,
-  PRIVATE_KEY,
 } from './meilisearch-test-utils'
 
 const uidNoPrimaryKey = {
@@ -123,7 +122,16 @@ describe.each([
       })
       await expect(client.listIndexes()).resolves.toHaveLength(1)
     })
+    test(`${permission} key: bad host should raise CommunicationError`, async () => {
+      const client = new MeiliSearch({host: 'badHost'})
+      try {
+        await client.version();
+      }
+      catch(e) {
+        expect(e.type).toEqual('MeiliSearchCommunicationError')
+      }
 
+    })
     test(`${permission} key: show deleted index should fail`, async () => {
       const index = client.getIndex(uidNoPrimaryKey.uid)
       await expect(index.show()).rejects.toThrowError(

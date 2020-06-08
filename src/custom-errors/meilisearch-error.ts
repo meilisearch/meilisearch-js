@@ -29,11 +29,6 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
         method: error.response.config.method,
       }
 
-      this.request = {
-        url: error.request._currentUrl,
-        path: error.config.url,
-        method: error.config.method,
-      }
       // If a custom message was sent back by our API
       // We change the error message to be more explicit
       if (error.response.data?.message !== undefined) {
@@ -41,13 +36,6 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
         this.errorType = error.response.data.errorType
         this.errorLink = error.response.data.errorLink
         this.message = error.response.data.message
-      }
-    } else {
-      // If MeiliSearch did not answered
-      this.request = {
-        url: error.request._currentUrl,
-        path: error.config.url,
-        method: error.config.method,
       }
     }
 
@@ -58,6 +46,7 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
         .slice(1)
         .join('\n')}`
     }
+
   }
 }
 export default MeiliSearchApiError
