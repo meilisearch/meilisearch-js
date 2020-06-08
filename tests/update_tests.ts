@@ -84,7 +84,7 @@ describe.each([
   test(`${permission} key: Try to get update that does not exist`, async () => {
     await expect(
       client.getIndex(index.uid).getUpdateStatus(2545)
-    ).rejects.toThrowError(`Update 2545 not found not found`)
+    ).rejects.toThrowError(`Update 2545 not found`)
   })
 })
 
