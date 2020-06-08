@@ -6,8 +6,13 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
   implements Types.MeiliSearchApiErrorInterface {
   response?: Types.MeiliSearchApiErrorResponse
   request?: Types.MeiliSearchApiErrorRequest
+  errorCode?: string
+  errorType?: string
+  errorLink?: string
+  stack?: string
   type: string
 
+  //{"errorType":"invalid_request_error","errorLink":"https://docs.meilisearch.com/error/index_already_exists"}%
   constructor(error: AxiosError, cachedStack?: string) {
     super(error.message)
 
@@ -22,7 +27,6 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
         statusText: error.response.statusText,
         path: error.response.config.url,
         method: error.response.config.method,
-        body: error.response.data,
       }
 
       this.request = {
@@ -33,6 +37,9 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
       // If a custom message was sent back by our API
       // We change the error message to be more explicit
       if (error.response.data?.message !== undefined) {
+        this.errorCode = error.response.data.errorCode
+        this.errorType = error.response.data.errorType
+        this.errorLink = error.response.data.errorLink
         this.message = error.response.data.message
       }
     } else {

@@ -336,6 +336,11 @@ export interface MeiliSearchApiErrorInterface extends Error {
   name: string
   message: string
   stack?: string
+  errorCode?: string
+  errorType?: string
+  errorLink?: string
+  response?: MeiliSearchApiErrorResponse
+  request?: MeiliSearchApiErrorRequest
 }
 export interface MeiliSearchApiErrorResponse {
   status?: number
