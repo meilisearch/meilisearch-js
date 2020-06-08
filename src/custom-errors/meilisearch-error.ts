@@ -12,7 +12,6 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
   stack?: string
   type: string
 
-  //{"errorType":"invalid_request_error","errorLink":"https://docs.meilisearch.com/error/index_already_exists"}%
   constructor(error: AxiosError, cachedStack?: string) {
     super(error.message)
 
@@ -46,7 +45,6 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
         .slice(1)
         .join('\n')}`
     }
-
   }
 }
 export default MeiliSearchApiError
