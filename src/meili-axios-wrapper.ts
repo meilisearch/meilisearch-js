@@ -13,7 +13,7 @@ import instance, {
   AxiosResponse,
   CancelTokenSource,
 } from 'axios'
-import { errorHandler } from './errors/index'
+import { httpErrorHandler } from './errors/index'
 import * as Types from './types'
 
 class MeiliAxiosWrapper implements Types.MeiliAxiosWrapperInterface {
@@ -55,7 +55,7 @@ class MeiliAxiosWrapper implements Types.MeiliAxiosWrapperInterface {
     try {
       return await this.instance.get(url, config)
     } catch (e) {
-      throw errorHandler(e, cachedStack)
+      throw httpErrorHandler(e, cachedStack)
     }
   }
 
@@ -81,7 +81,7 @@ class MeiliAxiosWrapper implements Types.MeiliAxiosWrapperInterface {
     try {
       return await this.instance.post(url, data, config)
     } catch (e) {
-      throw errorHandler(e, cachedStack)
+      throw httpErrorHandler(e, cachedStack)
     }
   }
 
@@ -94,7 +94,7 @@ class MeiliAxiosWrapper implements Types.MeiliAxiosWrapperInterface {
     try {
       return await this.instance.put(url, data, config)
     } catch (e) {
-      throw errorHandler(e, cachedStack)
+      throw httpErrorHandler(e, cachedStack)
     }
   }
 
@@ -107,7 +107,7 @@ class MeiliAxiosWrapper implements Types.MeiliAxiosWrapperInterface {
     try {
       return await this.instance.patch(url, data, config)
     } catch (e) {
-      throw errorHandler(e, cachedStack)
+      throw httpErrorHandler(e, cachedStack)
     }
   }
 
@@ -119,7 +119,7 @@ class MeiliAxiosWrapper implements Types.MeiliAxiosWrapperInterface {
     try {
       return await this.instance.delete(url, config)
     } catch (e) {
-      throw errorHandler(e, cachedStack)
+      throw httpErrorHandler(e, cachedStack)
     }
   }
 }
