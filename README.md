@@ -315,7 +315,7 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Make a search request:
 
-`client.getIndex('xxx').search(query: string, options?: SearchParams): Promise<SearchResponse>`
+`client.getIndex('xxx').search<T = any>(query: string, options?: SearchParams): Promise<SearchResponse<T>>`
 
 ### Indexes <!-- omit in toc -->
 
