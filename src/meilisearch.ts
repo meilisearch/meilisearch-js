@@ -22,16 +22,16 @@ class Meilisearch extends MeiliAxiosWrapper
   /**
    * Return an Index instance
    * @memberof Meilisearch
-   * @method Index
+   * @method getIndex
    */
   getIndex(indexUid: string): Index {
     return new Index(this.config, indexUid)
   }
 
   /**
-   * Return an Index instance
+   * Get an index or create it if it does not exist
    * @memberof Meilisearch
-   * @method Index
+   * @method getOrCreateIndex
    */
   async getOrCreateIndex(
     indexUid: string,

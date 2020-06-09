@@ -7,7 +7,7 @@ const config = {
 
 var meili = new MeiliSearch(config)
 
-const index = {
+const newIndex = {
   uid: 'movies_test',
 }
 
@@ -30,12 +30,6 @@ const dataset = [
 ]
 
 ;(async () => {
-  try {
-    await meili.createIndex(index)
-    await meili.getIndex(index.uid).addDocuments(dataset)
-  }
-  catch (e) {
-    console.error(e);
-
-  }
+  const index = await meili.getOrCreateIndex(newIndex.uid)
+  await index.addDocuments(dataset)
 })()
