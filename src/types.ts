@@ -233,7 +233,7 @@ export interface IndexInterface extends MeiliAxiosWrapperInterface {
   uid: string
   getUpdateStatus: (updateId: number) => Promise<Update>
   getAllUpdateStatus: () => Promise<Update[]>
-  search: <T>(
+  search: <T = any>(
     query: string,
     options?: SearchParams
   ) => Promise<SearchResponse<T>>
