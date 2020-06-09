@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import MeiliSearchApiError from './meilisearch-error'
+import MeiliSearchApiError from './meilisearch-api-error'
 import MeilISearchCommunicationError from './meilisearch-communication-error'
 
 function errorHandler(e: AxiosError, cachedStack?: string): void {

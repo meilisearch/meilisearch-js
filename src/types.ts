@@ -15,8 +15,8 @@ import {
 import { Index } from './index'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import MeiliSearch from './meilisearch'
-import MeiliSearchApiError from './custom-errors/meilisearch-error'
-import MeiliSearchTimeOutError from './custom-errors/meilisearch-timeout-error'
+import MeiliSearchApiError from './errors/meilisearch-api-error'
+import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
 export { Index }
 export { MeiliSearchApiError }
 export { MeiliSearchTimeOutError }
