@@ -331,6 +331,10 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 `client.getIndex(uid: string): Indexes`
 
+- Get or create index if it does not exist
+
+`client.getOrCreateIndex(indexUid: string, primaryKey?: string): Promise<Index>`
+
 - Show Index information:
 
 `index.show(): Promise<IndexResponse>`
