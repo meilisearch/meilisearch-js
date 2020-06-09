@@ -5,7 +5,6 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
   extends Error
   implements Types.MeiliSearchApiErrorInterface {
   response?: Types.MeiliSearchApiErrorResponse
-  request?: Types.MeiliSearchApiErrorRequest
   errorCode?: string
   errorType?: string
   errorLink?: string

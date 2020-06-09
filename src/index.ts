@@ -7,7 +7,7 @@
 
 'use strict'
 
-import MeiliSearchTimeOutError from './custom-errors/meilisearch-timeout-error'
+import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
 import { sleep } from './utils'
