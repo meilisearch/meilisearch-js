@@ -30,6 +30,10 @@ const dataset = [
 ]
 
 ;(async () => {
-  const index = await meili.getOrCreateIndex(newIndex.uid)
-  await index.addDocuments(dataset)
+  try {
+    const index = await meili.getOrCreateIndex(newIndex.uid)
+    await index.addDocuments(dataset)
+  } catch(e) {
+    console.error(e)
+  }
 })()
