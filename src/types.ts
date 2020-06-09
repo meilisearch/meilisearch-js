@@ -116,9 +116,9 @@ export type DocumentField =
   | DocumentArray
 
 export type Document<T> = DocumentLike &
-{
-  [key in keyof T]: T[key]
-}
+  {
+    [key in keyof T]: T[key]
+  }
 
 /*
  ** Settings
@@ -326,11 +326,11 @@ export interface MeiliAxiosWrapperInterface {
     data: IndexRequest,
     config?: AxiosRequestConfig
   ) => Promise<Index<T>>) &
-  (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
-    url: string,
-    data?: T,
-    config?: AxiosRequestConfig
-  ) => Promise<R>)
+    (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
+      url: string,
+      data?: T,
+      config?: AxiosRequestConfig
+    ) => Promise<R>)
   put: <T = any, R = AxiosResponse<T>>(
     url: string,
     data?: any,
