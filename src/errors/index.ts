@@ -2,7 +2,7 @@ import { AxiosError } from 'axios'
 import MeiliSearchApiError from './meilisearch-api-error'
 import MeilISearchCommunicationError from './meilisearch-communication-error'
 
-function errorHandler(e: AxiosError, cachedStack?: string): void {
+function httpErrorHandler(e: AxiosError, cachedStack?: string): void {
   if (e.response !== undefined) {
     throw new MeiliSearchApiError(e, cachedStack)
   } else if (e.isAxiosError) {
@@ -12,4 +12,4 @@ function errorHandler(e: AxiosError, cachedStack?: string): void {
   }
 }
 
-export { errorHandler }
+export { httpErrorHandler }
