@@ -19,9 +19,6 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-// Test with no index created before
-// Test with an index already existing
-// Test with a primary-key in parameter
 describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
