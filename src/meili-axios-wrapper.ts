@@ -13,7 +13,7 @@ import instance, {
   AxiosResponse,
   CancelTokenSource,
 } from 'axios'
-import { httpErrorHandler } from './errors/index'
+import { httpErrorHandler } from './errors/http-error-handler'
 import * as Types from './types'
 
 class MeiliAxiosWrapper implements Types.MeiliAxiosWrapperInterface {
