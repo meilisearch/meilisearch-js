@@ -114,7 +114,7 @@ export interface Document<T = any> {
  */
 
 export interface Settings {
-  attributesForFacetting?: string[]
+  attributesForFaceting?: string[]
   distinctAttribute?: string
   searchableAttributes?: string[]
   displayedAttributes?: string[]
