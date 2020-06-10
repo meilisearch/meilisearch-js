@@ -307,6 +307,23 @@ describe.each([
       })
   })
 
+  test(`${permission} key: Search with multiple facetFilters`, async () => {
+    await client
+      .getIndex(index.uid)
+      .search('a', {
+        facetFilters: ['genre:romance', ['genre:romance', 'genre:romance']],
+        facetsDistribution: ['genre'],
+      })
+      .then((response: Types.SearchResponse) => {
+        expect(response).toHaveProperty('facetsDistribution', {
+          genre: { adventure: 0, fantasy: 0, romance: 2 },
+        })
+        expect(response).toHaveProperty('exhaustiveFacetsCount', true)
+        expect(response).toHaveProperty('hits', expect.any(Array))
+        expect(response.hits.length).toEqual(2)
+      })
+  })
+
   test(`${permission} key: Search on index with no documents and no primary key`, async () => {
     await client
       .getIndex(emptyIndex.uid)
