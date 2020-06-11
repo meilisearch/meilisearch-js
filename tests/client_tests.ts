@@ -42,11 +42,9 @@ describe.each([
       await expect(client.listIndexes()).resolves.toHaveLength(0)
     })
     test(`${permission} key: create with no primary key`, async () => {
-      await client
-        .createIndex(uidNoPrimaryKey)
-        .then((response: Types.Index) => {
-          expect(response).toHaveProperty('uid', uidNoPrimaryKey.uid)
-        })
+      await client.createIndex(uidNoPrimaryKey).then((response) => {
+        expect(response).toHaveProperty('uid', uidNoPrimaryKey.uid)
+      })
 
       await client
         .getIndex(uidNoPrimaryKey.uid)
@@ -59,11 +57,9 @@ describe.each([
         })
     })
     test(`${permission} key: create with primary key`, async () => {
-      await client
-        .createIndex(uidAndPrimaryKey)
-        .then((response: Types.Index) => {
-          expect(response).toHaveProperty('uid', uidAndPrimaryKey.uid)
-        })
+      await client.createIndex(uidAndPrimaryKey).then((response) => {
+        expect(response).toHaveProperty('uid', uidAndPrimaryKey.uid)
+      })
       await client
         .getIndex(uidAndPrimaryKey.uid)
         .show()

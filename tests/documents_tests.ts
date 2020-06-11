@@ -341,11 +341,9 @@ describe.each([
       },
     ]
 
-    await client
-      .createIndex({ uid: 'updateUid' })
-      .then((response: Types.Index) => {
-        expect(response).toHaveProperty('uid', 'updateUid')
-      })
+    await client.createIndex({ uid: 'updateUid' }).then((response) => {
+      expect(response).toHaveProperty('uid', 'updateUid')
+    })
     const { updateId } = await client
       .getIndex('updateUid')
       .addDocuments(docs, { primaryKey: 'unique' })
