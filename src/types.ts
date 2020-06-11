@@ -229,26 +229,23 @@ export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   prettySysInfo: () => Promise<SysInfoPretty>
 }
 
-export interface IndexInterface extends MeiliAxiosWrapperInterface {
+export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   uid: string
   getUpdateStatus: (updateId: number) => Promise<Update>
   getAllUpdateStatus: () => Promise<Update[]>
-  search: <T = any>(
-    query: string,
-    options?: SearchParams
-  ) => Promise<SearchResponse<T>>
+  search: (query: string, options?: SearchParams) => Promise<SearchResponse<T>>
   show: () => Promise<IndexResponse>
   updateIndex: (data: UpdateIndexRequest) => Promise<IndexResponse>
   deleteIndex: () => Promise<string>
   getStats: () => Promise<IndexStats>
-  getDocuments: (options?: GetDocumentsParams) => Promise<Document[]>
-  getDocument: (documentId: string | number) => Promise<Document>
+  getDocuments: (options?: GetDocumentsParams) => Promise<Document<T>[]>
+  getDocument: (documentId: string | number) => Promise<Document<T>>
   addDocuments: (
-    documents: Document[],
+    documents: Document<T>[],
     options?: AddDocumentParams
   ) => Promise<EnqueuedUpdate>
   updateDocuments: (
-    documents: Document[],
+    documents: Document<T>[],
     options?: AddDocumentParams
   ) => Promise<EnqueuedUpdate>
   deleteDocument: (documentId: string | number) => Promise<EnqueuedUpdate>
