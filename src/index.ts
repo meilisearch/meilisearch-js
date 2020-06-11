@@ -153,7 +153,7 @@ class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
    * @method updateIndex
    */
   async updateIndex(
-    data: Types.UpdateIndexRequest
+    data: Types.IndexOptions
   ): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 

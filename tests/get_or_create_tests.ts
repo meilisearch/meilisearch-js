@@ -33,13 +33,13 @@ describe.each([
     expect(newIndexInfo.primaryKey).toEqual(null)
   })
   test(`${permission} key: getOrCreateIndex on already existing index`, async () => {
-    await masterClient.createIndex(index)
+    await masterClient.createIndex(index.uid)
     const newIndex = await client.getOrCreateIndex(index.uid)
     expect(newIndex.uid).toEqual(index.uid)
   })
 
   test(`${permission} key: getOrCreateIndex with primary key`, async () => {
-    const newIndex = await client.getOrCreateIndex(index.uid, 'primaryKey')
+    const newIndex = await client.getOrCreateIndex(index.uid, { primaryKey: 'primaryKey' })
     expect(newIndex.uid).toEqual(index.uid)
     const newIndexInfo = await client.getIndex(newIndex.uid).show()
     expect(newIndexInfo.primaryKey).toEqual('primaryKey')

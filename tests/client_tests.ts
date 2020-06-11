@@ -38,7 +38,7 @@ describe.each([
     })
     test(`${permission} key: create with no primary key`, async () => {
       await client
-        .createIndex(uidNoPrimaryKey)
+        .createIndex(uidNoPrimaryKey.uid)
         .then((response: Types.Index) => {
           expect(response).toHaveProperty('uid', uidNoPrimaryKey.uid)
         })
@@ -55,7 +55,7 @@ describe.each([
     })
     test(`${permission} key: create with primary key`, async () => {
       await client
-        .createIndex(uidAndPrimaryKey)
+        .createIndex(uidAndPrimaryKey.uid, uidAndPrimaryKey)
         .then((response: Types.Index) => {
           expect(response).toHaveProperty('uid', uidAndPrimaryKey.uid)
         })
@@ -138,14 +138,14 @@ describe.each([
     })
 
     test(`${permission} key: create index with already existing uid should fail`, async () => {
-      await expect(client.createIndex(uidAndPrimaryKey)).rejects.toThrowError(
+      await expect(client.createIndex(uidAndPrimaryKey.uid, uidAndPrimaryKey)).rejects.toThrowError(
         `index already exists`
       )
     })
 
     test(`${permission} key: create index with missing uid should fail`, async () => {
       // @ts-ignore
-      await expect(client.createIndex({ uid: null })).rejects.toThrowError(
+      await expect(client.createIndex(null)).rejects.toThrowError(
         `Index creation must have an uid`
       )
     })
@@ -224,12 +224,12 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
         )
       })
       test(`${permission} key: try to create Index with primary key and be denied`, async () => {
-        await expect(client.createIndex(uidAndPrimaryKey)).rejects.toThrowError(
+        await expect(client.createIndex(uidAndPrimaryKey.uid, uidAndPrimaryKey)).rejects.toThrowError(
           `Invalid API key: ${PUBLIC_KEY}`
         )
       })
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
-        await expect(client.createIndex(uidNoPrimaryKey)).rejects.toThrowError(
+        await expect(client.createIndex(uidNoPrimaryKey.uid)).rejects.toThrowError(
           `Invalid API key: ${PUBLIC_KEY}`
         )
       })
@@ -284,12 +284,12 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         )
       })
       test(`${permission} key: try to create an index with primary key and be denied`, async () => {
-        await expect(client.createIndex(uidAndPrimaryKey)).rejects.toThrowError(
+        await expect(client.createIndex(uidAndPrimaryKey.uid, uidAndPrimaryKey)).rejects.toThrowError(
           `You must have an authorization token`
         )
       })
       test(`${permission} key: try to create an index with NO primary key and be denied`, async () => {
-        await expect(client.createIndex(uidNoPrimaryKey)).rejects.toThrowError(
+        await expect(client.createIndex(uidNoPrimaryKey.uid)).rejects.toThrowError(
           `You must have an authorization token`
         )
       })

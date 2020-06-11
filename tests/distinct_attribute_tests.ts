@@ -39,7 +39,7 @@ describe.each([
 ])('Test on distinct attribute', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(index)
+    await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
       .getIndex(index.uid)
       .addDocuments(dataset)
@@ -93,7 +93,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(
@@ -118,7 +118,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(

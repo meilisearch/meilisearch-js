@@ -30,8 +30,8 @@ export interface Config {
 /// Request specific interfaces
 ///
 
-export interface IndexRequest {
-  uid: string
+export interface IndexOptions {
+  uid?: string
   primaryKey?: string
 }
 
@@ -41,10 +41,6 @@ export interface IndexResponse {
   primaryKey?: string
   createdAt: Date
   updatedAt: Date
-}
-
-export interface UpdateIndexRequest {
-  primaryKey?: string
 }
 
 export interface AddDocumentParams {
@@ -222,9 +218,9 @@ export interface SysInfoPretty {
 export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   config: Config
   getIndex: (indexUid: string) => Index
-  getOrCreateIndex: (indexUid: string) => Promise<Index>
+  getOrCreateIndex: (uid: string, options?: IndexOptions) => Promise<Index>
   listIndexes: () => Promise<IndexResponse[]>
-  createIndex: (data: IndexRequest) => Promise<Index>
+  createIndex: (uid: string, options?: IndexOptions) => Promise<Index>
   getKeys: () => Promise<Keys>
   isHealthy: () => Promise<boolean>
   setHealthy: () => Promise<void>
@@ -242,7 +238,7 @@ export interface IndexInterface extends MeiliAxiosWrapperInterface {
   getAllUpdateStatus: () => Promise<Update[]>
   search: (query: string, options?: SearchParams) => Promise<SearchResponse>
   show: () => Promise<IndexResponse>
-  updateIndex: (data: UpdateIndexRequest) => Promise<IndexResponse>
+  updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
   deleteIndex: () => Promise<string>
   getStats: () => Promise<IndexStats>
   getDocuments: (options?: GetDocumentsParams) => Promise<Document[]>
@@ -305,7 +301,7 @@ export interface MeiliAxiosWrapperInterface {
   ) => Promise<R>
   post: ((
     url: string,
-    data: IndexRequest,
+    data: IndexOptions,
     config?: AxiosRequestConfig
   ) => Promise<IndexResponse>) &
   (<T = any, R = AxiosResponse<EnqueuedUpdate>>(

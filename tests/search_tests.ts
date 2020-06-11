@@ -68,8 +68,8 @@ describe.each([
 ])('Test on search', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(index)
-    await masterClient.createIndex(emptyIndex)
+    await masterClient.createIndex(index.uid)
+    await masterClient.createIndex(emptyIndex.uid)
     const new_attributes_for_faceting = ['genre']
     const { updateId: settingUpdateId } = await masterClient
       .getIndex(index.uid)
@@ -340,7 +340,7 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: Try Basic search and be denied`, async () => {
       await expect(

@@ -25,7 +25,7 @@ describe.each([
 ])('Test on accept-new-fields', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(index)
+    await masterClient.createIndex(index.uid)
   })
   test(`${permission} key: Get accept new fields to be true`, async () => {
     await client

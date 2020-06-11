@@ -42,8 +42,8 @@ describe.each([
 ])('Test on documents', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(uidNoPrimaryKey)
-    await masterClient.createIndex(uidAndPrimaryKey)
+    await masterClient.createIndex(uidNoPrimaryKey.uid)
+    await masterClient.createIndex(uidAndPrimaryKey.uid, uidAndPrimaryKey)
   })
   test(`${permission} key: Add documents to uid with NO primary key`, async () => {
     const { updateId } = await client
@@ -336,7 +336,7 @@ describe.each([
     ]
 
     await client
-      .createIndex({ uid: 'updateUid' })
+      .createIndex('updateUid')
       .then((response: Types.Index) => {
         expect(response).toHaveProperty('uid', 'updateUid')
       })

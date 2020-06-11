@@ -74,7 +74,7 @@ import MeiliSearch from 'meilisearch'
     apiKey: 'masterKey',
   })
 
-  const index = await client.createIndex({ uid: 'books' }) // If your index does not exists
+  const index = await client.createIndex('books') // If your index does not exists
   // OR
   const index = client.getIndex('books') // If your index exists
 
@@ -140,9 +140,9 @@ In this section, the examples contain the [`await` keyword](https://developer.mo
 
 ```javascript
 // Create an index
-const index = await client.createIndex({ uid: 'books' })
+const index = await client.createIndex(('books'))
 // Create an index and give the primary-key
-const index = await client.createIndex({ uid: 'books', primaryKey: 'book_id' })
+const index = await client.createIndex('books', { primaryKey: 'book_id' })
 ```
 
 #### List all indexes <!-- omit in toc -->
@@ -325,7 +325,7 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Create new index:
 
-`client.createIndex(data: IndexRequest): Promise<Index>`
+`client.createIndex(uid: string, options?: IndexOptions): Promise<Index>`
 
 - Get index object:
 
@@ -333,7 +333,7 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Get or create index if it does not exist
 
-`client.getOrCreateIndex(indexUid: string, primaryKey?: string): Promise<Index>`
+`client.getOrCreateIndex(uid: string, options?: IndexOptions): Promise<Index>`
 
 - Show Index information:
 
@@ -341,7 +341,7 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Update Index:
 
-`index.updateIndex(data: UpdateIndexRequest): Promise<IndexResponse>`
+`index.updateIndex(data: IndexOptions): Promise<IndexResponse>`
 
 - Delete Index:
 

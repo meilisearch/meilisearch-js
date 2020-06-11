@@ -72,8 +72,8 @@ describe.each([
 ])('Test on settings', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(index)
-    await masterClient.createIndex(indexAndPK)
+    await masterClient.createIndex(index.uid)
+    await masterClient.createIndex(indexAndPK.uid, indexAndPK)
     const { updateId } = await masterClient
       .getIndex(index.uid)
       .addDocuments(dataset)
@@ -347,7 +347,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: try to get settings and be denied`, async () => {
       await expect(
@@ -372,7 +372,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: try to get settings and be denied`, async () => {
       await expect(
