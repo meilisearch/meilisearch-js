@@ -97,8 +97,9 @@ export interface GetDocumentsParams {
   attributesToRetrieve?: string[]
 }
 
-export interface Document<T = any> {
-  [attribute: string]: T
+// export type Document<T = any> = T
+export type Document<T = any> = {
+  [k in keyof T]: T[k]
 }
 
 /*
