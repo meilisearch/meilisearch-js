@@ -215,9 +215,9 @@ export interface SysInfoPretty {
 
 export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   config: Config
-  getIndex: (indexUid: string) => Index
+  getIndex: <T>(indexUid: string) => Index<T>
   listIndexes: () => Promise<IndexResponse[]>
-  createIndex: (data: IndexRequest) => Promise<Index>
+  createIndex: <T>(data: IndexRequest) => Promise<Index<T>>
   getKeys: () => Promise<Keys>
   isHealthy: () => Promise<boolean>
   setHealthy: () => Promise<void>
