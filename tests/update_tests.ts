@@ -39,7 +39,7 @@ describe.each([
 ])('Test on updates', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(index)
+    await masterClient.createIndex(index.uid)
   })
   test(`${permission} key: Get one update`, async () => {
     const { updateId } = await client
@@ -93,7 +93,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: Try to get a update and be denied`, async () => {
       await expect(
@@ -108,7 +108,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: Try to get an update and be denied`, async () => {
       await expect(
