@@ -233,7 +233,10 @@ export interface IndexInterface extends MeiliAxiosWrapperInterface {
   uid: string
   getUpdateStatus: (updateId: number) => Promise<Update>
   getAllUpdateStatus: () => Promise<Update[]>
-  search: (query: string, options?: SearchParams) => Promise<SearchResponse>
+  search: <T = any>(
+    query: string,
+    options?: SearchParams
+  ) => Promise<SearchResponse<T>>
   show: () => Promise<IndexResponse>
   updateIndex: (data: UpdateIndexRequest) => Promise<IndexResponse>
   deleteIndex: () => Promise<string>
@@ -296,11 +299,11 @@ export interface MeiliAxiosWrapperInterface {
     data: IndexRequest,
     config?: AxiosRequestConfig
   ) => Promise<IndexResponse>) &
-  (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
-    url: string,
-    data?: T,
-    config?: AxiosRequestConfig
-  ) => Promise<R>)
+    (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
+      url: string,
+      data?: T,
+      config?: AxiosRequestConfig
+    ) => Promise<R>)
   put: <T = any, R = AxiosResponse<T>>(
     url: string,
     data?: any,
