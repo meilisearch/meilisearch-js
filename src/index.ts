@@ -12,7 +12,7 @@ import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
 import { sleep } from './utils'
 
-class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
+class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   uid: string
   constructor(config: Types.Config, uid: string) {
     super(config)
@@ -72,7 +72,7 @@ class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
    * @memberof Index
    * @method search
    */
-  async search<T = any>(
+  async search(
     query: string,
     options?: Types.SearchParams
   ): Promise<Types.SearchResponse<T>> {
@@ -192,7 +192,7 @@ class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
    */
   async getDocuments(
     options?: Types.GetDocumentsParams
-  ): Promise<Types.Document[]> {
+  ): Promise<Types.Document<T>[]> {
     const url = `/indexes/${this.uid}/documents`
     let attr
     if (options !== undefined && Array.isArray(options.attributesToRetrieve)) {
@@ -212,7 +212,7 @@ class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
    * @memberof Index
    * @method getDocument
    */
-  async getDocument(documentId: string | number): Promise<Types.Document> {
+  async getDocument(documentId: string | number): Promise<Types.Document<T>> {
     const url = `/indexes/${this.uid}/documents/${documentId}`
 
     return await this.get(url)
@@ -224,7 +224,7 @@ class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
    * @method addDocuments
    */
   async addDocuments(
-    documents: Types.Document[],
+    documents: Types.Document<T>[],
     options?: Types.AddDocumentParams
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents`
@@ -240,7 +240,7 @@ class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
    * @method updateDocuments
    */
   async updateDocuments(
-    documents: Types.Document[],
+    documents: Types.Document<T>[],
     options?: Types.AddDocumentParams
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents`
