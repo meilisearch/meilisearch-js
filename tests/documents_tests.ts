@@ -265,7 +265,7 @@ describe.each([
       .getDocuments()
       .then((response) => {
         expect(response.length).toEqual(dataset.length - 2)
-        const returnedIds = response.map((x: Types.Document) => x.id)
+        const returnedIds = response.map((x) => x.id)
         expect(returnedIds).not.toContain(ids[0])
         expect(returnedIds).not.toContain(ids[1])
       })
@@ -285,7 +285,7 @@ describe.each([
       .getDocuments()
       .then((response) => {
         expect(response.length).toEqual(dataset.length - 2)
-        const returnedIds = response.map((x: Types.Document) => x.id)
+        const returnedIds = response.map((x) => x.id)
         expect(returnedIds).not.toContain(ids[0])
         expect(returnedIds).not.toContain(ids[1])
       })
