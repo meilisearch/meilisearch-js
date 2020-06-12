@@ -37,7 +37,7 @@ get_update_1: |-
   client.getIndex('movies').getUpdateStatus(1)
 get_all_updates_1: |-
   client.getIndex('movies').getAllUpdateStatus()
-get_keys: |-
+get_keys_1: |-
   client.getKeys()
 get_settings_1: |-
   client.getIndex('movies').getSettings()
