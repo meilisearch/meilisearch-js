@@ -97,10 +97,20 @@ export interface GetDocumentsParams {
   attributesToRetrieve?: string[]
 }
 
-// export type Document<T = any> = T
-export type Document<T = any> = {
-  [k in keyof T]: T[k]
-}
+export type DocumentLike = { [Key in string]?: DocumentField }
+export interface DocumentArray extends Array<DocumentField> {}
+export type DocumentField =
+  | string
+  | number
+  | boolean
+  | null
+  | DocumentLike
+  | DocumentArray
+
+export type Document<T> = DocumentLike &
+  {
+    [key in keyof T]: T[key]
+  }
 
 /*
  ** Settings
