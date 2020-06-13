@@ -197,7 +197,7 @@ filtering_guide_3: |-
   })
 filtering_guide_4: |-
   client.getIndex('movies').search('Planet of the Apes', {
-    filters: 'rating >= 3 AND (NOT director = "Tim Burton"'
+    filters: 'rating >= 3 AND (NOT director = "Tim Burton")'
   })
 search_parameter_guide_query_1: |-
   client.getIndex('movies').search('shifu')
