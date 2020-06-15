@@ -53,13 +53,17 @@ export interface AddDocumentParams {
 
 export type FacetFilter = (string | string[])[]
 
-export interface SearchParams {
+export interface SearchParams<T> {
   offset?: number
   limit?: number
-  attributesToRetrieve?: string[] | string
-  attributesToCrop?: string[] | string
+  attributesToRetrieve?: Extract<keyof T, string>[] | Extract<keyof T, string>
+  attributesToCrop?:
+    | (Extract<keyof T, string> | '*')[]
+    | (Extract<keyof T, string> | '*')
   cropLength?: number
-  attributesToHighlight?: string[] | string
+  attributesToHighlight?:
+    | (Extract<keyof T, string> | '*')[]
+    | (Extract<keyof T, string> | '*')
   filters?: string
   facetFilters?: string | FacetFilter | FacetFilter[]
   facetsDistribution?: string[]
@@ -258,7 +262,10 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   uid: string
   getUpdateStatus: (updateId: number) => Promise<Update>
   getAllUpdateStatus: () => Promise<Update[]>
-  search: (query: string, options?: SearchParams) => Promise<SearchResponse<T>>
+  search: (
+    query: string,
+    options?: SearchParams<T>
+  ) => Promise<SearchResponse<T>>
   show: () => Promise<IndexResponse>
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
   deleteIndex: () => Promise<string>
