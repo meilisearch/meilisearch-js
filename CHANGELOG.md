@@ -1,4 +1,4 @@
-## V0.10 (released)
+## V0.11.0 (released)
 
 - BREAKING: Usage of createIndex changed `createIndex(uid: string, options: IndexOptions)` #436
 - Error Handler improved by adding a new MeiliSearchCommunicationError #436
