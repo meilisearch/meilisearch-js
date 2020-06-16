@@ -361,5 +361,4 @@ export type MeiliSearchApiErrorConstructor = new (
   cachedStack?: string
 ) => void
 
-// export fu errorHandler (e)
 export default MeiliSearch
