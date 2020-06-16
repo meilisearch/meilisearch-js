@@ -5,12 +5,16 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
   extends Error
   implements Types.MeiliSearchApiErrorInterface {
   response?: Types.MeiliSearchApiErrorResponse
-  request?: Types.MeiliSearchApiErrorRequest
+  errorCode?: string
+  errorType?: string
+  errorLink?: string
+  stack?: string
   type: string
 
   constructor(error: AxiosError, cachedStack?: string) {
     super(error.message)
-    this.type = this.constructor.name
+
+    this.type = 'MeiliSearchApiError'
     this.name = 'MeiliSearchApiError'
 
     // Fetch the native error message but add our application name in front of it.
@@ -21,19 +25,15 @@ const MeiliSearchApiError: Types.MeiliSearchApiErrorConstructor = class
         statusText: error.response.statusText,
         path: error.response.config.url,
         method: error.response.config.method,
-        body: error.response.data,
       }
+
       // If a custom message was sent back by our API
       // We change the error message to be more explicit
       if (error.response.data?.message !== undefined) {
+        this.errorCode = error.response.data.errorCode
+        this.errorType = error.response.data.errorType
+        this.errorLink = error.response.data.errorLink
         this.message = error.response.data.message
-      }
-    } else {
-      // If MeiliSearch did not answered
-      this.request = {
-        url: error.request._currentUrl,
-        path: error.config.url,
-        method: error.config.method,
       }
     }
 

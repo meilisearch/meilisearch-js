@@ -14,26 +14,17 @@ const index = {
 }
 
 const dataset = [
-  { id: 123, title: 'Pride and Prejudice', comment: 'A great book' },
-  { id: 456, title: 'Le Petit Prince', comment: 'A french book' },
-  { id: 2, title: 'Le Rouge et le Noir', comment: 'Another french book' },
-  { id: 1, title: 'Alice In Wonderland', comment: 'A weird book' },
-  { id: 1344, title: 'The Hobbit', comment: 'An awesome book' },
+  { id: 123, title: 'Pride and Prejudice', genre: 'romance' },
+  { id: 456, title: 'Le Petit Prince', genre: 'adventure' },
+  { id: 2, title: 'Le Rouge et le Noir', genre: 'romance' },
+  { id: 1, title: 'Alice In Wonderland', genre: 'adventure' },
+  { id: 1344, title: 'The Hobbit', genre: 'adventure' },
   {
     id: 4,
     title: 'Harry Potter and the Half-Blood Prince',
-    comment: 'The best book',
+    genre: 'fantasy',
   },
   { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
-]
-
-const defaultRankingRules = [
-  'typo',
-  'words',
-  'proximity',
-  'attribute',
-  'wordsPosition',
-  'exactness',
 ]
 
 jest.setTimeout(100 * 1000)
@@ -45,28 +36,28 @@ afterAll(() => {
 describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
-])('Test on ranking rules', ({ client, permission }) => {
+])('Test on searchable attributes', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
       .getIndex(index.uid)
       .addDocuments(dataset)
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
   })
-  test(`${permission} key: Get default ranking rules`, async () => {
+  test(`${permission} key: Get default attributes for filtering`, async () => {
     await client
       .getIndex(index.uid)
-      .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
+      .getAttributesForFaceting()
+      .then((response: String[]) => {
+        expect(response.sort()).toEqual([])
       })
   })
-  test(`${permission} key: Update ranking rules`, async () => {
-    const new_rr = ['asc(title)', 'typo', 'desc(description)']
+  test(`${permission} key: Update attributes for filtering`, async () => {
+    const new_attributes_for_faceting = ['genre']
     const { updateId } = await client
       .getIndex(index.uid)
-      .updateRankingRules(new_rr)
+      .updateAttributesForFaceting(new_attributes_for_faceting)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -74,15 +65,15 @@ describe.each([
     await client.getIndex(index.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(index.uid)
-      .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(new_rr)
+      .getAttributesForFaceting()
+      .then((response: String[]) => {
+        expect(response).toEqual(new_attributes_for_faceting)
       })
   })
-  test(`${permission} key: Reset ranking rules`, async () => {
+  test(`${permission} key: Reset attributes for filtering`, async () => {
     const { updateId } = await client
       .getIndex(index.uid)
-      .resetRankingRules()
+      .resetAttributesForFaceting()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -90,58 +81,58 @@ describe.each([
     await client.getIndex(index.uid).waitForPendingUpdate(updateId)
     await client
       .getIndex(index.uid)
-      .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
+      .getAttributesForFaceting()
+      .then((response: String[]) => {
+        expect(response.sort()).toEqual([])
       })
   })
 })
 
 describe.each([{ client: publicClient, permission: 'Public' }])(
-  'Test on ranking rules',
+  'Test on attributes for filtering',
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
     })
-    test(`${permission} key: try to get ranking rules and be denied`, async () => {
+    test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getRankingRules()
+        client.getIndex(index.uid).getAttributesForFaceting()
       ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
     })
-    test(`${permission} key: try to update ranking rules and be denied`, async () => {
+    test(`${permission} key: try to update attributes for filtering and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateRankingRules([])
+        client.getIndex(index.uid).updateAttributesForFaceting([])
       ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
     })
-    test(`${permission} key: try to reset ranking rules and be denied`, async () => {
+    test(`${permission} key: try to reset attributes for filtering and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetRankingRules()
+        client.getIndex(index.uid).resetAttributesForFaceting()
       ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
     })
   }
 )
 
 describe.each([{ client: anonymousClient, permission: 'No' }])(
-  'Test on ranking rules',
+  'Test on attributes for filtering',
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
     })
-    test(`${permission} key: try to get ranking rules and be denied`, async () => {
+    test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getRankingRules()
+        client.getIndex(index.uid).getAttributesForFaceting()
       ).rejects.toThrowError(`You must have an authorization token`)
     })
-    test(`${permission} key: try to update ranking rules and be denied`, async () => {
+    test(`${permission} key: try to update attributes for filtering and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateRankingRules([])
+        client.getIndex(index.uid).updateAttributesForFaceting([])
       ).rejects.toThrowError(`You must have an authorization token`)
     })
-    test(`${permission} key: try to reset ranking rules and be denied`, async () => {
+    test(`${permission} key: try to reset attributes for filtering and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetRankingRules()
+        client.getIndex(index.uid).resetAttributesForFaceting()
       ).rejects.toThrowError(`You must have an authorization token`)
     })
   }

@@ -3,9 +3,9 @@ get_one_index_1: |-
 list_all_indexes_1: |-
   client.listIndexes()
 create_an_index_1: |-
-  client.createIndex({ uid: 'movies' })
+  client.createIndex('movies')
 update_an_index_1: |-
-  client.updateIndex({ uid: 'movies' })
+  client.updateIndex('movies', { primaryKey: 'movie_review_id' })
 delete_an_index_1: |-
   client.getIndex('movies').deleteIndex()
 get_one_document_1: |-
@@ -322,7 +322,7 @@ getting_started_create_index_md: |-
 
     var client = new MeiliSearch({ host: 'http://127.0.0.1:7700' })
     const index = client
-      .createIndex({ uid: 'movies' })
+      .createIndex('movies')
       .then((res) => console.log(res))
   ```
 
@@ -340,3 +340,47 @@ getting_started_search_md: |-
   ```
 
   [About this package](https://github.com/meilisearch/meilisearch-js/)
+get_attributes_for_faceting_1: |-
+  client.getIndex('movies').getAttributesForFaceting()
+update_attributes_for_faceting_1: |-
+  client.getIndex('movies')
+    .updateAttributesForFaceting([
+      'genre',
+      'director'
+    ])
+reset_attributes_for_faceting_1: |-
+  client.getIndex('movies').resetAttributesForFaceting()
+faceted_search_update_settings_1: |-
+  client.getIndex('movies')
+    .updateAttributesForFaceting([
+      'genre',
+      'director'
+    ])
+faceted_search_facet_filters_1: |-
+  client.getIndex('movies')
+    .search('thriller', {
+      facetFilters: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
+    })
+faceted_search_facets_distribution_1: |-
+  client.getIndex('movies')
+    .search('Batman', {
+      facetsDistribution: ['genres']
+    })
+faceted_search_walkthrough_attributes_for_faceting_1: |-
+  client.getIndex('movies')
+    .updateAttributesForFaceting([
+      'director',
+      'producer',
+      'genres',
+      'production_companies'
+    ])
+faceted_search_walkthrough_facet_filters_1: |-
+  client.getIndex('movies')
+    .search('thriller', {
+      facetFilters: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
+    })
+faceted_search_walkthrough_facets_distribution_1: |-
+  client.getIndex('movies')
+    .search('Batman', {
+      facetsDistribution: ['genres']
+    })

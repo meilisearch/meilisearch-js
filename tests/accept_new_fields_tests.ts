@@ -15,11 +15,6 @@ const index = {
 
 jest.setTimeout(100 * 1000)
 
-beforeAll(async () => {
-  await clearAllIndexes(config)
-  await masterClient.createIndex(index)
-})
-
 afterAll(() => {
   return clearAllIndexes(config)
 })
@@ -30,7 +25,7 @@ describe.each([
 ])('Test on accept-new-fields', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(index)
+    await masterClient.createIndex(index.uid)
   })
   test(`${permission} key: Get accept new fields to be true`, async () => {
     await client
@@ -75,7 +70,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     test(`${permission} key: try to get accept-new-fields and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getAcceptNewFields()
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
   }
 )

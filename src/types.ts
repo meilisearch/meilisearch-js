@@ -15,8 +15,8 @@ import {
 import { Index } from './index'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import MeiliSearch from './meilisearch'
-import MeiliSearchApiError from './custom-errors/meilisearch-error'
-import MeiliSearchTimeOutError from './custom-errors/meilisearch-timeout-error'
+import MeiliSearchApiError from './errors/meilisearch-api-error'
+import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
 export { Index }
 export { MeiliSearchApiError }
 export { MeiliSearchTimeOutError }
@@ -35,6 +35,10 @@ export interface IndexRequest {
   primaryKey?: string
 }
 
+export interface IndexOptions {
+  primaryKey?: string
+}
+
 export interface IndexResponse {
   uid: string
   name?: string
@@ -43,13 +47,11 @@ export interface IndexResponse {
   updatedAt: Date
 }
 
-export interface UpdateIndexRequest {
-  primaryKey?: string
-}
-
 export interface AddDocumentParams {
   primaryKey?: string
 }
+
+export type FacetFilter = string | FacetFilter[]
 
 export interface SearchParams {
   offset?: number
@@ -59,6 +61,8 @@ export interface SearchParams {
   cropLength?: number
   attributesToHighlight?: string[] | string
   filters?: string
+  facetFilters?: FacetFilter[]
+  facetsDistribution?: string[]
   matches?: boolean
 }
 
@@ -70,6 +74,8 @@ export interface SearchRequest {
   attributesToCrop?: string
   cropLength?: number
   attributesToHighlight?: string
+  facetFilters?: string
+  facetsDistribution?: string
   filters?: string
   matches?: boolean
 }
@@ -81,6 +87,8 @@ export interface SearchResponse<T = any> {
   offset: number
   limit: number
   processingTimeMs: number
+  facetsDistribution?: object
+  exhaustiveFacetsCount?: boolean
   query: string
 }
 
@@ -115,7 +123,9 @@ export type Document<T> = DocumentLike &
 /*
  ** Settings
  */
+
 export interface Settings {
+  attributesForFaceting?: string[]
   distinctAttribute?: string
   searchableAttributes?: string[]
   displayedAttributes?: string[]
@@ -227,8 +237,12 @@ export interface SysInfoPretty {
 export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   config: Config
   getIndex: <T>(indexUid: string) => Index<T>
+  getOrCreateIndex: <T>(
+    uid: string,
+    options?: IndexOptions
+  ) => Promise<Index<T>>
   listIndexes: () => Promise<IndexResponse[]>
-  createIndex: <T>(data: IndexRequest) => Promise<Index<T>>
+  createIndex: <T>(uid: string, options?: IndexOptions) => Promise<Index<T>>
   getKeys: () => Promise<Keys>
   isHealthy: () => Promise<boolean>
   setHealthy: () => Promise<void>
@@ -246,7 +260,7 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   getAllUpdateStatus: () => Promise<Update[]>
   search: (query: string, options?: SearchParams) => Promise<SearchResponse<T>>
   show: () => Promise<IndexResponse>
-  updateIndex: (data: UpdateIndexRequest) => Promise<IndexResponse>
+  updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
   deleteIndex: () => Promise<string>
   getStats: () => Promise<IndexStats>
   getDocuments: (options?: GetDocumentsParams) => Promise<Document<T>[]>
@@ -281,6 +295,11 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
     distinctAttribute: string
   ) => Promise<EnqueuedUpdate>
   resetDistinctAttribute: () => Promise<EnqueuedUpdate>
+  getAttributesForFaceting: () => Promise<string[]>
+  updateAttributesForFaceting: (
+    attributesForFaceting: string[]
+  ) => Promise<EnqueuedUpdate>
+  resetAttributesForFaceting: () => Promise<EnqueuedUpdate>
   getSearchableAttributes: () => Promise<string[]>
   updateSearchableAttributes: (
     searchableAttributes: string[]
@@ -302,11 +321,11 @@ export interface MeiliAxiosWrapperInterface {
     url: string,
     config?: AxiosRequestConfig
   ) => Promise<R>
-  post: ((
+  post: (<T = any>(
     url: string,
     data: IndexRequest,
     config?: AxiosRequestConfig
-  ) => Promise<IndexResponse>) &
+  ) => Promise<Index<T>>) &
     (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
       url: string,
       data?: T,
@@ -336,6 +355,11 @@ export interface MeiliSearchApiErrorInterface extends Error {
   name: string
   message: string
   stack?: string
+  errorCode?: string
+  errorType?: string
+  errorLink?: string
+  response?: MeiliSearchApiErrorResponse
+  request?: MeiliSearchApiErrorRequest
 }
 export interface MeiliSearchApiErrorResponse {
   status?: number

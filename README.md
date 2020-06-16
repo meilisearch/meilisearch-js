@@ -74,7 +74,7 @@ import MeiliSearch from 'meilisearch'
     apiKey: 'masterKey',
   })
 
-  const index = await client.createIndex({ uid: 'books' }) // If your index does not exists
+  const index = await client.createIndex('books') // If your index does not exist
   // OR
   const index = client.getIndex('books') // If your index exists
 
@@ -123,7 +123,7 @@ Output:
 
 This package is compatible with the following MeiliSearch versions:
 
-- `v0.10.X`
+- `v0.11.X`
 
 ## 🎬 Examples
 
@@ -140,9 +140,9 @@ In this section, the examples contain the [`await` keyword](https://developer.mo
 
 ```javascript
 // Create an index
-const index = await client.createIndex({ uid: 'books' })
+const index = await client.createIndex('books')
 // Create an index and give the primary-key
-const index = await client.createIndex({ uid: 'books', primaryKey: 'book_id' })
+const index = await client.createIndex('books', { primaryKey: 'book_id' })
 ```
 
 #### List all indexes <!-- omit in toc -->
@@ -262,7 +262,7 @@ await index.search('prince', { limit: 1, attributesToHighlight: '*' })
 
 ## ⚙️ Development Workflow
 
-If you want to contribute, this sections describes the steps to follow.
+If you want to contribute, this section describes the steps to follow.
 
 Thank you for your interest in a MeiliSearch tool! ♥️
 
@@ -325,11 +325,15 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Create new index:
 
-`client.createIndex(data: IndexRequest): Promise<Index<T>>`
+`client.createIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
 
 - Get index object:
 
 `client.getIndex<T>(uid: string): Index<T>`
+
+- Get or create index if it does not exist
+
+`client.getOrCreateIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
 
 - Show Index information:
 
@@ -337,7 +341,7 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Update Index:
 
-`index.updateIndex(data: UpdateIndexRequest): Promise<IndexResponse>`
+`index.updateIndex(data: IndexOptions): Promise<IndexResponse>`
 
 - Delete Index:
 

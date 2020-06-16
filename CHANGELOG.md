@@ -1,4 +1,18 @@
-## V0.10 (released)
+## V0.11.1 (released)
+
+- BREAKING: Usage of createIndex changed `createIndex(uid: string, options: IndexOptions): Index` #436
+- BREAKING: Changes in types
+  - `MeiliSearchApiErrorInterface` changes
+  - Removed `UpdateIndexRequest` and replaced it with `IndexOptions`
+- Error Handler improved by adding a new MeiliSearchCommunicationError #436
+- Refactor Error handler #436
+- Add getOrCreateIndex method to meilisearch client #436
+- Faceting (#421)
+- Improve tests with v11 (#422)
+- Improve code examples (#434)
+- Update dependencies
+
+## V0.10.1 (released)
 
 - Fix bug where you could not import the CJS package from a ES6 node environment. #410
 

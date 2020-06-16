@@ -32,12 +32,6 @@ const dataset = [
 ]
 jest.setTimeout(100 * 1000)
 
-beforeAll(async () => {
-  await clearAllIndexes(config)
-  await masterClient.createIndex(uidNoPrimaryKey)
-  await masterClient.createIndex(uidAndPrimaryKey)
-})
-
 afterAll(() => {
   return clearAllIndexes(config)
 })
@@ -48,8 +42,10 @@ describe.each([
 ])('Test on documents', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(uidNoPrimaryKey)
-    await masterClient.createIndex(uidAndPrimaryKey)
+    await masterClient.createIndex(uidNoPrimaryKey.uid)
+    await masterClient.createIndex(uidAndPrimaryKey.uid, {
+      primaryKey: uidAndPrimaryKey.primaryKey,
+    })
   })
   test(`${permission} key: Add documents to uid with NO primary key`, async () => {
     const { updateId } = await client
@@ -341,7 +337,7 @@ describe.each([
       },
     ]
 
-    await client.createIndex({ uid: 'updateUid' }).then((response) => {
+    await client.createIndex('updateUid').then((response) => {
       expect(response).toHaveProperty('uid', 'updateUid')
     })
     const { updateId } = await client
@@ -380,7 +376,10 @@ describe.each([
       .getAllUpdateStatus()
       .then((response: Types.Update[]) => {
         const lastUpdate = response[response.length - 1]
-        expect(lastUpdate).toHaveProperty('error', 'document id is missing')
+        expect(lastUpdate).toHaveProperty(
+          'error',
+          'serializer error; Primary key is missing.'
+        )
         expect(lastUpdate).toHaveProperty('status', 'failed')
       })
   })
@@ -427,32 +426,32 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   ({ client, permission }) => {
     test(`${permission} key: Try to add documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: Need a token`
+        `You must have an authorization token`
       )
     })
     test(`${permission} key: Try to update documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: Need a token`
+        `You must have an authorization token`
       )
     })
     test(`${permission} key: Try to get documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: Need a token`
+        `You must have an authorization token`
       )
     })
     test(`${permission} key: Try to delete one document and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: Need a token`
+        `You must have an authorization token`
       )
     })
     test(`${permission} key: Try to delete some documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: Need a token`
+        `You must have an authorization token`
       )
     })
     test(`${permission} key: Try to delete all documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: Need a token`
+        `You must have an authorization token`
       )
     })
   }
