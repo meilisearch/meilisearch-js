@@ -5,7 +5,6 @@
 - Refactor Error handler #436
 - FEATURE: Add getOrCreateIndex method to meilisearch client #436
 
-
 ## V0.10.1 (released)
 
 - Fix bug where you could not import the CJS package from a ES6 node environment. #410
