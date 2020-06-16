@@ -74,7 +74,7 @@ import MeiliSearch from 'meilisearch'
     apiKey: 'masterKey',
   })
 
-  const index = await client.createIndex('books') // If your index does not exists
+  const index = await client.createIndex('books') // If your index does not exist
   // OR
   const index = client.getIndex('books') // If your index exists
 
