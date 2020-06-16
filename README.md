@@ -140,7 +140,7 @@ In this section, the examples contain the [`await` keyword](https://developer.mo
 
 ```javascript
 // Create an index
-const index = await client.createIndex(('books'))
+const index = await client.createIndex('books')
 // Create an index and give the primary-key
 const index = await client.createIndex('books', { primaryKey: 'book_id' })
 ```
