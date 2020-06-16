@@ -59,10 +59,10 @@
     "axios": "^0.19.2"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "12.0.0",
+    "@rollup/plugin-commonjs": "13.0.0",
     "@rollup/plugin-json": "^4.0.2",
-    "@rollup/plugin-node-resolve": "8.0.0",
-    "@types/jest": "25.2.3",
+    "@rollup/plugin-node-resolve": "8.0.1",
+    "@types/jest": "26.0.0",
     "@types/prettier": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "2.34.0",
     "@typescript-eslint/parser": "2.34.0",
@@ -78,7 +78,7 @@
     "jest": "^25.2.4",
     "jest-watch-typeahead": "^0.5.0",
     "kleur": "^3.0.3",
-    "lint-staged": "10.2.6",
+    "lint-staged": "10.2.10",
     "prettier": "^2.0.2",
     "pretty-bytes": "^5.3.0",
     "rollup": "^2.2.0",
@@ -86,6 +86,6 @@
     "rollup-plugin-typescript2": "^0.27.0",
     "shx": "^0.3.2",
     "ts-jest": "^25.3.0",
-    "typescript": "3.9.3"
+    "typescript": "3.9.5"
   }
 }

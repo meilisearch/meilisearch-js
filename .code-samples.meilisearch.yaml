@@ -37,7 +37,7 @@ get_update_1: |-
   client.getIndex('movies').getUpdateStatus(1)
 get_all_updates_1: |-
   client.getIndex('movies').getAllUpdateStatus()
-get_keys: |-
+get_keys_1: |-
   client.getKeys()
 get_settings_1: |-
   client.getIndex('movies').getSettings()
@@ -189,7 +189,7 @@ filtering_guide_1: |-
   })
 filtering_guide_2: |-
   client.getIndex('movies').search('Batman', {
-    filters: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan"'
+    filters: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")'
   })
 filtering_guide_3: |-
   client.getIndex('movies').search('horror', {
@@ -197,7 +197,7 @@ filtering_guide_3: |-
   })
 filtering_guide_4: |-
   client.getIndex('movies').search('Planet of the Apes', {
-    filters: 'rating >= 3 AND (NOT director = "Tim Burton"'
+    filters: 'rating >= 3 AND (NOT director = "Tim Burton")'
   })
 search_parameter_guide_query_1: |-
   client.getIndex('movies').search('shifu')
