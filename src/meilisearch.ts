@@ -22,10 +22,30 @@ class Meilisearch extends MeiliAxiosWrapper
   /**
    * Return an Index instance
    * @memberof Meilisearch
-   * @method Index
+   * @method getIndex
    */
   getIndex(indexUid: string): Index {
     return new Index(this.config, indexUid)
+  }
+
+  /**
+   * Get an index or create it if it does not exist
+   * @memberof Meilisearch
+   * @method getOrCreateIndex
+   */
+  async getOrCreateIndex(
+    uid: string,
+    options: Types.IndexOptions = {}
+  ): Promise<Index> {
+    try {
+      const index = await this.createIndex(uid, options)
+      return index
+    } catch (e) {
+      if (e.errorCode === 'index_already_exists') {
+        return this.getIndex(uid)
+      }
+      throw e
+    }
   }
 
   /**
@@ -44,10 +64,13 @@ class Meilisearch extends MeiliAxiosWrapper
    * @memberof Meilisearch
    * @method createIndex
    */
-  async createIndex(data: Types.IndexRequest): Promise<Index> {
+  async createIndex(
+    uid: string,
+    options: Types.IndexOptions = {}
+  ): Promise<Index> {
     const url = '/indexes'
 
-    const index = await this.post(url, data)
+    const index = await this.post(url, { ...options, uid })
 
     return new Index(this.config, index.uid)
   }

@@ -25,11 +25,6 @@ const dataset = [
 
 jest.setTimeout(100 * 1000)
 
-beforeAll(async () => {
-  await clearAllIndexes(config)
-  await masterClient.createIndex(index)
-})
-
 afterAll(() => {
   return clearAllIndexes(config)
 })
@@ -40,7 +35,7 @@ describe.each([
 ])('Test on wait-for-pending-update', ({ client, permission }) => {
   beforeEach(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(index)
+    await masterClient.createIndex(index.uid)
   })
   test(`${permission} key: Get WaitForPendingStatus until done and resolved`, async () => {
     const { updateId } = await client.getIndex(index.uid).addDocuments(dataset)

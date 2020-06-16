@@ -7,7 +7,7 @@
 
 'use strict'
 
-import MeiliSearchTimeOutError from './custom-errors/meilisearch-timeout-error'
+import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
 import { sleep } from './utils'
@@ -116,9 +116,14 @@ class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
       if (options.filters !== undefined) {
         params.filters = options.filters
       }
-
       if (options.matches !== undefined) {
         params.matches = options.matches
+      }
+      if (options.facetFilters !== undefined) {
+        params.facetFilters = JSON.stringify(options.facetFilters)
+      }
+      if (options.facetsDistribution !== undefined) {
+        params.facetsDistribution = JSON.stringify(options.facetsDistribution)
       }
     }
 
@@ -148,7 +153,7 @@ class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
    * @method updateIndex
    */
   async updateIndex(
-    data: Types.UpdateIndexRequest
+    data: Types.IndexOptions
   ): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
@@ -475,6 +480,45 @@ class Index extends MeiliAxiosWrapper implements Types.IndexInterface {
    */
   async resetDistinctAttribute(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/distinct-attribute`
+
+    return await this.delete(url)
+  }
+
+  ///
+  /// ATTRIBUTES FOR FACETING
+  ///
+
+  /**
+   * Get the attributes-for-faceting
+   * @memberof Index
+   * @method getAttributesForFaceting
+   */
+  async getAttributesForFaceting(): Promise<string[]> {
+    const url = `/indexes/${this.uid}/settings/attributes-for-faceting`
+
+    return await this.get(url)
+  }
+
+  /**
+   * Update the attributes-for-faceting.
+   * @memberof Index
+   * @method updateAttributesForFaceting
+   */
+  async updateAttributesForFaceting(
+    attributesForFaceting: string[]
+  ): Promise<Types.EnqueuedUpdate> {
+    const url = `/indexes/${this.uid}/settings/attributes-for-faceting`
+
+    return await this.post(url, attributesForFaceting)
+  }
+
+  /**
+   * Reset the attributes-for-faceting.
+   * @memberof Index
+   * @method resetAttributesForFaceting
+   */
+  async resetAttributesForFaceting(): Promise<Types.EnqueuedUpdate> {
+    const url = `/indexes/${this.uid}/settings/attributes-for-faceting`
 
     return await this.delete(url)
   }

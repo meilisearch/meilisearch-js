@@ -29,10 +29,6 @@ const dataset = [
 
 jest.setTimeout(100 * 1000)
 
-beforeAll(async () => {
-  await clearAllIndexes(config)
-})
-
 afterAll(() => {
   return clearAllIndexes(config)
 })
@@ -43,7 +39,7 @@ describe.each([
 ])('Test on distinct attribute', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(index)
+    await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
       .getIndex(index.uid)
       .addDocuments(dataset)
@@ -97,7 +93,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(
@@ -122,22 +118,22 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getDistinctAttribute()
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateDistinctAttribute('title')
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetDistinctAttribute()
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
   }
 )
