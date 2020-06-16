@@ -73,7 +73,7 @@ describe.each([
   beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
-    await masterClient.createIndex(indexAndPK.uid, indexAndPK)
+    await masterClient.createIndex(indexAndPK.uid, { primaryKey: indexAndPK.primaryKey })
     const { updateId } = await masterClient
       .getIndex(index.uid)
       .addDocuments(dataset)

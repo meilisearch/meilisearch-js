@@ -62,7 +62,7 @@ class MeiliAxiosWrapper implements Types.MeiliAxiosWrapperInterface {
   //  Overloads functions
   async post(
     url: string,
-    data: Types.IndexOptions,
+    data: Types.IndexRequest,
     config?: AxiosRequestConfig
   ): Promise<Types.IndexResponse>
 
