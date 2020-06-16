@@ -62,10 +62,6 @@ const defaultSettings = {
 
 jest.setTimeout(100 * 1000)
 
-beforeAll(async () => {
-  await clearAllIndexes(config)
-})
-
 afterAll(() => {
   return clearAllIndexes(config)
 })
@@ -76,8 +72,8 @@ describe.each([
 ])('Test on settings', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(index)
-    await masterClient.createIndex(indexAndPK)
+    await masterClient.createIndex(index.uid)
+    await masterClient.createIndex(indexAndPK.uid, { primaryKey: indexAndPK.primaryKey })
     const { updateId } = await masterClient
       .getIndex(index.uid)
       .addDocuments(dataset)
@@ -129,6 +125,7 @@ describe.each([
       distinctAttribute: 'title',
       rankingRules: ['asc(title)', 'typo'],
       stopWords: ['the'],
+      attributesForFaceting: []
     }
     const { updateId } = await client
       .getIndex(index.uid)
@@ -351,7 +348,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: try to get settings and be denied`, async () => {
       await expect(
@@ -376,22 +373,22 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: try to get settings and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getSettings()
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
     test(`${permission} key: try to update settings and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateSettings({})
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
     test(`${permission} key: try to reset settings and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetSettings()
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
   }
 )

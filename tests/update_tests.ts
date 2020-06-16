@@ -29,11 +29,6 @@ const dataset = [
 
 jest.setTimeout(100 * 1000)
 
-beforeAll(async () => {
-  await clearAllIndexes(config)
-  await masterClient.createIndex(index)
-})
-
 afterAll(() => {
   return clearAllIndexes(config)
 })
@@ -44,7 +39,7 @@ describe.each([
 ])('Test on updates', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(index)
+    await masterClient.createIndex(index.uid)
   })
   test(`${permission} key: Get one update`, async () => {
     const { updateId } = await client
@@ -89,7 +84,7 @@ describe.each([
   test(`${permission} key: Try to get update that does not exist`, async () => {
     await expect(
       client.getIndex(index.uid).getUpdateStatus(2545)
-    ).rejects.toThrowError(`unknown update id`)
+    ).rejects.toThrowError(`Update 2545 not found`)
   })
 })
 
@@ -98,7 +93,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: Try to get a update and be denied`, async () => {
       await expect(
@@ -113,12 +108,12 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index)
+      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: Try to get an update and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getUpdateStatus(0)
-      ).rejects.toThrowError(`Invalid API key: Need a token`)
+      ).rejects.toThrowError(`You must have an authorization token`)
     })
   }
 )

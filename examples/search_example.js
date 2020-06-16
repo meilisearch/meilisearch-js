@@ -22,7 +22,7 @@ const addDataset = async () => {
   console.log({ indexes, indexFound })
 
   if (!indexFound) {
-    await meili.createIndex(index)
+    await meili.createIndex(index.uid)
   }
   const documents = await meili.getIndex(index.uid).getDocuments()
   if (documents.length === 0) {

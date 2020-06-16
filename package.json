@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "The MeiliSearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -16,7 +16,7 @@
     "qdequele <quentin@meilisearch.com>"
   ],
   "license": "MIT",
-  "main": "./dist/bundles/meilisearch.cjs.js",
+  "main": "./dist/bundles/meilisearch.umd.js",
   "module": "./dist/bundles/meilisearch.esm.js",
   "browser": "./dist/bundles/meilisearch.umd.js",
   "typings": "./dist/types/types.d.ts",
@@ -78,7 +78,7 @@
     "jest": "^25.2.4",
     "jest-watch-typeahead": "^0.5.0",
     "kleur": "^3.0.3",
-    "lint-staged": "10.2.9",
+    "lint-staged": "10.2.10",
     "prettier": "^2.0.2",
     "pretty-bytes": "^5.3.0",
     "rollup": "^2.2.0",
