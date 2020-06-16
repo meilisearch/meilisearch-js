@@ -70,7 +70,7 @@ class Meilisearch extends MeiliAxiosWrapper
   ): Promise<Index> {
     const url = '/indexes'
 
-    const index = await this.post(url, { uid, ...options })
+    const index = await this.post(url, { ...options, uid })
 
     return new Index(this.config, index.uid)
   }

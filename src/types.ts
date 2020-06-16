@@ -30,8 +30,12 @@ export interface Config {
 /// Request specific interfaces
 ///
 
+export interface IndexRequest {
+  uid: string
+  primaryKey?: string
+}
+
 export interface IndexOptions {
-  uid?: string
   primaryKey?: string
 }
 
@@ -305,9 +309,9 @@ export interface MeiliAxiosWrapperInterface {
   ) => Promise<R>
   post: ((
     url: string,
-    data: IndexOptions,
+    data: IndexRequest,
     config?: AxiosRequestConfig
-  ) => Promise<IndexResponse>) &
+  ) => Promise<Index>) &
   (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
     url: string,
     data?: T,
