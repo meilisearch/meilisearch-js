@@ -1,9 +1,13 @@
-## V0.11.0 (released)
+## V0.11.1 (released)
 
 - BREAKING: Usage of createIndex changed `createIndex(uid: string, options: IndexOptions)` #436
 - Error Handler improved by adding a new MeiliSearchCommunicationError #436
 - Refactor Error handler #436
 - FEATURE: Add getOrCreateIndex method to meilisearch client #436
+- Faceting (#421)
+- Improve tests with v11 (#422)
+- Improve code examples (#434)
+- Update dependencies
 
 ## V0.10.1 (released)
 
