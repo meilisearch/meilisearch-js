@@ -77,7 +77,7 @@
     "gzip-size": "^5.1.1",
     "jest": "^25.2.4",
     "jest-watch-typeahead": "^0.5.0",
-    "kleur": "^3.0.3",
+    "kleur": "^4.0.0",
     "lint-staged": "10.2.10",
     "prettier": "^2.0.2",
     "pretty-bytes": "^5.3.0",
