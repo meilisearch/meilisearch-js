@@ -43,7 +43,9 @@ describe.each([
   beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(uidNoPrimaryKey.uid)
-    await masterClient.createIndex(uidAndPrimaryKey.uid, { primaryKey: uidAndPrimaryKey.primaryKey })
+    await masterClient.createIndex(uidAndPrimaryKey.uid, {
+      primaryKey: uidAndPrimaryKey.primaryKey,
+    })
   })
   test(`${permission} key: Add documents to uid with NO primary key`, async () => {
     const { updateId } = await client
@@ -69,7 +71,7 @@ describe.each([
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.Document[]) => {
+      .then((response) => {
         expect(response.length).toEqual(dataset.length)
       })
   })
@@ -77,7 +79,7 @@ describe.each([
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.Document[]) => {
+      .then((response) => {
         expect(response.length).toEqual(dataset.length)
       })
   })
@@ -95,7 +97,7 @@ describe.each([
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocument(id)
-      .then((response: Types.Document) => {
+      .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
       })
@@ -114,7 +116,7 @@ describe.each([
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocument(id)
-      .then((response: Types.Document) => {
+      .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
       })
@@ -134,7 +136,7 @@ describe.each([
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocument(id)
-      .then((response: Types.Document) => {
+      .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
       })
@@ -153,7 +155,7 @@ describe.each([
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocument(id)
-      .then((response: Types.Document) => {
+      .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
       })
@@ -173,14 +175,14 @@ describe.each([
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocument(id)
-      .then((response: Types.Document) => {
+      .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
       })
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.Document[]) => {
+      .then((response) => {
         expect(response.length).toEqual(dataset.length + 1)
       })
   })
@@ -198,14 +200,14 @@ describe.each([
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocument(id)
-      .then((response: Types.Document) => {
+      .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
       })
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.Document[]) => {
+      .then((response) => {
         expect(response.length).toEqual(dataset.length + 1)
       })
   })
@@ -222,7 +224,7 @@ describe.each([
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.Document[]) => {
+      .then((response) => {
         expect(response.length).toEqual(dataset.length)
       })
   })
@@ -239,7 +241,7 @@ describe.each([
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.Document[]) => {
+      .then((response) => {
         expect(response.length).toEqual(dataset.length)
       })
   })
@@ -257,9 +259,9 @@ describe.each([
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.Document[]) => {
+      .then((response) => {
         expect(response.length).toEqual(dataset.length - 2)
-        const returnedIds = response.map((x: Types.Document) => x.id)
+        const returnedIds = response.map((x) => x.id)
         expect(returnedIds).not.toContain(ids[0])
         expect(returnedIds).not.toContain(ids[1])
       })
@@ -277,9 +279,9 @@ describe.each([
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.Document[]) => {
+      .then((response) => {
         expect(response.length).toEqual(dataset.length - 2)
-        const returnedIds = response.map((x: Types.Document) => x.id)
+        const returnedIds = response.map((x) => x.id)
         expect(returnedIds).not.toContain(ids[0])
         expect(returnedIds).not.toContain(ids[1])
       })
@@ -296,7 +298,7 @@ describe.each([
     await client
       .getIndex(uidNoPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.Document[]) => {
+      .then((response) => {
         expect(response.length).toEqual(0)
       })
   })
@@ -312,7 +314,7 @@ describe.each([
     await client
       .getIndex(uidAndPrimaryKey.uid)
       .getDocuments()
-      .then((response: Types.Document[]) => {
+      .then((response) => {
         expect(response.length).toEqual(0)
       })
   })
@@ -335,11 +337,9 @@ describe.each([
       },
     ]
 
-    await client
-      .createIndex('updateUid')
-      .then((response: Types.Index) => {
-        expect(response).toHaveProperty('uid', 'updateUid')
-      })
+    await client.createIndex('updateUid').then((response) => {
+      expect(response).toHaveProperty('uid', 'updateUid')
+    })
     const { updateId } = await client
       .getIndex('updateUid')
       .addDocuments(docs, { primaryKey: 'unique' })

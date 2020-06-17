@@ -24,8 +24,8 @@ class Meilisearch extends MeiliAxiosWrapper
    * @memberof Meilisearch
    * @method getIndex
    */
-  getIndex(indexUid: string): Index {
-    return new Index(this.config, indexUid)
+  getIndex<T = any>(indexUid: string): Index<T> {
+    return new Index<T>(this.config, indexUid)
   }
 
   /**
@@ -33,10 +33,10 @@ class Meilisearch extends MeiliAxiosWrapper
    * @memberof Meilisearch
    * @method getOrCreateIndex
    */
-  async getOrCreateIndex(
+  async getOrCreateIndex<T = any>(
     uid: string,
     options: Types.IndexOptions = {}
-  ): Promise<Index> {
+  ): Promise<Index<T>> {
     try {
       const index = await this.createIndex(uid, options)
       return index
@@ -64,10 +64,10 @@ class Meilisearch extends MeiliAxiosWrapper
    * @memberof Meilisearch
    * @method createIndex
    */
-  async createIndex(
+  async createIndex<T = any>(
     uid: string,
     options: Types.IndexOptions = {}
-  ): Promise<Index> {
+  ): Promise<Index<T>> {
     const url = '/indexes'
 
     const index = await this.post(url, { ...options, uid })

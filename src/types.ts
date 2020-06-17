@@ -51,7 +51,7 @@ export interface AddDocumentParams {
   primaryKey?: string
 }
 
-export type FacetFilter = string | FacetFilter[];
+export type FacetFilter = string | FacetFilter[]
 
 export interface SearchParams {
   offset?: number
@@ -105,9 +105,20 @@ export interface GetDocumentsParams {
   attributesToRetrieve?: string[]
 }
 
-export interface Document<T = any> {
-  [attribute: string]: T
-}
+export type DocumentLike = { [Key in string]?: DocumentField }
+export interface DocumentArray extends Array<DocumentField> {}
+export type DocumentField =
+  | string
+  | number
+  | boolean
+  | null
+  | DocumentLike
+  | DocumentArray
+
+export type Document<T> = DocumentLike &
+  {
+    [key in keyof T]: T[key]
+  }
 
 /*
  ** Settings
@@ -225,10 +236,13 @@ export interface SysInfoPretty {
 
 export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   config: Config
-  getIndex: (indexUid: string) => Index
-  getOrCreateIndex: (uid: string, options?: IndexOptions) => Promise<Index>
+  getIndex: <T>(indexUid: string) => Index<T>
+  getOrCreateIndex: <T>(
+    uid: string,
+    options?: IndexOptions
+  ) => Promise<Index<T>>
   listIndexes: () => Promise<IndexResponse[]>
-  createIndex: (uid: string, options?: IndexOptions) => Promise<Index>
+  createIndex: <T>(uid: string, options?: IndexOptions) => Promise<Index<T>>
   getKeys: () => Promise<Keys>
   isHealthy: () => Promise<boolean>
   setHealthy: () => Promise<void>
@@ -240,26 +254,23 @@ export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   prettySysInfo: () => Promise<SysInfoPretty>
 }
 
-export interface IndexInterface extends MeiliAxiosWrapperInterface {
+export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   uid: string
   getUpdateStatus: (updateId: number) => Promise<Update>
   getAllUpdateStatus: () => Promise<Update[]>
-  search: <T = any>(
-    query: string,
-    options?: SearchParams
-  ) => Promise<SearchResponse<T>>
+  search: (query: string, options?: SearchParams) => Promise<SearchResponse<T>>
   show: () => Promise<IndexResponse>
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
   deleteIndex: () => Promise<string>
   getStats: () => Promise<IndexStats>
-  getDocuments: (options?: GetDocumentsParams) => Promise<Document[]>
-  getDocument: (documentId: string | number) => Promise<Document>
+  getDocuments: (options?: GetDocumentsParams) => Promise<Document<T>[]>
+  getDocument: (documentId: string | number) => Promise<Document<T>>
   addDocuments: (
-    documents: Document[],
+    documents: Document<T>[],
     options?: AddDocumentParams
   ) => Promise<EnqueuedUpdate>
   updateDocuments: (
-    documents: Document[],
+    documents: Document<T>[],
     options?: AddDocumentParams
   ) => Promise<EnqueuedUpdate>
   deleteDocument: (documentId: string | number) => Promise<EnqueuedUpdate>
@@ -310,16 +321,16 @@ export interface MeiliAxiosWrapperInterface {
     url: string,
     config?: AxiosRequestConfig
   ) => Promise<R>
-  post: ((
+  post: (<T = any>(
     url: string,
     data: IndexRequest,
     config?: AxiosRequestConfig
-  ) => Promise<Index>) &
-  (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
-    url: string,
-    data?: T,
-    config?: AxiosRequestConfig
-  ) => Promise<R>)
+  ) => Promise<Index<T>>) &
+    (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
+      url: string,
+      data?: T,
+      config?: AxiosRequestConfig
+    ) => Promise<R>)
   put: <T = any, R = AxiosResponse<T>>(
     url: string,
     data?: any,

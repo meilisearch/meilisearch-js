@@ -315,7 +315,7 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Make a search request:
 
-`client.getIndex('xxx').search<T = any>(query: string, options?: SearchParams): Promise<SearchResponse<T>>`
+`client.getIndex<T>('xxx').search(query: string, options?: SearchParams): Promise<SearchResponse<T>>`
 
 ### Indexes <!-- omit in toc -->
 
@@ -325,15 +325,15 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Create new index:
 
-`client.createIndex(uid: string, options?: IndexOptions): Promise<Index>`
+`client.createIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
 
 - Get index object:
 
-`client.getIndex(uid: string): Indexes`
+`client.getIndex<T>(uid: string): Index<T>`
 
 - Get or create index if it does not exist
 
-`client.getOrCreateIndex(uid: string, options?: IndexOptions): Promise<Index>`
+`client.getOrCreateIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
 
 - Show Index information:
 
@@ -369,19 +369,19 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Add or replace multiple documents:
 
-`index.addDocuments(documents: object[]): Promise<EnqueuedUpdate>`
+`index.addDocuments(documents: Document<T>[]): Promise<EnqueuedUpdate>`
 
 - Add or update multiple documents:
 
-`index.updateDocuments(documents: object[]): Promise<EnqueuedUpdate>`
+`index.updateDocuments(documents: Document<T>[]): Promise<EnqueuedUpdate>`
 
 - Get Documents:
 
-`index.getDocuments(params: getDocumentsParams): Promise<object[]>`
+`index.getDocuments(params: getDocumentsParams): Promise<Document<T>[]>`
 
 - Get one document:
 
-`index.getDocument(documentId: string): Promise<object>`
+`index.getDocument(documentId: string): Promise<Document<T>>`
 
 - Delete one document:
 
