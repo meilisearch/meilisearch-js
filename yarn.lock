@@ -1594,9 +1594,9 @@ eslint-plugin-import@2:
     tsconfig-paths "^3.9.0"
 
 eslint-plugin-jsdoc@^27.0.2:
-  version "27.1.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-27.1.1.tgz#fe9786aaf6a2657648287ae74aaa67cda27a961b"
-  integrity sha512-4fBsb0mNlHg9AOTNsaJ6uCcQdQ/rHfvTFBf9f38TIM0Wtbg0eVE1C9grsdKbeCWc7IkY+QdrIq3d/Ad2QAlJ6Q==
+  version "27.1.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-27.1.2.tgz#76247ff14604b2170b3a959a6a0d4d0ceb3e65e7"
+  integrity sha512-iWrG2ZK4xrxamoMkoyzgkukdmfqWc5Ncd6K+CnwRgxrbwjQQpzmt5Kl8GB0l12R0oUK2AF+9tGFJKNGzuyz79Q==
   dependencies:
     comment-parser "^0.7.5"
     debug "^4.1.1"
