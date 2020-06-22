@@ -1,4 +1,4 @@
-// Type definitions for meilisearch 0.10.0
+// Type definitions for meilisearch
 // Project: https://github.com/meilisearch/meilisearch-js
 // Definitions by: qdequele <quentin@meilisearch.com> <https://github.com/meilisearch>
 // Definitions: https://github.com/meilisearch/meilisearch-js
