@@ -60,11 +60,16 @@ $ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --m
 
 NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 
-## Import MeiliSearch-js
+## Import
 
-### Front end - Ecma-script module
-```
+### Front end or ESmodule
+```javascript
 import MeiliSearch from 'meilisearch'
+
+const client = new MeiliSearch({
+    host: 'http://127.0.0.1:7700',
+    apiKey: 'masterKey',
+  })
 ```
 
 ### HTML import
@@ -82,13 +87,16 @@ import MeiliSearch from 'meilisearch'
 </script>
 ```
 
-### NodeJS - CommonJs
+### Back-End CommonJs
 
 ```javascript
-const MeiliSearch = require('meilisearch')
-```
+const MeiliSearch = require('meilisearch');
 
-### Ecma-script module
+const client = new MeiliSearch({
+    host: 'http://127.0.0.1:7700',
+    apiKey: 'masterKey',
+  })
+```
 
 ## 🎬 Getting started
 
