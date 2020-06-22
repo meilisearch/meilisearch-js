@@ -44,7 +44,7 @@ const dataset = [
     id: 1344,
     title: 'The Hobbit',
     comment: 'An awesome book',
-    genre: 'adventure',
+    genre: 'sci fi',
   },
   {
     id: 4,
@@ -299,11 +299,23 @@ describe.each([
       })
       .then((response: Types.SearchResponse) => {
         expect(response).toHaveProperty('facetsDistribution', {
-          genre: { adventure: 0, fantasy: 0, romance: 2 },
+          genre: { adventure: 0, fantasy: 0, romance: 2, "sci fi": 0, },
         })
         expect(response).toHaveProperty('exhaustiveFacetsCount', true)
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response.hits.length).toEqual(2)
+      })
+  })
+
+  test(`${permission} key: Search with facetFilters with spaces`, async () => {
+    await client
+      .getIndex(index.uid)
+      .search('h', {
+        facetFilters: ['genre:sci fi'],
+      })
+      .then((response: Types.SearchResponse) => {
+        expect(response).toHaveProperty('hits', expect.any(Array))
+        expect(response.hits.length).toEqual(1)
       })
   })
 
@@ -316,7 +328,7 @@ describe.each([
       })
       .then((response: Types.SearchResponse) => {
         expect(response).toHaveProperty('facetsDistribution', {
-          genre: { adventure: 0, fantasy: 0, romance: 2 },
+          genre: { adventure: 0, fantasy: 0, romance: 2, "sci fi": 0, },
         })
         expect(response).toHaveProperty('exhaustiveFacetsCount', true)
         expect(response).toHaveProperty('hits', expect.any(Array))
