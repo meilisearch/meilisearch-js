@@ -29,7 +29,7 @@ function dashToCamelCase(myStr) {
 }
 
 const env = process.env.NODE_ENV || 'development'
-const LIB_NAME = pascalCase(normalizePackageName(pkg.name))
+const LIB_NAME = 'MeiliSearch'
 const ROOT = resolve(__dirname, '.')
 
 const PLUGINS = [
@@ -43,7 +43,7 @@ const PLUGINS = [
 ]
 
 module.exports = [
-  // browser-friendly UMD build
+  // browser-friendly IIFE build
   {
     input: 'src/meilisearch.ts', // directory to transpilation of typescript
     output: {
@@ -60,13 +60,18 @@ module.exports = [
       },
     },
     plugins: [
-      nodeResolve({ jsnext: true, preferBuiltins: true, browser: true }),
-      commonjs(),
+      ...PLUGINS,
+      nodeResolve({
+        mainFields: ['jsnext', 'main'],
+        preferBuiltins: true,
+        browser: true,
+      }),
+      commonjs({
+        include: 'node_modules/axios/**',
+      }),
       json(),
       env === 'production' ? terser() : {}, // will minify the file in production mode
-      ...PLUGINS,
     ],
-    external: ['axios'],
   },
 
   // CommonJS (for Node) and ES module (for bundlers) build.

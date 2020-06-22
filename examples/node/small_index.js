@@ -1,15 +1,13 @@
-var MeiliSearch = require('../')
+const MeiliSearch = require('../../')
 
 const config = {
   host: 'http://127.0.0.1:7700',
   apiKey: 'masterKey',
 }
 
-var meili = new MeiliSearch(config)
+const client = new MeiliSearch(config)
 
-const newIndex = {
-  uid: 'movies_test',
-}
+const uid = 'movies_test'
 
 const dataset = [
   { id: 123, title: 'Pride and Prejudice', comment: 'A great book' },
@@ -31,8 +29,8 @@ const dataset = [
 
 ;(async () => {
   // This example creates an index with 7 documents
-  await meili.createIndex(index)
-  const { updateId } = await meili.getIndex(index.uid).addDocuments(dataset)
-  const res = await meili.getIndex(index.uid).waitForPendingUpdate(updateId)
-  console.log({ res });
+  const index = await client.getOrCreateIndex(uid)
+  const { updateId } = await index.addDocuments(dataset)
+  const res = await index.waitForPendingUpdate(updateId)
+  console.log({ res })
 })()

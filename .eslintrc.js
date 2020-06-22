@@ -17,6 +17,7 @@ module.exports = {
   },
   plugins: ['jsdoc', '@typescript-eslint'],
   rules: {
+    '@typescript-eslint/return-await': 'off',
     'jsdoc/check-alignment': 'error',
     'jsdoc/check-indentation': 'error',
     '@typescript-eslint/space-before-function-paren': 0,

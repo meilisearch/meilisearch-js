@@ -1,3 +1,9 @@
+## V0.12.00
+- Feat: Make IndexInterface generic. createIndex and getIndex generic support #442
+- Split bundles into umd and cjs.
+  - use bundle in package.json `browser` for `umd`
+  - use bundle in package.json `main` for `cjs`
+
 ## V0.11.1 (released)
 
 - BREAKING: Usage of createIndex changed `createIndex(uid: string, options: IndexOptions): Index` #436
