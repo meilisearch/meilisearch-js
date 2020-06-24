@@ -331,20 +331,13 @@ $ yarn build
 
 MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
 
-You must do a PR modifying the file `package.json` with the right version.<br>
+You must do a PR modifying the file [`package.json`](/package.json) with the right version.
 
 ```javascript
 "version": X.X.X
 ```
 
-Once the changes are merged on `master`, in your terminal, you must be on the `master` branch and push a new tag with the right version:
-
-```bash
-$ git checkout master
-$ git pull origin master
-$ git tag vX.X.X
-$ git push --tag origin master
-```
+Once the changes are merged on `master`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-js/releases).
 
 A GitHub Action will be triggered and push the package on [npm](https://www.npmjs.com/package/meilisearch).
 
