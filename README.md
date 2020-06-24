@@ -63,6 +63,7 @@ NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 ## Import
 
 ### Front end or ESmodule
+
 ```javascript
 import MeiliSearch from 'meilisearch'
 
