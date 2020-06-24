@@ -152,9 +152,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
    * @memberof Index
    * @method updateIndex
    */
-  async updateIndex(
-    data: Types.IndexOptions
-  ): Promise<Types.IndexResponse> {
+  async updateIndex(data: Types.IndexOptions): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
     return await this.put(url, data)
@@ -197,7 +195,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
    */
   async getDocuments(
     options?: Types.GetDocumentsParams
-  ): Promise<Types.Document<T>[]> {
+  ): Promise<Array<Types.Document<T>>> {
     const url = `/indexes/${this.uid}/documents`
     let attr
     if (options !== undefined && Array.isArray(options.attributesToRetrieve)) {
@@ -229,7 +227,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
    * @method addDocuments
    */
   async addDocuments(
-    documents: Types.Document<T>[],
+    documents: Array<Types.Document<T>>,
     options?: Types.AddDocumentParams
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents`
@@ -245,7 +243,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
    * @method updateDocuments
    */
   async updateDocuments(
-    documents: Types.Document<T>[],
+    documents: Array<Types.Document<T>>,
     options?: Types.AddDocumentParams
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents`

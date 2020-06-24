@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Page Title</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body>
+    hello
+</body>
+</html>
+<script src="../../dist/bundles/meilisearch.umd.js"></script>
+<script>
+  const client = new window.Meiliearch({
+    host: 'http://127.0.0.1:7700',
+    apiKey: 'masterKey',
+  })
+  client.listIndexes().then(res => {
+    console.log({ res });
+  })
+</script>

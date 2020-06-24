@@ -116,9 +116,9 @@ export type DocumentField =
   | DocumentArray
 
 export type Document<T> = DocumentLike &
-  {
-    [key in keyof T]: T[key]
-  }
+{
+  [key in keyof T]: T[key]
+}
 
 /*
  ** Settings
@@ -263,14 +263,14 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
   deleteIndex: () => Promise<string>
   getStats: () => Promise<IndexStats>
-  getDocuments: (options?: GetDocumentsParams) => Promise<Document<T>[]>
+  getDocuments: (options?: GetDocumentsParams) => Promise<Array<Document<T>>>
   getDocument: (documentId: string | number) => Promise<Document<T>>
   addDocuments: (
-    documents: Document<T>[],
+    documents: Array<Document<T>>,
     options?: AddDocumentParams
   ) => Promise<EnqueuedUpdate>
   updateDocuments: (
-    documents: Document<T>[],
+    documents: Array<Document<T>>,
     options?: AddDocumentParams
   ) => Promise<EnqueuedUpdate>
   deleteDocument: (documentId: string | number) => Promise<EnqueuedUpdate>
@@ -326,11 +326,11 @@ export interface MeiliAxiosWrapperInterface {
     data: IndexRequest,
     config?: AxiosRequestConfig
   ) => Promise<Index<T>>) &
-    (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
-      url: string,
-      data?: T,
-      config?: AxiosRequestConfig
-    ) => Promise<R>)
+  (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
+    url: string,
+    data?: T,
+    config?: AxiosRequestConfig
+  ) => Promise<R>)
   put: <T = any, R = AxiosResponse<T>>(
     url: string,
     data?: any,

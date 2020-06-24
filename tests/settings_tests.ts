@@ -73,7 +73,9 @@ describe.each([
   beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
-    await masterClient.createIndex(indexAndPK.uid, { primaryKey: indexAndPK.primaryKey })
+    await masterClient.createIndex(indexAndPK.uid, {
+      primaryKey: indexAndPK.primaryKey,
+    })
     const { updateId } = await masterClient
       .getIndex(index.uid)
       .addDocuments(dataset)
@@ -125,7 +127,7 @@ describe.each([
       distinctAttribute: 'title',
       rankingRules: ['asc(title)', 'typo'],
       stopWords: ['the'],
-      attributesForFaceting: []
+      attributesForFaceting: [],
     }
     const { updateId } = await client
       .getIndex(index.uid)
