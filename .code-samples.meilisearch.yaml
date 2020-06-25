@@ -354,7 +354,7 @@ reset_attributes_for_faceting_1: |-
 faceted_search_update_settings_1: |-
   client.getIndex('movies')
     .updateAttributesForFaceting([
-      'genre',
+      'genres',
       'director'
     ])
 faceted_search_facet_filters_1: |-
