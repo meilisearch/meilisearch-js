@@ -189,7 +189,7 @@ describe.each([
           'distinctAttribute',
           newSettings.distinctAttribute
         )
-        expect(response).toHaveProperty('searchableAttributes', ['id', 'title'])
+        expect(response).toHaveProperty('searchableAttributes', ['id'])
         expect(response).toHaveProperty(
           'displayedAttributes',
           expect.any(Array)
