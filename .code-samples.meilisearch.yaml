@@ -326,7 +326,7 @@ getting_started_create_index_md: |-
   ```javascript
   const MeiliSearch = require('meilisearch')
 
-  var client = new MeiliSearch({ host: 'http://127.0.0.1:7700' })
+  const client = new MeiliSearch({ host: 'http://127.0.0.1:7700' })
   const index = client
     .createIndex('movies')
     .then((res) => console.log(res))
