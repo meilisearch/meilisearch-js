@@ -186,7 +186,6 @@ describe.each([
         expect(response.global).toHaveProperty('inputData', expect.any(Number))
         expect(response.global).toHaveProperty('outputData', expect.any(Number))
         expect(response.process).toHaveProperty('memory', expect.any(Number))
-        expect(response.process).toHaveProperty('cpu', expect.any(Number))
       })
     })
     test(`${permission} key: get pretty system info`, async () => {
