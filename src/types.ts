@@ -51,7 +51,7 @@ export interface AddDocumentParams {
   primaryKey?: string
 }
 
-export type FacetFilter = string | FacetFilter[]
+export type FacetFilter = (string | string[])[]
 
 export interface SearchParams {
   offset?: number
@@ -61,7 +61,7 @@ export interface SearchParams {
   cropLength?: number
   attributesToHighlight?: string[] | string
   filters?: string
-  facetFilters?: FacetFilter[]
+  facetFilters?: string | FacetFilter | FacetFilter[]
   facetsDistribution?: string[]
   matches?: boolean
 }
