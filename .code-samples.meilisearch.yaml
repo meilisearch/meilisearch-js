@@ -318,31 +318,31 @@ search_guide_2: |-
   })
 getting_started_create_index_md: |-
   ```bash
-    $ npm install meilisearch
-    # or
-    $ yarn add meilisearch
+  $ npm install meilisearch
+  # or
+  $ yarn add meilisearch
   ```
 
   ```javascript
-    const MeiliSearch = require('meilisearch')
+  const MeiliSearch = require('meilisearch')
 
-    var client = new MeiliSearch({ host: 'http://127.0.0.1:7700' })
-    const index = client
-      .createIndex('movies')
-      .then((res) => console.log(res))
+  var client = new MeiliSearch({ host: 'http://127.0.0.1:7700' })
+  const index = client
+    .createIndex('movies')
+    .then((res) => console.log(res))
   ```
 
   [About this package](https://github.com/meilisearch/meilisearch-js/)
 getting_started_add_documents_md: |-
   ```js
-    const movies = require('./movies.json')
-    index.addDocuments(movies).then((res) => console.log(res))
+  const movies = require('./movies.json')
+  index.addDocuments(movies).then((res) => console.log(res))
   ```
 
   [About this package](https://github.com/meilisearch/meilisearch-js/)
 getting_started_search_md: |-
   ```js
-    index.search('botman').then((res) => console.log(res))
+  index.search('botman').then((res) => console.log(res))
   ```
 
   [About this package](https://github.com/meilisearch/meilisearch-js/)
