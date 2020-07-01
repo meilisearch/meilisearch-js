@@ -174,7 +174,7 @@ describe.each([
     })
     test(`${permission} key: get system info`, async () => {
       await client.sysInfo().then((response: Types.SysInfo) => {
-        expect(response).toHaveProperty('memoryUsage', null)
+        expect(response).toHaveProperty('memoryUsage', expect.any(Number))
         expect(response).toHaveProperty('processorUsage', expect.any(Array))
         expect(response.global).toHaveProperty(
           'totalMemory',
@@ -186,7 +186,6 @@ describe.each([
         expect(response.global).toHaveProperty('inputData', expect.any(Number))
         expect(response.global).toHaveProperty('outputData', expect.any(Number))
         expect(response.process).toHaveProperty('memory', expect.any(Number))
-        expect(response.process).toHaveProperty('cpu', expect.any(Number))
       })
     })
     test(`${permission} key: get pretty system info`, async () => {
