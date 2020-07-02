@@ -60,6 +60,45 @@ $ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --m
 
 NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 
+## Import
+
+### Front end or ESmodule
+
+```javascript
+import MeiliSearch from 'meilisearch'
+
+const client = new MeiliSearch({
+    host: 'http://127.0.0.1:7700',
+    apiKey: 'masterKey',
+  })
+```
+
+### HTML import
+
+```javascript
+<script src="https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.browser.js"></script>
+<script>
+  const client = new MeiliSearch({
+    host: 'http://127.0.0.1:7700',
+    apiKey: 'masterKey',
+  })
+  client.listIndexes().then(res => {
+    console.log({ res });
+  })
+</script>
+```
+
+### Back-End CommonJs
+
+```javascript
+const MeiliSearch = require('meilisearch');
+
+const client = new MeiliSearch({
+    host: 'http://127.0.0.1:7700',
+    apiKey: 'masterKey',
+  })
+```
+
 ## 🎬 Getting started
 
 Here is a quickstart for a search request
@@ -123,6 +162,7 @@ Output:
 
 This package is compatible with the following MeiliSearch versions:
 
+- `v0.12.X`
 - `v0.11.X`
 
 ## 🎬 Examples
@@ -292,20 +332,13 @@ $ yarn build
 
 MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
 
-You must do a PR modifying the file `package.json` with the right version.<br>
+You must do a PR modifying the file [`package.json`](/package.json) with the right version.
 
 ```javascript
 "version": X.X.X
 ```
 
-Once the changes are merged on `master`, in your terminal, you must be on the `master` branch and push a new tag with the right version:
-
-```bash
-$ git checkout master
-$ git pull origin master
-$ git tag vX.X.X
-$ git push --tag origin master
-```
+Once the changes are merged on `master`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-js/releases).
 
 A GitHub Action will be triggered and push the package on [npm](https://www.npmjs.com/package/meilisearch).
 
@@ -315,7 +348,7 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Make a search request:
 
-`client.getIndex('xxx').search<T = any>(query: string, options?: SearchParams): Promise<SearchResponse<T>>`
+`client.getIndex<T>('xxx').search(query: string, options?: SearchParams): Promise<SearchResponse<T>>`
 
 ### Indexes <!-- omit in toc -->
 
@@ -325,15 +358,15 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Create new index:
 
-`client.createIndex(uid: string, options?: IndexOptions): Promise<Index>`
+`client.createIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
 
 - Get index object:
 
-`client.getIndex(uid: string): Indexes`
+`client.getIndex<T>(uid: string): Index<T>`
 
 - Get or create index if it does not exist
 
-`client.getOrCreateIndex(uid: string, options?: IndexOptions): Promise<Index>`
+`client.getOrCreateIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
 
 - Show Index information:
 
@@ -369,19 +402,19 @@ A GitHub Action will be triggered and push the package on [npm](https://www.npmj
 
 - Add or replace multiple documents:
 
-`index.addDocuments(documents: object[]): Promise<EnqueuedUpdate>`
+`index.addDocuments(documents: Document<T>[]): Promise<EnqueuedUpdate>`
 
 - Add or update multiple documents:
 
-`index.updateDocuments(documents: object[]): Promise<EnqueuedUpdate>`
+`index.updateDocuments(documents: Document<T>[]): Promise<EnqueuedUpdate>`
 
 - Get Documents:
 
-`index.getDocuments(params: getDocumentsParams): Promise<object[]>`
+`index.getDocuments(params: getDocumentsParams): Promise<Document<T>[]>`
 
 - Get one document:
 
-`index.getDocument(documentId: string): Promise<object>`
+`index.getDocument(documentId: string): Promise<Document<T>>`
 
 - Delete one document:
 

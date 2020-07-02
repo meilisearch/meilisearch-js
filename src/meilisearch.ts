@@ -1,8 +1,8 @@
 /*
- * Bundle: Meilisearch
- * Project: Meilisearch - Javascript API
+ * Bundle: MeiliSearch
+ * Project: MeiliSearch - Javascript API
  * Author: Quentin de Quelen <quentin@meilisearch.com>
- * Copyright: 2019, Meilisearch
+ * Copyright: 2019, MeiliSearch
  */
 
 'use strict'
@@ -11,7 +11,7 @@ import { Index } from './index'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
 
-class Meilisearch extends MeiliAxiosWrapper
+class MeiliSearch extends MeiliAxiosWrapper
   implements Types.MeiliSearchInterface {
   config: Types.Config
   constructor(config: Types.Config) {
@@ -21,22 +21,22 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * Return an Index instance
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method getIndex
    */
-  getIndex(indexUid: string): Index {
-    return new Index(this.config, indexUid)
+  getIndex<T = any>(indexUid: string): Index<T> {
+    return new Index<T>(this.config, indexUid)
   }
 
   /**
    * Get an index or create it if it does not exist
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method getOrCreateIndex
    */
-  async getOrCreateIndex(
+  async getOrCreateIndex<T = any>(
     uid: string,
     options: Types.IndexOptions = {}
-  ): Promise<Index> {
+  ): Promise<Index<T>> {
     try {
       const index = await this.createIndex(uid, options)
       return index
@@ -50,7 +50,7 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * List all indexes in the database
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method listIndexes
    */
   async listIndexes(): Promise<Types.IndexResponse[]> {
@@ -61,13 +61,13 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * Create a new index
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method createIndex
    */
-  async createIndex(
+  async createIndex<T = any>(
     uid: string,
     options: Types.IndexOptions = {}
-  ): Promise<Index> {
+  ): Promise<Index<T>> {
     const url = '/indexes'
 
     const index = await this.post(url, { ...options, uid })
@@ -80,7 +80,7 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * Get private and public key
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method getKey
    */
   async getKeys(): Promise<Types.Keys> {
@@ -95,7 +95,7 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * Check if the server is healhty
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method isHealthy
    */
   async isHealthy(): Promise<boolean> {
@@ -106,7 +106,7 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * Change the healthyness to healthy
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method setHealthy
    */
   async setHealthy(): Promise<void> {
@@ -119,7 +119,7 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * Change the healthyness to unhealthy
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method setUnhealthy
    */
   async setUnhealthy(): Promise<void> {
@@ -132,7 +132,7 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * Set the healthyness to health value
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method changeHealthTo
    */
   async changeHealthTo(health: boolean): Promise<void> {
@@ -149,7 +149,7 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * Get the stats of all the database
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method stats
    */
   async stats(): Promise<Types.Stats> {
@@ -160,7 +160,7 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * Get the version of MeiliSearch
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method version
    */
   async version(): Promise<Types.Version> {
@@ -171,7 +171,7 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * Get the server consuption, RAM / CPU / Network
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method sysInfo
    */
   async sysInfo(): Promise<Types.SysInfo> {
@@ -182,7 +182,7 @@ class Meilisearch extends MeiliAxiosWrapper
 
   /**
    * Get the server consuption, RAM / CPU / Network. All information as human readable
-   * @memberof Meilisearch
+   * @memberof MeiliSearch
    * @method prettySysInfo
    */
   async prettySysInfo(): Promise<Types.SysInfoPretty> {
@@ -192,4 +192,4 @@ class Meilisearch extends MeiliAxiosWrapper
   }
 }
 
-export default Meilisearch
+export default MeiliSearch

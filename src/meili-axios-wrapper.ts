@@ -1,8 +1,8 @@
 /*
- * Bundle: Meilisearch
- * Project: Meilisearch - Javascript API
+ * Bundle: MeiliSearch
+ * Project: MeiliSearch - Javascript API
  * Author: Quentin de Quelen <quentin@meilisearch.com>
- * Copyright: 2019, Meilisearch
+ * Copyright: 2019, MeiliSearch
  */
 
 'use strict'

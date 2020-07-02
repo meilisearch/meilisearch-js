@@ -39,7 +39,9 @@ describe.each([
   })
 
   test(`${permission} key: getOrCreateIndex with primary key`, async () => {
-    const newIndex = await client.getOrCreateIndex(index.uid, { primaryKey: 'primaryKey' })
+    const newIndex = await client.getOrCreateIndex(index.uid, {
+      primaryKey: 'primaryKey',
+    })
     expect(newIndex.uid).toEqual(index.uid)
     const newIndexInfo = await client.getIndex(newIndex.uid).show()
     expect(newIndexInfo.primaryKey).toEqual('primaryKey')

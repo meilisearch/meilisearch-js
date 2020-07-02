@@ -18,3 +18,6 @@ template: |
   Thanks again to $CONTRIBUTORS! 🎉
 no-changes-template: 'Changes are coming soon 😎'
 sort-direction: 'ascending'
+replacers:
+  - search: '/(?:and )?@dependabot-preview(?:\[bot\])?,?/g'
+    replace: ''
