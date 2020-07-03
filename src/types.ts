@@ -103,10 +103,10 @@ export interface FieldFrequency {
 /*
  ** Documents
  */
-export interface GetDocumentsParams {
+export interface GetDocumentsParams<T> {
   offset?: number
   limit?: number
-  attributesToRetrieve?: string[]
+  attributesToRetrieve?: Extract<keyof T, string>[] | Extract<keyof T, string>
 }
 
 export type DocumentLike = { [Key in string]?: DocumentField }
@@ -270,7 +270,7 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
   deleteIndex: () => Promise<string>
   getStats: () => Promise<IndexStats>
-  getDocuments: (options?: GetDocumentsParams) => Promise<Array<Document<T>>>
+  getDocuments: (options?: GetDocumentsParams<T>) => Promise<Array<Document<T>>>
   getDocument: (documentId: string | number) => Promise<Document<T>>
   addDocuments: (
     documents: Array<Document<T>>,
