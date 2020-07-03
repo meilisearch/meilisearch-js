@@ -193,9 +193,9 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
    * @memberof Index
    * @method getDocuments
    */
-  async getDocuments(
-    options?: Types.GetDocumentsParams<T>
-  ): Promise<Array<Types.Document<T>>> {
+  async getDocuments<P extends Types.GetDocumentsParams<T>>(
+    options?: P
+  ): Promise<Types.GetDocumentsResponse<T, P>> {
     const url = `/indexes/${this.uid}/documents`
     let attr
     if (options !== undefined && Array.isArray(options.attributesToRetrieve)) {

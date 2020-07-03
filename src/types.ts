@@ -109,6 +109,19 @@ export interface GetDocumentsParams<T> {
   attributesToRetrieve?: Extract<keyof T, string>[] | Extract<keyof T, string>
 }
 
+export type GetDocumentsResponse<
+  T,
+  P extends GetDocumentsParams<T>
+> = P['attributesToRetrieve'] extends keyof T
+  ? Array<
+      Document<
+        Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
+      >
+    >
+  : P['attributesToRetrieve'] extends Array<infer K>
+  ? Array<Document<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
+  : Array<Document<T>>
+
 export type DocumentLike = { [Key in string]?: DocumentField }
 export interface DocumentArray extends Array<DocumentField> {}
 export type DocumentField =
@@ -270,7 +283,9 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
   deleteIndex: () => Promise<string>
   getStats: () => Promise<IndexStats>
-  getDocuments: (options?: GetDocumentsParams<T>) => Promise<Array<Document<T>>>
+  getDocuments: <P extends GetDocumentsParams<T>>(
+    options?: P
+  ) => Promise<GetDocumentsResponse<T, P>>
   getDocument: (documentId: string | number) => Promise<Document<T>>
   addDocuments: (
     documents: Array<Document<T>>,
