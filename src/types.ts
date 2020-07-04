@@ -86,8 +86,16 @@ export interface SearchRequest {
 
 export type Hit<T> = T & { _formatted?: T }
 
-export interface SearchResponse<T = any> {
-  hits: Array<Hit<T>>
+export interface SearchResponse<T, P extends SearchParams<T>> {
+  hits: P['attributesToRetrieve'] extends keyof T
+    ? Array<
+        Hit<
+          Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
+        >
+      >
+    : P['attributesToRetrieve'] extends Array<infer K>
+    ? Array<Hit<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
+    : Array<Hit<T>>
   offset: number
   limit: number
   processingTimeMs: number
@@ -275,10 +283,10 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   uid: string
   getUpdateStatus: (updateId: number) => Promise<Update>
   getAllUpdateStatus: () => Promise<Update[]>
-  search: (
+  search: <P extends SearchParams<T>>(
     query: string,
-    options?: SearchParams<T>
-  ) => Promise<SearchResponse<T>>
+    options?: P
+  ) => Promise<SearchResponse<T, P>>
   show: () => Promise<IndexResponse>
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
   deleteIndex: () => Promise<string>
