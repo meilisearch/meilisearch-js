@@ -88,7 +88,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .search('prince')
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 20)
@@ -102,7 +102,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .search('prince', { limit: 1 })
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 1)
@@ -116,7 +116,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .search('prince', { limit: 1 })
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 1)
@@ -132,7 +132,7 @@ describe.each([
         limit: 1,
         offset: 1,
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('hits', [
           {
             id: 4,
@@ -157,7 +157,7 @@ describe.each([
         cropLength: 5,
         matches: true,
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 20)
@@ -184,7 +184,7 @@ describe.each([
         filters: 'title = "Le Petit Prince"',
         matches: true,
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 5)
@@ -225,7 +225,7 @@ describe.each([
         filters: 'title = "Le Petit Prince"',
         matches: true,
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 5)
@@ -260,7 +260,7 @@ describe.each([
         filters: 'title = "Le Petit Prince"',
         matches: true,
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 5)
@@ -297,9 +297,9 @@ describe.each([
         facetFilters: ['genre:romance'],
         facetsDistribution: ['genre'],
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('facetsDistribution', {
-          genre: { adventure: 0, fantasy: 0, romance: 2, "sci fi": 0, },
+          genre: { adventure: 0, fantasy: 0, romance: 2, 'sci fi': 0 },
         })
         expect(response).toHaveProperty('exhaustiveFacetsCount', true)
         expect(response).toHaveProperty('hits', expect.any(Array))
@@ -313,7 +313,7 @@ describe.each([
       .search('h', {
         facetFilters: ['genre:sci fi'],
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response.hits.length).toEqual(1)
       })
@@ -326,9 +326,9 @@ describe.each([
         facetFilters: ['genre:romance', ['genre:romance', 'genre:romance']],
         facetsDistribution: ['genre'],
       })
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('facetsDistribution', {
-          genre: { adventure: 0, fantasy: 0, romance: 2, "sci fi": 0, },
+          genre: { adventure: 0, fantasy: 0, romance: 2, 'sci fi': 0 },
         })
         expect(response).toHaveProperty('exhaustiveFacetsCount', true)
         expect(response).toHaveProperty('hits', expect.any(Array))
@@ -340,7 +340,7 @@ describe.each([
     await client
       .getIndex(emptyIndex.uid)
       .search('prince')
-      .then((response: Types.SearchResponse) => {
+      .then((response) => {
         expect(response).toHaveProperty('hits', [])
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 20)
