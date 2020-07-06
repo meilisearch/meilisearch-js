@@ -194,7 +194,7 @@ const indexes = await client.listIndexes()
 #### Get an index object <!-- omit in toc -->
 
 ```javascript
-const index = await client.getIndex('books')
+const index = client.getIndex('books')
 ```
 
 ### Documents
