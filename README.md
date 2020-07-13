@@ -35,7 +35,7 @@
   - [Documents](#documents)
   - [Update status](#update-status)
   - [Search](#search)
-- [⚙️ Development Workflow](#️-development-workflow)
+- [⚙️ Development Workflow and Contributing](#️-development-workflow-and-contributing)
 - [📜 API Resources](#-api-resources)
 
 ## 🔧 Installation
@@ -60,9 +60,9 @@ $ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --m
 
 NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 
-## Import
+### Import <!-- omit in toc -->
 
-### Front end or ESmodule
+#### Front End or ESmodule <!-- omit in toc -->
 
 ```javascript
 import MeiliSearch from 'meilisearch'
@@ -73,7 +73,7 @@ const client = new MeiliSearch({
   })
 ```
 
-### HTML import
+#### HTML Import <!-- omit in toc -->
 
 ```javascript
 <script src="https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.browser.js"></script>
@@ -88,7 +88,7 @@ const client = new MeiliSearch({
 </script>
 ```
 
-### Back-End CommonJs
+#### Back-End CommonJs <!-- omit in toc -->
 
 ```javascript
 const MeiliSearch = require('meilisearch');
@@ -194,7 +194,7 @@ const indexes = await client.listIndexes()
 #### Get an index object <!-- omit in toc -->
 
 ```javascript
-const index = await client.getIndex('books')
+const index = client.getIndex('books')
 ```
 
 ### Documents
@@ -300,47 +300,11 @@ await index.search('prince', { limit: 1, attributesToHighlight: '*' })
 }
 ```
 
-## ⚙️ Development Workflow
+## ⚙️ Development Workflow and Contributing
 
-If you want to contribute, this section describes the steps to follow.
+Any new contribution is more than welcome in this project!
 
-Thank you for your interest in a MeiliSearch tool! ♥️
-
-### Install dependencies <!-- omit in toc -->
-
-```bash
-$ yarn --dev
-```
-
-### Tests and Linter <!-- omit in toc -->
-
-Each PR should pass the tests and the linter to be accepted.
-
-```bash
-# Tests
-$ docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics
-$ yarn test
-# Linter
-$ yarn style
-# Linter with fixing
-$ yarn style:fix
-# Build the project
-$ yarn build
-```
-
-### Release <!-- omit in toc -->
-
-MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
-
-You must do a PR modifying the file [`package.json`](/package.json) with the right version.
-
-```javascript
-"version": X.X.X
-```
-
-Once the changes are merged on `master`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-js/releases).
-
-A GitHub Action will be triggered and push the package on [npm](https://www.npmjs.com/package/meilisearch).
+If you want to know more about the development workflow or want to contribute, please visit our [contributing guidelines](/CONTRIBUTING.md) for detailed instructions!
 
 ## 📜 API Resources
 
