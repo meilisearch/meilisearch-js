@@ -159,7 +159,7 @@ export interface Settings {
   synonyms?: {
     [field: string]: string[]
   }
-  indexNewFields?: boolean
+  acceptNewFields?: boolean
 }
 
 /*
