@@ -53,13 +53,17 @@ export interface AddDocumentParams {
 
 export type FacetFilter = (string | string[])[]
 
-export interface SearchParams {
+export interface SearchParams<T> {
   offset?: number
   limit?: number
-  attributesToRetrieve?: string[] | string
-  attributesToCrop?: string[] | string
+  attributesToRetrieve?: Extract<keyof T, string>[] | Extract<keyof T, string>
+  attributesToCrop?:
+    | (Extract<keyof T, string> | '*')[]
+    | (Extract<keyof T, string> | '*')
   cropLength?: number
-  attributesToHighlight?: string[] | string
+  attributesToHighlight?:
+    | (Extract<keyof T, string> | '*')[]
+    | (Extract<keyof T, string> | '*')
   filters?: string
   facetFilters?: string | FacetFilter | FacetFilter[]
   facetsDistribution?: string[]
@@ -82,8 +86,16 @@ export interface SearchRequest {
 
 export type Hit<T> = T & { _formatted?: T }
 
-export interface SearchResponse<T = any> {
-  hits: Array<Hit<T>>
+export interface SearchResponse<T, P extends SearchParams<T>> {
+  hits: P['attributesToRetrieve'] extends keyof T
+    ? Array<
+        Hit<
+          Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
+        >
+      >
+    : P['attributesToRetrieve'] extends Array<infer K>
+    ? Array<Hit<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
+    : Array<Hit<T>>
   offset: number
   limit: number
   processingTimeMs: number
@@ -99,11 +111,24 @@ export interface FieldFrequency {
 /*
  ** Documents
  */
-export interface GetDocumentsParams {
+export interface GetDocumentsParams<T> {
   offset?: number
   limit?: number
-  attributesToRetrieve?: string[]
+  attributesToRetrieve?: Extract<keyof T, string>[] | Extract<keyof T, string>
 }
+
+export type GetDocumentsResponse<
+  T,
+  P extends GetDocumentsParams<T>
+> = P['attributesToRetrieve'] extends keyof T
+  ? Array<
+      Document<
+        Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
+      >
+    >
+  : P['attributesToRetrieve'] extends Array<infer K>
+  ? Array<Document<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
+  : Array<Document<T>>
 
 export type DocumentLike = { [Key in string]?: DocumentField }
 export interface DocumentArray extends Array<DocumentField> {}
@@ -116,9 +141,9 @@ export type DocumentField =
   | DocumentArray
 
 export type Document<T> = DocumentLike &
-{
-  [key in keyof T]: T[key]
-}
+  {
+    [key in keyof T]: T[key]
+  }
 
 /*
  ** Settings
@@ -258,12 +283,17 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   uid: string
   getUpdateStatus: (updateId: number) => Promise<Update>
   getAllUpdateStatus: () => Promise<Update[]>
-  search: (query: string, options?: SearchParams) => Promise<SearchResponse<T>>
+  search: <P extends SearchParams<T>>(
+    query: string,
+    options?: P
+  ) => Promise<SearchResponse<T, P>>
   show: () => Promise<IndexResponse>
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
   deleteIndex: () => Promise<string>
   getStats: () => Promise<IndexStats>
-  getDocuments: (options?: GetDocumentsParams) => Promise<Array<Document<T>>>
+  getDocuments: <P extends GetDocumentsParams<T>>(
+    options?: P
+  ) => Promise<GetDocumentsResponse<T, P>>
   getDocument: (documentId: string | number) => Promise<Document<T>>
   addDocuments: (
     documents: Array<Document<T>>,
@@ -326,11 +356,11 @@ export interface MeiliAxiosWrapperInterface {
     data: IndexRequest,
     config?: AxiosRequestConfig
   ) => Promise<Index<T>>) &
-  (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
-    url: string,
-    data?: T,
-    config?: AxiosRequestConfig
-  ) => Promise<R>)
+    (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
+      url: string,
+      data?: T,
+      config?: AxiosRequestConfig
+    ) => Promise<R>)
   put: <T = any, R = AxiosResponse<T>>(
     url: string,
     data?: any,

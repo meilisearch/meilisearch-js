@@ -68,9 +68,9 @@ NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 import MeiliSearch from 'meilisearch'
 
 const client = new MeiliSearch({
-    host: 'http://127.0.0.1:7700',
-    apiKey: 'masterKey',
-  })
+  host: 'http://127.0.0.1:7700',
+  apiKey: 'masterKey',
+})
 ```
 
 #### HTML Import <!-- omit in toc -->
@@ -91,12 +91,12 @@ const client = new MeiliSearch({
 #### Back-End CommonJs <!-- omit in toc -->
 
 ```javascript
-const MeiliSearch = require('meilisearch');
+const MeiliSearch = require('meilisearch')
 
 const client = new MeiliSearch({
-    host: 'http://127.0.0.1:7700',
-    apiKey: 'masterKey',
-  })
+  host: 'http://127.0.0.1:7700',
+  apiKey: 'masterKey',
+})
 ```
 
 ## 🎬 Getting started
