@@ -41,6 +41,7 @@ Each PR should pass the tests and the linter to be accepted.
 
 ```bash
 # Tests
+$ docker pull getmeili/meilisearch:latest # Fetch the latest version of MeiliSearch image from Docker Hub
 $ docker run -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics
 $ yarn test
 # Linter
