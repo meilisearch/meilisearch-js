@@ -62,7 +62,7 @@
     "@rollup/plugin-commonjs": "14.0.0",
     "@rollup/plugin-json": "^4.0.2",
     "@rollup/plugin-node-resolve": "8.4.0",
-    "@types/jest": "26.0.4",
+    "@types/jest": "26.0.5",
     "@types/prettier": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "2.34.0",
     "@typescript-eslint/parser": "2.34.0",
