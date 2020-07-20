@@ -18,5 +18,5 @@ function greeter(person: string) {
   const uids = indexes.map((index: IndexResponse) => index.uid)
   document.body.innerHTML = `${greeter(
     user
-  )} this is the list of all your indexes: ${uids.join(', ')}`
+  )} this is the list of all your indexes: \n ${uids.join(', ')}`
 })()
