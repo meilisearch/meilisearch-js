@@ -90,6 +90,7 @@ module.exports = [
           resolve(ROOT, pkg.main),
           env === 'production'
         ),
+        exports: 'default',
         format: 'cjs',
         sourcemap: env === 'production', // create sourcemap for error reporting in production mode
       },
@@ -98,6 +99,7 @@ module.exports = [
           resolve(ROOT, pkg.module),
           env === 'production'
         ),
+        exports: 'default',
         format: 'es',
         sourcemap: env === 'production', // create sourcemap for error reporting in production mode
       },
