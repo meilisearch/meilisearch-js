@@ -25,7 +25,7 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 4. Review the [Development Workflow](#workflow) section that describes the steps to maintain the repository.
 5. Make your changes.
 6. [Submit the branch as a PR](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) pointing to the `master` branch of the main meilisearch-js repository. A maintainer should comment and/or review your Pull Request within a few days. Although depending on the circumstances, it may take longer.<br>
- We do not enforce a naming convention for the PRs, but **please use something descriptive of your changes**, having in mind that the title of your PR will be automatically added to the next [release changelog](https://github.com/meilisearch/meilisearch-js/releases/).
+   We do not enforce a naming convention for the PRs, but **please use something descriptive of your changes**, having in mind that the title of your PR will be automatically added to the next [release changelog](https://github.com/meilisearch/meilisearch-js/releases/).
 
 ## Development Workflow
 
@@ -62,12 +62,13 @@ For each PR merged on `master`, a GitHub Action is running and updates the next 
 The draft release description is therefore generated and corresponds to all the PRs titles since the previous release. This means each PR should only do one change and the title should be descriptive of this change.
 
 About this automation:
+
 - As the draft release description is generated on every push on `master`, don't change it manually until the final release publishment.
 - If you don't want a PR to appear in the release changelogs: add the label `skip-changelog`. We suggest removing PRs updating the README or the CI (except for big changes).
 - If the changes you are doing in the PR are breaking: add the label `breaking-change`. In the release tag, the minor will be increased instead of the patch. The major will never be changed until [MeiliSearch](https://github.com/meilisearch/MeiliSearch) is stable.
 - If you did any mistake, for example the PR is already closed but you forgot to add a label or you misnamed your PR, don't panic: change what you want in the closed PR and run the job again.
 
-*More information about the [Release Drafter](https://github.com/release-drafter/release-drafter), used to automate these steps.*
+_More information about the [Release Drafter](https://github.com/release-drafter/release-drafter), used to automate these steps._
 
 #### How to Publish the Release
 
@@ -91,6 +92,7 @@ We do not enforce any branch naming style, but please use something descriptive 
 ### Git Commits
 
 As minimal requirements, your commit message should:
+
 - be capitalized
 - not finish by a dot or any other punctuation character (!,?)
 - start with a verb so that we can read your commit message this way: "This commit will ...", where "..." is the commit message.
@@ -101,6 +103,7 @@ We don't follow any other convention, but if you want to use one, we recommend [
 ### GitHub Pull Requests
 
 Some notes on GitHub PRs:
+
 - [Convert your PR as a draft](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/changing-the-stage-of-a-pull-request) if your changes are a work in progress: no one will review it until you pass your PR as ready for review.<br>
   The draft PR can be very useful if you want to show that you are working on something and make your work visible.
 - The branch related to the PR must be **up-to-date with `master`** before merging. You need to [rebase your branch](https://gist.github.com/curquiza/5f7ce615f85331f083cd467fc4e19398) if it is not.

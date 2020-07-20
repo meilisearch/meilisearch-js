@@ -23,6 +23,7 @@ module.exports = {
     '@typescript-eslint/space-before-function-paren': 0,
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-throw-literal': 'off',
+    '@typescript-eslint/array-type': ['warn', { default: 'array-simple' }],
     '@typescript-eslint/member-delimiter-style': [
       'error',
       {

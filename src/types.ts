@@ -51,19 +51,21 @@ export interface AddDocumentParams {
   primaryKey?: string
 }
 
-export type FacetFilter = (string | string[])[]
+export type FacetFilter = Array<string | string[]>
 
 export interface SearchParams<T> {
   offset?: number
   limit?: number
-  attributesToRetrieve?: Extract<keyof T, string>[] | Extract<keyof T, string>
+  attributesToRetrieve?:
+  | Array<Extract<keyof T, string>>
+  | Extract<keyof T, string>
   attributesToCrop?:
-    | (Extract<keyof T, string> | '*')[]
-    | (Extract<keyof T, string> | '*')
+  | Array<Extract<keyof T, string> | '*'>
+  | (Extract<keyof T, string> | '*')
   cropLength?: number
   attributesToHighlight?:
-    | (Extract<keyof T, string> | '*')[]
-    | (Extract<keyof T, string> | '*')
+  | Array<Extract<keyof T, string> | '*'>
+  | (Extract<keyof T, string> | '*')
   filters?: string
   facetFilters?: string | FacetFilter | FacetFilter[]
   facetsDistribution?: string[]
@@ -89,13 +91,13 @@ export type Hit<T> = T & { _formatted?: T }
 export interface SearchResponse<T, P extends SearchParams<T>> {
   hits: P['attributesToRetrieve'] extends keyof T
     ? Array<
-        Hit<
-          Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
-        >
-      >
+    Hit<
+    Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
+    >
+    >
     : P['attributesToRetrieve'] extends Array<infer K>
-    ? Array<Hit<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
-    : Array<Hit<T>>
+      ? Array<Hit<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
+      : Array<Hit<T>>
   offset: number
   limit: number
   processingTimeMs: number
@@ -114,7 +116,9 @@ export interface FieldFrequency {
 export interface GetDocumentsParams<T> {
   offset?: number
   limit?: number
-  attributesToRetrieve?: Extract<keyof T, string>[] | Extract<keyof T, string>
+  attributesToRetrieve?:
+  | Array<Extract<keyof T, string>>
+  | Extract<keyof T, string>
 }
 
 export type GetDocumentsResponse<
@@ -122,13 +126,13 @@ export type GetDocumentsResponse<
   P extends GetDocumentsParams<T>
 > = P['attributesToRetrieve'] extends keyof T
   ? Array<
-      Document<
-        Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
-      >
-    >
+  Document<
+  Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
+  >
+  >
   : P['attributesToRetrieve'] extends Array<infer K>
-  ? Array<Document<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
-  : Array<Document<T>>
+    ? Array<Document<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
+    : Array<Document<T>>
 
 export type DocumentLike = { [Key in string]?: DocumentField }
 export interface DocumentArray extends Array<DocumentField> {}
@@ -141,9 +145,9 @@ export type DocumentField =
   | DocumentArray
 
 export type Document<T> = DocumentLike &
-  {
-    [key in keyof T]: T[key]
-  }
+{
+  [key in keyof T]: T[key]
+}
 
 /*
  ** Settings
@@ -356,11 +360,11 @@ export interface MeiliAxiosWrapperInterface {
     data: IndexRequest,
     config?: AxiosRequestConfig
   ) => Promise<Index<T>>) &
-    (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
-      url: string,
-      data?: T,
-      config?: AxiosRequestConfig
-    ) => Promise<R>)
+  (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
+    url: string,
+    data?: T,
+    config?: AxiosRequestConfig
+  ) => Promise<R>)
   put: <T = any, R = AxiosResponse<T>>(
     url: string,
     data?: any,
