@@ -1,4 +1,4 @@
-const MeiliSearch = require('../../')
+const MeiliSearch = require('../../dist/bundles/meilisearch.cjs.js')
 
 const config = {
   host: 'http://127.0.0.1:7700',
