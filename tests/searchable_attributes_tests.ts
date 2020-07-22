@@ -49,15 +49,15 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getSearchableAttributes()
-      .then((response: String[]) => {
+      .then((response: string[]) => {
         expect(response.sort()).toEqual(Object.keys(dataset[0]).sort())
       })
   })
   test(`${permission} key: Update searchable attributes`, async () => {
-    const new_da = ['title']
+    const newSearchableAttributes = ['title']
     const { updateId } = await client
       .getIndex(index.uid)
-      .updateSearchableAttributes(new_da)
+      .updateSearchableAttributes(newSearchableAttributes)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -66,8 +66,8 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getSearchableAttributes()
-      .then((response: String[]) => {
-        expect(response).toEqual(new_da)
+      .then((response: string[]) => {
+        expect(response).toEqual(newSearchableAttributes)
       })
   })
   test(`${permission} key: Reset searchable attributes`, async () => {
@@ -82,7 +82,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getSearchableAttributes()
-      .then((response: String[]) => {
+      .then((response: string[]) => {
         expect(response.sort()).toEqual(Object.keys(dataset[0]).sort())
       })
   })

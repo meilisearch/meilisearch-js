@@ -63,10 +63,10 @@ describe.each([
       })
   })
   test(`${permission} key: Update ranking rules`, async () => {
-    const new_rr = ['asc(title)', 'typo', 'desc(description)']
+    const newRankingRules = ['asc(title)', 'typo', 'desc(description)']
     const { updateId } = await client
       .getIndex(index.uid)
-      .updateRankingRules(new_rr)
+      .updateRankingRules(newRankingRules)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -76,7 +76,7 @@ describe.each([
       .getIndex(index.uid)
       .getRankingRules()
       .then((response: string[]) => {
-        expect(response).toEqual(new_rr)
+        expect(response).toEqual(newRankingRules)
       })
   })
   test(`${permission} key: Reset ranking rules`, async () => {

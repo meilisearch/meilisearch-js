@@ -1,4 +1,3 @@
-import * as Types from '../src/types'
 import {
   clearAllIndexes,
   config,

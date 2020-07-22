@@ -31,7 +31,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getAcceptNewFields()
-      .then((response: Boolean) => {
+      .then((response: boolean) => {
         expect(response).toEqual(true)
       })
   })
@@ -47,7 +47,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getAcceptNewFields()
-      .then((response: Boolean) => {
+      .then((response: boolean) => {
         expect(response).toEqual(false)
       })
   })
