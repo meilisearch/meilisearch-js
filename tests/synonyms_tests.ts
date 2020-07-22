@@ -54,12 +54,12 @@ describe.each([
       })
   })
   test(`${permission} key: Update synonyms`, async () => {
-    const new_sy = {
+    const newSynonyms = {
       hp: ['harry potter'],
     }
     const { updateId } = await client
       .getIndex(index.uid)
-      .updateSynonyms(new_sy)
+      .updateSynonyms(newSynonyms)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -69,7 +69,7 @@ describe.each([
       .getIndex(index.uid)
       .getSynonyms()
       .then((response: object) => {
-        expect(response).toEqual(new_sy)
+        expect(response).toEqual(newSynonyms)
       })
   })
   test(`${permission} key: Reset synonyms`, async () => {

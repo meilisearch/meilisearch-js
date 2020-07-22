@@ -49,15 +49,15 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getAttributesForFaceting()
-      .then((response: String[]) => {
+      .then((response: string[]) => {
         expect(response.sort()).toEqual([])
       })
   })
   test(`${permission} key: Update attributes for filtering`, async () => {
-    const new_attributes_for_faceting = ['genre']
+    const newAttributesForFaceting = ['genre']
     const { updateId } = await client
       .getIndex(index.uid)
-      .updateAttributesForFaceting(new_attributes_for_faceting)
+      .updateAttributesForFaceting(newAttributesForFaceting)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -66,8 +66,8 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getAttributesForFaceting()
-      .then((response: String[]) => {
-        expect(response).toEqual(new_attributes_for_faceting)
+      .then((response: string[]) => {
+        expect(response).toEqual(newAttributesForFaceting)
       })
   })
   test(`${permission} key: Reset attributes for filtering`, async () => {
@@ -82,7 +82,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getAttributesForFaceting()
-      .then((response: String[]) => {
+      .then((response: string[]) => {
         expect(response.sort()).toEqual([])
       })
   })

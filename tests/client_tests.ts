@@ -145,13 +145,6 @@ describe.each([
       ).rejects.toThrowError(`index already exists`)
     })
 
-    test(`${permission} key: create index with missing uid should fail`, async () => {
-      // @ts-ignore
-      await expect(client.createIndex(null)).rejects.toThrowError(
-        `Index creation must have an uid`
-      )
-    })
-
     test(`${permission} key: delete index with uid that does not exist should fail`, async () => {
       const index = client.getIndex(uidNoPrimaryKey.uid)
       await expect(index.deleteIndex()).rejects.toThrowError(
