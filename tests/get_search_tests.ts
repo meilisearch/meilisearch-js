@@ -160,7 +160,7 @@ describe.each([
         'prince',
         {
           filters: 'title = "Le Petit Prince"',
-          attributesToCrop: '*',
+          attributesToCrop: ['*'],
           cropLength: 5,
           matches: true,
         },
@@ -189,9 +189,9 @@ describe.each([
           limit: 5,
           offset: 0,
           attributesToRetrieve: ['id', 'title'],
-          attributesToCrop: '*',
+          attributesToCrop: ['*'],
           cropLength: 6,
-          attributesToHighlight: '*',
+          attributesToHighlight: ['*'],
           filters: 'title = "Le Petit Prince"',
           matches: true,
         },
@@ -233,10 +233,10 @@ describe.each([
         {
           limit: 5,
           offset: 0,
-          attributesToRetrieve: '*',
-          attributesToCrop: '*',
+          attributesToRetrieve: ['*'],
+          attributesToCrop: ['*'],
           cropLength: 6,
-          attributesToHighlight: '*',
+          attributesToHighlight: ['*'],
           filters: 'title = "Le Petit Prince"',
           matches: true,
         },
@@ -381,20 +381,6 @@ describe.each([
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(0)
       })
-  })
-
-  test(`${permission} key: Search with one string facetFilters `, async () => {
-    await expect(
-      client.getIndex(index.uid).search(
-        'a',
-        {
-          facetFilters: 'genre:romance',
-        },
-        'GET'
-      )
-    ).rejects.toThrowError(
-      `error processing facet filter: unexpected token "genre:romance", expected Array`
-    )
   })
 
   test(`${permission} key: Try to Search on deleted index and fail`, async () => {
