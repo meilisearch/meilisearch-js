@@ -29,6 +29,7 @@ module.exports = {
     'jsdoc/check-indentation': 'error',
     '@typescript-eslint/space-before-function-paren': 0,
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-throw-literal': 'off',
     '@typescript-eslint/member-delimiter-style': [
       'error',
