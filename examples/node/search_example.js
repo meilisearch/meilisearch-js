@@ -23,8 +23,8 @@ const addDataset = async () => {
   const index = await client.getIndex('movies')
   const resp = await index.search('Avengers', {
     limit: 1,
-    attributesToHighlight: 'title',
-  })
+    attributesToHighlight: ['title'],
+  }, 'GET')
   console.log({ resp })
   console.log({ hit: resp.hits[0] })
 })()
