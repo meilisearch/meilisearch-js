@@ -17,8 +17,10 @@ import MeiliAxiosWrapper from './meili-axios-wrapper'
 import MeiliSearch from './meilisearch'
 import MeiliSearchApiError from './errors/meilisearch-api-error'
 import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
+import MeiliSearchError from './errors/meilisearch-error'
 export { Index }
 export { MeiliSearchApiError }
+export { MeiliSearchError }
 export { MeiliSearchTimeOutError }
 
 export interface Config {
@@ -73,7 +75,21 @@ export interface SearchParams<T> {
 }
 
 export interface SearchRequest {
-  q: string
+  q?: string
+  offset?: number
+  limit?: number
+  cropLength?: number
+  attributesToRetrieve?: string[]
+  attributesToCrop?: string[]
+  attributesToHighlight?: string[]
+  facetFilters?: string | FacetFilter | FacetFilter[]
+  facetsDistribution?: string[]
+  filters?: string
+  matches?: boolean
+}
+
+export interface GetSearchRequest {
+  q?: string
   offset?: number
   limit?: number
   attributesToRetrieve?: string
@@ -88,16 +104,23 @@ export interface SearchRequest {
 
 export type Hit<T> = T & { _formatted?: T }
 
+// The second generic P is used to capture the SearchParams type
 export interface SearchResponse<T, P extends SearchParams<T>> {
-  hits: P['attributesToRetrieve'] extends keyof T
+  // P represents the SearchParams
+  // and by using the indexer P['attributesToRetrieve'], we're able to pick the type of `attributesToRetrieve`
+  // and check whether the attribute is a single key present in the generic
+  hits: P['attributesToRetrieve'] extends keyof T // `attributesToRetrieve` contains one single key
     ? Array<
+        // So we return an array of
         Hit<
+          // hits
+          // We exclude the `attributesToRetrieve` first from the generic, and then we exclude what has been returned to make sure we only Pick the `attributesToRetrieve` on the generic T
           Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
         >
       >
-    : P['attributesToRetrieve'] extends Array<infer K>
-    ? Array<Hit<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
-    : Array<Hit<T>>
+    : P['attributesToRetrieve'] extends Array<infer K> // Otherwise if P['attributesToRetrieve'] is an array, we use `infer K` to extract the keys in the array in place
+    ? Array<Hit<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>> // Same extraction method as above when we have a single `attributesToRetrieve`
+    : Array<Hit<T>> // Finally return the full type as `attributesToRetrieve` is neither a single key nor an array of keys
   offset: number
   limit: number
   processingTimeMs: number
@@ -249,7 +272,8 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   getAllUpdateStatus: () => Promise<Update[]>
   search: <P extends SearchParams<T>>(
     query: string,
-    options?: P
+    options?: P,
+    method?: 'POST' | 'GET'
   ) => Promise<SearchResponse<T, P>>
   show: () => Promise<IndexResponse>
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
