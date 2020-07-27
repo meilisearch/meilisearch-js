@@ -112,7 +112,9 @@ describe.each([
       const index = client.getIndex(uidAndPrimaryKey.uid)
       await expect(
         index.updateIndex({ primaryKey: 'newPrimaryKey' })
-      ).rejects.toThrowError(`The primary key cannot be updated`)
+      ).rejects.toThrowError(
+        `The schema already have an primary key. It's impossible to update it`
+      ) // see issue in meilisearch/meilisearch
     })
 
     test(`${permission} key: delete index`, async () => {
@@ -163,39 +165,6 @@ describe.each([
         expect(response).toHaveProperty('commitSha', expect.any(String))
         expect(response).toHaveProperty('buildDate', expect.any(String))
         expect(response).toHaveProperty('pkgVersion', expect.any(String))
-      })
-    })
-    test(`${permission} key: get system info`, async () => {
-      await client.sysInfo().then((response: Types.SysInfo) => {
-        expect(response).toHaveProperty('memoryUsage', expect.any(Number))
-        expect(response).toHaveProperty('processorUsage', expect.any(Array))
-        expect(response.global).toHaveProperty(
-          'totalMemory',
-          expect.any(Number)
-        )
-        expect(response.global).toHaveProperty('usedMemory', expect.any(Number))
-        expect(response.global).toHaveProperty('totalSwap', expect.any(Number))
-        expect(response.global).toHaveProperty('usedSwap', expect.any(Number))
-        expect(response.global).toHaveProperty('inputData', expect.any(Number))
-        expect(response.global).toHaveProperty('outputData', expect.any(Number))
-        expect(response.process).toHaveProperty('memory', expect.any(Number))
-      })
-    })
-    test(`${permission} key: get pretty system info`, async () => {
-      await client.prettySysInfo().then((response: Types.SysInfoPretty) => {
-        expect(response).toHaveProperty('memoryUsage', expect.any(String))
-        expect(response).toHaveProperty('processorUsage', expect.any(Array))
-        expect(response.global).toHaveProperty(
-          'totalMemory',
-          expect.any(String)
-        )
-        expect(response.global).toHaveProperty('usedMemory', expect.any(String))
-        expect(response.global).toHaveProperty('totalSwap', expect.any(String))
-        expect(response.global).toHaveProperty('usedSwap', expect.any(String))
-        expect(response.global).toHaveProperty('inputData', expect.any(String))
-        expect(response.global).toHaveProperty('outputData', expect.any(String))
-        expect(response.process).toHaveProperty('memory', expect.any(String))
-        expect(response.process).toHaveProperty('cpu', expect.any(String))
       })
     })
     test(`${permission} key: get /stats information`, async () => {
@@ -253,16 +222,6 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
           `Invalid API key: ${PUBLIC_KEY}`
         )
       })
-      test(`${permission} key: try to get system info and be denied`, async () => {
-        await expect(client.sysInfo()).rejects.toThrowError(
-          `Invalid API key: ${PUBLIC_KEY}`
-        )
-      })
-      test(`${permission} key: try to get pretty system info and be denied`, async () => {
-        await expect(client.prettySysInfo()).rejects.toThrowError(
-          `Invalid API key: ${PUBLIC_KEY}`
-        )
-      })
       test(`${permission} key: try to get /stats information and be denied`, async () => {
         await expect(client.stats()).rejects.toThrowError(
           `Invalid API key: ${PUBLIC_KEY}`
@@ -314,16 +273,6 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     describe('Test on base routes', () => {
       test(`${permission} key: try to get version and be denied`, async () => {
         await expect(client.version()).rejects.toThrowError(
-          `You must have an authorization token`
-        )
-      })
-      test(`${permission} key: try to get system info and be denied`, async () => {
-        await expect(client.sysInfo()).rejects.toThrowError(
-          `You must have an authorization token`
-        )
-      })
-      test(`${permission} key: try to get pretty system info and be denied`, async () => {
-        await expect(client.prettySysInfo()).rejects.toThrowError(
           `You must have an authorization token`
         )
       })

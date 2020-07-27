@@ -67,10 +67,38 @@ describe.each([
       })
     await client.getIndex(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
   })
+  test(`${permission} key: Get documents with string attributesToRetrieve`, async () => {
+    await client
+      .getIndex(uidNoPrimaryKey.uid)
+      .getDocuments({
+        attributesToRetrieve: 'id',
+      })
+      .then((response) => {
+        expect(response.find((x) => Object.keys(x).length !== 1)).toEqual(
+          undefined
+        )
+      })
+  })
+
+  test(`${permission} key: Get documents with array attributesToRetrieve`, async () => {
+    await client
+      .getIndex(uidNoPrimaryKey.uid)
+      .getDocuments({
+        attributesToRetrieve: ['id'],
+      })
+      .then((response) => {
+        expect(response.find((x) => Object.keys(x).length !== 1)).toEqual(
+          undefined
+        )
+      })
+  })
+
   test(`${permission} key: Get documents from index that has no primary key`, async () => {
     await client
       .getIndex(uidNoPrimaryKey.uid)
-      .getDocuments()
+      .getDocuments({
+        attributesToRetrieve: 'id',
+      })
       .then((response) => {
         expect(response.length).toEqual(dataset.length)
       })
@@ -83,6 +111,7 @@ describe.each([
         expect(response.length).toEqual(dataset.length)
       })
   })
+
   test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
     const id = 2
     const title = 'The Red And The Black'
@@ -376,10 +405,7 @@ describe.each([
       .getAllUpdateStatus()
       .then((response: Types.Update[]) => {
         const lastUpdate = response[response.length - 1]
-        expect(lastUpdate).toHaveProperty(
-          'error',
-          'serializer error; Primary key is missing.'
-        )
+        expect(lastUpdate).toHaveProperty('error', 'document id is missing')
         expect(lastUpdate).toHaveProperty('status', 'failed')
       })
   })

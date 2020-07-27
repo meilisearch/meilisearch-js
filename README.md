@@ -163,8 +163,7 @@ Output:
 
 This package is compatible with the following MeiliSearch versions:
 
-- `v0.12.X`
-- `v0.11.X`
+- `v0.13.X`
 
 ## 🎬 Examples
 
@@ -475,14 +474,6 @@ If you want to know more about the development workflow or want to contribute, p
 - Reset Displayed Attributes
   `index.resetDisplayedAttributes(): Promise<EnqueuedUpdate>`
 
-### Accept new fields <!-- omit in toc -->
-
-- Get Accept new fields
-  `index.getAcceptNewFields(): Promise<boolean>`
-
-- Update Accept new fields
-  `index.updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>`
-
 ### Keys <!-- omit in toc -->
 
 - Get keys
@@ -506,16 +497,6 @@ If you want to know more about the development workflow or want to contribute, p
 - Get binary version
 
 `client.version(): Promise<Version>`
-
-### System <!-- omit in toc -->
-
-- Get system information
-
-`client.systemInformation(): Promise<SysInfo>`
-
-- Get system information (pretty mode)
-
-`client.systemInformationPretty(): Promise<SysInfoPretty>`
 
 <hr>
 

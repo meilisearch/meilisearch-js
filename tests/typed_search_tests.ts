@@ -15,6 +15,13 @@ const emptyIndex = {
   uid: 'empty_test',
 }
 
+interface Movie {
+  id: number
+  title: string
+  comment?: string
+  genre?: string
+}
+
 const dataset = [
   {
     id: 123,
@@ -65,9 +72,6 @@ describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
   { client: publicClient, permission: 'Public' },
-  { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-  { client: publicClient, permission: 'Public' },
 ])('Test on search', ({ client, permission }) => {
   describe.each([
     { method: 'POST' as Methods, permission, client },
@@ -79,23 +83,25 @@ describe.each([
       await masterClient.createIndex(emptyIndex.uid)
       const newAttributesForFaceting = ['genre']
       const { updateId: settingUpdateId } = await masterClient
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .updateAttributesForFaceting(newAttributesForFaceting)
         .then((response: EnqueuedUpdate) => {
           expect(response).toHaveProperty('updateId', expect.any(Number))
           return response
         })
       await masterClient
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .waitForPendingUpdate(settingUpdateId)
       const { updateId } = await masterClient
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .addDocuments(dataset)
-      await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
+      await masterClient
+        .getIndex<Movie>(index.uid)
+        .waitForPendingUpdate(updateId)
     })
-    test(`${permission} key: Basic ${method} search`, async () => {
+    test(`${permission} key: Basic search`, async () => {
       await client
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .search('prince', {}, method)
         .then((response) => {
           expect(response).toHaveProperty('hits', expect.any(Array))
@@ -110,9 +116,9 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with options`, async () => {
+    test(`${permission} key: Search with options`, async () => {
       await client
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .search('prince', { limit: 1 }, method)
         .then((response) => {
           expect(response).toHaveProperty('hits', expect.any(Array))
@@ -127,9 +133,9 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with options`, async () => {
+    test(`${permission} key: Search with options`, async () => {
       await client
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .search('prince', { limit: 1 }, method)
         .then((response) => {
           expect(response).toHaveProperty('hits', expect.any(Array))
@@ -143,9 +149,9 @@ describe.each([
           expect(response.hits.length).toEqual(1)
         })
     })
-    test(`${permission} key: ${method} search with limit and offset`, async () => {
+    test(`${permission} key: Search with limit and offset`, async () => {
       await client
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .search(
           'prince',
           {
@@ -174,9 +180,9 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with matches parameter and small croplength`, async () => {
+    test(`${permission} key: Search with matches parameter and small croplength`, async () => {
       await client
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .search(
           'prince',
           {
@@ -204,9 +210,9 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with all options but not all fields`, async () => {
+    test(`${permission} key: Search with all options but not all fields`, async () => {
       await client
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .search(
           'prince',
           {
@@ -252,9 +258,9 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with all options and all fields`, async () => {
+    test(`${permission} key: Search with all options and all fields`, async () => {
       await client
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .search(
           'prince',
           {
@@ -294,9 +300,9 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with all options but specific fields`, async () => {
+    test(`${permission} key: Search with all options but specific fields`, async () => {
       await client
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .search(
           'prince',
           {
@@ -344,9 +350,9 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with facetFilters and facetDistribution`, async () => {
+    test(`${permission} key: Search with facetFilters and facetDistribution`, async () => {
       await client
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .search(
           'a',
           {
@@ -365,9 +371,9 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with facetFilters with spaces`, async () => {
+    test(`${permission} key: Search with facetFilters with spaces`, async () => {
       await client
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .search(
           'h',
           {
@@ -381,9 +387,9 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with multiple facetFilters`, async () => {
+    test(`${permission} key: Search with multiple facetFilters`, async () => {
       await client
-        .getIndex(index.uid)
+        .getIndex<Movie>(index.uid)
         .search(
           'a',
           {
@@ -402,7 +408,7 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search on index with no documents and no primary key`, async () => {
+    test(`${permission} key: Search on index with no documents and no primary key`, async () => {
       await client
         .getIndex(emptyIndex.uid)
         .search('prince', {}, method)
@@ -419,10 +425,10 @@ describe.each([
         })
     })
 
-    test(`${permission} key: Try to ${method} search on deleted index and fail`, async () => {
-      await masterClient.getIndex(index.uid).deleteIndex()
+    test(`${permission} key: Try to Search on deleted index and fail`, async () => {
+      await masterClient.getIndex<Movie>(index.uid).deleteIndex()
       await expect(
-        client.getIndex(index.uid).search('prince', {}, method)
+        client.getIndex<Movie>(index.uid).search('prince')
       ).rejects.toThrowError(`Index movies_test not found`)
     })
   })
@@ -437,7 +443,7 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
     })
     test(`${permission} key: Try Basic search and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).search('prince')
+        client.getIndex<Movie>(index.uid).search('prince')
       ).rejects.toThrowError(`You must have an authorization token`)
     })
   }

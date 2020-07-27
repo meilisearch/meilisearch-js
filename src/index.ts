@@ -7,10 +7,11 @@
 
 'use strict'
 
+import MeiliSearchError from './errors/meilisearch-error'
 import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
-import { sleep } from './utils'
+import { sleep, removeUndefinedFromObject } from './utils'
 
 class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   uid: string
@@ -73,64 +74,58 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
    * @method search
    */
   async search<P extends Types.SearchParams<T>>(
-    query: string,
-    options?: P
+    query?: string,
+    options?: P,
+    method: Types.Methods = 'POST'
   ): Promise<Types.SearchResponse<T, P>> {
     const url = `/indexes/${this.uid}/search`
-
     const params: Types.SearchRequest = {
       q: query,
+      offset: options?.offset,
+      limit: options?.limit,
+      cropLength: options?.cropLength,
+      filters: options?.filters,
+      matches: options?.matches,
+      facetFilters: options?.facetFilters,
+      facetsDistribution: options?.facetsDistribution,
+      attributesToRetrieve: options?.attributesToRetrieve,
+      attributesToCrop: options?.attributesToCrop,
+      attributesToHighlight: options?.attributesToHighlight,
     }
-    if (options !== undefined) {
-      if (options.offset !== undefined) {
-        params.offset = options.offset
-      }
-      if (options.limit !== undefined) {
-        params.limit = options.limit
-      }
-      if (options.attributesToRetrieve !== undefined) {
-        if (Array.isArray(options.attributesToRetrieve)) {
-          params.attributesToRetrieve = options.attributesToRetrieve.join(',')
-        } else {
-          params.attributesToRetrieve = options.attributesToRetrieve
-        }
+    if (method.toUpperCase() === 'POST') {
+      return await this.post(url, removeUndefinedFromObject(params), {
+        cancelToken: this.cancelTokenSource.token,
+      })
+    } else if (method.toUpperCase() === 'GET') {
+      const getParams: Types.GetSearchRequest = {
+        ...params,
+        facetFilters:
+          Array.isArray(options?.facetFilters) && options?.facetFilters
+            ? JSON.stringify(options.facetFilters)
+            : undefined,
+        facetsDistribution: options?.facetsDistribution
+          ? JSON.stringify(options.facetsDistribution)
+          : undefined,
+        attributesToRetrieve: options?.attributesToRetrieve
+          ? options.attributesToRetrieve.join(',')
+          : undefined,
+        attributesToCrop: options?.attributesToCrop
+          ? options.attributesToCrop.join(',')
+          : undefined,
+        attributesToHighlight: options?.attributesToHighlight
+          ? options.attributesToHighlight.join(',')
+          : undefined,
       }
 
-      if (options.attributesToCrop !== undefined) {
-        if (Array.isArray(options.attributesToCrop)) {
-          params.attributesToCrop = options.attributesToCrop.join(',')
-        } else {
-          params.attributesToCrop = options.attributesToCrop
-        }
-      }
-      if (options.cropLength !== undefined) {
-        params.cropLength = options.cropLength
-      }
-      if (options.attributesToHighlight !== undefined) {
-        if (Array.isArray(options.attributesToHighlight)) {
-          params.attributesToHighlight = options.attributesToHighlight.join(',')
-        } else {
-          params.attributesToHighlight = options.attributesToHighlight
-        }
-      }
-      if (options.filters !== undefined) {
-        params.filters = options.filters
-      }
-      if (options.matches !== undefined) {
-        params.matches = options.matches
-      }
-      if (options.facetFilters !== undefined) {
-        params.facetFilters = JSON.stringify(options.facetFilters)
-      }
-      if (options.facetsDistribution !== undefined) {
-        params.facetsDistribution = JSON.stringify(options.facetsDistribution)
-      }
+      return await this.get(url, {
+        params: removeUndefinedFromObject(getParams),
+        cancelToken: this.cancelTokenSource.token,
+      })
+    } else {
+      throw new MeiliSearchError(
+        'method parameter should be either POST or GET'
+      )
     }
-
-    return await this.get(url, {
-      params,
-      cancelToken: this.cancelTokenSource.token,
-    })
   }
 
   ///
@@ -597,34 +592,6 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
     const url = `/indexes/${this.uid}/settings/displayed-attributes`
 
     return await this.delete(url)
-  }
-
-  ///
-  /// ACCEPT NEW FIELDS
-  ///
-
-  /**
-   * Get the accept-new-fields value.
-   * @memberof Index
-   * @method getAcceptNewFields
-   */
-  async getAcceptNewFields(): Promise<boolean> {
-    const url = `/indexes/${this.uid}/settings/accept-new-fields`
-
-    return await this.get(url)
-  }
-
-  /**
-   * Update the accept-new-fields value.
-   * @memberof Index
-   * @method updateAcceptNewFields
-   */
-  async updateAcceptNewFields(
-    acceptNewFields: boolean
-  ): Promise<Types.EnqueuedUpdate> {
-    const url = `/indexes/${this.uid}/settings/accept-new-fields`
-
-    return await this.post(url, acceptNewFields)
   }
 }
 

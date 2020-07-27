@@ -47,7 +47,6 @@ const defaultSettingsEmpty = {
   displayedAttributes: [],
   stopWords: [],
   synonyms: {},
-  acceptNewFields: true,
 }
 
 const defaultSettings = {
@@ -57,7 +56,6 @@ const defaultSettings = {
   displayedAttributes: ['comment', 'title', 'id'],
   stopWords: [],
   synonyms: {},
-  acceptNewFields: true,
 }
 
 jest.setTimeout(100 * 1000)
@@ -88,22 +86,10 @@ describe.each([
       .then((response: Types.Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty('distinctAttribute', null)
-        expect(response).toHaveProperty('searchableAttributes', [
-          'id',
-          'title',
-          'comment',
-        ])
-        expect(response).toHaveProperty(
-          'displayedAttributes',
-          expect.any(Array)
-        )
-        const sortedAttributes = response.displayedAttributes
-          ? response.displayedAttributes.sort()
-          : undefined
-        expect(sortedAttributes).toEqual(['id', 'title', 'comment'].sort())
+        expect(response).toHaveProperty('searchableAttributes', ['*'])
+        expect(response).toHaveProperty('displayedAttributes', ['*'])
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
-        expect(response).toHaveProperty('acceptNewFields', true)
       })
   })
 
@@ -114,11 +100,10 @@ describe.each([
       .then((response: Types.Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty('distinctAttribute', null)
-        expect(response).toHaveProperty('searchableAttributes', ['id'])
-        expect(response).toHaveProperty('displayedAttributes', ['id'])
+        expect(response).toHaveProperty('searchableAttributes', ['*'])
+        expect(response).toHaveProperty('displayedAttributes', ['*'])
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
-        expect(response).toHaveProperty('acceptNewFields', true)
       })
   })
 
@@ -149,17 +134,10 @@ describe.each([
           'distinctAttribute',
           newSettings.distinctAttribute
         )
-        expect(response).toHaveProperty(
-          'searchableAttributes',
-          defaultSettings.searchableAttributes
-        )
-        expect(response).toHaveProperty(
-          'displayedAttributes',
-          expect.any(Array)
-        )
+        expect(response).toHaveProperty('searchableAttributes', ['*'])
+        expect(response).toHaveProperty('displayedAttributes', ['*'])
         expect(response).toHaveProperty('stopWords', newSettings.stopWords)
         expect(response).toHaveProperty('synonyms', {})
-        expect(response).toHaveProperty('acceptNewFields', true)
       })
   })
 
@@ -189,14 +167,10 @@ describe.each([
           'distinctAttribute',
           newSettings.distinctAttribute
         )
-        expect(response).toHaveProperty('searchableAttributes', ['id'])
-        expect(response).toHaveProperty(
-          'displayedAttributes',
-          expect.any(Array)
-        )
+        expect(response).toHaveProperty('searchableAttributes', ['*'])
+        expect(response).toHaveProperty('displayedAttributes', ['*'])
         expect(response).toHaveProperty('stopWords', newSettings.stopWords)
         expect(response).toHaveProperty('synonyms', {})
-        expect(response).toHaveProperty('acceptNewFields', true)
       })
   })
 
@@ -215,25 +189,10 @@ describe.each([
       .then((response: Types.Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty('distinctAttribute', null)
-        expect(response).toHaveProperty(
-          'searchableAttributes',
-          expect.any(Array)
-        )
-        const sortedSearchable = response.searchableAttributes
-          ? response.searchableAttributes.sort()
-          : undefined
-        expect(sortedSearchable).toEqual(['id', 'title', 'comment'].sort())
-        expect(response).toHaveProperty(
-          'displayedAttributes',
-          expect.any(Array)
-        )
-        const sortedDisplayed = response.displayedAttributes
-          ? response.displayedAttributes.sort()
-          : undefined
-        expect(sortedDisplayed).toEqual(['id', 'title', 'comment'].sort())
+        expect(response).toHaveProperty('searchableAttributes', ['*'])
+        expect(response).toHaveProperty('displayedAttributes', ['*'])
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
-        expect(response).toHaveProperty('acceptNewFields', true)
       })
   })
 
@@ -252,25 +211,10 @@ describe.each([
       .then((response: Types.Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty('distinctAttribute', null)
-        expect(response).toHaveProperty(
-          'searchableAttributes',
-          expect.any(Array)
-        )
-        const sortedSearchable = response.searchableAttributes
-          ? response.searchableAttributes.sort()
-          : undefined
-        expect(sortedSearchable).toEqual(['id', 'title'].sort())
-        expect(response).toHaveProperty(
-          'displayedAttributes',
-          expect.any(Array)
-        )
-        const sortedDisplayed = response.displayedAttributes
-          ? response.displayedAttributes.sort()
-          : undefined
-        expect(sortedDisplayed).toEqual(['id', 'title'].sort())
+        expect(response).toHaveProperty('searchableAttributes', ['*'])
+        expect(response).toHaveProperty('displayedAttributes', ['*'])
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
-        expect(response).toHaveProperty('acceptNewFields', true)
       })
   })
 
@@ -305,7 +249,6 @@ describe.each([
         )
         expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
         expect(response).toHaveProperty('synonyms', {})
-        expect(response).toHaveProperty('acceptNewFields', true)
       })
   })
 
@@ -340,7 +283,6 @@ describe.each([
         )
         expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
         expect(response).toHaveProperty('synonyms', {})
-        expect(response).toHaveProperty('acceptNewFields', true)
       })
   })
 })

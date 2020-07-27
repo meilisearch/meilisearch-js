@@ -50,7 +50,7 @@ describe.each([
       .getIndex(index.uid)
       .getSearchableAttributes()
       .then((response: string[]) => {
-        expect(response.sort()).toEqual(Object.keys(dataset[0]).sort())
+        expect(response).toEqual(['*'])
       })
   })
   test(`${permission} key: Update searchable attributes`, async () => {
@@ -83,7 +83,7 @@ describe.each([
       .getIndex(index.uid)
       .getSearchableAttributes()
       .then((response: string[]) => {
-        expect(response.sort()).toEqual(Object.keys(dataset[0]).sort())
+        expect(response).toEqual(['*'])
       })
   })
 })

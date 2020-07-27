@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es6: true,
+    es2020: true,
     'jest/globals': true,
     node: true,
   },
@@ -14,7 +15,7 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: 2019,
     project: ['tsconfig.eslint.json'],
     sourceType: 'module',
     projectFolderIgnoreList: ['dist'],
@@ -29,6 +30,7 @@ module.exports = {
     'jsdoc/check-indentation': 'error',
     '@typescript-eslint/space-before-function-paren': 0,
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-throw-literal': 'off',
     '@typescript-eslint/member-delimiter-style': [
       'error',

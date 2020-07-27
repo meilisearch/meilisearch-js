@@ -17,8 +17,10 @@ import MeiliAxiosWrapper from './meili-axios-wrapper'
 import MeiliSearch from './meilisearch'
 import MeiliSearchApiError from './errors/meilisearch-api-error'
 import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
+import MeiliSearchError from './errors/meilisearch-error'
 export { Index }
 export { MeiliSearchApiError }
+export { MeiliSearchError }
 export { MeiliSearchTimeOutError }
 
 export interface Config {
@@ -56,24 +58,32 @@ export type FacetFilter = Array<string | string[]>
 export interface SearchParams<T> {
   offset?: number
   limit?: number
-  attributesToRetrieve?:
-    | Array<Extract<keyof T, string>>
-    | Extract<keyof T, string>
-  attributesToCrop?:
-    | Array<Extract<keyof T, string> | '*'>
-    | (Extract<keyof T, string> | '*')
+  attributesToRetrieve?: Array<Extract<keyof T, string> | '*'>
+  attributesToCrop?: Array<Extract<keyof T, string> | '*'>
   cropLength?: number
-  attributesToHighlight?:
-    | Array<Extract<keyof T, string> | '*'>
-    | (Extract<keyof T, string> | '*')
+  attributesToHighlight?: Array<Extract<keyof T, string> | '*'>
   filters?: string
-  facetFilters?: string | FacetFilter | FacetFilter[]
+  facetFilters?: FacetFilter | FacetFilter[]
   facetsDistribution?: string[]
   matches?: boolean
 }
 
 export interface SearchRequest {
-  q: string
+  q?: string
+  offset?: number
+  limit?: number
+  cropLength?: number
+  attributesToRetrieve?: string[]
+  attributesToCrop?: string[]
+  attributesToHighlight?: string[]
+  facetFilters?: FacetFilter | FacetFilter[]
+  facetsDistribution?: string[]
+  filters?: string
+  matches?: boolean
+}
+
+export interface GetSearchRequest {
+  q?: string
   offset?: number
   limit?: number
   attributesToRetrieve?: string
@@ -88,16 +98,14 @@ export interface SearchRequest {
 
 export type Hit<T> = T & { _formatted?: T }
 
+// The second generic P is used to capture the SearchParams type
 export interface SearchResponse<T, P extends SearchParams<T>> {
-  hits: P['attributesToRetrieve'] extends keyof T
-    ? Array<
-        Hit<
-          Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
-        >
-      >
-    : P['attributesToRetrieve'] extends Array<infer K>
-    ? Array<Hit<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
-    : Array<Hit<T>>
+  // P represents the SearchParams
+  // and by using the indexer P['attributesToRetrieve'], we're able to pick the type of `attributesToRetrieve`
+  // and check whether the attribute is a single key present in the generic
+  hits: P['attributesToRetrieve'] extends Array<infer K> // if P['attributesToRetrieve'] is an array, we use `infer K` to extract the keys in the array in place
+    ? Array<Hit<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>> // Same extraction method as above when we have a single `attributesToRetrieve`
+    : Array<Hit<T>> // Finally return the full type as `attributesToRetrieve` is neither a single key nor an array of keys
   offset: number
   limit: number
   processingTimeMs: number
@@ -163,7 +171,6 @@ export interface Settings {
   synonyms?: {
     [field: string]: string[]
   }
-  acceptNewFields?: boolean
 }
 
 /*
@@ -223,43 +230,6 @@ export interface Version {
 }
 
 /*
- ** SYS-INFO
- */
-export interface SysInfo {
-  memoryUsage: number
-  processorUsage: number[]
-  global: {
-    totalMemory: number
-    usedMemory: number
-    totalSwap: number
-    usedSwap: number
-    inputData: number
-    outputData: number
-  }
-  process: {
-    memory: number
-    cpu: number
-  }
-}
-
-export interface SysInfoPretty {
-  memoryUsage: string
-  processorUsage: string[]
-  global: {
-    totalMemory: string
-    usedMemory: string
-    totalSwap: string
-    usedSwap: string
-    inputData: string
-    outputData: string
-  }
-  process: {
-    memory: string
-    cpu: string
-  }
-}
-
-/*
  ** MeiliSearch Class Interfaces
  */
 
@@ -279,9 +249,9 @@ export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   changeHealthTo: (health: boolean) => Promise<void>
   stats: () => Promise<Stats>
   version: () => Promise<Version>
-  sysInfo: () => Promise<SysInfo>
-  prettySysInfo: () => Promise<SysInfoPretty>
 }
+
+export type Methods = 'POST' | 'GET'
 
 export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   uid: string
@@ -289,7 +259,8 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   getAllUpdateStatus: () => Promise<Update[]>
   search: <P extends SearchParams<T>>(
     query: string,
-    options?: P
+    options?: P,
+    method?: Methods
   ) => Promise<SearchResponse<T, P>>
   show: () => Promise<IndexResponse>
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
@@ -344,8 +315,6 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
     displayedAttributes: string[]
   ) => Promise<EnqueuedUpdate>
   resetDisplayedAttributes: () => Promise<EnqueuedUpdate>
-  getAcceptNewFields: () => Promise<boolean>
-  updateAcceptNewFields: (acceptNewFields: boolean) => Promise<EnqueuedUpdate>
 }
 
 export interface MeiliAxiosWrapperInterface {
