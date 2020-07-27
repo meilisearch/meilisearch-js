@@ -156,10 +156,6 @@ get_health_1: |-
 update_health_1: |-
 get_version_1: |-
   client.version()
-get_pretty_sys_info_1: |-
-  client.systemInformationPretty()
-get_sys_info_1: |-
-  client.systemInformation()
 distinct_attribute_guide_1: |-
   client.getIndex('jackets').settings({ distinctAttribute: 'product_id' })
 field_properties_guide_searchable_1: |-
