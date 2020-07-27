@@ -100,8 +100,6 @@ describe.each([
         attributesToRetrieve: 'id',
       })
       .then((response) => {
-        console.log({ response })
-
         expect(response.length).toEqual(dataset.length)
       })
   })
