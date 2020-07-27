@@ -7,11 +7,11 @@
 
 'use strict'
 
-import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
 import MeiliSearchError from './errors/meilisearch-error'
+import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
-import { sleep, joinIfArray, createArrayIfString } from './utils'
+import { sleep } from './utils'
 
 class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   uid: string
@@ -79,51 +79,44 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
     method: 'POST' | 'GET' = 'POST'
   ): Promise<Types.SearchResponse<T, P>> {
     const url = `/indexes/${this.uid}/search`
-    let params: Types.SearchRequest = {
+    const params: Types.SearchRequest = {
       q: query,
       offset: options?.offset,
       limit: options?.limit,
       cropLength: options?.cropLength,
       filters: options?.filters,
       matches: options?.matches,
+      facetFilters: options?.facetFilters,
+      facetsDistribution: options?.facetsDistribution,
+      attributesToRetrieve: options?.attributesToRetrieve,
+      attributesToCrop: options?.attributesToCrop,
+      attributesToHighlight: options?.attributesToHighlight,
     }
     if (method.toUpperCase() === 'POST') {
-      params = {
-        ...params,
-        facetFilters: options?.facetFilters,
-        facetsDistribution: options?.facetsDistribution,
-        attributesToRetrieve: options?.attributesToRetrieve
-          ? createArrayIfString(options.attributesToRetrieve)
-          : undefined,
-        attributesToCrop: options?.attributesToCrop
-          ? createArrayIfString(options.attributesToCrop)
-          : undefined,
-        attributesToHighlight: options?.attributesToHighlight
-          ? createArrayIfString(options.attributesToHighlight)
-          : undefined,
-      }
       return await this.post(url, params, {
         cancelToken: this.cancelTokenSource.token,
       })
     } else if (method.toUpperCase() === 'GET') {
       const getParams: Types.GetSearchRequest = {
         ...params,
-        facetFilters: options?.facetFilters
-          ? JSON.stringify(options.facetFilters)
-          : undefined,
+        facetFilters:
+          Array.isArray(options?.facetFilters) && options?.facetFilters
+            ? JSON.stringify(options.facetFilters)
+            : undefined,
         facetsDistribution: options?.facetsDistribution
           ? JSON.stringify(options.facetsDistribution)
           : undefined,
         attributesToRetrieve: options?.attributesToRetrieve
-          ? joinIfArray(options.attributesToRetrieve)
+          ? options.attributesToRetrieve.join(',')
           : undefined,
         attributesToCrop: options?.attributesToCrop
-          ? joinIfArray(options.attributesToCrop)
+          ? options.attributesToCrop.join(',')
           : undefined,
         attributesToHighlight: options?.attributesToHighlight
-          ? joinIfArray(options.attributesToHighlight)
+          ? options.attributesToHighlight.join(',')
           : undefined,
       }
+
       return await this.get(url, {
         params: getParams,
         cancelToken: this.cancelTokenSource.token,

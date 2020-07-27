@@ -154,7 +154,7 @@ describe.each([
       .getIndex(index.uid)
       .search('prince', {
         filters: 'title = "Le Petit Prince"',
-        attributesToCrop: '*',
+        attributesToCrop: ['*'],
         cropLength: 5,
         matches: true,
       })
@@ -179,9 +179,9 @@ describe.each([
         limit: 5,
         offset: 0,
         attributesToRetrieve: ['id', 'title'],
-        attributesToCrop: '*',
+        attributesToCrop: ['*'],
         cropLength: 6,
-        attributesToHighlight: '*',
+        attributesToHighlight: ['*'],
         filters: 'title = "Le Petit Prince"',
         matches: true,
       })
@@ -219,10 +219,10 @@ describe.each([
       .search('prince', {
         limit: 5,
         offset: 0,
-        attributesToRetrieve: '*',
-        attributesToCrop: '*',
+        attributesToRetrieve: ['*'],
+        attributesToCrop: ['*'],
         cropLength: 6,
-        attributesToHighlight: '*',
+        attributesToHighlight: ['*'],
         filters: 'title = "Le Petit Prince"',
         matches: true,
       })
