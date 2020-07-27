@@ -164,8 +164,6 @@ Output:
 This package is compatible with the following MeiliSearch versions:
 
 - `v0.13.X`
-- `v0.12.X`
-- `v0.11.X`
 
 ## 🎬 Examples
 
