@@ -58,18 +58,12 @@ export type FacetFilter = Array<string | string[]>
 export interface SearchParams<T> {
   offset?: number
   limit?: number
-  attributesToRetrieve?:
-    | Array<Extract<keyof T, string>>
-    | Extract<keyof T, string>
-  attributesToCrop?:
-    | Array<Extract<keyof T, string> | '*'>
-    | (Extract<keyof T, string> | '*')
+  attributesToRetrieve?: Array<Extract<keyof T, string> | '*'>
+  attributesToCrop?: Array<Extract<keyof T, string> | '*'>
   cropLength?: number
-  attributesToHighlight?:
-    | Array<Extract<keyof T, string> | '*'>
-    | (Extract<keyof T, string> | '*')
+  attributesToHighlight?: Array<Extract<keyof T, string> | '*'>
   filters?: string
-  facetFilters?: string | FacetFilter | FacetFilter[]
+  facetFilters?: FacetFilter | FacetFilter[]
   facetsDistribution?: string[]
   matches?: boolean
 }
@@ -109,16 +103,7 @@ export interface SearchResponse<T, P extends SearchParams<T>> {
   // P represents the SearchParams
   // and by using the indexer P['attributesToRetrieve'], we're able to pick the type of `attributesToRetrieve`
   // and check whether the attribute is a single key present in the generic
-  hits: P['attributesToRetrieve'] extends keyof T // `attributesToRetrieve` contains one single key
-    ? Array<
-        // So we return an array of
-        Hit<
-          // hits
-          // We exclude the `attributesToRetrieve` first from the generic, and then we exclude what has been returned to make sure we only Pick the `attributesToRetrieve` on the generic T
-          Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
-        >
-      >
-    : P['attributesToRetrieve'] extends Array<infer K> // Otherwise if P['attributesToRetrieve'] is an array, we use `infer K` to extract the keys in the array in place
+  hits: P['attributesToRetrieve'] extends Array<infer K> // if P['attributesToRetrieve'] is an array, we use `infer K` to extract the keys in the array in place
     ? Array<Hit<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>> // Same extraction method as above when we have a single `attributesToRetrieve`
     : Array<Hit<T>> // Finally return the full type as `attributesToRetrieve` is neither a single key nor an array of keys
   offset: number
