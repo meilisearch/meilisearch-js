@@ -101,7 +101,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async isHealthy(): Promise<boolean> {
     const url = '/health'
 
-    return await this.get(url).then((_) => true)
+    return await this.get(url).then(() => true)
   }
 
   /**

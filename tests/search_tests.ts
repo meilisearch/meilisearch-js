@@ -70,10 +70,10 @@ describe.each([
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     await masterClient.createIndex(emptyIndex.uid)
-    const new_attributes_for_faceting = ['genre']
+    const newAttributesForFaceting = ['genre']
     const { updateId: settingUpdateId } = await masterClient
       .getIndex(index.uid)
-      .updateAttributesForFaceting(new_attributes_for_faceting)
+      .updateAttributesForFaceting(newAttributesForFaceting)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response

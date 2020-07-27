@@ -51,18 +51,20 @@ export interface AddDocumentParams {
   primaryKey?: string
 }
 
-export type FacetFilter = (string | string[])[]
+export type FacetFilter = Array<string | string[]>
 
 export interface SearchParams<T> {
   offset?: number
   limit?: number
-  attributesToRetrieve?: Extract<keyof T, string>[] | Extract<keyof T, string>
+  attributesToRetrieve?:
+    | Array<Extract<keyof T, string>>
+    | Extract<keyof T, string>
   attributesToCrop?:
-    | (Extract<keyof T, string> | '*')[]
+    | Array<Extract<keyof T, string> | '*'>
     | (Extract<keyof T, string> | '*')
   cropLength?: number
   attributesToHighlight?:
-    | (Extract<keyof T, string> | '*')[]
+    | Array<Extract<keyof T, string> | '*'>
     | (Extract<keyof T, string> | '*')
   filters?: string
   facetFilters?: string | FacetFilter | FacetFilter[]
@@ -114,7 +116,9 @@ export interface FieldFrequency {
 export interface GetDocumentsParams<T> {
   offset?: number
   limit?: number
-  attributesToRetrieve?: Extract<keyof T, string>[] | Extract<keyof T, string>
+  attributesToRetrieve?:
+    | Array<Extract<keyof T, string>>
+    | Extract<keyof T, string>
 }
 
 export type GetDocumentsResponse<
@@ -131,7 +135,7 @@ export type GetDocumentsResponse<
   : Array<Document<T>>
 
 export type DocumentLike = { [Key in string]?: DocumentField }
-export interface DocumentArray extends Array<DocumentField> {}
+export type DocumentArray = DocumentField[]
 export type DocumentField =
   | string
   | number

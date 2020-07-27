@@ -49,15 +49,15 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getStopWords()
-      .then((response: String[]) => {
+      .then((response: string[]) => {
         expect(response).toEqual([])
       })
   })
   test(`${permission} key: Update stop words`, async () => {
-    const new_sw = ['the']
+    const newStopWords = ['the']
     const { updateId } = await client
       .getIndex(index.uid)
-      .updateStopWords(new_sw)
+      .updateStopWords(newStopWords)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -66,8 +66,8 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getStopWords()
-      .then((response: String[]) => {
-        expect(response).toEqual(new_sw)
+      .then((response: string[]) => {
+        expect(response).toEqual(newStopWords)
       })
   })
   test(`${permission} key: Reset stop words`, async () => {
@@ -82,7 +82,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getStopWords()
-      .then((response: String[]) => {
+      .then((response: string[]) => {
         expect(response).toEqual([])
       })
   })

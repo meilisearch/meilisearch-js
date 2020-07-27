@@ -54,10 +54,10 @@ describe.each([
       })
   })
   test(`${permission} key: Update distinct attribute`, async () => {
-    const new_da = 'title'
+    const newDistinctAttribute = 'title'
     const { updateId } = await client
       .getIndex(index.uid)
-      .updateDistinctAttribute(new_da)
+      .updateDistinctAttribute(newDistinctAttribute)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -67,7 +67,7 @@ describe.each([
       .getIndex(index.uid)
       .getDistinctAttribute()
       .then((response: string | null) => {
-        expect(response).toEqual(new_da)
+        expect(response).toEqual(newDistinctAttribute)
       })
   })
   test(`${permission} key: Reset distinct attribute`, async () => {
