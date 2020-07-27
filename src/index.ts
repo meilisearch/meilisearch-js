@@ -8,9 +8,10 @@
 'use strict'
 
 import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
+import MeiliSearchError from './errors/meilisearch-error'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
-import { sleep } from './utils'
+import { sleep, joinIfArray, createArrayIfString } from './utils'
 
 class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   uid: string
@@ -73,64 +74,65 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
    * @method search
    */
   async search<P extends Types.SearchParams<T>>(
-    query: string,
-    options?: P
+    query?: string,
+    options?: P,
+    method: 'POST' | 'GET' = 'POST'
   ): Promise<Types.SearchResponse<T, P>> {
     const url = `/indexes/${this.uid}/search`
-
-    const params: Types.SearchRequest = {
+    let params: Types.SearchRequest = {
       q: query,
+      offset: options?.offset,
+      limit: options?.limit,
+      cropLength: options?.cropLength,
+      filters: options?.filters,
+      matches: options?.matches,
     }
-    if (options !== undefined) {
-      if (options.offset !== undefined) {
-        params.offset = options.offset
+    if (method.toUpperCase() === 'POST') {
+      params = {
+        ...params,
+        facetFilters: options?.facetFilters,
+        facetsDistribution: options?.facetsDistribution,
+        attributesToRetrieve: options?.attributesToRetrieve
+          ? createArrayIfString(options.attributesToRetrieve)
+          : undefined,
+        attributesToCrop: options?.attributesToCrop
+          ? createArrayIfString(options.attributesToCrop)
+          : undefined,
+        attributesToHighlight: options?.attributesToHighlight
+          ? createArrayIfString(options.attributesToHighlight)
+          : undefined,
       }
-      if (options.limit !== undefined) {
-        params.limit = options.limit
+      return await this.post(url, params, {
+        cancelToken: this.cancelTokenSource.token,
+      })
+    } else if (method.toUpperCase() === 'GET') {
+      const getParams: Types.GetSearchRequest = {
+        ...params,
+        facetFilters: options?.facetFilters
+          ? JSON.stringify(options.facetFilters)
+          : undefined,
+        facetsDistribution: options?.facetsDistribution
+          ? JSON.stringify(options.facetsDistribution)
+          : undefined,
+        attributesToRetrieve: options?.attributesToRetrieve
+          ? joinIfArray(options.attributesToRetrieve)
+          : undefined,
+        attributesToCrop: options?.attributesToCrop
+          ? joinIfArray(options.attributesToCrop)
+          : undefined,
+        attributesToHighlight: options?.attributesToHighlight
+          ? joinIfArray(options.attributesToHighlight)
+          : undefined,
       }
-      if (options.attributesToRetrieve !== undefined) {
-        if (Array.isArray(options.attributesToRetrieve)) {
-          params.attributesToRetrieve = options.attributesToRetrieve.join(',')
-        } else {
-          params.attributesToRetrieve = options.attributesToRetrieve
-        }
-      }
-
-      if (options.attributesToCrop !== undefined) {
-        if (Array.isArray(options.attributesToCrop)) {
-          params.attributesToCrop = options.attributesToCrop.join(',')
-        } else {
-          params.attributesToCrop = options.attributesToCrop
-        }
-      }
-      if (options.cropLength !== undefined) {
-        params.cropLength = options.cropLength
-      }
-      if (options.attributesToHighlight !== undefined) {
-        if (Array.isArray(options.attributesToHighlight)) {
-          params.attributesToHighlight = options.attributesToHighlight.join(',')
-        } else {
-          params.attributesToHighlight = options.attributesToHighlight
-        }
-      }
-      if (options.filters !== undefined) {
-        params.filters = options.filters
-      }
-      if (options.matches !== undefined) {
-        params.matches = options.matches
-      }
-      if (options.facetFilters !== undefined) {
-        params.facetFilters = JSON.stringify(options.facetFilters)
-      }
-      if (options.facetsDistribution !== undefined) {
-        params.facetsDistribution = JSON.stringify(options.facetsDistribution)
-      }
+      return await this.get(url, {
+        params: getParams,
+        cancelToken: this.cancelTokenSource.token,
+      })
+    } else {
+      throw new MeiliSearchError(
+        'method parameter should be either POST or GET'
+      )
     }
-
-    return await this.get(url, {
-      params,
-      cancelToken: this.cancelTokenSource.token,
-    })
   }
 
   ///
