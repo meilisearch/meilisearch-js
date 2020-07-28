@@ -112,7 +112,9 @@ describe.each([
       const index = client.getIndex(uidAndPrimaryKey.uid)
       await expect(
         index.updateIndex({ primaryKey: 'newPrimaryKey' })
-      ).rejects.toThrowError(`The primary key cannot be updated`)
+      ).rejects.toThrowError(
+        `The schema already have an primary key. It's impossible to update it`
+      ) // see issue in meilisearch/meilisearch
     })
 
     test(`${permission} key: delete index`, async () => {
