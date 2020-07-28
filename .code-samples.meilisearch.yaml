@@ -84,8 +84,7 @@ update_settings_1: |-
       synonyms: {
           'wolverine': ['xmen', 'logan'],
           'logan': ['wolverine']
-      },
-      acceptNewFields: false
+      }
   })
 reset_settings_1: |-
   client.getIndex('movies').resetSettings()
@@ -148,10 +147,6 @@ update_displayed_attributes_1: |-
   ])
 reset_displayed_attributes_1: |-
   client.getIndex('movies').resetDisplayedAttributes()
-get_accept_new_fields_1: |-
-  client.getIndex('movies').getAcceptNewFields()
-update_accept_new_fields_1: |-
-  client.getIndex('movies').updateAcceptNewFields(false)
 get_index_stats_1: |-
   client.getIndex('movies').getStats()
 get_indexes_stats_1: |-
@@ -294,10 +289,6 @@ settings_guide_displayed_1: |-
       'release_date',
       'rank'
     ]
-  })
-settings_guide_accept_new_fields_1: |-
-  client.getIndex('movies').settings({
-    acceptNewFields: false
   })
 add_movies_json_1: |-
   const movies = require('./movies.json')

@@ -51,9 +51,9 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on getOrCreateIndex',
   ({ client, permission }) => {
     test(`${permission} key: try to getOrCreateIndex and be denied`, async () => {
-      await expect(
-        client.getIndex(index.uid).getAcceptNewFields()
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      await expect(client.getOrCreateIndex(index.uid)).rejects.toThrowError(
+        `Invalid API key: ${PUBLIC_KEY}`
+      )
     })
   }
 )
@@ -62,9 +62,9 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on getOrCreateIndex',
   ({ client, permission }) => {
     test(`${permission} key: try to getOrCreateIndex and be denied`, async () => {
-      await expect(
-        client.getIndex(index.uid).getAcceptNewFields()
-      ).rejects.toThrowError(`You must have an authorization token`)
+      await expect(client.getOrCreateIndex(index.uid)).rejects.toThrowError(
+        `You must have an authorization token`
+      )
     })
   }
 )
