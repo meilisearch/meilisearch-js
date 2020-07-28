@@ -168,28 +168,6 @@ class MeiliSearch extends MeiliAxiosWrapper
 
     return await this.get(url)
   }
-
-  /**
-   * Get the server consuption, RAM / CPU / Network
-   * @memberof MeiliSearch
-   * @method sysInfo
-   */
-  async sysInfo(): Promise<Types.SysInfo> {
-    const url = '/sys-info'
-
-    return await this.get(url)
-  }
-
-  /**
-   * Get the server consuption, RAM / CPU / Network. All information as human readable
-   * @memberof MeiliSearch
-   * @method prettySysInfo
-   */
-  async prettySysInfo(): Promise<Types.SysInfoPretty> {
-    const url = '/sys-info/pretty'
-
-    return await this.get(url)
-  }
 }
 
 export default MeiliSearch
