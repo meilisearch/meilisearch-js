@@ -76,7 +76,7 @@ export interface SearchRequest {
   attributesToRetrieve?: string[]
   attributesToCrop?: string[]
   attributesToHighlight?: string[]
-  facetFilters?: string | FacetFilter | FacetFilter[]
+  facetFilters?: FacetFilter | FacetFilter[]
   facetsDistribution?: string[]
   filters?: string
   matches?: boolean
