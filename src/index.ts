@@ -598,34 +598,6 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
 
     return await this.delete(url)
   }
-
-  ///
-  /// ACCEPT NEW FIELDS
-  ///
-
-  /**
-   * Get the accept-new-fields value.
-   * @memberof Index
-   * @method getAcceptNewFields
-   */
-  async getAcceptNewFields(): Promise<boolean> {
-    const url = `/indexes/${this.uid}/settings/accept-new-fields`
-
-    return await this.get(url)
-  }
-
-  /**
-   * Update the accept-new-fields value.
-   * @memberof Index
-   * @method updateAcceptNewFields
-   */
-  async updateAcceptNewFields(
-    acceptNewFields: boolean
-  ): Promise<Types.EnqueuedUpdate> {
-    const url = `/indexes/${this.uid}/settings/accept-new-fields`
-
-    return await this.post(url, acceptNewFields)
-  }
 }
 
 export { Index }

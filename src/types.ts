@@ -163,7 +163,6 @@ export interface Settings {
   synonyms?: {
     [field: string]: string[]
   }
-  acceptNewFields?: boolean
 }
 
 /*
@@ -344,8 +343,6 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
     displayedAttributes: string[]
   ) => Promise<EnqueuedUpdate>
   resetDisplayedAttributes: () => Promise<EnqueuedUpdate>
-  getAcceptNewFields: () => Promise<boolean>
-  updateAcceptNewFields: (acceptNewFields: boolean) => Promise<EnqueuedUpdate>
 }
 
 export interface MeiliAxiosWrapperInterface {

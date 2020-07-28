@@ -474,14 +474,6 @@ If you want to know more about the development workflow or want to contribute, p
 - Reset Displayed Attributes
   `index.resetDisplayedAttributes(): Promise<EnqueuedUpdate>`
 
-### Accept new fields <!-- omit in toc -->
-
-- Get Accept new fields
-  `index.getAcceptNewFields(): Promise<boolean>`
-
-- Update Accept new fields
-  `index.updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>`
-
 ### Keys <!-- omit in toc -->
 
 - Get keys
