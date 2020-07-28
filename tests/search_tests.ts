@@ -351,16 +351,6 @@ describe.each([
       })
   })
 
-  test(`${permission} key: Try to Search with one string facetFilters and fail`, async () => {
-    await expect(
-      client.getIndex(index.uid).search('a', {
-        facetFilters: 'genre:romance',
-      })
-    ).rejects.toThrowError(
-      `error processing facet filter: unexpected token "genre:romance", expected Array`
-    )
-  })
-
   test(`${permission} key: Try to Search on deleted index and fail`, async () => {
     await masterClient.getIndex(index.uid).deleteIndex()
     await expect(

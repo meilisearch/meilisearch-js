@@ -11,7 +11,7 @@ import MeiliSearchError from './errors/meilisearch-error'
 import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
 import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
-import { sleep } from './utils'
+import { sleep, removeUndefinedFromObject } from './utils'
 
 class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   uid: string
@@ -93,7 +93,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
       attributesToHighlight: options?.attributesToHighlight,
     }
     if (method.toUpperCase() === 'POST') {
-      return await this.post(url, params, {
+      return await this.post(url, removeUndefinedFromObject(params), {
         cancelToken: this.cancelTokenSource.token,
       })
     } else if (method.toUpperCase() === 'GET') {
@@ -118,7 +118,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
       }
 
       return await this.get(url, {
-        params: getParams,
+        params: removeUndefinedFromObject(getParams),
         cancelToken: this.cancelTokenSource.token,
       })
     } else {
