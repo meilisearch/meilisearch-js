@@ -376,10 +376,7 @@ describe.each([
       .getAllUpdateStatus()
       .then((response: Types.Update[]) => {
         const lastUpdate = response[response.length - 1]
-        expect(lastUpdate).toHaveProperty(
-          'error',
-          'serializer error; Primary key is missing.'
-        )
+        expect(lastUpdate).toHaveProperty('error', 'document id is missing')
         expect(lastUpdate).toHaveProperty('status', 'failed')
       })
   })
