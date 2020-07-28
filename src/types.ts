@@ -222,43 +222,6 @@ export interface Version {
 }
 
 /*
- ** SYS-INFO
- */
-export interface SysInfo {
-  memoryUsage: number
-  processorUsage: number[]
-  global: {
-    totalMemory: number
-    usedMemory: number
-    totalSwap: number
-    usedSwap: number
-    inputData: number
-    outputData: number
-  }
-  process: {
-    memory: number
-    cpu: number
-  }
-}
-
-export interface SysInfoPretty {
-  memoryUsage: string
-  processorUsage: string[]
-  global: {
-    totalMemory: string
-    usedMemory: string
-    totalSwap: string
-    usedSwap: string
-    inputData: string
-    outputData: string
-  }
-  process: {
-    memory: string
-    cpu: string
-  }
-}
-
-/*
  ** MeiliSearch Class Interfaces
  */
 
@@ -278,8 +241,6 @@ export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   changeHealthTo: (health: boolean) => Promise<void>
   stats: () => Promise<Stats>
   version: () => Promise<Version>
-  sysInfo: () => Promise<SysInfo>
-  prettySysInfo: () => Promise<SysInfoPretty>
 }
 
 export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
