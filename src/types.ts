@@ -251,6 +251,8 @@ export interface MeiliSearchInterface extends MeiliAxiosWrapper {
   version: () => Promise<Version>
 }
 
+export type Methods = 'POST' | 'GET'
+
 export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   uid: string
   getUpdateStatus: (updateId: number) => Promise<Update>
@@ -258,7 +260,7 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   search: <P extends SearchParams<T>>(
     query: string,
     options?: P,
-    method?: 'POST' | 'GET'
+    method?: Methods
   ) => Promise<SearchResponse<T, P>>
   show: () => Promise<IndexResponse>
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
