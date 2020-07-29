@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es6: true,
+    es2020: true,
     'jest/globals': true,
     node: true,
   },
@@ -14,7 +15,7 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: 2019,
     project: ['tsconfig.eslint.json'],
     sourceType: 'module',
     projectFolderIgnoreList: ['dist'],
