@@ -75,7 +75,7 @@ About this automation:
 Make a PR modifying the file [`package.json`](/package.json) with the right version.
 
 ```javascript
-"version": X.X.X
+"version": "X.X.X",
 ```
 
 Once the changes are merged on `master`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-js/releases).
