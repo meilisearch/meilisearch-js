@@ -302,7 +302,7 @@ await index.search('prince', { limit: 1, attributesToHighlight: '*' })
 
 #### Placeholder Search
 
-Placeholder search makes it possible to recieve hits based on your parameters without having any query (`q`).
+Placeholder search makes it possible to receive hits based on your parameters without having any query (`q`).
 To enable this behavior, instead of sending an empty string, the query should be `null` or `undefined`.
 
 ```javascript
