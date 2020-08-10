@@ -69,7 +69,7 @@ export interface SearchParams<T> {
 }
 
 export interface SearchRequest {
-  q?: string
+  q?: string | null
   offset?: number
   limit?: number
   cropLength?: number
@@ -83,7 +83,7 @@ export interface SearchRequest {
 }
 
 export interface GetSearchRequest {
-  q?: string
+  q?: string | null
   offset?: number
   limit?: number
   attributesToRetrieve?: string
@@ -258,7 +258,7 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   getUpdateStatus: (updateId: number) => Promise<Update>
   getAllUpdateStatus: () => Promise<Update[]>
   search: <P extends SearchParams<T>>(
-    query: string,
+    query?: string | null,
     options?: P,
     method?: Methods
   ) => Promise<SearchResponse<T, P>>

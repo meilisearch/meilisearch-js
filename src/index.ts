@@ -74,7 +74,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
    * @method search
    */
   async search<P extends Types.SearchParams<T>>(
-    query?: string,
+    query?: string | null,
     options?: P,
     method: Types.Methods = 'POST'
   ): Promise<Types.SearchResponse<T, P>> {
