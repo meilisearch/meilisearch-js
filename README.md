@@ -300,6 +300,44 @@ await index.search('prince', { limit: 1, attributesToHighlight: '*' })
 }
 ```
 
+#### Placeholder Search
+
+Placeholder search makes it possible to recieve hits based on your parameters without having any query (`q`).
+To enable this behavior, instead of sending an empty string, the query should be `null` or `undefined`.
+
+```javascript
+await index.search(null, {
+  facetFilters: ['genre:fantasy'],
+  facetsDistribution: ['genre']
+})
+```
+
+```json
+{
+  "hits": [
+    {
+      "genre": "fantasy",
+      "id": 4,
+      "title": "Harry Potter and the Half-Blood Prince",
+      "comment": "The best book"
+    },
+    {
+      "genre": "fantasy",
+      "id": 42,
+      "title": "The Hitchhiker's Guide to the Galaxy"
+    }
+  ],
+  "offset": 0,
+  "limit": 20,
+  "nbHits": 2,
+  "exhaustiveNbHits": false,
+  "processingTimeMs": 0,
+  "query": "",
+  "facetsDistribution": { "genre": { "fantasy": 2, "romance": 0, "sci fi": 0, "adventure": 0 } },
+  "exhaustiveFacetsCount": true
+}
+```
+
 ## ⚙️ Development Workflow and Contributing
 
 Any new contribution is more than welcome in this project!
