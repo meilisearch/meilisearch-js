@@ -48,7 +48,7 @@ const dataset = [
   },
   {
     id: 4,
-    title: "Harry Potter and the Half-Blood Prince",
+    title: 'Harry Potter and the Half-Blood Prince',
     comment: 'The best book',
     genre: 'fantasy',
   },
