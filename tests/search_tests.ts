@@ -344,7 +344,7 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with facetFilters and facetDistribution`, async () => {
+    test(`${permission} key: ${method} search with facetFilters and facetsDistribution`, async () => {
       await client
         .getIndex(index.uid)
         .search(
@@ -398,6 +398,44 @@ describe.each([
           })
           expect(response).toHaveProperty('exhaustiveFacetsCount', true)
           expect(response).toHaveProperty('hits', expect.any(Array))
+          expect(response.hits.length).toEqual(2)
+        })
+    })
+
+    test(`${permission} key: ${method} search with multiple facetFilters and placeholder search`, async () => {
+      await client
+        .getIndex(index.uid)
+        .search(
+          undefined,
+          {
+            facetFilters: ['genre:fantasy'],
+            facetsDistribution: ['genre'],
+          },
+          method
+        )
+        .then((response) => {
+          expect(response).toHaveProperty('facetsDistribution', {
+            genre: { adventure: 0, fantasy: 2, romance: 0, 'sci fi': 0 },
+          })
+          expect(response.hits.length).toEqual(2)
+        })
+    })
+
+    test(`${permission} key: ${method} search with multiple facetFilters and placeholder search`, async () => {
+      await client
+        .getIndex(index.uid)
+        .search(
+          null,
+          {
+            facetFilters: ['genre:fantasy'],
+            facetsDistribution: ['genre'],
+          },
+          method
+        )
+        .then((response) => {
+          expect(response).toHaveProperty('facetsDistribution', {
+            genre: { adventure: 0, fantasy: 2, romance: 0, 'sci fi': 0 },
+          })
           expect(response.hits.length).toEqual(2)
         })
     })
