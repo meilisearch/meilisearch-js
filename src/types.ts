@@ -114,7 +114,7 @@ export interface SearchResponse<T, P extends SearchParams<T>> {
   query: string
 }
 
-export interface FieldFrequency {
+export interface FieldDistribution {
   [field: string]: number
 }
 
@@ -200,7 +200,7 @@ export interface Update {
 export interface IndexStats {
   numberOfDocuments: number
   isIndexing: boolean
-  fieldsFrequency: FieldFrequency
+  fieldsDistribution: FieldDistribution
 }
 
 export interface Stats {
