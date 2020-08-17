@@ -21,7 +21,7 @@ class MeiliAxiosWrapper implements Types.MeiliAxiosWrapperInterface {
   cancelTokenSource: CancelTokenSource
 
   constructor(config: Types.Config) {
-    let headers = {
+    const headers: { [index: string]: any } = {
       ...(config.headers || {}),
       'Content-Type': 'application/json',
     }
