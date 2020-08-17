@@ -33,6 +33,7 @@ describe.each([
         Expect: '200-OK',
       },
     })
+    expect(client.config.headers).toStrictEqual({ Expect: '200-OK' })
     const health = await client.isHealthy()
     expect(health).toBe(true)
   })
