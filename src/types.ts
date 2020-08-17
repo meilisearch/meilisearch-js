@@ -26,6 +26,7 @@ export { MeiliSearchTimeOutError }
 export interface Config {
   host: string
   apiKey?: string
+  headers?: object
 }
 
 ///
