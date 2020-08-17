@@ -58,4 +58,6 @@ export {
   anonymousClient,
   PUBLIC_KEY,
   PRIVATE_KEY,
+  MASTER_KEY,
+  MeiliSearch,
 }
