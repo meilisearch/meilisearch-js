@@ -21,16 +21,12 @@ class MeiliAxiosWrapper implements Types.MeiliAxiosWrapperInterface {
   cancelTokenSource: CancelTokenSource
 
   constructor(config: Types.Config) {
-    let headers = {
+    const headers: { [index: string]: any } = {
       ...(config.headers || {}),
       'Content-Type': 'application/json',
     }
     if (config.apiKey !== undefined) {
-      headers = Object.defineProperty(headers, 'X-Meili-API-Key', {
-        enumerable: true,
-        configurable: true,
-        value: config.apiKey,
-      })
+      headers['X-Meili-API-Key'] = config.apiKey
     }
     this.instance = instance.create({
       baseURL: config.host,
