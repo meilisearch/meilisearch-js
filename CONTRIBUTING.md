@@ -80,7 +80,7 @@ Make a PR modifying the file [`package.json`](/package.json) with the right vers
 
 Once the changes are merged on `master`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-js/releases).
 
-A GitHub Action will be triggered and push the package to [NPM](https://www.npmjs.com/package/meilisearch).
+A GitHub Action will be triggered and push the package to [npm](https://www.npmjs.com/package/meilisearch).
 
 ## Git Guidelines
 
