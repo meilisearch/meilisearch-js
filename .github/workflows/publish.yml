@@ -1,4 +1,4 @@
-name: publish on NPM
+name: publish to npm
 on:
   push:
     tags:
