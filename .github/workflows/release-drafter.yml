@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - bump-meilisearch-v*
 
 jobs:
   update_release_draft:
