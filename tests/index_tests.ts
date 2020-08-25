@@ -113,7 +113,7 @@ describe.each([
       await expect(
         index.updateIndex({ primaryKey: 'newPrimaryKey' })
       ).rejects.toThrowError(
-        `The schema already have an primary key. It's impossible to update it`
+        `A primary key is already present. It's impossible to update it`
       ) // see issue in meilisearch/meilisearch
     })
 
