@@ -114,7 +114,7 @@ describe.each([
         index.updateIndex({ primaryKey: 'newPrimaryKey' })
       ).rejects.toThrowError(
         `A primary key is already present. It's impossible to update it`
-      ) // see issue in meilisearch/meilisearch
+      )
     })
 
     test(`${permission} key: delete index`, async () => {
