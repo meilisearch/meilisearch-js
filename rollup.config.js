@@ -28,9 +28,10 @@ const PLUGINS = [
 ]
 
 module.exports = [
-  // browser-friendly IIFE build
+  // browser-friendly UMD build
   {
     input: 'src/meilisearch.ts', // directory to transpilation of typescript
+    external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: {
       name: LIB_NAME,
       file: getOutputFileName(
@@ -40,9 +41,6 @@ module.exports = [
       ),
       format: 'umd',
       sourcemap: env === 'production', // create sourcemap for error reporting in production mode
-      globals: {
-        fetch: 'cross-fetch',
-      },
     },
     plugins: [
       ...PLUGINS,
@@ -85,16 +83,6 @@ module.exports = [
     input: 'src/meilisearch.ts',
     external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: [
-      {
-        file: getOutputFileName(
-          // will add .min. in filename if in production env
-          resolve(ROOT, pkg.main),
-          env === 'production'
-        ),
-        exports: 'default',
-        format: 'cjs',
-        sourcemap: env === 'production', // create sourcemap for error reporting in production mode
-      },
       {
         file: getOutputFileName(
           resolve(ROOT, pkg.module),

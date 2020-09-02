@@ -1,4 +1,4 @@
-const MeiliSearch = require('../../dist/bundles/meilisearch.cjs.js')
+const MeiliSearch = require('../../dist/bundles/meilisearch.umd.js')
 const dataset = require('./small_movies.json')
 
 const config = {
