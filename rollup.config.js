@@ -6,7 +6,6 @@ import typescript from 'rollup-plugin-typescript2'
 import pkg from './package.json'
 import { terser } from 'rollup-plugin-terser'
 import { babel } from '@rollup/plugin-babel'
-import nodePolyfills from 'rollup-plugin-node-polyfills'
 
 function getOutputFileName(fileName, isProd = false) {
   return isProd ? fileName.replace(/\.js$/, '.min.js') : fileName
