@@ -327,18 +327,25 @@ export interface MeiliSearchApiErrorRequest {
   method?: string
 }
 
-
 export interface FetchError extends Error {
   type: string
   errno: string
   code: string
 }
 
-export interface HttpConfig extends Request {
-  params?: { [key: string]: any }
+export type MSApiErrorConstructor = new (
+  error: MSApiError,
+  status: number
+) => void
+
+export interface MSApiError extends Error {
+  name: string
+  message: string
+  stack?: string
+  httpStatus: number
+  errorCode?: string
+  errorType?: string
+  errorLink?: string
 }
-// export interface HttpResponse<T> extends Response {
-//   parsedBody?: T
-// }
 
 export default MeiliSearch

@@ -1,22 +1,7 @@
 import * as Types from '../types'
 
-export type MSApiErrorConstructor = new (
-  error: MSApiError,
-  status: number
-) => void
-
-export interface MSApiError extends Error {
-  name: string
-  message: string
-  stack?: string
-  httpStatus: number
-  errorCode?: string
-  errorType?: string
-  errorLink?: string
-}
-
-const MeiliSearchApiError: MSApiErrorConstructor = class extends Error
-  implements Types.MeiliSearchApiErrorInterface {
+const MeiliSearchApiError: Types.MSApiErrorConstructor = class extends Error
+  implements Types.MSApiError {
   httpStatus: number
   response?: Types.MeiliSearchApiErrorResponse
   errorCode?: string
@@ -25,7 +10,7 @@ const MeiliSearchApiError: MSApiErrorConstructor = class extends Error
   stack?: string
   type: string
 
-  constructor(error: MSApiError, status: number) {
+  constructor(error: Types.MSApiError, status: number) {
     super(error.message)
     this.type = 'MeiliSearchApiError'
     this.name = 'MeiliSearchApiError'
