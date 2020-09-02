@@ -8,15 +8,18 @@
 'use strict'
 
 import { Index } from './index'
-import MeiliAxiosWrapper from './meili-axios-wrapper'
+import MeiliSearchApiError from './errors/meilisearch-api-error'
 import * as Types from './types'
+import HttpRequests from './http-requests'
 
-class MeiliSearch extends MeiliAxiosWrapper
+class MeiliSearch
   implements Types.MeiliSearchInterface {
   config: Types.Config
+  httpRequest: HttpRequests
+
   constructor(config: Types.Config) {
-    super(config)
     this.config = config
+    this.httpRequest = new HttpRequests(config)
   }
 
   /**
@@ -44,7 +47,7 @@ class MeiliSearch extends MeiliAxiosWrapper
       if (e.errorCode === 'index_already_exists') {
         return this.getIndex(uid)
       }
-      throw e
+      throw new MeiliSearchApiError(e, e.status)
     }
   }
 
@@ -56,7 +59,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async listIndexes(): Promise<Types.IndexResponse[]> {
     const url = '/indexes'
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.IndexResponse[]>(url)
   }
 
   /**
@@ -70,7 +73,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   ): Promise<Index<T>> {
     const url = '/indexes'
 
-    const index = await this.post(url, { ...options, uid })
+    const index = await this.httpRequest.post(url, { ...options, uid })
 
     return new Index(this.config, index.uid)
   }
@@ -86,7 +89,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async getKeys(): Promise<Types.Keys> {
     const url = '/keys'
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.Keys>(url)
   }
 
   ///
@@ -101,7 +104,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async isHealthy(): Promise<boolean> {
     const url = '/health'
 
-    return await this.get(url).then(() => true)
+    return await this.httpRequest.get(url).then(() => true)
   }
 
   /**
@@ -112,7 +115,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async setHealthy(): Promise<void> {
     const url = '/health'
 
-    return await this.put(url, {
+    return await this.httpRequest.put(url, {
       health: true,
     })
   }
@@ -125,7 +128,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async setUnhealthy(): Promise<void> {
     const url = '/health'
 
-    return await this.put(url, {
+    return await this.httpRequest.put(url, {
       health: false,
     })
   }
@@ -138,7 +141,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async changeHealthTo(health: boolean): Promise<void> {
     const url = '/health'
 
-    return await this.put(url, {
+    return await this.httpRequest.put(url, {
       health,
     })
   }
@@ -155,7 +158,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async stats(): Promise<Types.Stats> {
     const url = '/stats'
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.Stats>(url)
   }
 
   /**
@@ -166,7 +169,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async version(): Promise<Types.Version> {
     const url = '/version'
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.Version>(url)
   }
 }
 
