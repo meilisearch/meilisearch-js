@@ -1,7 +1,12 @@
-function removeUndefinedFromObject(obj: object): object {
-  // remove undefined
-  const cleaned = Object.entries(obj).filter((x) => x[1] !== undefined)
-  return Object.fromEntries(cleaned)
+/**
+ * Removes undefined entries from object
+ */
+function removeUndefinedFromObject(obj: Record<string, any>): object {
+  return Object.entries(obj).reduce((acc, curEntry) => {
+    const [key, val] = curEntry
+    if (val !== undefined) acc[key] = val
+    return acc
+  }, {} as Record<string, any>)
 }
 
 async function sleep(ms: number): Promise<void> {
