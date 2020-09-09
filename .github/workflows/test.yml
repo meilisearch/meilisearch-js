@@ -7,15 +7,24 @@ on:
   pull_request:
 
 jobs:
-  build:
+  v12-tests:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v1
+      - name: print version
+        run: npm -v
       - name: Docker setup
         run: docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --no-analytics=true --master-key='masterKey'
       - name: Install dependencies
         run: yarn install
       - name: Run tests
         run: yarn test
+  v10-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: change version
+        run: nvm use 10.0
+      - name: print version
+        run: npm -v
 
