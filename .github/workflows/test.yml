@@ -7,8 +7,12 @@ on:
   pull_request:
 
 jobs:
-  v12-tests:
+  tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [ '10', '12', '14' ]
+    name: Node ${{ matrix.node }} sample
     steps:
       - uses: actions/checkout@v1
       - name: print version
@@ -19,12 +23,4 @@ jobs:
         run: yarn install
       - name: Run tests
         run: yarn test
-  v10-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: change version
-        run: nvm use 10.0
-      - name: print version
-        run: npm -v
 
