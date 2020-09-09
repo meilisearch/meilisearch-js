@@ -81,7 +81,7 @@ class HttpRequests {
       method: 'GET',
       url,
       params,
-      config
+      config,
     })
   }
 
@@ -110,7 +110,7 @@ class HttpRequests {
       url,
       body: data,
       params,
-      config
+      config,
     })
   }
 
@@ -139,7 +139,7 @@ class HttpRequests {
       url,
       body: data,
       params,
-      config
+      config,
     })
   }
 
@@ -166,7 +166,7 @@ class HttpRequests {
       url,
       body: data,
       params,
-      config
+      config,
     })
   }
 }
