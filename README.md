@@ -77,7 +77,7 @@ const client = new MeiliSearch({
 #### HTML Import <!-- omit in toc -->
 
 ```javascript
-<script src="https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js"></script>
 <script>
   const client = new MeiliSearch({
     host: 'http://127.0.0.1:7700',
