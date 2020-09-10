@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Page Title</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body>
+    Hello this is your instant-meilisearch client:
+    <div id="instant-meilisearch"></div>
+</body>
+</html>
+<script src="../../dist/instant-meilisearch.umd.min.js"></script>
+<script>
+  console.log(instantMeiliSearch);
+  const client = instantMeiliSearch(
+        "http://localhost:7700",
+        "masterKey"
+      )
+  console.log({ client });
+  document.querySelector('#instant-meilisearch').innerHTML = JSON.stringify(client)
+
+</script>
