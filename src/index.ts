@@ -9,15 +9,17 @@
 
 import MeiliSearchError from './errors/meilisearch-error'
 import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
-import MeiliAxiosWrapper from './meili-axios-wrapper'
 import * as Types from './types'
 import { sleep, removeUndefinedFromObject } from './utils'
+import HttpRequests from './http-requests'
 
-class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
+class Index<T> implements Types.IndexInterface<T> {
   uid: string
+  httpRequest: HttpRequests
+
   constructor(config: Types.Config, uid: string) {
-    super(config)
     this.uid = uid
+    this.httpRequest = new HttpRequests(config)
   }
 
   ///
@@ -32,7 +34,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getUpdateStatus(updateId: number): Promise<Types.Update> {
     const url = `/indexes/${this.uid}/updates/${updateId}`
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.Update>(url)
   }
 
   async waitForPendingUpdate(
@@ -61,7 +63,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getAllUpdateStatus(): Promise<Types.Update[]> {
     const url = `/indexes/${this.uid}/updates`
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.Update[]>(url)
   }
 
   ///
@@ -93,9 +95,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
       attributesToHighlight: options?.attributesToHighlight,
     }
     if (method.toUpperCase() === 'POST') {
-      return await this.post(url, removeUndefinedFromObject(params), {
-        cancelToken: this.cancelTokenSource.token,
-      })
+      return await this.httpRequest.post(url, removeUndefinedFromObject(params))
     } else if (method.toUpperCase() === 'GET') {
       const getParams: Types.GetSearchRequest = {
         ...params,
@@ -117,10 +117,10 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
           : undefined,
       }
 
-      return await this.get(url, {
-        params: removeUndefinedFromObject(getParams),
-        cancelToken: this.cancelTokenSource.token,
-      })
+      return await this.httpRequest.get<Types.SearchResponse<T, P>>(
+        url,
+        removeUndefinedFromObject(getParams)
+      )
     } else {
       throw new MeiliSearchError(
         'method parameter should be either POST or GET'
@@ -139,7 +139,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async show(): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.IndexResponse>(url)
   }
 
   /**
@@ -150,7 +150,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async updateIndex(data: Types.IndexOptions): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
-    return await this.put(url, data)
+    return await this.httpRequest.put(url, data)
   }
 
   /**
@@ -159,10 +159,10 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
    * @method deleteIndex
    */
 
-  async deleteIndex(): Promise<string> {
+  async deleteIndex(): Promise<void> {
     const url = `/indexes/${this.uid}`
 
-    return await this.delete(url)
+    return await this.httpRequest.delete(url)
   }
 
   ///
@@ -177,7 +177,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getStats(): Promise<Types.IndexStats> {
     const url = `/indexes/${this.uid}/stats`
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.IndexStats>(url)
   }
   ///
   /// DOCUMENTS
@@ -197,11 +197,9 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
       attr = options.attributesToRetrieve.join(',')
     }
 
-    return await this.get(url, {
-      params: {
-        ...options,
-        ...(attr !== undefined ? { attributesToRetrieve: attr } : {}),
-      },
+    return await this.httpRequest.get<Types.GetDocumentsResponse<T, P>>(url, {
+      ...options,
+      ...(attr !== undefined ? { attributesToRetrieve: attr } : {}),
     })
   }
 
@@ -213,7 +211,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getDocument(documentId: string | number): Promise<Types.Document<T>> {
     const url = `/indexes/${this.uid}/documents/${documentId}`
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.Document<T>>(url)
   }
 
   /**
@@ -227,9 +225,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents`
 
-    return await this.post(url, documents, {
-      params: options,
-    })
+    return await this.httpRequest.post(url, documents, options)
   }
 
   /**
@@ -243,9 +239,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents`
 
-    return await this.put(url, documents, {
-      params: options,
-    })
+    return await this.httpRequest.put(url, documents, options)
   }
 
   /**
@@ -258,7 +252,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents/${documentId}`
 
-    return await this.delete(url)
+    return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
   /**
@@ -271,7 +265,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents/delete-batch`
 
-    return await this.post(url, documentsIds)
+    return await this.httpRequest.post(url, documentsIds)
   }
 
   /**
@@ -282,7 +276,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async deleteAllDocuments(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/documents`
 
-    return await this.delete(url)
+    return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
   ///
@@ -297,7 +291,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getSettings(): Promise<Types.Settings> {
     const url = `/indexes/${this.uid}/settings`
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.Settings>(url)
   }
 
   /**
@@ -311,7 +305,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings`
 
-    return await this.post(url, settings)
+    return await this.httpRequest.post(url, settings)
   }
 
   /**
@@ -322,7 +316,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async resetSettings(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings`
 
-    return await this.delete(url)
+    return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
   ///
@@ -337,7 +331,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getSynonyms(): Promise<object> {
     const url = `/indexes/${this.uid}/settings/synonyms`
 
-    return await this.get(url)
+    return await this.httpRequest.get<object>(url)
   }
 
   /**
@@ -348,7 +342,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async updateSynonyms(synonyms: object): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/synonyms`
 
-    return await this.post(url, synonyms)
+    return await this.httpRequest.post(url, synonyms)
   }
 
   /**
@@ -359,7 +353,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async resetSynonyms(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/synonyms`
 
-    return await this.delete(url)
+    return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
   ///
@@ -374,7 +368,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getStopWords(): Promise<string[]> {
     const url = `/indexes/${this.uid}/settings/stop-words`
 
-    return await this.get(url)
+    return await this.httpRequest.get<string[]>(url)
   }
 
   /**
@@ -385,7 +379,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async updateStopWords(stopWords: string[]): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/stop-words`
 
-    return await this.post(url, stopWords)
+    return await this.httpRequest.post(url, stopWords)
   }
 
   /**
@@ -396,7 +390,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async resetStopWords(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/stop-words`
 
-    return await this.delete(url)
+    return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
   ///
@@ -411,7 +405,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getRankingRules(): Promise<string[]> {
     const url = `/indexes/${this.uid}/settings/ranking-rules`
 
-    return await this.get(url)
+    return await this.httpRequest.get<string[]>(url)
   }
 
   /**
@@ -424,7 +418,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/ranking-rules`
 
-    return await this.post(url, rankingRules)
+    return await this.httpRequest.post(url, rankingRules)
   }
 
   /**
@@ -435,7 +429,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async resetRankingRules(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/ranking-rules`
 
-    return await this.delete(url)
+    return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
   ///
@@ -450,7 +444,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getDistinctAttribute(): Promise<string | null> {
     const url = `/indexes/${this.uid}/settings/distinct-attribute`
 
-    return await this.get(url)
+    return await this.httpRequest.get<string | null>(url)
   }
 
   /**
@@ -463,7 +457,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/distinct-attribute`
 
-    return await this.post(url, distinctAttribute)
+    return await this.httpRequest.post(url, distinctAttribute)
   }
 
   /**
@@ -474,7 +468,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async resetDistinctAttribute(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/distinct-attribute`
 
-    return await this.delete(url)
+    return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
   ///
@@ -489,7 +483,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getAttributesForFaceting(): Promise<string[]> {
     const url = `/indexes/${this.uid}/settings/attributes-for-faceting`
 
-    return await this.get(url)
+    return await this.httpRequest.get<string[]>(url)
   }
 
   /**
@@ -502,7 +496,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/attributes-for-faceting`
 
-    return await this.post(url, attributesForFaceting)
+    return await this.httpRequest.post(url, attributesForFaceting)
   }
 
   /**
@@ -513,7 +507,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async resetAttributesForFaceting(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/attributes-for-faceting`
 
-    return await this.delete(url)
+    return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
   ///
@@ -528,7 +522,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getSearchableAttributes(): Promise<string[]> {
     const url = `/indexes/${this.uid}/settings/searchable-attributes`
 
-    return await this.get(url)
+    return await this.httpRequest.get<string[]>(url)
   }
 
   /**
@@ -541,7 +535,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/searchable-attributes`
 
-    return await this.post(url, searchableAttributes)
+    return await this.httpRequest.post(url, searchableAttributes)
   }
 
   /**
@@ -552,7 +546,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async resetSearchableAttributes(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/searchable-attributes`
 
-    return await this.delete(url)
+    return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
   ///
@@ -567,7 +561,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async getDisplayedAttributes(): Promise<string[]> {
     const url = `/indexes/${this.uid}/settings/displayed-attributes`
 
-    return await this.get(url)
+    return await this.httpRequest.get<string[]>(url)
   }
 
   /**
@@ -580,7 +574,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   ): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/displayed-attributes`
 
-    return await this.post(url, displayedAttributes)
+    return await this.httpRequest.post(url, displayedAttributes)
   }
 
   /**
@@ -591,7 +585,7 @@ class Index<T> extends MeiliAxiosWrapper implements Types.IndexInterface<T> {
   async resetDisplayedAttributes(): Promise<Types.EnqueuedUpdate> {
     const url = `/indexes/${this.uid}/settings/displayed-attributes`
 
-    return await this.delete(url)
+    return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 }
 

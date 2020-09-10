@@ -119,13 +119,13 @@ describe.each([
 
     test(`${permission} key: delete index`, async () => {
       const index = client.getIndex(uidNoPrimaryKey.uid)
-      await index.deleteIndex().then((response: string) => {
-        expect(response).toBe('')
+      await index.deleteIndex().then((response: void) => {
+        expect(response).toBe(undefined)
       })
       await expect(client.listIndexes()).resolves.toHaveLength(1)
     })
     test(`${permission} key: bad host should raise CommunicationError`, async () => {
-      const client = new MeiliSearch({ host: 'badHost' })
+      const client = new MeiliSearch({ host: 'http://localhost:9345' })
       try {
         await client.version()
       } catch (e) {
