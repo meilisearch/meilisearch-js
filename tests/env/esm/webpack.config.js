@@ -6,7 +6,7 @@ module.exports = {
   mode: 'production',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'instant-meilisearch-demo.js',
+    filename: 'esm-meilisearch-js-test.js',
   },
   resolve: {
     extensions: ['.js'], // resolve all the modules other than index.ts

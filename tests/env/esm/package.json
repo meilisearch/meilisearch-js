@@ -1,11 +1,11 @@
 {
   "name": "esm-demo",
   "version": "0.0.1",
-  "description": "esm instant-meilisearch demo",
+  "description": "esm meilisearch-js env test",
   "main": "bundle/index.js",
   "scripts": {
     "build": "webpack",
-    "start": "yarn build && node dist/instant-meilisearch-demo.js"
+    "start": "yarn build && node dist/esm-meilisearch-js-test.js"
   },
   "author": "",
   "license": "ISC",

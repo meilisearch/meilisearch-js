@@ -27,4 +27,12 @@ jobs:
         run: yarn install
       - name: Run tests
         run: yarn test
+      - name: Build project
+        run: yarn build
+      - name: Run ESM env
+        run: yarn test:env:esm
+      - name: Run Node.js env
+        run: yarn test:env:nodejs
+      - name: Run Browser env
+        run: yarn test:env:browser
 
