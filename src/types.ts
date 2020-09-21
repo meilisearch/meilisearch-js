@@ -4,16 +4,8 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^3.8.3
 
-import {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  CancelTokenSource,
-} from 'axios'
 
 import { Index } from './index'
-import MeiliAxiosWrapper from './meili-axios-wrapper'
 import MeiliSearch from './meilisearch'
 import MeiliSearchApiError from './errors/meilisearch-api-error'
 import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
@@ -234,7 +226,7 @@ export interface Version {
  ** MeiliSearch Class Interfaces
  */
 
-export interface MeiliSearchInterface extends MeiliAxiosWrapper {
+export interface MeiliSearchInterface {
   config: Config
   getIndex: <T>(indexUid: string) => Index<T>
   getOrCreateIndex: <T>(
@@ -254,7 +246,7 @@ export interface MeiliSearchInterface extends MeiliAxiosWrapper {
 
 export type Methods = 'POST' | 'GET'
 
-export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
+export interface IndexInterface<T = any> {
   uid: string
   getUpdateStatus: (updateId: number) => Promise<Update>
   getAllUpdateStatus: () => Promise<Update[]>
@@ -265,7 +257,7 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   ) => Promise<SearchResponse<T, P>>
   show: () => Promise<IndexResponse>
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
-  deleteIndex: () => Promise<string>
+  deleteIndex: () => Promise<void>
   getStats: () => Promise<IndexStats>
   getDocuments: <P extends GetDocumentsParams<T>>(
     options?: P
@@ -318,53 +310,10 @@ export interface IndexInterface<T = any> extends MeiliAxiosWrapperInterface {
   resetDisplayedAttributes: () => Promise<EnqueuedUpdate>
 }
 
-export interface MeiliAxiosWrapperInterface {
-  instance: AxiosInstance
-  cancelTokenSource: CancelTokenSource
-  get: <T = any, R = AxiosResponse<T>>(
-    url: string,
-    config?: AxiosRequestConfig
-  ) => Promise<R>
-  post: (<T = any>(
-    url: string,
-    data: IndexRequest,
-    config?: AxiosRequestConfig
-  ) => Promise<Index<T>>) &
-    (<T = any, R = AxiosResponse<EnqueuedUpdate>>(
-      url: string,
-      data?: T,
-      config?: AxiosRequestConfig
-    ) => Promise<R>)
-  put: <T = any, R = AxiosResponse<T>>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig
-  ) => Promise<R>
-  patch: <T = any, R = AxiosResponse<T>>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig
-  ) => Promise<R>
-  delete: <T = any, R = AxiosResponse<T>>(
-    url: string,
-    config?: AxiosRequestConfig
-  ) => Promise<R>
-}
-
 /*
  ** ERROR HANDLER
  */
 
-export interface MeiliSearchApiErrorInterface extends Error {
-  name: string
-  message: string
-  stack?: string
-  errorCode?: string
-  errorType?: string
-  errorLink?: string
-  response?: MeiliSearchApiErrorResponse
-  request?: MeiliSearchApiErrorRequest
-}
 export interface MeiliSearchApiErrorResponse {
   status?: number
   statusText?: string
@@ -378,9 +327,25 @@ export interface MeiliSearchApiErrorRequest {
   method?: string
 }
 
-export type MeiliSearchApiErrorConstructor = new (
-  error: AxiosError,
-  cachedStack?: string
+export interface FetchError extends Error {
+  type: string
+  errno: string
+  code: string
+}
+
+export type MSApiErrorConstructor = new (
+  error: MSApiError,
+  status: number
 ) => void
+
+export interface MSApiError extends Error {
+  name: string
+  message: string
+  stack?: string
+  httpStatus: number
+  errorCode?: string
+  errorType?: string
+  errorLink?: string
+}
 
 export default MeiliSearch

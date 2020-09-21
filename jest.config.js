@@ -1,5 +1,4 @@
 const config = {
-  preset: 'ts-jest',
   rootDir: '.',
   testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
   testPathIgnorePatterns: ['meilisearch-test-utils', 'bundle_tests'],
@@ -19,7 +18,22 @@ const config = {
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
   ],
-  testEnvironment: 'node',
+  projects: [
+    {
+      preset: 'ts-jest',
+      displayName: 'dom',
+      testEnvironment: 'jsdom',
+      testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
+      testPathIgnorePatterns: ['meilisearch-test-utils'],
+    },
+    {
+      preset: 'ts-jest',
+      displayName: 'node',
+      testEnvironment: 'node',
+      testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
+      testPathIgnorePatterns: ['meilisearch-test-utils'],
+    },
+  ],
 }
 
 module.exports = config

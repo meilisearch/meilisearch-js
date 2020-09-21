@@ -11,7 +11,7 @@
       "declarationDir": "./dist/types",
       "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
-      "lib": ["ES2015", "ESNext"]
+      "lib": ["ES2015", "ESNext", "dom"]
   },
   "include": ["src"], // files to include during transpilation
 }

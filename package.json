@@ -16,9 +16,9 @@
     "qdequele <quentin@meilisearch.com>"
   ],
   "license": "MIT",
-  "main": "./dist/bundles/meilisearch.cjs.js",
+  "main": "./dist/bundles/meilisearch.umd.js",
   "module": "./dist/bundles/meilisearch.esm.js",
-  "browser": "./dist/bundles/meilisearch.browser.js",
+  "browser": "./dist/bundles/meilisearch.umd.js",
   "typings": "./dist/types/types.d.ts",
   "types": "./dist/types/types.d.ts",
   "jsnext:main": "./dist/bundles/meilisearch.esm.js",
@@ -30,12 +30,13 @@
   "scripts": {
     "cleanup": "shx rm -rf dist/",
     "build": "yarn cleanup && rollup -c && rollup -c --environment NODE_ENV:production",
+    "watch": "yarn cleanup && rollup -c --watch",
     "postbuild": "yarn size && yarn typingsheader",
     "test": "jest --runInBand",
     "test:watch": "yarn test --watch",
     "test:coverage": "yarn test --coverage",
     "test:ci": "yarn test --ci",
-    "size": "node scripts/file-size ./dist/bundles/meilisearch.cjs.min.js ./dist/bundles/meilisearch.esm.min.js ./dist/bundles/meilisearch.browser.min.js",
+    "size": "node scripts/file-size ./dist/bundles/meilisearch.esm.min.js ./dist/bundles/meilisearch.umd.min.js",
     "style": "yarn lint",
     "style:fix": "yarn lint:fix",
     "lint": "eslint --ext .js,.ts,.tsx .",
@@ -53,9 +54,11 @@
     ]
   },
   "dependencies": {
-    "axios": "^0.20.0"
+    "cross-fetch": "^3.0.5"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.11.0",
+    "@rollup/plugin-babel": "^5.2.0",
     "@rollup/plugin-commonjs": "15.0.0",
     "@rollup/plugin-json": "^4.0.2",
     "@rollup/plugin-node-resolve": "9.0.0",

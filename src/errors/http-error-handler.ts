@@ -1,15 +1,25 @@
-import { AxiosError } from 'axios'
-import MeiliSearchApiError from './meilisearch-api-error'
 import MeiliSearchCommunicationError from './meilisearch-communication-error'
+import MeiliSearchApiError from './meilisearch-api-error'
+import * as Types from '../types'
 
-function httpErrorHandler(e: AxiosError, cachedStack?: string): void {
-  if (e.response !== undefined) {
-    throw new MeiliSearchApiError(e, cachedStack)
-  } else if (e.isAxiosError === true) {
-    throw new MeiliSearchCommunicationError(e.message)
-  } else {
-    throw e
+async function httpResponseErrorHandler(response: Response): Promise<Response> {
+  if (!response.ok) {
+    let err
+    try {
+      err = await response.json()
+    } catch (e) {
+      throw new MeiliSearchCommunicationError(response.statusText, response)
+    }
+    throw new MeiliSearchApiError(err, response.status)
   }
+  return response
 }
 
-export { httpErrorHandler }
+function httpErrorHandler(response: Types.FetchError): Promise<void> {
+  if (response.type !== 'MeiliSearchApiError') {
+    throw new MeiliSearchCommunicationError(response.message, response)
+  }
+  throw response
+}
+
+export { httpResponseErrorHandler, httpErrorHandler }
