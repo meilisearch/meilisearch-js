@@ -12,8 +12,7 @@ import MeiliSearchApiError from './errors/meilisearch-api-error'
 import * as Types from './types'
 import HttpRequests from './http-requests'
 
-class MeiliSearch
-  implements Types.MeiliSearchInterface {
+class MeiliSearch implements Types.MeiliSearchInterface {
   config: Types.Config
   httpRequest: HttpRequests
 

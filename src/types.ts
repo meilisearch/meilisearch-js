@@ -4,7 +4,6 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^3.8.3
 
-
 import { Index } from './index'
 import MeiliSearch from './meilisearch'
 import MeiliSearchApiError from './errors/meilisearch-api-error'
