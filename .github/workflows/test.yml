@@ -7,15 +7,32 @@ on:
   pull_request:
 
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node: [ '10', '12', '14' ]
+    name: Node ${{ matrix.node }} sample
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: print version
+        run: node -v
       - name: Docker setup
         run: docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --no-analytics=true --master-key='masterKey'
       - name: Install dependencies
         run: yarn install
       - name: Run tests
         run: yarn test
+      - name: Build project
+        run: yarn build
+      - name: Run ESM env
+        run: yarn test:env:esm
+      - name: Run Node.js env
+        run: yarn test:env:nodejs
+      - name: Run Browser env
+        run: yarn test:env:browser
 
