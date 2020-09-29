@@ -402,7 +402,7 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with multiple facetFilters and placeholder search`, async () => {
+    test(`${permission} key: ${method} search with multiple facetFilters and undefined query (placeholder)`, async () => {
       await client
         .getIndex(index.uid)
         .search(
@@ -421,11 +421,30 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with multiple facetFilters and placeholder search`, async () => {
+    test(`${permission} key: ${method} search with multiple facetFilters and null query (placeholder)`, async () => {
       await client
         .getIndex(index.uid)
         .search(
           null,
+          {
+            facetFilters: ['genre:fantasy'],
+            facetsDistribution: ['genre'],
+          },
+          method
+        )
+        .then((response) => {
+          expect(response).toHaveProperty('facetsDistribution', {
+            genre: { adventure: 0, fantasy: 2, romance: 0, 'sci fi': 0 },
+          })
+          expect(response.hits.length).toEqual(2)
+        })
+    })
+
+    test(`${permission} key: ${method} search with multiple facetFilters and empty query (placeholder)`, async () => {
+      await client
+        .getIndex(index.uid)
+        .search(
+          '',
           {
             facetFilters: ['genre:fantasy'],
             facetsDistribution: ['genre'],
