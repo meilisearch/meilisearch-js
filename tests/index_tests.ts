@@ -144,7 +144,7 @@ describe.each([
         client.createIndex(uidAndPrimaryKey.uid, {
           primaryKey: uidAndPrimaryKey.primaryKey,
         })
-      ).rejects.toThrowError(`index already exists`)
+      ).rejects.toThrowError(`Index ${uidAndPrimaryKey.uid} already exists`)
     })
 
     test(`${permission} key: delete index with uid that does not exist should fail`, async () => {
