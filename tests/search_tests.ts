@@ -440,7 +440,7 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with multiple facetFilters and empty query (placeholder)`, async () => {
+    test(`${permission} key: ${method} search with multiple facetFilters and empty string query (placeholder)`, async () => {
       await client
         .getIndex(index.uid)
         .search(
