@@ -212,7 +212,7 @@ search_parameter_guide_retrieve_1: |-
   })
 search_parameter_guide_crop_1: |-
   client.getIndex('movies').search('shifu', {
-    attributesToCrop: 'overview',
+    attributesToCrop: ['overview'],
     cropLength: 10
   })
 search_parameter_guide_highlight_1: |-
