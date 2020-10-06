@@ -21,10 +21,12 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: print version
         run: node -v
+      - name: Install dependencies
+        run: yarn --dev
+      - name: Run style check
+        run: yarn style
       - name: Docker setup
         run: docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --no-analytics=true --master-key='masterKey'
-      - name: Install dependencies
-        run: yarn install
       - name: Run tests
         run: yarn test
       - name: Build project
