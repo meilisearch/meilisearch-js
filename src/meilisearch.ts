@@ -170,6 +170,32 @@ class MeiliSearch implements Types.MeiliSearchInterface {
 
     return await this.httpRequest.get<Types.Version>(url)
   }
+
+  ///
+  /// DUMPS
+  ///
+
+  /**
+   * Triggers a dump creation process
+   * @memberof MeiliSearch
+   * @method createDump
+   */
+  async createDump(): Promise<Types.EnqueuedDump> {
+    const url = '/dumps'
+
+    return await this.httpRequest.post<undefined, Types.EnqueuedDump>(url)
+  }
+
+  /**
+   * Get the status of a dump creation process
+   * @memberof MeiliSearch
+   * @method getDumpStatus
+   */
+  async getDumpStatus(dumpUid: string): Promise<Types.EnqueuedDump> {
+    const url = `/dumps/${dumpUid}/status`
+
+    return await this.httpRequest.get<Types.EnqueuedDump>(url)
+  }
 }
 
 export default MeiliSearch

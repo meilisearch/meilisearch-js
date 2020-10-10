@@ -185,6 +185,11 @@ export interface Update {
   processedAt: string
 }
 
+export interface EnqueuedDump {
+  uid: string
+  status: 'processing' | 'dump_process_failed' | 'done'
+}
+
 /*
  *** STATS
  */
@@ -241,6 +246,8 @@ export interface MeiliSearchInterface {
   changeHealthTo: (health: boolean) => Promise<void>
   stats: () => Promise<Stats>
   version: () => Promise<Version>
+  createDump: () => Promise<EnqueuedDump>
+  getDumpStatus: (dumpUid: string) => Promise<EnqueuedDump>
 }
 
 export type Methods = 'POST' | 'GET'
