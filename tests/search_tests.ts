@@ -437,6 +437,7 @@ describe.each([
             genre: { adventure: 0, fantasy: 2, romance: 0, 'sci fi': 0 },
           })
           expect(response.hits.length).toEqual(2)
+          expect(response.nbHits).toEqual(2)
         })
     })
 
