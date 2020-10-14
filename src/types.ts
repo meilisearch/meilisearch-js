@@ -104,6 +104,7 @@ export interface SearchResponse<T, P extends SearchParams<T>> {
   facetsDistribution?: object
   exhaustiveFacetsCount?: boolean
   query: string
+  nbHits: number
 }
 
 export interface FieldsDistribution {
