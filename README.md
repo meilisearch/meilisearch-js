@@ -30,11 +30,7 @@
 - [🔧 Installation](#-installation)
 - [🎬 Getting started](#-getting-started)
 - [🤖 Compatibility with MeiliSearch](#-compatibility-with-meilisearch)
-- [🎬 Examples](#-examples)
-  - [Indexes](#indexes)
-  - [Documents](#documents)
-  - [Update status](#update-status)
-  - [Search](#search)
+- [📖 Documentation and Examples](#-documentation-and-examples)
 - [⚙️ Development Workflow and Contributing](#️-development-workflow-and-contributing)
 - [📜 API Resources](#-api-resources)
 
@@ -132,9 +128,9 @@ import MeiliSearch from 'meilisearch'
 })()
 ```
 
-With the `updateId`, you can check the status (`processed` or `failed`) of your documents addition thanks to this [method](#update-status).
+With the `updateId`, you can check the status (`processed` or `failed`) of your documents addition thanks to this [method](https://docs.meilisearch.com/references/updates.html#get-an-update-status).
 
-#### Search in index <!-- omit in toc -->
+#### Basic search <!-- omit in toc -->
 
 ```javascript
 // MeiliSearch is typo-tolerant:
@@ -159,121 +155,9 @@ Output:
 }
 ```
 
-## 🤖 Compatibility with MeiliSearch
-
-This package only guarantees the compatibility with the [version v0.15.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.15.0).
-
-## 🎬 Examples
-
-All HTTP routes of MeiliSearch are accessible via methods in this SDK.</br>
-You can check out [the API documentation](https://docs.meilisearch.com/references/).
-
-Go checkout [examples](./examples)!
-
-In this section, the examples contain the [`await` keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await).
-
-### Indexes
-
-#### Create an index <!-- omit in toc -->
-
-```javascript
-// Create an index
-const index = await client.createIndex('books')
-// Create an index and give the primary-key
-const index = await client.createIndex('books', { primaryKey: 'book_id' })
-```
-
-#### List all indexes <!-- omit in toc -->
-
-```javascript
-const indexes = await client.listIndexes()
-```
-
-#### Get an index object <!-- omit in toc -->
-
-```javascript
-const index = client.getIndex('books')
-```
-
-### Documents
-
-#### Fetch documents <!-- omit in toc -->
-
-```javascript
-// Get one document
-const document = await index.getDocument(123)
-
-// Get documents by batch
-const documents = await index.getDocuments({ offset: 4, limit: 20 })
-```
-
-#### Add documents <!-- omit in toc -->
-
-```javascript
-await index.addDocuments([{ book_id: 2, title: 'Madame Bovary' }])
-```
-
-Response:
-
-```json
-{
-  "updateId": 1
-}
-```
-
-With this `updateId` you can track your [operation update](#update-status).
-
-#### Delete documents <!-- omit in toc -->
-
-```javascript
-// Delete one document
-await index.deleteDocument(2)
-// Delete several documents
-await index.deleteDocuments([1, 42])
-// Delete all documents /!\
-await index.deleteAllDocuments()
-```
-
-### Update status
-
-```javascript
-// Get one update
-// Parameter: the updateId got after an asynchronous request (e.g. documents addition)
-await index.getUpdateStatus(1)
-// Get all update satus
-await index.getAllUpdateStatus()
-```
-
-### Search
-
-#### Basic search <!-- omit in toc -->
-
-```javascript
-const search = await index.search('prince')
-```
-
-```json
-{
-  "hits": [
-    {
-      "book_id": 456,
-      "title": "Le Petit Prince"
-    },
-    {
-      "book_id": 4,
-      "title": "Harry Potter and the Half-Blood Prince"
-    }
-  ],
-  "offset": 0,
-  "limit": 20,
-  "processingTimeMs": 13,
-  "query": "prince"
-}
-```
-
 #### Custom search <!-- omit in toc -->
 
-All the supported options are described in [this documentation section](https://docs.meilisearch.com/references/search.html#search-in-an-index).
+All the supported options are described in [this documentation section](https://docs.meilisearch.com/guides/advanced_guides/search_parameters.html).
 
 ```javascript
 await index.search('prince', { limit: 1, attributesToHighlight: '*' })
@@ -298,43 +182,23 @@ await index.search('prince', { limit: 1, attributesToHighlight: '*' })
 }
 ```
 
-#### Placeholder Search
+## 🤖 Compatibility with MeiliSearch
 
-Placeholder search makes it possible to receive hits based on your parameters without having any query (`q`).
-To enable this behavior, instead of sending an empty string, the query should be `null` or `undefined`.
+This package only guarantees the compatibility with the [version v0.15.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.15.0).
 
-```javascript
-await index.search(null, {
-  facetFilters: ['genre:fantasy'],
-  facetsDistribution: ['genre']
-})
-```
 
-```json
-{
-  "hits": [
-    {
-      "genre": "fantasy",
-      "id": 4,
-      "title": "Harry Potter and the Half-Blood Prince",
-      "comment": "The best book"
-    },
-    {
-      "genre": "fantasy",
-      "id": 42,
-      "title": "The Hitchhiker's Guide to the Galaxy"
-    }
-  ],
-  "offset": 0,
-  "limit": 20,
-  "nbHits": 2,
-  "exhaustiveNbHits": false,
-  "processingTimeMs": 0,
-  "query": "",
-  "facetsDistribution": { "genre": { "fantasy": 2, "romance": 0, "sci fi": 0, "adventure": 0 } },
-  "exhaustiveFacetsCount": true
-}
-```
+## 📖 Documentation and Examples
+
+MeiliSearch documentation provides **examples** and a detailed explanation of every one of its features and functionalities, including examples on how to implement them **using this SDK**.
+
+Please read the [guides available in the documentation](https://docs.meilisearch.com/guides/) or check the [API references](https://docs.meilisearch.com/references/) to find the one that you need!
+
+The following sections may interest you:
+
+- [Manipulate documents](https://docs.meilisearch.com/references/documents.html)
+- [Search](https://docs.meilisearch.com/references/search.html)
+- [Manage the indexes](https://docs.meilisearch.com/references/indexes.html)
+- [Configure the index settings](https://docs.meilisearch.com/references/settings.html)
 
 ## ⚙️ Development Workflow and Contributing
 
