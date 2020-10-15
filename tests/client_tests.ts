@@ -37,6 +37,31 @@ describe.each([
     const health = await client.isHealthy()
     expect(health).toBe(true)
   })
+
+  test(`${permission} key: Client handles host URL with domain and path`, () => {
+    const customHost = `${config.host}/api`
+    const client = new MeiliSearch({
+      host: customHost,
+      apiKey: key,
+    })
+    expect(client.config.host).toBe(customHost)
+    expect(client.httpRequest.url).toBe(customHost)
+  })
+
+  test(`${permission} key: Client uses complete URL with domain and additionnal path in MeiliSearch call`, async () => {
+    try {
+      const customHost = `${config.host}/api`
+      const client = new MeiliSearch({
+        host: customHost,
+        apiKey: key,
+      })
+      const health = await client.isHealthy()
+      expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
+    } catch (e) {
+      expect(e.type).toBe('MeiliSearchCommunicationError')
+      expect(e.message).toBe('Not Found') // Expect 404 because host does not exist
+    }
+  })
 })
 
 describe.each([

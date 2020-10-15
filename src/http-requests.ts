@@ -7,8 +7,7 @@ import {
 
 class HttpRequests {
   headers: {}
-  baseUrl: string
-  url: URL
+  url: string
 
   constructor(config: Types.Config) {
     this.headers = {
@@ -16,8 +15,7 @@ class HttpRequests {
       'Content-Type': 'application/json',
       ...(config.apiKey ? { 'X-Meili-API-Key': config.apiKey } : {}),
     }
-    this.baseUrl = config.host
-    this.url = new URL(this.baseUrl)
+    this.url = config.host
   }
 
   async request({
@@ -34,7 +32,9 @@ class HttpRequests {
     config?: Request
   }) {
     try {
-      const constructURL = new URL(url, this.url)
+      const constructURL = new URL(this.url)
+      constructURL.pathname = constructURL.pathname + url
+
       if (params) {
         const queryParams = new URLSearchParams()
         Object.keys(params)
@@ -42,6 +42,7 @@ class HttpRequests {
           .map((x: string) => queryParams.set(x, params[x]))
         constructURL.search = queryParams.toString()
       }
+
       const response: Response = await fetch(constructURL.toString(), {
         ...config,
         method,
