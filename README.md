@@ -276,7 +276,7 @@ const search = await index.search('prince')
 All the supported options are described in [this documentation section](https://docs.meilisearch.com/references/search.html#search-in-an-index).
 
 ```javascript
-await index.search('prince', { limit: 1, attributesToHighlight: '*' })
+await index.search('prince', { limit: 1, attributesToHighlight: ['*'] })
 ```
 
 ```json
