@@ -21,7 +21,10 @@ const MeiliSearchApiError: Types.MSApiErrorConstructor = class
     this.errorLink = error.errorLink
     this.message = error.message
     this.httpStatus = status
-    Error.captureStackTrace(this, MeiliSearchApiError)
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, MeiliSearchApiError)
+    }
   }
 }
 export default MeiliSearchApiError

@@ -20,7 +20,9 @@ class MeiliSearchCommunicationError extends Error {
       this.code = body.code
     }
 
-    Error.captureStackTrace(this, MeiliSearchCommunicationError)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, MeiliSearchCommunicationError)
+    }
   }
 }
 
