@@ -103,7 +103,15 @@ class MeiliSearch implements Types.MeiliSearchInterface {
   async isHealthy(): Promise<boolean> {
     const url = '/health'
 
-    return await this.httpRequest.get(url).then(() => true)
+    try {
+      await this.httpRequest.get(url)
+      return true
+    } catch (error) {
+      if (error.errorCode !== 'maintenance') {
+        throw error
+      }
+      return false
+    }
   }
 
   /**
