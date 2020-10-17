@@ -78,7 +78,8 @@ class Index<T> implements Types.IndexInterface<T> {
   async search<P extends Types.SearchParams<T>>(
     query?: string | null,
     options?: P,
-    method: Types.Methods = 'POST'
+    method: Types.Methods = 'POST',
+    config?: Partial<Request>
   ): Promise<Types.SearchResponse<T, P>> {
     const url = `/indexes/${this.uid}/search`
     const params: Types.SearchRequest = {
@@ -95,7 +96,12 @@ class Index<T> implements Types.IndexInterface<T> {
       attributesToHighlight: options?.attributesToHighlight,
     }
     if (method.toUpperCase() === 'POST') {
-      return await this.httpRequest.post(url, removeUndefinedFromObject(params))
+      return await this.httpRequest.post(
+        url,
+        removeUndefinedFromObject(params),
+        undefined,
+        config
+      )
     } else if (method.toUpperCase() === 'GET') {
       const getParams: Types.GetSearchRequest = {
         ...params,
@@ -119,7 +125,8 @@ class Index<T> implements Types.IndexInterface<T> {
 
       return await this.httpRequest.get<Types.SearchResponse<T, P>>(
         url,
-        removeUndefinedFromObject(getParams)
+        removeUndefinedFromObject(getParams),
+        config
       )
     } else {
       throw new MeiliSearchError(

@@ -29,7 +29,7 @@ class HttpRequests {
     url: string
     params?: { [key: string]: any }
     body?: any
-    config?: Request
+    config?: Partial<Request>
   }) {
     try {
       const constructURL = new URL(this.url)
@@ -64,19 +64,19 @@ class HttpRequests {
   async get(
     url: string,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<void>
 
   async get<T = any>(
     url: string,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<T>
 
   async get(
     url: string,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<any> {
     return await this.request({
       method: 'GET',
@@ -90,21 +90,21 @@ class HttpRequests {
     url: string,
     data: Types.IndexRequest,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<Types.IndexResponse>
 
   async post<T = any, R = Types.EnqueuedUpdate>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<R>
 
   async post(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<any> {
     return await this.request({
       method: 'POST',
@@ -119,21 +119,21 @@ class HttpRequests {
     url: string,
     data: Types.IndexOptions | Types.IndexRequest,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<Types.IndexResponse>
 
   async put<T = any, R = Types.EnqueuedUpdate>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<R>
 
   async put(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<any> {
     return await this.request({
       method: 'PUT',
@@ -148,19 +148,19 @@ class HttpRequests {
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<void>
   async delete<T>(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<T>
   async delete(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Request
+    config?: Partial<Request>
   ): Promise<any> {
     return await this.request({
       method: 'DELETE',

@@ -1,3 +1,5 @@
+import 'abort-controller/polyfill'
+
 import * as Types from '../src/types'
 import {
   clearAllIndexes,
@@ -506,3 +508,86 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
     })
   }
 )
+
+describe.each([
+  { client: masterClient, permission: 'Master' },
+  { client: privateClient, permission: 'Private' },
+  { client: publicClient, permission: 'Public' },
+  { client: masterClient, permission: 'Master' },
+  { client: privateClient, permission: 'Private' },
+  { client: publicClient, permission: 'Public' },
+])('Test on abortable search', ({ client, permission }) => {
+  describe.each([
+    { method: 'POST' as Types.Methods, permission, client },
+    { method: 'GET' as Types.Methods, permission, client },
+  ])('Test on abortable search', ({ client, permission, method }) => {
+    beforeAll(async () => {
+      await clearAllIndexes(config)
+      await masterClient.createIndex(index.uid)
+    })
+
+    test(`${permission} key: ${method} search on index and abort`, () => {
+      const controller = new AbortController()
+
+      const searchPromise = client
+        .getIndex(index.uid)
+        .search('unreachable', {}, method, {
+          signal: controller.signal,
+        })
+
+      controller.abort()
+
+      searchPromise.catch((error) => {
+        expect(error).toHaveProperty('message', 'The user aborted a request.')
+      })
+    })
+
+    test(`${permission} key: ${method} search on index multiple times, and abort only one request`, () => {
+      const controllerA = new AbortController()
+      const controllerB = new AbortController()
+      const controllerC = new AbortController()
+
+      const searchQuery = 'prince'
+
+      const searchAPromise = client
+        .getIndex(index.uid)
+        .search(searchQuery, {}, method, {
+          signal: controllerA.signal,
+        })
+
+      const searchBPromise = client
+        .getIndex(index.uid)
+        .search(searchQuery, {}, method, {
+          signal: controllerB.signal,
+        })
+
+      const searchCPromise = client
+        .getIndex(index.uid)
+        .search(searchQuery, {}, method, {
+          signal: controllerC.signal,
+        })
+
+      const searchDPromise = client
+        .getIndex(index.uid)
+        .search(searchQuery, {}, method)
+
+      controllerB.abort()
+
+      searchDPromise.then((response) => {
+        expect(response).toHaveProperty('query', searchQuery)
+      })
+
+      searchCPromise.then((response) => {
+        expect(response).toHaveProperty('query', searchQuery)
+      })
+
+      searchAPromise.then((response) => {
+        expect(response).toHaveProperty('query', searchQuery)
+      })
+
+      searchBPromise.catch((error) => {
+        expect(error).toHaveProperty('message', 'The user aborted a request.')
+      })
+    })
+  })
+})
