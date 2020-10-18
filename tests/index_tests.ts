@@ -6,7 +6,6 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const uidNoPrimaryKey = {
@@ -112,8 +111,9 @@ describe.each([
       const index = client.getIndex(uidAndPrimaryKey.uid)
       await expect(
         index.updateIndex({ primaryKey: 'newPrimaryKey' })
-      ).rejects.toThrowError(
-        `A primary key is already present. It's impossible to update it`
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.PRIMARY_KEY_ALREADY_PRESENT
       )
     })
 
@@ -134,8 +134,9 @@ describe.each([
     })
     test(`${permission} key: show deleted index should fail`, async () => {
       const index = client.getIndex(uidNoPrimaryKey.uid)
-      await expect(index.show()).rejects.toThrowError(
-        `Index ${uidNoPrimaryKey.uid} not found`
+      await expect(index.show()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INDEX_NOT_FOUND
       )
     })
 
@@ -144,13 +145,17 @@ describe.each([
         client.createIndex(uidAndPrimaryKey.uid, {
           primaryKey: uidAndPrimaryKey.primaryKey,
         })
-      ).rejects.toThrowError(`Index ${uidAndPrimaryKey.uid} already exists`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INDEX_ALREADY_EXISTS
+      )
     })
 
     test(`${permission} key: delete index with uid that does not exist should fail`, async () => {
       const index = client.getIndex(uidNoPrimaryKey.uid)
-      await expect(index.deleteIndex()).rejects.toThrowError(
-        `Index ${uidNoPrimaryKey.uid} not found`
+      await expect(index.deleteIndex()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INDEX_NOT_FOUND
       )
     })
   })
@@ -182,8 +187,9 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   ({ client, permission }) => {
     describe('Test on indexes', () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
-        await expect(client.listIndexes()).rejects.toThrowError(
-          `Invalid API key: ${PUBLIC_KEY}`
+        await expect(client.listIndexes()).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.INVALID_TOKEN
         )
       })
       test(`${permission} key: try to create Index with primary key and be denied`, async () => {
@@ -191,40 +197,57 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
           client.createIndex(uidAndPrimaryKey.uid, {
             primaryKey: uidAndPrimaryKey.primaryKey,
           })
-        ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+        ).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.INVALID_TOKEN
+        )
       })
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
         await expect(
           client.createIndex(uidNoPrimaryKey.uid)
-        ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+        ).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.INVALID_TOKEN
+        )
       })
       test(`${permission} key: try to get index info and be denied`, async () => {
         await expect(
           client.getIndex(uidNoPrimaryKey.uid).show()
-        ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+        ).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.INVALID_TOKEN
+        )
       })
       test(`${permission} key: try to delete index and be denied`, async () => {
         await expect(
           client.getIndex(uidAndPrimaryKey.uid).deleteIndex()
-        ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+        ).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.INVALID_TOKEN
+        )
       })
       test(`${permission} key: try to update index and be denied`, async () => {
         await expect(
           client
             .getIndex(uidAndPrimaryKey.uid)
             .updateIndex({ primaryKey: uidAndPrimaryKey.primaryKey })
-        ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+        ).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.INVALID_TOKEN
+        )
       })
     })
     describe('Test on base routes', () => {
       test(`${permission} key: try to get version and be denied`, async () => {
-        await expect(client.version()).rejects.toThrowError(
-          `Invalid API key: ${PUBLIC_KEY}`
+        await expect(client.version()).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.INVALID_TOKEN
         )
       })
       test(`${permission} key: try to get /stats information and be denied`, async () => {
-        await expect(client.stats()).rejects.toThrowError(
-          `Invalid API key: ${PUBLIC_KEY}`
+        await expect(client.stats()).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.INVALID_TOKEN
         )
       })
     })
@@ -236,8 +259,9 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   ({ client, permission }) => {
     describe('Test on indexes', () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
-        await expect(client.listIndexes()).rejects.toThrowError(
-          `You must have an authorization token`
+        await expect(client.listIndexes()).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
       test(`${permission} key: try to create an index with primary key and be denied`, async () => {
@@ -245,40 +269,57 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
           client.createIndex(uidAndPrimaryKey.uid, {
             primaryKey: uidAndPrimaryKey.primaryKey,
           })
-        ).rejects.toThrowError(`You must have an authorization token`)
+        ).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        )
       })
       test(`${permission} key: try to create an index with NO primary key and be denied`, async () => {
         await expect(
           client.createIndex(uidNoPrimaryKey.uid)
-        ).rejects.toThrowError(`You must have an authorization token`)
+        ).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        )
       })
       test(`${permission} key: try to get index info and be denied`, async () => {
         await expect(
           client.getIndex(uidNoPrimaryKey.uid).show()
-        ).rejects.toThrowError(`You must have an authorization token`)
+        ).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        )
       })
       test(`${permission} key: try to delete index and be denied`, async () => {
         await expect(
           client.getIndex(uidAndPrimaryKey.uid).deleteIndex()
-        ).rejects.toThrowError(`You must have an authorization token`)
+        ).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        )
       })
       test(`${permission} key: try to update index and be denied`, async () => {
         await expect(
           client
             .getIndex(uidAndPrimaryKey.uid)
             .updateIndex({ primaryKey: uidAndPrimaryKey.primaryKey })
-        ).rejects.toThrowError(`You must have an authorization token`)
+        ).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        )
       })
     })
     describe('Test on base routes', () => {
       test(`${permission} key: try to get version and be denied`, async () => {
-        await expect(client.version()).rejects.toThrowError(
-          `You must have an authorization token`
+        await expect(client.version()).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
       test(`${permission} key: try to get /stats information and be denied`, async () => {
-        await expect(client.stats()).rejects.toThrowError(
-          `You must have an authorization token`
+        await expect(client.stats()).rejects.toHaveProperty(
+          'errorCode',
+          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
     })

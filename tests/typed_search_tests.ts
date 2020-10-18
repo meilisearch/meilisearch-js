@@ -1,4 +1,5 @@
-import { EnqueuedUpdate, Methods } from '../src/types'
+import * as Types from '../src/types'
+
 import {
   clearAllIndexes,
   config,
@@ -74,8 +75,8 @@ describe.each([
   { client: publicClient, permission: 'Public' },
 ])('Test on search', ({ client, permission }) => {
   describe.each([
-    { method: 'POST' as Methods, permission, client },
-    { method: 'GET' as Methods, permission, client },
+    { method: 'POST' as Types.Methods, permission, client },
+    { method: 'GET' as Types.Methods, permission, client },
   ])('Test on search', ({ client, permission, method }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
@@ -85,7 +86,7 @@ describe.each([
       const { updateId: settingUpdateId } = await masterClient
         .getIndex<Movie>(index.uid)
         .updateAttributesForFaceting(newAttributesForFaceting)
-        .then((response: EnqueuedUpdate) => {
+        .then((response: Types.EnqueuedUpdate) => {
           expect(response).toHaveProperty('updateId', expect.any(Number))
           return response
         })
@@ -467,7 +468,10 @@ describe.each([
       await masterClient.getIndex<Movie>(index.uid).deleteIndex()
       await expect(
         client.getIndex<Movie>(index.uid).search('prince')
-      ).rejects.toThrowError(`Index movies_test not found`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INDEX_NOT_FOUND
+      )
     })
   })
 })
@@ -482,7 +486,10 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
     test(`${permission} key: Try Basic search and be denied`, async () => {
       await expect(
         client.getIndex<Movie>(index.uid).search('prince')
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
   }
 )

@@ -1,3 +1,4 @@
+import * as Types from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -5,7 +6,6 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 beforeAll(async () => {
@@ -36,14 +36,16 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on dump with public api key should not have access',
   ({ client, permission }) => {
     test(`${permission} key: try to create dump with public key and be denied`, async () => {
-      await expect(client.createDump()).rejects.toThrowError(
-        `Invalid API key: ${PUBLIC_KEY}`
+      await expect(client.createDump()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: try to get dump status with public key and be denied`, async () => {
-      await expect(client.getDumpStatus('dumpUid')).rejects.toThrowError(
-        `Invalid API key: ${PUBLIC_KEY}`
+      await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INVALID_TOKEN
       )
     })
   }
@@ -53,14 +55,16 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on dump without api key should not have access',
   ({ client, permission }) => {
     test(`${permission} key: try to create dump with no key and be denied`, async () => {
-      await expect(client.createDump()).rejects.toThrowError(
-        `You must have an authorization token`
+      await expect(client.createDump()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to get dump status with no key and be denied`, async () => {
-      await expect(client.getDumpStatus('dumpUid')).rejects.toThrowError(
-        `You must have an authorization token`
+      await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }
