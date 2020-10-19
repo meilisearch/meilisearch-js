@@ -4,7 +4,10 @@ class MeiliSearchError extends Error {
     super(message)
     this.name = 'MeiliSearchError'
     this.type = 'MeiliSearchError'
-    Error.captureStackTrace(this, MeiliSearchError)
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, MeiliSearchError)
+    }
   }
 }
 

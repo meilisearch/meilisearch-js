@@ -4,7 +4,10 @@ class MeiliSearchTimeOutError extends Error {
     super(message)
     this.name = 'MeiliSearchTimeOutError'
     this.type = this.constructor.name
-    Error.captureStackTrace(this, MeiliSearchTimeOutError)
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, MeiliSearchTimeOutError)
+    }
   }
 }
 
