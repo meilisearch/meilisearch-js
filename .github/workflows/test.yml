@@ -1,10 +1,13 @@
 name: Jest
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
+  push:
+    # trying and staging branches are for BORS config
+    branches:
+      - trying
+      - staging
+      - master
 
 jobs:
   tests:
