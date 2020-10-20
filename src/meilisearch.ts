@@ -96,11 +96,12 @@ class MeiliSearch implements Types.MeiliSearchInterface {
   ///
 
   /**
-   * Check if the server is healhty
+   * Checks if the server is healthy, otherwise an error will be thrown.
+   *
    * @memberof MeiliSearch
    * @method isHealthy
    */
-  async isHealthy(): Promise<boolean> {
+  async isHealthy(): Promise<true> {
     const url = '/health'
 
     return await this.httpRequest.get(url).then(() => true)
