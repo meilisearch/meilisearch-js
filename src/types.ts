@@ -355,4 +355,87 @@ export interface MSApiError extends Error {
   errorLink?: string
 }
 
+export const enum ErrorStatusCode {
+  /** @see https://docs.meilisearch.com/errors/#index_creation_failed */
+  INDEX_CREATION_FAILED = 'index_creation_failed',
+
+  /** @see https://docs.meilisearch.com/errors/#index_already_exists */
+  INDEX_ALREADY_EXISTS = 'index_already_exists',
+
+  /** @see https://docs.meilisearch.com/errors/#index_not_found */
+  INDEX_NOT_FOUND = 'index_not_found',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_index_uid */
+  INVALID_INDEX_UID = 'invalid_index_uid',
+
+  /** @see https://docs.meilisearch.com/errors/#index_not_accessible */
+  INDEX_NOT_ACCESSIBLE = 'index_not_accessible',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_state */
+  INVALID_STATE = 'invalid_state',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_primary_key */
+  MISSING_PRIMARY_KEY = 'missing_primary_key',
+
+  /** @see https://docs.meilisearch.com/errors/#primary_key_already_present */
+  PRIMARY_KEY_ALREADY_PRESENT = 'primary_key_already_present',
+
+  /** @see https://docs.meilisearch.com/errors/#max_fields_limit_exceeded */
+  MAX_FIELDS_LIMIT_EXCEEDED = 'max_fields_limit_exceeded',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_document_id */
+  MISSING_DOCUMENT_ID = 'missing_document_id',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_facet */
+  INVALID_FACET = 'invalid_facet',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_filter */
+  INVALID_FILTER = 'invalid_filter',
+
+  /** @see https://docs.meilisearch.com/errors/#bad_parameter */
+  BAD_PARAMETER = 'bad_parameter',
+
+  /** @see https://docs.meilisearch.com/errors/#bad_request */
+  BAD_REQUEST = 'bad_request',
+
+  /** @see https://docs.meilisearch.com/errors/#document_not_found */
+  DOCUMENT_NOT_FOUND = 'document_not_found',
+
+  /** @see https://docs.meilisearch.com/errors/#internal */
+  INTERNAL = 'internal',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_token */
+  INVALID_TOKEN = 'invalid_token',
+
+  /** @see https://docs.meilisearch.com/errors/#maintenance */
+  MAINTENANCE = 'maintenance',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_authorization_header */
+  MISSING_AUTHORIZATION_HEADER = 'missing_authorization_header',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_header */
+  MISSING_HEADER = 'missing_header',
+
+  /** @see https://docs.meilisearch.com/errors/#not_found */
+  NOT_FOUND = 'not_found',
+
+  /** @see https://docs.meilisearch.com/errors/#payload_too_large */
+  PAYLOAD_TOO_LARGE = 'payload_too_large',
+
+  /** @see https://docs.meilisearch.com/errors/#unretrievable_document */
+  UNRETRIEVABLE_DOCUMENT = 'unretrievable_document',
+
+  /** @see https://docs.meilisearch.com/errors/#search_error */
+  SEARCH_ERROR = 'search_error',
+
+  /** @see https://docs.meilisearch.com/errors/#unsupported_media_type */
+  UNSUPPORTED_MEDIA_TYPE = 'unsupported_media_type',
+
+  /** @see https://docs.meilisearch.com/errors/#dump_already_in_progress */
+  DUMP_ALREADY_IN_PROGRESS = 'dump_already_in_progress',
+
+  /** @see https://docs.meilisearch.com/errors/#dump_process_failed */
+  DUMP_PROCESS_FAILED = 'dump_process_failed',
+}
+
 export default MeiliSearch

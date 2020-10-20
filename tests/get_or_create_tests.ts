@@ -1,3 +1,4 @@
+import * as Types from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -5,7 +6,6 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -51,8 +51,9 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on getOrCreateIndex',
   ({ client, permission }) => {
     test(`${permission} key: try to getOrCreateIndex and be denied`, async () => {
-      await expect(client.getOrCreateIndex(index.uid)).rejects.toThrowError(
-        `Invalid API key: ${PUBLIC_KEY}`
+      await expect(client.getOrCreateIndex(index.uid)).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INVALID_TOKEN
       )
     })
   }
@@ -62,8 +63,9 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on getOrCreateIndex',
   ({ client, permission }) => {
     test(`${permission} key: try to getOrCreateIndex and be denied`, async () => {
-      await expect(client.getOrCreateIndex(index.uid)).rejects.toThrowError(
-        `You must have an authorization token`
+      await expect(client.getOrCreateIndex(index.uid)).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }
