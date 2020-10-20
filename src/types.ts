@@ -241,7 +241,7 @@ export interface MeiliSearchInterface {
   listIndexes: () => Promise<IndexResponse[]>
   createIndex: <T>(uid: string, options?: IndexOptions) => Promise<Index<T>>
   getKeys: () => Promise<Keys>
-  isHealthy: () => Promise<boolean>
+  isHealthy: () => Promise<true>
   setHealthy: () => Promise<void>
   setUnhealthy: () => Promise<void>
   changeHealthTo: (health: boolean) => Promise<void>

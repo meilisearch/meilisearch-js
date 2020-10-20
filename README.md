@@ -520,7 +520,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Check if the server is healthy
 
-`client.isHealthy(): Promise<void>`
+`client.isHealthy(): Promise<true>`
 
 ### Stats <!-- omit in toc -->
 
