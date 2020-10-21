@@ -336,6 +336,27 @@ await index.search(null, {
 }
 ```
 
+#### Abortable Search
+
+You can abort a pending search request by providing an [AbortSignal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) to the request.
+
+```js
+const controller = new AbortController()
+
+index
+  .search('prince', {}, 'POST', {
+    signal: controller.signal,
+  })
+  .then((response) => {
+    /** ... */
+  })
+  .catch((e) => {
+    /** Catch AbortError here. */
+  })
+
+controller.abort()
+```
+
 ## ⚙️ Development Workflow and Contributing
 
 Any new contribution is more than welcome in this project!
@@ -348,7 +369,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Make a search request:
 
-`client.getIndex<T>('xxx').search(query: string, options: SearchParams = {}, method: 'POST' | 'GET' = 'POST'): Promise<SearchResponse<T>>`
+`client.getIndex<T>('xxx').search(query: string, options: SearchParams = {}, method: 'POST' | 'GET' = 'POST', config?: Partial<Request>): Promise<SearchResponse<T>>`
 
 ### Indexes <!-- omit in toc -->
 

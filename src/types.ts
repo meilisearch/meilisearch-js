@@ -260,7 +260,8 @@ export interface IndexInterface<T = any> {
   search: <P extends SearchParams<T>>(
     query?: string | null,
     options?: P,
-    method?: Methods
+    method?: Methods,
+    config?: Partial<Request>
   ) => Promise<SearchResponse<T, P>>
   show: () => Promise<IndexResponse>
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
