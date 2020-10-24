@@ -6,7 +6,6 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -84,7 +83,7 @@ describe.each([
   test(`${permission} key: Try to get update that does not exist`, async () => {
     await expect(
       client.getIndex(index.uid).getUpdateStatus(2545)
-    ).rejects.toThrowError(`Update 2545 not found`)
+    ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.NOT_FOUND)
   })
 })
 
@@ -98,7 +97,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: Try to get a update and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getUpdateStatus(0)
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
 )
@@ -113,7 +112,10 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     test(`${permission} key: Try to get an update and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getUpdateStatus(0)
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
   }
 )

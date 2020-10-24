@@ -5,27 +5,10 @@ import json from '@rollup/plugin-json'
 import typescript from 'rollup-plugin-typescript2'
 import pkg from './package.json'
 import { terser } from 'rollup-plugin-terser'
-
-function pascalCase(myStr) {
-  return toUpperCase(dashToCamelCase(myStr))
-}
-
-function normalizePackageName(rawPackageName) {
-  const scopeEnd = rawPackageName.indexOf('/') + 1
-
-  return rawPackageName.substring(scopeEnd)
-}
+import { babel } from '@rollup/plugin-babel'
 
 function getOutputFileName(fileName, isProd = false) {
   return isProd ? fileName.replace(/\.js$/, '.min.js') : fileName
-}
-
-function toUpperCase(myStr) {
-  return `${myStr.charAt(0).toUpperCase()}${myStr.substr(1)}`
-}
-
-function dashToCamelCase(myStr) {
-  return myStr.replace(/-([a-z])/g, (g) => g[1].toUpperCase())
 }
 
 const env = process.env.NODE_ENV || 'development'
@@ -36,16 +19,19 @@ const PLUGINS = [
   typescript({
     useTsconfigDeclarationDir: true,
     tsconfigOverride: {
-      exclude: ['tests'],
+      allowJs: false,
+      includes: ['src'],
+      exclude: ['tests', 'examples', '*.js', 'scripts'],
       esModuleInterop: true,
     },
   }),
 ]
 
 module.exports = [
-  // browser-friendly IIFE build
+  // browser-friendly UMD build
   {
     input: 'src/meilisearch.ts', // directory to transpilation of typescript
+    external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: {
       name: LIB_NAME,
       file: getOutputFileName(
@@ -55,20 +41,33 @@ module.exports = [
       ),
       format: 'umd',
       sourcemap: env === 'production', // create sourcemap for error reporting in production mode
-      globals: {
-        axios: 'axios',
-      },
     },
     plugins: [
       ...PLUGINS,
+      babel({
+        babelrc: false,
+        extensions: ['.ts'],
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              modules: false,
+              targets: {
+                browsers: ['last 2 versions', 'ie >= 11'],
+              },
+            },
+          ],
+        ],
+      }),
       nodeResolve({
         mainFields: ['jsnext', 'main'],
         preferBuiltins: true,
         browser: true,
       }),
       commonjs({
-        include: 'node_modules/axios/**',
+        include: ['node_modules/**'],
       }),
+      // nodePolyfills
       json(),
       env === 'production' ? terser() : {}, // will minify the file in production mode
     ],
@@ -82,22 +81,14 @@ module.exports = [
   // `file` and `format` for each target)
   {
     input: 'src/meilisearch.ts',
-    external: ['axios'],
+    external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: [
-      {
-        file: getOutputFileName(
-          // will add .min. in filename if in production env
-          resolve(ROOT, pkg.main),
-          env === 'production'
-        ),
-        format: 'cjs',
-        sourcemap: env === 'production', // create sourcemap for error reporting in production mode
-      },
       {
         file: getOutputFileName(
           resolve(ROOT, pkg.module),
           env === 'production'
         ),
+        exports: 'default',
         format: 'es',
         sourcemap: env === 'production', // create sourcemap for error reporting in production mode
       },

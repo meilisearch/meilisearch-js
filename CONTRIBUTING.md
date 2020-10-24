@@ -41,6 +41,7 @@ Each PR should pass the tests and the linter to be accepted.
 
 ```bash
 # Tests
+$ docker pull getmeili/meilisearch:latest # Fetch the latest version of MeiliSearch image from Docker Hub
 $ docker run -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics
 $ yarn test
 # Linter
@@ -74,12 +75,12 @@ About this automation:
 Make a PR modifying the file [`package.json`](/package.json) with the right version.
 
 ```javascript
-"version": X.X.X
+"version": "X.X.X",
 ```
 
 Once the changes are merged on `master`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-js/releases).
 
-A GitHub Action will be triggered and push the package to [NPM](https://www.npmjs.com/package/meilisearch).
+A GitHub Action will be triggered and push the package to [npm](https://www.npmjs.com/package/meilisearch).
 
 ## Git Guidelines
 
@@ -103,9 +104,8 @@ We don't follow any other convention, but if you want to use one, we recommend [
 Some notes on GitHub PRs:
 - [Convert your PR as a draft](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/changing-the-stage-of-a-pull-request) if your changes are a work in progress: no one will review it until you pass your PR as ready for review.<br>
   The draft PR can be very useful if you want to show that you are working on something and make your work visible.
-- The branch related to the PR must be **up-to-date with `master`** before merging. You need to [rebase your branch](https://gist.github.com/curquiza/5f7ce615f85331f083cd467fc4e19398) if it is not.
+- The branch related to the PR must be **up-to-date with `master`** before merging. [Bors](https://github.com/bors-ng/bors-ng) will rebase your branch if it is not. Ask a maintainer to run it.
 - All PRs must be reviewed and approved by at least one maintainer.
-- All PRs have to be **squashed and merged**.
 - The PR title should be accurate and descriptive of the changes. The title of the PR will be indeed automatically added to the next [release changlogs](https://github.com/meilisearch/meilisearch-js/releases/).
 
 Thank you again for reading this through, we can not wait to begin to work with you if you made your way through this contributing guide ❤️

@@ -1,0 +1,3 @@
+status = ["Node 10 sample", "Node 12 sample", "Node 14 sample"]
+# 1 hour timeout
+timeout-sec = 3600

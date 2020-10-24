@@ -6,7 +6,6 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -54,10 +53,10 @@ describe.each([
       })
   })
   test(`${permission} key: Update distinct attribute`, async () => {
-    const new_da = 'title'
+    const newDistinctAttribute = 'title'
     const { updateId } = await client
       .getIndex(index.uid)
-      .updateDistinctAttribute(new_da)
+      .updateDistinctAttribute(newDistinctAttribute)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -67,7 +66,7 @@ describe.each([
       .getIndex(index.uid)
       .getDistinctAttribute()
       .then((response: string | null) => {
-        expect(response).toEqual(new_da)
+        expect(response).toEqual(newDistinctAttribute)
       })
   })
   test(`${permission} key: Reset distinct attribute`, async () => {
@@ -98,17 +97,17 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getDistinctAttribute()
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateDistinctAttribute('title')
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetDistinctAttribute()
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
 )
@@ -123,17 +122,26 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getDistinctAttribute()
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateDistinctAttribute('title')
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetDistinctAttribute()
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
   }
 )

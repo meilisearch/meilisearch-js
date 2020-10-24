@@ -8,15 +8,17 @@
 'use strict'
 
 import { Index } from './index'
-import MeiliAxiosWrapper from './meili-axios-wrapper'
+import MeiliSearchApiError from './errors/meilisearch-api-error'
 import * as Types from './types'
+import HttpRequests from './http-requests'
 
-class MeiliSearch extends MeiliAxiosWrapper
-  implements Types.MeiliSearchInterface {
+class MeiliSearch implements Types.MeiliSearchInterface {
   config: Types.Config
+  httpRequest: HttpRequests
+
   constructor(config: Types.Config) {
-    super(config)
     this.config = config
+    this.httpRequest = new HttpRequests(config)
   }
 
   /**
@@ -44,7 +46,7 @@ class MeiliSearch extends MeiliAxiosWrapper
       if (e.errorCode === 'index_already_exists') {
         return this.getIndex(uid)
       }
-      throw e
+      throw new MeiliSearchApiError(e, e.status)
     }
   }
 
@@ -56,7 +58,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async listIndexes(): Promise<Types.IndexResponse[]> {
     const url = '/indexes'
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.IndexResponse[]>(url)
   }
 
   /**
@@ -70,7 +72,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   ): Promise<Index<T>> {
     const url = '/indexes'
 
-    const index = await this.post(url, { ...options, uid })
+    const index = await this.httpRequest.post(url, { ...options, uid })
 
     return new Index(this.config, index.uid)
   }
@@ -86,7 +88,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async getKeys(): Promise<Types.Keys> {
     const url = '/keys'
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.Keys>(url)
   }
 
   ///
@@ -94,14 +96,15 @@ class MeiliSearch extends MeiliAxiosWrapper
   ///
 
   /**
-   * Check if the server is healhty
+   * Checks if the server is healthy, otherwise an error will be thrown.
+   *
    * @memberof MeiliSearch
    * @method isHealthy
    */
-  async isHealthy(): Promise<boolean> {
+  async isHealthy(): Promise<true> {
     const url = '/health'
 
-    return await this.get(url).then((_) => true)
+    return await this.httpRequest.get(url).then(() => true)
   }
 
   /**
@@ -112,7 +115,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async setHealthy(): Promise<void> {
     const url = '/health'
 
-    return await this.put(url, {
+    return await this.httpRequest.put(url, {
       health: true,
     })
   }
@@ -125,7 +128,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async setUnhealthy(): Promise<void> {
     const url = '/health'
 
-    return await this.put(url, {
+    return await this.httpRequest.put(url, {
       health: false,
     })
   }
@@ -138,7 +141,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async changeHealthTo(health: boolean): Promise<void> {
     const url = '/health'
 
-    return await this.put(url, {
+    return await this.httpRequest.put(url, {
       health,
     })
   }
@@ -155,7 +158,7 @@ class MeiliSearch extends MeiliAxiosWrapper
   async stats(): Promise<Types.Stats> {
     const url = '/stats'
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.Stats>(url)
   }
 
   /**
@@ -166,29 +169,33 @@ class MeiliSearch extends MeiliAxiosWrapper
   async version(): Promise<Types.Version> {
     const url = '/version'
 
-    return await this.get(url)
+    return await this.httpRequest.get<Types.Version>(url)
+  }
+
+  ///
+  /// DUMPS
+  ///
+
+  /**
+   * Triggers a dump creation process
+   * @memberof MeiliSearch
+   * @method createDump
+   */
+  async createDump(): Promise<Types.EnqueuedDump> {
+    const url = '/dumps'
+
+    return await this.httpRequest.post<undefined, Types.EnqueuedDump>(url)
   }
 
   /**
-   * Get the server consuption, RAM / CPU / Network
+   * Get the status of a dump creation process
    * @memberof MeiliSearch
-   * @method sysInfo
+   * @method getDumpStatus
    */
-  async sysInfo(): Promise<Types.SysInfo> {
-    const url = '/sys-info'
+  async getDumpStatus(dumpUid: string): Promise<Types.EnqueuedDump> {
+    const url = `/dumps/${dumpUid}/status`
 
-    return await this.get(url)
-  }
-
-  /**
-   * Get the server consuption, RAM / CPU / Network. All information as human readable
-   * @memberof MeiliSearch
-   * @method prettySysInfo
-   */
-  async prettySysInfo(): Promise<Types.SysInfoPretty> {
-    const url = '/sys-info/pretty'
-
-    return await this.get(url)
+    return await this.httpRequest.get<Types.EnqueuedDump>(url)
   }
 }
 

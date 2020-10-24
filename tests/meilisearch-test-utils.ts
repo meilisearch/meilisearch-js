@@ -29,7 +29,7 @@ const anonymousClient = new MeiliSearch({
   host: HOST,
 })
 
-const clearAllIndexes = async (config: Types.Config) => {
+const clearAllIndexes = async (config: Types.Config): Promise<void> => {
   const client = new MeiliSearch(config)
   const indexes = await client
     .listIndexes()
@@ -58,4 +58,6 @@ export {
   anonymousClient,
   PUBLIC_KEY,
   PRIVATE_KEY,
+  MASTER_KEY,
+  MeiliSearch,
 }

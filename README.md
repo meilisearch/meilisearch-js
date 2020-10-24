@@ -6,10 +6,10 @@
 
 <h4 align="center">
   <a href="https://github.com/meilisearch/MeiliSearch">MeiliSearch</a> |
+  <a href="https://docs.meilisearch.com">Documentation</a> |
   <a href="https://www.meilisearch.com">Website</a> |
   <a href="https://blog.meilisearch.com">Blog</a> |
   <a href="https://twitter.com/meilisearch">Twitter</a> |
-  <a href="https://docs.meilisearch.com">Documentation</a> |
   <a href="https://docs.meilisearch.com/faq">FAQ</a>
 </h4>
 
@@ -21,28 +21,33 @@
   <a href="https://slack.meilisearch.com"><img src="https://img.shields.io/badge/slack-MeiliSearch-blue.svg?logo=slack" alt="Slack"></a>
 </p>
 
-<p align="center">⚡ Lightning Fast, Ultra Relevant, and Typo-Tolerant Search Engine MeiliSearch client written in JavaScript</p>
+<p align="center">⚡ The MeiliSearch API client written for JavaScript</p>
 
-**MeiliSearch JavaScript** is a client for **MeiliSearch** written in JavaScript. **MeiliSearch** is a powerful, fast, open-source, easy to use and deploy search engine. Both searching and indexing are highly customizable. Features such as typo-tolerance, filters, and synonyms are provided out-of-the-box.
+**MeiliSearch JavaScript** is the MeiliSearch API client for JavaScript developers. **MeiliSearch** is a powerful, fast, open-source, easy to use and deploy search engine. Both searching and indexing are highly customizable. Features such as typo-tolerance, filters, and synonyms are provided out-of-the-box.
 
 ## Table of Contents <!-- omit in toc -->
 
+- [📖 Documentation](#-documentation)
 - [🔧 Installation](#-installation)
-- [🎬 Getting started](#-getting-started)
+- [🎬 Getting Started](#-getting-started)
 - [🤖 Compatibility with MeiliSearch](#-compatibility-with-meilisearch)
-- [🎬 Examples](#-examples)
-  - [Indexes](#indexes)
-  - [Documents](#documents)
-  - [Update status](#update-status)
-  - [Search](#search)
+- [💡 Learn More](#-learn-more)
 - [⚙️ Development Workflow and Contributing](#️-development-workflow-and-contributing)
 - [📜 API Resources](#-api-resources)
 
+## 📖 Documentation
+
+See our [Documentation](https://docs.meilisearch.com/guides/introduction/quick_start_guide.html) or our [API References](https://docs.meilisearch.com/references/).
+
 ## 🔧 Installation
+
+With `npm`:
 
 ```sh
 npm install meilisearch
 ```
+
+With `yarn`:
 
 ```sh
 yarn add meilisearch
@@ -55,6 +60,7 @@ There are many easy ways to [download and run a MeiliSearch instance](https://do
 For example, if you use Docker:
 
 ```bash
+$ docker pull getmeili/meilisearch:latest # Fetch the latest version of MeiliSearch image from Docker Hub
 $ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey
 ```
 
@@ -68,15 +74,15 @@ NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 import MeiliSearch from 'meilisearch'
 
 const client = new MeiliSearch({
-    host: 'http://127.0.0.1:7700',
-    apiKey: 'masterKey',
-  })
+  host: 'http://127.0.0.1:7700',
+  apiKey: 'masterKey',
+})
 ```
 
 #### HTML Import <!-- omit in toc -->
 
 ```javascript
-<script src="https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js"></script>
 <script>
   const client = new MeiliSearch({
     host: 'http://127.0.0.1:7700',
@@ -91,22 +97,23 @@ const client = new MeiliSearch({
 #### Back-End CommonJs <!-- omit in toc -->
 
 ```javascript
-const MeiliSearch = require('meilisearch');
+const MeiliSearch = require('meilisearch')
 
 const client = new MeiliSearch({
-    host: 'http://127.0.0.1:7700',
-    apiKey: 'masterKey',
-  })
+  host: 'http://127.0.0.1:7700',
+  apiKey: 'masterKey',
+})
 ```
 
-## 🎬 Getting started
+## 🎬 Getting Started
 
-Here is a quickstart for a search request
+#### Add Documents <!-- omit in toc -->
 
 ```js
 const MeiliSearch = require('meilisearch')
 // Or if you are on a front-end environment:
 import MeiliSearch from 'meilisearch'
+
 ;(async () => {
   const client = new MeiliSearch({
     host: 'http://127.0.0.1:7700',
@@ -122,8 +129,8 @@ import MeiliSearch from 'meilisearch'
     { book_id: 456, title: 'Le Petit Prince' },
     { book_id: 1, title: 'Alice In Wonderland' },
     { book_id: 1344, title: 'The Hobbit' },
-    { book_id: 4, title: 'Harry Potter and the Half-Blood Prince' },
-    { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
+    { book_id: 4, title: 'Harry Potter and the Half-Blood Prince', genre: 'fantasy' },
+    { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: 'fantasy' }
   ]
 
   let response = await index.addDocuments(documents)
@@ -131,9 +138,9 @@ import MeiliSearch from 'meilisearch'
 })()
 ```
 
-With the `updateId`, you can check the status (`processed` or `failed`) of your documents addition thanks to this [method](#update-status).
+With the `updateId`, you can check the status (`enqueued`, `processed` or `failed`) of your documents addition using the [update endpoint](https://docs.meilisearch.com/references/updates.html#get-an-update-status).
 
-#### Search in index <!-- omit in toc -->
+#### Basic Search <!-- omit in toc -->
 
 ```javascript
 // MeiliSearch is typo-tolerant:
@@ -153,132 +160,25 @@ Output:
   ],
   "offset": 0,
   "limit": 20,
+  "nbHits": 1,
+  "exhaustiveNbHits": false,
   "processingTimeMs": 1,
   "query": "harry pottre"
 }
 ```
 
-## 🤖 Compatibility with MeiliSearch
+#### Custom Search <!-- omit in toc -->
 
-This package is compatible with the following MeiliSearch versions:
-
-- `v0.12.X`
-- `v0.11.X`
-
-## 🎬 Examples
-
-All HTTP routes of MeiliSearch are accessible via methods in this SDK.</br>
-You can check out [the API documentation](https://docs.meilisearch.com/references/).
-
-Go checkout [examples](./examples)!
-
-In this section, the examples contain the [`await` keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await).
-
-### Indexes
-
-#### Create an index <!-- omit in toc -->
+All the supported options are described in the [search parameters](https://docs.meilisearch.com/guides/advanced_guides/search_parameters.html) section of the documentation.
 
 ```javascript
-// Create an index
-const index = await client.createIndex('books')
-// Create an index and give the primary-key
-const index = await client.createIndex('books', { primaryKey: 'book_id' })
-```
-
-#### List all indexes <!-- omit in toc -->
-
-```javascript
-const indexes = await client.listIndexes()
-```
-
-#### Get an index object <!-- omit in toc -->
-
-```javascript
-const index = client.getIndex('books')
-```
-
-### Documents
-
-#### Fetch documents <!-- omit in toc -->
-
-```javascript
-// Get one document
-const document = await index.getDocument(123)
-
-// Get documents by batch
-const documents = await index.getDocuments({ offset: 4, limit: 20 })
-```
-
-#### Add documents <!-- omit in toc -->
-
-```javascript
-await index.addDocuments([{ book_id: 2, title: 'Madame Bovary' }])
-```
-
-Response:
-
-```json
-{
-  "updateId": 1
-}
-```
-
-With this `updateId` you can track your [operation update](#update-status).
-
-#### Delete documents <!-- omit in toc -->
-
-```javascript
-// Delete one document
-await index.deleteDocument(2)
-// Delete several documents
-await index.deleteDocuments([1, 42])
-// Delete all documents /!\
-await index.deleteAllDocuments()
-```
-
-### Update status
-
-```javascript
-// Get one update
-// Parameter: the updateId got after an asynchronous request (e.g. documents addition)
-await index.getUpdateStatus(1)
-// Get all update satus
-await index.getAllUpdateStatus()
-```
-
-### Search
-
-#### Basic search <!-- omit in toc -->
-
-```javascript
-const search = await index.search('prince')
-```
-
-```json
-{
-  "hits": [
-    {
-      "book_id": 456,
-      "title": "Le Petit Prince"
-    },
-    {
-      "book_id": 4,
-      "title": "Harry Potter and the Half-Blood Prince"
-    }
-  ],
-  "offset": 0,
-  "limit": 20,
-  "processingTimeMs": 13,
-  "query": "prince"
-}
-```
-
-#### Custom search <!-- omit in toc -->
-
-All the supported options are described in [this documentation section](https://docs.meilisearch.com/references/search.html#search-in-an-index).
-
-```javascript
-await index.search('prince', { limit: 1, attributesToHighlight: '*' })
+await index.search(
+  'prince',
+  {
+    attributesToHighlight: ['*'],
+    filters: 'book_id > 10'
+  }
+)
 ```
 
 ```json
@@ -294,11 +194,88 @@ await index.search('prince', { limit: 1, attributesToHighlight: '*' })
     }
   ],
   "offset": 0,
-  "limit": 1,
+  "limit": 20,
+  "nbHits": 1,
+  "exhaustiveNbHits": false,
   "processingTimeMs": 0,
   "query": "prince"
 }
 ```
+
+#### Placeholder Search <!-- omit in toc -->
+
+Placeholder search makes it possible to receive hits based on your parameters without having any query (`q`).
+
+```javascript
+await index.search(
+  '',
+  {
+    facetFilters: ['genre:fantasy'],
+    facetsDistribution: ['genre']
+  }
+)
+```
+
+```json
+{
+  "hits": [
+    {
+      "id": 4,
+      "title": "Harry Potter and the Half-Blood Prince",
+      "genre": "fantasy"
+    },
+    {
+      "id": 42,
+      "title": "The Hitchhiker's Guide to the Galaxy",
+      "genre": "fantasy"
+    }
+  ],
+  "offset": 0,
+  "limit": 20,
+  "nbHits": 2,
+  "exhaustiveNbHits": false,
+  "processingTimeMs": 0,
+  "query": "",
+  "facetsDistribution": { "genre": { "fantasy": 2 } },
+  "exhaustiveFacetsCount": true
+}
+```
+
+#### Abortable Search <!-- omit in toc -->
+
+You can abort a pending search request by providing an [AbortSignal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) to the request.
+
+```js
+const controller = new AbortController()
+
+index
+  .search('prince', {}, 'POST', {
+    signal: controller.signal,
+  })
+  .then((response) => {
+    /** ... */
+  })
+  .catch((e) => {
+    /** Catch AbortError here. */
+  })
+
+controller.abort()
+```
+
+## 🤖 Compatibility with MeiliSearch
+
+This package only guarantees the compatibility with the [version v0.15.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.15.0).
+
+## 💡 Learn More
+
+The following sections may interest you:
+
+- **Manipulate documents**: see the [API references](https://docs.meilisearch.com/references/documents.html) or read more about [documents](https://docs.meilisearch.com/guides/main_concepts/documents.html).
+- **Search**: see the [API references](https://docs.meilisearch.com/references/search.html) or follow our guide on [search parameters](https://docs.meilisearch.com/guides/advanced_guides/search_parameters.html).
+- **Manage the indexes**: see the [API references](https://docs.meilisearch.com/references/indexes.html) or read more about [indexes](https://docs.meilisearch.com/guides/main_concepts/indexes.html).
+- **Configure the index settings**: see the [API references](https://docs.meilisearch.com/references/settings.html) or follow our guide on [settings parameters](https://docs.meilisearch.com/guides/advanced_guides/settings.html).
+
+This repository also contains [more examples](./examples).
 
 ## ⚙️ Development Workflow and Contributing
 
@@ -312,7 +289,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Make a search request:
 
-`client.getIndex<T>('xxx').search(query: string, options?: SearchParams): Promise<SearchResponse<T>>`
+`client.getIndex<T>('xxx').search(query: string, options: SearchParams = {}, method: 'POST' | 'GET' = 'POST', config?: Partial<Request>): Promise<SearchResponse<T>>`
 
 ### Indexes <!-- omit in toc -->
 
@@ -389,7 +366,8 @@ If you want to know more about the development workflow or want to contribute, p
 `index.deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedUpdate>`
 
 - Delete all documents:
-  `index.deleteAllDocuments(): Promise<Types.EnqueuedUpdate>`
+
+`index.deleteAllDocuments(): Promise<Types.EnqueuedUpdate>`
 
 ### Settings <!-- omit in toc -->
 
@@ -474,14 +452,6 @@ If you want to know more about the development workflow or want to contribute, p
 - Reset Displayed Attributes
   `index.resetDisplayedAttributes(): Promise<EnqueuedUpdate>`
 
-### Accept new fields <!-- omit in toc -->
-
-- Get Accept new fields
-  `index.getAcceptNewFields(): Promise<boolean>`
-
-- Update Accept new fields
-  `index.updateAcceptNewFields(acceptNewFields: boolean): Promise<EnqueuedUpdate>`
-
 ### Keys <!-- omit in toc -->
 
 - Get keys
@@ -492,7 +462,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Check if the server is healthy
 
-`client.isHealthy(): Promise<void>`
+`client.isHealthy(): Promise<true>`
 
 ### Stats <!-- omit in toc -->
 
@@ -506,15 +476,15 @@ If you want to know more about the development workflow or want to contribute, p
 
 `client.version(): Promise<Version>`
 
-### System <!-- omit in toc -->
+### Dumps <!-- omit in toc -->
 
-- Get system information
+- Trigger a dump creation process
 
-`client.systemInformation(): Promise<SysInfo>`
+`client.createDump(): Promise<Types.EnqueuedDump>`
 
-- Get system information (pretty mode)
+- Get the status of a dump creation process
 
-`client.systemInformationPretty(): Promise<SysInfoPretty>`
+`client.getDumpStatus(dumpUid: string): Promise<Types.EnqueuedDump>`
 
 <hr>
 

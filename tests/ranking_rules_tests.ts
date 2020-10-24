@@ -6,7 +6,6 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -63,10 +62,10 @@ describe.each([
       })
   })
   test(`${permission} key: Update ranking rules`, async () => {
-    const new_rr = ['asc(title)', 'typo', 'desc(description)']
+    const newRankingRules = ['asc(title)', 'typo', 'desc(description)']
     const { updateId } = await client
       .getIndex(index.uid)
-      .updateRankingRules(new_rr)
+      .updateRankingRules(newRankingRules)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -76,7 +75,7 @@ describe.each([
       .getIndex(index.uid)
       .getRankingRules()
       .then((response: string[]) => {
-        expect(response).toEqual(new_rr)
+        expect(response).toEqual(newRankingRules)
       })
   })
   test(`${permission} key: Reset ranking rules`, async () => {
@@ -107,17 +106,17 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get ranking rules and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getRankingRules()
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to update ranking rules and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateRankingRules([])
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to reset ranking rules and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetRankingRules()
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
 )
@@ -132,17 +131,26 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     test(`${permission} key: try to get ranking rules and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getRankingRules()
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
     test(`${permission} key: try to update ranking rules and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateRankingRules([])
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
     test(`${permission} key: try to reset ranking rules and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetRankingRules()
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
   }
 )

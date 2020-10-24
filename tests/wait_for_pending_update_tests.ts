@@ -71,8 +71,6 @@ describe.each([
       client
         .getIndex(index.uid)
         .waitForPendingUpdate(updateId, { timeOutMs: 0 })
-    ).rejects.toThrowError(
-      `timeout of 0ms has exceeded on process 0 when waiting for pending update to resolve.`
-    )
+    ).rejects.toHaveProperty('name', 'MeiliSearchTimeOutError')
   })
 })

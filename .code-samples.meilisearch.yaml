@@ -84,8 +84,7 @@ update_settings_1: |-
       synonyms: {
           'wolverine': ['xmen', 'logan'],
           'logan': ['wolverine']
-      },
-      acceptNewFields: false
+      }
   })
 reset_settings_1: |-
   client.getIndex('movies').resetSettings()
@@ -148,10 +147,6 @@ update_displayed_attributes_1: |-
   ])
 reset_displayed_attributes_1: |-
   client.getIndex('movies').resetDisplayedAttributes()
-get_accept_new_fields_1: |-
-  client.getIndex('movies').getAcceptNewFields()
-update_accept_new_fields_1: |-
-  client.getIndex('movies').updateAcceptNewFields(false)
 get_index_stats_1: |-
   client.getIndex('movies').getStats()
 get_indexes_stats_1: |-
@@ -161,14 +156,10 @@ get_health_1: |-
 update_health_1: |-
 get_version_1: |-
   client.version()
-get_pretty_sys_info_1: |-
-  client.systemInformationPretty()
-get_sys_info_1: |-
-  client.systemInformation()
 distinct_attribute_guide_1: |-
-  client.getIndex('jackets').settings({ distinctAttribute: 'product_id' })
+  client.getIndex('jackets').updateSettings({ distinctAttribute: 'product_id' })
 field_properties_guide_searchable_1: |-
-  client.getIndex('movies').settings({
+  client.getIndex('movies').updateSettings({
         searchableAttributes: [
             'uid',
             'movie_id',
@@ -180,7 +171,7 @@ field_properties_guide_searchable_1: |-
         ]
     })
 field_properties_guide_displayed_1: |-
-  client.getIndex('movies').settings({
+  client.getIndex('movies').updateSettings({
       displayedAttributes: [
           'title',
           'description',
@@ -221,7 +212,7 @@ search_parameter_guide_retrieve_1: |-
   })
 search_parameter_guide_crop_1: |-
   client.getIndex('movies').search('shifu', {
-    attributesToCrop: 'overview',
+    attributesToCrop: ['overview'],
     cropLength: 10
   })
 search_parameter_guide_highlight_1: |-
@@ -243,13 +234,13 @@ search_parameter_guide_matches_1: |-
     matches: true
   })
 settings_guide_synonyms_1: |-
-  client.getIndex('tops').settings({
+  client.getIndex('tops').updateSettings({
     synonyms: {
       sweater: ['jumper'],
       jumper: ['sweater']
   })
 settings_guide_stop_words_1: |-
-  client.getIndex('movies').settings({
+  client.getIndex('movies').updateSettings({
     stopWords: [
       'the',
       'a',
@@ -257,7 +248,7 @@ settings_guide_stop_words_1: |-
     ]
   })
 settings_guide_ranking_rules_1: |-
-  client.getIndex('movies').settings({
+  client.getIndex('movies').updateSettings({
     rankingRules: [
         'typo',
         'words',
@@ -270,11 +261,11 @@ settings_guide_ranking_rules_1: |-
     ]
   })
 settings_guide_distinct_1: |-
-  client.getIndex('movies').settings({
+  client.getIndex('movies').updateSettings({
     distinctAttribute: 'product_id'
   })
 settings_guide_searchable_1: |-
-  client.getIndex('movies').settings({
+  client.getIndex('movies').updateSettings({
     searchableAttributes: [
       'uid',
       'movie_id',
@@ -286,7 +277,7 @@ settings_guide_searchable_1: |-
     ]
   })
 settings_guide_displayed_1: |-
-  client.getIndex('movies').settings({
+  client.getIndex('movies').updateSettings({
     displayedAttributes: [
       'title',
       'description',
@@ -294,10 +285,6 @@ settings_guide_displayed_1: |-
       'release_date',
       'rank'
     ]
-  })
-settings_guide_accept_new_fields_1: |-
-  client.getIndex('movies').settings({
-    acceptNewFields: false
   })
 add_movies_json_1: |-
   const movies = require('./movies.json')
@@ -359,8 +346,8 @@ reset_attributes_for_faceting_1: |-
 faceted_search_update_settings_1: |-
   client.getIndex('movies')
     .updateAttributesForFaceting([
-      'genres',
-      'director'
+      'director',
+      'genres'
     ])
 faceted_search_facet_filters_1: |-
   client.getIndex('movies')
@@ -390,3 +377,7 @@ faceted_search_walkthrough_facets_distribution_1: |-
     .search('Batman', {
       facetsDistribution: ['genres']
     })
+post_dump_1: |-
+  client.createDump()
+get_dump_status_1: |-
+  client.getDumpStatus("20201101-110357260")

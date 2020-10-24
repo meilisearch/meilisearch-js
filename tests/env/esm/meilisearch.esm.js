@@ -1,0 +1,1 @@
+../../../dist/bundles/meilisearch.esm.js

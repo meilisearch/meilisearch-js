@@ -6,7 +6,6 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -49,15 +48,15 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getAttributesForFaceting()
-      .then((response: String[]) => {
+      .then((response: string[]) => {
         expect(response.sort()).toEqual([])
       })
   })
   test(`${permission} key: Update attributes for filtering`, async () => {
-    const new_attributes_for_faceting = ['genre']
+    const newAttributesForFaceting = ['genre']
     const { updateId } = await client
       .getIndex(index.uid)
-      .updateAttributesForFaceting(new_attributes_for_faceting)
+      .updateAttributesForFaceting(newAttributesForFaceting)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -66,8 +65,8 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getAttributesForFaceting()
-      .then((response: String[]) => {
-        expect(response).toEqual(new_attributes_for_faceting)
+      .then((response: string[]) => {
+        expect(response).toEqual(newAttributesForFaceting)
       })
   })
   test(`${permission} key: Reset attributes for filtering`, async () => {
@@ -82,7 +81,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getAttributesForFaceting()
-      .then((response: String[]) => {
+      .then((response: string[]) => {
         expect(response.sort()).toEqual([])
       })
   })
@@ -98,17 +97,17 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getAttributesForFaceting()
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to update attributes for filtering and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateAttributesForFaceting([])
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to reset attributes for filtering and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetAttributesForFaceting()
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
 )
@@ -123,17 +122,26 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getAttributesForFaceting()
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
     test(`${permission} key: try to update attributes for filtering and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateAttributesForFaceting([])
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
     test(`${permission} key: try to reset attributes for filtering and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetAttributesForFaceting()
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
   }
 )

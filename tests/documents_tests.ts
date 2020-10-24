@@ -6,7 +6,6 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const uidNoPrimaryKey = {
@@ -67,10 +66,38 @@ describe.each([
       })
     await client.getIndex(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
   })
+  test(`${permission} key: Get documents with string attributesToRetrieve`, async () => {
+    await client
+      .getIndex(uidNoPrimaryKey.uid)
+      .getDocuments({
+        attributesToRetrieve: 'id',
+      })
+      .then((response) => {
+        expect(response.find((x) => Object.keys(x).length !== 1)).toEqual(
+          undefined
+        )
+      })
+  })
+
+  test(`${permission} key: Get documents with array attributesToRetrieve`, async () => {
+    await client
+      .getIndex(uidNoPrimaryKey.uid)
+      .getDocuments({
+        attributesToRetrieve: ['id'],
+      })
+      .then((response) => {
+        expect(response.find((x) => Object.keys(x).length !== 1)).toEqual(
+          undefined
+        )
+      })
+  })
+
   test(`${permission} key: Get documents from index that has no primary key`, async () => {
     await client
       .getIndex(uidNoPrimaryKey.uid)
-      .getDocuments()
+      .getDocuments({
+        attributesToRetrieve: 'id',
+      })
       .then((response) => {
         expect(response.length).toEqual(dataset.length)
       })
@@ -83,6 +110,7 @@ describe.each([
         expect(response.length).toEqual(dataset.length)
       })
   })
+
   test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
     const id = 2
     const title = 'The Red And The Black'
@@ -321,12 +349,18 @@ describe.each([
   test(`${permission} key: Try to get deleted document from index that has NO primary key`, async () => {
     await expect(
       client.getIndex(uidNoPrimaryKey.uid).getDocument(1)
-    ).rejects.toThrowError('Document with id 1 not found')
+    ).rejects.toHaveProperty(
+      'errorCode',
+      Types.ErrorStatusCode.DOCUMENT_NOT_FOUND
+    )
   })
   test(`${permission} key: Try to get deleted document from index that has a primary key`, async () => {
     await expect(
       client.getIndex(uidAndPrimaryKey.uid).getDocument(1)
-    ).rejects.toThrowError('Document with id 1 not found')
+    ).rejects.toHaveProperty(
+      'errorCode',
+      Types.ErrorStatusCode.DOCUMENT_NOT_FOUND
+    )
   })
   test(`${permission} key: Add documents from index with no primary key by giving a primary key as parameter`, async () => {
     const docs = [
@@ -376,10 +410,7 @@ describe.each([
       .getAllUpdateStatus()
       .then((response: Types.Update[]) => {
         const lastUpdate = response[response.length - 1]
-        expect(lastUpdate).toHaveProperty(
-          'error',
-          'serializer error; Primary key is missing.'
-        )
+        expect(lastUpdate).toHaveProperty('error', 'document id is missing')
         expect(lastUpdate).toHaveProperty('status', 'failed')
       })
   })
@@ -389,33 +420,39 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on documents',
   ({ client, permission }) => {
     test(`${permission} key: Try to add documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: ${PUBLIC_KEY}`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INVALID_TOKEN
       )
     })
     test(`${permission} key: Try to update documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: ${PUBLIC_KEY}`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INVALID_TOKEN
       )
     })
     test(`${permission} key: Try to get documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: ${PUBLIC_KEY}`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INVALID_TOKEN
       )
     })
     test(`${permission} key: Try to delete one document and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: ${PUBLIC_KEY}`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INVALID_TOKEN
       )
     })
     test(`${permission} key: Try to delete some documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: ${PUBLIC_KEY}`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INVALID_TOKEN
       )
     })
     test(`${permission} key: Try to delete all documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `Invalid API key: ${PUBLIC_KEY}`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INVALID_TOKEN
       )
     })
   }
@@ -425,33 +462,39 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on documents',
   ({ client, permission }) => {
     test(`${permission} key: Try to add documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `You must have an authorization token`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
     test(`${permission} key: Try to update documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `You must have an authorization token`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
     test(`${permission} key: Try to get documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `You must have an authorization token`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
     test(`${permission} key: Try to delete one document and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `You must have an authorization token`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
     test(`${permission} key: Try to delete some documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `You must have an authorization token`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
     test(`${permission} key: Try to delete all documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toThrowError(
-        `You must have an authorization token`
+      await expect(client.listIndexes()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }

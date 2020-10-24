@@ -6,7 +6,6 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  PUBLIC_KEY,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -49,15 +48,15 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getStopWords()
-      .then((response: String[]) => {
+      .then((response: string[]) => {
         expect(response).toEqual([])
       })
   })
   test(`${permission} key: Update stop words`, async () => {
-    const new_sw = ['the']
+    const newStopWords = ['the']
     const { updateId } = await client
       .getIndex(index.uid)
-      .updateStopWords(new_sw)
+      .updateStopWords(newStopWords)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -66,8 +65,8 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getStopWords()
-      .then((response: String[]) => {
-        expect(response).toEqual(new_sw)
+      .then((response: string[]) => {
+        expect(response).toEqual(newStopWords)
       })
   })
   test(`${permission} key: Reset stop words`, async () => {
@@ -82,7 +81,7 @@ describe.each([
     await client
       .getIndex(index.uid)
       .getStopWords()
-      .then((response: String[]) => {
+      .then((response: string[]) => {
         expect(response).toEqual([])
       })
   })
@@ -98,17 +97,17 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get stop words and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getStopWords()
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to update stop words and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateStopWords([])
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to reset stop words and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetStopWords()
-      ).rejects.toThrowError(`Invalid API key: ${PUBLIC_KEY}`)
+      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
 )
@@ -123,17 +122,26 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     test(`${permission} key: try to get stop words and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).getStopWords()
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
     test(`${permission} key: try to update stop words and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).updateStopWords([])
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
     test(`${permission} key: try to reset stop words and be denied`, async () => {
       await expect(
         client.getIndex(index.uid).resetStopWords()
-      ).rejects.toThrowError(`You must have an authorization token`)
+      ).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
     })
   }
 )
