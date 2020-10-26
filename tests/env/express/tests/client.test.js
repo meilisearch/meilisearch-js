@@ -4,6 +4,8 @@ describe('MeiliSearch JS Browser test', () => {
   })
 
   it('Should have generated a meilisearch client and displayed', async () => {
-    await expect(page).toMatch(`test`)
-  }, 10000)
+    await expect(
+      page.content()
+      ).resolves.toMatch('createdIndexTest')
+  }, 5000)
 })
