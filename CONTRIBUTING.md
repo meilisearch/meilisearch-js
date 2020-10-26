@@ -106,6 +106,6 @@ Some notes on GitHub PRs:
   The draft PR can be very useful if you want to show that you are working on something and make your work visible.
 - The branch related to the PR must be **up-to-date with `master`** before merging. [Bors](https://github.com/bors-ng/bors-ng) will rebase your branch if it is not. Ask a maintainer to run it.
 - All PRs must be reviewed and approved by at least one maintainer.
-- The PR title should be accurate and descriptive of the changes. The title of the PR will be indeed automatically added to the next [release changlogs](https://github.com/meilisearch/meilisearch-js/releases/).
+- The PR title should be accurate and descriptive of the changes. The title of the PR will be indeed automatically added to the next [release changelogs](https://github.com/meilisearch/meilisearch-js/releases/).
 
 Thank you again for reading this through, we can not wait to begin to work with you if you made your way through this contributing guide ❤️
