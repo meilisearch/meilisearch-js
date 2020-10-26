@@ -15,17 +15,12 @@
 <script>
   ;(async () => {
     try {
-      console.log('test');
-
       const client = new window.MeiliSearch({
         host: 'http://127.0.0.1:7700',
         apiKey: 'masterKey',
       })
-      console.log('test 2');
-
-      await client.createIndex("test")
-      console.log('Created');
-      const index = await client.getIndex("test").show()
+      await client.getOrCreateIndex("createdIndexTest")
+      const index = await client.getIndex("createdIndexTest").show()
       document.querySelector('#indexes').innerHTML = `<div>${JSON.stringify(index.uid)}</div>`
       await client.getIndex("test").deleteIndex()
     } catch(e) {
