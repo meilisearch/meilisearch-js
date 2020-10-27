@@ -4,7 +4,7 @@
       "strict": true,
       "lib": [
           "esnext",
-          "dom" // Added to avoir Request type error
+          "dom" // Added to get Request type error
       ],
       "module": "commonjs",
       "moduleResolution": "node",
