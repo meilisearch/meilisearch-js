@@ -7,5 +7,5 @@ describe('MeiliSearch JS Browser test', () => {
     await expect(
       page.content()
       ).resolves.toMatch('createdIndexTest')
-  }, 5000)
+  }, 10000)
 })
