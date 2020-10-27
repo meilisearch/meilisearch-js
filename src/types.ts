@@ -135,20 +135,7 @@ export type GetDocumentsResponse<
   ? Array<Document<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
   : Array<Document<T>>
 
-export type DocumentLike = { [Key in string]?: DocumentField }
-export type DocumentArray = DocumentField[]
-export type DocumentField =
-  | string
-  | number
-  | boolean
-  | null
-  | DocumentLike
-  | DocumentArray
-
-export type Document<T> = DocumentLike &
-  {
-    [key in keyof T]: T[key]
-  }
+export type Document<T> = T
 
 /*
  ** Settings
