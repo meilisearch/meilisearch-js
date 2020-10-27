@@ -24,14 +24,14 @@ const config = {
       displayName: 'dom',
       testEnvironment: 'jsdom',
       testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
-      testPathIgnorePatterns: ['meilisearch-test-utils'],
+      testPathIgnorePatterns: ['meilisearch-test-utils', 'env/'],
     },
     {
       preset: 'ts-jest',
       displayName: 'node',
       testEnvironment: 'node',
       testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
-      testPathIgnorePatterns: ['meilisearch-test-utils'],
+      testPathIgnorePatterns: ['meilisearch-test-utils', 'env/'],
     },
   ],
 }
