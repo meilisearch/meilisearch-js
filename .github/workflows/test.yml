@@ -40,4 +40,6 @@ jobs:
         run: yarn test:env:nodejs
       - name: Run Browser env
         run: yarn test:env:browser
+      - name: Run node typescript env
+        run: yarn test:env:node-ts
 
