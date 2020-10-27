@@ -1,4 +1,4 @@
-import 'abort-controller/polyfill'
+import AbortController from 'abort-controller'
 
 import * as Types from '../src/types'
 import {
