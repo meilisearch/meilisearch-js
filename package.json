@@ -36,7 +36,7 @@
     "test:watch": "yarn test --watch",
     "test:coverage": "yarn test --coverage",
     "test:ci": "yarn test --ci",
-    "test:env": "yarn build && yarn test:env:browser && yarn test:env:nodejs && yarn test:env:esm",
+    "test:env": "yarn build && yarn test:env:browser && yarn test:env:nodejs && yarn test:env:esm && yarn test:env:node-ts",
     "test:env:browser": "yarn --cwd tests/env/express && yarn --cwd tests/env/express test",
     "test:env:node-ts": "yarn --cwd tests/env/typescript-node build",
     "test:env:nodejs": "node tests/env/node/index.js",
