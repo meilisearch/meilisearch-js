@@ -8,7 +8,7 @@
 </head>
 <body>
     Index name:
-    <div id="indexes"></div>
+    <div id="content"></div>
 </body>
 </html>
 <script src="./meilisearch.umd.js"></script>
@@ -21,8 +21,13 @@
       })
       await client.getOrCreateIndex("createdIndexTest")
       const index = await client.getIndex("createdIndexTest").show()
-      document.querySelector('#indexes').innerHTML = `<div>${JSON.stringify(index.uid)}</div>`
-      await client.getIndex("test").deleteIndex()
+      // Create dynamic element to wait on with puppeteer
+      const newDiv = document.createElement("div");
+      newDiv.setAttribute("id", "indexes");
+      newDiv.innerHTML = index.uid
+
+      document.body.insertBefore(newDiv, document.querySelector("#content"));
+      await client.getIndex("createdIndexTest").deleteIndex()
     } catch(e) {
       console.error(e);
     }
