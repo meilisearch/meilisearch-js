@@ -1,0 +1,21 @@
+{
+  "name": "typescript-node",
+  "version": "0.1.0",
+  "description": "Demo typescrypt node",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json"
+  },
+  "keywords": [
+    "demo",
+    "meilisearch"
+  ],
+  "author": "Charlotte Vermandel",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "meilisearch": "^0.14.2"
+  }
+}
