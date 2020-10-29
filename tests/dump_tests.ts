@@ -19,7 +19,7 @@ describe.each([
   test(`${permission} key: create a new dump`, async () => {
     await client.createDump().then((response) => {
       expect(response.uid).toBeDefined()
-      expect(response.status).toEqual('processing')
+      expect(response.status).toEqual('in_progress')
     })
   })
 

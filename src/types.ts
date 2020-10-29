@@ -175,7 +175,7 @@ export interface Update {
 
 export interface EnqueuedDump {
   uid: string
-  status: 'processing' | 'dump_process_failed' | 'done'
+  status: 'in_progress' | 'failed' | 'done'
 }
 
 /*
