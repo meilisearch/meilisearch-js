@@ -107,45 +107,6 @@ class MeiliSearch implements Types.MeiliSearchInterface {
     return await this.httpRequest.get(url).then(() => true)
   }
 
-  /**
-   * Change the healthyness to healthy
-   * @memberof MeiliSearch
-   * @method setHealthy
-   */
-  async setHealthy(): Promise<void> {
-    const url = '/health'
-
-    return await this.httpRequest.put(url, {
-      health: true,
-    })
-  }
-
-  /**
-   * Change the healthyness to unhealthy
-   * @memberof MeiliSearch
-   * @method setUnhealthy
-   */
-  async setUnhealthy(): Promise<void> {
-    const url = '/health'
-
-    return await this.httpRequest.put(url, {
-      health: false,
-    })
-  }
-
-  /**
-   * Set the healthyness to health value
-   * @memberof MeiliSearch
-   * @method changeHealthTo
-   */
-  async changeHealthTo(health: boolean): Promise<void> {
-    const url = '/health'
-
-    return await this.httpRequest.put(url, {
-      health,
-    })
-  }
-
   ///
   /// STATS
   ///
