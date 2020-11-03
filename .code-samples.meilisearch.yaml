@@ -29,7 +29,7 @@ add_or_update_documents_1: |-
   client.getIndex('movies').updateDocuments([{
       id: 287947,
       title: 'Shazam ⚡️',
-      genre: 'comedy'
+      genres: 'comedy'
   }])
 delete_all_documents_1: |-
   client.getIndex('movies').deleteAllDocuments()
@@ -153,7 +153,6 @@ get_indexes_stats_1: |-
   client.stats()
 get_health_1: |-
   client.isHealthy()
-update_health_1: |-
 get_version_1: |-
   client.version()
 distinct_attribute_guide_1: |-
@@ -338,7 +337,7 @@ get_attributes_for_faceting_1: |-
 update_attributes_for_faceting_1: |-
   client.getIndex('movies')
     .updateAttributesForFaceting([
-      'genre',
+      'genres',
       'director'
     ])
 reset_attributes_for_faceting_1: |-
