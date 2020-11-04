@@ -8,7 +8,7 @@ version-resolver:
       - 'breaking-change'
   default: patch
 categories:
-  - title: 'Breaking changes'
+  - title: 'Breaking changes ⚠️'
     label: 'breaking-change'
 template: |
   ## Changes
@@ -22,4 +22,6 @@ replacers:
   - search: '/(?:and )?@dependabot-preview(?:\[bot\])?,?/g'
     replace: ''
   - search: '/(?:and )?@dependabot(?:\[bot\])?,?/g'
+    replace: ''
+  - search: '/(?:and )?@bors(?:\[bot\])?,?/g'
     replace: ''
