@@ -6,6 +6,7 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
+  waitForDumpProcessing,
 } from './meilisearch-test-utils'
 
 beforeAll(async () => {
@@ -17,18 +18,18 @@ describe.each([
   { client: privateClient, permission: 'Private' },
 ])('Test on dump', ({ client, permission }) => {
   test(`${permission} key: create a new dump`, async () => {
-    await client.createDump().then((response) => {
-      expect(response.uid).toBeDefined()
-      expect(response.status).toEqual('in_progress')
-    })
+    const response = await client.createDump()
+    expect(response.uid).toBeDefined()
+    expect(response.status).toEqual('in_progress')
+    await waitForDumpProcessing(response.uid, client)
   })
 
   test(`${permission} key: get dump status`, async () => {
     const enqueuedDump = await client.createDump()
-    await client.getDumpStatus(enqueuedDump.uid).then((response) => {
-      expect(response.uid).toEqual(enqueuedDump.uid)
-      expect(response.status).toBeDefined()
-    })
+    await waitForDumpProcessing(enqueuedDump.uid, client)
+    const response = await client.getDumpStatus(enqueuedDump.uid)
+    expect(response.uid).toEqual(enqueuedDump.uid)
+    expect(response.status).toBeDefined()
   })
 })
 
