@@ -65,7 +65,7 @@ async function waitForDumpProcessing(
     await sleep(intervalMs)
   }
   throw new Types.MeiliSearchTimeOutError(
-    `timeout of ${timeOutMs}ms has exceeded on process ${dumpId} when waiting for pending update to resolve.`
+    `timeout of ${timeOutMs}ms has exceeded on process ${dumpId} when waiting for the dump creation process to be done.`
   )
 }
 
