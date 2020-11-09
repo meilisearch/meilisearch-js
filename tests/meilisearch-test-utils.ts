@@ -1,5 +1,6 @@
 import MeiliSearch from '../src/meilisearch'
 import * as Types from '../src/types'
+import { sleep } from '../src/utils'
 
 // testing
 const MASTER_KEY = 'masterKey'
@@ -49,6 +50,25 @@ const clearAllIndexes = async (config: Types.Config): Promise<void> => {
   await expect(client.listIndexes()).resolves.toHaveLength(0)
 }
 
+async function waitForDumpProcessing(
+  dumpId: string,
+  client: MeiliSearch,
+  {
+    timeOutMs = 5000,
+    intervalMs = 50,
+  }: { timeOutMs?: number; intervalMs?: number } = {}
+): Promise<Types.EnqueuedDump> {
+  const startingTime = Date.now()
+  while (Date.now() - startingTime < timeOutMs) {
+    const response = await client.getDumpStatus(dumpId)
+    if (response.status !== 'in_progress') return response
+    await sleep(intervalMs)
+  }
+  throw new Types.MeiliSearchTimeOutError(
+    `timeout of ${timeOutMs}ms has exceeded on process ${dumpId} when waiting for the dump creation process to be done.`
+  )
+}
+
 export {
   clearAllIndexes,
   config,
@@ -60,4 +80,5 @@ export {
   PRIVATE_KEY,
   MASTER_KEY,
   MeiliSearch,
+  waitForDumpProcessing,
 }

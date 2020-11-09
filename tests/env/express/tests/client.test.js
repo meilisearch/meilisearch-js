@@ -4,6 +4,7 @@ describe('MeiliSearch JS Browser test', () => {
   })
 
   it('Should have generated a meilisearch client and displayed', async () => {
+    jest.setTimeout(100 * 1000)
     await page.waitForSelector("#indexes")
     await expect(
       page.content()
