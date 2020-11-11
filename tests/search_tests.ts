@@ -362,6 +362,7 @@ describe.each([
             genre: { adventure: 0, fantasy: 0, romance: 2, 'sci fi': 0 },
           })
           expect(response).toHaveProperty('exhaustiveFacetsCount', true)
+          expect(response).toHaveProperty('exhaustiveNbHits', false)
           expect(response).toHaveProperty('hits', expect.any(Array))
           expect(response.hits.length).toEqual(2)
         })
@@ -399,6 +400,7 @@ describe.each([
             genre: { adventure: 0, fantasy: 0, romance: 2, 'sci fi': 0 },
           })
           expect(response).toHaveProperty('exhaustiveFacetsCount', true)
+          expect(response).toHaveProperty('exhaustiveNbHits', false)
           expect(response).toHaveProperty('hits', expect.any(Array))
           expect(response.hits.length).toEqual(2)
         })
