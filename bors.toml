@@ -1,3 +1,8 @@
-status = ["Node 10 sample", "Node 12 sample", "Node 14 sample"]
+status = [
+  'linter-check',
+  'integration-tests (Node.js 10)',
+  'integration-tests (Node.js 12)',
+  'integration-tests (Node.js 14)'
+]
 # 1 hour timeout
 timeout-sec = 3600
