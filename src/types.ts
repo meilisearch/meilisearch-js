@@ -105,6 +105,7 @@ export interface SearchResponse<T, P extends SearchParams<T>> {
   exhaustiveFacetsCount?: boolean
   query: string
   nbHits: number
+  exhaustiveNbHits: boolean
 }
 
 export interface FieldsDistribution {
