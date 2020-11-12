@@ -1,4 +1,4 @@
-name: Jest
+name: Tests
 
 on:
   pull_request:
@@ -10,12 +10,12 @@ on:
       - master
 
 jobs:
-  tests:
+  integration_tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node: [ '10', '12', '14' ]
-    name: Node ${{ matrix.node }} sample
+    name: integration-tests (Node.js ${{ matrix.node }})
     steps:
       - uses: actions/checkout@v2
       - name: Setup node
@@ -26,9 +26,7 @@ jobs:
         run: node -v
       - name: Install dependencies
         run: yarn --dev
-      - name: Run style check
-        run: yarn style
-      - name: Docker setup
+      - name: MeiliSearch setup with Docker
         run: docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --no-analytics=true --master-key='masterKey'
       - name: Run tests
         run: yarn test
@@ -43,3 +41,14 @@ jobs:
       - name: Run node typescript env
         run: yarn test:env:node-ts
 
+  linter_check:
+    runs-on: ubuntu-latest
+    name: linter-check
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+      - name: Install dependencies
+        run: yarn --dev
+      - name: Run style check
+        run: yarn style
