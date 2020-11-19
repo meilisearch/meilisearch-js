@@ -7,6 +7,7 @@
 <h4 align="center">
   <a href="https://github.com/meilisearch/MeiliSearch">MeiliSearch</a> |
   <a href="https://docs.meilisearch.com">Documentation</a> |
+  <a href="https://roadmap.meilisearch.com/tabs/1-under-consideration">Roadmap</a> |
   <a href="https://www.meilisearch.com">Website</a> |
   <a href="https://blog.meilisearch.com">Blog</a> |
   <a href="https://twitter.com/meilisearch">Twitter</a> |
