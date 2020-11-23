@@ -82,7 +82,7 @@
     "eslint-plugin-node": "11",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "4",
-    "eslint-plugin-standard": "4",
+    "eslint-plugin-standard": "5",
     "gzip-size": "^6.0.0",
     "jest": "^25.2.4",
     "jest-watch-typeahead": "^0.5.0",
