@@ -107,6 +107,10 @@ const client = new MeiliSearch({
 })
 ```
 
+#### React Native <!-- omit in toc -->
+
+To make this package work with React Native, please add the [react-native-url-polyfill](https://www.npmjs.com/package/react-native-url-polyfill).
+
 ## 🎬 Getting Started
 
 #### Add Documents <!-- omit in toc -->
