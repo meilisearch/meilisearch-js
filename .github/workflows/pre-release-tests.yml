@@ -1,13 +1,12 @@
-name: Tests
+# Testing the code base against the MeiliSearch pre-releases
+name: Pre-Release Tests
 
+# Will only run for PRs and pushes to bump-meilisearch-v*
 on:
-  pull_request:
   push:
-    # trying and staging branches are for BORS config
-    branches:
-      - trying
-      - staging
-      - master
+    branches: bump-meilisearch-v*
+  pull_request:
+    branches: bump-meilisearch-v*
 
 jobs:
   integration_tests:
@@ -15,7 +14,7 @@ jobs:
     strategy:
       matrix:
         node: [ '10', '12', '14' ]
-    name: integration-tests (Node.js ${{ matrix.node }})
+    name: integration-tests-against-rc (Node.js ${{ matrix.node }})
     steps:
       - uses: actions/checkout@v2
       - name: Setup node
@@ -26,8 +25,10 @@ jobs:
         run: node -v
       - name: Install dependencies
         run: yarn --dev
-      - name: MeiliSearch setup with Docker
-        run: docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --no-analytics=true --master-key='masterKey'
+      - name: Get the latest MeiliSearch RC
+        run: echo "MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/master/scripts/get-latest-meilisearch-rc.sh | bash)" >> $GITHUB_ENV
+      - name: MeiliSearch (${{ env.MEILISEARCH_VERSION }}) setup with Docker
+        run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_VERSION }} ./meilisearch --master-key=masterKey --no-analytics=true
       - name: Run tests
         run: yarn test
       - name: Build project
@@ -40,15 +41,3 @@ jobs:
         run: yarn test:env:browser
       - name: Run node typescript env
         run: yarn test:env:node-ts
-
-  linter_check:
-    runs-on: ubuntu-latest
-    name: linter-check
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup node
-        uses: actions/setup-node@v1
-      - name: Install dependencies
-        run: yarn --dev
-      - name: Run style check
-        run: yarn style
