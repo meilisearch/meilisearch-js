@@ -1,0 +1,57 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    # trying and staging branches are for BORS config
+    branches:
+      - trying
+      - staging
+      - master
+
+jobs:
+  integration_tests:
+    # Will not run if the event is a PR to bump-meilisearch-v* (so a pre-release PR)
+    # Will still run for each push to bump-meilisearch-v*
+    if: github.event_name != 'pull_request' || !startsWith(github.base_ref, 'bump-meilisearch-v')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [ '10', '12', '14' ]
+    name: integration-tests (Node.js ${{ matrix.node }})
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: print version
+        run: node -v
+      - name: Install dependencies
+        run: yarn --dev
+      - name: MeiliSearch (latest) setup with Docker
+        run: docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --no-analytics=true --master-key='masterKey'
+      - name: Run tests
+        run: yarn test
+      - name: Build project
+        run: yarn build
+      - name: Run ESM env
+        run: yarn test:env:esm
+      - name: Run Node.js env
+        run: yarn test:env:nodejs
+      - name: Run Browser env
+        run: yarn test:env:browser
+      - name: Run node typescript env
+        run: yarn test:env:node-ts
+
+  linter_check:
+    runs-on: ubuntu-latest
+    name: linter-check
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+      - name: Install dependencies
+        run: yarn --dev
+      - name: Run style check
+        run: yarn style
