@@ -21,7 +21,6 @@
   "browser": "./dist/bundles/meilisearch.umd.js",
   "typings": "./dist/types/types.d.ts",
   "types": "./dist/types/types.d.ts",
-  "jsnext:main": "./dist/bundles/meilisearch.esm.js",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -64,7 +63,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.11.0",
     "@rollup/plugin-babel": "^5.2.0",
-    "@rollup/plugin-commonjs": "16.0.0",
+    "@rollup/plugin-commonjs": "17.0.0",
     "@rollup/plugin-json": "^4.0.2",
     "@rollup/plugin-node-resolve": "11.0.0",
     "@types/jest": "26.0.14",
