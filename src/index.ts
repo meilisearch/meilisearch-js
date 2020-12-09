@@ -195,12 +195,12 @@ class Index<T> implements Types.IndexInterface<T> {
    * @memberof Index
    * @method update
    */
-  async update(data: Types.IndexOptions): Promise<Types.IndexResponse> {
+  async update(data: Types.IndexOptions): Promise<this> {
     const url = `/indexes/${this.uid}`
 
     const index = await this.httpRequest.put(url, data)
     this.primaryKey = index.primaryKey
-    return index
+    return this
   }
 
   /**

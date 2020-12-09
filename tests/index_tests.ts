@@ -162,7 +162,7 @@ describe.each([
       const index = client.index(uidNoPrimaryKey.uid)
       await index
         .update({ primaryKey: 'newPrimaryKey' })
-        .then((response: Types.IndexResponse) => {
+        .then((response: Types.Index<any>) => {
           expect(response).toHaveProperty('uid', uidNoPrimaryKey.uid)
           expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
         })
@@ -172,7 +172,7 @@ describe.each([
       await client.createIndex('tempIndex')
       await client
         .updateIndex('tempIndex', { primaryKey: 'newPrimaryKey' })
-        .then((response: Types.IndexResponse) => {
+        .then((response: Types.Index<any>) => {
           expect(response).toHaveProperty('uid', 'tempIndex')
           expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
         })

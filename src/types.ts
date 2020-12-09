@@ -229,6 +229,11 @@ export interface MeiliSearchInterface {
   ) => Promise<Index<T>>
   listIndexes: () => Promise<IndexResponse[]>
   createIndex: <T>(uid: string, options?: IndexOptions) => Promise<Index<T>>
+  updateIndex: <T = any>(
+    uid: string,
+    options?: IndexOptions
+  ) => Promise<Index<T>>
+  deleteIndex: <T = any>(uid: string) => Promise<void>
   getKeys: () => Promise<Keys>
   isHealthy: () => Promise<true>
   stats: () => Promise<Stats>
@@ -252,7 +257,7 @@ export interface IndexInterface<T = any> {
   getRawInfo: () => Promise<IndexResponse>
   fetchInfo(): Promise<this>
   fetchPrimaryKey(): Promise<string | undefined>
-  update: (indexData: IndexOptions) => Promise<IndexResponse>
+  update: (indexData: IndexOptions) => Promise<this>
   delete: () => Promise<void>
   getStats: () => Promise<IndexStats>
   getDocuments: <P extends GetDocumentsParams<T>>(

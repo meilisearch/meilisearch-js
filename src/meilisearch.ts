@@ -91,7 +91,7 @@ class MeiliSearch implements Types.MeiliSearchInterface {
   async updateIndex<T = any>(
     uid: string,
     options: Types.IndexOptions = {}
-  ): Promise<Types.IndexResponse> {
+  ): Promise<Index<T>> {
     return new Index<T>(this.config, uid).update(options)
   }
 
