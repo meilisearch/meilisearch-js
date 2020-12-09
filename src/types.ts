@@ -249,7 +249,7 @@ export interface IndexInterface<T = any> {
     method?: Methods,
     config?: Partial<Request>
   ) => Promise<SearchResponse<T, P>>
-  getInfo: () => Promise<IndexResponse>
+  getRawInfo: () => Promise<IndexResponse>
   fetchInfo(): Promise<this>
   fetchPrimaryKey(): Promise<string | undefined>
   update: (indexData: IndexOptions) => Promise<IndexResponse>

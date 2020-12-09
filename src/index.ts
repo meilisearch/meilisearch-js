@@ -143,9 +143,9 @@ class Index<T> implements Types.IndexInterface<T> {
   /**
    * Get index information.
    * @memberof Index
-   * @method getInfo
+   * @method getRawInfo
    */
-  async getInfo(): Promise<Types.IndexResponse> {
+  async getRawInfo(): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
     const res = await this.httpRequest.get<Types.IndexResponse>(url)
@@ -159,7 +159,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method fetchInfo
    */
   async fetchInfo(): Promise<this> {
-    await this.getInfo()
+    await this.getRawInfo()
     return this
   }
 
@@ -169,7 +169,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method fetchPrimaryKey
    */
   async fetchPrimaryKey(): Promise<string | undefined> {
-    this.primaryKey = (await this.getInfo()).primaryKey
+    this.primaryKey = (await this.getRawInfo()).primaryKey
     return this.primaryKey
   }
 

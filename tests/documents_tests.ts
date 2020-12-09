@@ -384,7 +384,7 @@ describe.each([
     await client.index('updateUid').waitForPendingUpdate(updateId)
     await client
       .index('updateUid')
-      .getInfo()
+      .getRawInfo()
       .then((response: Types.IndexResponse) => {
         expect(response).toHaveProperty('uid', 'updateUid')
         expect(response).toHaveProperty('primaryKey', 'unique')

@@ -322,7 +322,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Get Index information:
 
-`index.getInfo(): Promise<IndexResponse>`
+`index.getRawInfo(): Promise<IndexResponse>`
 
 - Update Index:
 
