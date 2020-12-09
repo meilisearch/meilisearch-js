@@ -40,13 +40,13 @@ describe.each([
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
-      .getIndex(index.uid)
+      .index(index.uid)
       .addDocuments(dataset)
-    await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await masterClient.index(index.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Get default searchable attributes`, async () => {
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getSearchableAttributes()
       .then((response: string[]) => {
         expect(response).toEqual(['*'])
@@ -55,15 +55,15 @@ describe.each([
   test(`${permission} key: Update searchable attributes`, async () => {
     const newSearchableAttributes = ['title']
     const { updateId } = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .updateSearchableAttributes(newSearchableAttributes)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getSearchableAttributes()
       .then((response: string[]) => {
         expect(response).toEqual(newSearchableAttributes)
@@ -71,15 +71,15 @@ describe.each([
   })
   test(`${permission} key: Reset searchable attributes`, async () => {
     const { updateId } = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .resetSearchableAttributes()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getSearchableAttributes()
       .then((response: string[]) => {
         expect(response).toEqual(['*'])
@@ -96,17 +96,17 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     })
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getSearchableAttributes()
+        client.index(index.uid).getSearchableAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to update searchable attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateSearchableAttributes([])
+        client.index(index.uid).updateSearchableAttributes([])
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetSearchableAttributes()
+        client.index(index.uid).resetSearchableAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
@@ -121,7 +121,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getSearchableAttributes()
+        client.index(index.uid).getSearchableAttributes()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -129,7 +129,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to update searchable attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateSearchableAttributes([])
+        client.index(index.uid).updateSearchableAttributes([])
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -137,7 +137,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetSearchableAttributes()
+        client.index(index.uid).resetSearchableAttributes()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER

@@ -81,23 +81,23 @@ describe.each([
       await masterClient.createIndex(emptyIndex.uid)
       const newAttributesForFaceting = ['genre']
       const { updateId: settingUpdateId } = await masterClient
-        .getIndex(index.uid)
+        .index(index.uid)
         .updateAttributesForFaceting(newAttributesForFaceting)
         .then((response: Types.EnqueuedUpdate) => {
           expect(response).toHaveProperty('updateId', expect.any(Number))
           return response
         })
       await masterClient
-        .getIndex(index.uid)
+        .index(index.uid)
         .waitForPendingUpdate(settingUpdateId)
       const { updateId } = await masterClient
-        .getIndex(index.uid)
+        .index(index.uid)
         .addDocuments(dataset)
-      await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
+      await masterClient.index(index.uid).waitForPendingUpdate(updateId)
     })
     test(`${permission} key: Basic ${method} search`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search('prince', {}, method)
         .then((response) => {
           expect(response).toHaveProperty('hits', expect.any(Array))
@@ -114,7 +114,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with options`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search('prince', { limit: 1 }, method)
         .then((response) => {
           expect(response).toHaveProperty('hits', expect.any(Array))
@@ -131,7 +131,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with options`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search('prince', { limit: 1 }, method)
         .then((response) => {
           expect(response).toHaveProperty('hits', expect.any(Array))
@@ -147,7 +147,7 @@ describe.each([
     })
     test(`${permission} key: ${method} search with limit and offset`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(
           'prince',
           {
@@ -178,7 +178,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with matches parameter and small croplength`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(
           'prince',
           {
@@ -208,7 +208,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with all options but not all fields`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(
           'prince',
           {
@@ -256,7 +256,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with all options and all fields`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(
           'prince',
           {
@@ -298,7 +298,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with all options but specific fields`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(
           'prince',
           {
@@ -348,7 +348,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with facetFilters and facetsDistribution`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(
           'a',
           {
@@ -370,7 +370,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with facetFilters with spaces`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(
           'h',
           {
@@ -386,7 +386,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with multiple facetFilters`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(
           'a',
           {
@@ -408,7 +408,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with multiple facetFilters and undefined query (placeholder)`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(
           undefined,
           {
@@ -427,7 +427,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with multiple facetFilters and null query (placeholder)`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(
           null,
           {
@@ -447,7 +447,7 @@ describe.each([
 
     test(`${permission} key: ${method} search with multiple facetFilters and empty string query (placeholder)`, async () => {
       await client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(
           '',
           {
@@ -466,7 +466,7 @@ describe.each([
 
     test(`${permission} key: ${method} search on index with no documents and no primary key`, async () => {
       await client
-        .getIndex(emptyIndex.uid)
+        .index(emptyIndex.uid)
         .search('prince', {}, method)
         .then((response) => {
           expect(response).toHaveProperty('hits', [])
@@ -482,9 +482,9 @@ describe.each([
     })
 
     test(`${permission} key: Try to ${method} search on deleted index and fail`, async () => {
-      await masterClient.getIndex(index.uid).deleteIndex()
+      await masterClient.index(index.uid).deleteIndex()
       await expect(
-        client.getIndex(index.uid).search('prince', {}, method)
+        client.index(index.uid).search('prince', {}, method)
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.INDEX_NOT_FOUND
@@ -502,7 +502,7 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
     })
     test(`${permission} key: Try Basic search and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).search('prince')
+        client.index(index.uid).search('prince')
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -532,7 +532,7 @@ describe.each([
       const controller = new AbortController()
 
       const searchPromise = client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search('unreachable', {}, method, {
           signal: controller.signal,
         })
@@ -552,25 +552,25 @@ describe.each([
       const searchQuery = 'prince'
 
       const searchAPromise = client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(searchQuery, {}, method, {
           signal: controllerA.signal,
         })
 
       const searchBPromise = client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(searchQuery, {}, method, {
           signal: controllerB.signal,
         })
 
       const searchCPromise = client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(searchQuery, {}, method, {
           signal: controllerC.signal,
         })
 
       const searchDPromise = client
-        .getIndex(index.uid)
+        .index(index.uid)
         .search(searchQuery, {}, method)
 
       controllerB.abort()

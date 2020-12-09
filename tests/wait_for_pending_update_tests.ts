@@ -38,16 +38,16 @@ describe.each([
     await masterClient.createIndex(index.uid)
   })
   test(`${permission} key: Get WaitForPendingStatus until done and resolved`, async () => {
-    const { updateId } = await client.getIndex(index.uid).addDocuments(dataset)
+    const { updateId } = await client.index(index.uid).addDocuments(dataset)
     const update = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .waitForPendingUpdate(updateId)
     expect(update).toHaveProperty('status', 'processed')
   })
   test(`${permission} key: Get WaitForPendingStatus with custom interval and timeout until done and resolved`, async () => {
-    const { updateId } = await client.getIndex(index.uid).addDocuments(dataset)
+    const { updateId } = await client.index(index.uid).addDocuments(dataset)
     const update = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .waitForPendingUpdate(updateId, {
         timeOutMs: 6000,
         intervalMs: 100,
@@ -55,9 +55,9 @@ describe.each([
     expect(update).toHaveProperty('status', 'processed')
   })
   test(`${permission} key: Get WaitForPendingStatus with custom timeout and interval at 0 done and resolved`, async () => {
-    const { updateId } = await client.getIndex(index.uid).addDocuments(dataset)
+    const { updateId } = await client.index(index.uid).addDocuments(dataset)
     const update = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .waitForPendingUpdate(updateId, {
         timeOutMs: 6000,
         intervalMs: 0,
@@ -66,10 +66,10 @@ describe.each([
   })
 
   test(`${permission} key: Try to WaitForPendingStatus with small timeout and raise an error`, async () => {
-    const { updateId } = await client.getIndex(index.uid).addDocuments(dataset)
+    const { updateId } = await client.index(index.uid).addDocuments(dataset)
     await expect(
       client
-        .getIndex(index.uid)
+        .index(index.uid)
         .waitForPendingUpdate(updateId, { timeOutMs: 0 })
     ).rejects.toHaveProperty('name', 'MeiliSearchTimeOutError')
   })
