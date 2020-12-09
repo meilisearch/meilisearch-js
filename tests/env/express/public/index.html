@@ -20,14 +20,14 @@
         apiKey: 'masterKey',
       })
       await client.getOrCreateIndex("createdIndexTest")
-      const index = await client.getIndex("createdIndexTest").show()
+      const index = await client.index("createdIndexTest").show()
       // Create dynamic element to wait on with puppeteer
       const newDiv = document.createElement("div");
       newDiv.setAttribute("id", "indexes");
       newDiv.innerHTML = index.uid
 
       document.body.insertBefore(newDiv, document.querySelector("#content"));
-      await client.getIndex("createdIndexTest").deleteIndex()
+      await client.index("createdIndexTest").deleteIndex()
     } catch(e) {
       console.error(e);
     }

@@ -15,10 +15,12 @@ import HttpRequests from './http-requests'
 
 class Index<T> implements Types.IndexInterface<T> {
   uid: string
+  primaryKey: string | undefined
   httpRequest: HttpRequests
 
-  constructor(config: Types.Config, uid: string) {
+  constructor(config: Types.Config, uid: string, primaryKey?: string) {
     this.uid = uid
+    this.primaryKey = primaryKey
     this.httpRequest = new HttpRequests(config)
   }
 
@@ -146,7 +148,46 @@ class Index<T> implements Types.IndexInterface<T> {
   async show(): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
-    return await this.httpRequest.get<Types.IndexResponse>(url)
+    const res = await this.httpRequest.get<Types.IndexResponse>(url)
+    this.primaryKey = res.primaryKey
+    return res
+  }
+
+  /**
+   * Fetch and update Index information.
+   * @memberof Index
+   * @method show
+   */
+  async fetchInfo(): Promise<this> {
+    await this.show()
+    return this
+  }
+
+  /**
+   * Get Primary Key.
+   * @memberof Index
+   * @method getPrimaryKey
+   */
+  async getPrimaryKey(): Promise<string | undefined> {
+    this.primaryKey = (await this.show()).primaryKey
+    return this.primaryKey
+  }
+
+  /**
+   * Update an index.
+   * @memberof Index
+   * @method updateIndex
+   */
+  static async create<T = any>(
+    config: Types.Config,
+    uid: string,
+    options: Types.IndexOptions = {}
+  ): Promise<Index<T>> {
+    const url = '/indexes'
+
+    const req = new HttpRequests(config)
+    const index = await req.post(url, { ...options, uid })
+    return new Index(config, uid, index.primaryKey)
   }
 
   /**
@@ -157,7 +198,9 @@ class Index<T> implements Types.IndexInterface<T> {
   async updateIndex(data: Types.IndexOptions): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
-    return await this.httpRequest.put(url, data)
+    const index = await this.httpRequest.put(url, data)
+    this.primaryKey = index.primaryKey
+    return index
   }
 
   /**
@@ -165,7 +208,6 @@ class Index<T> implements Types.IndexInterface<T> {
    * @memberof Index
    * @method deleteIndex
    */
-
   async deleteIndex(): Promise<void> {
     const url = `/indexes/${this.uid}`
 

@@ -22,11 +22,20 @@ class MeiliSearch implements Types.MeiliSearchInterface {
   }
 
   /**
+   * Return information about an existing Index
+   * @memberof MeiliSearch
+   * @method getIndex
+   */
+  async getIndex<T = any>(indexUid: string): Promise<Index<T>> {
+    return new Index<T>(this.config, indexUid).fetchInfo()
+  }
+
+  /**
    * Return an Index instance
    * @memberof MeiliSearch
    * @method getIndex
    */
-  getIndex<T = any>(indexUid: string): Index<T> {
+  index<T = any>(indexUid: string): Index<T> {
     return new Index<T>(this.config, indexUid)
   }
 
@@ -40,11 +49,11 @@ class MeiliSearch implements Types.MeiliSearchInterface {
     options: Types.IndexOptions = {}
   ): Promise<Index<T>> {
     try {
-      const index = await this.createIndex(uid, options)
+      const index = await this.getIndex(uid)
       return index
     } catch (e) {
-      if (e.errorCode === 'index_already_exists') {
-        return this.getIndex(uid)
+      if (e.errorCode === 'index_not_found') {
+        return this.createIndex(uid, options)
       }
       throw new MeiliSearchApiError(e, e.status)
     }
@@ -70,7 +79,8 @@ class MeiliSearch implements Types.MeiliSearchInterface {
     uid: string,
     options: Types.IndexOptions = {}
   ): Promise<Index<T>> {
-    const url = '/indexes'
+    return await Index.create<T>(this.config, uid, options)
+  }
 
     const index = await this.httpRequest.post(url, { ...options, uid })
 

@@ -221,7 +221,8 @@ export interface Version {
 
 export interface MeiliSearchInterface {
   config: Config
-  getIndex: <T>(indexUid: string) => Index<T>
+  getIndex: <T>(indexUid: string) => Promise<Index<T>>
+  index: <T>(indexUid: string) => Index<T>
   getOrCreateIndex: <T>(
     uid: string,
     options?: IndexOptions
@@ -249,6 +250,8 @@ export interface IndexInterface<T = any> {
     config?: Partial<Request>
   ) => Promise<SearchResponse<T, P>>
   show: () => Promise<IndexResponse>
+  fetchInfo(): Promise<this>
+  getPrimaryKey(): Promise<string | undefined>
   updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
   deleteIndex: () => Promise<void>
   getStats: () => Promise<IndexStats>

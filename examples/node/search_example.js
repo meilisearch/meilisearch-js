@@ -20,7 +20,7 @@ const addDataset = async () => {
 
 ;(async () => {
   await addDataset()
-  const index = await client.getIndex('movies')
+  const index = await client.index('movies')
   const resp = await index.search('Avengers', {
     limit: 1,
     attributesToHighlight: ['title'],
