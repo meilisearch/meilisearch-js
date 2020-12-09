@@ -87,9 +87,7 @@ describe.each([
           expect(response).toHaveProperty('updateId', expect.any(Number))
           return response
         })
-      await masterClient
-        .index(index.uid)
-        .waitForPendingUpdate(settingUpdateId)
+      await masterClient.index(index.uid).waitForPendingUpdate(settingUpdateId)
       const { updateId } = await masterClient
         .index(index.uid)
         .addDocuments(dataset)

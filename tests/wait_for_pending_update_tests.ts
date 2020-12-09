@@ -39,9 +39,7 @@ describe.each([
   })
   test(`${permission} key: Get WaitForPendingStatus until done and resolved`, async () => {
     const { updateId } = await client.index(index.uid).addDocuments(dataset)
-    const update = await client
-      .index(index.uid)
-      .waitForPendingUpdate(updateId)
+    const update = await client.index(index.uid).waitForPendingUpdate(updateId)
     expect(update).toHaveProperty('status', 'processed')
   })
   test(`${permission} key: Get WaitForPendingStatus with custom interval and timeout until done and resolved`, async () => {
@@ -68,9 +66,7 @@ describe.each([
   test(`${permission} key: Try to WaitForPendingStatus with small timeout and raise an error`, async () => {
     const { updateId } = await client.index(index.uid).addDocuments(dataset)
     await expect(
-      client
-        .index(index.uid)
-        .waitForPendingUpdate(updateId, { timeOutMs: 0 })
+      client.index(index.uid).waitForPendingUpdate(updateId, { timeOutMs: 0 })
     ).rejects.toHaveProperty('name', 'MeiliSearchTimeOutError')
   })
 })

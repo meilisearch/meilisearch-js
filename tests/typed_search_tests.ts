@@ -96,9 +96,7 @@ describe.each([
       const { updateId } = await masterClient
         .index<Movie>(index.uid)
         .addDocuments(dataset)
-      await masterClient
-        .index<Movie>(index.uid)
-        .waitForPendingUpdate(updateId)
+      await masterClient.index<Movie>(index.uid).waitForPendingUpdate(updateId)
     })
     test(`${permission} key: Basic search`, async () => {
       await client
