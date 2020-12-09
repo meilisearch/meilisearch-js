@@ -326,11 +326,16 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Update Index:
 
-`index.update(data: IndexOptions): Promise<IndexResponse>`
+`client.updateIndex(uid): Promise<Index>`
+Or using the index object:
+`index.update(data: IndexOptions): Promise<Index>`
 
 - Delete Index:
 
+`client.deleteIndex(uid): Promise<void>`
+Or using the index object:
 `index.delete(): Promise<void>`
+
 
 - Get specific index stats
 
@@ -338,7 +343,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Return Index instance with updated information:
 
-`index.fetchInfo(): Promise<IndexResponse>`
+`index.fetchInfo(): Promise<Index>`
 
 - Get Primary Key of an Index:
 
