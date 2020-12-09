@@ -4,7 +4,7 @@
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
 get_one_index_1: |-
-  client.index('movies').show()
+  client.index('movies').getInfo()
 list_all_indexes_1: |-
   client.listIndexes()
 create_an_index_1: |-
@@ -12,7 +12,7 @@ create_an_index_1: |-
 update_an_index_1: |-
   client.updateIndex('movies', { primaryKey: 'movie_review_id' })
 delete_an_index_1: |-
-  client.index('movies').deleteIndex()
+  client.deleteIndex('movies')
 get_one_document_1: |-
   client.getDocument(25684)
 get_documents_1: |-

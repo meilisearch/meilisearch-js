@@ -322,15 +322,15 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Get Index information:
 
-`index.show(): Promise<IndexResponse>`
+`index.getInfo(): Promise<IndexResponse>`
 
 - Update Index:
 
-`index.updateIndex(data: IndexOptions): Promise<IndexResponse>`
+`index.update(data: IndexOptions): Promise<IndexResponse>`
 
 - Delete Index:
 
-`index.deleteIndex(): Promise<void>`
+`index.delete(): Promise<void>`
 
 - Get specific index stats
 
@@ -342,7 +342,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Get Primary Key of an Index:
 
-`index.getPrimaryKey(): Promise<string | undefined>`
+`index.fetchPrimaryKey(): Promise<string | undefined>`
 
 ### Updates <!-- omit in toc -->
 
