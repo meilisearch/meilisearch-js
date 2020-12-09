@@ -22,21 +22,22 @@ class MeiliSearch implements Types.MeiliSearchInterface {
   }
 
   /**
-   * Return information about an existing Index
-   * @memberof MeiliSearch
-   * @method getIndex
-   */
-  async getIndex<T = any>(indexUid: string): Promise<Index<T>> {
-    return new Index<T>(this.config, indexUid).fetchInfo()
-  }
-
-  /**
    * Return an Index instance
    * @memberof MeiliSearch
    * @method index
    */
   index<T = any>(indexUid: string): Index<T> {
     return new Index<T>(this.config, indexUid)
+  }
+
+  /**
+   * Gather information about an index by calling MeiliSearch and
+   * return an Index instance with the gathered information
+   * @memberof MeiliSearch
+   * @method getIndex
+   */
+  async getIndex<T = any>(indexUid: string): Promise<Index<T>> {
+    return new Index<T>(this.config, indexUid).fetchInfo()
   }
 
   /**
