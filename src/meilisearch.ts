@@ -33,7 +33,7 @@ class MeiliSearch implements Types.MeiliSearchInterface {
   /**
    * Return an Index instance
    * @memberof MeiliSearch
-   * @method getIndex
+   * @method index
    */
   index<T = any>(indexUid: string): Index<T> {
     return new Index<T>(this.config, indexUid)
@@ -82,10 +82,27 @@ class MeiliSearch implements Types.MeiliSearchInterface {
     return await Index.create<T>(this.config, uid, options)
   }
 
-    const index = await this.httpRequest.post(url, { ...options, uid })
-
-    return new Index(this.config, index.uid)
+  /**
+   * Update an index
+   * @memberof MeiliSearch
+   * @method updateIndex
+   */
+  async updateIndex<T = any>(
+    uid: string,
+    options: Types.IndexOptions = {}
+  ): Promise<Types.IndexResponse> {
+    return new Index<T>(this.config, uid).update(options)
   }
+
+  /**
+   * Delete an index
+   * @memberof MeiliSearch
+   * @method deleteIndex
+   */
+  async deleteIndex<T = any>(uid: string): Promise<void> {
+    return new Index<T>(this.config, uid).delete()
+  }
+
   ///
   /// KEYS
   ///

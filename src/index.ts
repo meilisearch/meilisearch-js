@@ -141,11 +141,11 @@ class Index<T> implements Types.IndexInterface<T> {
   /// INDEX
   ///
   /**
-   * Show index information.
+   * Get index information.
    * @memberof Index
-   * @method show
+   * @method getInfo
    */
-  async show(): Promise<Types.IndexResponse> {
+  async getInfo(): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
     const res = await this.httpRequest.get<Types.IndexResponse>(url)
@@ -156,27 +156,27 @@ class Index<T> implements Types.IndexInterface<T> {
   /**
    * Fetch and update Index information.
    * @memberof Index
-   * @method show
+   * @method fetchInfo
    */
   async fetchInfo(): Promise<this> {
-    await this.show()
+    await this.getInfo()
     return this
   }
 
   /**
    * Get Primary Key.
    * @memberof Index
-   * @method getPrimaryKey
+   * @method fetchPrimaryKey
    */
-  async getPrimaryKey(): Promise<string | undefined> {
-    this.primaryKey = (await this.show()).primaryKey
+  async fetchPrimaryKey(): Promise<string | undefined> {
+    this.primaryKey = (await this.getInfo()).primaryKey
     return this.primaryKey
   }
 
   /**
-   * Update an index.
+   * Create an index.
    * @memberof Index
-   * @method updateIndex
+   * @method create
    */
   static async create<T = any>(
     config: Types.Config,
@@ -193,9 +193,9 @@ class Index<T> implements Types.IndexInterface<T> {
   /**
    * Update an index.
    * @memberof Index
-   * @method updateIndex
+   * @method update
    */
-  async updateIndex(data: Types.IndexOptions): Promise<Types.IndexResponse> {
+  async update(data: Types.IndexOptions): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
     const index = await this.httpRequest.put(url, data)
@@ -206,9 +206,9 @@ class Index<T> implements Types.IndexInterface<T> {
   /**
    * Delete an index.
    * @memberof Index
-   * @method deleteIndex
+   * @method delete
    */
-  async deleteIndex(): Promise<void> {
+  async delete(): Promise<void> {
     const url = `/indexes/${this.uid}`
 
     return await this.httpRequest.delete(url)

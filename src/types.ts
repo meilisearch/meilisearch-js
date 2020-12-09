@@ -249,11 +249,11 @@ export interface IndexInterface<T = any> {
     method?: Methods,
     config?: Partial<Request>
   ) => Promise<SearchResponse<T, P>>
-  show: () => Promise<IndexResponse>
+  getInfo: () => Promise<IndexResponse>
   fetchInfo(): Promise<this>
-  getPrimaryKey(): Promise<string | undefined>
-  updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
-  deleteIndex: () => Promise<void>
+  fetchPrimaryKey(): Promise<string | undefined>
+  update: (indexData: IndexOptions) => Promise<IndexResponse>
+  delete: () => Promise<void>
   getStats: () => Promise<IndexStats>
   getDocuments: <P extends GetDocumentsParams<T>>(
     options?: P
