@@ -28,7 +28,7 @@ describe.each([
   test(`${permission} key: getOrCreateIndex without index created before`, async () => {
     const newIndex = await client.getOrCreateIndex(index.uid)
     expect(newIndex.uid).toEqual(index.uid)
-    const newIndexInfo = await client.index(newIndex.uid).show()
+    const newIndexInfo = await client.index(newIndex.uid).getInfo()
     expect(newIndexInfo.primaryKey).toEqual(null)
   })
   test(`${permission} key: getOrCreateIndex on already existing index`, async () => {
@@ -42,7 +42,7 @@ describe.each([
       primaryKey: 'primaryKey',
     })
     expect(newIndex.uid).toEqual(index.uid)
-    const newIndexInfo = await client.index(newIndex.uid).show()
+    const newIndexInfo = await client.index(newIndex.uid).getInfo()
     expect(newIndexInfo.primaryKey).toEqual('primaryKey')
   })
 })

@@ -42,13 +42,18 @@ describe.each([
 
       await client
         .index(uidNoPrimaryKey.uid)
-        .show()
+        .getInfo()
         .then((response: Types.IndexResponse) => {
           expect(response).toHaveProperty('uid', uidNoPrimaryKey.uid)
           expect(response).toHaveProperty('primaryKey', null)
           expect(response).toHaveProperty('createdAt', expect.any(String))
           expect(response).toHaveProperty('updatedAt', expect.any(String))
         })
+
+      await client.getIndex(uidNoPrimaryKey.uid).then((response) => {
+        expect(response.primaryKey).toBe(null)
+        expect(response.uid).toBe(uidNoPrimaryKey.uid)
+      })
     })
     test(`${permission} key: create with primary key`, async () => {
       await client
@@ -60,7 +65,7 @@ describe.each([
         })
       await client
         .index(uidAndPrimaryKey.uid)
-        .show()
+        .getInfo()
         .then((response: Types.IndexResponse) => {
           expect(response).toHaveProperty(
             'primaryKey',
@@ -69,6 +74,10 @@ describe.each([
           expect(response).toHaveProperty('createdAt', expect.any(String))
           expect(response).toHaveProperty('updatedAt', expect.any(String))
         })
+      await client.getIndex(uidAndPrimaryKey.uid).then((response) => {
+        expect(response.primaryKey).toBe(uidAndPrimaryKey.primaryKey)
+        expect(response.uid).toBe(uidAndPrimaryKey.uid)
+      })
     })
     test(`${permission} key: get all indexes when not empty`, async () => {
       await client.listIndexes().then((response: Types.IndexResponse[]) => {
@@ -78,9 +87,9 @@ describe.each([
         expect(indexes.length).toEqual(2)
       })
     })
-    test(`${permission} key: show index with primary key`, async () => {
+    test(`${permission} key: Get index with primary key`, async () => {
       const index = client.index(uidAndPrimaryKey.uid)
-      await index.show().then((response: Types.IndexResponse) => {
+      await index.getInfo().then((response: Types.IndexResponse) => {
         expect(response).toHaveProperty('uid', uidAndPrimaryKey.uid)
         expect(response).toHaveProperty(
           'primaryKey',
@@ -89,9 +98,42 @@ describe.each([
       })
     })
 
-    test(`${permission} key: show index with NO primary key`, async () => {
+    test(`${permission} key: Get index with NO primary key`, async () => {
       const index = client.index(uidNoPrimaryKey.uid)
-      await index.show().then((response: Types.IndexResponse) => {
+      await index.getInfo().then((response: Types.IndexResponse) => {
+        expect(response).toHaveProperty('uid', uidNoPrimaryKey.uid)
+        expect(response).toHaveProperty('primaryKey', null)
+      })
+    })
+
+    test(`${permission} key: fetch index with primary key`, async () => {
+      const index = client.index(uidAndPrimaryKey.uid)
+      await index.fetchInfo().then((response: Types.Index<any>) => {
+        expect(response).toHaveProperty('uid', uidAndPrimaryKey.uid)
+        expect(response).toHaveProperty(
+          'primaryKey',
+          uidAndPrimaryKey.primaryKey
+        )
+      })
+    })
+
+    test(`${permission} key: fetch primary key on an index with NO primary key`, async () => {
+      const index = client.index(uidNoPrimaryKey.uid)
+      await index.fetchPrimaryKey().then((response: string | undefined) => {
+        expect(response).toBe(null)
+      })
+    })
+
+    test(`${permission} key: fetch primary key on an index with primary key`, async () => {
+      const index = client.index(uidAndPrimaryKey.uid)
+      await index.fetchPrimaryKey().then((response: string | undefined) => {
+        expect(response).toBe(uidAndPrimaryKey.primaryKey)
+      })
+    })
+
+    test(`${permission} key: fetch index with NO primary key`, async () => {
+      const index = client.index(uidNoPrimaryKey.uid)
+      await index.fetchInfo().then((response: Types.Index<any>) => {
         expect(response).toHaveProperty('uid', uidNoPrimaryKey.uid)
         expect(response).toHaveProperty('primaryKey', null)
       })
@@ -100,7 +142,7 @@ describe.each([
     test(`${permission} key: update primary key on an index that has no primary key already`, async () => {
       const index = client.index(uidNoPrimaryKey.uid)
       await index
-        .updateIndex({ primaryKey: 'newPrimaryKey' })
+        .update({ primaryKey: 'newPrimaryKey' })
         .then((response: Types.IndexResponse) => {
           expect(response).toHaveProperty('uid', uidNoPrimaryKey.uid)
           expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
@@ -110,7 +152,7 @@ describe.each([
     test(`${permission} key: update primary key on an index that has already a primary key and fail`, async () => {
       const index = client.index(uidAndPrimaryKey.uid)
       await expect(
-        index.updateIndex({ primaryKey: 'newPrimaryKey' })
+        index.update({ primaryKey: 'newPrimaryKey' })
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.PRIMARY_KEY_ALREADY_PRESENT
@@ -119,7 +161,7 @@ describe.each([
 
     test(`${permission} key: delete index`, async () => {
       const index = client.index(uidNoPrimaryKey.uid)
-      await index.deleteIndex().then((response: void) => {
+      await index.delete().then((response: void) => {
         expect(response).toBe(undefined)
       })
       await expect(client.listIndexes()).resolves.toHaveLength(1)
@@ -132,9 +174,9 @@ describe.each([
         expect(e.type).toEqual('MeiliSearchCommunicationError')
       }
     })
-    test(`${permission} key: show deleted index should fail`, async () => {
+    test(`${permission} key: fetch deleted index should fail`, async () => {
       const index = client.index(uidNoPrimaryKey.uid)
-      await expect(index.show()).rejects.toHaveProperty(
+      await expect(index.getInfo()).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.INDEX_NOT_FOUND
       )
@@ -153,7 +195,7 @@ describe.each([
 
     test(`${permission} key: delete index with uid that does not exist should fail`, async () => {
       const index = client.index(uidNoPrimaryKey.uid)
-      await expect(index.deleteIndex()).rejects.toHaveProperty(
+      await expect(index.delete()).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.INDEX_NOT_FOUND
       )
@@ -212,7 +254,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
       test(`${permission} key: try to get index info and be denied`, async () => {
         await expect(
-          client.index(uidNoPrimaryKey.uid).show()
+          client.index(uidNoPrimaryKey.uid).getInfo()
         ).rejects.toHaveProperty(
           'errorCode',
           Types.ErrorStatusCode.INVALID_TOKEN
@@ -220,7 +262,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
       test(`${permission} key: try to delete index and be denied`, async () => {
         await expect(
-          client.index(uidAndPrimaryKey.uid).deleteIndex()
+          client.index(uidAndPrimaryKey.uid).delete()
         ).rejects.toHaveProperty(
           'errorCode',
           Types.ErrorStatusCode.INVALID_TOKEN
@@ -230,7 +272,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
         await expect(
           client
             .index(uidAndPrimaryKey.uid)
-            .updateIndex({ primaryKey: uidAndPrimaryKey.primaryKey })
+            .update({ primaryKey: uidAndPrimaryKey.primaryKey })
         ).rejects.toHaveProperty(
           'errorCode',
           Types.ErrorStatusCode.INVALID_TOKEN
@@ -284,7 +326,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
       test(`${permission} key: try to get index info and be denied`, async () => {
         await expect(
-          client.index(uidNoPrimaryKey.uid).show()
+          client.index(uidNoPrimaryKey.uid).getInfo()
         ).rejects.toHaveProperty(
           'errorCode',
           Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -292,7 +334,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
       test(`${permission} key: try to delete index and be denied`, async () => {
         await expect(
-          client.index(uidAndPrimaryKey.uid).deleteIndex()
+          client.index(uidAndPrimaryKey.uid).delete()
         ).rejects.toHaveProperty(
           'errorCode',
           Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -302,7 +344,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         await expect(
           client
             .index(uidAndPrimaryKey.uid)
-            .updateIndex({ primaryKey: uidAndPrimaryKey.primaryKey })
+            .update({ primaryKey: uidAndPrimaryKey.primaryKey })
         ).rejects.toHaveProperty(
           'errorCode',
           Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER

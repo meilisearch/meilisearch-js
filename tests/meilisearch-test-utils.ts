@@ -41,7 +41,7 @@ const clearAllIndexes = async (config: Types.Config): Promise<void> => {
   for (const indexUid of indexes) {
     await client
       .index(indexUid)
-      .deleteIndex()
+      .delete()
       .catch((err) => {
         expect(err).toBe(null)
       })

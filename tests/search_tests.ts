@@ -482,7 +482,7 @@ describe.each([
     })
 
     test(`${permission} key: Try to ${method} search on deleted index and fail`, async () => {
-      await masterClient.index(index.uid).deleteIndex()
+      await masterClient.index(index.uid).delete()
       await expect(
         client.index(index.uid).search('prince', {}, method)
       ).rejects.toHaveProperty(
