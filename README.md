@@ -308,11 +308,11 @@ If you want to know more about the development workflow or want to contribute, p
 
 `client.createIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
 
-- Get index object:
+- Create a local reference to an index:
 
 `client.index<T>(uid: string): Index<T>`
 
-- Get an existing index and return an instance of Index:
+- Get an index:
 
 `client.getIndex<T>(uid: string): Index<T>`
 
