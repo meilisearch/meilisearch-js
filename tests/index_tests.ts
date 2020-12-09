@@ -38,6 +38,7 @@ describe.each([
     test(`${permission} key: create with no primary key`, async () => {
       await client.createIndex(uidNoPrimaryKey.uid).then((response) => {
         expect(response).toHaveProperty('uid', uidNoPrimaryKey.uid)
+        expect(response).toHaveProperty('primaryKey', null)
       })
 
       await client
@@ -62,6 +63,10 @@ describe.each([
         })
         .then((response) => {
           expect(response).toHaveProperty('uid', uidAndPrimaryKey.uid)
+          expect(response).toHaveProperty(
+            'primaryKey',
+            uidAndPrimaryKey.primaryKey
+          )
         })
       await client
         .index(uidAndPrimaryKey.uid)
@@ -87,7 +92,21 @@ describe.each([
         expect(indexes.length).toEqual(2)
       })
     })
-    test(`${permission} key: Get index with primary key`, async () => {
+
+    test(`${permission} key: Get index that exists`, async () => {
+      await client.getIndex(uidAndPrimaryKey.uid).then((response) => {
+        expect(response).toHaveProperty('uid', uidAndPrimaryKey.uid)
+      })
+    })
+
+    test(`${permission} key: Get index that does not exist`, async () => {
+      await expect(client.getIndex('does_not_exist')).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INDEX_NOT_FOUND
+      )
+    })
+
+    test(`${permission} key: Get index info with primary key`, async () => {
       const index = client.index(uidAndPrimaryKey.uid)
       await index.getInfo().then((response: Types.IndexResponse) => {
         expect(response).toHaveProperty('uid', uidAndPrimaryKey.uid)
@@ -98,7 +117,7 @@ describe.each([
       })
     })
 
-    test(`${permission} key: Get index with NO primary key`, async () => {
+    test(`${permission} key: Get index info with NO primary key`, async () => {
       const index = client.index(uidNoPrimaryKey.uid)
       await index.getInfo().then((response: Types.IndexResponse) => {
         expect(response).toHaveProperty('uid', uidNoPrimaryKey.uid)
@@ -149,6 +168,17 @@ describe.each([
         })
     })
 
+    test(`${permission} key: update primary key on an index that has no primary key already using client`, async () => {
+      await client.createIndex('tempIndex')
+      await client
+        .updateIndex('tempIndex', { primaryKey: 'newPrimaryKey' })
+        .then((response: Types.IndexResponse) => {
+          expect(response).toHaveProperty('uid', 'tempIndex')
+          expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
+        })
+      await client.deleteIndex('tempIndex')
+    })
+
     test(`${permission} key: update primary key on an index that has already a primary key and fail`, async () => {
       const index = client.index(uidAndPrimaryKey.uid)
       await expect(
@@ -166,6 +196,15 @@ describe.each([
       })
       await expect(client.listIndexes()).resolves.toHaveLength(1)
     })
+
+    test(`${permission} key: delete index using client`, async () => {
+      await client.createIndex('tempIndex')
+      await client.deleteIndex('tempIndex').then((response: void) => {
+        expect(response).toBe(undefined)
+      })
+      await expect(client.listIndexes()).resolves.toHaveLength(1)
+    })
+
     test(`${permission} key: bad host should raise CommunicationError`, async () => {
       const client = new MeiliSearch({ host: 'http://localhost:9345' })
       try {
