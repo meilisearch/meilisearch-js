@@ -40,13 +40,13 @@ describe.each([
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
-      .getIndex(index.uid)
+      .index(index.uid)
       .addDocuments(dataset)
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Get default distinct attribute`, async () => {
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getDistinctAttribute()
       .then((response: string | null) => {
         expect(response).toEqual(null)
@@ -55,15 +55,15 @@ describe.each([
   test(`${permission} key: Update distinct attribute`, async () => {
     const newDistinctAttribute = 'title'
     const { updateId } = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .updateDistinctAttribute(newDistinctAttribute)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getDistinctAttribute()
       .then((response: string | null) => {
         expect(response).toEqual(newDistinctAttribute)
@@ -71,15 +71,15 @@ describe.each([
   })
   test(`${permission} key: Reset distinct attribute`, async () => {
     const { updateId } = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .resetDistinctAttribute()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getDistinctAttribute()
       .then((response: string | null) => {
         expect(response).toEqual(null)
@@ -96,17 +96,17 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     })
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getDistinctAttribute()
+        client.index(index.uid).getDistinctAttribute()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateDistinctAttribute('title')
+        client.index(index.uid).updateDistinctAttribute('title')
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetDistinctAttribute()
+        client.index(index.uid).resetDistinctAttribute()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
@@ -121,7 +121,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getDistinctAttribute()
+        client.index(index.uid).getDistinctAttribute()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -129,7 +129,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateDistinctAttribute('title')
+        client.index(index.uid).updateDistinctAttribute('title')
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -137,7 +137,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetDistinctAttribute()
+        client.index(index.uid).resetDistinctAttribute()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER

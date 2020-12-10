@@ -126,9 +126,8 @@ import MeiliSearch from 'meilisearch'
     apiKey: 'masterKey',
   })
 
-  const index = await client.createIndex('books') // If your index does not exist
-  // OR
-  const index = client.getIndex('books') // If your index exists
+  // An index is where the documents are stored.
+  const index = client.index('books') // If your index exists
 
   const documents = [
     { book_id: 123, title: 'Pride and Prejudice' },
@@ -139,7 +138,9 @@ import MeiliSearch from 'meilisearch'
     { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: 'fantasy' }
   ]
 
+  // If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
   let response = await index.addDocuments(documents)
+
   console.log(response) // => { "updateId": 0 }
 })()
 ```
@@ -307,7 +308,11 @@ If you want to know more about the development workflow or want to contribute, p
 
 `client.createIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
 
-- Get index object:
+- Create a local reference to an index:
+
+`client.index<T>(uid: string): Index<T>`
+
+- Get an index:
 
 `client.getIndex<T>(uid: string): Index<T>`
 
@@ -315,21 +320,34 @@ If you want to know more about the development workflow or want to contribute, p
 
 `client.getOrCreateIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
 
-- Show Index information:
+- Get Index information:
 
-`index.show(): Promise<IndexResponse>`
+`index.getRawInfo(): Promise<IndexResponse>`
 
 - Update Index:
 
-`index.updateIndex(data: IndexOptions): Promise<IndexResponse>`
+`client.updateIndex(uid): Promise<Index>`
+Or using the index object:
+`index.update(data: IndexOptions): Promise<Index>`
 
 - Delete Index:
 
-`index.deleteIndex(): Promise<void>`
+`client.deleteIndex(uid): Promise<void>`
+Or using the index object:
+`index.delete(): Promise<void>`
+
 
 - Get specific index stats
 
 `index.getStats(): Promise<IndexStats>`
+
+- Return Index instance with updated information:
+
+`index.fetchInfo(): Promise<Index>`
+
+- Get Primary Key of an Index:
+
+`index.fetchPrimaryKey(): Promise<string | undefined>`
 
 ### Updates <!-- omit in toc -->
 

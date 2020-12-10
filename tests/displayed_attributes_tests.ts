@@ -40,13 +40,13 @@ describe.each([
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
-      .getIndex(index.uid)
+      .index(index.uid)
       .addDocuments(dataset)
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Get default displayed attributes`, async () => {
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getDisplayedAttributes()
       .then((response: string[]) => {
         expect(response).toEqual(['*'])
@@ -55,15 +55,15 @@ describe.each([
   test(`${permission} key: Update displayed attributes`, async () => {
     const newDisplayedAttribute = ['title']
     const { updateId } = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .updateDisplayedAttributes(newDisplayedAttribute)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getDisplayedAttributes()
       .then((response: string[]) => {
         expect(response).toEqual(newDisplayedAttribute)
@@ -71,15 +71,15 @@ describe.each([
   })
   test(`${permission} key: Reset displayed attributes`, async () => {
     const { updateId } = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .resetDisplayedAttributes()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getDisplayedAttributes()
       .then((response: string[]) => {
         expect(response).toEqual(['*'])
@@ -96,17 +96,17 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     })
     test(`${permission} key: try to get displayed attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getDisplayedAttributes()
+        client.index(index.uid).getDisplayedAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to update displayed attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateDisplayedAttributes([])
+        client.index(index.uid).updateDisplayedAttributes([])
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to reset displayed attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetDisplayedAttributes()
+        client.index(index.uid).resetDisplayedAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
@@ -121,7 +121,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to get displayed attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getDisplayedAttributes()
+        client.index(index.uid).getDisplayedAttributes()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -129,7 +129,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to update displayed attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateDisplayedAttributes([])
+        client.index(index.uid).updateDisplayedAttributes([])
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -137,7 +137,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to reset displayed attributes and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetDisplayedAttributes()
+        client.index(index.uid).resetDisplayedAttributes()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER

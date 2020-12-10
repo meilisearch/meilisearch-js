@@ -40,13 +40,13 @@ describe.each([
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
-      .getIndex(index.uid)
+      .index(index.uid)
       .addDocuments(dataset)
-    await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await masterClient.index(index.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Get default stop words`, async () => {
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getStopWords()
       .then((response: string[]) => {
         expect(response).toEqual([])
@@ -55,15 +55,15 @@ describe.each([
   test(`${permission} key: Update stop words`, async () => {
     const newStopWords = ['the']
     const { updateId } = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .updateStopWords(newStopWords)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getStopWords()
       .then((response: string[]) => {
         expect(response).toEqual(newStopWords)
@@ -71,15 +71,15 @@ describe.each([
   })
   test(`${permission} key: Reset stop words`, async () => {
     const { updateId } = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .resetStopWords()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getStopWords()
       .then((response: string[]) => {
         expect(response).toEqual([])
@@ -96,17 +96,17 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     })
     test(`${permission} key: try to get stop words and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getStopWords()
+        client.index(index.uid).getStopWords()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to update stop words and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateStopWords([])
+        client.index(index.uid).updateStopWords([])
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to reset stop words and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetStopWords()
+        client.index(index.uid).resetStopWords()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
@@ -121,7 +121,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to get stop words and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getStopWords()
+        client.index(index.uid).getStopWords()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -129,7 +129,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to update stop words and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateStopWords([])
+        client.index(index.uid).updateStopWords([])
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -137,7 +137,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to reset stop words and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetStopWords()
+        client.index(index.uid).resetStopWords()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER

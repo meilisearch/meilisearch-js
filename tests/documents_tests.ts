@@ -48,27 +48,27 @@ describe.each([
   })
   test(`${permission} key: Add documents to uid with NO primary key`, async () => {
     const { updateId } = await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .addDocuments(dataset)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Add documents to uid with primary key`, async () => {
     const { updateId } = await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .addDocuments(dataset)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Get documents with string attributesToRetrieve`, async () => {
     await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .getDocuments({
         attributesToRetrieve: 'id',
       })
@@ -81,7 +81,7 @@ describe.each([
 
   test(`${permission} key: Get documents with array attributesToRetrieve`, async () => {
     await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .getDocuments({
         attributesToRetrieve: ['id'],
       })
@@ -94,7 +94,7 @@ describe.each([
 
   test(`${permission} key: Get documents from index that has no primary key`, async () => {
     await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .getDocuments({
         attributesToRetrieve: 'id',
       })
@@ -104,7 +104,7 @@ describe.each([
   })
   test(`${permission} key: Get documents from index that has a primary key`, async () => {
     await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .getDocuments()
       .then((response) => {
         expect(response.length).toEqual(dataset.length)
@@ -115,15 +115,15 @@ describe.each([
     const id = 2
     const title = 'The Red And The Black'
     const { updateId } = await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .addDocuments([{ id, title }])
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .getDocument(id)
       .then((response) => {
         expect(response).toHaveProperty('id', id)
@@ -134,15 +134,15 @@ describe.each([
     const id = 2
     const title = 'The Red And The Black'
     const { updateId } = await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .addDocuments([{ id, title }])
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .getDocument(id)
       .then((response) => {
         expect(response).toHaveProperty('id', id)
@@ -154,15 +154,15 @@ describe.each([
     const id = 456
     const title = 'The Little Prince'
     const { updateId } = await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .updateDocuments([{ id, title }])
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .getDocument(id)
       .then((response) => {
         expect(response).toHaveProperty('id', id)
@@ -173,15 +173,15 @@ describe.each([
     const id = 456
     const title = 'The Little Prince'
     const { updateId } = await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .updateDocuments([{ id, title }])
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .getDocument(id)
       .then((response) => {
         expect(response).toHaveProperty('id', id)
@@ -193,22 +193,22 @@ describe.each([
     const id = 9
     const title = '1984'
     const { updateId } = await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .updateDocuments([{ id, title }])
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .getDocument(id)
       .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
       })
     await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .getDocuments()
       .then((response) => {
         expect(response.length).toEqual(dataset.length + 1)
@@ -218,22 +218,22 @@ describe.each([
     const id = 9
     const title = '1984'
     const { updateId } = await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .updateDocuments([{ id, title }])
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .getDocument(id)
       .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
       })
     await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .getDocuments()
       .then((response) => {
         expect(response.length).toEqual(dataset.length + 1)
@@ -242,15 +242,15 @@ describe.each([
   test(`${permission} key: Delete a document from index that has NO primary key`, async () => {
     const id = 9
     const { updateId } = await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .deleteDocument(id)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .getDocuments()
       .then((response) => {
         expect(response.length).toEqual(dataset.length)
@@ -259,15 +259,15 @@ describe.each([
   test(`${permission} key: Delete a document from index that has a primary key`, async () => {
     const id = 9
     const { updateId } = await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .deleteDocument(id)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .getDocuments()
       .then((response) => {
         expect(response.length).toEqual(dataset.length)
@@ -277,15 +277,15 @@ describe.each([
   test(`${permission} key: Delete some documents from index that has NO primary key`, async () => {
     const ids = [1, 2]
     const { updateId } = await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .deleteDocuments(ids)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .getDocuments()
       .then((response) => {
         expect(response.length).toEqual(dataset.length - 2)
@@ -297,15 +297,15 @@ describe.each([
   test(`${permission} key: Delete some documents from index that has a primary key`, async () => {
     const ids = [1, 2]
     const { updateId } = await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .deleteDocuments(ids)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .getDocuments()
       .then((response) => {
         expect(response.length).toEqual(dataset.length - 2)
@@ -316,15 +316,15 @@ describe.each([
   })
   test(`${permission} key: Delete all document from index that has NO primary key`, async () => {
     const { updateId } = await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .deleteAllDocuments()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .getDocuments()
       .then((response) => {
         expect(response.length).toEqual(0)
@@ -332,15 +332,15 @@ describe.each([
   })
   test(`${permission} key: Delete all document from index that has a primary key`, async () => {
     const { updateId } = await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .deleteAllDocuments()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidAndPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidAndPrimaryKey.uid)
+      .index(uidAndPrimaryKey.uid)
       .getDocuments()
       .then((response) => {
         expect(response.length).toEqual(0)
@@ -348,7 +348,7 @@ describe.each([
   })
   test(`${permission} key: Try to get deleted document from index that has NO primary key`, async () => {
     await expect(
-      client.getIndex(uidNoPrimaryKey.uid).getDocument(1)
+      client.index(uidNoPrimaryKey.uid).getDocument(1)
     ).rejects.toHaveProperty(
       'errorCode',
       Types.ErrorStatusCode.DOCUMENT_NOT_FOUND
@@ -356,7 +356,7 @@ describe.each([
   })
   test(`${permission} key: Try to get deleted document from index that has a primary key`, async () => {
     await expect(
-      client.getIndex(uidAndPrimaryKey.uid).getDocument(1)
+      client.index(uidAndPrimaryKey.uid).getDocument(1)
     ).rejects.toHaveProperty(
       'errorCode',
       Types.ErrorStatusCode.DOCUMENT_NOT_FOUND
@@ -375,16 +375,16 @@ describe.each([
       expect(response).toHaveProperty('uid', 'updateUid')
     })
     const { updateId } = await client
-      .getIndex('updateUid')
+      .index('updateUid')
       .addDocuments(docs, { primaryKey: 'unique' })
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex('updateUid').waitForPendingUpdate(updateId)
+    await client.index('updateUid').waitForPendingUpdate(updateId)
     await client
-      .getIndex('updateUid')
-      .show()
+      .index('updateUid')
+      .getRawInfo()
       .then((response: Types.IndexResponse) => {
         expect(response).toHaveProperty('uid', 'updateUid')
         expect(response).toHaveProperty('primaryKey', 'unique')
@@ -398,15 +398,15 @@ describe.each([
       },
     ]
     const { updateId } = await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .addDocuments(docs)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
+    await client.index(uidNoPrimaryKey.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(uidNoPrimaryKey.uid)
+      .index(uidNoPrimaryKey.uid)
       .getAllUpdateStatus()
       .then((response: Types.Update[]) => {
         const lastUpdate = response[response.length - 1]

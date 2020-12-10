@@ -40,13 +40,13 @@ describe.each([
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
-      .getIndex(index.uid)
+      .index(index.uid)
       .addDocuments(dataset)
-    await masterClient.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await masterClient.index(index.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Get default synonyms`, async () => {
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getSynonyms()
       .then((response: object) => {
         expect(response).toEqual({})
@@ -57,15 +57,15 @@ describe.each([
       hp: ['harry potter'],
     }
     const { updateId } = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .updateSynonyms(newSynonyms)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getSynonyms()
       .then((response: object) => {
         expect(response).toEqual(newSynonyms)
@@ -73,15 +73,15 @@ describe.each([
   })
   test(`${permission} key: Reset synonyms`, async () => {
     const { updateId } = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .resetSynonyms()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getSynonyms()
       .then((response: object) => {
         expect(response).toEqual({})
@@ -98,17 +98,17 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     })
     test(`${permission} key: try to get synonyms and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getSynonyms()
+        client.index(index.uid).getSynonyms()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to update synonyms and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateSynonyms({})
+        client.index(index.uid).updateSynonyms({})
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to reset synonyms and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetSynonyms()
+        client.index(index.uid).resetSynonyms()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
@@ -123,7 +123,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to get synonyms and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getSynonyms()
+        client.index(index.uid).getSynonyms()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -131,7 +131,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to update synonyms and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).updateSynonyms({})
+        client.index(index.uid).updateSynonyms({})
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -139,7 +139,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: try to reset synonyms and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).resetSynonyms()
+        client.index(index.uid).resetSynonyms()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER

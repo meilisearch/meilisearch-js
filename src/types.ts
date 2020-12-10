@@ -221,13 +221,19 @@ export interface Version {
 
 export interface MeiliSearchInterface {
   config: Config
-  getIndex: <T>(indexUid: string) => Index<T>
+  getIndex: <T>(indexUid: string) => Promise<Index<T>>
+  index: <T>(indexUid: string) => Index<T>
   getOrCreateIndex: <T>(
     uid: string,
     options?: IndexOptions
   ) => Promise<Index<T>>
   listIndexes: () => Promise<IndexResponse[]>
   createIndex: <T>(uid: string, options?: IndexOptions) => Promise<Index<T>>
+  updateIndex: <T = any>(
+    uid: string,
+    options?: IndexOptions
+  ) => Promise<Index<T>>
+  deleteIndex: <T = any>(uid: string) => Promise<void>
   getKeys: () => Promise<Keys>
   isHealthy: () => Promise<true>
   stats: () => Promise<Stats>
@@ -248,9 +254,11 @@ export interface IndexInterface<T = any> {
     method?: Methods,
     config?: Partial<Request>
   ) => Promise<SearchResponse<T, P>>
-  show: () => Promise<IndexResponse>
-  updateIndex: (indexData: IndexOptions) => Promise<IndexResponse>
-  deleteIndex: () => Promise<void>
+  getRawInfo: () => Promise<IndexResponse>
+  fetchInfo(): Promise<this>
+  fetchPrimaryKey(): Promise<string | undefined>
+  update: (indexData: IndexOptions) => Promise<this>
+  delete: () => Promise<void>
   getStats: () => Promise<IndexStats>
   getDocuments: <P extends GetDocumentsParams<T>>(
     options?: P

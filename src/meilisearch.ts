@@ -24,10 +24,20 @@ class MeiliSearch implements Types.MeiliSearchInterface {
   /**
    * Return an Index instance
    * @memberof MeiliSearch
+   * @method index
+   */
+  index<T = any>(indexUid: string): Index<T> {
+    return new Index<T>(this.config, indexUid)
+  }
+
+  /**
+   * Gather information about an index by calling MeiliSearch and
+   * return an Index instance with the gathered information
+   * @memberof MeiliSearch
    * @method getIndex
    */
-  getIndex<T = any>(indexUid: string): Index<T> {
-    return new Index<T>(this.config, indexUid)
+  async getIndex<T = any>(indexUid: string): Promise<Index<T>> {
+    return new Index<T>(this.config, indexUid).fetchInfo()
   }
 
   /**
@@ -40,11 +50,11 @@ class MeiliSearch implements Types.MeiliSearchInterface {
     options: Types.IndexOptions = {}
   ): Promise<Index<T>> {
     try {
-      const index = await this.createIndex(uid, options)
+      const index = await this.getIndex(uid)
       return index
     } catch (e) {
-      if (e.errorCode === 'index_already_exists') {
-        return this.getIndex(uid)
+      if (e.errorCode === 'index_not_found') {
+        return this.createIndex(uid, options)
       }
       throw new MeiliSearchApiError(e, e.status)
     }
@@ -70,12 +80,30 @@ class MeiliSearch implements Types.MeiliSearchInterface {
     uid: string,
     options: Types.IndexOptions = {}
   ): Promise<Index<T>> {
-    const url = '/indexes'
-
-    const index = await this.httpRequest.post(url, { ...options, uid })
-
-    return new Index(this.config, index.uid)
+    return await Index.create<T>(this.config, uid, options)
   }
+
+  /**
+   * Update an index
+   * @memberof MeiliSearch
+   * @method updateIndex
+   */
+  async updateIndex<T = any>(
+    uid: string,
+    options: Types.IndexOptions = {}
+  ): Promise<Index<T>> {
+    return new Index<T>(this.config, uid).update(options)
+  }
+
+  /**
+   * Delete an index
+   * @memberof MeiliSearch
+   * @method deleteIndex
+   */
+  async deleteIndex<T = any>(uid: string): Promise<void> {
+    return new Index<T>(this.config, uid).delete()
+  }
+
   ///
   /// KEYS
   ///

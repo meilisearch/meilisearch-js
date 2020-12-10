@@ -42,15 +42,15 @@ describe.each([
   })
   test(`${permission} key: Get one update`, async () => {
     const { updateId } = await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .addDocuments(dataset)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
-    await client.getIndex(index.uid).waitForPendingUpdate(updateId)
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getUpdateStatus(updateId)
       .then((response: Types.Update) => {
         expect(response).toHaveProperty('status', 'processed')
@@ -66,7 +66,7 @@ describe.each([
 
   test(`${permission} key: Get all updates`, async () => {
     await client
-      .getIndex(index.uid)
+      .index(index.uid)
       .getAllUpdateStatus()
       .then((response: Types.Update[]) => {
         expect(response.length).toEqual(1)
@@ -82,7 +82,7 @@ describe.each([
   })
   test(`${permission} key: Try to get update that does not exist`, async () => {
     await expect(
-      client.getIndex(index.uid).getUpdateStatus(2545)
+      client.index(index.uid).getUpdateStatus(2545)
     ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.NOT_FOUND)
   })
 })
@@ -96,7 +96,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     })
     test(`${permission} key: Try to get a update and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getUpdateStatus(0)
+        client.index(index.uid).getUpdateStatus(0)
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
@@ -111,7 +111,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
     test(`${permission} key: Try to get an update and be denied`, async () => {
       await expect(
-        client.getIndex(index.uid).getUpdateStatus(0)
+        client.index(index.uid).getUpdateStatus(0)
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER

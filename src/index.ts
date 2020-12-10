@@ -15,10 +15,12 @@ import HttpRequests from './http-requests'
 
 class Index<T> implements Types.IndexInterface<T> {
   uid: string
+  primaryKey: string | undefined
   httpRequest: HttpRequests
 
-  constructor(config: Types.Config, uid: string) {
+  constructor(config: Types.Config, uid: string, primaryKey?: string) {
     this.uid = uid
+    this.primaryKey = primaryKey
     this.httpRequest = new HttpRequests(config)
   }
 
@@ -139,34 +141,74 @@ class Index<T> implements Types.IndexInterface<T> {
   /// INDEX
   ///
   /**
-   * Show index information.
+   * Get index information.
    * @memberof Index
-   * @method show
+   * @method getRawInfo
    */
-  async show(): Promise<Types.IndexResponse> {
+  async getRawInfo(): Promise<Types.IndexResponse> {
     const url = `/indexes/${this.uid}`
 
-    return await this.httpRequest.get<Types.IndexResponse>(url)
+    const res = await this.httpRequest.get<Types.IndexResponse>(url)
+    this.primaryKey = res.primaryKey
+    return res
+  }
+
+  /**
+   * Fetch and update Index information.
+   * @memberof Index
+   * @method fetchInfo
+   */
+  async fetchInfo(): Promise<this> {
+    await this.getRawInfo()
+    return this
+  }
+
+  /**
+   * Get Primary Key.
+   * @memberof Index
+   * @method fetchPrimaryKey
+   */
+  async fetchPrimaryKey(): Promise<string | undefined> {
+    this.primaryKey = (await this.getRawInfo()).primaryKey
+    return this.primaryKey
+  }
+
+  /**
+   * Create an index.
+   * @memberof Index
+   * @method create
+   */
+  static async create<T = any>(
+    config: Types.Config,
+    uid: string,
+    options: Types.IndexOptions = {}
+  ): Promise<Index<T>> {
+    const url = '/indexes'
+
+    const req = new HttpRequests(config)
+    const index = await req.post(url, { ...options, uid })
+    return new Index(config, uid, index.primaryKey)
   }
 
   /**
    * Update an index.
    * @memberof Index
-   * @method updateIndex
+   * @method update
    */
-  async updateIndex(data: Types.IndexOptions): Promise<Types.IndexResponse> {
+  async update(data: Types.IndexOptions): Promise<this> {
     const url = `/indexes/${this.uid}`
 
-    return await this.httpRequest.put(url, data)
+    const index = await this.httpRequest.put(url, data)
+    this.primaryKey = index.primaryKey
+    return this
   }
 
   /**
    * Delete an index.
    * @memberof Index
-   * @method deleteIndex
+   * @method delete
    */
-
-  async deleteIndex(): Promise<void> {
+  async delete(): Promise<void> {
     const url = `/indexes/${this.uid}`
 
     return await this.httpRequest.delete(url)
