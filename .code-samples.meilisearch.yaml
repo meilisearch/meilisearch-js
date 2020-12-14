@@ -91,13 +91,13 @@ reset_settings_1: |-
 get_synonyms_1: |-
   client.index('movies').getSynonyms()
 update_synonyms_1: |-
-  client.index('movies').updateSynonym({
+  client.index('movies').updateSynonyms({
     wolverine: ['xmen', 'logan'],
     logan: ['wolverine', 'xmen'],
     wow: ['world of warcraft']
   })
 reset_synonyms_1: |-
-  client.index('movies').resetSynonym()
+  client.index('movies').resetSynonyms()
 get_stop_words_1: |-
   client.index('movies').getStopWords()
 update_stop_words_1: |-
