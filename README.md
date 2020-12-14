@@ -415,11 +415,11 @@ Or using the index object:
 
 - Update synonyms:
 
-`index.updateSynonym(synonyms: object): Promise<EnqueuedUpdate>`
+`index.updateSynonyms(synonyms: object): Promise<EnqueuedUpdate>`
 
 - Reset synonyms:
 
-`index.resetSynonym(): Promise<EnqueuedUpdate>`
+`index.resetSynonyms(): Promise<EnqueuedUpdate>`
 
 ### Stop-words <!-- omit in toc -->
 
