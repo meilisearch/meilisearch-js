@@ -298,7 +298,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async getRawInfo(): Promise<Types.IndexResponse> {
     const url = Index.routeConstructors.indexRoute(this.uid)
-
     const res = await this.httpRequest.get<Types.IndexResponse>(url)
     this.primaryKey = res.primaryKey
     return res
@@ -335,7 +334,6 @@ class Index<T> implements Types.IndexInterface<T> {
     options: Types.IndexOptions = {}
   ): Promise<Index<T>> {
     const url = Index.apiRoutes.indexes
-
     const req = new HttpRequests(config)
     const index = await req.post(url, { ...options, uid })
     return new Index(config, uid, index.primaryKey)
@@ -348,7 +346,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async update(data: Types.IndexOptions): Promise<this> {
     const url = Index.routeConstructors.update(this.uid)
-
     const index = await this.httpRequest.put(url, data)
     this.primaryKey = index.primaryKey
     return this
@@ -361,7 +358,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async delete(): Promise<void> {
     const url = Index.routeConstructors.delete(this.uid)
-
     return await this.httpRequest.delete(url)
   }
 
@@ -376,7 +372,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async getStats(): Promise<Types.IndexStats> {
     const url = `/indexes/${this.uid}/stats`
-
     return await this.httpRequest.get<Types.IndexStats>(url)
   }
   ///
@@ -410,7 +405,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async getDocument(documentId: string | number): Promise<Types.Document<T>> {
     const url = Index.routeConstructors.getDocument(this.uid, documentId)
-
     return await this.httpRequest.get<Types.Document<T>>(url)
   }
 
@@ -424,7 +418,6 @@ class Index<T> implements Types.IndexInterface<T> {
     options?: Types.AddDocumentParams
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.addDocuments(this.uid)
-
     return await this.httpRequest.post(url, documents, options)
   }
 
@@ -438,7 +431,6 @@ class Index<T> implements Types.IndexInterface<T> {
     options?: Types.AddDocumentParams
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateDocuments(this.uid)
-
     return await this.httpRequest.put(url, documents, options)
   }
 
@@ -451,7 +443,6 @@ class Index<T> implements Types.IndexInterface<T> {
     documentId: string | number
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.deleteDocument(this.uid, documentId)
-
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
@@ -475,7 +466,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async deleteAllDocuments(): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.deleteAllDocuments(this.uid)
-
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
@@ -490,7 +480,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async getSettings(): Promise<Types.Settings> {
     const url = Index.routeConstructors.getSettings(this.uid)
-
     return await this.httpRequest.get<Types.Settings>(url)
   }
 
@@ -504,7 +493,6 @@ class Index<T> implements Types.IndexInterface<T> {
     settings: Types.Settings
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateSettings(this.uid)
-
     return await this.httpRequest.post(url, settings)
   }
 
@@ -515,7 +503,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async resetSettings(): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.resetSettings(this.uid)
-
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
@@ -530,7 +517,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async getSynonyms(): Promise<object> {
     const url = Index.routeConstructors.getSynonyms(this.uid)
-
     return await this.httpRequest.get<object>(url)
   }
 
@@ -541,7 +527,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async updateSynonyms(synonyms: object): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateSynonyms(this.uid)
-
     return await this.httpRequest.post(url, synonyms)
   }
 
@@ -552,7 +537,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async resetSynonyms(): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.resetSynonyms(this.uid)
-
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
@@ -567,7 +551,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async getStopWords(): Promise<string[]> {
     const url = Index.routeConstructors.getStopWords(this.uid)
-
     return await this.httpRequest.get<string[]>(url)
   }
 
@@ -578,7 +561,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async updateStopWords(stopWords: string[]): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateStopWords(this.uid)
-
     return await this.httpRequest.post(url, stopWords)
   }
 
@@ -589,7 +571,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async resetStopWords(): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.resetStopWords(this.uid)
-
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
@@ -604,7 +585,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async getRankingRules(): Promise<string[]> {
     const url = Index.routeConstructors.getRankingRules(this.uid)
-
     return await this.httpRequest.get<string[]>(url)
   }
 
@@ -617,7 +597,6 @@ class Index<T> implements Types.IndexInterface<T> {
     rankingRules: string[]
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateRankingRules(this.uid)
-
     return await this.httpRequest.post(url, rankingRules)
   }
 
@@ -628,7 +607,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async resetRankingRules(): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.resetRankingRules(this.uid)
-
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
@@ -643,7 +621,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async getDistinctAttribute(): Promise<string | null> {
     const url = Index.routeConstructors.getDistinctAttribute(this.uid)
-
     return await this.httpRequest.get<string | null>(url)
   }
 
@@ -656,7 +633,6 @@ class Index<T> implements Types.IndexInterface<T> {
     distinctAttribute: string
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateDistinctAttribute(this.uid)
-
     return await this.httpRequest.post(url, distinctAttribute)
   }
 
@@ -667,7 +643,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async resetDistinctAttribute(): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.resetDistinctAttribute(this.uid)
-
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
@@ -682,7 +657,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async getAttributesForFaceting(): Promise<string[]> {
     const url = Index.routeConstructors.getAttributesForFaceting(this.uid)
-
     return await this.httpRequest.get<string[]>(url)
   }
 
@@ -695,7 +669,6 @@ class Index<T> implements Types.IndexInterface<T> {
     attributesForFaceting: string[]
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateAttributesForFaceting(this.uid)
-
     return await this.httpRequest.post(url, attributesForFaceting)
   }
 
@@ -706,7 +679,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async resetAttributesForFaceting(): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.resetAttributesForFaceting(this.uid)
-
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
@@ -721,7 +693,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async getSearchableAttributes(): Promise<string[]> {
     const url = Index.routeConstructors.getSearchableAttributes(this.uid)
-
     return await this.httpRequest.get<string[]>(url)
   }
 
@@ -734,7 +705,6 @@ class Index<T> implements Types.IndexInterface<T> {
     searchableAttributes: string[]
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateSearchableAttributes(this.uid)
-
     return await this.httpRequest.post(url, searchableAttributes)
   }
 
@@ -745,7 +715,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async resetSearchableAttributes(): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.resetSearchableAttributes(this.uid)
-
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
@@ -760,7 +729,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async getDisplayedAttributes(): Promise<string[]> {
     const url = Index.routeConstructors.getDisplayedAttributes(this.uid)
-
     return await this.httpRequest.get<string[]>(url)
   }
 
@@ -773,7 +741,6 @@ class Index<T> implements Types.IndexInterface<T> {
     displayedAttributes: string[]
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateDisplayedAttributes(this.uid)
-
     return await this.httpRequest.post(url, displayedAttributes)
   }
 
@@ -784,7 +751,6 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async resetDisplayedAttributes(): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.resetDisplayedAttributes(this.uid)
-
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 }
