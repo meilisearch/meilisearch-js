@@ -63,7 +63,7 @@ describe.each([
     }
   })
 
-  test(`${permission} key: host with double slash  should not double slash`, async () => {
+  test(`${permission} key: host with double slash should not double slash`, async () => {
     try {
       const customHost = `${BAD_HOST}//`
       const client = new MeiliSearch({
