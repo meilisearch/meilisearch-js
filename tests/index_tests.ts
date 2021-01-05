@@ -6,6 +6,8 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
+  badHostClient,
+  BAD_HOST,
 } from './meilisearch-test-utils'
 
 const uidNoPrimaryKey = {
@@ -406,3 +408,47 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
   }
 )
+
+test(`Create request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.createIndex(uidNoPrimaryKey.uid)
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(`${BAD_HOST}/indexes`)
+    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/`)
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Update request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.updateIndex(uidNoPrimaryKey.uid)
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(`${BAD_HOST}/indexes/${uidNoPrimaryKey.uid}`)
+    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/${uidNoPrimaryKey.uid}/`)
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Delete request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.deleteIndex(uidNoPrimaryKey.uid)
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(`${BAD_HOST}/indexes/${uidNoPrimaryKey.uid}`)
+    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/${uidNoPrimaryKey.uid}/`)
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Get all request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.listIndexes()
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(`${BAD_HOST}/indexes`)
+    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/`)
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})

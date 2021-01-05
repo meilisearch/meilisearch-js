@@ -5,6 +5,7 @@ import { sleep } from '../src/utils'
 // testing
 const MASTER_KEY = 'masterKey'
 const HOST = 'http://127.0.0.1:7700'
+const BAD_HOST = HOST.slice(0, -1) + `1`
 const PRIVATE_KEY =
   '8dcbb482663333d0280fa9fedf0e0c16d52185cb67db494ce4cd34da32ce2092'
 const PUBLIC_KEY =
@@ -14,6 +15,10 @@ const config = {
   host: HOST,
   apiKey: MASTER_KEY,
 }
+const badHostClient = new MeiliSearch({
+  host: BAD_HOST,
+  apiKey: MASTER_KEY,
+})
 const masterClient = new MeiliSearch({
   host: HOST,
   apiKey: MASTER_KEY,
@@ -75,7 +80,9 @@ export {
   masterClient,
   privateClient,
   publicClient,
+  badHostClient,
   anonymousClient,
+  BAD_HOST,
   PUBLIC_KEY,
   PRIVATE_KEY,
   MASTER_KEY,

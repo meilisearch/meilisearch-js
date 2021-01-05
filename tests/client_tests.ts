@@ -5,6 +5,7 @@ import {
   MeiliSearch,
   MASTER_KEY,
   PRIVATE_KEY,
+  BAD_HOST,
 } from './meilisearch-test-utils'
 
 afterAll(() => {
@@ -47,6 +48,50 @@ describe.each([
     expect(client.config.host).toBe(customHost)
     expect(client.httpRequest.url).toBe(customHost)
   })
+  test(`${permission} key: No double slash when on host with domain and path`, async () => {
+    try {
+      const customHost = `${BAD_HOST}/api`
+      const client = new MeiliSearch({
+        host: customHost,
+        apiKey: key,
+      })
+      const health = await client.isHealthy()
+      expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
+    } catch (e) {
+      expect(e.message).toMatch(`${BAD_HOST}/api/health`)
+      expect(e.type).toBe('MeiliSearchCommunicationError')
+    }
+  })
+
+  test(`${permission} key: host with double slash  should not double slash`, async () => {
+    try {
+      const customHost = `${BAD_HOST}//`
+      const client = new MeiliSearch({
+        host: customHost,
+        apiKey: key,
+      })
+      const health = await client.isHealthy()
+      expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
+    } catch (e) {
+      expect(e.message).toMatch(`${BAD_HOST}/health`)
+      expect(e.type).toBe('MeiliSearchCommunicationError')
+    }
+  })
+
+  test(`${permission} key: host with one slash should not double slash`, async () => {
+    try {
+      const customHost = `${BAD_HOST}/`
+      const client = new MeiliSearch({
+        host: customHost,
+        apiKey: key,
+      })
+      const health = await client.isHealthy()
+      expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
+    } catch (e) {
+      expect(e.message).toMatch(`${BAD_HOST}/health`)
+      expect(e.type).toBe('MeiliSearchCommunicationError')
+    }
+  })
 
   test(`${permission} key: Client uses complete URL with domain and additionnal path in MeiliSearch call`, async () => {
     try {
@@ -57,6 +102,7 @@ describe.each([
       })
       const health = await client.isHealthy()
       expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
+      await client.listIndexes()
     } catch (e) {
       expect(e.type).toBe('MeiliSearchCommunicationError')
       expect(e.message).toBe('Not Found') // Expect 404 because host does not exist
