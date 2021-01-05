@@ -12,9 +12,28 @@ import MeiliSearchApiError from './errors/meilisearch-api-error'
 import * as Types from './types'
 import HttpRequests from './http-requests'
 
+type createPath = (x: string | number) => string
+
 class MeiliSearch implements Types.MeiliSearchInterface {
   config: Types.Config
   httpRequest: HttpRequests
+  static apiPaths: {
+    [key: string]: string
+  } = {
+    listIndexes: 'indexes',
+    getkeys: 'keys',
+    isHealthy: 'health',
+    stats: 'stats',
+    version: 'version',
+    createDump: 'dumps',
+  }
+  static apiPathConstructors: {
+    [key: string]: createPath
+  } = {
+    getDumpStatus: (dumpUid: string | number) => {
+      return `dumps/${dumpUid}/status`
+    },
+  }
 
   constructor(config: Types.Config) {
     this.config = config
@@ -66,8 +85,7 @@ class MeiliSearch implements Types.MeiliSearchInterface {
    * @method listIndexes
    */
   async listIndexes(): Promise<Types.IndexResponse[]> {
-    const url = '/indexes'
-
+    const url = MeiliSearch.apiPaths.listIndexes
     return await this.httpRequest.get<Types.IndexResponse[]>(url)
   }
 
@@ -114,8 +132,7 @@ class MeiliSearch implements Types.MeiliSearchInterface {
    * @method getKey
    */
   async getKeys(): Promise<Types.Keys> {
-    const url = '/keys'
-
+    const url = MeiliSearch.apiPaths.getKeys
     return await this.httpRequest.get<Types.Keys>(url)
   }
 
@@ -130,9 +147,9 @@ class MeiliSearch implements Types.MeiliSearchInterface {
    * @method isHealthy
    */
   async isHealthy(): Promise<true> {
-    const url = '/health'
-
-    return await this.httpRequest.get(url).then(() => true)
+    return await this.httpRequest
+      .get(MeiliSearch.apiPaths.isHealthy)
+      .then(() => true)
   }
 
   ///
@@ -145,8 +162,7 @@ class MeiliSearch implements Types.MeiliSearchInterface {
    * @method stats
    */
   async stats(): Promise<Types.Stats> {
-    const url = '/stats'
-
+    const url = MeiliSearch.apiPaths.stats
     return await this.httpRequest.get<Types.Stats>(url)
   }
 
@@ -156,8 +172,7 @@ class MeiliSearch implements Types.MeiliSearchInterface {
    * @method version
    */
   async version(): Promise<Types.Version> {
-    const url = '/version'
-
+    const url = MeiliSearch.apiPaths.version
     return await this.httpRequest.get<Types.Version>(url)
   }
 
@@ -171,8 +186,7 @@ class MeiliSearch implements Types.MeiliSearchInterface {
    * @method createDump
    */
   async createDump(): Promise<Types.EnqueuedDump> {
-    const url = '/dumps'
-
+    const url = MeiliSearch.apiPaths.createDump
     return await this.httpRequest.post<undefined, Types.EnqueuedDump>(url)
   }
 
@@ -182,8 +196,7 @@ class MeiliSearch implements Types.MeiliSearchInterface {
    * @method getDumpStatus
    */
   async getDumpStatus(dumpUid: string): Promise<Types.EnqueuedDump> {
-    const url = `/dumps/${dumpUid}/status`
-
+    const url = MeiliSearch.apiPathConstructors.getDumpStatus(dumpUid)
     return await this.httpRequest.get<Types.EnqueuedDump>(url)
   }
 }

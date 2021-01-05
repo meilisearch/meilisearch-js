@@ -17,6 +17,22 @@ class HttpRequests {
     }
     this.url = config.host
   }
+  static constructCorrectPath(pathname: string, url: string): string {
+    let slash = '/'
+    if (pathname.endsWith('/') || url.startsWith('/')) {
+      slash = ''
+    }
+    if (pathname.endsWith('//')) {
+      pathname = pathname.substring(1)
+    }
+    if (url.endsWith('/')) {
+      url = url.slice(0, -1)
+    }
+    if (pathname.endsWith('/') && url.startsWith('/')) {
+      url = url.substring(1)
+    }
+    return pathname + slash + url
+  }
 
   async request({
     method,
@@ -33,8 +49,10 @@ class HttpRequests {
   }) {
     try {
       const constructURL = new URL(this.url)
-      constructURL.pathname = constructURL.pathname + url
-
+      constructURL.pathname = HttpRequests.constructCorrectPath(
+        constructURL.pathname,
+        url
+      )
       if (params) {
         const queryParams = new URLSearchParams()
         Object.keys(params)
@@ -42,7 +60,6 @@ class HttpRequests {
           .map((x: string) => queryParams.set(x, params[x]))
         constructURL.search = queryParams.toString()
       }
-
       const response: Response = await fetch(constructURL.toString(), {
         ...config,
         method,
