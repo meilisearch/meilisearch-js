@@ -607,15 +607,3 @@ test(`Get one request should not add double slash nor a trailing slash`, async (
     expect(e.type).toBe('MeiliSearchCommunicationError')
   }
 })
-test(`Get one request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(uidNoPrimaryKey.uid).getDocument(1)
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/documents/1`)
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/documents/1/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
