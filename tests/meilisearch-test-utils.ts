@@ -1,4 +1,5 @@
 import MeiliSearch from '../src/meilisearch'
+import { Index } from '../src/index'
 import * as Types from '../src/types'
 import { sleep } from '../src/utils'
 
@@ -87,5 +88,6 @@ export {
   PRIVATE_KEY,
   MASTER_KEY,
   MeiliSearch,
+  Index,
   waitForDumpProcessing,
 }
