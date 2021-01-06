@@ -7,7 +7,7 @@ import {
 
 class HttpRequests {
   headers: {}
-  url: string
+  url: URL
 
   constructor(config: Types.Config) {
     this.headers = {
@@ -15,23 +15,14 @@ class HttpRequests {
       'Content-Type': 'application/json',
       ...(config.apiKey ? { 'X-Meili-API-Key': config.apiKey } : {}),
     }
-    this.url = config.host
+    this.url = new URL(config.host)
   }
-  static constructCorrectPath(pathname: string, url: string): string {
-    let slash = '/'
-    if (pathname.endsWith('/') || url.startsWith('/')) {
-      slash = ''
+
+  static addTrailingSlash(url: string): string {
+    if (!url.endsWith('/')) {
+      url = url + '/'
     }
-    if (pathname.endsWith('//')) {
-      pathname = pathname.substring(1)
-    }
-    if (url.endsWith('/')) {
-      url = url.slice(0, -1)
-    }
-    if (pathname.endsWith('/') && url.startsWith('/')) {
-      url = url.substring(1)
-    }
-    return pathname + slash + url
+    return url
   }
 
   async request({
@@ -48,11 +39,7 @@ class HttpRequests {
     config?: Partial<Request>
   }) {
     try {
-      const constructURL = new URL(this.url)
-      constructURL.pathname = HttpRequests.constructCorrectPath(
-        constructURL.pathname,
-        url
-      )
+      const constructURL = new URL(url, this.url)
       if (params) {
         const queryParams = new URLSearchParams()
         Object.keys(params)

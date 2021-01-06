@@ -29,18 +29,20 @@ class Index<T> implements Types.IndexInterface<T> {
     [key: string]: createIndexPath
   } = {
     indexRoute: (indexUid: string) => {
-      return `${Index.apiRoutes.indexes}/${indexUid}/`
+      return `${Index.apiRoutes.indexes}/${indexUid}`
     },
     getUpdateStatus: (indexUid: string, updateId: objectId) => {
       return (
-        Index.routeConstructors.indexRoute(indexUid) + `updates/${updateId}`
+        Index.routeConstructors.indexRoute(indexUid) +
+        '/' +
+        `updates/${updateId}`
       )
     },
     getAllUpdateStatus: (indexUid: string) => {
-      return Index.routeConstructors.indexRoute(indexUid) + `updates`
+      return Index.routeConstructors.indexRoute(indexUid) + '/' + `updates`
     },
     search: (indexUid: string) => {
-      return Index.routeConstructors.indexRoute(indexUid) + `search`
+      return Index.routeConstructors.indexRoute(indexUid) + '/' + `search`
     },
     getRawInfo: (indexUid: string) => {
       return `indexes/${indexUid}`
@@ -52,15 +54,17 @@ class Index<T> implements Types.IndexInterface<T> {
       return Index.routeConstructors.indexRoute(indexUid)
     },
     getStats: (indexUid: string) => {
-      return Index.routeConstructors.indexRoute(indexUid) + `stats`
+      return Index.routeConstructors.indexRoute(indexUid) + '/' + `stats`
     },
     getDocument: (indexUid: string, documentId: objectId) => {
       return (
-        Index.routeConstructors.indexRoute(indexUid) + `documents/${documentId}`
+        Index.routeConstructors.indexRoute(indexUid) +
+        '/' +
+        `documents/${documentId}`
       )
     },
     getDocuments: (indexUid: string) => {
-      return Index.routeConstructors.indexRoute(indexUid) + `documents`
+      return Index.routeConstructors.indexRoute(indexUid) + '/' + `documents`
     },
     addDocuments: (indexUid: string) => {
       return Index.routeConstructors.getDocuments(indexUid)
@@ -73,16 +77,20 @@ class Index<T> implements Types.IndexInterface<T> {
     },
     deleteDocument: (indexUid: string, documentId: objectId) => {
       return (
-        Index.routeConstructors.indexRoute(indexUid) + `documents/${documentId}`
+        Index.routeConstructors.indexRoute(indexUid) +
+        '/' +
+        `documents/${documentId}`
       )
     },
     deleteDocuments: (indexUid: string) => {
       return (
-        Index.routeConstructors.indexRoute(indexUid) + `documents/delete-batch`
+        Index.routeConstructors.indexRoute(indexUid) +
+        '/' +
+        `documents/delete-batch`
       )
     },
     getSettings: (indexUid: string) => {
-      return Index.routeConstructors.indexRoute(indexUid) + `settings`
+      return Index.routeConstructors.indexRoute(indexUid) + '/' + `settings`
     },
     updateSettings: (indexUid: string) => {
       return Index.routeConstructors.getSettings(indexUid)
@@ -91,7 +99,9 @@ class Index<T> implements Types.IndexInterface<T> {
       return Index.routeConstructors.getSettings(indexUid)
     },
     getSynonyms: (indexUid: string) => {
-      return Index.routeConstructors.indexRoute(indexUid) + `settings/synonyms`
+      return (
+        Index.routeConstructors.indexRoute(indexUid) + '/' + `settings/synonyms`
+      )
     },
     updateSynonyms: (indexUid: string) => {
       return Index.routeConstructors.getSynonyms(indexUid)
@@ -101,7 +111,9 @@ class Index<T> implements Types.IndexInterface<T> {
     },
     getStopWords: (indexUid: string) => {
       return (
-        Index.routeConstructors.indexRoute(indexUid) + `settings/stop-words`
+        Index.routeConstructors.indexRoute(indexUid) +
+        '/' +
+        `settings/stop-words`
       )
     },
     updateStopWords: (indexUid: string) => {
@@ -112,7 +124,9 @@ class Index<T> implements Types.IndexInterface<T> {
     },
     getRankingRules: (indexUid: string) => {
       return (
-        Index.routeConstructors.indexRoute(indexUid) + `settings/ranking-rules`
+        Index.routeConstructors.indexRoute(indexUid) +
+        '/' +
+        `settings/ranking-rules`
       )
     },
     updateRankingRules: (indexUid: string) => {
@@ -124,6 +138,7 @@ class Index<T> implements Types.IndexInterface<T> {
     getDistinctAttribute: (indexUid: string) => {
       return (
         Index.routeConstructors.indexRoute(indexUid) +
+        '/' +
         `settings/distinct-attribute`
       )
     },
@@ -136,6 +151,7 @@ class Index<T> implements Types.IndexInterface<T> {
     getAttributesForFaceting: (indexUid: string) => {
       return (
         Index.routeConstructors.indexRoute(indexUid) +
+        '/' +
         `settings/attributes-for-faceting`
       )
     },
@@ -148,6 +164,7 @@ class Index<T> implements Types.IndexInterface<T> {
     getSearchableAttributes: (indexUid: string) => {
       return (
         Index.routeConstructors.indexRoute(indexUid) +
+        '/' +
         `settings/searchable-attributes`
       )
     },
@@ -160,6 +177,7 @@ class Index<T> implements Types.IndexInterface<T> {
     getDisplayedAttributes: (indexUid: string) => {
       return (
         Index.routeConstructors.indexRoute(indexUid) +
+        '/' +
         `settings/displayed-attributes`
       )
     },
@@ -175,6 +193,16 @@ class Index<T> implements Types.IndexInterface<T> {
     this.uid = uid
     this.primaryKey = primaryKey
     this.httpRequest = new HttpRequests(config)
+  }
+  ///
+  /// STATIC
+  ///
+
+  static getApiRoutes(): { [key: string]: string } {
+    return Index.apiRoutes
+  }
+  static getRouteConstructors(): { [key: string]: createIndexPath } {
+    return Index.routeConstructors
   }
 
   ///
