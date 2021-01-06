@@ -7,6 +7,8 @@ import {
   publicClient,
   anonymousClient,
   waitForDumpProcessing,
+  badHostClient,
+  BAD_HOST,
 } from './meilisearch-test-utils'
 
 beforeAll(async () => {
@@ -70,3 +72,25 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
   }
 )
+
+test(`Post request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.createDump()
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(`${BAD_HOST}/dumps`)
+    expect(e.message).not.toMatch(`${BAD_HOST}/dumps/`)
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Get status request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.getDumpStatus('1')
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(`${BAD_HOST}/dumps/1/status`)
+    expect(e.message).not.toMatch(`${BAD_HOST}/dumps/1/status/`)
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})

@@ -6,6 +6,8 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
+  badHostClient,
+  BAD_HOST,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -154,3 +156,48 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
   }
 )
+
+test(`Get request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.index(index.uid).getRankingRules()
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(
+      `${BAD_HOST}/indexes/movies_test/settings/ranking-rules`
+    )
+    expect(e.message).not.toMatch(
+      `${BAD_HOST}/indexes/movies_test/settings/ranking-rules/`
+    )
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Update request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.index(index.uid).updateRankingRules([])
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(
+      `${BAD_HOST}/indexes/movies_test/settings/ranking-rules`
+    )
+    expect(e.message).not.toMatch(
+      `${BAD_HOST}/indexes/movies_test/settings/ranking-rules/`
+    )
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Reset request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.index(index.uid).resetRankingRules()
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(
+      `${BAD_HOST}/indexes/movies_test/settings/ranking-rules`
+    )
+    expect(e.message).not.toMatch(
+      `${BAD_HOST}/indexes/movies_test/settings/ranking-rules/`
+    )
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})

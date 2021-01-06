@@ -6,6 +6,8 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
+  badHostClient,
+  BAD_HOST,
 } from './meilisearch-test-utils'
 
 const uidNoPrimaryKey = {
@@ -499,3 +501,98 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
   }
 )
+
+test(`Get request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.index(uidNoPrimaryKey.uid).getDocuments()
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/documents`)
+    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/movies_test/documents/`)
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Get request with options should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient
+      .index(uidNoPrimaryKey.uid)
+      .getDocuments({ attributesToRetrieve: ['id'] })
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(
+      `${BAD_HOST}/indexes/movies_test/documents?attributesToRetrieve=id`
+    )
+    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/movies_test/documents/`)
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Update request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient
+      .index(uidNoPrimaryKey.uid)
+      .updateDocuments([])
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/documents`)
+    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/movies_test/documents/`)
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Delete batch request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient
+      .index(uidNoPrimaryKey.uid)
+      .deleteDocuments([])
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(
+      `${BAD_HOST}/indexes/movies_test/documents/delete-batch`
+    )
+    expect(e.message).not.toMatch(
+      `${BAD_HOST}/indexes/movies_test/documents/delete-batch/`
+    )
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Delete all request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient
+      .index(uidNoPrimaryKey.uid)
+      .deleteAllDocuments()
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/documents`)
+    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/movies_test/documents/`)
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Delete one request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.index(uidNoPrimaryKey.uid).deleteDocument(1)
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/documents/1`)
+    expect(e.message).not.toMatch(
+      `${BAD_HOST}/indexes/movies_test/documents/1/`
+    )
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
+
+test(`Get one request should not add double slash nor a trailing slash`, async () => {
+  try {
+    const res = await badHostClient.index(uidNoPrimaryKey.uid).getDocument(1)
+    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
+  } catch (e) {
+    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/documents/1`)
+    expect(e.message).not.toMatch(
+      `${BAD_HOST}/indexes/movies_test/documents/1/`
+    )
+    expect(e.type).toBe('MeiliSearchCommunicationError')
+  }
+})
