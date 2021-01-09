@@ -101,7 +101,7 @@ export interface SearchResponse<T, P extends SearchParams<T>> {
   offset: number
   limit: number
   processingTimeMs: number
-  facetsDistribution?: object
+  facetsDistribution?: Record<string, Record<string, number>>
   exhaustiveFacetsCount?: boolean
   query: string
   nbHits: number
