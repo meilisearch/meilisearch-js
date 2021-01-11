@@ -90,6 +90,12 @@ export interface GetSearchRequest {
 
 export type Hit<T> = T & { _formatted?: T }
 
+export type CategoriesDistribution = {
+  [category: string]: number
+}
+
+export type Facet = string
+
 // The second generic P is used to capture the SearchParams type
 export interface SearchResponse<T, P extends SearchParams<T>> {
   // P represents the SearchParams
@@ -101,7 +107,7 @@ export interface SearchResponse<T, P extends SearchParams<T>> {
   offset: number
   limit: number
   processingTimeMs: number
-  facetsDistribution?: Record<string, Record<string, number>>
+  facetsDistribution?: Record<Facet, CategoriesDistribution>
   exhaustiveFacetsCount?: boolean
   query: string
   nbHits: number
