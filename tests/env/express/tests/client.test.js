@@ -4,6 +4,7 @@ describe('MeiliSearch JS Browser test', () => {
   })
 
   it('Should have generated a meilisearch client and displayed', async () => {
+    await page.waitForNavigation({waitUntil: "domcontentloaded"})
     await page.waitForSelector("#indexes")
     await expect(
       page.content()
