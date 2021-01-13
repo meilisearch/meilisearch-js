@@ -20,7 +20,7 @@ class HttpRequests {
 
   static addTrailingSlash(url: string): string {
     if (!url.endsWith('/')) {
-      url = url + '/'
+      url += '/'
     }
     return url
   }
