@@ -61,20 +61,15 @@ update_settings_1: |-
       ],
       distinctAttribute: 'movie_id',
       searchableAttributes: [
-          'uid',
-          'movie_id',
           'title',
           'description',
-          'poster',
-          'release_date',
-          'rank'
+          'genre'
       ],
       displayedAttributes: [
           'title',
           'description',
-          'poster',
-          'release_date',
-          'rank'
+          'genre',
+          'release_date'
       ],
       stopWords: [
           'the',
@@ -129,9 +124,9 @@ get_searchable_attributes_1: |-
   client.index('movies').getSearchableAttributes()
 update_searchable_attributes_1: |-
   client.index('movies').updateSearchableAttributes([
-      'title',
-      'description',
-      'uid'
+    'title',
+    'description',
+    'genre',
   ])
 reset_searchable_attributes_1: |-
   client.index('movies').resetSearchableAttributes()
@@ -139,11 +134,10 @@ get_displayed_attributes_1: |-
   client.index('movies').getDisplayedAttributes()
 update_displayed_attributes_1: |-
   client.index('movies').updateDisplayedAttributes([
-      'title',
-      'description',
-      'release_date',
-      'rank',
-      'poster'
+    'title',
+    'description',
+    'genre',
+    'release_date',
   ])
 reset_displayed_attributes_1: |-
   client.index('movies').resetDisplayedAttributes()
@@ -159,24 +153,19 @@ distinct_attribute_guide_1: |-
   client.index('jackets').updateSettings({ distinctAttribute: 'product_id' })
 field_properties_guide_searchable_1: |-
   client.index('movies').updateSettings({
-        searchableAttributes: [
-            'uid',
-            'movie_id',
-            'title',
-            'description',
-            'poster',
-            'release_date',
-            'rank'
-        ]
-    })
+    searchableAttributes: [
+        'title',
+        'description',
+        'genre'
+    ]
+  })
 field_properties_guide_displayed_1: |-
   client.index('movies').updateSettings({
       displayedAttributes: [
           'title',
           'description',
-          'poster',
-          'release_date',
-          'rank'
+          'genre',
+          'release_date'
       ]
   })
 filtering_guide_1: |-
@@ -266,13 +255,9 @@ settings_guide_distinct_1: |-
 settings_guide_searchable_1: |-
   client.index('movies').updateSettings({
     searchableAttributes: [
-      'uid',
-      'movie_id',
       'title',
       'description',
-      'poster',
-      'release_date',
-      'rank'
+      'genre'
     ]
   })
 settings_guide_displayed_1: |-
@@ -280,9 +265,8 @@ settings_guide_displayed_1: |-
     displayedAttributes: [
       'title',
       'description',
-      'poster',
+      'genre',
       'release_date',
-      'rank'
     ]
   })
 add_movies_json_1: |-
@@ -290,8 +274,8 @@ add_movies_json_1: |-
   index.addDocuments(movies).then((res) => console.log(res))
 documents_guide_add_movie_1: |-
   index.addDocuments([{
-    "movie_id": "123sq178",
-    "title": "Amelie Poulain"
+    'movie_id': '123sq178',
+    'title': 'Amelie Poulain'
   }])
 search_guide_1: |-
   client.index('movies').search('shifu', {
@@ -302,27 +286,20 @@ search_guide_2: |-
   client.index('movies').search('Avengers', {
     filters: 'release_date > 795484800',
   })
-getting_started_create_index_md: |-
+getting_started_add_documents_md: |-
   ```bash
   $ npm install meilisearch
   # or
   $ yarn add meilisearch
   ```
 
-  ```javascript
+  ```js
   const MeiliSearch = require('meilisearch')
+  const movies = require('./movies.json')
 
   const client = new MeiliSearch({ host: 'http://127.0.0.1:7700' })
-  const index = client
-    .createIndex('movies')
+  client.index("movie").addDocuments(movies)
     .then((res) => console.log(res))
-  ```
-
-  [About this package](https://github.com/meilisearch/meilisearch-js/)
-getting_started_add_documents_md: |-
-  ```js
-  const movies = require('./movies.json')
-  index.addDocuments(movies).then((res) => console.log(res))
   ```
 
   [About this package](https://github.com/meilisearch/meilisearch-js/)
