@@ -298,7 +298,7 @@ getting_started_add_documents_md: |-
   const movies = require('./movies.json')
 
   const client = new MeiliSearch({ host: 'http://127.0.0.1:7700' })
-  client.index("movie").addDocuments(movies)
+  client.index('movie').addDocuments(movies)
     .then((res) => console.log(res))
   ```
 
