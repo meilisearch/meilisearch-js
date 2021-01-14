@@ -7,7 +7,7 @@ import {
 
 class HttpRequests {
   headers: {}
-  url: string
+  url: URL
 
   constructor(config: Types.Config) {
     this.headers = {
@@ -15,7 +15,14 @@ class HttpRequests {
       'Content-Type': 'application/json',
       ...(config.apiKey ? { 'X-Meili-API-Key': config.apiKey } : {}),
     }
-    this.url = config.host
+    this.url = new URL(config.host)
+  }
+
+  static addTrailingSlash(url: string): string {
+    if (!url.endsWith('/')) {
+      url += '/'
+    }
+    return url
   }
 
   async request({
@@ -32,9 +39,7 @@ class HttpRequests {
     config?: Partial<Request>
   }) {
     try {
-      const constructURL = new URL(this.url)
-      constructURL.pathname = constructURL.pathname + url
-
+      const constructURL = new URL(url, this.url)
       if (params) {
         const queryParams = new URLSearchParams()
         Object.keys(params)
@@ -42,7 +47,6 @@ class HttpRequests {
           .map((x: string) => queryParams.set(x, params[x]))
         constructURL.search = queryParams.toString()
       }
-
       const response: Response = await fetch(constructURL.toString(), {
         ...config,
         method,
