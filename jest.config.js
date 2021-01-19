@@ -22,7 +22,10 @@ const config = {
     {
       preset: 'ts-jest',
       displayName: 'dom',
-      testEnvironment: 'jest-environment-jsdom-fifteen',
+      // TODO: Change this value back to jsdom once once `globalThis` issue is resolved
+      // Also uninstall jest-environment-jsdom-sixteen
+      // https://github.com/jsdom/jsdom/issues/2961
+      testEnvironment: 'jest-environment-jsdom-sixteen',
       testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
       testPathIgnorePatterns: ['meilisearch-test-utils', 'env/'],
     },
