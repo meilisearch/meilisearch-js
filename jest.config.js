@@ -22,7 +22,7 @@ const config = {
     {
       preset: 'ts-jest',
       displayName: 'dom',
-      testEnvironment: 'jsdom',
+      testEnvironment: 'jest-environment-jsdom-fifteen',
       testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
       testPathIgnorePatterns: ['meilisearch-test-utils', 'env/'],
     },
