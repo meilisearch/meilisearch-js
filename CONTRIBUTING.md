@@ -8,7 +8,7 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 - [How to Contribute](#how-to-contribute)
 - [Development Workflow](#development-workflow)
 - [Git Guidelines](#git-guidelines)
-- [Release Process (for Admin only)](#release-process-for-admin-only)
+- [Release Process (for internal team only)](#release-process-for-internal-team-only)
 
 <!-- /MarkdownTOC -->
 
@@ -80,7 +80,7 @@ Some notes on GitHub PRs:
 - All PRs must be reviewed and approved by at least one maintainer.
 - The PR title should be accurate and descriptive of the changes. The title of the PR will be indeed automatically added to the next [release changelogs](https://github.com/meilisearch/meilisearch-js/releases/).
 
-## Release Process (for Admin only)
+## Release Process (for internal team only)
 
 MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
 
