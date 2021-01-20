@@ -1,4 +1,4 @@
-import MeiliSearch from '../src/meilisearch'
+import { MeiliSearch } from '../src/meilisearch'
 import { Index } from '../src/index'
 import * as Types from '../src/types'
 import { sleep } from '../src/utils'

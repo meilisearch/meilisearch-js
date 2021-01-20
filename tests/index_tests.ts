@@ -1,5 +1,6 @@
-import MeiliSearch, * as Types from '../src/types'
+import * as Types from '../src/types'
 import {
+  MeiliSearch,
   clearAllIndexes,
   config,
   masterClient,

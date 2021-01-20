@@ -5,11 +5,12 @@
 // TypeScript Version: ^3.8.3
 
 import { Index } from './index'
-import MeiliSearch from './meilisearch'
+import { MeiliSearch } from './meilisearch'
 import MeiliSearchApiError from './errors/meilisearch-api-error'
 import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
 import MeiliSearchError from './errors/meilisearch-error'
 export { Index }
+export { MeiliSearch }
 export { MeiliSearchApiError }
 export { MeiliSearchError }
 export { MeiliSearchTimeOutError }
