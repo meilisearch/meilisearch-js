@@ -9,9 +9,12 @@
       "declaration": true,
       "declarationMap": true,
       "declarationDir": "./dist/types",
-      "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
-      "lib": ["ES2015", "ESNext", "dom"]
+      "lib": ["ES2015", "ESNext", "dom"],
+      "noUnusedLocals": true,
+      "strictNullChecks": true,
+      "noImplicitAny": true,
+      "noImplicitThis": true,
   },
   "include": ["src"], // files to include during transpilation
 }

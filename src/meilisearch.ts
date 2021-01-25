@@ -14,7 +14,7 @@ import HttpRequests from './http-requests'
 
 type createPath = (x: string | number) => string
 
-class MeiliSearch implements Types.MeiliSearchInterface {
+export class MeiliSearch implements Types.MeiliSearchInterface {
   config: Types.Config
   httpRequest: HttpRequests
   static apiRoutes: {
@@ -208,5 +208,3 @@ class MeiliSearch implements Types.MeiliSearchInterface {
     return await this.httpRequest.get<Types.EnqueuedDump>(url)
   }
 }
-
-export default MeiliSearch

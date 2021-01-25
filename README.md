@@ -70,10 +70,14 @@ NB: you can also download MeiliSearch from **Homebrew** or **APT**.
 
 ### Import <!-- omit in toc -->
 
-#### Front End or ESmodule <!-- omit in toc -->
+Depending on the environment on which you are using MeiliSearch, imports may differ.
+
+#### Import Syntax <!-- omit in toc -->
+
+Usage in a ES module environment:
 
 ```javascript
-import MeiliSearch from 'meilisearch'
+import { MeiliSearch } from 'meilisearch'
 
 const client = new MeiliSearch({
   host: 'http://127.0.0.1:7700',
@@ -81,25 +85,26 @@ const client = new MeiliSearch({
 })
 ```
 
-#### HTML Import <!-- omit in toc -->
+#### Include Script Tag <!-- omit in toc -->
 
-```javascript
+Usage in an HTML (or alike) file:
+
+```html
 <script src="https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js"></script>
 <script>
   const client = new MeiliSearch({
     host: 'http://127.0.0.1:7700',
     apiKey: 'masterKey',
   })
-  client.listIndexes().then(res => {
-    console.log({ res });
-  })
 </script>
 ```
 
-#### Back-End CommonJs <!-- omit in toc -->
+#### Require Syntax <!-- omit in toc -->
+
+Usage in a back-end node environment
 
 ```javascript
-const MeiliSearch = require('meilisearch')
+const { MeiliSearch } = require('meilisearch')
 
 const client = new MeiliSearch({
   host: 'http://127.0.0.1:7700',
@@ -116,9 +121,9 @@ To make this package work with React Native, please add the [react-native-url-po
 #### Add Documents <!-- omit in toc -->
 
 ```js
-const MeiliSearch = require('meilisearch')
-// Or if you are on a front-end environment:
-import MeiliSearch from 'meilisearch'
+const { MeiliSearch } = require('meilisearch')
+// Or if you are in a ES environment
+import { MeiliSearch } from 'meilisearch'
 
 ;(async () => {
   const client = new MeiliSearch({

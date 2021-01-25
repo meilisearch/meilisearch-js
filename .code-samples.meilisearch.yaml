@@ -293,10 +293,22 @@ getting_started_add_documents_md: |-
   $ yarn add meilisearch
   ```
 
-  ```js
-  const MeiliSearch = require('meilisearch')
-  const movies = require('./movies.json')
+  **Import**
 
+  `require` syntax:
+  ```js
+  const { MeiliSearch } = require('meilisearch')
+  const movies = require('./movies.json')
+  ```
+
+  `import` syntax:
+  ```js
+  import { MeiliSearch } from 'meilisearch'
+  import movies from '../small_movies.json'
+  ```
+
+  **Use**
+  ```js
   const client = new MeiliSearch({ host: 'http://127.0.0.1:7700' })
   client.index('movie').addDocuments(movies)
     .then((res) => console.log(res))

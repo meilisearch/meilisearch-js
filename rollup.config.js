@@ -12,7 +12,6 @@ function getOutputFileName(fileName, isProd = false) {
 }
 
 const env = process.env.NODE_ENV || 'development'
-const LIB_NAME = 'MeiliSearch'
 const ROOT = resolve(__dirname, '.')
 
 const PLUGINS = [
@@ -22,7 +21,6 @@ const PLUGINS = [
       allowJs: false,
       includes: ['src'],
       exclude: ['tests', 'examples', '*.js', 'scripts'],
-      esModuleInterop: true,
     },
   }),
 ]
@@ -33,7 +31,8 @@ module.exports = [
     input: 'src/meilisearch.ts', // directory to transpilation of typescript
     external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: {
-      name: LIB_NAME,
+      name: 'window',
+      extend: true,
       file: getOutputFileName(
         // will add .min. in filename if in production env
         resolve(ROOT, pkg.browser),
@@ -88,7 +87,7 @@ module.exports = [
           resolve(ROOT, pkg.module),
           env === 'production'
         ),
-        exports: 'default',
+        exports: 'named',
         format: 'es',
         sourcemap: env === 'production', // create sourcemap for error reporting in production mode
       },

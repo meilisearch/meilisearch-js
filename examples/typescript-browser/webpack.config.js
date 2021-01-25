@@ -7,7 +7,7 @@ let config = {
     path: path.resolve(__dirname, './public'),
     filename: './bundle.js',
   },
-  mode: 'production',
+  mode: 'development',
   module: {
     rules: [
       {
