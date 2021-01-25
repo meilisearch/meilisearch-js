@@ -22,7 +22,8 @@ const config = {
     {
       preset: 'ts-jest',
       displayName: 'dom',
-      // We are using jest-environment-jsdom 15 until we stop supporting node 10
+      // We are using jest-environment-jsdom 25 until we stop supporting node 10
+      // jest-environment-jsdom 25 uses jsdom 15 which still supports node 10
       testEnvironment: 'jest-environment-jsdom',
       testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
       testPathIgnorePatterns: ['meilisearch-test-utils', 'env/'],
