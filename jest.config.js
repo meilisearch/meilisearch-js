@@ -25,7 +25,7 @@ const config = {
       // TODO: Change this value back to jsdom once once `globalThis` issue is resolved
       // Also uninstall jest-environment-jsdom-sixteen
       // https://github.com/jsdom/jsdom/issues/2961
-      testEnvironment: 'jest-environment-jsdom-sixteen',
+      testEnvironment: 'jest-environment-jsdom',
       testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
       testPathIgnorePatterns: ['meilisearch-test-utils', 'env/'],
     },
