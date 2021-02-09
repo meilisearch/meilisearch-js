@@ -81,6 +81,7 @@ describe.each([
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
       await masterClient.createIndex(emptyIndex.uid)
+
       const newAttributesForFaceting = ['genre']
       const { updateId: settingUpdateId } = await masterClient
         .index(index.uid)

@@ -126,8 +126,8 @@ export class MeiliSearch implements Types.MeiliSearchInterface {
    * @memberof MeiliSearch
    * @method deleteIndex
    */
-  async deleteIndex<T = any>(uid: string): Promise<void> {
-    return new Index<T>(this.config, uid).delete()
+  async deleteIndex(uid: string): Promise<void> {
+    return new Index(this.config, uid).delete()
   }
 
   ///

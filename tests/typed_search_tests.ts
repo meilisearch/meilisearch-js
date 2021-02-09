@@ -1,5 +1,4 @@
-import * as Types from '../src/types'
-
+import { Methods, EnqueuedUpdate, ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -77,8 +76,8 @@ describe.each([
   { client: publicClient, permission: 'Public' },
 ])('Test on search', ({ client, permission }) => {
   describe.each([
-    { method: 'POST' as Types.Methods, permission, client },
-    { method: 'GET' as Types.Methods, permission, client },
+    { method: 'POST' as Methods, permission, client },
+    { method: 'GET' as Methods, permission, client },
   ])('Test on search', ({ client, permission, method }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
@@ -88,7 +87,7 @@ describe.each([
       const { updateId: settingUpdateId } = await masterClient
         .index<Movie>(index.uid)
         .updateAttributesForFaceting(newAttributesForFaceting)
-        .then((response: Types.EnqueuedUpdate) => {
+        .then((response: EnqueuedUpdate) => {
           expect(response).toHaveProperty('updateId', expect.any(Number))
           return response
         })
@@ -105,15 +104,14 @@ describe.each([
         .index<Movie>(index.uid)
         .search('prince', {}, method)
         .then((response) => {
-          expect(response).toHaveProperty('hits', expect.any(Array))
-          expect(response).toHaveProperty('offset', 0)
-          expect(response).toHaveProperty('limit', 20)
+          expect(response.hits.length === 2).toBeTruthy()
+          expect(response.offset === 0).toBeTruthy()
+          expect(response.limit === 20).toBeTruthy()
           expect(response).toHaveProperty(
             'processingTimeMs',
             expect.any(Number)
           )
-          expect(response).toHaveProperty('query', 'prince')
-          expect(response.hits.length).toEqual(2)
+          expect(response.query === 'prince').toBeTruthy()
         })
     })
 
@@ -122,34 +120,17 @@ describe.each([
         .index<Movie>(index.uid)
         .search('prince', { limit: 1 }, method)
         .then((response) => {
-          expect(response).toHaveProperty('hits', expect.any(Array))
-          expect(response).toHaveProperty('offset', 0)
-          expect(response).toHaveProperty('limit', 1)
+          expect(response.hits.length === 1).toBeTruthy()
+          expect(response.offset === 0).toBeTruthy()
+          expect(response.limit === 1).toBeTruthy()
           expect(response).toHaveProperty(
             'processingTimeMs',
             expect.any(Number)
           )
-          expect(response).toHaveProperty('query', 'prince')
-          expect(response.hits.length).toEqual(1)
+          expect(response.query === 'prince').toBeTruthy()
         })
     })
 
-    test(`${permission} key: Search with options`, async () => {
-      await client
-        .index<Movie>(index.uid)
-        .search('prince', { limit: 1 }, method)
-        .then((response) => {
-          expect(response).toHaveProperty('hits', expect.any(Array))
-          expect(response).toHaveProperty('offset', 0)
-          expect(response).toHaveProperty('limit', 1)
-          expect(response).toHaveProperty(
-            'processingTimeMs',
-            expect.any(Number)
-          )
-          expect(response).toHaveProperty('query', 'prince')
-          expect(response.hits.length).toEqual(1)
-        })
-    })
     test(`${permission} key: Search with limit and offset`, async () => {
       await client
         .index<Movie>(index.uid)
@@ -162,22 +143,22 @@ describe.each([
           method
         )
         .then((response) => {
-          expect(response).toHaveProperty('hits', [
-            {
-              id: 4,
-              title: 'Harry Potter and the Half-Blood Prince',
-              comment: 'The best book',
-              genre: 'fantasy',
-            },
-          ])
-          expect(response).toHaveProperty('offset', 1)
-          expect(response).toHaveProperty('limit', 1)
+          expect(response.hits.length === 1).toBeTruthy()
+          expect(response.offset === 1).toBeTruthy()
+          // expect(response.bloub).toEqual(0) -> ERROR, bloub does not exist on type Response
+          expect(response.limit === 1).toBeTruthy()
           expect(response).toHaveProperty(
             'processingTimeMs',
             expect.any(Number)
           )
-          expect(response).toHaveProperty('query', 'prince')
-          expect(response.hits.length).toEqual(1)
+          expect(response.query === 'prince').toBeTruthy()
+          expect(response.hits[0].id).toEqual(4)
+          expect(response.hits[0].title).toEqual(
+            'Harry Potter and the Half-Blood Prince'
+          )
+          expect(response.hits[0].comment).toEqual('The best book')
+          expect(response.hits[0].genre).toEqual('fantasy')
+          expect(response.query === 'prince').toBeTruthy()
         })
     })
 
@@ -195,19 +176,20 @@ describe.each([
           method
         )
         .then((response) => {
-          expect(response).toHaveProperty('hits', expect.any(Array))
-          expect(response).toHaveProperty('offset', 0)
-          expect(response).toHaveProperty('limit', 20)
+          expect(response.hits.length === 1).toBeTruthy()
+          expect(response.offset === 0).toBeTruthy()
+          expect(response.limit === 20).toBeTruthy()
           expect(response).toHaveProperty(
             'processingTimeMs',
             expect.any(Number)
           )
-          expect(response).toHaveProperty('query', 'prince')
-          expect(response.hits.length).toEqual(1)
-          expect(response.hits[0]).toHaveProperty('_matchesInfo', {
-            comment: [{ start: 2, length: 6 }],
-            title: [{ start: 0, length: 6 }],
-          })
+          expect(response.query === 'prince').toBeTruthy()
+          expect(response.hits[0]?._matchesInfo?.comment).toEqual([
+            { start: 2, length: 6 },
+          ])
+          expect(response.hits[0]?._matchesInfo?.title).toEqual([
+            { start: 0, length: 6 },
+          ])
         })
     })
 
@@ -229,29 +211,23 @@ describe.each([
           method
         )
         .then((response) => {
-          expect(response).toHaveProperty('hits', expect.any(Array))
-          expect(response).toHaveProperty('offset', 0)
-          expect(response).toHaveProperty('limit', 5)
+          expect(response.hits.length === 1).toBeTruthy()
+          expect(response.offset === 0).toBeTruthy()
+          expect(response.limit === 5).toBeTruthy()
           expect(response).toHaveProperty(
             'processingTimeMs',
             expect.any(Number)
           )
-          expect(response).toHaveProperty('query', 'prince')
-          expect(response.hits[0]._formatted).toHaveProperty('title')
-          expect(response.hits[0]._formatted).toHaveProperty('id')
+          expect(response.query === 'prince').toBeTruthy()
+          expect(
+            response.hits[0]?._formatted?.title === 'Petit <em>Prince</em>'
+          ).toBeTruthy()
+          expect(response.hits[0]._formatted?.id).toEqual(456)
           expect(response.hits[0]).not.toHaveProperty('comment')
           expect(response.hits[0]).not.toHaveProperty('description')
           expect(response.hits[0]._formatted).not.toHaveProperty('comment')
           expect(response.hits[0]._formatted).not.toHaveProperty('description')
-          expect(response.hits.length).toEqual(1)
-          expect(response.hits[0]).toHaveProperty(
-            '_formatted',
-            expect.any(Object)
-          )
-          expect(response.hits[0]._formatted).toHaveProperty(
-            'title',
-            'Petit <em>Prince</em>'
-          )
+          expect(response.hits.length === 1).toBeTruthy()
           expect(response.hits[0]).toHaveProperty(
             '_matchesInfo',
             expect.any(Object)
@@ -277,27 +253,24 @@ describe.each([
           method
         )
         .then((response) => {
-          expect(response).toHaveProperty('hits', expect.any(Array))
-          expect(response).toHaveProperty('offset', 0)
-          expect(response).toHaveProperty('limit', 5)
+          expect(response.hits.length === 1).toBeTruthy()
+          expect(response.offset === 0).toBeTruthy()
+          expect(response.limit === 5).toBeTruthy()
           expect(response).toHaveProperty(
             'processingTimeMs',
             expect.any(Number)
           )
-          expect(response).toHaveProperty('query', 'prince')
-          expect(response.hits.length).toEqual(1)
-          expect(response.hits[0]).toHaveProperty(
-            '_formatted',
-            expect.any(Object)
-          )
-          expect(response.hits[0]._formatted).toHaveProperty(
-            'title',
-            'Petit <em>Prince</em>'
-          )
-          expect(response.hits[0]).toHaveProperty(
-            '_matchesInfo',
-            expect.any(Object)
-          )
+          expect(response.query === 'prince').toBeTruthy()
+          expect(response.hits[0]?.title === 'Le Petit Prince').toBeTruthy()
+          expect(
+            response.hits[0]?._matchesInfo?.title?.[0]?.start === 6
+          ).toBeTruthy()
+          expect(
+            response.hits[0]?._matchesInfo?.title?.[0]?.length === 6
+          ).toBeTruthy()
+          expect(
+            response.hits[0]?._formatted?.title === 'Petit <em>Prince</em>'
+          ).toBeTruthy()
         })
     })
 
@@ -319,35 +292,35 @@ describe.each([
           method
         )
         .then((response) => {
-          expect(response).toHaveProperty('hits', expect.any(Array))
-          expect(response).toHaveProperty('offset', 0)
-          expect(response).toHaveProperty('limit', 5)
+          expect(response.hits.length === 1).toBeTruthy()
+          expect(response.offset === 0).toBeTruthy()
+          expect(response.limit === 5).toBeTruthy()
           expect(response).toHaveProperty(
             'processingTimeMs',
             expect.any(Number)
           )
-          expect(response).toHaveProperty('query', 'prince')
-          expect(response.hits.length).toEqual(1)
-          expect(response.hits[0]).toHaveProperty('id', 456)
-          expect(response.hits[0]).toHaveProperty('title', 'Le Petit Prince')
-          expect(response.hits[0]).not.toHaveProperty('comment')
-          expect(response.hits[0]).toHaveProperty(
-            '_formatted',
-            expect.any(Object)
-          )
+          expect(response.query === 'prince').toBeTruthy()
+
+          expect(response.hits[0].id).toEqual(456)
+          expect(response.hits[0].title).toEqual('Le Petit Prince')
+          // ERROR Property 'comment' does not exist on type 'Hit<Pick<Movie, "id" | "title">>'.
+          // expect(response.hits[0].comment).toEqual('comment')
+
+          expect(response.hits[0]?.title === 'Le Petit Prince').toBeTruthy()
+          expect(
+            response.hits[0]?._matchesInfo?.title?.[0]?.start === 6
+          ).toBeTruthy()
+          expect(
+            response.hits[0]?._matchesInfo?.title?.[0]?.length === 6
+          ).toBeTruthy()
+          expect(
+            response.hits[0]?._formatted?.title === 'Petit <em>Prince</em>'
+          ).toBeTruthy()
           expect(response.hits[0]).not.toHaveProperty(
             'description',
             expect.any(Object)
           )
-          expect(response.hits[0]._formatted).toHaveProperty(
-            'title',
-            'Petit <em>Prince</em>'
-          )
           expect(response.hits[0]._formatted).not.toHaveProperty('comment')
-          expect(response.hits[0]).toHaveProperty(
-            '_matchesInfo',
-            expect.any(Object)
-          )
         })
     })
 
@@ -363,12 +336,16 @@ describe.each([
           method
         )
         .then((response) => {
-          expect(response).toHaveProperty('facetsDistribution', {
-            genre: { adventure: 0, fantasy: 0, romance: 2, 'sci fi': 0 },
-          })
-          expect(response).toHaveProperty('exhaustiveFacetsCount', true)
-          expect(response).toHaveProperty('hits', expect.any(Array))
-          expect(response.hits.length).toEqual(2)
+          expect(
+            response.facetsDistribution?.genre?.adventure === 0
+          ).toBeTruthy()
+          expect(response.facetsDistribution?.genre?.fantasy === 0).toBeTruthy()
+          expect(response.facetsDistribution?.genre?.romance === 2).toBeTruthy()
+          expect(
+            response.facetsDistribution?.genre['sci fi'] === 0
+          ).toBeTruthy()
+          expect(response.exhaustiveFacetsCount === true).toBeTruthy()
+          expect(response.hits.length === 2).toBeTruthy()
         })
     })
 
@@ -384,7 +361,7 @@ describe.each([
         )
         .then((response) => {
           expect(response).toHaveProperty('hits', expect.any(Array))
-          expect(response.hits.length).toEqual(1)
+          expect(response.hits.length === 1).toBeTruthy()
         })
     })
 
@@ -400,16 +377,20 @@ describe.each([
           method
         )
         .then((response) => {
-          expect(response).toHaveProperty('facetsDistribution', {
-            genre: { adventure: 0, fantasy: 0, romance: 2, 'sci fi': 0 },
-          })
-          expect(response).toHaveProperty('exhaustiveFacetsCount', true)
-          expect(response).toHaveProperty('hits', expect.any(Array))
-          expect(response.hits.length).toEqual(2)
+          expect(
+            response.facetsDistribution?.genre?.adventure === 0
+          ).toBeTruthy()
+          expect(response.facetsDistribution?.genre?.fantasy === 0).toBeTruthy()
+          expect(response.facetsDistribution?.genre?.romance === 2).toBeTruthy()
+          expect(
+            response.facetsDistribution?.genre['sci fi'] === 0
+          ).toBeTruthy()
+          expect(response.exhaustiveFacetsCount === true).toBeTruthy()
+          expect(response.hits.length === 2).toBeTruthy()
         })
     })
 
-    test(`${permission} key: ${method} search with multiple facetFilters and placeholder search`, async () => {
+    test(`${permission} key: ${method} search with multiple facetFilters and placeholder search using undefined`, async () => {
       await client
         .index<Movie>(index.uid)
         .search(
@@ -421,14 +402,20 @@ describe.each([
           method
         )
         .then((response) => {
-          expect(response).toHaveProperty('facetsDistribution', {
-            genre: { adventure: 0, fantasy: 2, romance: 0, 'sci fi': 0 },
-          })
-          expect(response.hits.length).toEqual(2)
+          expect(
+            response.facetsDistribution?.genre?.adventure === 0
+          ).toBeTruthy()
+          expect(response.facetsDistribution?.genre?.fantasy === 2).toBeTruthy()
+          expect(response.facetsDistribution?.genre?.romance === 0).toBeTruthy()
+          expect(
+            response.facetsDistribution?.genre['sci fi'] === 0
+          ).toBeTruthy()
+          expect(response.exhaustiveFacetsCount === true).toBeTruthy()
+          expect(response.hits.length === 2).toBeTruthy()
         })
     })
 
-    test(`${permission} key: ${method} search with multiple facetFilters and placeholder search`, async () => {
+    test(`${permission} key: ${method} search with multiple facetFilters and placeholder search using NULL`, async () => {
       await client
         .index<Movie>(index.uid)
         .search(
@@ -440,10 +427,16 @@ describe.each([
           method
         )
         .then((response) => {
-          expect(response).toHaveProperty('facetsDistribution', {
-            genre: { adventure: 0, fantasy: 2, romance: 0, 'sci fi': 0 },
-          })
-          expect(response.hits.length).toEqual(2)
+          expect(
+            response.facetsDistribution?.genre?.adventure === 0
+          ).toBeTruthy()
+          expect(response.facetsDistribution?.genre?.fantasy === 2).toBeTruthy()
+          expect(response.facetsDistribution?.genre?.romance === 0).toBeTruthy()
+          expect(
+            response.facetsDistribution?.genre['sci fi'] === 0
+          ).toBeTruthy()
+          expect(response.exhaustiveFacetsCount === true).toBeTruthy()
+          expect(response.hits.length === 2).toBeTruthy()
         })
     })
 
@@ -452,15 +445,14 @@ describe.each([
         .index(emptyIndex.uid)
         .search('prince', {}, method)
         .then((response) => {
-          expect(response).toHaveProperty('hits', [])
-          expect(response).toHaveProperty('offset', 0)
-          expect(response).toHaveProperty('limit', 20)
+          expect(response.hits.length === 0).toBeTruthy()
+          expect(response.offset === 0).toBeTruthy()
+          expect(response.limit === 20).toBeTruthy()
           expect(response).toHaveProperty(
             'processingTimeMs',
             expect.any(Number)
           )
-          expect(response).toHaveProperty('query', 'prince')
-          expect(response.hits.length).toEqual(0)
+          expect(response.query === 'prince').toBeTruthy()
         })
     })
 
@@ -468,10 +460,7 @@ describe.each([
       await masterClient.index<Movie>(index.uid).delete()
       await expect(
         client.index<Movie>(index.uid).search('prince')
-      ).rejects.toHaveProperty(
-        'errorCode',
-        Types.ErrorStatusCode.INDEX_NOT_FOUND
-      )
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INDEX_NOT_FOUND)
     })
   })
 })
@@ -488,7 +477,7 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
         client.index<Movie>(index.uid).search('prince')
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }
