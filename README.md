@@ -276,7 +276,7 @@ controller.abort()
 
 ## 🤖 Compatibility with MeiliSearch
 
-This package only guarantees the compatibility with the [version v0.18.1 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.18.1).
+This package only guarantees the compatibility with the [version v0.19.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.19.0).
 
 ## 💡 Learn More
 
