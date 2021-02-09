@@ -145,7 +145,7 @@ describe.each([
         .then((response) => {
           expect(response.hits.length === 1).toBeTruthy()
           expect(response.offset === 1).toBeTruthy()
-          // expect(response.bloub).toEqual(0) ERROR, bloub does not exist on type Response
+          // expect(response.bloub).toEqual(0) -> ERROR, bloub does not exist on type Response
           expect(response.limit === 1).toBeTruthy()
           expect(response).toHaveProperty(
             'processingTimeMs',
