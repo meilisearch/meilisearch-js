@@ -100,7 +100,7 @@ export type _matchesInfo<T> = Partial<
 >
 
 export type Hit<T> = T & {
-  _formatted?: Partial<T> // SHOULD BE IMPROVED !
+  _formatted?: Partial<T>
   _matchesInfo?: _matchesInfo<T>
 }
 
