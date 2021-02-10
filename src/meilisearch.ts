@@ -21,7 +21,7 @@ export class MeiliSearch implements Types.MeiliSearchInterface {
     [key: string]: string
   } = {
     listIndexes: 'indexes',
-    getkeys: 'keys',
+    getKeys: 'keys',
     isHealthy: 'health',
     stats: 'stats',
     version: 'version',
