@@ -288,9 +288,11 @@ search_guide_2: |-
   })
 getting_started_add_documents_md: |-
   ```bash
-  $ npm install meilisearch
-  # or
-  $ yarn add meilisearch
+  npm install meilisearch
+  ```
+  Or
+  ```bash
+  yarn add meilisearch
   ```
 
   **Import**
