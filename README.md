@@ -301,7 +301,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Make a search request:
 
-`client.getIndex<T>('xxx').search(query: string, options: SearchParams = {}, method: 'POST' | 'GET' = 'POST', config?: Partial<Request>): Promise<SearchResponse<T>>`
+`client.index<T>('xxx').search(query: string, options: SearchParams = {}, method: 'POST' | 'GET' = 'POST', config?: Partial<Request>): Promise<SearchResponse<T>>`
 
 ### Indexes <!-- omit in toc -->
 
