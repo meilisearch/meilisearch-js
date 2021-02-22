@@ -1,6 +1,7 @@
 import * as Types from '../types'
 
-const MeiliSearchApiError: Types.MSApiErrorConstructor = class extends Error
+const MeiliSearchApiError: Types.MSApiErrorConstructor = class
+  extends Error
   implements Types.MSApiError {
   httpStatus: number
   response?: Types.MeiliSearchApiErrorResponse

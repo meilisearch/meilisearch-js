@@ -22,11 +22,7 @@ module.exports = {
   plugins: ['jsdoc', '@typescript-eslint', 'prettier', 'jest'],
   rules: {
     'no-dupe-class-members': 'off', // Off due to conflict with typescript overload functions
-    'prettier/prettier': [
-      'error',
-      {},
-      { usePrettierrc: true, endOfLine: 'auto' },
-    ],
+    'prettier/prettier': ['error', {}, { usePrettierrc: true }],
     '@typescript-eslint/array-type': ['warn', { default: 'array-simple' }],
     '@typescript-eslint/return-await': 'off',
     'jsdoc/check-alignment': 'error',
