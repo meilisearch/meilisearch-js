@@ -203,7 +203,7 @@ await index.search(
       "genres": ["poetic"],
       "_formatted": {
         "book_id": 456,
-        "title": "Le Petit <em>Prince</em>"
+        "title": "Le Petit <em>Prince</em>",
         "genres": ["poetic"]
       }
     }
