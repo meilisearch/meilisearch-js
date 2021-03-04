@@ -135,15 +135,15 @@ import { MeiliSearch } from 'meilisearch'
   const index = client.index('books') // If your index exists
 
   const documents = [
-    { book_id: 123, title: 'Pride and Prejudice' },
-    { book_id: 456, title: 'Le Petit Prince' },
-    { book_id: 1, title: 'Alice In Wonderland' },
+    { book_id: 123, title: 'Pride and Prejudice', genres: ['drama', 'romance'] },
+    { book_id: 456, title: 'Le Petit Prince', genres: ['poetic'] },
+    { book_id: 1, title: 'Alice In Wonderland', genres: ['conceptual'] },
     { book_id: 1344, title: 'The Hobbit' },
-    { book_id: 4, title: 'Harry Potter and the Half-Blood Prince', genre: 'fantasy' },
-    { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: 'fantasy' }
+    { book_id: 4, title: 'Harry Potter and the Half-Blood Prince', genres: ['fantasy'] },
+    { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy", genres: ['fantasy'] }
   ]
 
-  // If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
+  // If the index 'books' does not exist, MeiliSearch creates it when you first add the documents.
   let response = await index.addDocuments(documents)
 
   console.log(response) // => { "updateId": 0 }
@@ -222,8 +222,8 @@ Placeholder search makes it possible to receive hits based on your parameters wi
 await index.search(
   '',
   {
-    facetFilters: ['genre:fantasy'],
-    facetsDistribution: ['genre']
+    facetFilters: ['genres:fantasy'],
+    facetsDistribution: ['genres']
   }
 )
 ```
@@ -234,12 +234,12 @@ await index.search(
     {
       "id": 4,
       "title": "Harry Potter and the Half-Blood Prince",
-      "genre": "fantasy"
+      "genres": "fantasy"
     },
     {
       "id": 42,
       "title": "The Hitchhiker's Guide to the Galaxy",
-      "genre": "fantasy"
+      "genres": "fantasy"
     }
   ],
   "offset": 0,
@@ -248,7 +248,7 @@ await index.search(
   "exhaustiveNbHits": false,
   "processingTimeMs": 0,
   "query": "",
-  "facetsDistribution": { "genre": { "fantasy": 2 } },
+  "facetsDistribution": { "genres": { "fantasy": 2 } },
   "exhaustiveFacetsCount": true
 }
 ```
