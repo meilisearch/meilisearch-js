@@ -167,7 +167,8 @@ Output:
   "hits": [
     {
       "book_id": 4,
-      "title": "Harry Potter and the Half-Blood Prince"
+      "title": "Harry Potter and the Half-Blood Prince",
+      "genres": ["fantasy"]
     }
   ],
   "offset": 0,
@@ -199,9 +200,11 @@ await index.search(
     {
       "book_id": 456,
       "title": "Le Petit Prince",
+      "genres": ["poetic"],
       "_formatted": {
         "book_id": 456,
         "title": "Le Petit <em>Prince</em>"
+        "genres": ["poetic"]
       }
     }
   ],
@@ -234,12 +237,12 @@ await index.search(
     {
       "id": 4,
       "title": "Harry Potter and the Half-Blood Prince",
-      "genres": "fantasy"
+      "genres": ["fantasy"]
     },
     {
       "id": 42,
       "title": "The Hitchhiker's Guide to the Galaxy",
-      "genres": "fantasy"
+      "genres": ["fantasy"]
     }
   ],
   "offset": 0,
