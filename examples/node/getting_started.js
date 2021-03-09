@@ -7,7 +7,7 @@ const { MeiliSearch } = require('../../dist/bundles/meilisearch.umd.js')
   })
 
   // An index is where the documents are stored.
-  const index = client.index('movies') // If your index exists
+  const index = client.index('movies')
 
   const dataset = [
       { id: 1, title: "Carol", genres: ["Romance", "Drama"] },
