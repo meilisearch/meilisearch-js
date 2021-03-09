@@ -185,7 +185,7 @@ All the supported options are described in the [search parameters](https://docs.
 
 ```javascript
 await index.search(
-  'Wonder',
+  'wonder',
   {
     attributesToHighlight: ['*'],
     filters: 'id >= 1'
@@ -211,7 +211,7 @@ await index.search(
   "limit": 20,
   "nbHits": 1,
   "processingTimeMs": 0,
-  "query": "Wonder"
+  "query": "wonder"
 }
 ```
 
