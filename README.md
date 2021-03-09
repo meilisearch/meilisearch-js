@@ -233,29 +233,29 @@ await index.search(
 {
   "hits": [
     {
-      "id":2,
-      "title":"Wonder Woman",
+      "id": 2,
+      "title": "Wonder Woman",
       "genres": ["Action","Adventure"]
     },
     {
-      "id":5,
-      "title":"Moana",
-      "genres":["Fantasy","Action"]
+      "id": 5,
+      "title": "Moana",
+      "genres": ["Fantasy","Action"]
     }
   ],
-  "offset":0,
-  "limit":20,
-  "nbHits":2,
-  "processingTimeMs":0,
-  "query":"",
-  "facetsDistribution":{
+  "offset": 0,
+  "limit": 20,
+  "nbHits": 2,
+  "processingTimeMs": 0,
+  "query": "",
+  "facetsDistribution": {
     "genres": {
-      "Drama":0,
-      "Action":2,
-      "Science Fiction":0,
-      "Fantasy":1,
-      "Romance":0,
-      "Adventure":1
+      "Drama": 0,
+      "Action": 2,
+      "Science Fiction": 0,
+      "Fantasy": 1,
+      "Romance": 0,
+      "Adventure": 1
     }
   }
 ```
