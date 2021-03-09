@@ -211,7 +211,7 @@ await index.search(
   "limit": 20,
   "nbHits": 1,
   "processingTimeMs": 0,
-  "query": "Wonder"
+  "query": "wonder"
 }
 ```
 
