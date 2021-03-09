@@ -132,7 +132,7 @@ import { MeiliSearch } from 'meilisearch'
   })
 
   // An index is where the documents are stored.
-  const index = client.index('movies') // If your index exists
+  const index = client.index('movies')
 
   const documents = [
       { id: 1, title: "Carol", genres: ["Romance", "Drama"] },
@@ -188,7 +188,7 @@ await index.search(
   'prince',
   {
     attributesToHighlight: ['*'],
-    filters: 'book_id > 10'
+    filters: 'id >= 1'
   }
 )
 ```
