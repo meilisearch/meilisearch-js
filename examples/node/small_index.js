@@ -10,27 +10,44 @@ const client = new MeiliSearch(config)
 const uid = 'movies_test'
 
 const dataset = [
-  { id: 123, title: 'Pride and Prejudice', comment: 'A great book' },
+  { biduleidbidule: "ahaha", id: 123, title: 'Pride and Prejudice', comment: 'A great book' },
   {
+    biduleidbidule: "ahaha2",
     id: 456,
     title: 'Le Petit Prince',
     comment: 'A french book about a prince that walks on little cute planets',
   },
-  { id: 2, title: 'Le Rouge et le Noir', comment: 'Another french book' },
-  { id: 1, title: 'Alice In Wonderland', comment: 'A weird book' },
-  { id: 1344, title: 'The Hobbit', comment: 'An awesome book' },
+  { biduleidbidule: "ahaha3", id: 2, title: 'Le Rouge et le Noir', comment: 'Another french book' },
+  { biduleidbidule: "ahaha4", id: 1, title: 'Alice In Wonderland', comment: 'A weird book' },
+  { biduleidbidule: "ahaha5", id: 1344, title: 'The Hobbit', comment: 'An awesome book' },
   {
+    biduleidbidule: "ahaha6",
     id: 4,
     title: 'Harry Potter and the Half-Blood Prince',
     comment: 'The best book',
   },
-  { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
+  { biduleidbidule: "ahaha7", id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
 ]
 
 ;(async () => {
-  // This example creates an index with 7 documents
-  const index = await client.getOrCreateIndex(uid)
-  const { updateId } = await index.addDocuments(dataset)
-  const res = await index.waitForPendingUpdate(updateId)
-  console.log({ res })
+  try {
+    // This example creates an index with 7 documents
+    // console.log(await client.getKeys())
+    await client.deleteIndex(uid)
+    const index = await client.getOrCreateIndex(uid, {
+      // primaryKey: "id"
+    })
+    // const update = await client.updateIndex(uid, {
+    //   primaryKey: "test_id"
+    // })
+    const { updateId } = await index.addDocuments(dataset)
+    const res = await index.waitForPendingUpdate(updateId)
+    // console.log({ res })
+    // const docs = await index.search("harry")
+    // console.log(docs.hits)
+    const i = await client.index(uid).getRawInfo()
+    console.log(i)
+  } catch(e) {
+    console.log(e)
+  }
 })()

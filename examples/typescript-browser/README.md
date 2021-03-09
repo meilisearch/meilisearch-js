@@ -5,8 +5,8 @@
 Build the base project `/meilisearch-js` as this example uses the locally build bundles from `meilisearch-js`.
 
 ```
-$ cd meilisearch-js
-$ yarn build
+cd meilisearch-js
+yarn build
 ```
 
 ## Credentials
@@ -22,19 +22,19 @@ To try it out you need to follow these steps.
 ### 1. Install dependencies
 
 ```bash
-$ yarn
+yarn
 ```
 
 ### 2. Build
 
 ```bash
-$ yarn build
+yarn build
 ```
 
 ### 3. Serve
 
 ```bash
-$ http-server public
+http-server public
 ```
 
 We used http-server CLI to serve the webpage. Feel free to use any tool with the same purpose as it will not impact the result.

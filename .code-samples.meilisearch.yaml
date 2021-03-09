@@ -290,7 +290,8 @@ getting_started_add_documents_md: |-
   ```bash
   npm install meilisearch
   ```
-  Or
+
+  Or, if you are using `yarn`
   ```bash
   yarn add meilisearch
   ```

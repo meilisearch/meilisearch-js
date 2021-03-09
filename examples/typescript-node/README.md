@@ -5,8 +5,8 @@
 Build the base project `/meilisearch-js` as this example uses the locally build bundles from `meilisearch-js`.
 
 ```
-$ cd meilisearch-js
-$ yarn build
+cd meilisearch-js
+yarn build
 ```
 
 ## Credentials
@@ -22,17 +22,17 @@ To try it out you need to follow these steps:
 ### 1. Install dependencies
 
 ```bash
-$ yarn
+yarn
 ```
 
 ### 2. Build
 
 ```bash
-$ yarn build
+yarn build
 ```
 
 ### 3. Execute
 
 ```bash
-$ node build/bundle.js
+node build/bundle.js
 ```
