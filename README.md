@@ -156,7 +156,7 @@ With the `updateId`, you can check the status (`enqueued`, `processed` or `faile
 
 ```javascript
 // MeiliSearch is typo-tolerant:
-const search = await index.search('harry pottre')
+const search = await index.search('philoudelphia')
 console.log(search)
 ```
 
