@@ -90,7 +90,7 @@ const client = new MeiliSearch({
 Usage in an HTML (or alike) file:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js'></script>
 <script>
   const client = new MeiliSearch({
     host: 'http://127.0.0.1:7700',
@@ -132,18 +132,18 @@ import { MeiliSearch } from 'meilisearch'
   })
 
   // An index is where the documents are stored.
-  const index = client.index('books') // If your index exists
+  const index = client.index('movies')
 
   const documents = [
-    { book_id: 123, title: 'Pride and Prejudice', genres: ['drama', 'romance'] },
-    { book_id: 456, title: 'Le Petit Prince', genres: ['poetic'] },
-    { book_id: 1, title: 'Alice In Wonderland', genres: ['conceptual'] },
-    { book_id: 1344, title: 'The Hobbit' },
-    { book_id: 4, title: 'Harry Potter and the Half-Blood Prince', genres: ['fantasy'] },
-    { book_id: 42, title: "The Hitchhiker's Guide to the Galaxy", genres: ['fantasy'] }
+      { id: 1, title: 'Carol', genres: ['Romance', 'Drama'] },
+      { id: 2, title: 'Wonder Woman', genres: ['Action', 'Adventure'] },
+      { id: 3, title: 'Life of Pi', genres: ['Adventure', 'Drama'] },
+      { id: 4, title: 'Mad Max: Fury Road', genres: ['Adventure', 'Science Fiction'] },
+      { id: 5, title: 'Moana', genres: ['Fantasy', 'Action']},
+      { id: 6, title: 'Philadelphia', genres: ['Drama'] },
   ]
 
-  // If the index 'books' does not exist, MeiliSearch creates it when you first add the documents.
+  // If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
   let response = await index.addDocuments(documents)
 
   console.log(response) // => { "updateId": 0 }
@@ -156,7 +156,7 @@ With the `updateId`, you can check the status (`enqueued`, `processed` or `faile
 
 ```javascript
 // MeiliSearch is typo-tolerant:
-const search = await index.search('harry pottre')
+const search = await index.search('philoudelphia')
 console.log(search)
 ```
 
@@ -166,17 +166,16 @@ Output:
 {
   "hits": [
     {
-      "book_id": 4,
-      "title": "Harry Potter and the Half-Blood Prince",
-      "genres": ["fantasy"]
+      "id": "6",
+      "title": "Philadelphia",
+      "genres": ["Drama"]
     }
   ],
   "offset": 0,
   "limit": 20,
   "nbHits": 1,
-  "exhaustiveNbHits": false,
   "processingTimeMs": 1,
-  "query": "harry pottre"
+  "query": "philoudelphia"
 }
 ```
 
@@ -186,10 +185,10 @@ All the supported options are described in the [search parameters](https://docs.
 
 ```javascript
 await index.search(
-  'prince',
+  'wonder',
   {
     attributesToHighlight: ['*'],
-    filters: 'book_id > 10'
+    filters: 'id >= 1'
   }
 )
 ```
@@ -198,28 +197,27 @@ await index.search(
 {
   "hits": [
     {
-      "book_id": 456,
-      "title": "Le Petit Prince",
-      "genres": ["poetic"],
+      "id": 2,
+      "title": "Wonder Woman",
+      "genres": ["Action", "Adventure"],
       "_formatted": {
-        "book_id": 456,
-        "title": "Le Petit <em>Prince</em>",
-        "genres": ["poetic"]
+        "id": 2,
+        "title": "<em>Wonder</em> Woman",
+        "genres": ["Action", "Adventure"]
       }
     }
   ],
   "offset": 0,
   "limit": 20,
   "nbHits": 1,
-  "exhaustiveNbHits": false,
   "processingTimeMs": 0,
-  "query": "prince"
+  "query": "wonder"
 }
 ```
 
 #### Placeholder Search <!-- omit in toc -->
 
-Placeholder search makes it possible to receive hits based on your parameters without having any query (`q`).
+Placeholder search makes it possible to receive hits based on your parameters without having any query (`q`). To enable faceted search on your dataset you need to add `genres` in the [settings](https://docs.meilisearch.com/reference/features/faceted_search.html#setting-up-facets).
 
 ```javascript
 await index.search(
@@ -235,25 +233,31 @@ await index.search(
 {
   "hits": [
     {
-      "id": 4,
-      "title": "Harry Potter and the Half-Blood Prince",
-      "genres": ["fantasy"]
+      "id": 2,
+      "title": "Wonder Woman",
+      "genres": ["Action","Adventure"]
     },
     {
-      "id": 42,
-      "title": "The Hitchhiker's Guide to the Galaxy",
-      "genres": ["fantasy"]
+      "id": 5,
+      "title": "Moana",
+      "genres": ["Fantasy","Action"]
     }
   ],
   "offset": 0,
   "limit": 20,
   "nbHits": 2,
-  "exhaustiveNbHits": false,
   "processingTimeMs": 0,
   "query": "",
-  "facetsDistribution": { "genres": { "fantasy": 2 } },
-  "exhaustiveFacetsCount": true
-}
+  "facetsDistribution": {
+    "genres": {
+      "Drama": 0,
+      "Action": 2,
+      "Science Fiction": 0,
+      "Fantasy": 1,
+      "Romance": 0,
+      "Adventure": 1
+    }
+  }
 ```
 
 #### Abortable Search <!-- omit in toc -->
@@ -264,7 +268,7 @@ You can abort a pending search request by providing an [AbortSignal](https://dev
 const controller = new AbortController()
 
 index
-  .search('prince', {}, 'POST', {
+  .search('wonder', {}, 'POST', {
     signal: controller.signal,
   })
   .then((response) => {
