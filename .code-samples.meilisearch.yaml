@@ -317,13 +317,13 @@ getting_started_add_documents_md: |-
     .then((res) => console.log(res))
   ```
 
-  [About this package](https://github.com/meilisearch/meilisearch-js/)
+  [About this SDK](https://github.com/meilisearch/meilisearch-js/)
 getting_started_search_md: |-
   ```js
   index.search('botman').then((res) => console.log(res))
   ```
 
-  [About this package](https://github.com/meilisearch/meilisearch-js/)
+  [About this SDK](https://github.com/meilisearch/meilisearch-js/)
 get_attributes_for_faceting_1: |-
   client.index('movies').getAttributesForFaceting()
 update_attributes_for_faceting_1: |-
