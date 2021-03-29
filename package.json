@@ -73,7 +73,7 @@
     "@typescript-eslint/parser": "2.34.0",
     "abort-controller": "^3.0.0",
     "brotli-size": "^4.0.0",
-    "eslint": "^7.21.0",
+    "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-config-standard-with-typescript": "^17.0.0",
     "eslint-plugin-import": "2",
