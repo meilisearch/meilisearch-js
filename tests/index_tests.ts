@@ -245,8 +245,22 @@ describe.each([
   })
   describe('Test on base routes', () => {
     test(`${permission} key: get health`, async () => {
+      await client.health().then((response: Types.Health) => {
+        expect(response).toHaveProperty(
+          'status',
+          expect.stringMatching('available')
+        )
+      })
+    })
+    test(`${permission} key: is server healthy`, async () => {
       await client.isHealthy().then((response: boolean) => {
         expect(response).toBe(true)
+      })
+    })
+    test(`${permission} key: is healthy return false on bad host`, async () => {
+      const client = new MeiliSearch({ host: 'http://localhost:9345' })
+      await client.isHealthy().then((response: boolean) => {
+        expect(response).toBe(false)
       })
     })
     test(`${permission} key: get version`, async () => {
@@ -263,11 +277,19 @@ describe.each([
         expect(response).toHaveProperty('indexes', expect.any(Object))
       })
     })
+    test(`${permission} key: bad host raise CommunicationError on health route`, async () => {
+      const client = new MeiliSearch({ host: 'http://localhost:9345' })
+      try {
+        await client.health()
+      } catch (e) {
+        expect(e.type).toEqual('MeiliSearchCommunicationError')
+      }
+    })
   })
 })
 
 describe.each([{ client: publicClient, permission: 'Public' }])(
-  'Test on routes where public key should not have access',
+  'Test on routes with public key',
   ({ client, permission }) => {
     describe('Test on indexes', () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
@@ -322,6 +344,14 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
     })
     describe('Test on base routes', () => {
+      test(`${permission} key: get health`, async () => {
+        await client.health().then((response: Types.Health) => {
+          expect(response).toHaveProperty(
+            'status',
+            expect.stringMatching('available')
+          )
+        })
+      })
       test(`${permission} key: try to get version and be denied`, async () => {
         await expect(client.version()).rejects.toHaveProperty(
           'errorCode',
@@ -339,7 +369,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 )
 
 describe.each([{ client: anonymousClient, permission: 'No' }])(
-  'Test on routes where client without api key should not have access',
+  'Test on routes without an API key',
   ({ client, permission }) => {
     describe('Test on indexes', () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
@@ -394,6 +424,14 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
     })
     describe('Test on base routes', () => {
+      test(`${permission} key: get health`, async () => {
+        await client.health().then((response: Types.Health) => {
+          expect(response).toHaveProperty(
+            'status',
+            expect.stringMatching('available')
+          )
+        })
+      })
       test(`${permission} key: try to get version and be denied`, async () => {
         await expect(client.version()).rejects.toHaveProperty(
           'errorCode',

@@ -494,11 +494,17 @@ Or using the index object:
 
 `client.getKeys(): Promise<Keys>`
 
-### Healthy <!-- omit in toc -->
+### isHealthy <!-- omit in toc -->
+
+- Return `true` or `false` depending on the health of the server.
+
+`client.isHealthy(): Promise<boolean>`
+
+### Health <!-- omit in toc -->
 
 - Check if the server is healthy
 
-`client.isHealthy(): Promise<true>`
+`client.health(): Promise<Health>`
 
 ### Stats <!-- omit in toc -->
 
