@@ -146,7 +146,7 @@ get_index_stats_1: |-
 get_indexes_stats_1: |-
   client.stats()
 get_health_1: |-
-  client.isHealthy()
+  client.health()
 get_version_1: |-
   client.version()
 distinct_attribute_guide_1: |-

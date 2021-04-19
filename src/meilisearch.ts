@@ -22,7 +22,7 @@ export class MeiliSearch implements Types.MeiliSearchInterface {
   } = {
     listIndexes: 'indexes',
     getKeys: 'keys',
-    isHealthy: 'health',
+    health: 'health',
     stats: 'stats',
     version: 'version',
     createDump: 'dumps',
@@ -152,12 +152,27 @@ export class MeiliSearch implements Types.MeiliSearchInterface {
    * Checks if the server is healthy, otherwise an error will be thrown.
    *
    * @memberof MeiliSearch
+   * @method health
+   */
+  async health(): Promise<Types.Health> {
+    return await this.httpRequest.get<Types.Health>(
+      MeiliSearch.apiRoutes.health
+    )
+  }
+
+  /**
+   * Checks if the server is healthy, return true or false.
+   *
+   * @memberof MeiliSearch
    * @method isHealthy
    */
-  async isHealthy(): Promise<true> {
-    return await this.httpRequest
-      .get(MeiliSearch.apiRoutes.isHealthy)
-      .then(() => true)
+  async isHealthy(): Promise<boolean> {
+    try {
+      await this.httpRequest.get(MeiliSearch.apiRoutes.health)
+      return true
+    } catch (e) {
+      return false
+    }
   }
 
   ///

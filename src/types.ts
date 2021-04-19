@@ -201,6 +201,14 @@ export interface EnqueuedDump {
 }
 
 /*
+ *** HEALTH
+ */
+
+export interface Health {
+  status: 'available'
+}
+
+/*
  *** STATS
  */
 
@@ -256,7 +264,8 @@ export interface MeiliSearchInterface {
   ) => Promise<Index<T>>
   deleteIndex: (uid: string) => Promise<void>
   getKeys: () => Promise<Keys>
-  isHealthy: () => Promise<true>
+  health: () => Promise<Health>
+  isHealthy: () => Promise<boolean>
   stats: () => Promise<Stats>
   version: () => Promise<Version>
   createDump: () => Promise<EnqueuedDump>
