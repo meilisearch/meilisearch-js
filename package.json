@@ -80,7 +80,7 @@
     "eslint-plugin-jest": "^24.1.8",
     "eslint-plugin-jsdoc": "^32.2.0",
     "eslint-plugin-node": "11",
-    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-promise": "4",
     "eslint-plugin-standard": "5",
     "gzip-size": "^6.0.0",
