@@ -11,3 +11,6 @@ updates:
   - dependencies
   versioning-strategy: increase
   rebase-strategy: disabled
+  ignore:
+      - dependency-name: "eslint*"
+      - dependency-name: "babel-eslint"
