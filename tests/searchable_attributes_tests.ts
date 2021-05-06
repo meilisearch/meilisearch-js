@@ -71,6 +71,22 @@ describe.each([
         expect(response).toEqual(newSearchableAttributes)
       })
   })
+  test(`${permission} key: Update searchable attributes at null`, async () => {
+    const { updateId } = await client
+      .index(index.uid)
+      .updateSearchableAttributes(null)
+      .then((response: Types.EnqueuedUpdate) => {
+        expect(response).toHaveProperty('updateId', expect.any(Number))
+        return response
+      })
+    await client.index(index.uid).waitForPendingUpdate(updateId)
+    await client
+      .index(index.uid)
+      .getSearchableAttributes()
+      .then((response: string[]) => {
+        expect(response).toEqual(['*'])
+      })
+  })
   test(`${permission} key: Reset searchable attributes`, async () => {
     const { updateId } = await client
       .index(index.uid)

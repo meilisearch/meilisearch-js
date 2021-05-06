@@ -50,7 +50,7 @@ class HttpRequests {
       const response: Response = await fetch(constructURL.toString(), {
         ...config,
         method,
-        body: body ? JSON.stringify(body) : undefined,
+        body: JSON.stringify(body),
         headers: this.headers,
       }).then((res) => httpResponseErrorHandler(res))
       const parsedBody: string = await response.text()

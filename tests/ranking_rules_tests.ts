@@ -80,6 +80,22 @@ describe.each([
         expect(response).toEqual(newRankingRules)
       })
   })
+  test(`${permission} key: Update ranking rules at null`, async () => {
+    const { updateId } = await client
+      .index(index.uid)
+      .updateRankingRules(null)
+      .then((response: Types.EnqueuedUpdate) => {
+        expect(response).toHaveProperty('updateId', expect.any(Number))
+        return response
+      })
+    await client.index(index.uid).waitForPendingUpdate(updateId)
+    await client
+      .index(index.uid)
+      .getRankingRules()
+      .then((response: string[]) => {
+        expect(response).toEqual(defaultRankingRules)
+      })
+  })
   test(`${permission} key: Reset ranking rules`, async () => {
     const { updateId } = await client
       .index(index.uid)
