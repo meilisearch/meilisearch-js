@@ -71,6 +71,22 @@ describe.each([
         expect(response).toEqual(newDistinctAttribute)
       })
   })
+  test(`${permission} key: Update distinct attribute at null`, async () => {
+    const { updateId } = await client
+      .index(index.uid)
+      .updateDistinctAttribute(null)
+      .then((response: Types.EnqueuedUpdate) => {
+        expect(response).toHaveProperty('updateId', expect.any(Number))
+        return response
+      })
+    await client.index(index.uid).waitForPendingUpdate(updateId)
+    await client
+      .index(index.uid)
+      .getDistinctAttribute()
+      .then((response: string | null) => {
+        expect(response).toEqual(null)
+      })
+  })
   test(`${permission} key: Reset distinct attribute`, async () => {
     const { updateId } = await client
       .index(index.uid)

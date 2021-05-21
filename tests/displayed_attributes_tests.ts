@@ -71,6 +71,22 @@ describe.each([
         expect(response).toEqual(newDisplayedAttribute)
       })
   })
+  test(`${permission} key: Update displayed attributes at null`, async () => {
+    const { updateId } = await client
+      .index(index.uid)
+      .updateDisplayedAttributes(null)
+      .then((response: Types.EnqueuedUpdate) => {
+        expect(response).toHaveProperty('updateId', expect.any(Number))
+        return response
+      })
+    await client.index(index.uid).waitForPendingUpdate(updateId)
+    await client
+      .index(index.uid)
+      .getDisplayedAttributes()
+      .then((response: string[]) => {
+        expect(response).toEqual(['*'])
+      })
+  })
   test(`${permission} key: Reset displayed attributes`, async () => {
     const { updateId } = await client
       .index(index.uid)

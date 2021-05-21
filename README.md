@@ -450,7 +450,7 @@ Or using the index object:
   `index.getRankingRules(): Promise<string[]>`
 
 - Update Ranking Rules
-  `index.updateRankingRules(rankingRules: string[]): Promise<EnqueuedUpdate>`
+  `index.updateRankingRules(rankingRules: string[] | null): Promise<EnqueuedUpdate>`
 
 - Reset Ranking Rules
   `index.resetRankingRules(): Promise<EnqueuedUpdate>`
@@ -461,7 +461,7 @@ Or using the index object:
   `index.getDistinctAttribute(): Promise<string | void>`
 
 - Update Distinct Attribute
-  `index.updateDistinctAttribute(distinctAttribute: string): Promise<EnqueuedUpdate>`
+  `index.updateDistinctAttribute(distinctAttribute: string | null): Promise<EnqueuedUpdate>`
 
 - Reset Distinct Attribute
   `index.resetDistinctAttribute(): Promise<EnqueuedUpdate>`
@@ -472,7 +472,7 @@ Or using the index object:
   `index.getSearchableAttributes(): Promise<string[]>`
 
 - Update Searchable Attributes
-  `index.updateSearchableAttributes(searchableAttributes: string[]): Promise<EnqueuedUpdate>`
+  `index.updateSearchableAttributes(searchableAttributes: string[] | null): Promise<EnqueuedUpdate>`
 
 - Reset Searchable Attributes
   `index.resetSearchableAttributes(): Promise<EnqueuedUpdate>`
@@ -483,7 +483,7 @@ Or using the index object:
   `index.getDisplayedAttributes(): Promise<string[]>`
 
 - Update Displayed Attributes
-  `index.updateDisplayedAttributes(displayedAttributes: string[]): Promise<EnqueuedUpdate>`
+  `index.updateDisplayedAttributes(displayedAttributes: string[] | null): Promise<EnqueuedUpdate>`
 
 - Reset Displayed Attributes
   `index.resetDisplayedAttributes(): Promise<EnqueuedUpdate>`

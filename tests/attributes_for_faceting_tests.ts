@@ -71,6 +71,22 @@ describe.each([
         expect(response).toEqual(newAttributesForFaceting)
       })
   })
+  test(`${permission} key: Update attributes for filtering at null`, async () => {
+    const { updateId } = await client
+      .index(index.uid)
+      .updateAttributesForFaceting(null)
+      .then((response: Types.EnqueuedUpdate) => {
+        expect(response).toHaveProperty('updateId', expect.any(Number))
+        return response
+      })
+    await client.index(index.uid).waitForPendingUpdate(updateId)
+    await client
+      .index(index.uid)
+      .getAttributesForFaceting()
+      .then((response: string[]) => {
+        expect(response.sort()).toEqual([])
+      })
+  })
   test(`${permission} key: Reset attributes for filtering`, async () => {
     const { updateId } = await client
       .index(index.uid)

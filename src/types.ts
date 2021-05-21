@@ -317,26 +317,26 @@ export interface IndexInterface<T = any> {
   updateStopWords: (stopWords: string[]) => Promise<EnqueuedUpdate>
   resetStopWords: () => Promise<EnqueuedUpdate>
   getRankingRules: () => Promise<string[]>
-  updateRankingRules: (rankingRules: string[]) => Promise<EnqueuedUpdate>
+  updateRankingRules: (rankingRules: string[] | null) => Promise<EnqueuedUpdate>
   resetRankingRules: () => Promise<EnqueuedUpdate>
   getDistinctAttribute: () => Promise<string | null>
   updateDistinctAttribute: (
-    distinctAttribute: string
+    distinctAttribute: string | null
   ) => Promise<EnqueuedUpdate>
   resetDistinctAttribute: () => Promise<EnqueuedUpdate>
   getAttributesForFaceting: () => Promise<string[]>
   updateAttributesForFaceting: (
-    attributesForFaceting: string[]
+    attributesForFaceting: string[] | null
   ) => Promise<EnqueuedUpdate>
   resetAttributesForFaceting: () => Promise<EnqueuedUpdate>
   getSearchableAttributes: () => Promise<string[]>
   updateSearchableAttributes: (
-    searchableAttributes: string[]
+    searchableAttributes: string[] | null
   ) => Promise<EnqueuedUpdate>
   resetSearchableAttributes: () => Promise<EnqueuedUpdate>
   getDisplayedAttributes: () => Promise<string[]>
   updateDisplayedAttributes: (
-    displayedAttributes: string[]
+    displayedAttributes: string[] | null
   ) => Promise<EnqueuedUpdate>
   resetDisplayedAttributes: () => Promise<EnqueuedUpdate>
 }

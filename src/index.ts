@@ -622,7 +622,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateRankingRules
    */
   async updateRankingRules(
-    rankingRules: string[]
+    rankingRules: string[] | null
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateRankingRules(this.uid)
     return await this.httpRequest.post(url, rankingRules)
@@ -658,7 +658,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateDistinctAttribute
    */
   async updateDistinctAttribute(
-    distinctAttribute: string
+    distinctAttribute: string | null
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateDistinctAttribute(this.uid)
     return await this.httpRequest.post(url, distinctAttribute)
@@ -694,7 +694,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateAttributesForFaceting
    */
   async updateAttributesForFaceting(
-    attributesForFaceting: string[]
+    attributesForFaceting: string[] | null
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateAttributesForFaceting(this.uid)
     return await this.httpRequest.post(url, attributesForFaceting)
@@ -730,7 +730,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateSearchableAttributes
    */
   async updateSearchableAttributes(
-    searchableAttributes: string[]
+    searchableAttributes: string[] | null
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateSearchableAttributes(this.uid)
     return await this.httpRequest.post(url, searchableAttributes)
@@ -766,7 +766,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateDisplayedAttributes
    */
   async updateDisplayedAttributes(
-    displayedAttributes: string[]
+    displayedAttributes: string[] | null
   ): Promise<Types.EnqueuedUpdate> {
     const url = Index.routeConstructors.updateDisplayedAttributes(this.uid)
     return await this.httpRequest.post(url, displayedAttributes)
