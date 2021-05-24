@@ -273,7 +273,7 @@ add_movies_json_1: |-
   const movies = require('./movies.json')
   client.index('movies').addDocuments(movies).then((res) => console.log(res))
 documents_guide_add_movie_1: |-
-  client.index('movies')addDocuments([{
+  client.index('movies').addDocuments([{
     'movie_id': '123sq178',
     'title': 'Amelie Poulain'
   }])
