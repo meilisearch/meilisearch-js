@@ -271,9 +271,9 @@ settings_guide_displayed_1: |-
   })
 add_movies_json_1: |-
   const movies = require('./movies.json')
-  index.addDocuments(movies).then((res) => console.log(res))
+  client.index('movies').addDocuments(movies).then((res) => console.log(res))
 documents_guide_add_movie_1: |-
-  index.addDocuments([{
+  client.index('movies').addDocuments([{
     'movie_id': '123sq178',
     'title': 'Amelie Poulain'
   }])
@@ -320,7 +320,7 @@ getting_started_add_documents_md: |-
   [About this SDK](https://github.com/meilisearch/meilisearch-js/)
 getting_started_search_md: |-
   ```js
-  index.search('botman').then((res) => console.log(res))
+  client.index('movies').search('botman').then((res) => console.log(res))
   ```
 
   [About this SDK](https://github.com/meilisearch/meilisearch-js/)
