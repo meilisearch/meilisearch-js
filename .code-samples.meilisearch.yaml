@@ -37,8 +37,10 @@ delete_one_document_1: |-
   client.index('movies').deleteDocument(25684)
 delete_documents_1: |-
   client.index('movies').deleteDocuments([23488, 153738, 437035, 363869])
-search_1: |-
+search_post_1: |-
   client.index('movies').search('American ninja')
+search_get_1: |-
+  client.index('movies').search('American ninja', {}, 'GET')
 get_update_1: |-
   client.index('movies').getUpdateStatus(1)
 get_all_updates_1: |-
