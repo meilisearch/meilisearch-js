@@ -1,6 +1,5 @@
 status = [
   'linter-check',
-  'integration-tests (Node.js 10)',
   'integration-tests (Node.js 12)',
   'integration-tests (Node.js 14)'
 ]
