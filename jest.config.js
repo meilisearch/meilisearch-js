@@ -18,7 +18,7 @@ const config = {
     {
       preset: 'ts-jest',
       displayName: 'dom',
-      testEnvironment: 'jest-environment-jsdom',
+      testEnvironment: 'jsdom',
       testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
       testPathIgnorePatterns: ['meilisearch-test-utils', 'env/'],
     },
