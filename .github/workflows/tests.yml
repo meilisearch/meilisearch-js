@@ -16,6 +16,7 @@ jobs:
     if: github.event_name != 'pull_request' || !startsWith(github.base_ref, 'bump-meilisearch-v')
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node: [ '12', '14' ]
     name: integration-tests (Node.js ${{ matrix.node }})
