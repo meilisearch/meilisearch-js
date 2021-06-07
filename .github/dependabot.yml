@@ -14,6 +14,4 @@ updates:
   ignore:
       - dependency-name: "eslint*"
       - dependency-name: "babel-eslint"
-      - dependency-name: "jest-environment-jsdom"
       - dependency-name: "*prettier*"
-      
