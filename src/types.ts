@@ -263,6 +263,7 @@ export interface MeiliSearchInterface {
     options?: IndexOptions
   ) => Promise<Index<T>>
   deleteIndex: (uid: string) => Promise<void>
+  deleteIndexIfExists: (uid: string) => Promise<boolean>
   getKeys: () => Promise<Keys>
   health: () => Promise<Health>
   isHealthy: () => Promise<boolean>
@@ -289,6 +290,7 @@ export interface IndexInterface<T = any> {
   fetchPrimaryKey(): Promise<string | undefined>
   update: (indexData: IndexOptions) => Promise<this>
   delete: () => Promise<void>
+  deleteIfExists: () => Promise<boolean>
   getStats: () => Promise<IndexStats>
   getDocuments: <P extends GetDocumentsParams<T>>(
     options?: P

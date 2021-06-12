@@ -130,6 +130,23 @@ export class MeiliSearch implements Types.MeiliSearchInterface {
     return new Index(this.config, uid).delete()
   }
 
+  /**
+   * Deletes an index if it already exists.
+   * @memberof MeiliSearch
+   * @method deleteIndexIfExists
+   */
+  async deleteIndexIfExists(uid: string): Promise<boolean> {
+    try {
+      await this.deleteIndex(uid)
+      return true
+    } catch (e) {
+      if (e.errorCode === 'index_not_found') {
+        return false
+      }
+      throw e
+    }
+  }
+
   ///
   /// KEYS
   ///

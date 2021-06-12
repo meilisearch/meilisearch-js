@@ -200,12 +200,72 @@ describe.each([
       await expect(client.listIndexes()).resolves.toHaveLength(1)
     })
 
+    test(`${permission} key: delete if exists when index is present`, async () => {
+      const index = await client.createIndex('tempIndex')
+      await index.deleteIfExists().then((response: boolean) => {
+        expect(response).toBe(true)
+      })
+      await expect(client.getIndex('tempIndex')).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INDEX_NOT_FOUND
+      )
+    })
+
+    test(`${permission} key: delete if exists when index is not present`, async () => {
+      const indexes = await client.listIndexes()
+      const index = client.index('badIndex')
+      await index.deleteIfExists().then((response: boolean) => {
+        expect(response).toBe(false)
+      })
+      await expect(client.getIndex('badIndex')).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INDEX_NOT_FOUND
+      )
+      await expect(client.listIndexes()).resolves.toHaveLength(indexes.length)
+    })
+
+    test(`${permission} key: delete if exists error`, async () => {
+      const client = new MeiliSearch({ host: 'http://localhost:9345' })
+      const index = client.index('tempIndex')
+      await expect(index.deleteIfExists()).rejects.toThrow()
+    })
+
     test(`${permission} key: delete index using client`, async () => {
       await client.createIndex('tempIndex')
       await client.deleteIndex('tempIndex').then((response: void) => {
         expect(response).toBe(undefined)
       })
       await expect(client.listIndexes()).resolves.toHaveLength(1)
+    })
+
+    test(`${permission} key: delete index if exists using client when index is present`, async () => {
+      await client.createIndex('tempIndex')
+      await client
+        .deleteIndexIfExists('tempIndex')
+        .then((response: boolean) => {
+          expect(response).toBe(true)
+        })
+      await expect(client.getIndex('tempIndex')).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INDEX_NOT_FOUND
+      )
+    })
+
+    test(`${permission} key: delete index if exists using client when index is not present`, async () => {
+      const indexes = await client.listIndexes()
+      await client.deleteIndexIfExists('badIndex').then((response: boolean) => {
+        expect(response).toBe(false)
+      })
+      await expect(client.getIndex('badIndex')).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INDEX_NOT_FOUND
+      )
+      await expect(client.listIndexes()).resolves.toHaveLength(indexes.length)
+    })
+
+    test(`${permission} key: delete index if exists error`, async () => {
+      const client = new MeiliSearch({ host: 'http://localhost:9345' })
+      await expect(client.deleteIndexIfExists('tempIndex')).rejects.toThrow()
     })
 
     test(`${permission} key: bad host should raise CommunicationError`, async () => {

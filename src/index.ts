@@ -53,6 +53,9 @@ class Index<T> implements Types.IndexInterface<T> {
     delete: (indexUid: string) => {
       return Index.routeConstructors.indexRoute(indexUid)
     },
+    deleteIfExists: (indexUid: string) => {
+      return Index.routeConstructors.indexRoute(indexUid) + '/delete-if-exists'
+    },
     getStats: (indexUid: string) => {
       return Index.routeConstructors.indexRoute(indexUid) + '/' + `stats`
     },
@@ -387,6 +390,23 @@ class Index<T> implements Types.IndexInterface<T> {
   async delete(): Promise<void> {
     const url = Index.routeConstructors.delete(this.uid)
     return await this.httpRequest.delete(url)
+  }
+
+  /**
+   * Deletes an index if it already exists.
+   * @memberof Index
+   * @method deleteIfExists
+   */
+  async deleteIfExists(): Promise<boolean> {
+    try {
+      await this.delete()
+      return true
+    } catch (e) {
+      if (e.errorCode === 'index_not_found') {
+        return false
+      }
+      throw e
+    }
   }
 
   ///
