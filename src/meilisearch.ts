@@ -163,7 +163,6 @@ export class MeiliSearch implements Types.MeiliSearchInterface {
     return await this.httpRequest.get<Types.Stats>(url)
   }
 
-
   ///
   /// VERSION
   ///
