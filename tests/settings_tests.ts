@@ -69,7 +69,7 @@ describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
 ])('Test on settings', ({ client, permission }) => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     await masterClient.createIndex(indexAndPK.uid, {
@@ -80,6 +80,7 @@ describe.each([
       .addDocuments(dataset)
     await masterClient.index(index.uid).waitForPendingUpdate(updateId)
   })
+
   test(`${permission} key: Get default settings of an index`, async () => {
     await client
       .index(index.uid)
@@ -291,9 +292,8 @@ describe.each([
 describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on settings',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: try to get settings and be denied`, async () => {
       await expect(
@@ -316,9 +316,8 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on settings',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: try to get settings and be denied`, async () => {
       await expect(
@@ -347,35 +346,43 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-test(`Get request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).getSettings()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/settings`)
-    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/movies_test/settings/`)
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+describe('Tests on url construction', () => {
+  test(`Test getSettings route`, async () => {
+    const route = `indexes/${index.uid}/settings`
+    await expect(
+      badHostClient.index(index.uid).getSettings()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+  })
 
-test(`Update request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).updateSettings({})
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/settings`)
-    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/movies_test/settings/`)
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  test(`Test updateSettings route`, async () => {
+    const route = `indexes/${index.uid}/settings`
+    await expect(
+      badHostClient.index(index.uid).updateSettings({})
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+  })
 
-test(`Reset request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).resetSettings()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/settings`)
-    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/movies_test/settings/`)
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
+  test(`Test resetSettings route`, async () => {
+    const route = `indexes/${index.uid}/settings`
+    await expect(
+      badHostClient.index(index.uid).resetSettings()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+  })
 })
