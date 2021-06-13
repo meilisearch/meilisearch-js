@@ -53,9 +53,6 @@ class Index<T> implements Types.IndexInterface<T> {
     delete: (indexUid: string) => {
       return Index.routeConstructors.indexRoute(indexUid)
     },
-    deleteIfExists: (indexUid: string) => {
-      return Index.routeConstructors.indexRoute(indexUid) + '/delete-if-exists'
-    },
     getStats: (indexUid: string) => {
       return Index.routeConstructors.indexRoute(indexUid) + '/' + `stats`
     },
