@@ -38,10 +38,11 @@ describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
 ])('Test on updates', ({ client, permission }) => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
   })
+
   test(`${permission} key: Get one update`, async () => {
     const { updateId } = await client
       .index(index.uid)
@@ -67,6 +68,8 @@ describe.each([
   })
 
   test(`${permission} key: Get all updates`, async () => {
+    const { updateId } = await client.index(index.uid).addDocuments([{ id: 1 }])
+    await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
       .index(index.uid)
       .getAllUpdateStatus()
@@ -76,12 +79,13 @@ describe.each([
         expect(response[0]).toHaveProperty('updateId', expect.any(Number))
         expect(response[0]).toHaveProperty('type', expect.any(Object))
         expect(response[0].type).toHaveProperty('name', 'DocumentsAddition')
-        expect(response[0].type).toHaveProperty('number', 7)
+        expect(response[0].type).toHaveProperty('number', 1)
         expect(response[0]).toHaveProperty('duration', expect.any(Number))
         expect(response[0]).toHaveProperty('enqueuedAt', expect.any(String))
         expect(response[0]).toHaveProperty('processedAt', expect.any(String))
       })
   })
+
   test(`${permission} key: Try to get update that does not exist`, async () => {
     await expect(
       client.index(index.uid).getUpdateStatus(2545)
@@ -92,10 +96,10 @@ describe.each([
 describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on updates',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: Try to get a update and be denied`, async () => {
       await expect(
         client.index(index.uid).getUpdateStatus(0)
@@ -107,10 +111,10 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on updates',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: Try to get an update and be denied`, async () => {
       await expect(
         client.index(index.uid).getUpdateStatus(0)
@@ -122,24 +126,30 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-test(`Get request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).getAllUpdateStatus()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/updates`)
-    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/movies_test/updates/`)
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+describe('Tests on url construction', () => {
+  test(`Test getUpdateStatus route`, async () => {
+    const route = `indexes/${index.uid}/updates/1`
+    await expect(
+      badHostClient.index(index.uid).getUpdateStatus(1)
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+  })
 
-test(`Update request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).getUpdateStatus(1)
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/updates/1`)
-    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/movies_test/updates/1/`)
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
+  test(`Test getAllUpdateStatus route`, async () => {
+    const route = `indexes/${index.uid}/updates`
+    await expect(
+      badHostClient.index(index.uid).getAllUpdateStatus()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+  })
 })
