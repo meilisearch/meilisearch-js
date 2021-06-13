@@ -389,6 +389,23 @@ class Index<T> implements Types.IndexInterface<T> {
     return await this.httpRequest.delete(url)
   }
 
+  /**
+   * Deletes an index if it already exists.
+   * @memberof Index
+   * @method deleteIfExists
+   */
+  async deleteIfExists(): Promise<boolean> {
+    try {
+      await this.delete()
+      return true
+    } catch (e) {
+      if (e.errorCode === 'index_not_found') {
+        return false
+      }
+      throw e
+    }
+  }
+
   ///
   /// STATS
   ///
