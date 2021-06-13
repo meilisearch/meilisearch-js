@@ -499,7 +499,7 @@ describe.each([
 describe.each([{ client: anonymousClient, permission: 'Client' }])(
   'Test failing test on search',
   ({ client, permission }) => {
-    beforeEach(async () => {
+    beforeAll(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
     })
@@ -527,7 +527,7 @@ describe.each([
     { method: 'POST' as Types.Methods, permission, client },
     { method: 'GET' as Types.Methods, permission, client },
   ])('Test on abortable search', ({ client, permission, method }) => {
-    beforeEach(async () => {
+    beforeAll(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
     })
