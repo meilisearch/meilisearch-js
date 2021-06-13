@@ -11,7 +11,7 @@ import {
   BAD_HOST,
 } from './meilisearch-test-utils'
 
-beforeAll(async () => {
+beforeEach(async () => {
   await clearAllIndexes(config)
 })
 
@@ -73,24 +73,26 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-test(`Post request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.createDump()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/dumps`)
-    expect(e.message).not.toMatch(`${BAD_HOST}/dumps/`)
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+describe('Tests on url construction', () => {
+  test(`Test createDump route`, async () => {
+    const route = `dumps`
+    await expect(badHostClient.createDump()).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+  })
 
-test(`Get status request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.getDumpStatus('1')
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/dumps/1/status`)
-    expect(e.message).not.toMatch(`${BAD_HOST}/dumps/1/status/`)
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
+  test(`Test getDumpStatus route`, async () => {
+    const route = `dumps/1/status`
+    await expect(badHostClient.getDumpStatus('1')).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+  })
 })
