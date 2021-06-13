@@ -38,7 +38,7 @@ describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
 ])('Test on distinct attribute', ({ client, permission }) => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
@@ -46,6 +46,7 @@ describe.each([
       .addDocuments(dataset)
     await client.index(index.uid).waitForPendingUpdate(updateId)
   })
+
   test(`${permission} key: Get default distinct attribute`, async () => {
     await client
       .index(index.uid)
@@ -54,6 +55,7 @@ describe.each([
         expect(response).toEqual(null)
       })
   })
+
   test(`${permission} key: Update distinct attribute`, async () => {
     const newDistinctAttribute = 'title'
     const { updateId } = await client
@@ -71,6 +73,7 @@ describe.each([
         expect(response).toEqual(newDistinctAttribute)
       })
   })
+
   test(`${permission} key: Update distinct attribute at null`, async () => {
     const { updateId } = await client
       .index(index.uid)
@@ -87,6 +90,7 @@ describe.each([
         expect(response).toEqual(null)
       })
   })
+
   test(`${permission} key: Reset distinct attribute`, async () => {
     const { updateId } = await client
       .index(index.uid)
@@ -108,20 +112,22 @@ describe.each([
 describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on distinct attribute',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).getDistinctAttribute()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
+
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).updateDistinctAttribute('title')
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
+
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).resetDistinctAttribute()
@@ -133,10 +139,10 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on distinct attribute',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).getDistinctAttribute()
@@ -145,6 +151,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
+
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).updateDistinctAttribute('title')
@@ -153,6 +160,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
+
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).resetDistinctAttribute()
@@ -164,47 +172,43 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-test(`Get request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).getDistinctAttribute()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/distinct-attribute`
+describe('Tests on url construction', () => {
+  test(`Test getDistinctAttribute route`, async () => {
+    const route = `indexes/${index.uid}/settings/distinct-attribute`
+    await expect(
+      badHostClient.index(index.uid).getDistinctAttribute()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/distinct-attribute/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Update request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).updateDistinctAttribute('')
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/distinct-attribute`
+  test(`Test updateDistinctAttribute route`, async () => {
+    const route = `indexes/${index.uid}/settings/distinct-attribute`
+    await expect(
+      badHostClient.index(index.uid).updateDistinctAttribute('a')
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/distinct-attribute/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Reset request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).resetDistinctAttribute()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/distinct-attribute`
+  test(`Test resetDistinctAttribute route`, async () => {
+    const route = `indexes/${index.uid}/settings/distinct-attribute`
+    await expect(
+      badHostClient.index(index.uid).resetDistinctAttribute()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/distinct-attribute/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
+  })
 })
