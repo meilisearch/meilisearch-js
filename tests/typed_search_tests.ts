@@ -99,6 +99,7 @@ describe.each([
         .addDocuments(dataset)
       await masterClient.index<Movie>(index.uid).waitForPendingUpdate(updateId)
     })
+
     test(`${permission} key: Basic search`, async () => {
       await client
         .index<Movie>(index.uid)
@@ -468,9 +469,8 @@ describe.each([
 describe.each([{ client: anonymousClient, permission: 'Client' }])(
   'Test failing test on search',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
     })
     test(`${permission} key: Try Basic search and be denied`, async () => {
       await expect(
@@ -483,32 +483,30 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
   }
 )
 
-test(`Get request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient
-      .index<Movie>(index.uid)
-      .search('prince', { limit: 1 }, 'GET')
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/search?q=prince&limit=1`
+describe('Tests on url construction', () => {
+  test(`Test get search route`, async () => {
+    const route = `indexes/${index.uid}/search`
+    await expect(
+      badHostClient.index<Movie>(index.uid).search()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/search?q=prince&limit=1/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Post request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient
-      .index<Movie>(index.uid)
-      .search('prince', { limit: 1 }, 'POST')
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/search`)
-    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/movies_test/search/`)
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
+  test(`Test post search route`, async () => {
+    const route = `indexes/${index.uid}/search`
+    await expect(
+      badHostClient.index<Movie>(index.uid).search()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+  })
 })
