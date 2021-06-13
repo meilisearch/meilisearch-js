@@ -289,6 +289,10 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on routes without an API key',
   ({ client, permission }) => {
+    beforeEach(() => {
+      return clearAllIndexes(config)
+    })
+
     test(`${permission} key: try to get all indexes and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
