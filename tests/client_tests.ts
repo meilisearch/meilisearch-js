@@ -298,6 +298,38 @@ describe.each([
         Types.ErrorStatusCode.INDEX_NOT_FOUND
       )
     })
+    test(`${permission} key: delete index if exists on existing index`, async () => {
+      await client.createIndex(indexPk.uid)
+      await client
+        .deleteIndexIfExists(indexPk.uid)
+        .then((response: boolean) => {
+          expect(response).toBe(true)
+        })
+      await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INDEX_NOT_FOUND
+      )
+    })
+
+    test(`${permission} key: delete index if exists on index that does not exist`, async () => {
+      const indexes = await client.listIndexes()
+      await client.deleteIndexIfExists('badIndex').then((response: boolean) => {
+        expect(response).toBe(false)
+      })
+      await expect(client.getIndex('badIndex')).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.INDEX_NOT_FOUND
+      )
+      await expect(client.listIndexes()).resolves.toHaveLength(indexes.length)
+    })
+
+    test(`${permission} key: fetch deleted index should fail`, async () => {
+      const index = client.index(indexPk.uid)
+      await expect(index.getRawInfo()).rejects.toHaveProperty(
+        'errorCode',
+        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
+    })
   })
 
   describe('Test on base routes', () => {
