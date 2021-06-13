@@ -38,7 +38,7 @@ describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
 ])('Test on stop words', ({ client, permission }) => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
@@ -46,6 +46,7 @@ describe.each([
       .addDocuments(dataset)
     await masterClient.index(index.uid).waitForPendingUpdate(updateId)
   })
+
   test(`${permission} key: Get default stop words`, async () => {
     await client
       .index(index.uid)
@@ -54,6 +55,7 @@ describe.each([
         expect(response).toEqual([])
       })
   })
+
   test(`${permission} key: Update stop words`, async () => {
     const newStopWords = ['the']
     const { updateId } = await client
@@ -71,6 +73,7 @@ describe.each([
         expect(response).toEqual(newStopWords)
       })
   })
+
   test(`${permission} key: Reset stop words`, async () => {
     const { updateId } = await client
       .index(index.uid)
@@ -92,20 +95,22 @@ describe.each([
 describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on stop words',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: try to get stop words and be denied`, async () => {
       await expect(
         client.index(index.uid).getStopWords()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
+
     test(`${permission} key: try to update stop words and be denied`, async () => {
       await expect(
         client.index(index.uid).updateStopWords([])
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
+
     test(`${permission} key: try to reset stop words and be denied`, async () => {
       await expect(
         client.index(index.uid).resetStopWords()
@@ -117,10 +122,10 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on stop words',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: try to get stop words and be denied`, async () => {
       await expect(
         client.index(index.uid).getStopWords()
@@ -129,6 +134,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
+
     test(`${permission} key: try to update stop words and be denied`, async () => {
       await expect(
         client.index(index.uid).updateStopWords([])
@@ -137,6 +143,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
+
     test(`${permission} key: try to reset stop words and be denied`, async () => {
       await expect(
         client.index(index.uid).resetStopWords()
@@ -148,47 +155,43 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-test(`Get request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).getStopWords()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/stop-words`
+describe('Tests on url construction', () => {
+  test(`Test getStopWords route`, async () => {
+    const route = `indexes/${index.uid}/settings/stop-words`
+    await expect(
+      badHostClient.index(index.uid).getStopWords()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/stop-words/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Update request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).updateStopWords([])
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/stop-words`
+  test(`Test updateStopWords route`, async () => {
+    const route = `indexes/${index.uid}/settings/stop-words`
+    await expect(
+      badHostClient.index(index.uid).updateStopWords([])
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/stop-words/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Reset request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).resetStopWords()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/stop-words`
+  test(`Test resetStopWords route`, async () => {
+    const route = `indexes/${index.uid}/settings/stop-words`
+    await expect(
+      badHostClient.index(index.uid).resetStopWords()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/stop-words/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
+  })
 })
