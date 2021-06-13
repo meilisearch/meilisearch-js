@@ -38,7 +38,7 @@ describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
 ])('Test on searchable attributes', ({ client, permission }) => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
@@ -46,6 +46,7 @@ describe.each([
       .addDocuments(dataset)
     await masterClient.index(index.uid).waitForPendingUpdate(updateId)
   })
+
   test(`${permission} key: Get default searchable attributes`, async () => {
     await client
       .index(index.uid)
@@ -54,6 +55,7 @@ describe.each([
         expect(response).toEqual(['*'])
       })
   })
+
   test(`${permission} key: Update searchable attributes`, async () => {
     const newSearchableAttributes = ['title']
     const { updateId } = await client
@@ -71,6 +73,7 @@ describe.each([
         expect(response).toEqual(newSearchableAttributes)
       })
   })
+
   test(`${permission} key: Update searchable attributes at null`, async () => {
     const { updateId } = await client
       .index(index.uid)
@@ -87,6 +90,7 @@ describe.each([
         expect(response).toEqual(['*'])
       })
   })
+
   test(`${permission} key: Reset searchable attributes`, async () => {
     const { updateId } = await client
       .index(index.uid)
@@ -108,20 +112,23 @@ describe.each([
 describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on searchable attributes',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).getSearchableAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
+
     test(`${permission} key: try to update searchable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).updateSearchableAttributes([])
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
+
     test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).resetSearchableAttributes()
@@ -137,6 +144,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).getSearchableAttributes()
@@ -145,6 +153,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
+
     test(`${permission} key: try to update searchable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).updateSearchableAttributes([])
@@ -153,6 +162,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
+
     test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).resetSearchableAttributes()
@@ -164,49 +174,43 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-test(`Get request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).getSearchableAttributes()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/searchable-attributes`
+describe('Tests on url construction', () => {
+  test(`Test getSearchableAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/searchable-attributes`
+    await expect(
+      badHostClient.index(index.uid).getSearchableAttributes()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/searchable-attributes/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Update request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient
-      .index(index.uid)
-      .updateSearchableAttributes([])
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/searchable-attributes`
+  test(`Test updateSearchableAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/searchable-attributes`
+    await expect(
+      badHostClient.index(index.uid).updateSearchableAttributes([])
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/searchable-attributes/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Reset request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).resetSearchableAttributes()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/searchable-attributes`
+  test(`Test resetSearchableAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/searchable-attributes`
+    await expect(
+      badHostClient.index(index.uid).resetSearchableAttributes()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/searchable-attributes/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
+  })
 })
