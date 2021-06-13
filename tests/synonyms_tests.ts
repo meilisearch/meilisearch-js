@@ -38,7 +38,7 @@ describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
 ])('Test on synonyms', ({ client, permission }) => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
@@ -94,20 +94,22 @@ describe.each([
 describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on synonyms',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: try to get synonyms and be denied`, async () => {
       await expect(
         client.index(index.uid).getSynonyms()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
+
     test(`${permission} key: try to update synonyms and be denied`, async () => {
       await expect(
         client.index(index.uid).updateSynonyms({})
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
+
     test(`${permission} key: try to reset synonyms and be denied`, async () => {
       await expect(
         client.index(index.uid).resetSynonyms()
@@ -119,10 +121,10 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on synonyms',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: try to get synonyms and be denied`, async () => {
       await expect(
         client.index(index.uid).getSynonyms()
@@ -131,6 +133,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
+
     test(`${permission} key: try to update synonyms and be denied`, async () => {
       await expect(
         client.index(index.uid).updateSynonyms({})
@@ -139,6 +142,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
+
     test(`${permission} key: try to reset synonyms and be denied`, async () => {
       await expect(
         client.index(index.uid).resetSynonyms()
@@ -150,47 +154,43 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-test(`Get request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).getSynonyms()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/synonyms`
+describe('Tests on url construction', () => {
+  test(`Test getSynonyms route`, async () => {
+    const route = `indexes/${index.uid}/settings/synonyms`
+    await expect(
+      badHostClient.index(index.uid).getSynonyms()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/synonyms/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Update request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).updateSynonyms([])
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/synonyms`
+  test(`Test updateSynonyms route`, async () => {
+    const route = `indexes/${index.uid}/settings/synonyms`
+    await expect(
+      badHostClient.index(index.uid).updateSynonyms([])
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/synonyms/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Reset request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).resetSynonyms()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/synonyms`
+  test(`Test resetSynonyms route`, async () => {
+    const route = `indexes/${index.uid}/settings/synonyms`
+    await expect(
+      badHostClient.index(index.uid).resetSynonyms()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/synonyms/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
+  })
 })
