@@ -38,7 +38,7 @@ describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
 ])('Test on displayed attributes', ({ client, permission }) => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
@@ -46,6 +46,7 @@ describe.each([
       .addDocuments(dataset)
     await client.index(index.uid).waitForPendingUpdate(updateId)
   })
+
   test(`${permission} key: Get default displayed attributes`, async () => {
     await client
       .index(index.uid)
@@ -54,6 +55,7 @@ describe.each([
         expect(response).toEqual(['*'])
       })
   })
+
   test(`${permission} key: Update displayed attributes`, async () => {
     const newDisplayedAttribute = ['title']
     const { updateId } = await client
@@ -71,6 +73,7 @@ describe.each([
         expect(response).toEqual(newDisplayedAttribute)
       })
   })
+
   test(`${permission} key: Update displayed attributes at null`, async () => {
     const { updateId } = await client
       .index(index.uid)
@@ -87,6 +90,7 @@ describe.each([
         expect(response).toEqual(['*'])
       })
   })
+
   test(`${permission} key: Reset displayed attributes`, async () => {
     const { updateId } = await client
       .index(index.uid)
@@ -108,20 +112,23 @@ describe.each([
 describe.each([{ client: publicClient, permission: 'Public' }])(
   'Test on displayed attributes',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: try to get displayed attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).getDisplayedAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
+
     test(`${permission} key: try to update displayed attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).updateDisplayedAttributes([])
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
+
     test(`${permission} key: try to reset displayed attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).resetDisplayedAttributes()
@@ -133,10 +140,11 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 describe.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on displayed attributes',
   ({ client, permission }) => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: try to get displayed attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).getDisplayedAttributes()
@@ -145,6 +153,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
+
     test(`${permission} key: try to update displayed attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).updateDisplayedAttributes([])
@@ -153,6 +162,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
+
     test(`${permission} key: try to reset displayed attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).resetDisplayedAttributes()
@@ -164,49 +174,43 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-test(`Get request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).getDisplayedAttributes()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/displayed-attributes`
+describe('Tests on url construction', () => {
+  test(`Test getDisplayedAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/displayed-attributes`
+    await expect(
+      badHostClient.index(index.uid).getDisplayedAttributes()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/displayed-attributes/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Update request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient
-      .index(index.uid)
-      .updateDisplayedAttributes([])
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/displayed-attributes`
+  test(`Test updateDisplayedAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/displayed-attributes`
+    await expect(
+      badHostClient.index(index.uid).updateDisplayedAttributes([])
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/displayed-attributes/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Reset request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.index(index.uid).resetDisplayedAttributes()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/displayed-attributes`
+  test(`Test resetDisplayedAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/displayed-attributes`
+    await expect(
+      badHostClient.index(index.uid).resetDisplayedAttributes()
+    ).rejects.toHaveProperty(
+      'message',
+      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/settings/displayed-attributes/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
+  })
 })
