@@ -8,6 +8,7 @@ import {
   anonymousClient,
   badHostClient,
   BAD_HOST,
+  MeiliSearch,
 } from './meilisearch-test-utils'
 
 const indexNoPk = {
@@ -214,11 +215,11 @@ describe.each([
   })
 
   test(`${permission} key: delete if exists when index is present`, async () => {
-    const index = await client.createIndex('tempIndex')
+    const index = await client.createIndex(indexPk.uid)
     await index.deleteIfExists().then((response: boolean) => {
       expect(response).toBe(true)
     })
-    await expect(client.getIndex('tempIndex')).rejects.toHaveProperty(
+    await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
       'errorCode',
       Types.ErrorStatusCode.INDEX_NOT_FOUND
     )
@@ -238,16 +239,16 @@ describe.each([
   })
 
   test(`${permission} key: delete if exists error`, async () => {
-    const index = badHostClient.index('tempIndex')
+    const index = badHostClient.index(indexPk.uid)
     await expect(index.deleteIfExists()).rejects.toThrow()
   })
 
   test(`${permission} key: delete index using client`, async () => {
-    await client.createIndex('tempIndex')
-    await client.deleteIndex('tempIndex').then((response: void) => {
+    await client.createIndex(indexPk.uid)
+    await client.deleteIndex(indexPk.uid).then((response: void) => {
       expect(response).toBe(undefined)
     })
-    await expect(client.listIndexes()).resolves.toHaveLength(1)
+    await expect(client.listIndexes()).resolves.toHaveLength(0)
   })
 })
 
@@ -327,7 +328,11 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-describe('Tests on url construction', () => {
+describe.each([
+  { host: BAD_HOST },
+  { host: `${BAD_HOST}/api` },
+  { host: `${BAD_HOST}/trailing/` },
+])('Tests on url construction', ({ host }) => {
   test(`Test getStats route`, async () => {
     const route = `indexes/${indexPk.uid}/stats`
     await expect(
@@ -343,11 +348,10 @@ describe('Tests on url construction', () => {
 
   test(`Test getRawInfo route`, async () => {
     const route = `indexes/${indexPk.uid}`
-    await expect(
-      badHostClient.index(indexPk.uid).getRawInfo()
-    ).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${host}/${route} failed, reason: connect ECONNREFUSED ${host.replace(
         'http://',
         ''
       )}`
@@ -356,11 +360,10 @@ describe('Tests on url construction', () => {
 
   test(`Test updateIndex route`, async () => {
     const route = `indexes/${indexPk.uid}`
-    await expect(
-      badHostClient.index(indexPk.uid).getRawInfo()
-    ).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${host}/${route} failed, reason: connect ECONNREFUSED ${host.replace(
         'http://',
         ''
       )}`
@@ -369,11 +372,10 @@ describe('Tests on url construction', () => {
 
   test(`Test delete index route`, async () => {
     const route = `indexes/${indexPk.uid}`
-    await expect(
-      badHostClient.index(indexPk.uid).getRawInfo()
-    ).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${host}/${route} failed, reason: connect ECONNREFUSED ${host.replace(
         'http://',
         ''
       )}`
