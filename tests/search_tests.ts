@@ -8,8 +8,8 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  badHostClient,
   BAD_HOST,
+  MeiliSearch,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -96,6 +96,7 @@ describe.each([
         .addDocuments(dataset)
       await masterClient.index(index.uid).waitForPendingUpdate(updateId)
     })
+
     test(`${permission} key: Basic ${method} search`, async () => {
       await client
         .index(index.uid)
@@ -146,6 +147,7 @@ describe.each([
           expect(response.hits.length).toEqual(1)
         })
     })
+
     test(`${permission} key: ${method} search with limit and offset`, async () => {
       await client
         .index(index.uid)
@@ -501,6 +503,7 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
     })
+
     test(`${permission} key: Try Basic search and be denied`, async () => {
       await expect(
         client.index(index.uid).search('prince')
@@ -595,32 +598,34 @@ describe.each([
   })
 })
 
-test(`Get request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient
-      .index(index.uid)
-      .search('prince', { limit: 1 }, 'GET')
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(
-      `${BAD_HOST}/indexes/movies_test/search?q=prince&limit=1`
+describe.each([
+  { host: BAD_HOST, trailing: false },
+  { host: `${BAD_HOST}/api`, trailing: false },
+  { host: `${BAD_HOST}/trailing/`, trailing: true },
+])('Tests on url construction', ({ host, trailing }) => {
+  test(`Test get search route`, async () => {
+    const route = `indexes/${index.uid}/search`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.index(index.uid).search()).rejects.toHaveProperty(
+      'message',
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
     )
-    expect(e.message).not.toMatch(
-      `${BAD_HOST}/indexes/movies_test/search?q=prince&limit=1/`
-    )
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+  })
 
-test(`Post request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient
-      .index(index.uid)
-      .search('prince', { limit: 1 }, 'POST')
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/indexes/movies_test/search`)
-    expect(e.message).not.toMatch(`${BAD_HOST}/indexes/movies_test/search/`)
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
+  test(`Test post search route`, async () => {
+    const route = `indexes/${index.uid}/search`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.index(index.uid).search()).rejects.toHaveProperty(
+      'message',
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+  })
 })

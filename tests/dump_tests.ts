@@ -7,11 +7,11 @@ import {
   publicClient,
   anonymousClient,
   waitForDumpProcessing,
-  badHostClient,
+  MeiliSearch,
   BAD_HOST,
 } from './meilisearch-test-utils'
 
-beforeAll(async () => {
+beforeEach(async () => {
   await clearAllIndexes(config)
 })
 
@@ -73,24 +73,35 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-test(`Post request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.createDump()
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/dumps`)
-    expect(e.message).not.toMatch(`${BAD_HOST}/dumps/`)
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
-})
+describe.each([
+  { host: BAD_HOST, trailing: false },
+  { host: `${BAD_HOST}/api`, trailing: false },
+  { host: `${BAD_HOST}/trailing/`, trailing: true },
+])('Tests on url construction', ({ host, trailing }) => {
+  test(`Test createDump route`, async () => {
+    const route = `dumps`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
 
-test(`Get status request should not add double slash nor a trailing slash`, async () => {
-  try {
-    const res = await badHostClient.getDumpStatus('1')
-    expect(res).toBe(undefined) // Left here to trigger failed test if error is not thrown
-  } catch (e) {
-    expect(e.message).toMatch(`${BAD_HOST}/dumps/1/status`)
-    expect(e.message).not.toMatch(`${BAD_HOST}/dumps/1/status/`)
-    expect(e.type).toBe('MeiliSearchCommunicationError')
-  }
+    await expect(client.createDump()).rejects.toHaveProperty(
+      'message',
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+  })
+
+  test(`Test getDumpStatus route`, async () => {
+    const route = `dumps/1/status`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.getDumpStatus('1')).rejects.toHaveProperty(
+      'message',
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+  })
 })
