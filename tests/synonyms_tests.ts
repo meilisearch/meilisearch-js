@@ -6,8 +6,8 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  badHostClient,
   BAD_HOST,
+  MeiliSearch,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -154,14 +154,18 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-describe('Tests on url construction', () => {
+describe.each([
+  { host: BAD_HOST, trailing: false },
+  { host: `${BAD_HOST}/api`, trailing: false },
+  { host: `${BAD_HOST}/trailing/`, trailing: true },
+])('Tests on url construction', ({ host, trailing }) => {
   test(`Test getSynonyms route`, async () => {
     const route = `indexes/${index.uid}/settings/synonyms`
-    await expect(
-      badHostClient.index(index.uid).getSynonyms()
-    ).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.index(index.uid).getSynonyms()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -170,11 +174,13 @@ describe('Tests on url construction', () => {
 
   test(`Test updateSynonyms route`, async () => {
     const route = `indexes/${index.uid}/settings/synonyms`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      badHostClient.index(index.uid).updateSynonyms([])
+      client.index(index.uid).updateSynonyms([])
     ).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -183,11 +189,13 @@ describe('Tests on url construction', () => {
 
   test(`Test resetSynonyms route`, async () => {
     const route = `indexes/${index.uid}/settings/synonyms`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      badHostClient.index(index.uid).resetSynonyms()
+      client.index(index.uid).resetSynonyms()
     ).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`

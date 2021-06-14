@@ -329,17 +329,17 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
 )
 
 describe.each([
-  { host: BAD_HOST },
-  { host: `${BAD_HOST}/api` },
-  { host: `${BAD_HOST}/trailing/` },
-])('Tests on url construction', ({ host }) => {
+  { host: BAD_HOST, trailing: false },
+  { host: `${BAD_HOST}/api`, trailing: false },
+  { host: `${BAD_HOST}/trailing/`, trailing: true },
+])('Tests on url construction', ({ host, trailing }) => {
   test(`Test getStats route`, async () => {
     const route = `indexes/${indexPk.uid}/stats`
-    await expect(
-      badHostClient.index(indexPk.uid).getStats()
-    ).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.index(indexPk.uid).getStats()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -349,21 +349,27 @@ describe.each([
   test(`Test getRawInfo route`, async () => {
     const route = `indexes/${indexPk.uid}`
     const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       'message',
-      `request to ${host}/${route} failed, reason: connect ECONNREFUSED ${host.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
+    )
+    await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
+      'type',
+      'MeiliSearchCommunicationError'
     )
   })
 
   test(`Test updateIndex route`, async () => {
     const route = `indexes/${indexPk.uid}`
     const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       'message',
-      `request to ${host}/${route} failed, reason: connect ECONNREFUSED ${host.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -373,9 +379,10 @@ describe.each([
   test(`Test delete index route`, async () => {
     const route = `indexes/${indexPk.uid}`
     const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       'message',
-      `request to ${host}/${route} failed, reason: connect ECONNREFUSED ${host.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`

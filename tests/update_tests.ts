@@ -6,8 +6,8 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  badHostClient,
   BAD_HOST,
+  MeiliSearch,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -126,14 +126,20 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-describe('Tests on url construction', () => {
+describe.each([
+  { host: BAD_HOST, trailing: false },
+  { host: `${BAD_HOST}/api`, trailing: false },
+  { host: `${BAD_HOST}/trailing/`, trailing: true },
+])('Tests on url construction', ({ host, trailing }) => {
   test(`Test getUpdateStatus route`, async () => {
     const route = `indexes/${index.uid}/updates/1`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      badHostClient.index(index.uid).getUpdateStatus(1)
+      client.index(index.uid).getUpdateStatus(1)
     ).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -142,11 +148,13 @@ describe('Tests on url construction', () => {
 
   test(`Test getAllUpdateStatus route`, async () => {
     const route = `indexes/${index.uid}/updates`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      badHostClient.index(index.uid).getAllUpdateStatus()
+      client.index(index.uid).getAllUpdateStatus()
     ).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`

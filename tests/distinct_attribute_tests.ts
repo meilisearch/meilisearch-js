@@ -6,8 +6,8 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  badHostClient,
   BAD_HOST,
+  MeiliSearch,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -172,14 +172,20 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-describe('Tests on url construction', () => {
+describe.each([
+  { host: BAD_HOST, trailing: false },
+  { host: `${BAD_HOST}/api`, trailing: false },
+  { host: `${BAD_HOST}/trailing/`, trailing: true },
+])('Tests on url construction', ({ host, trailing }) => {
   test(`Test getDistinctAttribute route`, async () => {
     const route = `indexes/${index.uid}/settings/distinct-attribute`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      badHostClient.index(index.uid).getDistinctAttribute()
+      client.index(index.uid).getDistinctAttribute()
     ).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -188,11 +194,13 @@ describe('Tests on url construction', () => {
 
   test(`Test updateDistinctAttribute route`, async () => {
     const route = `indexes/${index.uid}/settings/distinct-attribute`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      badHostClient.index(index.uid).updateDistinctAttribute('a')
+      client.index(index.uid).updateDistinctAttribute('a')
     ).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -201,11 +209,13 @@ describe('Tests on url construction', () => {
 
   test(`Test resetDistinctAttribute route`, async () => {
     const route = `indexes/${index.uid}/settings/distinct-attribute`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      badHostClient.index(index.uid).resetDistinctAttribute()
+      client.index(index.uid).resetDistinctAttribute()
     ).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`

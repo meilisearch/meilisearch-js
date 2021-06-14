@@ -6,8 +6,8 @@ import {
   privateClient,
   publicClient,
   anonymousClient,
-  badHostClient,
   BAD_HOST,
+  MeiliSearch,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -346,14 +346,18 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-describe('Tests on url construction', () => {
+describe.each([
+  { host: BAD_HOST, trailing: false },
+  { host: `${BAD_HOST}/api`, trailing: false },
+  { host: `${BAD_HOST}/trailing/`, trailing: true },
+])('Tests on url construction', ({ host, trailing }) => {
   test(`Test getSettings route`, async () => {
     const route = `indexes/${index.uid}/settings`
-    await expect(
-      badHostClient.index(index.uid).getSettings()
-    ).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.index(index.uid).getSettings()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -362,11 +366,13 @@ describe('Tests on url construction', () => {
 
   test(`Test updateSettings route`, async () => {
     const route = `indexes/${index.uid}/settings`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      badHostClient.index(index.uid).updateSettings({})
+      client.index(index.uid).updateSettings({})
     ).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -375,11 +381,13 @@ describe('Tests on url construction', () => {
 
   test(`Test resetSettings route`, async () => {
     const route = `indexes/${index.uid}/settings`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      badHostClient.index(index.uid).resetSettings()
+      client.index(index.uid).resetSettings()
     ).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`

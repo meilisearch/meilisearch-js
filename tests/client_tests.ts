@@ -7,7 +7,6 @@ import {
   MASTER_KEY,
   PRIVATE_KEY,
   BAD_HOST,
-  badHostClient,
   masterClient,
   privateClient,
   publicClient,
@@ -555,12 +554,18 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-describe('Tests on url construction', () => {
+describe.each([
+  { host: BAD_HOST, trailing: false },
+  { host: `${BAD_HOST}/api`, trailing: false },
+  { host: `${BAD_HOST}/trailing/`, trailing: true },
+])('Tests on url construction', ({ host, trailing }) => {
   test(`Test getIndex route`, async () => {
     const route = `indexes/${indexPk.uid}`
-    await expect(badHostClient.getIndex(indexPk.uid)).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -569,9 +574,11 @@ describe('Tests on url construction', () => {
 
   test(`Test createIndex route`, async () => {
     const route = `indexes`
-    await expect(badHostClient.createIndex(indexPk.uid)).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.createIndex(indexPk.uid)).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -580,9 +587,11 @@ describe('Tests on url construction', () => {
 
   test(`Test updateIndex route`, async () => {
     const route = `indexes/${indexPk.uid}`
-    await expect(badHostClient.updateIndex(indexPk.uid)).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.updateIndex(indexPk.uid)).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -591,9 +600,11 @@ describe('Tests on url construction', () => {
 
   test(`Test deleteIndex route`, async () => {
     const route = `indexes/${indexPk.uid}`
-    await expect(badHostClient.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -602,9 +613,11 @@ describe('Tests on url construction', () => {
 
   test(`Test listIndexes route`, async () => {
     const route = `indexes`
-    await expect(badHostClient.listIndexes()).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.listIndexes()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -613,9 +626,11 @@ describe('Tests on url construction', () => {
 
   test(`Test getKeys route`, async () => {
     const route = `keys`
-    await expect(badHostClient.getKeys()).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.getKeys()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -624,9 +639,11 @@ describe('Tests on url construction', () => {
 
   test(`Test health route`, async () => {
     const route = `health`
-    await expect(badHostClient.health()).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.health()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -635,9 +652,11 @@ describe('Tests on url construction', () => {
 
   test(`Test stats route`, async () => {
     const route = `stats`
-    await expect(badHostClient.stats()).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.stats()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -646,9 +665,11 @@ describe('Tests on url construction', () => {
 
   test(`Test version route`, async () => {
     const route = `version`
-    await expect(badHostClient.version()).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.version()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -657,9 +678,11 @@ describe('Tests on url construction', () => {
 
   test(`Test createDump route`, async () => {
     const route = `dumps`
-    await expect(badHostClient.createDump()).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.createDump()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -668,9 +691,11 @@ describe('Tests on url construction', () => {
 
   test(`Test getDumpStatus route`, async () => {
     const route = `dumps/1/status`
-    await expect(badHostClient.getDumpStatus('1')).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.getDumpStatus('1')).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`

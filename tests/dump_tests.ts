@@ -7,7 +7,7 @@ import {
   publicClient,
   anonymousClient,
   waitForDumpProcessing,
-  badHostClient,
+  MeiliSearch,
   BAD_HOST,
 } from './meilisearch-test-utils'
 
@@ -73,12 +73,19 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-describe('Tests on url construction', () => {
+describe.each([
+  { host: BAD_HOST, trailing: false },
+  { host: `${BAD_HOST}/api`, trailing: false },
+  { host: `${BAD_HOST}/trailing/`, trailing: true },
+])('Tests on url construction', ({ host, trailing }) => {
   test(`Test createDump route`, async () => {
     const route = `dumps`
-    await expect(badHostClient.createDump()).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+
+    await expect(client.createDump()).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
@@ -87,9 +94,11 @@ describe('Tests on url construction', () => {
 
   test(`Test getDumpStatus route`, async () => {
     const route = `dumps/1/status`
-    await expect(badHostClient.getDumpStatus('1')).rejects.toHaveProperty(
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.getDumpStatus('1')).rejects.toHaveProperty(
       'message',
-      `request to ${BAD_HOST}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
         ''
       )}`
