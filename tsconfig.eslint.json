@@ -10,6 +10,8 @@
     "scripts/**/*.js",
     "jest.config.js",
     "rollup.config.js",
-    ".eslintrc.js"
+    ".eslintrc.js",
+    "playgrounds/**/*.js",
+    "playgrounds/**/*.ts"
   ]
 }
