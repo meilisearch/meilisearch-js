@@ -204,7 +204,7 @@ search_parameter_guide_crop_1: |-
     cropLength: 10
   })
 search_parameter_guide_highlight_1: |-
-  client.index('movies').search('shifu', {
+  client.index('movies').search('winter feast', {
     attributesToHighlight: ['overview']
   })
 search_parameter_guide_filter_1: |-
@@ -216,9 +216,7 @@ search_parameter_guide_filter_2: |-
     filter: 'title="Kung Fu Panda"'
   })
 search_parameter_guide_matches_1: |-
-  client.index('movies').search('n', {
-    filter: 'title="Kung Fu Panda"',
-    attributesToHighlight: ['overview'],
+  client.index('movies').search('winter feast', {
     matches: true
   })
 settings_guide_synonyms_1: |-
@@ -323,15 +321,15 @@ getting_started_search_md: |-
   ```
 
   [About this SDK](https://github.com/meilisearch/meilisearch-js/)
-get_attributes_for_faceting_1: |-
+get_filterable_attributes_1: |-
   client.index('movies').getFilterableAttributes()
-update_attributes_for_faceting_1: |-
+update_filterable_attributes_1: |-
   client.index('movies')
     .updateFilterableAttributes([
       'genres',
       'director'
     ])
-reset_attributes_for_faceting_1: |-
+reset_filterable_attributes_1: |-
   client.index('movies').resetFilterableAttributes()
 faceted_search_update_settings_1: |-
   client.index('movies')
@@ -339,7 +337,7 @@ faceted_search_update_settings_1: |-
       'director',
       'genres'
     ])
-faceted_search_facet_filters_1: |-
+faceted_search_filter_1: |-
   client.index('movies')
     .search('thriller', {
       filter: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
@@ -349,7 +347,7 @@ faceted_search_facets_distribution_1: |-
     .search('Batman', {
       facetsDistribution: ['genres']
     })
-faceted_search_walkthrough_attributes_for_faceting_1: |-
+faceted_search_walkthrough_filterable_attributes_1: |-
   client.index('movies')
     .updateFilterableAttributes([
       'director',
@@ -357,7 +355,7 @@ faceted_search_walkthrough_attributes_for_faceting_1: |-
       'genres',
       'production_companies'
     ])
-faceted_search_walkthrough_facet_filters_1: |-
+faceted_search_walkthrough_filter_1: |-
   client.index('movies')
     .search('thriller', {
       filter: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
@@ -371,3 +369,5 @@ post_dump_1: |-
   client.createDump()
 get_dump_status_1: |-
   client.getDumpStatus("20201101-110357260")
+phrase_search_1: |-
+  client.index('movies').search('"neo"')
