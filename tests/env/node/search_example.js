@@ -1,5 +1,5 @@
-const { MeiliSearch } = require('../../dist/bundles/meilisearch.umd.js')
-const dataset = require('./small_movies.json')
+const { MeiliSearch } = require('../../../dist/bundles/meilisearch.umd.js')
+const dataset = require('../../../assets/small_movies.json')
 
 const config = {
   host: 'http://127.0.0.1:7700',
