@@ -240,7 +240,7 @@ export interface Keys {
  */
 export interface Version {
   commitSha: string
-  buildDate: string
+  commitDate: string
   pkgVersion: string
 }
 
