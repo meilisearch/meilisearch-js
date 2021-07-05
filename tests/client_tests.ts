@@ -352,7 +352,7 @@ describe.each([
       test(`${permission} key: get version`, async () => {
         await client.version().then((response: Types.Version) => {
           expect(response).toHaveProperty('commitSha', expect.any(String))
-          expect(response).toHaveProperty('commitDate', expect.any(String))
+          expect(response).toHaveProperty('buildDate', expect.any(String))
           expect(response).toHaveProperty('pkgVersion', expect.any(String))
         })
       })
