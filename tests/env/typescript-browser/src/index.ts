@@ -1,4 +1,4 @@
-import { MeiliSearch, IndexResponse } from '../../../'
+import { MeiliSearch, IndexResponse } from '../../../../dist/types/types'
 
 const config = {
   host: 'http://127.0.0.1:7700',
@@ -14,8 +14,9 @@ function greeter(person: string) {
 
 ;(async () => {
   const indexes = await client.listIndexes()
+  console.log({ indexes }, 'hello')
   const uids = indexes.map((index: IndexResponse) => index.uid)
-  console.log(
-    `${greeter(user)} this is the list of all your indexes: ${uids.join(', ')}`
-  )
+  document.body.innerHTML = `${greeter(
+    user
+  )} this is the list of all your indexes: \n ${uids.join(', ')}`
 })()
