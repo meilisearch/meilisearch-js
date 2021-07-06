@@ -164,7 +164,7 @@ export type Document<T> = T
  */
 
 export interface Settings {
-  attributesForFaceting?: string[]
+  filterableAttributes?: string[]
   distinctAttribute?: string
   searchableAttributes?: string[]
   displayedAttributes?: string[]
@@ -326,11 +326,11 @@ export interface IndexInterface<T = any> {
     distinctAttribute: string | null
   ) => Promise<EnqueuedUpdate>
   resetDistinctAttribute: () => Promise<EnqueuedUpdate>
-  getFilterableAttributes: () => Promise<string[]>
-  updateFilterableAttributes: (
+  getAttributesForFaceting: () => Promise<string[]>
+  updateAttributesForFaceting: (
     filterableAttributes: string[] | null
   ) => Promise<EnqueuedUpdate>
-  resetFilterableAttributes: () => Promise<EnqueuedUpdate>
+  resetAttributesForFaceting: () => Promise<EnqueuedUpdate>
   getSearchableAttributes: () => Promise<string[]>
   updateSearchableAttributes: (
     searchableAttributes: string[] | null
