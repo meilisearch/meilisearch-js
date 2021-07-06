@@ -8,10 +8,6 @@ const client = new MeiliSearch({
   apiKey: 'masterKey',
 })
 
-async function sleep(ms) {
-  return await new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 ;(async () => {
   // Delete if exist
   try {
@@ -25,9 +21,6 @@ async function sleep(ms) {
   // add documents
   const { updateId } = await index.addDocuments(dataset)
   await index.waitForPendingUpdate(updateId)
-
-  // wait for
-  await sleep(1000)
 
   // documents
   const documents = await index.getDocuments()
