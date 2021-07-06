@@ -323,19 +323,19 @@ getting_started_search_md: |-
   ```
 
   [About this SDK](https://github.com/meilisearch/meilisearch-js/)
-get_attributes_for_faceting_1: |-
-  client.index('movies').getAttributesForFaceting()
-update_attributes_for_faceting_1: |-
+get_filterable_attributes_1: |-
+  client.index('movies').getFilterableAttributes()
+update_filterable_attributes_1: |-
   client.index('movies')
-    .updateAttributesForFaceting([
+    .updateFilterableAttributes([
       'genres',
       'director'
     ])
-reset_attributes_for_faceting_1: |-
-  client.index('movies').resetAttributesForFaceting()
+reset_filterable_attributes_1: |-
+  client.index('movies').resetFilterableAttributes()
 faceted_search_update_settings_1: |-
   client.index('movies')
-    .updateAttributesForFaceting([
+    .updateFilterableAttributes([
       'director',
       'genres'
     ])
@@ -349,9 +349,9 @@ faceted_search_facets_distribution_1: |-
     .search('Batman', {
       facetsDistribution: ['genres']
     })
-faceted_search_walkthrough_attributes_for_faceting_1: |-
+faceted_search_walkthrough_filterable_attributes_1: |-
   client.index('movies')
-    .updateAttributesForFaceting([
+    .updateFilterableAttributes([
       'director',
       'producer',
       'genres',
