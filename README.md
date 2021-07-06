@@ -328,7 +328,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Get an index:
 
-`client.getIndex<T>(uid: string): Index<T>`
+`client.getIndex<T>(uid: string): Promise<Index<T>>`
 
 - Get or create index if it does not exist
 
