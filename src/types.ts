@@ -164,7 +164,7 @@ export type Document<T> = T
  */
 
 export interface Settings {
-  attributesForFaceting?: string[]
+  filterableAttributes?: string[]
   distinctAttribute?: string
   searchableAttributes?: string[]
   displayedAttributes?: string[]
