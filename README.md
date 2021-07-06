@@ -340,7 +340,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Update Index:
 
-`client.updateIndex(uid): Promise<Index>`
+`client.updateIndex(uid: string, options: IndexOptions): Promise<Index>`
 Or using the index object:
 `index.update(data: IndexOptions): Promise<Index>`
 
