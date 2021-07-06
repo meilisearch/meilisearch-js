@@ -520,34 +520,34 @@ class Index<T> implements Types.IndexInterface<T> {
   ///
 
   /**
-   * Get the attributes-for-faceting
+   * Get the filterable-attributes
    * @memberof Index
-   * @method getAttributesForFaceting
+   * @method getFilterableAttributes
    */
-  async getAttributesForFaceting(): Promise<string[]> {
-    const url = `indexes/${this.uid}/settings/attributes-for-faceting`
+  async getFilterableAttributes(): Promise<string[]> {
+    const url = `indexes/${this.uid}/settings/filterable-attributes`
     return await this.httpRequest.get<string[]>(url)
   }
 
   /**
-   * Update the attributes-for-faceting.
+   * Update the filterable-attributes.
    * @memberof Index
-   * @method updateAttributesForFaceting
+   * @method updateFilterableAttributes
    */
-  async updateAttributesForFaceting(
-    attributesForFaceting: string[] | null
+  async updateFilterableAttributes(
+    filterableAttributes: string[] | null
   ): Promise<Types.EnqueuedUpdate> {
-    const url = `indexes/${this.uid}/settings/attributes-for-faceting`
-    return await this.httpRequest.post(url, attributesForFaceting)
+    const url = `indexes/${this.uid}/settings/filterable-attributes`
+    return await this.httpRequest.post(url, filterableAttributes)
   }
 
   /**
-   * Reset the attributes-for-faceting.
+   * Reset the filterable-attributes.
    * @memberof Index
-   * @method resetAttributesForFaceting
+   * @method resetFilterableAttributes
    */
-  async resetAttributesForFaceting(): Promise<Types.EnqueuedUpdate> {
-    const url = `indexes/${this.uid}/settings/attributes-for-faceting`
+  async resetFilterableAttributes(): Promise<Types.EnqueuedUpdate> {
+    const url = `indexes/${this.uid}/settings/filterable-attributes`
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 

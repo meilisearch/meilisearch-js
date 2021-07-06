@@ -83,10 +83,10 @@ describe.each([
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
       await masterClient.createIndex(emptyIndex.uid)
-      const newAttributesForFaceting = ['genre']
+      const newFilterableAttributes = ['genre']
       const { updateId: settingUpdateId } = await masterClient
         .index<Movie>(index.uid)
-        .updateAttributesForFaceting(newAttributesForFaceting)
+        .updateFilterableAttributes(newFilterableAttributes)
         .then((response: EnqueuedUpdate) => {
           expect(response).toHaveProperty('updateId', expect.any(Number))
           return response

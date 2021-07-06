@@ -82,10 +82,10 @@ describe.each([
       await masterClient.createIndex(index.uid)
       await masterClient.createIndex(emptyIndex.uid)
 
-      const newAttributesForFaceting = ['genre']
+      const newFilterableAttributes = ['genre']
       const { updateId: settingUpdateId } = await masterClient
         .index(index.uid)
-        .updateAttributesForFaceting(newAttributesForFaceting)
+        .updateFilterableAttributes(newFilterableAttributes)
         .then((response: Types.EnqueuedUpdate) => {
           expect(response).toHaveProperty('updateId', expect.any(Number))
           return response

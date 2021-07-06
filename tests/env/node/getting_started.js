@@ -19,7 +19,7 @@ const { MeiliSearch } = require('../../../dist/bundles/meilisearch.umd.js')
   ]
 
   // If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
-  await index.updateAttributesForFaceting([
+  await index.updateFilterableAttributes([
     'director',
     'genres'
   ])

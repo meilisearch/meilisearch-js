@@ -113,7 +113,7 @@ describe.each([
       distinctAttribute: 'title',
       rankingRules: ['asc(title)', 'typo'],
       stopWords: ['the'],
-      attributesForFaceting: [],
+      filterableAttributes: [],
     }
     const { updateId } = await client
       .index(index.uid)
