@@ -326,11 +326,11 @@ export interface IndexInterface<T = any> {
     distinctAttribute: string | null
   ) => Promise<EnqueuedUpdate>
   resetDistinctAttribute: () => Promise<EnqueuedUpdate>
-  getAttributesForFaceting: () => Promise<string[]>
-  updateAttributesForFaceting: (
+  getFilterableAttributes: () => Promise<string[]>
+  updateFilterableAttributes: (
     filterableAttributes: string[] | null
   ) => Promise<EnqueuedUpdate>
-  resetAttributesForFaceting: () => Promise<EnqueuedUpdate>
+  resetFilterableAttributes: () => Promise<EnqueuedUpdate>
   getSearchableAttributes: () => Promise<string[]>
   updateSearchableAttributes: (
     searchableAttributes: string[] | null
