@@ -38,7 +38,7 @@ class Index<T> implements Types.IndexInterface<T> {
     const startingTime = Date.now()
     while (Date.now() - startingTime < timeOutMs) {
       const response = await this.getUpdateStatus(updateId)
-      if (response.status !== 'enqueued') return response
+      if (!['enqueued', 'processing'].includes(response.status)) return response
       await sleep(intervalMs)
     }
     throw new MeiliSearchTimeOutError(
