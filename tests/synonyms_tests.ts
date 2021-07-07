@@ -88,7 +88,7 @@ describe.each([
       .index(index.uid)
       .getSynonyms()
       .then((response: object) => {
-        expect(response).toEqual([])
+        expect(response).toEqual({})
       })
   })
 
@@ -196,7 +196,7 @@ describe.each([
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).updateSynonyms([])
+      client.index(index.uid).updateSynonyms({})
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
