@@ -5,6 +5,8 @@ import {
   clearAllIndexes,
   config,
   masterClient,
+  privateClient,
+  publicClient,
   anonymousClient,
   BAD_HOST,
   MeiliSearch,
@@ -65,8 +67,8 @@ afterAll(() => {
 
 describe.each([
   { client: masterClient, permission: 'Master' },
-  // { client: privateClient, permission: 'Private' }, // Skipped until search fixed
-  // { client: publicClient, permission: 'Public' }, // Skipped until search fixed
+  { client: privateClient, permission: 'Private' }, // Skipped until search fixed
+  { client: publicClient, permission: 'Public' }, // Skipped until search fixed
 ])('Test on search', ({ client, permission }) => {
   describe.each([
     { method: 'POST' as Types.Methods, permission, client },
