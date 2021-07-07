@@ -3,8 +3,8 @@ import {
   clearAllIndexes,
   config,
   masterClient,
-  // privateClient, // skipped until fixed
-  // publicClient, // skipped until fixed
+  privateClient,
+  publicClient,
   anonymousClient,
   BAD_HOST,
   MeiliSearch,
@@ -72,8 +72,8 @@ afterAll(() => {
 
 describe.each([
   { client: masterClient, permission: 'Master' },
-  // { client: privateClient, permission: 'Private' }, // skipped until search fix
-  // { client: publicClient, permission: 'Public' }, // skipped until search fix
+  { client: privateClient, permission: 'Private' },
+  { client: publicClient, permission: 'Public' },
 ])('Test on search', ({ client, permission }) => {
   describe.each([
     { method: 'POST' as Methods, permission, client },

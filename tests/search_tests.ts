@@ -67,8 +67,8 @@ afterAll(() => {
 
 describe.each([
   { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' }, // Skipped until search fixed
-  { client: publicClient, permission: 'Public' }, // Skipped until search fixed
+  { client: privateClient, permission: 'Private' },
+  { client: publicClient, permission: 'Public' },
 ])('Test on search', ({ client, permission }) => {
   describe.each([
     { method: 'POST' as Types.Methods, permission, client },
@@ -438,7 +438,7 @@ describe.each([
         })
     })
 
-    test.skip(`${permission} key: ${method} search with multiple filter and undefined query (placeholder)`, async () => {
+    test(`${permission} key: ${method} search with multiple filter and undefined query (placeholder)`, async () => {
       await client
         .index(index.uid)
         .search(
@@ -457,7 +457,7 @@ describe.each([
         })
     })
 
-    test.skip(`${permission} key: ${method} search with multiple filter and null query (placeholder)`, async () => {
+    test(`${permission} key: ${method} search with multiple filter and null query (placeholder)`, async () => {
       await client
         .index(index.uid)
         .search(
@@ -477,7 +477,7 @@ describe.each([
         })
     })
 
-    test.skip(`${permission} key: ${method} search with multiple filter and empty string query (placeholder)`, async () => {
+    test(`${permission} key: ${method} search with multiple filter and empty string query (placeholder)`, async () => {
       await client
         .index(index.uid)
         .search(
