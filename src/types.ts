@@ -160,16 +160,24 @@ export type Document<T> = T
  ** Settings
  */
 
+export type FilterableAttributes = string[] | null
+export type DistinctAttribute = string | null
+export type SearchableAttributes = string[] | null
+export type DisplayedAttributes = string[] | null
+export type RankingRules = string[] | null
+export type StopWords = string[] | null
+export type Synonyms = {
+  [field: string]: string[]
+} | null
+
 export interface Settings {
-  filterableAttributes?: string[]
-  distinctAttribute?: string
-  searchableAttributes?: string[]
-  displayedAttributes?: string[]
-  rankingRules?: string[]
-  stopWords?: string[]
-  synonyms?: {
-    [field: string]: string[]
-  }
+  filterableAttributes?: FilterableAttributes
+  distinctAttribute?: DistinctAttribute
+  searchableAttributes?: SearchableAttributes
+  displayedAttributes?: DisplayedAttributes
+  rankingRules?: RankingRules
+  stopWords?: StopWords
+  synonyms?: Synonyms
 }
 
 /*
@@ -310,32 +318,32 @@ export interface IndexInterface<T = any> {
   updateSettings: (settings: Settings) => Promise<EnqueuedUpdate>
   resetSettings: () => Promise<EnqueuedUpdate>
   getSynonyms: () => Promise<object>
-  updateSynonyms: (synonyms: object) => Promise<object>
+  updateSynonyms: (synonyms: Synonyms) => Promise<object>
   resetSynonyms: () => Promise<object>
   getStopWords: () => Promise<string[]>
-  updateStopWords: (stopWords: string[]) => Promise<EnqueuedUpdate>
+  updateStopWords: (stopWords: StopWords) => Promise<EnqueuedUpdate>
   resetStopWords: () => Promise<EnqueuedUpdate>
   getRankingRules: () => Promise<string[]>
-  updateRankingRules: (rankingRules: string[] | null) => Promise<EnqueuedUpdate>
+  updateRankingRules: (rankingRules: RankingRules) => Promise<EnqueuedUpdate>
   resetRankingRules: () => Promise<EnqueuedUpdate>
   getDistinctAttribute: () => Promise<string | null>
   updateDistinctAttribute: (
-    distinctAttribute: string | null
+    distinctAttribute: DistinctAttribute
   ) => Promise<EnqueuedUpdate>
   resetDistinctAttribute: () => Promise<EnqueuedUpdate>
   getFilterableAttributes: () => Promise<string[]>
   updateFilterableAttributes: (
-    filterableAttributes: string[] | null
+    filterableAttributes: FilterableAttributes
   ) => Promise<EnqueuedUpdate>
   resetFilterableAttributes: () => Promise<EnqueuedUpdate>
   getSearchableAttributes: () => Promise<string[]>
   updateSearchableAttributes: (
-    searchableAttributes: string[] | null
+    searchableAttributes: SearchableAttributes
   ) => Promise<EnqueuedUpdate>
   resetSearchableAttributes: () => Promise<EnqueuedUpdate>
   getDisplayedAttributes: () => Promise<string[]>
   updateDisplayedAttributes: (
-    displayedAttributes: string[] | null
+    displayedAttributes: DisplayedAttributes
   ) => Promise<EnqueuedUpdate>
   resetDisplayedAttributes: () => Promise<EnqueuedUpdate>
 }

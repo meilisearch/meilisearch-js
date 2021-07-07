@@ -429,7 +429,7 @@ Or using the index object:
 
 - Update synonyms:
 
-`index.updateSynonyms(synonyms: object): Promise<EnqueuedUpdate>`
+`index.updateSynonyms(synonyms: Synonyms): Promise<EnqueuedUpdate>`
 
 - Reset synonyms:
 
@@ -441,7 +441,7 @@ Or using the index object:
   `index.getStopWords(): Promise<string[]>`
 
 - Update Stop Words
-  `index.updateStopWords(string[]): Promise<EnqueuedUpdate>`
+  `index.updateStopWords(stopWords: string[] | null ): Promise<EnqueuedUpdate>`
 
 - Reset Stop Words
   `index.resetStopWords(): Promise<EnqueuedUpdate>`
