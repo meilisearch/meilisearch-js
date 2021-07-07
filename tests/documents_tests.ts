@@ -449,18 +449,21 @@ describe.each([
       })
   })
 
-  test(`${permission} key: Try to add documents from index with no primary key with NO valid primary key and fail`, async () => {
-    await expect(
-      client.index(indexNoPk.uid).addDocuments([
-        {
-          unique: 2,
-          title: 'Le Rouge et le Noir',
-        },
-      ])
-    ).rejects.toHaveProperty(
-      'errorCode',
-      Types.ErrorStatusCode.MISSING_PRIMARY_KEY
-    )
+  test(`${permission} key: Try to add documents from index with no primary key with NO valid primary key, update should fail`, async () => {
+    const { updateId } = await client.index(indexNoPk.uid).addDocuments([
+      {
+        unique: 2,
+        title: 'Le Rouge et le Noir',
+      },
+    ])
+
+    const status = await client
+      .index(indexNoPk.uid)
+      .waitForPendingUpdate(updateId)
+    const index = await client.index(indexNoPk.uid).getRawInfo()
+    expect(index.uid).toEqual(indexNoPk.uid)
+    expect(index.primaryKey).toEqual(null)
+    expect(status.status).toEqual('failed')
   })
 })
 
