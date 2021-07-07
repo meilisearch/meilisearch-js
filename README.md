@@ -190,7 +190,7 @@ await index.search(
   'wonder',
   {
     attributesToHighlight: ['*'],
-    filters: 'id >= 1'
+    filter: 'id >= 1'
   }
 )
 ```
@@ -225,7 +225,7 @@ Placeholder search makes it possible to receive hits based on your parameters wi
 await index.search(
   '',
   {
-    facetFilters: ['genres:fantasy'],
+    filter: ['genres = fantasy'],
     facetsDistribution: ['genres']
   }
 )
