@@ -77,7 +77,7 @@ describe.each([
       await masterClient.createIndex(index.uid)
       await masterClient.createIndex(emptyIndex.uid)
 
-      const newFilterableAttributes = ['genre', 'title']
+      const newFilterableAttributes = ['genre', 'title', 'id']
       const { updateId: settingUpdateId } = await masterClient
         .index(index.uid)
         .updateFilterableAttributes(newFilterableAttributes)
@@ -363,6 +363,23 @@ describe.each([
           expect(response).toHaveProperty('exhaustiveNbHits', false)
           expect(response).toHaveProperty('hits', expect.any(Array))
           expect(response.hits.length).toEqual(2)
+        })
+    })
+
+    test.only(`${permission} key: ${method} search with filter on number`, async () => {
+      await client
+        .index(index.uid)
+        .search(
+          'a',
+          {
+            filter: 'id < 0',
+          },
+          method
+        )
+        .then((response) => {
+          expect(response).toHaveProperty('exhaustiveNbHits', false)
+          expect(response).toHaveProperty('hits', expect.any(Array))
+          expect(response.hits.length).toEqual(0)
         })
     })
 
