@@ -109,6 +109,23 @@ describe.each([
         })
     })
 
+    test(`${permission} key: Basic ${method} phrase search`, async () => {
+      await client
+        .index(index.uid)
+        .search('"french book" about', {}, method)
+        .then((response) => {
+          expect(response).toHaveProperty('hits', expect.any(Array))
+          expect(response).toHaveProperty('offset', 0)
+          expect(response).toHaveProperty('limit', 20)
+          expect(response).toHaveProperty(
+            'processingTimeMs',
+            expect.any(Number)
+          )
+          expect(response).toHaveProperty('query', '"french book" about')
+          expect(response.hits.length).toEqual(2)
+        })
+    })
+
     test(`${permission} key: ${method} search with options`, async () => {
       await client
         .index(index.uid)
