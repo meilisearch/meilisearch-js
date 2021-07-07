@@ -1,0 +1,12 @@
+extends: default
+ignore: |
+  node_modules
+
+rules:
+  # 80 chars should be enough, but don't fail if a line is longer
+  line-length: disable
+
+  # don't bother me with this rule
+  document-start: disable
+  brackets: disable
+  truthy: disable
