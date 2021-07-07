@@ -55,8 +55,7 @@ export interface SearchParams<T> {
   attributesToCrop?: Array<Extract<keyof T, string> | '*'>
   cropLength?: number
   attributesToHighlight?: Array<Extract<keyof T, string> | '*'>
-  filters?: string
-  facetFilters?: FacetFilter | FacetFilter[]
+  filter?: FacetFilter | FacetFilter[] | string
   facetsDistribution?: string[]
   matches?: boolean
 }
@@ -69,9 +68,8 @@ export interface SearchRequest {
   attributesToRetrieve?: string[]
   attributesToCrop?: string[]
   attributesToHighlight?: string[]
-  facetFilters?: FacetFilter | FacetFilter[]
   facetsDistribution?: string[]
-  filters?: string
+  filter?: FacetFilter | FacetFilter[] | string
   matches?: boolean
 }
 
@@ -83,9 +81,8 @@ export interface GetSearchRequest {
   attributesToCrop?: string
   cropLength?: number
   attributesToHighlight?: string
-  facetFilters?: string
   facetsDistribution?: string
-  filters?: string
+  filter?: string
   matches?: boolean
 }
 

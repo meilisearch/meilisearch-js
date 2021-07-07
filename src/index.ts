@@ -67,9 +67,8 @@ class Index<T> implements Types.IndexInterface<T> {
       offset: options?.offset,
       limit: options?.limit,
       cropLength: options?.cropLength,
-      filters: options?.filters,
+      filter: options?.filter,
       matches: options?.matches,
-      facetFilters: options?.facetFilters,
       facetsDistribution: options?.facetsDistribution,
       attributesToRetrieve: options?.attributesToRetrieve,
       attributesToCrop: options?.attributesToCrop,
@@ -83,12 +82,14 @@ class Index<T> implements Types.IndexInterface<T> {
         config
       )
     } else if (method.toUpperCase() === 'GET') {
+      const parsFilter = (filter?: any) => {
+        if (typeof filter === 'string') return filter
+        else if (Array.isArray(filter)) return JSON.stringify(filter)
+        else return undefined
+      }
       const getParams: Types.GetSearchRequest = {
         ...params,
-        facetFilters:
-          Array.isArray(options?.facetFilters) && options?.facetFilters
-            ? JSON.stringify(options.facetFilters)
-            : undefined,
+        filter: parsFilter(options?.filter),
         facetsDistribution: options?.facetsDistribution
           ? JSON.stringify(options.facetsDistribution)
           : undefined,
