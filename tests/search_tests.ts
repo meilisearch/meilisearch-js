@@ -359,7 +359,7 @@ describe.each([
           expect(response).toHaveProperty('facetsDistribution', {
             genre: { romance: 2 },
           })
-          expect(response).toHaveProperty('exhaustiveFacetsCount', true)
+          expect(response).toHaveProperty('exhaustiveFacetsCount', false)
           expect(response).toHaveProperty('exhaustiveNbHits', false)
           expect(response).toHaveProperty('hits', expect.any(Array))
           expect(response.hits.length).toEqual(2)

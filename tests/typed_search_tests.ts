@@ -345,7 +345,7 @@ describe.each([
           expect(
             response.facetsDistribution?.genre['sci fi'] === 0
           ).toBeTruthy()
-          expect(response.exhaustiveFacetsCount === true).toBeTruthy()
+          expect(response.exhaustiveFacetsCount === false).toBeTruthy()
           expect(response.hits.length === 2).toBeTruthy()
         })
     })
@@ -397,7 +397,7 @@ describe.each([
         )
         .then((response) => {
           expect(response.facetsDistribution?.genre?.fantasy === 2).toBeTruthy()
-          expect(response.exhaustiveFacetsCount === true).toBeTruthy()
+          expect(response.exhaustiveFacetsCount === false).toBeTruthy()
           expect(response.hits.length === 2).toBeTruthy()
         })
     })
@@ -415,7 +415,7 @@ describe.each([
         )
         .then((response) => {
           expect(response.facetsDistribution?.genre?.fantasy === 2).toBeTruthy()
-          expect(response.exhaustiveFacetsCount === true).toBeTruthy()
+          expect(response.exhaustiveFacetsCount === false).toBeTruthy()
           expect(response.hits.length === 2).toBeTruthy()
         })
     })
