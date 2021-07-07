@@ -82,14 +82,14 @@ class Index<T> implements Types.IndexInterface<T> {
         config
       )
     } else if (method.toUpperCase() === 'GET') {
-      const parsFilter = (filter?: any) => {
+      const parseFilter = (filter?: any) => {
         if (typeof filter === 'string') return filter
         else if (Array.isArray(filter)) return JSON.stringify(filter)
         else return undefined
       }
       const getParams: Types.GetSearchRequest = {
         ...params,
-        filter: parsFilter(options?.filter),
+        filter: parseFilter(options?.filter),
         facetsDistribution: options?.facetsDistribution
           ? JSON.stringify(options.facetsDistribution)
           : undefined,
