@@ -126,7 +126,7 @@ export interface SearchResponse<T, P extends SearchParams<T>> {
   exhaustiveNbHits: boolean
 }
 
-export interface FieldsDistribution {
+export interface FieldDistribution {
   [field: string]: number
 }
 
@@ -212,7 +212,7 @@ export interface Health {
 export interface IndexStats {
   numberOfDocuments: number
   isIndexing: boolean
-  fieldsDistribution: FieldsDistribution
+  fieldDistribution: FieldDistribution
 }
 
 export interface Stats {
