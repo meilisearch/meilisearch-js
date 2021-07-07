@@ -252,11 +252,8 @@ await index.search(
   "query": "",
   "facetsDistribution": {
     "genres": {
-      "Drama": 0,
       "Action": 2,
-      "Science Fiction": 0,
       "Fantasy": 1,
-      "Romance": 0,
       "Adventure": 1
     }
   }
