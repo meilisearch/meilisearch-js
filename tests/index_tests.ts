@@ -211,7 +211,7 @@ describe.each([
     const response = await index.getStats()
     expect(response).toHaveProperty('numberOfDocuments', 0)
     expect(response).toHaveProperty('isIndexing', false)
-    expect(response).toHaveProperty('fieldsDistribution', {})
+    expect(response).toHaveProperty('fieldDistribution', {})
   })
 
   test(`${permission} key: delete if exists when index is present`, async () => {
