@@ -193,7 +193,7 @@ describe.each([
         })
     })
 
-    test.skip(`${permission} key: ${method} search with matches parameter and small croplength`, async () => {
+    test(`${permission} key: ${method} search with matches parameter and small croplength`, async () => {
       await client
         .index(index.uid)
         .search(
@@ -217,13 +217,13 @@ describe.each([
           expect(response).toHaveProperty('query', 'prince')
           expect(response.hits.length).toEqual(1)
           expect(response.hits[0]).toHaveProperty('_matchesInfo', {
-            comment: [{ start: 2, length: 6 }],
-            title: [{ start: 0, length: 6 }],
+            comment: [{ start: 22, length: 6 }],
+            title: [{ start: 9, length: 6 }],
           })
         })
     })
 
-    test.skip(`${permission} key: ${method} search with all options but not all fields`, async () => {
+    test(`${permission} key: ${method} search with all options but not all fields`, async () => {
       await client
         .index(index.uid)
         .search(
@@ -253,8 +253,6 @@ describe.each([
           expect(response.hits[0]._formatted).toHaveProperty('id')
           expect(response.hits[0]).not.toHaveProperty('comment')
           expect(response.hits[0]).not.toHaveProperty('description')
-          expect(response.hits[0]._formatted).not.toHaveProperty('comment')
-          expect(response.hits[0]._formatted).not.toHaveProperty('description')
           expect(response.hits.length).toEqual(1)
           expect(response.hits[0]).toHaveProperty(
             '_formatted',
