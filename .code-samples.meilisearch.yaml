@@ -340,7 +340,7 @@ faceted_search_update_settings_1: |-
 faceted_search_filter_1: |-
   client.index('movies')
     .search('thriller', {
-      filter: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
+      filter: [['genres = Horror', 'genres = Mystery'], 'director = \"Jordan Peele\"']
     })
 faceted_search_facets_distribution_1: |-
   client.index('movies')
@@ -358,7 +358,7 @@ faceted_search_walkthrough_filterable_attributes_1: |-
 faceted_search_walkthrough_filter_1: |-
   client.index('movies')
     .search('thriller', {
-      filter: [['genres:Horror', 'genres:Mystery'], 'director:Jordan Peele']
+      filter: [['genres = Horror', 'genres = Mystery'], 'director = \"Jordan Peele\"']
     })
 faceted_search_walkthrough_facets_distribution_1: |-
   client.index('movies')
@@ -370,4 +370,4 @@ post_dump_1: |-
 get_dump_status_1: |-
   client.getDumpStatus("20201101-110357260")
 phrase_search_1: |-
-  client.index('movies').search('"neo"')
+  client.index('movies').search('"african american" horror')
