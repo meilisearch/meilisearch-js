@@ -395,7 +395,9 @@ class Index<T> implements Types.IndexInterface<T> {
    * @memberof Index
    * @method updateSynonyms
    */
-  async updateSynonyms(synonyms: object): Promise<Types.EnqueuedUpdate> {
+  async updateSynonyms(
+    synonyms: Types.Synonyms
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/synonyms`
     return await this.httpRequest.post(url, synonyms)
   }
@@ -429,7 +431,9 @@ class Index<T> implements Types.IndexInterface<T> {
    * @memberof Index
    * @method updateStopWords
    */
-  async updateStopWords(stopWords: string[]): Promise<Types.EnqueuedUpdate> {
+  async updateStopWords(
+    stopWords: Types.StopWords
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/stop-words`
     return await this.httpRequest.post(url, stopWords)
   }
@@ -464,7 +468,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateRankingRules
    */
   async updateRankingRules(
-    rankingRules: string[] | null
+    rankingRules: Types.RankingRules
   ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/ranking-rules`
     return await this.httpRequest.post(url, rankingRules)
@@ -500,7 +504,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateDistinctAttribute
    */
   async updateDistinctAttribute(
-    distinctAttribute: string | null
+    distinctAttribute: Types.DistinctAttribute
   ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`
     return await this.httpRequest.post(url, distinctAttribute)
@@ -536,7 +540,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateFilterableAttributes
    */
   async updateFilterableAttributes(
-    filterableAttributes: string[] | null
+    filterableAttributes: Types.FilterableAttributes
   ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`
     return await this.httpRequest.post(url, filterableAttributes)
@@ -572,7 +576,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateSearchableAttributes
    */
   async updateSearchableAttributes(
-    searchableAttributes: string[] | null
+    searchableAttributes: Types.SearchableAttributes
   ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`
     return await this.httpRequest.post(url, searchableAttributes)
@@ -608,7 +612,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateDisplayedAttributes
    */
   async updateDisplayedAttributes(
-    displayedAttributes: string[] | null
+    displayedAttributes: Types.DisplayedAttributes
   ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
     return await this.httpRequest.post(url, displayedAttributes)
