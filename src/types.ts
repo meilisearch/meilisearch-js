@@ -203,6 +203,8 @@ export interface Update {
 export interface EnqueuedDump {
   uid: string
   status: 'in_progress' | 'failed' | 'done'
+  startedAt: string
+  finishedAt: string
 }
 
 /*
