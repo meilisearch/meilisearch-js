@@ -22,6 +22,12 @@ jobs:
     name: integration-tests (Node.js ${{ matrix.node }})
     steps:
       - uses: actions/checkout@v2
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./node_modules
+          key: ${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
       - name: Setup node
         uses: actions/setup-node@v1
         with:
@@ -50,6 +56,12 @@ jobs:
     name: linter-check
     steps:
       - uses: actions/checkout@v2
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./node_modules
+          key: ${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
       - name: Setup node
         uses: actions/setup-node@v1
       - name: Install dependencies
