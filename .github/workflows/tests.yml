@@ -27,7 +27,7 @@ jobs:
         with:
           path: |
             ./node_modules
-          key: ${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
+          key: ${{ hashFiles('yarn.lock') }}
       - name: Setup node
         uses: actions/setup-node@v1
         with:
@@ -61,7 +61,7 @@ jobs:
         with:
           path: |
             ./node_modules
-          key: ${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
+          key: ${{ hashFiles('yarn.lock') }}
       - name: Setup node
         uses: actions/setup-node@v1
       - name: Install dependencies
