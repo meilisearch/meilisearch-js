@@ -67,7 +67,7 @@
     "@rollup/plugin-commonjs": "19.0.0",
     "@rollup/plugin-json": "^4.0.2",
     "@rollup/plugin-node-resolve": "13.0.0",
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^26.0.24",
     "@types/prettier": "^2.2.3",
     "@typescript-eslint/eslint-plugin": "2.34.0",
     "@typescript-eslint/parser": "2.34.0",
