@@ -19,7 +19,7 @@ const { MeiliSearch } = require('../../../dist/bundles/meilisearch.umd.js')
   ]
 
   // If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
-  await index.updateAttributesForFaceting([
+  await index.updateFilterableAttributes([
     'director',
     'genres'
   ])
@@ -32,13 +32,13 @@ const { MeiliSearch } = require('../../../dist/bundles/meilisearch.umd.js')
   console.log({ search, hit: search.hits })
   const filteredSearch = await index.search('Wonder', {
     attributesToHighlight: ['*'],
-    filters: 'id >= 1'
+    filter: 'id >= 1'
   })
   console.log({ filteredSearch, hit: filteredSearch.hits[0] })
   const facetedSearch = await index.search(
     '',
     {
-      facetFilters: ['genres:action'],
+      filter: ['genres = action'],
       facetsDistribution: ['genres']
     }
   )

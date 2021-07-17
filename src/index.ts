@@ -38,7 +38,7 @@ class Index<T> implements Types.IndexInterface<T> {
     const startingTime = Date.now()
     while (Date.now() - startingTime < timeOutMs) {
       const response = await this.getUpdateStatus(updateId)
-      if (response.status !== 'enqueued') return response
+      if (!['enqueued', 'processing'].includes(response.status)) return response
       await sleep(intervalMs)
     }
     throw new MeiliSearchTimeOutError(
@@ -67,9 +67,8 @@ class Index<T> implements Types.IndexInterface<T> {
       offset: options?.offset,
       limit: options?.limit,
       cropLength: options?.cropLength,
-      filters: options?.filters,
+      filter: options?.filter,
       matches: options?.matches,
-      facetFilters: options?.facetFilters,
       facetsDistribution: options?.facetsDistribution,
       attributesToRetrieve: options?.attributesToRetrieve,
       attributesToCrop: options?.attributesToCrop,
@@ -83,12 +82,14 @@ class Index<T> implements Types.IndexInterface<T> {
         config
       )
     } else if (method.toUpperCase() === 'GET') {
+      const parseFilter = (filter?: any) => {
+        if (typeof filter === 'string') return filter
+        else if (Array.isArray(filter)) return JSON.stringify(filter)
+        else return undefined
+      }
       const getParams: Types.GetSearchRequest = {
         ...params,
-        facetFilters:
-          Array.isArray(options?.facetFilters) && options?.facetFilters
-            ? JSON.stringify(options.facetFilters)
-            : undefined,
+        filter: parseFilter(options?.filter),
         facetsDistribution: options?.facetsDistribution
           ? JSON.stringify(options.facetsDistribution)
           : undefined,
@@ -394,7 +395,9 @@ class Index<T> implements Types.IndexInterface<T> {
    * @memberof Index
    * @method updateSynonyms
    */
-  async updateSynonyms(synonyms: object): Promise<Types.EnqueuedUpdate> {
+  async updateSynonyms(
+    synonyms: Types.Synonyms
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/synonyms`
     return await this.httpRequest.post(url, synonyms)
   }
@@ -428,7 +431,9 @@ class Index<T> implements Types.IndexInterface<T> {
    * @memberof Index
    * @method updateStopWords
    */
-  async updateStopWords(stopWords: string[]): Promise<Types.EnqueuedUpdate> {
+  async updateStopWords(
+    stopWords: Types.StopWords
+  ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/stop-words`
     return await this.httpRequest.post(url, stopWords)
   }
@@ -463,7 +468,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateRankingRules
    */
   async updateRankingRules(
-    rankingRules: string[] | null
+    rankingRules: Types.RankingRules
   ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/ranking-rules`
     return await this.httpRequest.post(url, rankingRules)
@@ -499,7 +504,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateDistinctAttribute
    */
   async updateDistinctAttribute(
-    distinctAttribute: string | null
+    distinctAttribute: Types.DistinctAttribute
   ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`
     return await this.httpRequest.post(url, distinctAttribute)
@@ -520,34 +525,34 @@ class Index<T> implements Types.IndexInterface<T> {
   ///
 
   /**
-   * Get the attributes-for-faceting
+   * Get the filterable-attributes
    * @memberof Index
-   * @method getAttributesForFaceting
+   * @method getFilterableAttributes
    */
-  async getAttributesForFaceting(): Promise<string[]> {
-    const url = `indexes/${this.uid}/settings/attributes-for-faceting`
+  async getFilterableAttributes(): Promise<string[]> {
+    const url = `indexes/${this.uid}/settings/filterable-attributes`
     return await this.httpRequest.get<string[]>(url)
   }
 
   /**
-   * Update the attributes-for-faceting.
+   * Update the filterable-attributes.
    * @memberof Index
-   * @method updateAttributesForFaceting
+   * @method updateFilterableAttributes
    */
-  async updateAttributesForFaceting(
-    attributesForFaceting: string[] | null
+  async updateFilterableAttributes(
+    filterableAttributes: Types.FilterableAttributes
   ): Promise<Types.EnqueuedUpdate> {
-    const url = `indexes/${this.uid}/settings/attributes-for-faceting`
-    return await this.httpRequest.post(url, attributesForFaceting)
+    const url = `indexes/${this.uid}/settings/filterable-attributes`
+    return await this.httpRequest.post(url, filterableAttributes)
   }
 
   /**
-   * Reset the attributes-for-faceting.
+   * Reset the filterable-attributes.
    * @memberof Index
-   * @method resetAttributesForFaceting
+   * @method resetFilterableAttributes
    */
-  async resetAttributesForFaceting(): Promise<Types.EnqueuedUpdate> {
-    const url = `indexes/${this.uid}/settings/attributes-for-faceting`
+  async resetFilterableAttributes(): Promise<Types.EnqueuedUpdate> {
+    const url = `indexes/${this.uid}/settings/filterable-attributes`
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
@@ -571,7 +576,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateSearchableAttributes
    */
   async updateSearchableAttributes(
-    searchableAttributes: string[] | null
+    searchableAttributes: Types.SearchableAttributes
   ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`
     return await this.httpRequest.post(url, searchableAttributes)
@@ -607,7 +612,7 @@ class Index<T> implements Types.IndexInterface<T> {
    * @method updateDisplayedAttributes
    */
   async updateDisplayedAttributes(
-    displayedAttributes: string[] | null
+    displayedAttributes: Types.DisplayedAttributes
   ): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
     return await this.httpRequest.post(url, displayedAttributes)

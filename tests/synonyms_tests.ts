@@ -73,6 +73,25 @@ describe.each([
         expect(response).toEqual(newSynonyms)
       })
   })
+
+  test(`${permission} key: Update synonyms with null value`, async () => {
+    const newSynonyms = null
+    const { updateId } = await client
+      .index(index.uid)
+      .updateSynonyms(newSynonyms)
+      .then((response: Types.EnqueuedUpdate) => {
+        expect(response).toHaveProperty('updateId', expect.any(Number))
+        return response
+      })
+    await client.index(index.uid).waitForPendingUpdate(updateId)
+    await client
+      .index(index.uid)
+      .getSynonyms()
+      .then((response: object) => {
+        expect(response).toEqual({})
+      })
+  })
+
   test(`${permission} key: Reset synonyms`, async () => {
     const { updateId } = await client
       .index(index.uid)
@@ -177,7 +196,7 @@ describe.each([
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).updateSynonyms([])
+      client.index(index.uid).updateSynonyms({})
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(

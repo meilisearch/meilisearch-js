@@ -33,11 +33,10 @@ const dataset = [
 ]
 
 const defaultRankingRules = [
-  'typo',
   'words',
+  'typo',
   'proximity',
   'attribute',
-  'wordsPosition',
   'exactness',
 ]
 
@@ -114,7 +113,7 @@ describe.each([
       distinctAttribute: 'title',
       rankingRules: ['asc(title)', 'typo'],
       stopWords: ['the'],
-      attributesForFaceting: [],
+      filterableAttributes: [],
     }
     const { updateId } = await client
       .index(index.uid)

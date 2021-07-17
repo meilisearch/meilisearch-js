@@ -190,7 +190,7 @@ await index.search(
   'wonder',
   {
     attributesToHighlight: ['*'],
-    filters: 'id >= 1'
+    filter: 'id >= 1'
   }
 )
 ```
@@ -225,7 +225,7 @@ Placeholder search makes it possible to receive hits based on your parameters wi
 await index.search(
   '',
   {
-    facetFilters: ['genres:fantasy'],
+    filter: ['genres = fantasy'],
     facetsDistribution: ['genres']
   }
 )
@@ -252,11 +252,8 @@ await index.search(
   "query": "",
   "facetsDistribution": {
     "genres": {
-      "Drama": 0,
       "Action": 2,
-      "Science Fiction": 0,
       "Fantasy": 1,
-      "Romance": 0,
       "Adventure": 1
     }
   }
@@ -285,7 +282,7 @@ controller.abort()
 
 ## 🤖 Compatibility with MeiliSearch
 
-This package only guarantees the compatibility with the [version v0.20.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.20.0).
+This package only guarantees the compatibility with the [version v0.21.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.21.0).
 
 ## 💡 Learn More
 
@@ -429,7 +426,7 @@ Or using the index object:
 
 - Update synonyms:
 
-`index.updateSynonyms(synonyms: object): Promise<EnqueuedUpdate>`
+`index.updateSynonyms(synonyms: Synonyms): Promise<EnqueuedUpdate>`
 
 - Reset synonyms:
 
@@ -441,7 +438,7 @@ Or using the index object:
   `index.getStopWords(): Promise<string[]>`
 
 - Update Stop Words
-  `index.updateStopWords(string[]): Promise<EnqueuedUpdate>`
+  `index.updateStopWords(stopWords: string[] | null ): Promise<EnqueuedUpdate>`
 
 - Reset Stop Words
   `index.resetStopWords(): Promise<EnqueuedUpdate>`

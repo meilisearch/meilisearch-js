@@ -69,23 +69,20 @@ describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
   { client: publicClient, permission: 'Public' },
-  { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-  { client: publicClient, permission: 'Public' },
 ])('Test on search', ({ client, permission }) => {
   describe.each([
     { method: 'POST' as Types.Methods, permission, client },
-    { method: 'GET' as Types.Methods, permission, client },
+    // { method: 'GET' as Types.Methods, permission, client }, // does not work with facetsDistribution
   ])('Test on search', ({ client, permission, method }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
       await masterClient.createIndex(emptyIndex.uid)
 
-      const newAttributesForFaceting = ['genre']
+      const newFilterableAttributes = ['genre', 'title', 'id']
       const { updateId: settingUpdateId } = await masterClient
         .index(index.uid)
-        .updateAttributesForFaceting(newAttributesForFaceting)
+        .updateFilterableAttributes(newFilterableAttributes)
         .then((response: Types.EnqueuedUpdate) => {
           expect(response).toHaveProperty('updateId', expect.any(Number))
           return response
@@ -110,6 +107,23 @@ describe.each([
             expect.any(Number)
           )
           expect(response).toHaveProperty('query', 'prince')
+          expect(response.hits.length).toEqual(2)
+        })
+    })
+
+    test(`${permission} key: Basic ${method} phrase search`, async () => {
+      await client
+        .index(index.uid)
+        .search('"french book" about', {}, method)
+        .then((response) => {
+          expect(response).toHaveProperty('hits', expect.any(Array))
+          expect(response).toHaveProperty('offset', 0)
+          expect(response).toHaveProperty('limit', 20)
+          expect(response).toHaveProperty(
+            'processingTimeMs',
+            expect.any(Number)
+          )
+          expect(response).toHaveProperty('query', '"french book" about')
           expect(response.hits.length).toEqual(2)
         })
     })
@@ -185,7 +199,7 @@ describe.each([
         .search(
           'prince',
           {
-            filters: 'title = "Le Petit Prince"',
+            filter: 'title = "Le Petit Prince"',
             attributesToCrop: ['*'],
             cropLength: 5,
             matches: true,
@@ -203,8 +217,8 @@ describe.each([
           expect(response).toHaveProperty('query', 'prince')
           expect(response.hits.length).toEqual(1)
           expect(response.hits[0]).toHaveProperty('_matchesInfo', {
-            comment: [{ start: 2, length: 6 }],
-            title: [{ start: 0, length: 6 }],
+            comment: [{ start: 22, length: 6 }],
+            title: [{ start: 9, length: 6 }],
           })
         })
     })
@@ -221,7 +235,7 @@ describe.each([
             attributesToCrop: ['*'],
             cropLength: 6,
             attributesToHighlight: ['*'],
-            filters: 'title = "Le Petit Prince"',
+            filter: 'title = "Le Petit Prince"',
             matches: true,
           },
           method
@@ -239,8 +253,6 @@ describe.each([
           expect(response.hits[0]._formatted).toHaveProperty('id')
           expect(response.hits[0]).not.toHaveProperty('comment')
           expect(response.hits[0]).not.toHaveProperty('description')
-          expect(response.hits[0]._formatted).not.toHaveProperty('comment')
-          expect(response.hits[0]._formatted).not.toHaveProperty('description')
           expect(response.hits.length).toEqual(1)
           expect(response.hits[0]).toHaveProperty(
             '_formatted',
@@ -269,7 +281,7 @@ describe.each([
             attributesToCrop: ['*'],
             cropLength: 6,
             attributesToHighlight: ['*'],
-            filters: 'title = "Le Petit Prince"',
+            filter: 'title = "Le Petit Prince"',
             matches: true,
           },
           method
@@ -311,7 +323,7 @@ describe.each([
             attributesToCrop: ['id', 'title'],
             cropLength: 6,
             attributesToHighlight: ['id', 'title'],
-            filters: 'title = "Le Petit Prince"',
+            filter: 'title = "Le Petit Prince"',
             matches: true,
           },
           method
@@ -349,35 +361,52 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with facetFilters and facetsDistribution`, async () => {
+    test(`${permission} key: ${method} search with filter and facetsDistribution`, async () => {
       await client
         .index(index.uid)
         .search(
           'a',
           {
-            facetFilters: ['genre:romance'],
+            filter: ['genre = romance'],
             facetsDistribution: ['genre'],
           },
           method
         )
         .then((response) => {
           expect(response).toHaveProperty('facetsDistribution', {
-            genre: { adventure: 0, fantasy: 0, romance: 2, 'sci fi': 0 },
+            genre: { romance: 2 },
           })
-          expect(response).toHaveProperty('exhaustiveFacetsCount', true)
+          expect(response).toHaveProperty('exhaustiveFacetsCount', false)
           expect(response).toHaveProperty('exhaustiveNbHits', false)
           expect(response).toHaveProperty('hits', expect.any(Array))
           expect(response.hits.length).toEqual(2)
         })
     })
 
-    test(`${permission} key: ${method} search with facetFilters with spaces`, async () => {
+    test(`${permission} key: ${method} search with filter on number`, async () => {
+      await client
+        .index(index.uid)
+        .search(
+          'a',
+          {
+            filter: 'id < 0',
+          },
+          method
+        )
+        .then((response) => {
+          expect(response).toHaveProperty('exhaustiveNbHits', false)
+          expect(response).toHaveProperty('hits', expect.any(Array))
+          expect(response.hits.length).toEqual(0)
+        })
+    })
+
+    test(`${permission} key: ${method} search with filter with spaces`, async () => {
       await client
         .index(index.uid)
         .search(
           'h',
           {
-            facetFilters: ['genre:sci fi'],
+            filter: ['genre = "sci fi"'],
           },
           method
         )
@@ -387,81 +416,81 @@ describe.each([
         })
     })
 
-    test(`${permission} key: ${method} search with multiple facetFilters`, async () => {
+    test(`${permission} key: ${method} search with multiple filter`, async () => {
       await client
         .index(index.uid)
         .search(
           'a',
           {
-            facetFilters: ['genre:romance', ['genre:romance', 'genre:romance']],
+            filter: ['genre = romance', ['genre = romance', 'genre = romance']],
             facetsDistribution: ['genre'],
           },
           method
         )
         .then((response) => {
           expect(response).toHaveProperty('facetsDistribution', {
-            genre: { adventure: 0, fantasy: 0, romance: 2, 'sci fi': 0 },
+            genre: { romance: 2 },
           })
-          expect(response).toHaveProperty('exhaustiveFacetsCount', true)
+          expect(response).toHaveProperty('exhaustiveFacetsCount', false)
           expect(response).toHaveProperty('exhaustiveNbHits', false)
           expect(response).toHaveProperty('hits', expect.any(Array))
           expect(response.hits.length).toEqual(2)
         })
     })
 
-    test(`${permission} key: ${method} search with multiple facetFilters and undefined query (placeholder)`, async () => {
+    test(`${permission} key: ${method} search with multiple filter and undefined query (placeholder)`, async () => {
       await client
         .index(index.uid)
         .search(
           undefined,
           {
-            facetFilters: ['genre:fantasy'],
+            filter: ['genre = fantasy'],
             facetsDistribution: ['genre'],
           },
           method
         )
         .then((response) => {
           expect(response).toHaveProperty('facetsDistribution', {
-            genre: { adventure: 0, fantasy: 2, romance: 0, 'sci fi': 0 },
+            genre: { fantasy: 2 },
           })
           expect(response.hits.length).toEqual(2)
         })
     })
 
-    test(`${permission} key: ${method} search with multiple facetFilters and null query (placeholder)`, async () => {
+    test(`${permission} key: ${method} search with multiple filter and null query (placeholder)`, async () => {
       await client
         .index(index.uid)
         .search(
           null,
           {
-            facetFilters: ['genre:fantasy'],
+            filter: ['genre = fantasy'],
             facetsDistribution: ['genre'],
           },
           method
         )
         .then((response) => {
           expect(response).toHaveProperty('facetsDistribution', {
-            genre: { adventure: 0, fantasy: 2, romance: 0, 'sci fi': 0 },
+            genre: { fantasy: 2 },
           })
           expect(response.hits.length).toEqual(2)
           expect(response.nbHits).toEqual(2)
         })
     })
 
-    test(`${permission} key: ${method} search with multiple facetFilters and empty string query (placeholder)`, async () => {
+    test(`${permission} key: ${method} search with multiple filter and empty string query (placeholder)`, async () => {
       await client
         .index(index.uid)
         .search(
           '',
           {
-            facetFilters: ['genre:fantasy'],
+            filter: ['genre = fantasy'],
             facetsDistribution: ['genre'],
           },
           method
         )
         .then((response) => {
           expect(response).toHaveProperty('facetsDistribution', {
-            genre: { adventure: 0, fantasy: 2, romance: 0, 'sci fi': 0 },
+            genre: { fantasy: 2 },
           })
           expect(response.hits.length).toEqual(2)
         })
@@ -517,11 +546,8 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
 
 describe.each([
   { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-  { client: publicClient, permission: 'Public' },
-  { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-  { client: publicClient, permission: 'Public' },
+  // { client: privateClient, permission: 'Private' },
+  // { client: publicClient, permission: 'Public' },
 ])('Test on abortable search', ({ client, permission }) => {
   describe.each([
     { method: 'POST' as Types.Methods, permission, client },

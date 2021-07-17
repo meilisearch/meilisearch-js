@@ -46,7 +46,7 @@ export interface AddDocumentParams {
   primaryKey?: string
 }
 
-export type FacetFilter = Array<string | string[]>
+export type Filter = Array<string | string[]>
 
 export interface SearchParams<T> {
   offset?: number
@@ -55,8 +55,7 @@ export interface SearchParams<T> {
   attributesToCrop?: Array<Extract<keyof T, string> | '*'>
   cropLength?: number
   attributesToHighlight?: Array<Extract<keyof T, string> | '*'>
-  filters?: string
-  facetFilters?: FacetFilter | FacetFilter[]
+  filter?: Filter | Filter[] | string
   facetsDistribution?: string[]
   matches?: boolean
 }
@@ -69,9 +68,8 @@ export interface SearchRequest {
   attributesToRetrieve?: string[]
   attributesToCrop?: string[]
   attributesToHighlight?: string[]
-  facetFilters?: FacetFilter | FacetFilter[]
   facetsDistribution?: string[]
-  filters?: string
+  filter?: Filter | Filter[] | string
   matches?: boolean
 }
 
@@ -83,9 +81,8 @@ export interface GetSearchRequest {
   attributesToCrop?: string
   cropLength?: number
   attributesToHighlight?: string
-  facetFilters?: string
   facetsDistribution?: string
-  filters?: string
+  filter?: string
   matches?: boolean
 }
 
@@ -129,7 +126,7 @@ export interface SearchResponse<T, P extends SearchParams<T>> {
   exhaustiveNbHits: boolean
 }
 
-export interface FieldsDistribution {
+export interface FieldDistribution {
   [field: string]: number
 }
 
@@ -163,16 +160,24 @@ export type Document<T> = T
  ** Settings
  */
 
+export type FilterableAttributes = string[] | null
+export type DistinctAttribute = string | null
+export type SearchableAttributes = string[] | null
+export type DisplayedAttributes = string[] | null
+export type RankingRules = string[] | null
+export type StopWords = string[] | null
+export type Synonyms = {
+  [field: string]: string[]
+} | null
+
 export interface Settings {
-  attributesForFaceting?: string[]
-  distinctAttribute?: string
-  searchableAttributes?: string[]
-  displayedAttributes?: string[]
-  rankingRules?: string[]
-  stopWords?: string[]
-  synonyms?: {
-    [field: string]: string[]
-  }
+  filterableAttributes?: FilterableAttributes
+  distinctAttribute?: DistinctAttribute
+  searchableAttributes?: SearchableAttributes
+  displayedAttributes?: DisplayedAttributes
+  rankingRules?: RankingRules
+  stopWords?: StopWords
+  synonyms?: Synonyms
 }
 
 /*
@@ -198,6 +203,8 @@ export interface Update {
 export interface EnqueuedDump {
   uid: string
   status: 'in_progress' | 'failed' | 'done'
+  startedAt: string
+  finishedAt: string
 }
 
 /*
@@ -215,7 +222,7 @@ export interface Health {
 export interface IndexStats {
   numberOfDocuments: number
   isIndexing: boolean
-  fieldsDistribution: FieldsDistribution
+  fieldDistribution: FieldDistribution
 }
 
 export interface Stats {
@@ -240,7 +247,7 @@ export interface Keys {
  */
 export interface Version {
   commitSha: string
-  buildDate: string
+  commitDate: string
   pkgVersion: string
 }
 
@@ -313,32 +320,32 @@ export interface IndexInterface<T = any> {
   updateSettings: (settings: Settings) => Promise<EnqueuedUpdate>
   resetSettings: () => Promise<EnqueuedUpdate>
   getSynonyms: () => Promise<object>
-  updateSynonyms: (synonyms: object) => Promise<object>
+  updateSynonyms: (synonyms: Synonyms) => Promise<object>
   resetSynonyms: () => Promise<object>
   getStopWords: () => Promise<string[]>
-  updateStopWords: (stopWords: string[]) => Promise<EnqueuedUpdate>
+  updateStopWords: (stopWords: StopWords) => Promise<EnqueuedUpdate>
   resetStopWords: () => Promise<EnqueuedUpdate>
   getRankingRules: () => Promise<string[]>
-  updateRankingRules: (rankingRules: string[] | null) => Promise<EnqueuedUpdate>
+  updateRankingRules: (rankingRules: RankingRules) => Promise<EnqueuedUpdate>
   resetRankingRules: () => Promise<EnqueuedUpdate>
   getDistinctAttribute: () => Promise<string | null>
   updateDistinctAttribute: (
-    distinctAttribute: string | null
+    distinctAttribute: DistinctAttribute
   ) => Promise<EnqueuedUpdate>
   resetDistinctAttribute: () => Promise<EnqueuedUpdate>
-  getAttributesForFaceting: () => Promise<string[]>
-  updateAttributesForFaceting: (
-    attributesForFaceting: string[] | null
+  getFilterableAttributes: () => Promise<string[]>
+  updateFilterableAttributes: (
+    filterableAttributes: FilterableAttributes
   ) => Promise<EnqueuedUpdate>
-  resetAttributesForFaceting: () => Promise<EnqueuedUpdate>
+  resetFilterableAttributes: () => Promise<EnqueuedUpdate>
   getSearchableAttributes: () => Promise<string[]>
   updateSearchableAttributes: (
-    searchableAttributes: string[] | null
+    searchableAttributes: SearchableAttributes
   ) => Promise<EnqueuedUpdate>
   resetSearchableAttributes: () => Promise<EnqueuedUpdate>
   getDisplayedAttributes: () => Promise<string[]>
   updateDisplayedAttributes: (
-    displayedAttributes: string[] | null
+    displayedAttributes: DisplayedAttributes
   ) => Promise<EnqueuedUpdate>
   resetDisplayedAttributes: () => Promise<EnqueuedUpdate>
 }
