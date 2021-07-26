@@ -118,6 +118,20 @@ const client = new MeiliSearch({
 
 To make this package work with React Native, please add the [react-native-url-polyfill](https://www.npmjs.com/package/react-native-url-polyfill).
 
+#### Deno<!-- omit in toc -->
+
+Usage in a back-end deno environment
+
+```ts
+import { MeiliSearch } from "https://esm.sh/meilisearch"
+
+const client = new MeiliSearch({
+  host: 'http://127.0.0.1:7700',
+  apiKey: 'masterKey',
+})
+```
+
+
 ## 🎬 Getting Started
 
 #### Add Documents <!-- omit in toc -->
