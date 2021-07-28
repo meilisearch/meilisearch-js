@@ -487,6 +487,17 @@ Or using the index object:
 - Reset Displayed Attributes
   `index.resetDisplayedAttributes(): Promise<EnqueuedUpdate>`
 
+### Filterable Attributes <!-- omit in toc -->
+
+- Get Filterable Attributes
+  `index.getFilterableAttributes(): Promise<string[]>`
+
+- Update Filterable Attributes
+  `index.updateFilterableAttributes(filterableAttributes: string[] | null): Promise<EnqueuedUpdate>`
+
+- Reset Filterable Attributes
+  `index.resetFilterableAttributes(): Promise<EnqueuedUpdate>`
+
 ### Keys <!-- omit in toc -->
 
 - Get keys
