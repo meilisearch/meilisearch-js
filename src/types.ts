@@ -46,7 +46,7 @@ export interface AddDocumentParams {
   primaryKey?: string
 }
 
-export type Filter = Array<string | string[]>
+export type Filter = string | Array<string | string[]>
 
 export interface SearchParams<T> {
   offset?: number
@@ -55,7 +55,7 @@ export interface SearchParams<T> {
   attributesToCrop?: Array<Extract<keyof T, string> | '*'>
   cropLength?: number
   attributesToHighlight?: Array<Extract<keyof T, string> | '*'>
-  filter?: Filter | Filter[] | string
+  filter?: Filter
   facetsDistribution?: string[]
   matches?: boolean
 }
