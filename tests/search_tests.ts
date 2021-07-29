@@ -495,7 +495,6 @@ describe.each([
   // { client: privateClient, permission: 'Private' },
   // { client: publicClient, permission: 'Public' },
 ])('Test on abortable search', ({ client, permission }) => {
-
   beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)

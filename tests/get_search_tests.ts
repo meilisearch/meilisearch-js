@@ -421,7 +421,6 @@ describe.each([
   })
 
   test(`${permission} key: search with multiple filter and empty string query (placeholder)`, async () => {
-
     await client
       .index(index.uid)
       .searchGet('', {
