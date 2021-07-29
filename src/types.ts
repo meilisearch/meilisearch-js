@@ -60,20 +60,7 @@ export interface SearchParams<T> {
   matches?: boolean
 }
 
-export interface SearchRequest {
-  q?: string | null
-  offset?: number
-  limit?: number
-  cropLength?: number
-  attributesToRetrieve?: string[]
-  attributesToCrop?: string[]
-  attributesToHighlight?: string[]
-  facetsDistribution?: string[]
-  filter?: Filter | Filter[] | string
-  matches?: boolean
-}
-
-export interface GetSearchRequest {
+export interface SearchRequestGET {
   q?: string | null
   offset?: number
   limit?: number
@@ -83,6 +70,19 @@ export interface GetSearchRequest {
   attributesToHighlight?: string
   facetsDistribution?: string
   filter?: string
+  matches?: boolean
+}
+
+export interface SearchRequest {
+  q?: string | null
+  offset?: number
+  limit?: number
+  cropLength?: number
+  attributesToRetrieve?: string[]
+  attributesToCrop?: string[]
+  attributesToHighlight?: string[]
+  facetsDistribution?: string[]
+  filter?: Filter
   matches?: boolean
 }
 
@@ -280,8 +280,6 @@ export interface MeiliSearchInterface {
   getDumpStatus: (dumpUid: string) => Promise<EnqueuedDump>
 }
 
-export type Methods = 'POST' | 'GET'
-
 export interface IndexInterface<T = any> {
   uid: string
   getUpdateStatus: (updateId: number) => Promise<Update>
@@ -289,7 +287,11 @@ export interface IndexInterface<T = any> {
   search: <P extends SearchParams<T>>(
     query?: string | null,
     options?: P,
-    method?: Methods,
+    config?: Partial<Request>
+  ) => Promise<SearchResponse<T, P>>
+  searchGet: <P extends SearchParams<T>>(
+    query?: string | null,
+    options?: P,
     config?: Partial<Request>
   ) => Promise<SearchResponse<T, P>>
   getRawInfo: () => Promise<IndexResponse>

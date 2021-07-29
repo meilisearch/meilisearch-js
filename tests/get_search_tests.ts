@@ -1,5 +1,3 @@
-import AbortController from 'abort-controller'
-
 import * as Types from '../src/types'
 import {
   clearAllIndexes,
@@ -7,7 +5,6 @@ import {
   masterClient,
   privateClient,
   publicClient,
-  anonymousClient,
   BAD_HOST,
   MeiliSearch,
 } from './meilisearch-test-utils'
@@ -69,7 +66,7 @@ describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
   { client: publicClient, permission: 'Public' },
-])('Test on POST search', ({ client, permission }) => {
+])('Test on GET search', ({ client, permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
@@ -83,17 +80,19 @@ describe.each([
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
+
     await masterClient.index(index.uid).waitForPendingUpdate(settingUpdateId)
     const { updateId } = await masterClient
       .index(index.uid)
       .addDocuments(dataset)
+
     await masterClient.index(index.uid).waitForPendingUpdate(updateId)
   })
 
   test(`${permission} key: Basic search`, async () => {
     await client
       .index(index.uid)
-      .search('prince', {})
+      .searchGet('prince', {})
       .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
@@ -104,24 +103,10 @@ describe.each([
       })
   })
 
-  test(`${permission} key: Basic phrase search`, async () => {
-    await client
-      .index(index.uid)
-      .search('"french book" about', {})
-      .then((response) => {
-        expect(response).toHaveProperty('hits', expect.any(Array))
-        expect(response).toHaveProperty('offset', 0)
-        expect(response).toHaveProperty('limit', 20)
-        expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
-        expect(response).toHaveProperty('query', '"french book" about')
-        expect(response.hits.length).toEqual(2)
-      })
-  })
-
   test(`${permission} key: search with options`, async () => {
     await client
       .index(index.uid)
-      .search('prince', { limit: 1 })
+      .searchGet('prince', { limit: 1 })
       .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
@@ -135,7 +120,7 @@ describe.each([
   test(`${permission} key: search with array options`, async () => {
     await client
       .index(index.uid)
-      .search('prince', {
+      .searchGet('prince', {
         attributesToRetrieve: ['*'],
       })
       .then((response) => {
@@ -151,7 +136,7 @@ describe.each([
   test(`${permission} key: search with array options`, async () => {
     await client
       .index(index.uid)
-      .search('prince', {
+      .searchGet('prince', {
         attributesToRetrieve: ['*'],
       })
       .then((response) => {
@@ -167,7 +152,7 @@ describe.each([
   test(`${permission} key: search with options`, async () => {
     await client
       .index(index.uid)
-      .search('prince', { limit: 1 })
+      .searchGet('prince', { limit: 1 })
       .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
@@ -181,7 +166,7 @@ describe.each([
   test(`${permission} key: search with limit and offset`, async () => {
     await client
       .index(index.uid)
-      .search('prince', {
+      .searchGet('prince', {
         limit: 1,
         offset: 1,
       })
@@ -205,7 +190,7 @@ describe.each([
   test(`${permission} key: search with matches parameter and small croplength`, async () => {
     await client
       .index(index.uid)
-      .search('prince', {
+      .searchGet('prince', {
         filter: 'title = "Le Petit Prince"',
         attributesToCrop: ['*'],
         cropLength: 5,
@@ -228,7 +213,7 @@ describe.each([
   test(`${permission} key: search with all options but not all fields`, async () => {
     await client
       .index(index.uid)
-      .search('prince', {
+      .searchGet('prince', {
         limit: 5,
         offset: 0,
         attributesToRetrieve: ['id', 'title'],
@@ -267,7 +252,7 @@ describe.each([
   test(`${permission} key: search with all options and all fields`, async () => {
     await client
       .index(index.uid)
-      .search('prince', {
+      .searchGet('prince', {
         limit: 5,
         offset: 0,
         attributesToRetrieve: ['*'],
@@ -302,7 +287,7 @@ describe.each([
   test(`${permission} key: search with all options but specific fields`, async () => {
     await client
       .index(index.uid)
-      .search('prince', {
+      .searchGet('prince', {
         limit: 5,
         offset: 0,
         attributesToRetrieve: ['id', 'title'],
@@ -345,8 +330,8 @@ describe.each([
   test(`${permission} key: search with filter and facetsDistribution`, async () => {
     await client
       .index(index.uid)
-      .search('a', {
-        filter: ['genre = romance'],
+      .searchGet('a', {
+        filter: 'genre = romance',
         facetsDistribution: ['genre'],
       })
       .then((response) => {
@@ -363,8 +348,9 @@ describe.each([
   test(`${permission} key: search with filter on number`, async () => {
     await client
       .index(index.uid)
-      .search('a', {
+      .searchGet('a', {
         filter: 'id < 0',
+        facetsDistribution: ['genre'],
       })
       .then((response) => {
         expect(response).toHaveProperty('exhaustiveNbHits', false)
@@ -376,8 +362,8 @@ describe.each([
   test(`${permission} key: search with filter with spaces`, async () => {
     await client
       .index(index.uid)
-      .search('h', {
-        filter: ['genre = "sci fi"'],
+      .searchGet('h', {
+        filter: 'genre = "sci fi"',
       })
       .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
@@ -388,8 +374,8 @@ describe.each([
   test(`${permission} key: search with multiple filter`, async () => {
     await client
       .index(index.uid)
-      .search('a', {
-        filter: ['genre = romance', ['genre = romance', 'genre = romance']],
+      .searchGet('a', {
+        filter: 'genre = romance AND (genre = romance OR genre = romance)',
         facetsDistribution: ['genre'],
       })
       .then((response) => {
@@ -406,8 +392,8 @@ describe.each([
   test(`${permission} key: search with multiple filter and undefined query (placeholder)`, async () => {
     await client
       .index(index.uid)
-      .search(undefined, {
-        filter: ['genre = fantasy'],
+      .searchGet(undefined, {
+        filter: 'genre = fantasy',
         facetsDistribution: ['genre'],
       })
       .then((response) => {
@@ -421,8 +407,8 @@ describe.each([
   test(`${permission} key: search with multiple filter and null query (placeholder)`, async () => {
     await client
       .index(index.uid)
-      .search(null, {
-        filter: ['genre = fantasy'],
+      .searchGet(null, {
+        filter: 'genre = fantasy',
         facetsDistribution: ['genre'],
       })
       .then((response) => {
@@ -435,10 +421,11 @@ describe.each([
   })
 
   test(`${permission} key: search with multiple filter and empty string query (placeholder)`, async () => {
+
     await client
       .index(index.uid)
-      .search('', {
-        filter: ['genre = fantasy'],
+      .searchGet('', {
+        filter: 'genre = fantasy',
         facetsDistribution: ['genre'],
       })
       .then((response) => {
@@ -449,126 +436,22 @@ describe.each([
       })
   })
 
-  test(`${permission} key: search on index with no documents and no primary key`, async () => {
-    await client
-      .index(emptyIndex.uid)
-      .search('prince', {})
-      .then((response) => {
-        expect(response).toHaveProperty('hits', [])
-        expect(response).toHaveProperty('offset', 0)
-        expect(response).toHaveProperty('limit', 20)
-        expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
-        expect(response).toHaveProperty('query', 'prince')
-        expect(response.hits.length).toEqual(0)
+  test(`${permission} key: Try to search with wrong format filter`, async () => {
+    await expect(
+      client.index(index.uid).searchGet('prince', {
+        filter: ['hello'],
       })
+    ).rejects.toHaveProperty(
+      'message',
+      'The filter query parameter should be in string format when using searchGet'
+    )
   })
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     await masterClient.index(index.uid).delete()
     await expect(
-      client.index(index.uid).search('prince', {})
+      client.index(index.uid).searchGet('prince')
     ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INDEX_NOT_FOUND)
-  })
-})
-
-describe.each([{ client: anonymousClient, permission: 'Client' }])(
-  'Test failing test on search',
-  ({ client, permission }) => {
-    beforeAll(async () => {
-      await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
-    })
-
-    test(`${permission} key: Try Basic search and be denied`, async () => {
-      await expect(
-        client.index(index.uid).search('prince')
-      ).rejects.toHaveProperty(
-        'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
-      )
-    })
-  }
-)
-
-describe.each([
-  { client: masterClient, permission: 'Master' },
-  // { client: privateClient, permission: 'Private' },
-  // { client: publicClient, permission: 'Public' },
-])('Test on abortable search', ({ client, permission }) => {
-
-  beforeAll(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index.uid)
-  })
-
-  test(`${permission} key: search on index and abort`, () => {
-    const controller = new AbortController()
-
-    const searchPromise = client.index(index.uid).search(
-      'unreachable',
-      {},
-      {
-        signal: controller.signal,
-      }
-    )
-
-    controller.abort()
-
-    searchPromise.catch((error) => {
-      expect(error).toHaveProperty('message', 'The user aborted a request.')
-    })
-  })
-
-  test(`${permission} key: search on index multiple times, and abort only one request`, () => {
-    const controllerA = new AbortController()
-    const controllerB = new AbortController()
-    const controllerC = new AbortController()
-
-    const searchQuery = 'prince'
-
-    const searchAPromise = client.index(index.uid).search(
-      searchQuery,
-      {},
-      {
-        signal: controllerA.signal,
-      }
-    )
-
-    const searchBPromise = client.index(index.uid).search(
-      searchQuery,
-      {},
-      {
-        signal: controllerB.signal,
-      }
-    )
-
-    const searchCPromise = client.index(index.uid).search(
-      searchQuery,
-      {},
-      {
-        signal: controllerC.signal,
-      }
-    )
-
-    const searchDPromise = client.index(index.uid).search(searchQuery, {})
-
-    controllerB.abort()
-
-    searchDPromise.then((response) => {
-      expect(response).toHaveProperty('query', searchQuery)
-    })
-
-    searchCPromise.then((response) => {
-      expect(response).toHaveProperty('query', searchQuery)
-    })
-
-    searchAPromise.then((response) => {
-      expect(response).toHaveProperty('query', searchQuery)
-    })
-
-    searchBPromise.catch((error) => {
-      expect(error).toHaveProperty('message', 'The user aborted a request.')
-    })
   })
 })
 
@@ -581,7 +464,7 @@ describe.each([
     const route = `indexes/${index.uid}/search`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
-    await expect(client.index(index.uid).search()).rejects.toHaveProperty(
+    await expect(client.index(index.uid).searchGet()).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
@@ -594,7 +477,7 @@ describe.each([
     const route = `indexes/${index.uid}/search`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
-    await expect(client.index(index.uid).search()).rejects.toHaveProperty(
+    await expect(client.index(index.uid).searchGet()).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
