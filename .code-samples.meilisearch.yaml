@@ -40,7 +40,7 @@ delete_documents_1: |-
 search_post_1: |-
   client.index('movies').search('American ninja')
 search_get_1: |-
-  client.index('movies').search('American ninja', {}, 'GET')
+  client.index('movies').search('American ninja')
 get_update_1: |-
   client.index('movies').getUpdateStatus(1)
 get_all_updates_1: |-

@@ -58,62 +58,62 @@ class Index<T> implements Types.IndexInterface<T> {
   async search<P extends Types.SearchParams<T>>(
     query?: string | null,
     options?: P,
-    method: Types.Methods = 'POST',
     config?: Partial<Request>
   ): Promise<Types.SearchResponse<T, P>> {
     const url = `indexes/${this.uid}/search`
-    const params: Types.SearchRequest = {
-      q: query,
-      offset: options?.offset,
-      limit: options?.limit,
-      cropLength: options?.cropLength,
-      filter: options?.filter,
-      matches: options?.matches,
-      facetsDistribution: options?.facetsDistribution,
-      attributesToRetrieve: options?.attributesToRetrieve,
-      attributesToCrop: options?.attributesToCrop,
-      attributesToHighlight: options?.attributesToHighlight,
-    }
-    if (method.toUpperCase() === 'POST') {
-      return await this.httpRequest.post(
-        url,
-        removeUndefinedFromObject(params),
-        undefined,
-        config
-      )
-    } else if (method.toUpperCase() === 'GET') {
-      const parseFilter = (filter?: any) => {
-        if (typeof filter === 'string') return filter
-        else if (Array.isArray(filter)) return JSON.stringify(filter)
-        else return undefined
-      }
-      const getParams: Types.GetSearchRequest = {
-        ...params,
-        filter: parseFilter(options?.filter),
-        facetsDistribution: options?.facetsDistribution
-          ? JSON.stringify(options.facetsDistribution)
-          : undefined,
-        attributesToRetrieve: options?.attributesToRetrieve
-          ? options.attributesToRetrieve.join(',')
-          : undefined,
-        attributesToCrop: options?.attributesToCrop
-          ? options.attributesToCrop.join(',')
-          : undefined,
-        attributesToHighlight: options?.attributesToHighlight
-          ? options.attributesToHighlight.join(',')
-          : undefined,
-      }
 
-      return await this.httpRequest.get<Types.SearchResponse<T, P>>(
-        url,
-        removeUndefinedFromObject(getParams),
-        config
-      )
-    } else {
-      throw new MeiliSearchError(
-        'method parameter should be either POST or GET'
-      )
+    return await this.httpRequest.post(
+      url,
+      removeUndefinedFromObject({ ...options, q: query }),
+      undefined,
+      config
+    )
+  }
+
+  /**
+   * Search for documents into an index using the GET method
+   * @memberof Index
+   * @method search
+   */
+  async searchGet<P extends Types.SearchParams<T>>(
+    query?: string | null,
+    options?: P,
+    config?: Partial<Request>
+  ): Promise<Types.SearchResponse<T, P>> {
+    const url = `indexes/${this.uid}/search`
+
+    const parseFilter = (filter?: Types.Filter): string | undefined => {
+      if (typeof filter === 'string') return filter
+      else if (Array.isArray(filter))
+        throw new MeiliSearchError(
+          'The filter query parameter should be in string format when using searchGet'
+        )
+      else return undefined
     }
+
+    const getParams: Types.SearchRequestGET = {
+      q: query,
+      ...options,
+      filter: parseFilter(options?.filter),
+      facetsDistribution: options?.facetsDistribution
+        ? options.facetsDistribution.join(',')
+        : undefined,
+      attributesToRetrieve: options?.attributesToRetrieve
+        ? options.attributesToRetrieve.join(',')
+        : undefined,
+      attributesToCrop: options?.attributesToCrop
+        ? options.attributesToCrop.join(',')
+        : undefined,
+      attributesToHighlight: options?.attributesToHighlight
+        ? options.attributesToHighlight.join(',')
+        : undefined,
+    }
+
+    return await this.httpRequest.get<Types.SearchResponse<T, P>>(
+      url,
+      removeUndefinedFromObject(getParams),
+      config
+    )
   }
 
   ///

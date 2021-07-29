@@ -188,7 +188,6 @@ All the supported options are described in the [search parameters](https://docs.
 ```javascript
 await index.search(
   'wonder',
-  {
     attributesToHighlight: ['*'],
     filter: 'id >= 1'
   }
@@ -267,7 +266,7 @@ You can abort a pending search request by providing an [AbortSignal](https://dev
 const controller = new AbortController()
 
 index
-  .search('wonder', {}, 'POST', {
+  .search('wonder', {}, {
     signal: controller.signal,
   })
   .then((response) => {
@@ -307,7 +306,11 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Make a search request:
 
-`client.index<T>('xxx').search(query: string, options: SearchParams = {}, method: 'POST' | 'GET' = 'POST', config?: Partial<Request>): Promise<SearchResponse<T>>`
+`client.index<T>('xxx').search(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>`
+
+- Make a search request using GET method (slower than the search method):
+
+`client.index<T>('xxx').searchGet(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>`
 
 ### Indexes <!-- omit in toc -->
 
