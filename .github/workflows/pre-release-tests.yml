@@ -17,6 +17,12 @@ jobs:
     name: integration-tests-against-rc (Node.js ${{ matrix.node }})
     steps:
       - uses: actions/checkout@v2
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./node_modules
+          key: ${{ hashFiles('yarn.lock') }}
       - name: Setup node
         uses: actions/setup-node@v1
         with:

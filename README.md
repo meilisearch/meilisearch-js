@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://res.cloudinary.com/meilisearch/image/upload/v1587402338/SDKs/meilisearch_js.svg" alt="MeiliSearch-JavaScript" width="200" height="200" />
+  <img src="https://images.meilisearch.workers.dev/v1587402338/SDKs/meilisearch_js.svg" alt="MeiliSearch-JavaScript" width="200" height="200" />
 </p>
 
 <h1 align="center">MeiliSearch JavaScript</h1>
@@ -117,6 +117,20 @@ const client = new MeiliSearch({
 #### React Native <!-- omit in toc -->
 
 To make this package work with React Native, please add the [react-native-url-polyfill](https://www.npmjs.com/package/react-native-url-polyfill).
+
+#### Deno<!-- omit in toc -->
+
+Usage in a back-end deno environment
+
+```ts
+import { MeiliSearch } from "https://esm.sh/meilisearch"
+
+const client = new MeiliSearch({
+  host: 'http://127.0.0.1:7700',
+  apiKey: 'masterKey',
+})
+```
+
 
 ## 🎬 Getting Started
 
@@ -328,7 +342,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Get an index:
 
-`client.getIndex<T>(uid: string): Index<T>`
+`client.getIndex<T>(uid: string): Promise<Index<T>>`
 
 - Get or create index if it does not exist
 
@@ -340,7 +354,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Update Index:
 
-`client.updateIndex(uid): Promise<Index>`
+`client.updateIndex(uid: string, options: IndexOptions): Promise<Index>`
 Or using the index object:
 `index.update(data: IndexOptions): Promise<Index>`
 
