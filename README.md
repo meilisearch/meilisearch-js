@@ -166,7 +166,7 @@ import { MeiliSearch } from 'meilisearch'
 })()
 ```
 
-With the `updateId`, you can check the status (`enqueued`, `processed` or `failed`) of your documents addition using the [update endpoint](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status).
+With the `updateId`, you can check the status (`enqueued`, `processing`, `processed` or `failed`) of your documents addition using the [update endpoint](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status).
 
 #### Basic Search <!-- omit in toc -->
 
@@ -202,9 +202,8 @@ All the supported options are described in the [search parameters](https://docs.
 ```javascript
 await index.search(
   'wonder',
-  {
     attributesToHighlight: ['*'],
-    filters: 'id >= 1'
+    filter: 'id >= 1'
   }
 )
 ```
@@ -239,7 +238,7 @@ Placeholder search makes it possible to receive hits based on your parameters wi
 await index.search(
   '',
   {
-    facetFilters: ['genres:fantasy'],
+    filter: ['genres = fantasy'],
     facetsDistribution: ['genres']
   }
 )
@@ -266,11 +265,8 @@ await index.search(
   "query": "",
   "facetsDistribution": {
     "genres": {
-      "Drama": 0,
       "Action": 2,
-      "Science Fiction": 0,
       "Fantasy": 1,
-      "Romance": 0,
       "Adventure": 1
     }
   }
@@ -284,7 +280,7 @@ You can abort a pending search request by providing an [AbortSignal](https://dev
 const controller = new AbortController()
 
 index
-  .search('wonder', {}, 'POST', {
+  .search('wonder', {}, {
     signal: controller.signal,
   })
   .then((response) => {
@@ -299,7 +295,7 @@ controller.abort()
 
 ## 🤖 Compatibility with MeiliSearch
 
-This package only guarantees the compatibility with the [version v0.20.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.20.0).
+This package only guarantees the compatibility with the [version v0.21.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.21.0).
 
 ## 💡 Learn More
 
@@ -324,7 +320,11 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Make a search request:
 
-`client.index<T>('xxx').search(query: string, options: SearchParams = {}, method: 'POST' | 'GET' = 'POST', config?: Partial<Request>): Promise<SearchResponse<T>>`
+`client.index<T>('xxx').search(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>`
+
+- Make a search request using GET method (slower than the search method):
+
+`client.index<T>('xxx').searchGet(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>`
 
 ### Indexes <!-- omit in toc -->
 
@@ -443,7 +443,7 @@ Or using the index object:
 
 - Update synonyms:
 
-`index.updateSynonyms(synonyms: object): Promise<EnqueuedUpdate>`
+`index.updateSynonyms(synonyms: Synonyms): Promise<EnqueuedUpdate>`
 
 - Reset synonyms:
 
@@ -455,7 +455,7 @@ Or using the index object:
   `index.getStopWords(): Promise<string[]>`
 
 - Update Stop Words
-  `index.updateStopWords(string[]): Promise<EnqueuedUpdate>`
+  `index.updateStopWords(stopWords: string[] | null ): Promise<EnqueuedUpdate>`
 
 - Reset Stop Words
   `index.resetStopWords(): Promise<EnqueuedUpdate>`
@@ -503,6 +503,17 @@ Or using the index object:
 
 - Reset Displayed Attributes
   `index.resetDisplayedAttributes(): Promise<EnqueuedUpdate>`
+
+### Filterable Attributes <!-- omit in toc -->
+
+- Get Filterable Attributes
+  `index.getFilterableAttributes(): Promise<string[]>`
+
+- Update Filterable Attributes
+  `index.updateFilterableAttributes(filterableAttributes: string[] | null): Promise<EnqueuedUpdate>`
+
+- Reset Filterable Attributes
+  `index.resetFilterableAttributes(): Promise<EnqueuedUpdate>`
 
 ### Keys <!-- omit in toc -->
 
