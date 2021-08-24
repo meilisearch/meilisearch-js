@@ -204,7 +204,7 @@ search_parameter_guide_crop_1: |-
     cropLength: 10
   })
 search_parameter_guide_highlight_1: |-
-  client.index('movies').search('shifu', {
+  client.index('movies').search('winter feast', {
     attributesToHighlight: ['overview']
   })
 search_parameter_guide_filter_1: |-
@@ -216,9 +216,7 @@ search_parameter_guide_filter_2: |-
     filter: 'title="Kung Fu Panda"'
   })
 search_parameter_guide_matches_1: |-
-  client.index('movies').search('n', {
-    filter: 'title="Kung Fu Panda"',
-    attributesToHighlight: ['overview'],
+  client.index('movies').search('winter feast', {
     matches: true
   })
 settings_guide_synonyms_1: |-
@@ -371,3 +369,6 @@ post_dump_1: |-
   client.createDump()
 get_dump_status_1: |-
   client.getDumpStatus("20201101-110357260")
+phrase_search_1: |-
+  client.index('movies')
+    .search('"african american" horror')
