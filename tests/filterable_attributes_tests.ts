@@ -50,17 +50,17 @@ describe.each([
   test(`${permission} key: Get default attributes for filtering`, async () => {
     await client
       .index(index.uid)
-      .getAttributesForFaceting()
+      .getFilterableAttributes()
       .then((response: string[]) => {
         expect(response.sort()).toEqual([])
       })
   })
 
   test(`${permission} key: Update attributes for filtering`, async () => {
-    const newAttributesForFaceting = ['genre']
+    const newFilterableAttributes = ['genre']
     const { updateId } = await client
       .index(index.uid)
-      .updateAttributesForFaceting(newAttributesForFaceting)
+      .updateFilterableAttributes(newFilterableAttributes)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -68,16 +68,16 @@ describe.each([
     await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
       .index(index.uid)
-      .getAttributesForFaceting()
+      .getFilterableAttributes()
       .then((response: string[]) => {
-        expect(response).toEqual(newAttributesForFaceting)
+        expect(response).toEqual(newFilterableAttributes)
       })
   })
 
   test(`${permission} key: Update attributes for filtering at null`, async () => {
     const { updateId } = await client
       .index(index.uid)
-      .updateAttributesForFaceting(null)
+      .updateFilterableAttributes(null)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -85,7 +85,7 @@ describe.each([
     await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
       .index(index.uid)
-      .getAttributesForFaceting()
+      .getFilterableAttributes()
       .then((response: string[]) => {
         expect(response.sort()).toEqual([])
       })
@@ -94,7 +94,7 @@ describe.each([
   test(`${permission} key: Reset attributes for filtering`, async () => {
     const { updateId } = await client
       .index(index.uid)
-      .resetAttributesForFaceting()
+      .resetFilterableAttributes()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -102,7 +102,7 @@ describe.each([
     await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
       .index(index.uid)
-      .getAttributesForFaceting()
+      .getFilterableAttributes()
       .then((response: string[]) => {
         expect(response.sort()).toEqual([])
       })
@@ -119,19 +119,19 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 
     test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
       await expect(
-        client.index(index.uid).getAttributesForFaceting()
+        client.index(index.uid).getFilterableAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
 
     test(`${permission} key: try to update attributes for filtering and be denied`, async () => {
       await expect(
-        client.index(index.uid).updateAttributesForFaceting([])
+        client.index(index.uid).updateFilterableAttributes([])
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
 
     test(`${permission} key: try to reset attributes for filtering and be denied`, async () => {
       await expect(
-        client.index(index.uid).resetAttributesForFaceting()
+        client.index(index.uid).resetFilterableAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
@@ -147,7 +147,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
 
     test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
       await expect(
-        client.index(index.uid).getAttributesForFaceting()
+        client.index(index.uid).getFilterableAttributes()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -156,7 +156,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
 
     test(`${permission} key: try to update attributes for filtering and be denied`, async () => {
       await expect(
-        client.index(index.uid).updateAttributesForFaceting([])
+        client.index(index.uid).updateFilterableAttributes([])
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -165,7 +165,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
 
     test(`${permission} key: try to reset attributes for filtering and be denied`, async () => {
       await expect(
-        client.index(index.uid).resetAttributesForFaceting()
+        client.index(index.uid).resetFilterableAttributes()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -179,12 +179,12 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])('Tests on url construction', ({ host, trailing }) => {
-  test(`Test getAttributesForFaceting route`, async () => {
-    const route = `indexes/${index.uid}/settings/attributes-for-faceting`
+  test(`Test getFilterableAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/filterable-attributes`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).getAttributesForFaceting()
+      client.index(index.uid).getFilterableAttributes()
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
@@ -194,12 +194,12 @@ describe.each([
     )
   })
 
-  test(`Test updateAttributesForFaceting route`, async () => {
-    const route = `indexes/${index.uid}/settings/attributes-for-faceting`
+  test(`Test updateFilterableAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/filterable-attributes`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).updateAttributesForFaceting([])
+      client.index(index.uid).updateFilterableAttributes([])
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
@@ -209,12 +209,12 @@ describe.each([
     )
   })
 
-  test(`Test resetAttributesForFaceting route`, async () => {
-    const route = `indexes/${index.uid}/settings/attributes-for-faceting`
+  test(`Test resetFilterableAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/filterable-attributes`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).resetAttributesForFaceting()
+      client.index(index.uid).resetFilterableAttributes()
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(

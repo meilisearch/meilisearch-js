@@ -32,6 +32,8 @@ describe.each([
     const response = await client.getDumpStatus(enqueuedDump.uid)
     expect(response.uid).toEqual(enqueuedDump.uid)
     expect(response.status).toBeDefined()
+    expect(response.startedAt).toBeDefined()
+    expect(response.finishedAt).toBeDefined()
   })
 })
 

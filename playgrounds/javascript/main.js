@@ -31,9 +31,6 @@ async function sleep(ms) {
   const { updateId } = await index.addDocuments(dataset)
   await index.waitForPendingUpdate(updateId)
 
-  // wait for
-  await sleep(1000)
-
   // documents
   const documents = await index.getDocuments()
 
