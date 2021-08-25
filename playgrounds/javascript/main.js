@@ -8,6 +8,11 @@ const client = new MeiliSearch({
   apiKey: 'masterKey',
 })
 
+const publicKey = new MeiliSearch({
+  host: 'http://127.0.0.1:7700',
+  apiKey: '3b3bf839485f90453acc6159ba18fbed673ca88523093def11a9b4f4320e44a5',
+})
+
 ;(async () => {
   // Delete if exist
   try {
@@ -29,7 +34,7 @@ const client = new MeiliSearch({
   const indexes = await client.listIndexes()
 
   // search response
-  const response = await index.search('the')
+  const response = await publicKey.index(INDEX).search('the')
 
   console.log({
     indexes,
