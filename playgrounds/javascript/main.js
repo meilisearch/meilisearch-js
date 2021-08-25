@@ -13,10 +13,6 @@ const publicKey = new MeiliSearch({
   apiKey: '3b3bf839485f90453acc6159ba18fbed673ca88523093def11a9b4f4320e44a5',
 })
 
-async function sleep(ms) {
-  return await new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 ;(async () => {
   // Delete if exist
   try {
