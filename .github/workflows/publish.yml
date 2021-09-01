@@ -18,7 +18,7 @@ jobs:
       - name: Build
         run: yarn build
       - name: Check release validity
-        run: sh scripts/check-release.sh
+        run: sh .github/scripts/check-release.sh
       - name: Publish
         run: npm publish .
         env:
