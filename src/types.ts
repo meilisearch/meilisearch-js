@@ -56,6 +56,7 @@ export interface SearchParams<T> {
   cropLength?: number
   attributesToHighlight?: Array<Extract<keyof T, string> | '*'>
   filter?: Filter
+  sort?: string[]
   facetsDistribution?: string[]
   matches?: boolean
 }
@@ -70,6 +71,7 @@ export interface SearchRequestGET {
   attributesToHighlight?: string
   facetsDistribution?: string
   filter?: string
+  sort?: string
   matches?: boolean
 }
 
@@ -83,6 +85,7 @@ export interface SearchRequest {
   attributesToHighlight?: string[]
   facetsDistribution?: string[]
   filter?: Filter
+  sort?: string[]
   matches?: boolean
 }
 
@@ -163,6 +166,7 @@ export type Document<T> = T
 export type FilterableAttributes = string[] | null
 export type DistinctAttribute = string | null
 export type SearchableAttributes = string[] | null
+export type SortableAttributes = string[] | null
 export type DisplayedAttributes = string[] | null
 export type RankingRules = string[] | null
 export type StopWords = string[] | null
@@ -173,6 +177,7 @@ export type Synonyms = {
 export interface Settings {
   filterableAttributes?: FilterableAttributes
   distinctAttribute?: DistinctAttribute
+  sortableAttributes?: SortableAttributes
   searchableAttributes?: SearchableAttributes
   displayedAttributes?: DisplayedAttributes
   rankingRules?: RankingRules
@@ -340,6 +345,11 @@ export interface IndexInterface<T = any> {
     filterableAttributes: FilterableAttributes
   ) => Promise<EnqueuedUpdate>
   resetFilterableAttributes: () => Promise<EnqueuedUpdate>
+  getSortableAttributes: () => Promise<string[]>
+  updateSortableAttributes: (
+    sortableAttributes: SortableAttributes
+  ) => Promise<EnqueuedUpdate>
+  resetSortableAttributes: () => Promise<EnqueuedUpdate>
   getSearchableAttributes: () => Promise<string[]>
   updateSearchableAttributes: (
     searchableAttributes: SearchableAttributes
