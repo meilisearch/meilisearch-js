@@ -28,15 +28,6 @@ const dataset = [
   { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
 ]
 
-const defaultRankingRules = [
-  'words',
-  'typo',
-  'sort',
-  'proximity',
-  'attribute',
-  'exactness',
-]
-
 jest.setTimeout(100 * 1000)
 
 afterAll(() => {
@@ -46,30 +37,30 @@ afterAll(() => {
 describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
-])('Test on ranking rules', ({ client, permission }) => {
+])('Test on searchable attributes', ({ client, permission }) => {
   beforeEach(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
     const { updateId } = await masterClient
       .index(index.uid)
       .addDocuments(dataset)
-    await client.index(index.uid).waitForPendingUpdate(updateId)
+    await masterClient.index(index.uid).waitForPendingUpdate(updateId)
   })
 
-  test(`${permission} key: Get default ranking rules`, async () => {
+  test(`${permission} key: Get default searchable attributes`, async () => {
     await client
       .index(index.uid)
-      .getRankingRules()
+      .getSortableAttributes()
       .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
+        expect(response).toEqual([])
       })
   })
 
-  test(`${permission} key: Update ranking rules`, async () => {
-    const newRankingRules = ['title:asc', 'typo', 'description:desc']
+  test(`${permission} key: Update searchable attributes`, async () => {
+    const newSortableAttributes = ['title']
     const { updateId } = await client
       .index(index.uid)
-      .updateRankingRules(newRankingRules)
+      .updateSortableAttributes(newSortableAttributes)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -77,16 +68,16 @@ describe.each([
     await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
       .index(index.uid)
-      .getRankingRules()
+      .getSortableAttributes()
       .then((response: string[]) => {
-        expect(response).toEqual(newRankingRules)
+        expect(response).toEqual(newSortableAttributes)
       })
   })
 
-  test(`${permission} key: Update ranking rules at null`, async () => {
+  test(`${permission} key: Update searchable attributes at null`, async () => {
     const { updateId } = await client
       .index(index.uid)
-      .updateRankingRules(null)
+      .updateSortableAttributes(null)
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -94,16 +85,16 @@ describe.each([
     await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
       .index(index.uid)
-      .getRankingRules()
+      .getSortableAttributes()
       .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
+        expect(response).toEqual([])
       })
   })
 
-  test(`${permission} key: Reset ranking rules`, async () => {
+  test(`${permission} key: Reset searchable attributes`, async () => {
     const { updateId } = await client
       .index(index.uid)
-      .resetRankingRules()
+      .resetSortableAttributes()
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -111,68 +102,71 @@ describe.each([
     await client.index(index.uid).waitForPendingUpdate(updateId)
     await client
       .index(index.uid)
-      .getRankingRules()
+      .getSortableAttributes()
       .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
+        expect(response).toEqual([])
       })
   })
 })
 
 describe.each([{ client: publicClient, permission: 'Public' }])(
-  'Test on ranking rules',
+  'Test on searchable attributes',
   ({ client, permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
+      await masterClient.createIndex(index.uid)
     })
 
-    test(`${permission} key: try to get ranking rules and be denied`, async () => {
+    test(`${permission} key: try to get searchable attributes and be denied`, async () => {
       await expect(
-        client.index(index.uid).getRankingRules()
+        client.index(index.uid).getSortableAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
 
-    test(`${permission} key: try to update ranking rules and be denied`, async () => {
+    test(`${permission} key: try to update searchable attributes and be denied`, async () => {
       await expect(
-        client.index(index.uid).updateRankingRules([])
+        client.index(index.uid).updateSortableAttributes([])
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
 
-    test(`${permission} key: try to reset ranking rules and be denied`, async () => {
+    test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
       await expect(
-        client.index(index.uid).resetRankingRules()
+        client.index(index.uid).resetSortableAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
   }
 )
 
 describe.each([{ client: anonymousClient, permission: 'No' }])(
-  'Test on ranking rules',
+  'Test on searchable attributes',
   ({ client, permission }) => {
-    beforeEach(async () => {
+    beforeAll(async () => {
       await clearAllIndexes(config)
+      await masterClient.createIndex(index.uid)
     })
 
-    test(`${permission} key: try to get ranking rules and be denied`, async () => {
+    test(`${permission} key: try to get searchable attributes and be denied`, async () => {
       await expect(
-        client.index(index.uid).getRankingRules()
+        client.index(index.uid).getSortableAttributes()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
-    test(`${permission} key: try to update ranking rules and be denied`, async () => {
+    test(`${permission} key: try to update searchable attributes and be denied`, async () => {
+      const resetSortable: string[] = []
       await expect(
-        client.index(index.uid).updateRankingRules([])
+        client.index(index.uid).updateSortableAttributes(resetSortable)
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
-    test(`${permission} key: try to reset ranking rules and be denied`, async () => {
+    test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
       await expect(
-        client.index(index.uid).resetRankingRules()
+        client.index(index.uid).resetSortableAttributes()
       ).rejects.toHaveProperty(
         'errorCode',
         Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -186,12 +180,12 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])('Tests on url construction', ({ host, trailing }) => {
-  test(`Test getRankingRules route`, async () => {
-    const route = `indexes/${index.uid}/settings/ranking-rules`
+  test(`Test getSortableAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/sortable-attributes`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).getRankingRules()
+      client.index(index.uid).getSortableAttributes()
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
@@ -201,12 +195,12 @@ describe.each([
     )
   })
 
-  test(`Test updateRankingRules route`, async () => {
-    const route = `indexes/${index.uid}/settings/ranking-rules`
+  test(`Test updateSortableAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/sortable-attributes`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).updateRankingRules([])
+      client.index(index.uid).updateSortableAttributes([])
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
@@ -216,12 +210,12 @@ describe.each([
     )
   })
 
-  test(`Test resetRankingRules route`, async () => {
-    const route = `indexes/${index.uid}/settings/ranking-rules`
+  test(`Test resetSortableAttributes route`, async () => {
+    const route = `indexes/${index.uid}/settings/sortable-attributes`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).resetRankingRules()
+      client.index(index.uid).resetSortableAttributes()
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(

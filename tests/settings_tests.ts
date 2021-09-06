@@ -35,6 +35,7 @@ const dataset = [
 const defaultRankingRules = [
   'words',
   'typo',
+  'sort',
   'proximity',
   'attribute',
   'exactness',
@@ -45,6 +46,7 @@ const defaultSettingsEmpty = {
   distinctAttribute: null,
   searchableAttributes: [],
   displayedAttributes: [],
+  sortableAttributes: [],
   stopWords: [],
   synonyms: {},
 }
@@ -54,6 +56,7 @@ const defaultSettings = {
   distinctAttribute: null,
   searchableAttributes: ['id', 'title', 'comment'],
   displayedAttributes: ['comment', 'title', 'id'],
+  sortableAttributes: ['id'],
   stopWords: [],
   synonyms: {},
 }
@@ -89,6 +92,7 @@ describe.each([
         expect(response).toHaveProperty('distinctAttribute', null)
         expect(response).toHaveProperty('searchableAttributes', ['*'])
         expect(response).toHaveProperty('displayedAttributes', ['*'])
+        expect(response).toHaveProperty('sortableAttributes', [])
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
       })
@@ -103,6 +107,7 @@ describe.each([
         expect(response).toHaveProperty('distinctAttribute', null)
         expect(response).toHaveProperty('searchableAttributes', ['*'])
         expect(response).toHaveProperty('displayedAttributes', ['*'])
+        expect(response).toHaveProperty('sortableAttributes', [])
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
       })
@@ -111,7 +116,7 @@ describe.each([
   test(`${permission} key: Update settings`, async () => {
     const newSettings = {
       distinctAttribute: 'title',
-      rankingRules: ['asc(title)', 'typo'],
+      rankingRules: ['id:asc', 'typo'],
       stopWords: ['the'],
       filterableAttributes: [],
     }
@@ -145,7 +150,7 @@ describe.each([
   test(`${permission} key: Update settings on empty index with primary key`, async () => {
     const newSettings = {
       distinctAttribute: 'title',
-      rankingRules: ['asc(title)', 'typo'],
+      rankingRules: ['title:asc', 'typo'],
       stopWords: ['the'],
     }
     const { updateId } = await client
@@ -192,6 +197,7 @@ describe.each([
         expect(response).toHaveProperty('distinctAttribute', null)
         expect(response).toHaveProperty('searchableAttributes', ['*'])
         expect(response).toHaveProperty('displayedAttributes', ['*'])
+        expect(response).toHaveProperty('sortableAttributes', [])
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
       })
