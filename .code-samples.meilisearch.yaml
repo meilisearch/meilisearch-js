@@ -54,11 +54,12 @@ update_settings_1: |-
       rankingRules: [
           'words',
           'typo',
+          'sort',
           'proximity',
           'attribute',
           'exactness',
-          'desc(release_date)',
-          'desc(rank)'
+          'release_date:desc',
+          'rank:desc'
       ],
       distinctAttribute: 'movie_id',
       searchableAttributes: [
@@ -106,11 +107,12 @@ update_ranking_rules_1: |-
   client.index('movies').updateRankingRules([
       'words',
       'typo',
+      'sort',
       'proximity',
       'attribute',
       'exactness',
-      'asc(release_date)',
-      'desc(rank)'
+      'release_date:asc',
+      'rank:desc'
   ])
 reset_ranking_rules_1: |-
   client.index('movies').resetRankingRules()
@@ -238,11 +240,12 @@ settings_guide_ranking_rules_1: |-
     rankingRules: [
         'words',
         'typo',
+        'sort',
         'proximity',
         'attribute',
         'exactness',
-        'asc(release_date)',
-        'desc(rank)'
+        'release_date:asc',
+        'rank:desc'
     ]
   })
 settings_guide_distinct_1: |-

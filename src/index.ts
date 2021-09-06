@@ -95,6 +95,7 @@ class Index<T> implements Types.IndexInterface<T> {
       q: query,
       ...options,
       filter: parseFilter(options?.filter),
+      sort: options?.sort ? options.sort.join(',') : undefined,
       facetsDistribution: options?.facetsDistribution
         ? options.facetsDistribution.join(',')
         : undefined,
@@ -521,7 +522,7 @@ class Index<T> implements Types.IndexInterface<T> {
   }
 
   ///
-  /// ATTRIBUTES FOR FACETING
+  /// FILTERABLE ATTRIBUTES
   ///
 
   /**
@@ -553,6 +554,42 @@ class Index<T> implements Types.IndexInterface<T> {
    */
   async resetFilterableAttributes(): Promise<Types.EnqueuedUpdate> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`
+    return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
+  }
+
+  ///
+  /// SORTABLE ATTRIBUTES
+  ///
+
+  /**
+   * Get the sortable-attributes
+   * @memberof Index
+   * @method getSortableAttributes
+   */
+  async getSortableAttributes(): Promise<string[]> {
+    const url = `indexes/${this.uid}/settings/sortable-attributes`
+    return await this.httpRequest.get<string[]>(url)
+  }
+
+  /**
+   * Update the sortable-attributes.
+   * @memberof Index
+   * @method updateSortableAttributes
+   */
+  async updateSortableAttributes(
+    sortableAttributes: Types.SortableAttributes
+  ): Promise<Types.EnqueuedUpdate> {
+    const url = `indexes/${this.uid}/settings/sortable-attributes`
+    return await this.httpRequest.post(url, sortableAttributes)
+  }
+
+  /**
+   * Reset the sortable-attributes.
+   * @memberof Index
+   * @method resetSortableAttributes
+   */
+  async resetSortableAttributes(): Promise<Types.EnqueuedUpdate> {
+    const url = `indexes/${this.uid}/settings/sortable-attributes`
     return await this.httpRequest.delete<Types.EnqueuedUpdate>(url)
   }
 
