@@ -399,15 +399,15 @@ sorting_guide_sort_parameter_2: |-
   client.index('books').search('butler', {
     sort: ['author:desc'],
   })
-sortable_attributes_get_1: |-
+get_sortable_attributes_1: |-
   client.index('books').getSortableAttributes()
-sortable_attributes_update_1: |-
+update_sortable_attributes_1: |-
   client.index('books')
     .updateSortableAttributes([
       'price',
       'author'
     ])
-sortable_attributes_reset_1: |-
+reset_sortable_attributes_1: |-
   client.index('books').resetSortableAttributes()
 search_parameter_guide_sort_1: |-
   client.index('books').search('science fiction', {
