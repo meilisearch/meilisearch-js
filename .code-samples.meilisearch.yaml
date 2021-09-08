@@ -376,12 +376,10 @@ phrase_search_1: |-
   client.index('movies')
     .search('"african american" horror')
 sorting_guide_update_sortable_attributes_1: |-
-  client.index('books').updateSettings({
-      sortableAttributes: [
-        'author',
-        'price'
-      ]
-  })
+  client.index('books').updateSortableAttributes([
+      'author',
+      'price'
+    ])
 sorting_guide_update_ranking_rules_1: |-
   client.index('books').updateRankingRules([
     'words',
