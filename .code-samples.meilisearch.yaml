@@ -375,3 +375,39 @@ get_dump_status_1: |-
 phrase_search_1: |-
   client.index('movies')
     .search('"african american" horror')
+sorting_guide_update_sortable_attributes_1: |-
+  client.index('books').updateSortableAttributes([
+      'author',
+      'price'
+    ])
+sorting_guide_update_ranking_rules_1: |-
+  client.index('books').updateRankingRules([
+    'words',
+    'sort',
+    'typo',
+    'proximity',
+    'attribute',
+    'exactness'
+  ])
+sorting_guide_sort_parameter_1: |-
+  client.index('books').search('science fiction', {
+    sort: ['price:asc'],
+  })
+sorting_guide_sort_parameter_2: |-
+  client.index('books').search('butler', {
+    sort: ['author:desc'],
+  })
+get_sortable_attributes_1: |-
+  client.index('books').getSortableAttributes()
+update_sortable_attributes_1: |-
+  client.index('books')
+    .updateSortableAttributes([
+      'price',
+      'author'
+    ])
+reset_sortable_attributes_1: |-
+  client.index('books').resetSortableAttributes()
+search_parameter_guide_sort_1: |-
+  client.index('books').search('science fiction', {
+    sort: ['price:asc'],
+  })
