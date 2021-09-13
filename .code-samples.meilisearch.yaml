@@ -54,9 +54,9 @@ update_settings_1: |-
       rankingRules: [
           'words',
           'typo',
-          'sort',
           'proximity',
           'attribute',
+          'sort',
           'exactness',
           'release_date:desc',
           'rank:desc'
@@ -111,9 +111,9 @@ update_ranking_rules_1: |-
   client.index('movies').updateRankingRules([
       'words',
       'typo',
-      'sort',
       'proximity',
       'attribute',
+      'sort',
       'exactness',
       'release_date:asc',
       'rank:desc'
@@ -244,9 +244,9 @@ settings_guide_ranking_rules_1: |-
     rankingRules: [
         'words',
         'typo',
-        'sort',
         'proximity',
         'attribute',
+        'sort',
         'exactness',
         'release_date:asc',
         'rank:desc'
@@ -387,9 +387,9 @@ sorting_guide_update_sortable_attributes_1: |-
 sorting_guide_update_ranking_rules_1: |-
   client.index('books').updateRankingRules([
     'words',
-    'sort',
     'typo',
     'proximity',
+    'sort',
     'attribute',
     'exactness'
   ])
