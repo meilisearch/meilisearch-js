@@ -37,7 +37,7 @@ afterAll(() => {
 describe.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
-])('Test on searchable attributes', ({ client, permission }) => {
+])('Test on sortable attributes', ({ client, permission }) => {
   beforeEach(async () => {
     await clearAllIndexes(config)
     await masterClient.createIndex(index.uid)
@@ -47,7 +47,7 @@ describe.each([
     await masterClient.index(index.uid).waitForPendingUpdate(updateId)
   })
 
-  test(`${permission} key: Get default searchable attributes`, async () => {
+  test(`${permission} key: Get default sortable attributes`, async () => {
     await client
       .index(index.uid)
       .getSortableAttributes()
@@ -56,7 +56,7 @@ describe.each([
       })
   })
 
-  test(`${permission} key: Update searchable attributes`, async () => {
+  test(`${permission} key: Update sortable attributes`, async () => {
     const newSortableAttributes = ['title']
     const { updateId } = await client
       .index(index.uid)
@@ -74,7 +74,7 @@ describe.each([
       })
   })
 
-  test(`${permission} key: Update searchable attributes at null`, async () => {
+  test(`${permission} key: Update sortable attributes at null`, async () => {
     const { updateId } = await client
       .index(index.uid)
       .updateSortableAttributes(null)
@@ -91,7 +91,7 @@ describe.each([
       })
   })
 
-  test(`${permission} key: Reset searchable attributes`, async () => {
+  test(`${permission} key: Reset sortable attributes`, async () => {
     const { updateId } = await client
       .index(index.uid)
       .resetSortableAttributes()
@@ -110,26 +110,26 @@ describe.each([
 })
 
 describe.each([{ client: publicClient, permission: 'Public' }])(
-  'Test on searchable attributes',
+  'Test on sortable attributes',
   ({ client, permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
     })
 
-    test(`${permission} key: try to get searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to get sortable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).getSortableAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
 
-    test(`${permission} key: try to update searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to update sortable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).updateSortableAttributes([])
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
     })
 
-    test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to reset sortable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).resetSortableAttributes()
       ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
@@ -138,14 +138,14 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 )
 
 describe.each([{ client: anonymousClient, permission: 'No' }])(
-  'Test on searchable attributes',
+  'Test on sortable attributes',
   ({ client, permission }) => {
     beforeAll(async () => {
       await clearAllIndexes(config)
       await masterClient.createIndex(index.uid)
     })
 
-    test(`${permission} key: try to get searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to get sortable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).getSortableAttributes()
       ).rejects.toHaveProperty(
@@ -154,7 +154,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       )
     })
 
-    test(`${permission} key: try to update searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to update sortable attributes and be denied`, async () => {
       const resetSortable: string[] = []
       await expect(
         client.index(index.uid).updateSortableAttributes(resetSortable)
@@ -164,7 +164,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       )
     })
 
-    test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to reset sortable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).resetSortableAttributes()
       ).rejects.toHaveProperty(
