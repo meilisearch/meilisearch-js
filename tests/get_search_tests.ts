@@ -75,7 +75,10 @@ describe.each([
     const newFilterableAttributes = ['genre', 'title', 'id']
     const { updateId: settingUpdateId } = await masterClient
       .index(index.uid)
-      .updateFilterableAttributes(newFilterableAttributes)
+      .updateSettings({
+        filterableAttributes: newFilterableAttributes,
+        sortableAttributes: ['id'],
+      })
       .then((response: Types.EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
@@ -114,6 +117,17 @@ describe.each([
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(1)
+      })
+  })
+
+  test(`${permission} key: search with sortable`, async () => {
+    await client
+      .index(index.uid)
+      .search('', { sort: ['id:asc'] })
+      .then((response) => {
+        expect(response).toHaveProperty('hits', expect.any(Array))
+        const hit = response.hits[0]
+        expect(hit.id).toEqual(1)
       })
   })
 
