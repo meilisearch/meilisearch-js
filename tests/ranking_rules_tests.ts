@@ -31,9 +31,9 @@ const dataset = [
 const defaultRankingRules = [
   'words',
   'typo',
-  'sort',
   'proximity',
   'attribute',
+  'sort',
   'exactness',
 ]
 
