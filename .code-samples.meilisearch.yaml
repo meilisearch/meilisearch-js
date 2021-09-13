@@ -389,8 +389,8 @@ sorting_guide_update_ranking_rules_1: |-
     'words',
     'typo',
     'proximity',
-    'sort',
     'attribute',
+    'sort',
     'exactness'
   ])
 sorting_guide_sort_parameter_1: |-
