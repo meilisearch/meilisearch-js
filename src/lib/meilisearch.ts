@@ -20,14 +20,14 @@ import {
   EnqueuedDump,
 } from '../types'
 import { HttpRequests } from './http-requests'
-import { addProtocolIfNotPresent } from './utils';
+import { addProtocolIfNotPresent } from './utils'
 
 class MeiliSearch {
   config: Config
   httpRequest: HttpRequests
 
   constructor(config: Config) {
-    config = addProtocolIfNotPresent(config);
+    config = addProtocolIfNotPresent(config)
     config.host = HttpRequests.addTrailingSlash(config.host)
     this.config = config
     this.httpRequest = new HttpRequests(config)

@@ -1,4 +1,4 @@
-import { Config } from "../types"
+import { Config } from '../types'
 
 /**
  * Removes undefined entries from object
@@ -16,14 +16,15 @@ async function sleep(ms: number): Promise<void> {
 }
 
 function addProtocolIfNotPresent(config: Config): Config {
-  if(!!!(config.host.startsWith('https://')||config.host.startsWith('http://'))){
-    let newConfig: Config = {
+  if (
+    !(config.host.startsWith('https://') || config.host.startsWith('http://'))
+  ) {
+    return {
       ...config,
-      host: 'http://' + config.host
+      host: 'http://' + config.host,
     }
-    return newConfig;
   }
-  return config;
+  return config
 }
 
 export { sleep, removeUndefinedFromObject, addProtocolIfNotPresent }
