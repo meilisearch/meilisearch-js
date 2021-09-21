@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedUpdate, IndexResponse } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -437,7 +437,7 @@ describe.each([
     await client
       .index('updateUid')
       .getRawInfo()
-      .then((response: Types.IndexResponse) => {
+      .then((response: IndexResponse) => {
         expect(response).toHaveProperty('uid', 'updateUid')
         expect(response).toHaveProperty('primaryKey', 'unique')
       })
