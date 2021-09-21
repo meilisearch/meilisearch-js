@@ -1,17 +1,15 @@
-import * as Types from '../types'
+import { MSApiError, MeiliSearchApiErrorResponse } from '../types'
 
-const MeiliSearchApiError: Types.MSApiErrorConstructor = class
-  extends Error
-  implements Types.MSApiError {
+const MeiliSearchApiError = class extends Error implements MSApiError {
   httpStatus: number
-  response?: Types.MeiliSearchApiErrorResponse
+  response?: MeiliSearchApiErrorResponse
   errorCode?: string
   errorType?: string
   errorLink?: string
   stack?: string
   type: string
 
-  constructor(error: Types.MSApiError, status: number) {
+  constructor(error: MSApiError, status: number) {
     super(error.message)
     this.type = 'MeiliSearchApiError'
     this.name = 'MeiliSearchApiError'
@@ -27,4 +25,4 @@ const MeiliSearchApiError: Types.MSApiErrorConstructor = class
     }
   }
 }
-export default MeiliSearchApiError
+export { MeiliSearchApiError }

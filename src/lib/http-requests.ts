@@ -1,15 +1,20 @@
 import 'cross-fetch/polyfill'
-import * as Types from './types'
+
 import {
+  Config,
+  IndexRequest,
+  EnqueuedUpdate,
+  IndexResponse,
+  IndexOptions,
   httpResponseErrorHandler,
   httpErrorHandler,
-} from './errors/http-error-handler'
+} from '../'
 
 class HttpRequests {
   headers: {}
   url: URL
 
-  constructor(config: Types.Config) {
+  constructor(config: Config) {
     this.headers = {
       ...(config.headers || {}),
       'Content-Type': 'application/json',
@@ -92,12 +97,12 @@ class HttpRequests {
 
   async post(
     url: string,
-    data: Types.IndexRequest,
+    data: IndexRequest,
     params?: { [key: string]: any },
     config?: Partial<Request>
-  ): Promise<Types.IndexResponse>
+  ): Promise<IndexResponse>
 
-  async post<T = any, R = Types.EnqueuedUpdate>(
+  async post<T = any, R = EnqueuedUpdate>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
@@ -121,12 +126,12 @@ class HttpRequests {
 
   async put(
     url: string,
-    data: Types.IndexOptions | Types.IndexRequest,
+    data: IndexOptions | IndexRequest,
     params?: { [key: string]: any },
     config?: Partial<Request>
-  ): Promise<Types.IndexResponse>
+  ): Promise<IndexResponse>
 
-  async put<T = any, R = Types.EnqueuedUpdate>(
+  async put<T = any, R = EnqueuedUpdate>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
@@ -176,4 +181,4 @@ class HttpRequests {
   }
 }
 
-export default HttpRequests
+export { HttpRequests }

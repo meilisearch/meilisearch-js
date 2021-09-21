@@ -1,5 +1,5 @@
 import 'cross-fetch/polyfill'
-import * as Types from '../types'
+import { FetchError } from '../types'
 
 class MeiliSearchCommunicationError extends Error {
   type: string
@@ -7,7 +7,7 @@ class MeiliSearchCommunicationError extends Error {
   errno?: string
   code?: string
 
-  constructor(message: string, body: Response | Types.FetchError) {
+  constructor(message: string, body: Response | FetchError) {
     super(message)
     this.name = 'MeiliSearchCommunicationError'
     this.type = 'MeiliSearchCommunicationError'
@@ -26,4 +26,4 @@ class MeiliSearchCommunicationError extends Error {
   }
 }
 
-export default MeiliSearchCommunicationError
+export { MeiliSearchCommunicationError }

@@ -5,6 +5,7 @@
     "allowJs": false,
   },
   "include": [
+    "src/**/*.ts",
     "tests/**/*.ts",
     "examples/**/*.js",
     "scripts/**/*.js",

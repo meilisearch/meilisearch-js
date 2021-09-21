@@ -11,4 +11,4 @@ class MeiliSearchTimeOutError extends Error {
   }
 }
 
-export default MeiliSearchTimeOutError
+export { MeiliSearchTimeOutError }

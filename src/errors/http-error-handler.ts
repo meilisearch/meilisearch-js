@@ -1,6 +1,5 @@
-import MeiliSearchCommunicationError from './meilisearch-communication-error'
-import MeiliSearchApiError from './meilisearch-api-error'
-import * as Types from '../types'
+import { MeiliSearchCommunicationError, MeiliSearchApiError } from './'
+import { FetchError } from '../types'
 
 async function httpResponseErrorHandler(response: Response): Promise<Response> {
   if (!response.ok) {
@@ -15,7 +14,7 @@ async function httpResponseErrorHandler(response: Response): Promise<Response> {
   return response
 }
 
-function httpErrorHandler(response: Types.FetchError): Promise<void> {
+function httpErrorHandler(response: FetchError): Promise<void> {
   if (response.type !== 'MeiliSearchApiError') {
     throw new MeiliSearchCommunicationError(response.message, response)
   }
