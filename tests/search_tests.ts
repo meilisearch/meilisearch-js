@@ -1,6 +1,5 @@
 import AbortController from 'abort-controller'
-
-import * as Types from '../src/types'
+import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -82,7 +81,7 @@ describe.each([
         filterableAttributes: newFilterableAttributes,
         sortableAttributes: ['id'],
       })
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -481,7 +480,7 @@ describe.each([
     await masterClient.index(index.uid).delete()
     await expect(
       client.index(index.uid).search('prince', {})
-    ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INDEX_NOT_FOUND)
+    ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INDEX_NOT_FOUND)
   })
 })
 
@@ -498,7 +497,7 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
         client.index(index.uid).search('prince')
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }

@@ -1,4 +1,4 @@
-import * as Types from '../src/types'
+import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -61,7 +61,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .updateSortableAttributes(newSortableAttributes)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -78,7 +78,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .updateSortableAttributes(null)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -95,7 +95,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .resetSortableAttributes()
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -120,19 +120,19 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get sortable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).getSortableAttributes()
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
 
     test(`${permission} key: try to update sortable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).updateSortableAttributes([])
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
 
     test(`${permission} key: try to reset sortable attributes and be denied`, async () => {
       await expect(
         client.index(index.uid).resetSortableAttributes()
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
   }
 )
@@ -150,7 +150,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).getSortableAttributes()
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
@@ -160,7 +160,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).updateSortableAttributes(resetSortable)
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
@@ -169,7 +169,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).resetSortableAttributes()
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }

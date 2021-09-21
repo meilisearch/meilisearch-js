@@ -7,9 +7,9 @@
 
 'use strict'
 
+import { MeiliSearchTimeOutError, MeiliSearchError } from '../errors'
+
 import {
-  MeiliSearchTimeOutError,
-  MeiliSearchError,
   Config,
   Update,
   SearchResponse,
@@ -33,7 +33,7 @@ import {
   SortableAttributes,
   SearchableAttributes,
   DisplayedAttributes,
-} from '../'
+} from '../types'
 import { sleep, removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
 

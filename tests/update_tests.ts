@@ -1,4 +1,4 @@
-import * as Types from '../src/types'
+import { ErrorStatusCode, EnqueuedUpdate, Update } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -47,7 +47,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .addDocuments(dataset)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -55,7 +55,7 @@ describe.each([
     await client
       .index(index.uid)
       .getUpdateStatus(updateId)
-      .then((response: Types.Update) => {
+      .then((response: Update) => {
         expect(response).toHaveProperty('status', 'processed')
         expect(response).toHaveProperty('updateId', expect.any(Number))
         expect(response).toHaveProperty('type', expect.any(Object))
@@ -73,7 +73,7 @@ describe.each([
     await client
       .index(index.uid)
       .getAllUpdateStatus()
-      .then((response: Types.Update[]) => {
+      .then((response: Update[]) => {
         expect(response.length).toEqual(1)
         expect(response[0]).toHaveProperty('status', 'processed')
         expect(response[0]).toHaveProperty('updateId', expect.any(Number))
@@ -89,7 +89,7 @@ describe.each([
   test(`${permission} key: Try to get update that does not exist`, async () => {
     await expect(
       client.index(index.uid).getUpdateStatus(2545)
-    ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.NOT_FOUND)
+    ).rejects.toHaveProperty('errorCode', ErrorStatusCode.NOT_FOUND)
   })
 })
 
@@ -103,7 +103,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: Try to get a update and be denied`, async () => {
       await expect(
         client.index(index.uid).getUpdateStatus(0)
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
   }
 )
@@ -120,7 +120,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).getUpdateStatus(0)
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }

@@ -1,4 +1,4 @@
-import * as Types from '../src/types'
+import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -61,7 +61,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .updateStopWords(newStopWords)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -79,7 +79,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .updateStopWords(newStopWords)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -96,7 +96,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .resetStopWords()
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -120,19 +120,19 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get stop words and be denied`, async () => {
       await expect(
         client.index(index.uid).getStopWords()
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
 
     test(`${permission} key: try to update stop words and be denied`, async () => {
       await expect(
         client.index(index.uid).updateStopWords([])
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
 
     test(`${permission} key: try to reset stop words and be denied`, async () => {
       await expect(
         client.index(index.uid).resetStopWords()
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
   }
 )
@@ -149,7 +149,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).getStopWords()
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
@@ -158,7 +158,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).updateStopWords([])
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
@@ -167,7 +167,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).resetStopWords()
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }

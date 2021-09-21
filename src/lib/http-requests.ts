@@ -6,9 +6,9 @@ import {
   EnqueuedUpdate,
   IndexResponse,
   IndexOptions,
-  httpResponseErrorHandler,
-  httpErrorHandler,
-} from '../'
+} from '../types'
+
+import { httpResponseErrorHandler, httpErrorHandler } from '../errors'
 
 class HttpRequests {
   headers: {}

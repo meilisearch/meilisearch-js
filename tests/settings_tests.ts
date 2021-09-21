@@ -1,4 +1,4 @@
-import * as Types from '../src/types'
+import { ErrorStatusCode, EnqueuedUpdate, Settings } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -87,7 +87,7 @@ describe.each([
     await client
       .index(index.uid)
       .getSettings()
-      .then((response: Types.Settings) => {
+      .then((response: Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty('distinctAttribute', null)
         expect(response).toHaveProperty('searchableAttributes', ['*'])
@@ -102,7 +102,7 @@ describe.each([
     await client
       .index(indexAndPK.uid)
       .getSettings()
-      .then((response: Types.Settings) => {
+      .then((response: Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty('distinctAttribute', null)
         expect(response).toHaveProperty('searchableAttributes', ['*'])
@@ -123,7 +123,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .updateSettings(newSettings)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -131,7 +131,7 @@ describe.each([
     await client
       .index(index.uid)
       .getSettings()
-      .then((response: Types.Settings) => {
+      .then((response: Settings) => {
         expect(response).toHaveProperty(
           'rankingRules',
           newSettings.rankingRules
@@ -156,7 +156,7 @@ describe.each([
     const { updateId } = await client
       .index(indexAndPK.uid)
       .updateSettings(newSettings)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -164,7 +164,7 @@ describe.each([
     await client
       .index(indexAndPK.uid)
       .getSettings()
-      .then((response: Types.Settings) => {
+      .then((response: Settings) => {
         expect(response).toHaveProperty(
           'rankingRules',
           newSettings.rankingRules
@@ -184,7 +184,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .resetSettings()
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -192,7 +192,7 @@ describe.each([
     await client
       .index(index.uid)
       .getSettings()
-      .then((response: Types.Settings) => {
+      .then((response: Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty('distinctAttribute', null)
         expect(response).toHaveProperty('searchableAttributes', ['*'])
@@ -207,7 +207,7 @@ describe.each([
     const { updateId } = await client
       .index(indexAndPK.uid)
       .resetSettings()
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -215,7 +215,7 @@ describe.each([
     await client
       .index(indexAndPK.uid)
       .getSettings()
-      .then((response: Types.Settings) => {
+      .then((response: Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty('distinctAttribute', null)
         expect(response).toHaveProperty('searchableAttributes', ['*'])
@@ -232,7 +232,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .updateSettings(newSettings)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -240,7 +240,7 @@ describe.each([
     await client
       .index(index.uid)
       .getSettings()
-      .then((response: Types.Settings) => {
+      .then((response: Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty(
           'distinctAttribute',
@@ -266,7 +266,7 @@ describe.each([
     const { updateId } = await client
       .index(indexAndPK.uid)
       .updateSettings(newSettings)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -274,7 +274,7 @@ describe.each([
     await client
       .index(indexAndPK.uid)
       .getSettings()
-      .then((response: Types.Settings) => {
+      .then((response: Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty(
           'distinctAttribute',
@@ -303,17 +303,17 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get settings and be denied`, async () => {
       await expect(
         client.index(index.uid).getSettings()
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to update settings and be denied`, async () => {
       await expect(
         client.index(index.uid).updateSettings({})
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
     test(`${permission} key: try to reset settings and be denied`, async () => {
       await expect(
         client.index(index.uid).resetSettings()
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
   }
 )
@@ -329,7 +329,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).getSettings()
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
     test(`${permission} key: try to update settings and be denied`, async () => {
@@ -337,7 +337,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).updateSettings({})
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
     test(`${permission} key: try to reset settings and be denied`, async () => {
@@ -345,7 +345,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).resetSettings()
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }

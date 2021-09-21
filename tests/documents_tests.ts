@@ -1,4 +1,4 @@
-import * as Types from '../src/types'
+import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -53,7 +53,7 @@ describe.each([
     const { updateId } = await client
       .index(indexNoPk.uid)
       .addDocuments(dataset)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -64,7 +64,7 @@ describe.each([
     const { updateId } = await client
       .index(indexPk.uid)
       .addDocuments(dataset)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -134,7 +134,7 @@ describe.each([
     const { updateId } = await client
       .index(indexNoPk.uid)
       .addDocuments([{ id, title }])
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -154,7 +154,7 @@ describe.each([
     const { updateId } = await client
       .index(indexPk.uid)
       .addDocuments([{ id, title }])
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -174,7 +174,7 @@ describe.each([
     const { updateId } = await client
       .index(indexNoPk.uid)
       .updateDocuments([{ id, title }])
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -194,7 +194,7 @@ describe.each([
     const { updateId } = await client
       .index(indexPk.uid)
       .updateDocuments([{ id, title }])
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -219,7 +219,7 @@ describe.each([
     const { updateId } = await client
       .index(indexNoPk.uid)
       .updateDocuments([{ id, title }])
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -250,7 +250,7 @@ describe.each([
     const { updateId } = await client
       .index(indexPk.uid)
       .updateDocuments([{ id, title }])
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -280,7 +280,7 @@ describe.each([
     const { updateId } = await client
       .index(indexNoPk.uid)
       .deleteDocument(id)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -303,7 +303,7 @@ describe.each([
     const { updateId } = await client
       .index(indexPk.uid)
       .deleteDocument(id)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -326,7 +326,7 @@ describe.each([
     const { updateId } = await client
       .index(indexNoPk.uid)
       .deleteDocuments(ids)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -352,7 +352,7 @@ describe.each([
     const { updateId } = await client
       .index(indexPk.uid)
       .deleteDocuments(ids)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -372,7 +372,7 @@ describe.each([
     const { updateId } = await client
       .index(indexNoPk.uid)
       .deleteAllDocuments()
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -389,7 +389,7 @@ describe.each([
     const { updateId } = await client
       .index(indexPk.uid)
       .deleteAllDocuments()
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -405,19 +405,13 @@ describe.each([
   test(`${permission} key: Try to get deleted document from index that has NO primary key`, async () => {
     await expect(
       client.index(indexNoPk.uid).getDocument(1)
-    ).rejects.toHaveProperty(
-      'errorCode',
-      Types.ErrorStatusCode.DOCUMENT_NOT_FOUND
-    )
+    ).rejects.toHaveProperty('errorCode', ErrorStatusCode.DOCUMENT_NOT_FOUND)
   })
 
   test(`${permission} key: Try to get deleted document from index that has a primary key`, async () => {
     await expect(
       client.index(indexPk.uid).getDocument(1)
-    ).rejects.toHaveProperty(
-      'errorCode',
-      Types.ErrorStatusCode.DOCUMENT_NOT_FOUND
-    )
+    ).rejects.toHaveProperty('errorCode', ErrorStatusCode.DOCUMENT_NOT_FOUND)
   })
 
   test(`${permission} key: Add documents from index with no primary key by giving a primary key as parameter`, async () => {
@@ -435,7 +429,7 @@ describe.each([
     const { updateId } = await client
       .index('updateUid')
       .addDocuments(docs, { primaryKey: 'unique' })
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -477,42 +471,42 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: Try to add documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.INVALID_TOKEN
+        ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: Try to update documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.INVALID_TOKEN
+        ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: Try to get documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.INVALID_TOKEN
+        ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: Try to delete one document and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.INVALID_TOKEN
+        ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: Try to delete some documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.INVALID_TOKEN
+        ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: Try to delete all documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.INVALID_TOKEN
+        ErrorStatusCode.INVALID_TOKEN
       )
     })
   }
@@ -528,42 +522,42 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     test(`${permission} key: Try to add documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: Try to update documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: Try to get documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: Try to delete one document and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: Try to delete some documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: Try to delete all documents and be denied`, async () => {
       await expect(client.listIndexes()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }

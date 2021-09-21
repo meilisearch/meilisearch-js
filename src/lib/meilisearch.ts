@@ -8,8 +8,8 @@
 'use strict'
 
 import { Index } from './indexes'
+import { MeiliSearchApiError } from '../errors'
 import {
-  MeiliSearchApiError,
   Config,
   IndexOptions,
   IndexResponse,
@@ -18,10 +18,10 @@ import {
   Stats,
   Version,
   EnqueuedDump,
-} from '../'
+} from '../types'
 import { HttpRequests } from './http-requests'
 
-export class MeiliSearch {
+class MeiliSearch {
   config: Config
   httpRequest: HttpRequests
 
@@ -227,3 +227,5 @@ export class MeiliSearch {
     return await this.httpRequest.get<EnqueuedDump>(url)
   }
 }
+
+export { MeiliSearch }
