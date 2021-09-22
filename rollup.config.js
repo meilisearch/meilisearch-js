@@ -28,7 +28,7 @@ const PLUGINS = [
 module.exports = [
   // browser-friendly UMD build
   {
-    input: 'src/meilisearch.ts', // directory to transpilation of typescript
+    input: 'src/index.ts', // directory to transpilation of typescript
     external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: {
       name: 'window',
@@ -79,7 +79,7 @@ module.exports = [
   // an array for the `output` option, where we can specify
   // `file` and `format` for each target)
   {
-    input: 'src/meilisearch.ts',
+    input: 'src/index.ts',
     external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: [
       {

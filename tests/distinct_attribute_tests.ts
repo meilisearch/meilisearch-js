@@ -1,4 +1,4 @@
-import * as Types from '../src/types'
+import { EnqueuedUpdate, ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -61,7 +61,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .updateDistinctAttribute(newDistinctAttribute)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -78,7 +78,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .updateDistinctAttribute(null)
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -95,7 +95,7 @@ describe.each([
     const { updateId } = await client
       .index(index.uid)
       .resetDistinctAttribute()
-      .then((response: Types.EnqueuedUpdate) => {
+      .then((response: EnqueuedUpdate) => {
         expect(response).toHaveProperty('updateId', expect.any(Number))
         return response
       })
@@ -119,19 +119,19 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).getDistinctAttribute()
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
 
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).updateDistinctAttribute('title')
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
 
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).resetDistinctAttribute()
-      ).rejects.toHaveProperty('errorCode', Types.ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
   }
 )
@@ -148,7 +148,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).getDistinctAttribute()
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
@@ -157,7 +157,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).updateDistinctAttribute('title')
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
@@ -166,7 +166,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
         client.index(index.uid).resetDistinctAttribute()
       ).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }

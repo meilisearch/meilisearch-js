@@ -1,4 +1,4 @@
-import * as Types from '../src/types'
+import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -53,7 +53,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to getOrCreateIndex and be denied`, async () => {
       await expect(client.getOrCreateIndex(index.uid)).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.INVALID_TOKEN
+        ErrorStatusCode.INVALID_TOKEN
       )
     })
   }
@@ -65,7 +65,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     test(`${permission} key: try to getOrCreateIndex and be denied`, async () => {
       await expect(client.getOrCreateIndex(index.uid)).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }

@@ -11,4 +11,4 @@ class MeiliSearchError extends Error {
   }
 }
 
-export default MeiliSearchError
+export { MeiliSearchError }

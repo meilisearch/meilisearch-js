@@ -1,4 +1,11 @@
-import * as Types from '../src/types'
+import {
+  IndexResponse,
+  ErrorStatusCode,
+  Health,
+  Version,
+  Stats,
+  Index,
+} from '../src/'
 import {
   clearAllIndexes,
   config,
@@ -184,7 +191,7 @@ describe.each([
         await client
           .index(indexNoPk.uid)
           .getRawInfo()
-          .then((response: Types.IndexResponse) => {
+          .then((response: IndexResponse) => {
             expect(response).toHaveProperty('uid', indexNoPk.uid)
             expect(response).toHaveProperty('primaryKey', null)
             expect(response).toHaveProperty('createdAt', expect.any(String))
@@ -209,7 +216,7 @@ describe.each([
         await client
           .index(indexPk.uid)
           .getRawInfo()
-          .then((response: Types.IndexResponse) => {
+          .then((response: IndexResponse) => {
             expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
             expect(response).toHaveProperty('createdAt', expect.any(String))
             expect(response).toHaveProperty('updatedAt', expect.any(String))
@@ -222,7 +229,7 @@ describe.each([
 
       test(`${permission} key: get all indexes when not empty`, async () => {
         await client.createIndex(indexPk.uid)
-        await client.listIndexes().then((response: Types.IndexResponse[]) => {
+        await client.listIndexes().then((response: IndexResponse[]) => {
           const indexes = response.map((index) => index.uid)
           expect(indexes).toEqual(expect.arrayContaining([indexPk.uid]))
           expect(indexes.length).toEqual(1)
@@ -239,7 +246,7 @@ describe.each([
       test(`${permission} key: Get index that does not exist`, async () => {
         await expect(client.getIndex('does_not_exist')).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INDEX_NOT_FOUND
+          ErrorStatusCode.INDEX_NOT_FOUND
         )
       })
 
@@ -247,7 +254,7 @@ describe.each([
         await client.createIndex(indexPk.uid)
         await client
           .updateIndex(indexPk.uid, { primaryKey: 'newPrimaryKey' })
-          .then((response: Types.Index<any>) => {
+          .then((response: Index<any>) => {
             expect(response).toHaveProperty('uid', indexPk.uid)
             expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
           })
@@ -263,7 +270,7 @@ describe.each([
           })
         ).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.PRIMARY_KEY_ALREADY_PRESENT
+          ErrorStatusCode.PRIMARY_KEY_ALREADY_PRESENT
         )
       })
 
@@ -279,7 +286,7 @@ describe.each([
         await client.createIndex(indexPk.uid)
         await expect(client.createIndex(indexPk.uid)).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INDEX_ALREADY_EXISTS
+          ErrorStatusCode.INDEX_ALREADY_EXISTS
         )
       })
 
@@ -287,7 +294,7 @@ describe.each([
         const index = client.index(indexNoPk.uid)
         await expect(index.delete()).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INDEX_NOT_FOUND
+          ErrorStatusCode.INDEX_NOT_FOUND
         )
       })
       test(`${permission} key: delete index if exists on existing index`, async () => {
@@ -299,7 +306,7 @@ describe.each([
           })
         await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INDEX_NOT_FOUND
+          ErrorStatusCode.INDEX_NOT_FOUND
         )
       })
 
@@ -312,7 +319,7 @@ describe.each([
           })
         await expect(client.getIndex('badIndex')).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INDEX_NOT_FOUND
+          ErrorStatusCode.INDEX_NOT_FOUND
         )
         await expect(client.listIndexes()).resolves.toHaveLength(indexes.length)
       })
@@ -321,14 +328,14 @@ describe.each([
         const index = client.index(indexPk.uid)
         await expect(index.getRawInfo()).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INDEX_NOT_FOUND
+          ErrorStatusCode.INDEX_NOT_FOUND
         )
       })
     })
 
     describe('Test on base routes', () => {
       test(`${permission} key: get health`, async () => {
-        await client.health().then((response: Types.Health) => {
+        await client.health().then((response: Health) => {
           expect(response).toHaveProperty(
             'status',
             expect.stringMatching('available')
@@ -350,7 +357,7 @@ describe.each([
       })
 
       test(`${permission} key: get version`, async () => {
-        await client.version().then((response: Types.Version) => {
+        await client.version().then((response: Version) => {
           expect(response).toHaveProperty('commitSha', expect.any(String))
           expect(response).toHaveProperty('commitDate', expect.any(String))
           expect(response).toHaveProperty('pkgVersion', expect.any(String))
@@ -358,7 +365,7 @@ describe.each([
       })
 
       test(`${permission} key: get /stats information`, async () => {
-        await client.stats().then((response: Types.Stats) => {
+        await client.stats().then((response: Stats) => {
           expect(response).toHaveProperty('databaseSize', expect.any(Number))
           expect(response).toHaveProperty('lastUpdate') // TODO: Could be null, find out why
           expect(response).toHaveProperty('indexes', expect.any(Object))
@@ -379,7 +386,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       test(`${permission} key: try to get all indexes and be denied`, async () => {
         await expect(client.listIndexes()).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INVALID_TOKEN
+          ErrorStatusCode.INVALID_TOKEN
         )
       })
 
@@ -388,23 +395,20 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
           client.createIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           })
-        ).rejects.toHaveProperty(
-          'errorCode',
-          Types.ErrorStatusCode.INVALID_TOKEN
-        )
+        ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
       })
 
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INVALID_TOKEN
+          ErrorStatusCode.INVALID_TOKEN
         )
       })
 
       test(`${permission} key: try to delete index and be denied`, async () => {
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INVALID_TOKEN
+          ErrorStatusCode.INVALID_TOKEN
         )
       })
 
@@ -413,16 +417,13 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
           client.updateIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           })
-        ).rejects.toHaveProperty(
-          'errorCode',
-          Types.ErrorStatusCode.INVALID_TOKEN
-        )
+        ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
       })
     })
 
     describe('Test on misc client methods', () => {
       test(`${permission} key: get health`, async () => {
-        await client.health().then((response: Types.Health) => {
+        await client.health().then((response: Health) => {
           expect(response).toHaveProperty(
             'status',
             expect.stringMatching('available')
@@ -433,28 +434,28 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       test(`${permission} key: try to get version and be denied`, async () => {
         await expect(client.version()).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INVALID_TOKEN
+          ErrorStatusCode.INVALID_TOKEN
         )
       })
 
       test(`${permission} key: try to get /stats information and be denied`, async () => {
         await expect(client.stats()).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INVALID_TOKEN
+          ErrorStatusCode.INVALID_TOKEN
         )
       })
 
       test(`${permission} key: try to create dumps and be denir`, async () => {
         await expect(client.createDump()).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INVALID_TOKEN
+          ErrorStatusCode.INVALID_TOKEN
         )
       })
 
       test(`${permission} key: try to create dumps and be denied`, async () => {
         await expect(client.getDumpStatus('test')).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.INVALID_TOKEN
+          ErrorStatusCode.INVALID_TOKEN
         )
       })
     })
@@ -472,7 +473,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       test(`${permission} key: try to get all indexes and be denied`, async () => {
         await expect(client.listIndexes()).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
@@ -483,21 +484,21 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
           })
         ).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
       test(`${permission} key: try to delete index and be denied`, async () => {
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
@@ -508,14 +509,14 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
           })
         ).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
     })
 
     describe('Test on misc client methods', () => {
       test(`${permission} key: get health`, async () => {
-        await client.health().then((response: Types.Health) => {
+        await client.health().then((response: Health) => {
           expect(response).toHaveProperty(
             'status',
             expect.stringMatching('available')
@@ -526,28 +527,28 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       test(`${permission} key: try to get version and be denied`, async () => {
         await expect(client.version()).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
       test(`${permission} key: try to get /stats information and be denied`, async () => {
         await expect(client.stats()).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
       test(`${permission} key: try to create dumps and be denir`, async () => {
         await expect(client.createDump()).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
       test(`${permission} key: try to create dumps and be denied`, async () => {
         await expect(client.getDumpStatus('test')).rejects.toHaveProperty(
           'errorCode',
-          Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
     })

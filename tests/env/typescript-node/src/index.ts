@@ -1,4 +1,11 @@
-import { MeiliSearch, IndexResponse, SearchResponse, Hits, Hit, SearchParams } from '../../../../'
+import {
+  MeiliSearch,
+  IndexResponse,
+  SearchResponse,
+  Hits,
+  Hit,
+  SearchParams,
+} from '../../../../'
 
 const config = {
   host: 'http://127.0.0.1:7700',
@@ -14,7 +21,7 @@ interface Movie {
 const client = new MeiliSearch(config)
 
 ;(async () => {
-  const index = await client.createIndex<Movie>('movies')
+  const index = await client.getOrCreateIndex<Movie>('movies')
 
   const indexes = await client.listIndexes()
   indexes.map((index: IndexResponse) => {
@@ -24,15 +31,18 @@ const client = new MeiliSearch(config)
 
   const searchParams: SearchParams<Movie> = {
     limit: 5,
-    attributesToRetrieve: ["title", "genre"],
-    attributesToHighlight: ["title"],
+    attributesToRetrieve: ['title', 'genre'],
+    attributesToHighlight: ['title'],
     // test: true -> ERROR Test does not exist on type SearchParams
   }
   indexes.map((index: IndexResponse) => index.uid)
-  const res: SearchResponse<Movie, SearchParams<Movie> > =  await index.search("avenger", searchParams)
+  const res: SearchResponse<Movie, SearchParams<Movie>> = await index.search(
+    'avenger',
+    searchParams
+  )
 
   // both work
-  const { hits } : { hits: Hits<Movie, typeof searchParams> } = res;
+  const { hits }: { hits: Hits<Movie, typeof searchParams> } = res
   // const { hits } : { hits: Hits<Movie, SearchParams<Movie>> } = res;
 
   hits.map((hit: Hit<Movie>) => {

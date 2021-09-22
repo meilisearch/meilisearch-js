@@ -1,4 +1,4 @@
-import * as Types from '../src/types'
+import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -43,14 +43,14 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to create dump with public key and be denied`, async () => {
       await expect(client.createDump()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.INVALID_TOKEN
+        ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: try to get dump status with public key and be denied`, async () => {
       await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.INVALID_TOKEN
+        ErrorStatusCode.INVALID_TOKEN
       )
     })
   }
@@ -62,14 +62,14 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     test(`${permission} key: try to create dump with no key and be denied`, async () => {
       await expect(client.createDump()).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to get dump status with no key and be denied`, async () => {
       await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
         'errorCode',
-        Types.ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
   }

@@ -1,4 +1,4 @@
-import { EnqueuedUpdate, ErrorStatusCode } from '../src/types'
+import { EnqueuedUpdate, ErrorStatusCode } from '../src/'
 import {
   clearAllIndexes,
   config,

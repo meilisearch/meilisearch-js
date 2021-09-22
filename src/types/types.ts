@@ -4,18 +4,7 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^3.8.3
 
-import { Index } from './index'
-import { MeiliSearch } from './meilisearch'
-import MeiliSearchApiError from './errors/meilisearch-api-error'
-import MeiliSearchTimeOutError from './errors/meilisearch-timeout-error'
-import MeiliSearchError from './errors/meilisearch-error'
-export { Index }
-export { MeiliSearch }
-export { MeiliSearchApiError }
-export { MeiliSearchError }
-export { MeiliSearchTimeOutError }
-
-export interface Config {
+export type Config = {
   host: string
   apiKey?: string
   headers?: object
@@ -25,16 +14,16 @@ export interface Config {
 /// Request specific interfaces
 ///
 
-export interface IndexRequest {
+export type IndexRequest = {
   uid: string
   primaryKey?: string
 }
 
-export interface IndexOptions {
+export type IndexOptions = {
   primaryKey?: string
 }
 
-export interface IndexResponse {
+export type IndexResponse = {
   uid: string
   name?: string
   primaryKey?: string
@@ -42,13 +31,13 @@ export interface IndexResponse {
   updatedAt: Date
 }
 
-export interface AddDocumentParams {
+export type AddDocumentParams = {
   primaryKey?: string
 }
 
 export type Filter = string | Array<string | string[]>
 
-export interface SearchParams<T> {
+export type SearchParams<T> = {
   offset?: number
   limit?: number
   attributesToRetrieve?: Array<Extract<keyof T, string> | '*'>
@@ -61,7 +50,7 @@ export interface SearchParams<T> {
   matches?: boolean
 }
 
-export interface SearchRequestGET {
+export type SearchRequestGET = {
   q?: string | null
   offset?: number
   limit?: number
@@ -75,7 +64,7 @@ export interface SearchRequestGET {
   matches?: boolean
 }
 
-export interface SearchRequest {
+export type SearchRequest = {
   q?: string | null
   offset?: number
   limit?: number
@@ -114,7 +103,7 @@ export type Hits<
   : Array<Hit<T>> // Finally return the full type as `attributesToRetrieve` is neither a single key nor an array of keys
 
 // The second generic P is used to capture the SearchParams type
-export interface SearchResponse<T, P extends SearchParams<T>> {
+export type SearchResponse<T, P extends SearchParams<T>> = {
   // P represents the SearchParams
   // and by using the indexer P['attributesToRetrieve'], we're able to pick the type of `attributesToRetrieve`
   // and check whether the attribute is a single key present in the generic
@@ -129,14 +118,14 @@ export interface SearchResponse<T, P extends SearchParams<T>> {
   exhaustiveNbHits: boolean
 }
 
-export interface FieldDistribution {
+export type FieldDistribution = {
   [field: string]: number
 }
 
 /*
  ** Documents
  */
-export interface GetDocumentsParams<T> {
+export type GetDocumentsParams<T> = {
   offset?: number
   limit?: number
   attributesToRetrieve?:
@@ -174,7 +163,7 @@ export type Synonyms = {
   [field: string]: string[]
 } | null
 
-export interface Settings {
+export type Settings = {
   filterableAttributes?: FilterableAttributes
   distinctAttribute?: DistinctAttribute
   sortableAttributes?: SortableAttributes
@@ -189,11 +178,11 @@ export interface Settings {
  ** UPDATE
  */
 
-export interface EnqueuedUpdate {
+export type EnqueuedUpdate = {
   updateId: number
 }
 
-export interface Update {
+export type Update = {
   status: string
   updateId: number
   type: {
@@ -205,7 +194,7 @@ export interface Update {
   processedAt: string
 }
 
-export interface EnqueuedDump {
+export type EnqueuedDump = {
   uid: string
   status: 'in_progress' | 'failed' | 'done'
   startedAt: string
@@ -216,7 +205,7 @@ export interface EnqueuedDump {
  *** HEALTH
  */
 
-export interface Health {
+export type Health = {
   status: 'available'
 }
 
@@ -224,13 +213,13 @@ export interface Health {
  *** STATS
  */
 
-export interface IndexStats {
+export type IndexStats = {
   numberOfDocuments: number
   isIndexing: boolean
   fieldDistribution: FieldDistribution
 }
 
-export interface Stats {
+export type Stats = {
   databaseSize: number
   lastUpdate: string
   indexes: {
@@ -242,7 +231,7 @@ export interface Stats {
  ** Keys
  */
 
-export interface Keys {
+export type Keys = {
   private: string | null
   public: string | null
 }
@@ -250,130 +239,29 @@ export interface Keys {
 /*
  ** version
  */
-export interface Version {
+export type Version = {
   commitSha: string
   commitDate: string
   pkgVersion: string
 }
 
 /*
- ** MeiliSearch Class Interfaces
- */
-
-export interface MeiliSearchInterface {
-  config: Config
-  getIndex: <T>(indexUid: string) => Promise<Index<T>>
-  index: <T>(indexUid: string) => Index<T>
-  getOrCreateIndex: <T>(
-    uid: string,
-    options?: IndexOptions
-  ) => Promise<Index<T>>
-  listIndexes: () => Promise<IndexResponse[]>
-  createIndex: <T>(uid: string, options?: IndexOptions) => Promise<Index<T>>
-  updateIndex: <T = any>(
-    uid: string,
-    options?: IndexOptions
-  ) => Promise<Index<T>>
-  deleteIndex: (uid: string) => Promise<void>
-  deleteIndexIfExists: (uid: string) => Promise<boolean>
-  getKeys: () => Promise<Keys>
-  health: () => Promise<Health>
-  isHealthy: () => Promise<boolean>
-  stats: () => Promise<Stats>
-  version: () => Promise<Version>
-  createDump: () => Promise<EnqueuedDump>
-  getDumpStatus: (dumpUid: string) => Promise<EnqueuedDump>
-}
-
-export interface IndexInterface<T = any> {
-  uid: string
-  getUpdateStatus: (updateId: number) => Promise<Update>
-  getAllUpdateStatus: () => Promise<Update[]>
-  search: <P extends SearchParams<T>>(
-    query?: string | null,
-    options?: P,
-    config?: Partial<Request>
-  ) => Promise<SearchResponse<T, P>>
-  searchGet: <P extends SearchParams<T>>(
-    query?: string | null,
-    options?: P,
-    config?: Partial<Request>
-  ) => Promise<SearchResponse<T, P>>
-  getRawInfo: () => Promise<IndexResponse>
-  fetchInfo(): Promise<this>
-  fetchPrimaryKey(): Promise<string | undefined>
-  update: (indexData: IndexOptions) => Promise<this>
-  delete: () => Promise<void>
-  deleteIfExists: () => Promise<boolean>
-  getStats: () => Promise<IndexStats>
-  getDocuments: <P extends GetDocumentsParams<T>>(
-    options?: P
-  ) => Promise<GetDocumentsResponse<T, P>>
-  getDocument: (documentId: string | number) => Promise<Document<T>>
-  addDocuments: (
-    documents: Array<Document<T>>,
-    options?: AddDocumentParams
-  ) => Promise<EnqueuedUpdate>
-  updateDocuments: (
-    documents: Array<Document<T>>,
-    options?: AddDocumentParams
-  ) => Promise<EnqueuedUpdate>
-  deleteDocument: (documentId: string | number) => Promise<EnqueuedUpdate>
-  deleteDocuments: (
-    documentsIds: string[] | number[]
-  ) => Promise<EnqueuedUpdate>
-  deleteAllDocuments: () => Promise<EnqueuedUpdate>
-  getSettings: () => Promise<Settings>
-  updateSettings: (settings: Settings) => Promise<EnqueuedUpdate>
-  resetSettings: () => Promise<EnqueuedUpdate>
-  getSynonyms: () => Promise<object>
-  updateSynonyms: (synonyms: Synonyms) => Promise<object>
-  resetSynonyms: () => Promise<object>
-  getStopWords: () => Promise<string[]>
-  updateStopWords: (stopWords: StopWords) => Promise<EnqueuedUpdate>
-  resetStopWords: () => Promise<EnqueuedUpdate>
-  getRankingRules: () => Promise<string[]>
-  updateRankingRules: (rankingRules: RankingRules) => Promise<EnqueuedUpdate>
-  resetRankingRules: () => Promise<EnqueuedUpdate>
-  getDistinctAttribute: () => Promise<string | null>
-  updateDistinctAttribute: (
-    distinctAttribute: DistinctAttribute
-  ) => Promise<EnqueuedUpdate>
-  resetDistinctAttribute: () => Promise<EnqueuedUpdate>
-  getFilterableAttributes: () => Promise<string[]>
-  updateFilterableAttributes: (
-    filterableAttributes: FilterableAttributes
-  ) => Promise<EnqueuedUpdate>
-  resetFilterableAttributes: () => Promise<EnqueuedUpdate>
-  getSortableAttributes: () => Promise<string[]>
-  updateSortableAttributes: (
-    sortableAttributes: SortableAttributes
-  ) => Promise<EnqueuedUpdate>
-  resetSortableAttributes: () => Promise<EnqueuedUpdate>
-  getSearchableAttributes: () => Promise<string[]>
-  updateSearchableAttributes: (
-    searchableAttributes: SearchableAttributes
-  ) => Promise<EnqueuedUpdate>
-  resetSearchableAttributes: () => Promise<EnqueuedUpdate>
-  getDisplayedAttributes: () => Promise<string[]>
-  updateDisplayedAttributes: (
-    displayedAttributes: DisplayedAttributes
-  ) => Promise<EnqueuedUpdate>
-  resetDisplayedAttributes: () => Promise<EnqueuedUpdate>
-}
-
-/*
  ** ERROR HANDLER
  */
 
-export interface MeiliSearchApiErrorResponse {
+export type MSApiErrorConstructor = new (
+  error: MSApiError,
+  status: number
+) => void
+
+export type MeiliSearchApiErrorResponse = {
   status?: number
   statusText?: string
   path?: string
   method?: string
   body?: object
 }
-export interface MeiliSearchApiErrorRequest {
+export type MeiliSearchApiErrorRequest = {
   url?: string
   path?: string
   method?: string
@@ -384,11 +272,6 @@ export interface FetchError extends Error {
   errno: string
   code: string
 }
-
-export type MSApiErrorConstructor = new (
-  error: MSApiError,
-  status: number
-) => void
 
 export interface MSApiError extends Error {
   name: string
@@ -482,5 +365,3 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#dump_process_failed */
   DUMP_PROCESS_FAILED = 'dump_process_failed',
 }
-
-export default MeiliSearch
