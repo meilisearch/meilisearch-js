@@ -516,6 +516,17 @@ Or using the index object:
 - Reset Filterable Attributes
   `index.resetFilterableAttributes(): Promise<EnqueuedUpdate>`
 
+### Sortable Attributes <!-- omit in toc -->
+
+- Get Sortable Attributes
+  `index.getSortableAttributes(): Promise<string[]>`
+
+- Update Sortable Attributes
+  `index.updateSortableAttributes(sortableAttributes: string[] | null): Promise<EnqueuedUpdate>`
+
+- Reset Sortable Attributes
+  `index.resetSortableAttributes(): Promise<EnqueuedUpdate>`
+
 ### Keys <!-- omit in toc -->
 
 - Get keys
