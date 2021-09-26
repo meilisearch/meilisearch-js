@@ -37,7 +37,7 @@ import {
 import { sleep, removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
 
-class Index<T> {
+class Index<T = Record<string, any>> {
   uid: string
   primaryKey: string | undefined
   httpRequest: HttpRequests
@@ -79,11 +79,11 @@ class Index<T> {
    * @memberof Index
    * @method search
    */
-  async search<P extends SearchParams<T>>(
+  async search<T = Record<string, any>>(
     query?: string | null,
-    options?: P,
+    options?: SearchParams,
     config?: Partial<Request>
-  ): Promise<SearchResponse<T, P>> {
+  ): Promise<SearchResponse<T>> {
     const url = `indexes/${this.uid}/search`
 
     return await this.httpRequest.post(
@@ -99,11 +99,11 @@ class Index<T> {
    * @memberof Index
    * @method search
    */
-  async searchGet<P extends SearchParams<T>>(
+  async searchGet<T = Record<string, any>>(
     query?: string | null,
-    options?: P,
+    options?: SearchParams,
     config?: Partial<Request>
-  ): Promise<SearchResponse<T, P>> {
+  ): Promise<SearchResponse<T>> {
     const url = `indexes/${this.uid}/search`
 
     const parseFilter = (filter?: Filter): string | undefined => {
@@ -134,7 +134,7 @@ class Index<T> {
         : undefined,
     }
 
-    return await this.httpRequest.get<SearchResponse<T, P>>(
+    return await this.httpRequest.get<SearchResponse<T>>(
       url,
       removeUndefinedFromObject(getParams),
       config
@@ -182,7 +182,7 @@ class Index<T> {
    * @memberof Index
    * @method create
    */
-  static async create<T = any>(
+  static async create<T = Record<string, any>>(
     config: Config,
     uid: string,
     options: IndexOptions = {}
@@ -278,16 +278,16 @@ class Index<T> {
    * @memberof Index
    * @method getDocuments
    */
-  async getDocuments<P extends GetDocumentsParams<T>>(
-    options?: P
-  ): Promise<GetDocumentsResponse<T, P>> {
+  async getDocuments<T = Record<string, any>>(
+    options?: GetDocumentsParams<T>
+  ): Promise<GetDocumentsResponse<T>> {
     const url = `indexes/${this.uid}/documents`
     let attr
     if (options !== undefined && Array.isArray(options.attributesToRetrieve)) {
       attr = options.attributesToRetrieve.join(',')
     }
 
-    return await this.httpRequest.get<GetDocumentsResponse<T, P>>(url, {
+    return await this.httpRequest.get<GetDocumentsResponse<T>>(url, {
       ...options,
       ...(attr !== undefined ? { attributesToRetrieve: attr } : {}),
     })

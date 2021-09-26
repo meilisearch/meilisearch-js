@@ -37,13 +37,13 @@ export type AddDocumentParams = {
 
 export type Filter = string | Array<string | string[]>
 
-export type SearchParams<T> = {
+export type SearchParams = {
   offset?: number
   limit?: number
-  attributesToRetrieve?: Array<Extract<keyof T, string> | '*'>
-  attributesToCrop?: Array<Extract<keyof T, string> | '*'>
+  attributesToRetrieve?: string[]
+  attributesToCrop?: string[]
   cropLength?: number
-  attributesToHighlight?: Array<Extract<keyof T, string> | '*'>
+  attributesToHighlight?: string[]
   filter?: Filter
   sort?: string[]
   facetsDistribution?: string[]
@@ -88,26 +88,19 @@ export type _matchesInfo<T> = Partial<
   Record<keyof T, Array<{ start: number; length: number }>>
 >
 
-export type Hit<T> = T & {
+export type document = {
+  [field: string]: any
+}
+
+export type Hit<T = document> = T & {
   _formatted?: Partial<T>
   _matchesInfo?: _matchesInfo<T>
 }
 
-export type Hits<
-  T,
-  P extends SearchParams<T>
-> = P['attributesToRetrieve'] extends Array<'*'>
-  ? Array<Hit<T>>
-  : P['attributesToRetrieve'] extends Array<infer K> // if P['attributesToRetrieve'] is an array, we use `infer K` to extract the keys in the array in place
-  ? Array<Hit<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>> // Same extraction method as above when we have a single `attributesToRetrieve`
-  : Array<Hit<T>> // Finally return the full type as `attributesToRetrieve` is neither a single key nor an array of keys
+export type Hits<T = document> = Array<Hit<T>>
 
-// The second generic P is used to capture the SearchParams type
-export type SearchResponse<T, P extends SearchParams<T>> = {
-  // P represents the SearchParams
-  // and by using the indexer P['attributesToRetrieve'], we're able to pick the type of `attributesToRetrieve`
-  // and check whether the attribute is a single key present in the generic
-  hits: Hits<T, P>
+export type SearchResponse<T = Record<string, any>> = {
+  hits: Hits<T>
   offset: number
   limit: number
   processingTimeMs: number
@@ -125,7 +118,7 @@ export type FieldDistribution = {
 /*
  ** Documents
  */
-export type GetDocumentsParams<T> = {
+export type GetDocumentsParams<T = Record<string, any>> = {
   offset?: number
   limit?: number
   attributesToRetrieve?:
@@ -133,20 +126,9 @@ export type GetDocumentsParams<T> = {
     | Extract<keyof T, string>
 }
 
-export type GetDocumentsResponse<
-  T,
-  P extends GetDocumentsParams<T>
-> = P['attributesToRetrieve'] extends keyof T
-  ? Array<
-      Document<
-        Pick<T, Exclude<keyof T, Exclude<keyof T, P['attributesToRetrieve']>>>
-      >
-    >
-  : P['attributesToRetrieve'] extends Array<infer K>
-  ? Array<Document<Pick<T, Exclude<keyof T, Exclude<keyof T, K>>>>>
-  : Array<Document<T>>
+export type GetDocumentsResponse<T = Record<string, any>> = Array<Document<T>>
 
-export type Document<T> = T
+export type Document<T = Record<string, any>> = T
 
 /*
  ** Settings
