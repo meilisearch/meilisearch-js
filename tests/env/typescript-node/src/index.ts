@@ -29,21 +29,20 @@ const client = new MeiliSearch(config)
     // console.log(index.something) -> ERROR
   })
 
-  const searchParams: SearchParams<Movie> = {
+  const searchParams: SearchParams = {
     limit: 5,
     attributesToRetrieve: ['title', 'genre'],
     attributesToHighlight: ['title'],
     // test: true -> ERROR Test does not exist on type SearchParams
   }
   indexes.map((index: IndexResponse) => index.uid)
-  const res: SearchResponse<Movie, SearchParams<Movie>> = await index.search(
+  const res: SearchResponse<Movie> = await index.search(
     'avenger',
     searchParams
   )
 
   // both work
-  const { hits }: { hits: Hits<Movie, typeof searchParams> } = res
-  // const { hits } : { hits: Hits<Movie, SearchParams<Movie>> } = res;
+  const { hits }: { hits: Hits<Movie> } = res
 
   hits.map((hit: Hit<Movie>) => {
     console.log(hit?.genre)
