@@ -8,16 +8,29 @@ async function httpResponseErrorHandler(response: Response): Promise<Response> {
     try {
       err = await response.json()
     } catch (e) {
-      throw new MeiliSearchCommunicationError(response.statusText, response)
+      throw new MeiliSearchCommunicationError(
+        response.statusText,
+        response,
+        response.url
+      )
     }
     throw new MeiliSearchApiError(err, response.status)
   }
   return response
 }
 
-function httpErrorHandler(response: FetchError): Promise<void> {
+function httpErrorHandler(
+  response: FetchError,
+  stack?: string,
+  url?: string
+): Promise<void> {
   if (response.type !== 'MeiliSearchApiError') {
-    throw new MeiliSearchCommunicationError(response.message, response)
+    throw new MeiliSearchCommunicationError(
+      response.message,
+      response,
+      url,
+      stack
+    )
   }
   throw response
 }

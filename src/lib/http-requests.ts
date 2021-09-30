@@ -43,15 +43,16 @@ class HttpRequests {
     body?: any
     config?: Partial<Request>
   }) {
+    const constructURL = new URL(url, this.url)
+    if (params) {
+      const queryParams = new URLSearchParams()
+      Object.keys(params)
+        .filter((x: string) => params[x] !== null)
+        .map((x: string) => queryParams.set(x, params[x]))
+      constructURL.search = queryParams.toString()
+    }
+
     try {
-      const constructURL = new URL(url, this.url)
-      if (params) {
-        const queryParams = new URLSearchParams()
-        Object.keys(params)
-          .filter((x: string) => params[x] !== null)
-          .map((x: string) => queryParams.set(x, params[x]))
-        constructURL.search = queryParams.toString()
-      }
       const response: Response = await fetch(constructURL.toString(), {
         ...config,
         method,
@@ -59,6 +60,7 @@ class HttpRequests {
         headers: this.headers,
       }).then((res) => httpResponseErrorHandler(res))
       const parsedBody: string = await response.text()
+
       try {
         const parsedJson = JSON.parse(parsedBody)
         return parsedJson
@@ -66,7 +68,8 @@ class HttpRequests {
         return
       }
     } catch (e) {
-      httpErrorHandler(e)
+      const stack = e.stack
+      httpErrorHandler(e, stack, constructURL.toString())
     }
   }
 

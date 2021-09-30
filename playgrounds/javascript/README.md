@@ -1,25 +1,16 @@
-# Vanilla JavaScript Playground
+# Javascript Playground
 
-## Required
-
-- Yarn or NPM
-- Parent directory should have its packages installed
-
-## Start
-
-First:
-
+## Project setup
 ```
 yarn install
 ```
 
-Run development server
+### Compiles and hot-reloads for development
 ```
-yarn dev
+yarn start
 ```
 
-## Play
-
-When running `yarn dev` a server it should be served on `http://localhost:3000/`.
-
-Changes in `main.js` and `../../src` hot reload the server.
+### Compiles and minifies for production
+```
+yarn build
+```

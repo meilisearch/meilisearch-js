@@ -36,6 +36,7 @@ import {
 } from '../types'
 import { sleep, removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
+import { FetchError } from '../../playgrounds/typescript-node/dist/types/src/types'
 
 class Index<T = Record<string, any>> {
   uid: string
@@ -224,7 +225,7 @@ class Index<T = Record<string, any>> {
     try {
       await this.delete()
       return true
-    } catch (e) {
+    } catch (e: any | FetchError) {
       if (e.errorCode === 'index_not_found') {
         return false
       }

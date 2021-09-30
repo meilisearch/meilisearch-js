@@ -8,7 +8,7 @@
 'use strict'
 
 import { Index } from './indexes'
-import { MeiliSearchApiError } from '../errors'
+import { MeiliSearchApiError, MeiliSearchCommunicationError } from '../errors'
 import {
   Config,
   IndexOptions,
@@ -66,7 +66,13 @@ class MeiliSearch {
       if (e.errorCode === 'index_not_found') {
         return this.createIndex(uid, options)
       }
-      throw new MeiliSearchApiError(e, e.status)
+      if (e.type !== 'MeiliSearchCommunicationError') {
+        throw new MeiliSearchApiError(e, e.status)
+      }
+      if (e.type === 'MeiliSearchCommunicationError') {
+        throw new MeiliSearchCommunicationError(e.message, e, e.stack)
+      }
+      throw e
     }
   }
 
