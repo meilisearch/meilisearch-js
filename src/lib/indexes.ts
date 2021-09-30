@@ -33,7 +33,6 @@ import {
   SortableAttributes,
   SearchableAttributes,
   DisplayedAttributes,
-  FetchError,
 } from '../types'
 import { sleep, removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
