@@ -6,11 +6,19 @@ class MeiliSearchCommunicationError extends Error {
   statusCode?: number
   errno?: string
   code?: string
+  stack?: string
 
-  constructor(message: string, body: Response | FetchError) {
+  constructor(
+    message: string,
+    body: Response | FetchError,
+    url?: string,
+    stack?: string
+  ) {
     super(message)
+
     this.name = 'MeiliSearchCommunicationError'
     this.type = 'MeiliSearchCommunicationError'
+
     if (body instanceof Response) {
       this.message = body.statusText
       this.statusCode = body.status
@@ -19,9 +27,17 @@ class MeiliSearchCommunicationError extends Error {
       this.errno = body.errno
       this.code = body.code
     }
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, MeiliSearchCommunicationError)
+    if (stack) {
+      this.stack = stack
+      this.stack = this.stack?.replace(/(TypeError|FetchError)/, this.name)
+      this.stack = this.stack?.replace(
+        'Failed to fetch',
+        `request to ${url} failed, reason: connect ECONNREFUSED`
+      )
+    } else {
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, MeiliSearchCommunicationError)
+      }
     }
   }
 }

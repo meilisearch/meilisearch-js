@@ -1,12 +1,26 @@
 {
-  "version": "0.0.0",
+  "name": "js-playground",
+  "version": "0.1.0",
+  "description": "Instant-meilisearch playground written with vanilla javascript",
+  "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
+    "start": "parcel serve index.html --open --port 2222",
+    "build": "parcel build index.html"
   },
   "devDependencies": {
-    "vite": "^2.4.0"
+    "@babel/core": "^7.13.1",
+    "parcel-bundler": "^1.12.4"
   },
+  "resolutions": {
+    "node-forge": "^0.10.0"
+  },
+  "browserslist": [
+    "last 3 and_chr versions",
+    "last 3 chrome versions",
+    "last 3 opera versions",
+    "last 3 ios_saf versions",
+    "last 3 safari versions"
+  ],
+  "license": "MIT",
   "dependencies": {}
 }

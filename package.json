@@ -27,6 +27,7 @@
     "url": "https://github.com/meilisearch/meilisearch-js"
   },
   "scripts": {
+    "playground:javascript": "yarn --cwd ./playgrounds/javascript && yarn --cwd ./playgrounds/javascript start",
     "clear_jest": "jest --clearCache",
     "cleanup": "shx rm -rf dist/",
     "build": "yarn cleanup && rollup -c && rollup -c --environment NODE_ENV:production",
