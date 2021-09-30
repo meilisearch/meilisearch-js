@@ -33,10 +33,10 @@ import {
   SortableAttributes,
   SearchableAttributes,
   DisplayedAttributes,
+  FetchError,
 } from '../types'
 import { sleep, removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
-import { FetchError } from '../../playgrounds/typescript-node/dist/types/src/types'
 
 class Index<T = Record<string, any>> {
   uid: string
