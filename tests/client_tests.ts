@@ -357,7 +357,7 @@ describe.each([
       })
 
       test(`${permission} key: get version`, async () => {
-        await client.version().then((response: Version) => {
+        await client.getVersion().then((response: Version) => {
           expect(response).toHaveProperty('commitSha', expect.any(String))
           expect(response).toHaveProperty('commitDate', expect.any(String))
           expect(response).toHaveProperty('pkgVersion', expect.any(String))
@@ -365,7 +365,7 @@ describe.each([
       })
 
       test(`${permission} key: get /stats information`, async () => {
-        await client.stats().then((response: Stats) => {
+        await client.getStats().then((response: Stats) => {
           expect(response).toHaveProperty('databaseSize', expect.any(Number))
           expect(response).toHaveProperty('lastUpdate') // TODO: Could be null, find out why
           expect(response).toHaveProperty('indexes', expect.any(Object))
@@ -432,14 +432,14 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
 
       test(`${permission} key: try to get version and be denied`, async () => {
-        await expect(client.version()).rejects.toHaveProperty(
+        await expect(client.getVersion()).rejects.toHaveProperty(
           'errorCode',
           ErrorStatusCode.INVALID_TOKEN
         )
       })
 
       test(`${permission} key: try to get /stats information and be denied`, async () => {
-        await expect(client.stats()).rejects.toHaveProperty(
+        await expect(client.getStats()).rejects.toHaveProperty(
           'errorCode',
           ErrorStatusCode.INVALID_TOKEN
         )
@@ -525,14 +525,14 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
 
       test(`${permission} key: try to get version and be denied`, async () => {
-        await expect(client.version()).rejects.toHaveProperty(
+        await expect(client.getVersion()).rejects.toHaveProperty(
           'errorCode',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
       test(`${permission} key: try to get /stats information and be denied`, async () => {
-        await expect(client.stats()).rejects.toHaveProperty(
+        await expect(client.getStats()).rejects.toHaveProperty(
           'errorCode',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
@@ -655,7 +655,7 @@ describe.each([
     const route = `stats`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
-    await expect(client.stats()).rejects.toHaveProperty(
+    await expect(client.getStats()).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
@@ -668,7 +668,7 @@ describe.each([
     const route = `version`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
-    await expect(client.version()).rejects.toHaveProperty(
+    await expect(client.getVersion()).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',

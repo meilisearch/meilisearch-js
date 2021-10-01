@@ -188,9 +188,9 @@ class MeiliSearch {
   /**
    * Get the stats of all the database
    * @memberof MeiliSearch
-   * @method stats
+   * @method getStats
    */
-  async stats(): Promise<Stats> {
+  async getStats(): Promise<Stats> {
     const url = `stats`
     return await this.httpRequest.get<Stats>(url)
   }
@@ -202,9 +202,9 @@ class MeiliSearch {
   /**
    * Get the version of MeiliSearch
    * @memberof MeiliSearch
-   * @method version
+   * @method getVersion
    */
-  async version(): Promise<Version> {
+  async getVersion(): Promise<Version> {
     const url = `version`
     return await this.httpRequest.get<Version>(url)
   }

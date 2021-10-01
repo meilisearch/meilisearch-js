@@ -549,13 +549,13 @@ Or using the index object:
 
 - Get database stats
 
-`client.stats(): Promise<Stats>`
+`client.getStats(): Promise<Stats>`
 
 ### Version <!-- omit in toc -->
 
 - Get binary version
 
-`client.version(): Promise<Version>`
+`client.getVersion(): Promise<Version>`
 
 ### Dumps <!-- omit in toc -->
 
