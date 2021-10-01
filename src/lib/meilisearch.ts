@@ -95,7 +95,7 @@ class MeiliSearch {
     uid: string,
     options: IndexOptions = {}
   ): Promise<Index<T>> {
-    return await Index.create<T>(this.config, uid, options)
+    return await Index.create<T>(uid, options, this.config)
   }
 
   /**
