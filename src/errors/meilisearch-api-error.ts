@@ -25,9 +25,18 @@ const MeiliSearchApiError: MSApiErrorConstructor = class
     this.errorLink = error.errorLink
     this.message = error.message
     this.httpStatus = status
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, MeiliSearchApiError)
+    debugger
+    if (error.stack) {
+      this.stack = error.stack;
+      this.stack = this.stack?.replace(/(TypeError|FetchError)/, this.name)
+      this.stack = this.stack?.replace(
+        'Failed to fetch',
+        `request to ${error.errorLink} failed, reason: connect ECONNREFUSED`
+      )
+    } else {
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, MeiliSearchApiError)
+      }
     }
   }
 }
