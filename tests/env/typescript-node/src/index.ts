@@ -18,9 +18,9 @@ interface Movie {
   genre?: string
 }
 
-const client = new MeiliSearch(config);
+const client = new MeiliSearch(config)
 
-(async () => {
+;(async () => {
   const index = await client.getOrCreateIndex<Movie>('movies')
 
   const indexes = await client.getIndexes()
