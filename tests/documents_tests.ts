@@ -469,42 +469,42 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     })
 
     test(`${permission} key: Try to add documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: Try to update documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: Try to get documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: Try to delete one document and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: Try to delete some documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.INVALID_TOKEN
       )
     })
 
     test(`${permission} key: Try to delete all documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.INVALID_TOKEN
       )
@@ -520,42 +520,42 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
 
     test(`${permission} key: Try to add documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: Try to update documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: Try to get documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: Try to delete one document and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: Try to delete some documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: Try to delete all documents and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )

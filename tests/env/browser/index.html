@@ -17,7 +17,7 @@
     host: 'http://127.0.0.1:7700',
     apiKey: 'masterKey',
   })
-  client.listIndexes().then(res => {
+  client.getIndexes().then(res => {
     console.log({ res });
     res.map(index => document.querySelector('#indexes').innerHTML = `<div>${index.name}</div>`)
   })

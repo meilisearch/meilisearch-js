@@ -177,7 +177,7 @@ describe.each([
       const health = await client.isHealthy()
       expect(health).toBe(true)
       await client.getOrCreateIndex('test')
-      const indexes = await client.listIndexes()
+      const indexes = await client.getIndexes()
       expect(indexes.length).toBe(1)
     })
 
@@ -229,7 +229,7 @@ describe.each([
 
       test(`${permission} key: get all indexes when not empty`, async () => {
         await client.createIndex(indexPk.uid)
-        await client.listIndexes().then((response: IndexResponse[]) => {
+        await client.getIndexes().then((response: IndexResponse[]) => {
           const indexes = response.map((index) => index.uid)
           expect(indexes).toEqual(expect.arrayContaining([indexPk.uid]))
           expect(indexes.length).toEqual(1)
@@ -279,7 +279,7 @@ describe.each([
         await client.deleteIndex(indexNoPk.uid).then((response: void) => {
           expect(response).toBe(undefined)
         })
-        await expect(client.listIndexes()).resolves.toHaveLength(0)
+        await expect(client.getIndexes()).resolves.toHaveLength(0)
       })
 
       test(`${permission} key: create index with already existing uid should fail`, async () => {
@@ -311,7 +311,7 @@ describe.each([
       })
 
       test(`${permission} key: delete index if exists on index that does not exist`, async () => {
-        const indexes = await client.listIndexes()
+        const indexes = await client.getIndexes()
         await client
           .deleteIndexIfExists('badIndex')
           .then((response: boolean) => {
@@ -321,7 +321,7 @@ describe.each([
           'errorCode',
           ErrorStatusCode.INDEX_NOT_FOUND
         )
-        await expect(client.listIndexes()).resolves.toHaveLength(indexes.length)
+        await expect(client.getIndexes()).resolves.toHaveLength(indexes.length)
       })
 
       test(`${permission} key: fetch deleted index should fail`, async () => {
@@ -384,7 +384,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 
     describe('Test on indexes methods', () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
-        await expect(client.listIndexes()).rejects.toHaveProperty(
+        await expect(client.getIndexes()).rejects.toHaveProperty(
           'errorCode',
           ErrorStatusCode.INVALID_TOKEN
         )
@@ -471,7 +471,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
 
     describe('Test on indexes methods', () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
-        await expect(client.listIndexes()).rejects.toHaveProperty(
+        await expect(client.getIndexes()).rejects.toHaveProperty(
           'errorCode',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
@@ -612,11 +612,11 @@ describe.each([
     )
   })
 
-  test(`Test listIndexes route`, async () => {
+  test(`Test getIndexes route`, async () => {
     const route = `indexes`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
-    await expect(client.listIndexes()).rejects.toHaveProperty(
+    await expect(client.getIndexes()).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
