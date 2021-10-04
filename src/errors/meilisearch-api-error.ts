@@ -30,7 +30,7 @@ const MeiliSearchApiError: MSApiErrorConstructor = class
       this.stack = this.stack?.replace(/(TypeError|FetchError)/, this.name)
       this.stack = this.stack?.replace(
         'Failed to fetch',
-        `request to ${error.errorLink} failed, reason: connect ECONNREFUSED`
+        `reason: NOT FOUND: ${this.errorLink} - 404`
       )
     } else {
       if (Error.captureStackTrace) {
