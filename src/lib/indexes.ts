@@ -184,9 +184,9 @@ class Index<T = Record<string, any>> {
    * @method create
    */
   static async create<T = Record<string, any>>(
-    config: Config,
     uid: string,
-    options: IndexOptions = {}
+    options: IndexOptions = {},
+    config: Config
   ): Promise<Index<T>> {
     const url = `indexes`
     const req = new HttpRequests(config)

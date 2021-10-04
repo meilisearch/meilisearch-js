@@ -187,7 +187,7 @@ describe.each([
     await index.delete().then((response: void) => {
       expect(response).toBe(undefined)
     })
-    await expect(client.listIndexes()).resolves.toHaveLength(0)
+    await expect(client.getIndexes()).resolves.toHaveLength(0)
   })
 
   test(`${permission} key: fetch deleted index should fail`, async () => {
@@ -227,7 +227,7 @@ describe.each([
   })
 
   test(`${permission} key: delete if exists when index is not present`, async () => {
-    const indexes = await client.listIndexes()
+    const indexes = await client.getIndexes()
     const index = client.index('badIndex')
     await index.deleteIfExists().then((response: boolean) => {
       expect(response).toBe(false)
@@ -236,7 +236,7 @@ describe.each([
       'errorCode',
       ErrorStatusCode.INDEX_NOT_FOUND
     )
-    await expect(client.listIndexes()).resolves.toHaveLength(indexes.length)
+    await expect(client.getIndexes()).resolves.toHaveLength(indexes.length)
   })
 
   test(`${permission} key: delete if exists error`, async () => {
@@ -249,7 +249,7 @@ describe.each([
     await client.deleteIndex(indexPk.uid).then((response: void) => {
       expect(response).toBe(undefined)
     })
-    await expect(client.listIndexes()).resolves.toHaveLength(0)
+    await expect(client.getIndexes()).resolves.toHaveLength(0)
   })
 })
 
@@ -296,7 +296,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
 
     test(`${permission} key: try to get all indexes and be denied`, async () => {
-      await expect(client.listIndexes()).rejects.toHaveProperty(
+      await expect(client.getIndexes()).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
