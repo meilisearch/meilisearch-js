@@ -2,13 +2,14 @@ import {
   MSApiError,
   MeiliSearchApiErrorResponse,
   MSApiErrorConstructor,
+  FetchError,
 } from '../types'
 
 const MeiliSearchApiError: MSApiErrorConstructor = class
   extends Error
   implements MSApiError {
   httpStatus: number
-  response?: MeiliSearchApiErrorResponse
+  response?: MeiliSearchApiErrorResponse | FetchError
   errorCode?: string
   errorType?: string
   errorLink?: string
@@ -19,7 +20,7 @@ const MeiliSearchApiError: MSApiErrorConstructor = class
     super(error.message)
     this.type = 'MeiliSearchApiError'
     this.name = 'MeiliSearchApiError'
-
+    this.stack = this.message
     this.errorCode = error.errorCode
     this.errorType = error.errorType
     this.errorLink = error.errorLink
@@ -27,10 +28,10 @@ const MeiliSearchApiError: MSApiErrorConstructor = class
     this.httpStatus = status
     if (error.stack) {
       this.stack = error.stack
-      this.stack = this.stack?.replace(/(TypeError)/, this.name)
+      this.stack = this.stack?.replace(/(TypeError|FetchError)/, this.name)
       this.stack = this.stack?.replace(
         'Failed to fetch',
-        `reason: NOT FOUND: ${this.errorLink} - ${this.httpStatus}`
+        `${this.name} reason: NOT FOUND request to ${error.errorLink} failed - ${this.httpStatus}, `
       )
     } else {
       if (Error.captureStackTrace) {
