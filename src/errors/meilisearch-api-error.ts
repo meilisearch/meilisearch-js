@@ -25,7 +25,6 @@ const MeiliSearchApiError: MSApiErrorConstructor = class
     this.errorLink = error.errorLink
     this.message = error.message
     this.httpStatus = status
-    debugger
     if (error.stack) {
       this.stack = error.stack;
       this.stack = this.stack?.replace(/(TypeError|FetchError)/, this.name)
