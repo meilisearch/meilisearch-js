@@ -77,11 +77,11 @@ class MeiliSearch {
   }
 
   /**
-   * List all indexes in the database
+   * Get all indexes in the database
    * @memberof MeiliSearch
-   * @method listIndexes
+   * @method getIndexes
    */
-  async listIndexes(): Promise<IndexResponse[]> {
+  async getIndexes(): Promise<IndexResponse[]> {
     const url = `indexes`
     return await this.httpRequest.get<IndexResponse[]>(url)
   }
@@ -95,7 +95,7 @@ class MeiliSearch {
     uid: string,
     options: IndexOptions = {}
   ): Promise<Index<T>> {
-    return await Index.create<T>(this.config, uid, options)
+    return await Index.create<T>(uid, options, this.config)
   }
 
   /**

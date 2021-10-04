@@ -23,7 +23,7 @@ const client = new MeiliSearch(config)
 ;(async () => {
   const index = await client.getOrCreateIndex<Movie>('movies')
 
-  const indexes = await client.listIndexes()
+  const indexes = await client.getIndexes()
   indexes.map((index: IndexResponse) => {
     console.log(index.uid)
     // console.log(index.something) -> ERROR

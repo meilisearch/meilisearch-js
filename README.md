@@ -329,9 +329,9 @@ If you want to know more about the development workflow or want to contribute, p
 
 ### Indexes <!-- omit in toc -->
 
-- List all indexes:
+- Get all indexes:
 
-`client.listIndexes(): Promise<IndexResponse[]>`
+`client.getIndexes(): Promise<IndexResponse[]>`
 
 - Create new index:
 

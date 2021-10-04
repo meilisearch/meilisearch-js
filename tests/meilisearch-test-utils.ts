@@ -37,7 +37,7 @@ const anonymousClient = new MeiliSearch({
 const clearAllIndexes = async (config: Config): Promise<void> => {
   const client = new MeiliSearch(config)
   const indexes = await client
-    .listIndexes()
+    .getIndexes()
     .then((response: IndexResponse[]): string[] => {
       return response.map((elem: IndexResponse) => elem.uid)
     })
@@ -51,7 +51,7 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
       })
   }
 
-  await expect(client.listIndexes()).resolves.toHaveLength(0)
+  await expect(client.getIndexes()).resolves.toHaveLength(0)
 }
 
 async function waitForDumpProcessing(
