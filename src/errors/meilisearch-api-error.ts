@@ -27,7 +27,7 @@ const MeiliSearchApiError: MSApiErrorConstructor = class
     this.httpStatus = status
     if (error.stack) {
       this.stack = error.stack;
-      this.stack = this.stack?.replace(/(TypeError|FetchError)/, this.name)
+      this.stack = this.stack?.replace(/(TypeError)/, this.name)
       this.stack = this.stack?.replace(
         'Failed to fetch',
         `reason: NOT FOUND: ${this.errorLink} - ${this.httpStatus}`
