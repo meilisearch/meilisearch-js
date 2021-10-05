@@ -1,5 +1,3 @@
-import { Config } from '../types'
-
 /**
  * Removes undefined entries from object
  */
@@ -15,16 +13,11 @@ async function sleep(ms: number): Promise<void> {
   return await new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-function addProtocolIfNotPresent(config: Config): Config {
-  if (
-    !(config.host.startsWith('https://') || config.host.startsWith('http://'))
-  ) {
-    return {
-      ...config,
-      host: 'http://' + config.host,
-    }
+function addProtocolIfNotPresent(host: string): string {
+  if (!(host.startsWith('https://') || host.startsWith('http://'))) {
+    return `http://${host}`
   }
-  return config
+  return host
 }
 
 export { sleep, removeUndefinedFromObject, addProtocolIfNotPresent }

@@ -27,7 +27,7 @@ class MeiliSearch {
   httpRequest: HttpRequests
 
   constructor(config: Config) {
-    config = addProtocolIfNotPresent(config)
+    config.host = addProtocolIfNotPresent(config.host)
     config.host = HttpRequests.addTrailingSlash(config.host)
     this.config = config
     this.httpRequest = new HttpRequests(config)
