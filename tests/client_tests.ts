@@ -153,6 +153,18 @@ describe.each([
       expect(e.type).toEqual('MeiliSearchCommunicationError')
     }
   })
+
+  test(`${permission} key: host without HTTP should not throw Invalid URL Error`, async () => {
+    const client = new MeiliSearch({ host: 'meilisearch:7700' })
+    const health = await client.isHealthy()
+    expect(health).toBe(false)
+  })
+
+  test(`${permission} key: host without HTTP and port should not throw Invalid URL Error`, async () => {
+    const client = new MeiliSearch({ host: 'meilisearch' })
+    const health = await client.isHealthy()
+    expect(health).toBe(false)
+  })
 })
 
 describe.each([

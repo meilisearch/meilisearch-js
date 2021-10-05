@@ -13,4 +13,11 @@ async function sleep(ms: number): Promise<void> {
   return await new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export { sleep, removeUndefinedFromObject }
+function addProtocolIfNotPresent(host: string): string {
+  if (!(host.startsWith('https://') || host.startsWith('http://'))) {
+    return `http://${host}`
+  }
+  return host
+}
+
+export { sleep, removeUndefinedFromObject, addProtocolIfNotPresent }
