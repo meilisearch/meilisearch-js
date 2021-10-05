@@ -1,7 +1,6 @@
 import 'cross-fetch/polyfill'
 import { FetchError,MSApiError } from '../types'
-import { MSApiError } from '../../dist/types/types/types';
-import { MeiliSearchApiError } from '.';
+import { MeiliSearchApiError } from '.'
 
 
 class MeiliSearchCommunicationError extends Error {
