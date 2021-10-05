@@ -56,6 +56,10 @@ class HttpRequests {
 
     const controller = new AbortController()
 
+    if(this.timeout === undefined){
+      this.timeout = 3000
+    }
+
     setTimeout(() => { controller.abort() } , this.timeout)
 
     try {
