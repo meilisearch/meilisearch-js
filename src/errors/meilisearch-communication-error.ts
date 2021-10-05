@@ -1,5 +1,8 @@
 import 'cross-fetch/polyfill'
-import { FetchError } from '../types'
+import { FetchError,MSApiError } from '../types'
+import { MSApiError } from '../../dist/types/types/types';
+import { MeiliSearchApiError } from '.';
+
 
 class MeiliSearchCommunicationError extends Error {
   type: string
@@ -28,6 +31,18 @@ class MeiliSearchCommunicationError extends Error {
       this.code = body.code
     }
     if (stack) {
+      if (this.statusCode === 404) {
+        const err: MSApiError = {
+          name: '',
+          message: '',
+          stack: this.stack,
+          httpStatus: this.statusCode,
+          errorCode: this.statusCode.toString(),
+          errorType: 'NOT FOUND',
+          errorLink: url,
+        }
+        throw new MeiliSearchApiError(err, this.statusCode)
+      }
       this.stack = stack
       this.stack = this.stack?.replace(/(TypeError|FetchError)/, this.name)
       this.stack = this.stack?.replace(
