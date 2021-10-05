@@ -13,6 +13,7 @@ import { httpResponseErrorHandler, httpErrorHandler } from '../errors'
 class HttpRequests {
   headers: {}
   url: URL
+  timeout: number | undefined
 
   constructor(config: Config) {
     this.headers = {
@@ -20,6 +21,7 @@ class HttpRequests {
       'Content-Type': 'application/json',
       ...(config.apiKey ? { 'X-Meili-API-Key': config.apiKey } : {}),
     }
+    this.timeout = config.timeout
     this.url = new URL(config.host)
   }
 
@@ -52,12 +54,17 @@ class HttpRequests {
       constructURL.search = queryParams.toString()
     }
 
+    const controller = new AbortController()
+
+    setTimeout(() => { controller.abort() } , this.timeout)
+
     try {
       const response: Response = await fetch(constructURL.toString(), {
         ...config,
         method,
         body: JSON.stringify(body),
         headers: this.headers,
+        signal: controller.signal
       }).then((res) => httpResponseErrorHandler(res))
       const parsedBody: string = await response.text()
 

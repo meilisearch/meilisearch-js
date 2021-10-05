@@ -8,6 +8,7 @@ export type Config = {
   host: string
   apiKey?: string
   headers?: object
+  timeout?: number
 }
 
 ///
