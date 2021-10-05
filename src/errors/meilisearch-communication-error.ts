@@ -1,5 +1,5 @@
 import 'cross-fetch/polyfill'
-import { FetchError,MSApiError } from '../types'
+import { FetchError, MSApiError } from '../types'
 import { MeiliSearchApiError } from './meilisearch-api-error'
 
 class MeiliSearchCommunicationError extends Error {
