@@ -56,11 +56,13 @@ class HttpRequests {
 
     const controller = new AbortController()
 
-    if(this.timeout === undefined){
+    if (this.timeout === undefined) {
       this.timeout = 3000
     }
 
-    setTimeout(() => { controller.abort() } , this.timeout)
+    setTimeout(() => {
+      controller.abort()
+    }, this.timeout)
 
     try {
       const response: Response = await fetch(constructURL.toString(), {
@@ -68,7 +70,7 @@ class HttpRequests {
         method,
         body: JSON.stringify(body),
         headers: this.headers,
-        signal: controller.signal
+        signal: controller.signal,
       }).then((res) => httpResponseErrorHandler(res))
       const parsedBody: string = await response.text()
 
