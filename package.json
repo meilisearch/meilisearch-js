@@ -51,6 +51,7 @@
   },
   "files": [
     "src",
+    "dist",
     "CONTRIBUTING.md",
     "bors.toml"
   ],
