@@ -49,6 +49,11 @@
     "lint:fix": "eslint --ext .js,.ts,.tsx --fix .",
     "typingsheader": "node scripts/build.js"
   },
+  "files": [
+    "src",
+    "dist",
+    "CONTRIBUTING.md"
+  ],
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}": [
       "prettier --write",
