@@ -52,8 +52,7 @@
   "files": [
     "src",
     "dist",
-    "CONTRIBUTING.md",
-    "bors.toml"
+    "CONTRIBUTING.md"
   ],
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}": [
