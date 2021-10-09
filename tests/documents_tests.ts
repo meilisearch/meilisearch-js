@@ -71,6 +71,24 @@ describe.each([
     await client.index(indexPk.uid).waitForPendingUpdate(updateId)
   })
 
+
+  test(`${permission} key: Add documents to uid with primary key in batch`, async () => {
+    const updateIds:number[] = await client
+      .index(indexPk.uid)
+      .addDocumentsInBatch(dataset, 4)
+      .then((response: EnqueuedUpdate[]) => {
+        expect(response).toBeInstanceOf(Array);
+        expect(response).toHaveLength(2);
+        expect(response[0]).toHaveProperty('updateId', expect.any(Number))
+        const tempIds:number[] = [];
+        response.forEach((entry) => tempIds.push(entry.updateId))
+        return tempIds
+      })
+    for(let updateId of updateIds) {
+      await client.index(indexPk.uid).waitForPendingUpdate(updateId)
+    }
+  })
+
   test(`${permission} key: Get documents with string attributesToRetrieve`, async () => {
     await client
       .index(indexNoPk.uid)

@@ -317,6 +317,31 @@ class Index<T = Record<string, any>> {
     return await this.httpRequest.post(url, documents, options)
   }
 
+    /**
+   * Add or replace multiples documents to an index in batches
+   * @memberof Index
+   * @method addDocumentsInBatch
+   */
+    async addDocumentsInBatch(
+      documents: Array<Document<T>>,
+      batchSize: number = 1000,
+      options?: AddDocumentParams
+    ): Promise<EnqueuedUpdate[]> {
+      const resultArray = []
+      let batchDocuments = [];
+      for(let i = 0, n = documents.length; i < n; ++i) {
+        if(batchDocuments.length == batchSize) {
+          resultArray.push(await this.addDocuments(batchDocuments, options));
+          batchDocuments = []
+        }
+        batchDocuments.push(documents[i]);
+      }
+      if(batchDocuments.length != 0) {
+        resultArray.push(await this.addDocuments(batchDocuments, options));
+      }
+      return resultArray
+    }
+
   /**
    * Add or update multiples documents to an index
    * @memberof Index
@@ -329,6 +354,31 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/documents`
     return await this.httpRequest.put(url, documents, options)
   }
+
+    /**
+   * Add or update multiples documents to an index in batches
+   * @memberof Index
+   * @method updateDocuments
+   */
+    async updateDocumentsInBatch(
+    documents: Array<Document<T>>,
+    batchSize: number = 1000,
+    options?: AddDocumentParams
+    ): Promise<EnqueuedUpdate[]> {
+      const resultArray = []
+      let batchDocuments = [];
+      for(let i = 0, n = documents.length; i < n; ++i) {
+        if(batchDocuments.length == batchSize) {
+          resultArray.push(await this.updateDocuments(batchDocuments, options));
+          batchDocuments = []
+        }
+        batchDocuments.push(documents[i]);
+      }
+      if(batchDocuments.length != 0) {
+        resultArray.push(await this.updateDocuments(batchDocuments, options));
+      }
+      return resultArray
+    }
 
   /**
    * Delete one document
