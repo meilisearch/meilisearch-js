@@ -330,7 +330,7 @@ class Index<T = Record<string, any>> {
       const resultArray = []
       let batchDocuments = [];
       for(let i = 0, n = documents.length; i < n; ++i) {
-        if(batchDocuments.length == batchSize) {
+        if(batchDocuments.length === batchSize) {
           resultArray.push(await this.addDocuments(batchDocuments, options));
           batchDocuments = []
         }
@@ -368,7 +368,7 @@ class Index<T = Record<string, any>> {
       const resultArray = []
       let batchDocuments = [];
       for(let i = 0, n = documents.length; i < n; ++i) {
-        if(batchDocuments.length == batchSize) {
+        if(batchDocuments.length === batchSize) {
           resultArray.push(await this.updateDocuments(batchDocuments, options));
           batchDocuments = []
         }
