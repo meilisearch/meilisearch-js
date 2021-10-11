@@ -84,33 +84,35 @@ describe.each([
   })
 
   test(`${permission} key: Get default settings of an index`, async () => {
-    await client
-      .index(index.uid)
-      .getSettings()
-      .then((response: Settings) => {
-        expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-        expect(response).toHaveProperty('distinctAttribute', null)
-        expect(response).toHaveProperty('searchableAttributes', ['*'])
-        expect(response).toHaveProperty('displayedAttributes', ['*'])
-        expect(response).toHaveProperty('sortableAttributes', [])
-        expect(response).toHaveProperty('stopWords', [])
-        expect(response).toHaveProperty('synonyms', {})
-      })
+    try {
+      const response: Settings = await client.index(index.uid).getSettings()
+      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
+      expect(response).toHaveProperty('distinctAttribute', null)
+      expect(response).toHaveProperty('searchableAttributes', ['*'])
+      expect(response).toHaveProperty('displayedAttributes', ['*'])
+      expect(response).toHaveProperty('sortableAttributes', [])
+      expect(response).toHaveProperty('stopWords', [])
+      expect(response).toHaveProperty('synonyms', {})
+    } catch (error) {
+      throw new Error(error)
+    }
   })
 
   test(`${permission} key: Get default settings of empty index with primary key`, async () => {
-    await client
-      .index(indexAndPK.uid)
-      .getSettings()
-      .then((response: Settings) => {
-        expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-        expect(response).toHaveProperty('distinctAttribute', null)
-        expect(response).toHaveProperty('searchableAttributes', ['*'])
-        expect(response).toHaveProperty('displayedAttributes', ['*'])
-        expect(response).toHaveProperty('sortableAttributes', [])
-        expect(response).toHaveProperty('stopWords', [])
-        expect(response).toHaveProperty('synonyms', {})
-      })
+    try {
+      const response: Settings = await client
+        .index(indexAndPK.uid)
+        .getSettings()
+      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
+      expect(response).toHaveProperty('distinctAttribute', null)
+      expect(response).toHaveProperty('searchableAttributes', ['*'])
+      expect(response).toHaveProperty('displayedAttributes', ['*'])
+      expect(response).toHaveProperty('sortableAttributes', [])
+      expect(response).toHaveProperty('stopWords', [])
+      expect(response).toHaveProperty('synonyms', {})
+    } catch (error) {
+      throw new Error(error)
+    }
   })
 
   test(`${permission} key: Update settings`, async () => {
@@ -120,31 +122,30 @@ describe.each([
       stopWords: ['the'],
       filterableAttributes: [],
     }
-    const { updateId } = await client
-      .index(index.uid)
-      .updateSettings(newSettings)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getSettings()
-      .then((response: Settings) => {
-        expect(response).toHaveProperty(
-          'rankingRules',
-          newSettings.rankingRules
-        )
-        expect(response).toHaveProperty(
-          'distinctAttribute',
-          newSettings.distinctAttribute
-        )
-        expect(response).toHaveProperty('searchableAttributes', ['*'])
-        expect(response).toHaveProperty('displayedAttributes', ['*'])
-        expect(response).toHaveProperty('stopWords', newSettings.stopWords)
-        expect(response).toHaveProperty('synonyms', {})
-      })
+    try {
+      const response: EnqueuedUpdate = await client
+        .index(index.uid)
+        .updateSettings(newSettings)
+      expect(response).toHaveProperty('updateId', expect.any(Number))
+      await client.index(index.uid).waitForPendingUpdate(response.updateId)
+    } catch (error) {
+      throw new Error(error)
+    }
+
+    try {
+      const response: Settings = await client.index(index.uid).getSettings()
+      expect(response).toHaveProperty('rankingRules', newSettings.rankingRules)
+      expect(response).toHaveProperty(
+        'distinctAttribute',
+        newSettings.distinctAttribute
+      )
+      expect(response).toHaveProperty('searchableAttributes', ['*'])
+      expect(response).toHaveProperty('displayedAttributes', ['*'])
+      expect(response).toHaveProperty('stopWords', newSettings.stopWords)
+      expect(response).toHaveProperty('synonyms', {})
+    } catch (error) {
+      throw new Error(error)
+    }
   })
 
   test(`${permission} key: Update settings on empty index with primary key`, async () => {
@@ -153,144 +154,151 @@ describe.each([
       rankingRules: ['title:asc', 'typo'],
       stopWords: ['the'],
     }
-    const { updateId } = await client
-      .index(indexAndPK.uid)
-      .updateSettings(newSettings)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(indexAndPK.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(indexAndPK.uid)
-      .getSettings()
-      .then((response: Settings) => {
-        expect(response).toHaveProperty(
-          'rankingRules',
-          newSettings.rankingRules
-        )
-        expect(response).toHaveProperty(
-          'distinctAttribute',
-          newSettings.distinctAttribute
-        )
-        expect(response).toHaveProperty('searchableAttributes', ['*'])
-        expect(response).toHaveProperty('displayedAttributes', ['*'])
-        expect(response).toHaveProperty('stopWords', newSettings.stopWords)
-        expect(response).toHaveProperty('synonyms', {})
-      })
+
+    try {
+      const response: EnqueuedUpdate = await client
+        .index(indexAndPK.uid)
+        .updateSettings(newSettings)
+      expect(response).toHaveProperty('updateId', expect.any(Number))
+      await client.index(indexAndPK.uid).waitForPendingUpdate(response.updateId)
+    } catch (error) {
+      throw new Error(error)
+    }
+    try {
+      const response: Settings = await client
+        .index(indexAndPK.uid)
+        .getSettings()
+      expect(response).toHaveProperty('rankingRules', newSettings.rankingRules)
+      expect(response).toHaveProperty(
+        'distinctAttribute',
+        newSettings.distinctAttribute
+      )
+      expect(response).toHaveProperty('searchableAttributes', ['*'])
+      expect(response).toHaveProperty('displayedAttributes', ['*'])
+      expect(response).toHaveProperty('stopWords', newSettings.stopWords)
+      expect(response).toHaveProperty('synonyms', {})
+    } catch (error) {
+      throw new Error(error)
+    }
   })
 
   test(`${permission} key: Reset settings`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .resetSettings()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getSettings()
-      .then((response: Settings) => {
-        expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-        expect(response).toHaveProperty('distinctAttribute', null)
-        expect(response).toHaveProperty('searchableAttributes', ['*'])
-        expect(response).toHaveProperty('displayedAttributes', ['*'])
-        expect(response).toHaveProperty('sortableAttributes', [])
-        expect(response).toHaveProperty('stopWords', [])
-        expect(response).toHaveProperty('synonyms', {})
-      })
+    try {
+      const response: EnqueuedUpdate = await client
+        .index(index.uid)
+        .resetSettings()
+      expect(response).toHaveProperty('updateId', expect.any(Number))
+      await client.index(index.uid).waitForPendingUpdate(response.updateId)
+    } catch (error) {
+      throw new Error(error)
+    }
+
+    try {
+      const response: Settings = await client.index(index.uid).getSettings()
+      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
+      expect(response).toHaveProperty('distinctAttribute', null)
+      expect(response).toHaveProperty('searchableAttributes', ['*'])
+      expect(response).toHaveProperty('displayedAttributes', ['*'])
+      expect(response).toHaveProperty('sortableAttributes', [])
+      expect(response).toHaveProperty('stopWords', [])
+      expect(response).toHaveProperty('synonyms', {})
+    } catch (error) {
+      throw new Error(error)
+    }
   })
 
   test(`${permission} key: Reset settings of empty index`, async () => {
-    const { updateId } = await client
-      .index(indexAndPK.uid)
-      .resetSettings()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(indexAndPK.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(indexAndPK.uid)
-      .getSettings()
-      .then((response: Settings) => {
-        expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-        expect(response).toHaveProperty('distinctAttribute', null)
-        expect(response).toHaveProperty('searchableAttributes', ['*'])
-        expect(response).toHaveProperty('displayedAttributes', ['*'])
-        expect(response).toHaveProperty('stopWords', [])
-        expect(response).toHaveProperty('synonyms', {})
-      })
+    try {
+      const response: EnqueuedUpdate = await client
+        .index(indexAndPK.uid)
+        .resetSettings()
+      expect(response).toHaveProperty('updateId', expect.any(Number))
+      await client.index(index.uid).waitForPendingUpdate(response.updateId)
+    } catch (error) {
+      throw new Error(error)
+    }
+
+    try {
+      const response: Settings = await client
+        .index(indexAndPK.uid)
+        .getSettings()
+      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
+      expect(response).toHaveProperty('distinctAttribute', null)
+      expect(response).toHaveProperty('searchableAttributes', ['*'])
+      expect(response).toHaveProperty('displayedAttributes', ['*'])
+      expect(response).toHaveProperty('stopWords', [])
+      expect(response).toHaveProperty('synonyms', {})
+    } catch (error) {
+      throw new Error(error)
+    }
   })
 
   test(`${permission} key: Update settings that verifies no overwrite in the settings`, async () => {
     const newSettings = {
       searchableAttributes: ['title'],
     }
-    const { updateId } = await client
-      .index(index.uid)
-      .updateSettings(newSettings)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getSettings()
-      .then((response: Settings) => {
-        expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-        expect(response).toHaveProperty(
-          'distinctAttribute',
-          defaultSettings.distinctAttribute
-        )
-        expect(response).toHaveProperty(
-          'searchableAttributes',
-          newSettings.searchableAttributes
-        )
-        expect(response).toHaveProperty(
-          'displayedAttributes',
-          expect.any(Array)
-        )
-        expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
-        expect(response).toHaveProperty('synonyms', {})
-      })
+    try {
+      const response: EnqueuedUpdate = await client
+        .index(index.uid)
+        .updateSettings(newSettings)
+      expect(response).toHaveProperty('updateId', expect.any(Number))
+      await client.index(index.uid).waitForPendingUpdate(response.updateId)
+    } catch (error) {
+      throw new Error(error)
+    }
+
+    try {
+      const response: Settings = await client.index(index.uid).getSettings()
+      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
+      expect(response).toHaveProperty(
+        'distinctAttribute',
+        defaultSettings.distinctAttribute
+      )
+      expect(response).toHaveProperty(
+        'searchableAttributes',
+        newSettings.searchableAttributes
+      )
+      expect(response).toHaveProperty('displayedAttributes', expect.any(Array))
+      expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
+      expect(response).toHaveProperty('synonyms', {})
+    } catch (error) {
+      throw new Error(error)
+    }
   })
 
   test(`${permission} key: Update settings that verifies no overwrite in the settings on empty index with primary key`, async () => {
     const newSettings = {
       searchableAttributes: ['title'],
     }
-    const { updateId } = await client
-      .index(indexAndPK.uid)
-      .updateSettings(newSettings)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(indexAndPK.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(indexAndPK.uid)
-      .getSettings()
-      .then((response: Settings) => {
-        expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-        expect(response).toHaveProperty(
-          'distinctAttribute',
-          defaultSettingsEmpty.distinctAttribute
-        )
-        expect(response).toHaveProperty(
-          'searchableAttributes',
-          newSettings.searchableAttributes
-        )
-        expect(response).toHaveProperty(
-          'displayedAttributes',
-          expect.any(Array)
-        )
-        expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
-        expect(response).toHaveProperty('synonyms', {})
-      })
+    try {
+      const response: EnqueuedUpdate = await client
+        .index(indexAndPK.uid)
+        .updateSettings(newSettings)
+      expect(response).toHaveProperty('updateId', expect.any(Number))
+      await client.index(index.uid).waitForPendingUpdate(response.updateId)
+    } catch (error) {
+      throw new Error(error)
+    }
+
+    try {
+      const response: Settings = await client
+        .index(indexAndPK.uid)
+        .getSettings()
+      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
+      expect(response).toHaveProperty(
+        'distinctAttribute',
+        defaultSettingsEmpty.distinctAttribute
+      )
+      expect(response).toHaveProperty(
+        'searchableAttributes',
+        newSettings.searchableAttributes
+      )
+      expect(response).toHaveProperty('displayedAttributes', expect.any(Array))
+      expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
+      expect(response).toHaveProperty('synonyms', {})
+    } catch (error) {
+      throw new Error(error)
+    }
   })
 })
 
