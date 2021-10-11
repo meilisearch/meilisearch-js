@@ -317,30 +317,24 @@ class Index<T = Record<string, any>> {
     return await this.httpRequest.post(url, documents, options)
   }
 
-    /**
+  /**
    * Add or replace multiples documents to an index in batches
    * @memberof Index
    * @method addDocumentsInBatch
    */
-    async addDocumentsInBatch(
-      documents: Array<Document<T>>,
-      batchSize: number = 1000,
-      options?: AddDocumentParams
-    ): Promise<EnqueuedUpdate[]> {
-      const resultArray = []
-      let batchDocuments = [];
-      for(let i = 0, n = documents.length; i < n; ++i) {
-        if(batchDocuments.length === batchSize) {
-          resultArray.push(await this.addDocuments(batchDocuments, options));
-          batchDocuments = []
-        }
-        batchDocuments.push(documents[i]);
-      }
-      if(batchDocuments.length != 0) {
-        resultArray.push(await this.addDocuments(batchDocuments, options));
-      }
-      return resultArray
+  async addDocumentsInBatch(
+    documents: Array<Document<T>>,
+    batchSize = 1000,
+    options?: AddDocumentParams
+  ): Promise<EnqueuedUpdate[]> {
+    const resultArray = []
+    for (let i = 0, n = documents.length; i < n; i += batchSize) {
+      resultArray.push(
+        await this.addDocuments(documents.slice(i, i + batchSize), options)
+      )
     }
+    return resultArray
+  }
 
   /**
    * Add or update multiples documents to an index
@@ -355,30 +349,24 @@ class Index<T = Record<string, any>> {
     return await this.httpRequest.put(url, documents, options)
   }
 
-    /**
+  /**
    * Add or update multiples documents to an index in batches
    * @memberof Index
    * @method updateDocuments
    */
-    async updateDocumentsInBatch(
+  async updateDocumentsInBatch(
     documents: Array<Document<T>>,
-    batchSize: number = 1000,
+    batchSize = 1000,
     options?: AddDocumentParams
-    ): Promise<EnqueuedUpdate[]> {
-      const resultArray = []
-      let batchDocuments = [];
-      for(let i = 0, n = documents.length; i < n; ++i) {
-        if(batchDocuments.length === batchSize) {
-          resultArray.push(await this.updateDocuments(batchDocuments, options));
-          batchDocuments = []
-        }
-        batchDocuments.push(documents[i]);
-      }
-      if(batchDocuments.length != 0) {
-        resultArray.push(await this.updateDocuments(batchDocuments, options));
-      }
-      return resultArray
+  ): Promise<EnqueuedUpdate[]> {
+    const resultArray = []
+    for (let i = 0, n = documents.length; i < n; i += batchSize) {
+      resultArray.push(
+        await this.updateDocuments(documents.slice(i, i + batchSize), options)
+      )
     }
+    return resultArray
+  }
 
   /**
    * Delete one document

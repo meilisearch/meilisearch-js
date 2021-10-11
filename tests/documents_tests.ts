@@ -71,21 +71,19 @@ describe.each([
     await client.index(indexPk.uid).waitForPendingUpdate(updateId)
   })
 
-
   test(`${permission} key: Add documents to uid with primary key in batch`, async () => {
-    const updateIds:number[] = await client
+    const response: EnqueuedUpdate[] = await client
       .index(indexPk.uid)
       .addDocumentsInBatch(dataset, 4)
-      .then((response: EnqueuedUpdate[]) => {
-        expect(response).toBeInstanceOf(Array);
-        expect(response).toHaveLength(2);
-        expect(response[0]).toHaveProperty('updateId', expect.any(Number))
-        const tempIds:number[] = [];
-        response.forEach((entry) => tempIds.push(entry.updateId))
-        return tempIds
-      })
-    for(let updateId of updateIds) {
-      await client.index(indexPk.uid).waitForPendingUpdate(updateId)
+    expect(response).toBeInstanceOf(Array)
+    expect(response).toHaveLength(2)
+    expect(response[0]).toHaveProperty('updateId', expect.any(Number))
+    for (const enqueuedUpdate of response) {
+      const addResponse = await client
+        .index(indexPk.uid)
+        .waitForPendingUpdate(enqueuedUpdate.updateId)
+      expect(addResponse.status).toBe('processed')
+      expect(addResponse.type.name).toBe('DocumentsAddition')
     }
   })
 
@@ -227,30 +225,19 @@ describe.each([
   })
 
   test(`${permission} key: Update document from index that has a primary key in batch`, async () => {
-    const id = 456
-    const title = 'The Little Prince'
-    const comment = 'Updated comment'
-
-    const updateIds = await client
+    const response: EnqueuedUpdate[] = await client
       .index(indexPk.uid)
-      .updateDocumentsInBatch([{ id, title }, {id, comment}], 1)
-      .then((response: EnqueuedUpdate[]) => {
-        expect(response).toHaveLength(2)
-        expect(response[0]).toHaveProperty('updateId', expect.any(Number))
-        const tempIds:number[] = [];
-        response.forEach((entry) => tempIds.push(entry.updateId))
-        return tempIds
-      })
-    await client.index(indexPk.uid).waitForPendingUpdate(updateIds[0])
-    await client.index(indexPk.uid).waitForPendingUpdate(updateIds[1])
-    await client
-      .index(indexPk.uid)
-      .getDocument(id)
-      .then((response) => {
-        expect(response).toHaveProperty('id', id)
-        expect(response).toHaveProperty('title', title)
-        expect(response).toHaveProperty('comment', comment)
-      })
+      .updateDocumentsInBatch(dataset, 2)
+    expect(response).toBeInstanceOf(Array)
+    expect(response).toHaveLength(4)
+    expect(response[0]).toHaveProperty('updateId', expect.any(Number))
+    for (const enqueuedUpdate of response) {
+      const addResponse = await client
+        .index(indexPk.uid)
+        .waitForPendingUpdate(enqueuedUpdate.updateId)
+      expect(addResponse.status).toBe('processed')
+      expect(addResponse.type.name).toBe('DocumentsPartial')
+    }
   })
 
   test(`${permission} key: Add document with update documents function from index that has NO primary key`, async () => {
