@@ -89,8 +89,22 @@ describe.each([
       })
   })
 
+  test(`${permission} key: Get raw index that exists`, async () => {
+    await client.createIndex(indexPk.uid)
+    await client.getRawIndex(indexPk.uid).then((response) => {
+      expect(response).toHaveProperty('uid', indexPk.uid)
+    })
+  })
+
   test(`${permission} key: Get index that does not exist`, async () => {
     await expect(client.getIndex('does_not_exist')).rejects.toHaveProperty(
+      'errorCode',
+      ErrorStatusCode.INDEX_NOT_FOUND
+    )
+  })
+
+  test(`${permission} key: Get raw index that does not exist`, async () => {
+    await expect(client.getRawIndex('does_not_exist')).rejects.toHaveProperty(
       'errorCode',
       ErrorStatusCode.INDEX_NOT_FOUND
     )
@@ -106,9 +120,27 @@ describe.each([
     })
   })
 
+  test(`${permission} key: Get raw index info with primary key`, async () => {
+    await client.createIndex(indexPk.uid, {
+      primaryKey: indexPk.primaryKey,
+    })
+    await client.getRawIndex(indexPk.uid).then((response: IndexResponse) => {
+      expect(response).toHaveProperty('uid', indexPk.uid)
+      expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
+    })
+  })
+
   test(`${permission} key: Get index info with NO primary key`, async () => {
     const index = await client.createIndex(indexNoPk.uid)
     await index.getRawInfo().then((response: IndexResponse) => {
+      expect(response).toHaveProperty('uid', indexNoPk.uid)
+      expect(response).toHaveProperty('primaryKey', null)
+    })
+  })
+
+  test(`${permission} key: Get raw index info with NO primary key`, async () => {
+    await client.createIndex(indexNoPk.uid)
+    await client.getRawIndex(indexNoPk.uid).then((response: IndexResponse) => {
       expect(response).toHaveProperty('uid', indexNoPk.uid)
       expect(response).toHaveProperty('primaryKey', null)
     })
@@ -198,6 +230,13 @@ describe.each([
     )
   })
 
+  test(`${permission} key: get deleted raw index should fail`, async () => {
+    await expect(client.getRawIndex(indexNoPk.uid)).rejects.toHaveProperty(
+      'errorCode',
+      ErrorStatusCode.INDEX_NOT_FOUND
+    )
+  })
+
   test(`${permission} key: delete index with uid that does not exist should fail`, async () => {
     const index = client.index(indexNoPk.uid)
     await expect(index.delete()).rejects.toHaveProperty(
@@ -266,6 +305,13 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
     })
 
+    test(`${permission} key: try to get raw index and be denied`, async () => {
+      await expect(client.getRawIndex(indexNoPk.uid)).rejects.toHaveProperty(
+        'errorCode',
+        ErrorStatusCode.INVALID_TOKEN
+      )
+    })
+
     test(`${permission} key: try to delete index and be denied`, async () => {
       await expect(client.index(indexPk.uid).delete()).rejects.toHaveProperty(
         'errorCode',
@@ -306,6 +352,13 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(indexNoPk.uid).getRawInfo()
       ).rejects.toHaveProperty(
+        'errorCode',
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
+    })
+
+    test(`${permission} key: try to get raw index and be denied`, async () => {
+      await expect(client.getRawIndex(indexNoPk.uid)).rejects.toHaveProperty(
         'errorCode',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
@@ -359,6 +412,23 @@ describe.each([
       )}`
     )
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
+      'type',
+      'MeiliSearchCommunicationError'
+    )
+  })
+
+  test(`Test getRawIndex route`, async () => {
+    const route = `indexes/${indexPk.uid}`
+    const client = new MeiliSearch({ host })
+    const strippedHost = trailing ? host.slice(0, -1) : host
+    await expect(client.getRawIndex(indexPk.uid)).rejects.toHaveProperty(
+      'message',
+      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
+        'http://',
+        ''
+      )}`
+    )
+    await expect(client.getRawIndex(indexPk.uid)).rejects.toHaveProperty(
       'type',
       'MeiliSearchCommunicationError'
     )
