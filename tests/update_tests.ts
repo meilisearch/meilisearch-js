@@ -44,46 +44,50 @@ describe.each([
   })
 
   test(`${permission} key: Get one update`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .addDocuments(dataset)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getUpdateStatus(updateId)
-      .then((response: Update) => {
-        expect(response).toHaveProperty('status', 'processed')
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        expect(response).toHaveProperty('type', expect.any(Object))
-        expect(response.type).toHaveProperty('name', 'DocumentsAddition')
-        expect(response.type).toHaveProperty('number', 7)
-        expect(response).toHaveProperty('duration', expect.any(Number))
-        expect(response).toHaveProperty('enqueuedAt', expect.any(String))
-        expect(response).toHaveProperty('processedAt', expect.any(String))
-      })
+    try {
+      const response: EnqueuedUpdate = await client
+        .index(index.uid)
+        .addDocuments(dataset)
+      expect(response).toHaveProperty('updateId', expect.any(Number))
+      await client.index(index.uid).waitForPendingUpdate(response.updateId)
+
+      const stausReponse: Update = await client
+        .index(index.uid)
+        .getUpdateStatus(response.updateId)
+
+      expect(stausReponse).toHaveProperty('status', 'processed')
+      expect(stausReponse).toHaveProperty('updateId', expect.any(Number))
+      expect(stausReponse).toHaveProperty('type', expect.any(Object))
+      expect(stausReponse.type).toHaveProperty('name', 'DocumentsAddition')
+      expect(stausReponse.type).toHaveProperty('number', 7)
+      expect(stausReponse).toHaveProperty('duration', expect.any(Number))
+      expect(stausReponse).toHaveProperty('enqueuedAt', expect.any(String))
+      expect(stausReponse).toHaveProperty('processedAt', expect.any(String))
+    } catch (error) {
+      throw new Error(error)
+    }
   })
 
   test(`${permission} key: Get all updates`, async () => {
     const { updateId } = await client.index(index.uid).addDocuments([{ id: 1 }])
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getAllUpdateStatus()
-      .then((response: Update[]) => {
-        expect(response.length).toEqual(1)
-        expect(response[0]).toHaveProperty('status', 'processed')
-        expect(response[0]).toHaveProperty('updateId', expect.any(Number))
-        expect(response[0]).toHaveProperty('type', expect.any(Object))
-        expect(response[0].type).toHaveProperty('name', 'DocumentsAddition')
-        expect(response[0].type).toHaveProperty('number', 1)
-        expect(response[0]).toHaveProperty('duration', expect.any(Number))
-        expect(response[0]).toHaveProperty('enqueuedAt', expect.any(String))
-        expect(response[0]).toHaveProperty('processedAt', expect.any(String))
-      })
+
+    try {
+      const response: Update[] = await client
+        .index(index.uid)
+        .getAllUpdateStatus()
+      expect(response.length).toEqual(1)
+      expect(response[0]).toHaveProperty('status', 'processed')
+      expect(response[0]).toHaveProperty('updateId', expect.any(Number))
+      expect(response[0]).toHaveProperty('type', expect.any(Object))
+      expect(response[0].type).toHaveProperty('name', 'DocumentsAddition')
+      expect(response[0].type).toHaveProperty('number', 1)
+      expect(response[0]).toHaveProperty('duration', expect.any(Number))
+      expect(response[0]).toHaveProperty('enqueuedAt', expect.any(String))
+      expect(response[0]).toHaveProperty('processedAt', expect.any(String))
+    } catch (error) {
+      throw new Error(error)
+    }
   })
 
   test(`${permission} key: Try to get update that does not exist`, async () => {
