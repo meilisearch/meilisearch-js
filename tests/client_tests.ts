@@ -241,7 +241,7 @@ describe.each([
 
       test(`${permission} key: get all indexes when not empty`, async () => {
         await client.createIndex(indexPk.uid)
-        await client.getIndexes().then((response: IndexResponse[]) => {
+        await client.getIndexes().then((response: Index[]) => {
           const indexes = response.map((index) => index.uid)
           expect(indexes).toEqual(expect.arrayContaining([indexPk.uid]))
           expect(indexes.length).toEqual(1)

@@ -1,5 +1,5 @@
 import { MeiliSearch, MeiliSearchTimeOutError, Index, sleep } from '../src/'
-import { Config, IndexResponse, EnqueuedDump } from '../src/types'
+import { Config, EnqueuedDump } from '../src/types'
 
 // testing
 const MASTER_KEY = 'masterKey'
@@ -38,8 +38,8 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
   const client = new MeiliSearch(config)
   const indexes = await client
     .getIndexes()
-    .then((response: IndexResponse[]): string[] => {
-      return response.map((elem: IndexResponse) => elem.uid)
+    .then((response: Index[]): string[] => {
+      return response.map((elem: Index) => elem.uid)
     })
 
   for (const indexUid of indexes) {
