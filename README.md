@@ -345,6 +345,9 @@ If you want to know more about the development workflow or want to contribute, p
 - [Get an index instance completed with information fetched from MeiliSearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
 `client.getIndex<T>(uid: string): Promise<Index<T>>`
 
+- [Get the raw index JSON response from MeiliSearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
+`client.getRawIndex(uid: string): Promise<IndexResponse>`
+
 - Get or create an index if it does not exist:
 
 `client.getOrCreateIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
