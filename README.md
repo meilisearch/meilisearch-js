@@ -398,9 +398,13 @@ Or using the index object:
 
 `index.addDocuments(documents: Document<T>[]): Promise<EnqueuedUpdate>`
 
+`index.addDocumentsInBatch(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedUpdate[]>`
+
 - Add or update multiple documents:
 
 `index.updateDocuments(documents: Document<T>[]): Promise<EnqueuedUpdate>`
+
+`index.updateDocumentsInBatch(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedUpdate[]>`
 
 - Get Documents:
 
