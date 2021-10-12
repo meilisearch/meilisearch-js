@@ -434,9 +434,9 @@ geosearch_guide_sort_settings_1: |-
   ])
 geosearch_guide_sort_usage_1: |-
   client.index('restaurants').search('', {
-    sort: '_geoPoint(48.8583701,2.2922926):asc',
+    sort: ['_geoPoint(48.8583701,2.2922926):asc'],
   })
 geosearch_guide_sort_usage_2: |-
   client.index('restaurants').search('', {
-    sort: '_geoPoint(48.8583701,2.2922926):asc", "rating:desc',
+    sort: ['_geoPoint(48.8583701,2.2922926):asc', 'rating:desc'],
   })
