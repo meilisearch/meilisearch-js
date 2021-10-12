@@ -74,7 +74,7 @@ describe.each([
   test(`${permission} key: Add documents to uid with primary key in batch`, async () => {
     const response: EnqueuedUpdate[] = await client
       .index(indexPk.uid)
-      .addDocumentsInBatch(dataset, 4)
+      .addDocumentsInBatches(dataset, 4)
     expect(response).toBeInstanceOf(Array)
     expect(response).toHaveLength(2)
     expect(response[0]).toHaveProperty('updateId', expect.any(Number))
@@ -227,7 +227,7 @@ describe.each([
   test(`${permission} key: Update document from index that has a primary key in batch`, async () => {
     const response: EnqueuedUpdate[] = await client
       .index(indexPk.uid)
-      .updateDocumentsInBatch(dataset, 2)
+      .updateDocumentsInBatches(dataset, 2)
     expect(response).toBeInstanceOf(Array)
     expect(response).toHaveLength(4)
     expect(response[0]).toHaveProperty('updateId', expect.any(Number))

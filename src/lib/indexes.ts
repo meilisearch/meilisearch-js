@@ -319,9 +319,9 @@ class Index<T = Record<string, any>> {
   /**
    * Add or replace multiples documents to an index in batches
    * @memberof Index
-   * @method addDocumentsInBatch
+   * @method addDocumentsInBatches
    */
-  async addDocumentsInBatch(
+  async addDocumentsInBatches(
     documents: Array<Document<T>>,
     batchSize = 1000,
     options?: AddDocumentParams
@@ -353,7 +353,7 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateDocuments
    */
-  async updateDocumentsInBatch(
+  async updateDocumentsInBatches(
     documents: Array<Document<T>>,
     batchSize = 1000,
     options?: AddDocumentParams

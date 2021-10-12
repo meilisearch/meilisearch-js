@@ -402,7 +402,7 @@ Or using the index object:
 
 - [Add or replace multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents):
 
-`index.addDocumentsInBatch(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedUpdate[]>`
+`index.addDocumentsInBatches(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedUpdate[]>`
 
 - [Add or update multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
 
@@ -410,7 +410,7 @@ Or using the index object:
 
 - [Add or update multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
 
-`index.updateDocumentsInBatch(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedUpdate[]>`
+`index.updateDocumentsInBatches(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedUpdate[]>`
 
 - [Get Documents](https://docs.meilisearch.com/reference/api/documents.html#get-documents):
 
