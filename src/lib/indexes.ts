@@ -33,7 +33,6 @@ import {
   SortableAttributes,
   SearchableAttributes,
   DisplayedAttributes,
-  FetchError,
 } from '../types'
 import { sleep, removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -225,7 +224,7 @@ class Index<T = Record<string, any>> {
     try {
       await this.delete()
       return true
-    } catch (e: any | FetchError) {
+    } catch (e) {
       if (e.errorCode === 'index_not_found') {
         return false
       }
