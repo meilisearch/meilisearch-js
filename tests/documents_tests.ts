@@ -71,6 +71,22 @@ describe.each([
     await client.index(indexPk.uid).waitForPendingUpdate(updateId)
   })
 
+  test(`${permission} key: Add documents to uid with primary key in batch`, async () => {
+    const response: EnqueuedUpdate[] = await client
+      .index(indexPk.uid)
+      .addDocumentsInBatch(dataset, 4)
+    expect(response).toBeInstanceOf(Array)
+    expect(response).toHaveLength(2)
+    expect(response[0]).toHaveProperty('updateId', expect.any(Number))
+    for (const enqueuedUpdate of response) {
+      const addResponse = await client
+        .index(indexPk.uid)
+        .waitForPendingUpdate(enqueuedUpdate.updateId)
+      expect(addResponse.status).toBe('processed')
+      expect(addResponse.type.name).toBe('DocumentsAddition')
+    }
+  })
+
   test(`${permission} key: Get documents with string attributesToRetrieve`, async () => {
     await client
       .index(indexNoPk.uid)
@@ -206,6 +222,22 @@ describe.each([
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
       })
+  })
+
+  test(`${permission} key: Update document from index that has a primary key in batch`, async () => {
+    const response: EnqueuedUpdate[] = await client
+      .index(indexPk.uid)
+      .updateDocumentsInBatch(dataset, 2)
+    expect(response).toBeInstanceOf(Array)
+    expect(response).toHaveLength(4)
+    expect(response[0]).toHaveProperty('updateId', expect.any(Number))
+    for (const enqueuedUpdate of response) {
+      const addResponse = await client
+        .index(indexPk.uid)
+        .waitForPendingUpdate(enqueuedUpdate.updateId)
+      expect(addResponse.status).toBe('processed')
+      expect(addResponse.type.name).toBe('DocumentsPartial')
+    }
   })
 
   test(`${permission} key: Add document with update documents function from index that has NO primary key`, async () => {

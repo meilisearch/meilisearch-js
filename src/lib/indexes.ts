@@ -317,6 +317,25 @@ class Index<T = Record<string, any>> {
   }
 
   /**
+   * Add or replace multiples documents to an index in batches
+   * @memberof Index
+   * @method addDocumentsInBatch
+   */
+  async addDocumentsInBatch(
+    documents: Array<Document<T>>,
+    batchSize = 1000,
+    options?: AddDocumentParams
+  ): Promise<EnqueuedUpdate[]> {
+    const updates = []
+    for (let i = 0; i < documents.length; i += batchSize) {
+      updates.push(
+        await this.addDocuments(documents.slice(i, i + batchSize), options)
+      )
+    }
+    return updates
+  }
+
+  /**
    * Add or update multiples documents to an index
    * @memberof Index
    * @method updateDocuments
@@ -327,6 +346,25 @@ class Index<T = Record<string, any>> {
   ): Promise<EnqueuedUpdate> {
     const url = `indexes/${this.uid}/documents`
     return await this.httpRequest.put(url, documents, options)
+  }
+
+  /**
+   * Add or update multiples documents to an index in batches
+   * @memberof Index
+   * @method updateDocuments
+   */
+  async updateDocumentsInBatch(
+    documents: Array<Document<T>>,
+    batchSize = 1000,
+    options?: AddDocumentParams
+  ): Promise<EnqueuedUpdate[]> {
+    const updates = []
+    for (let i = 0; i < documents.length; i += batchSize) {
+      updates.push(
+        await this.updateDocuments(documents.slice(i, i + batchSize), options)
+      )
+    }
+    return updates
   }
 
   /**
