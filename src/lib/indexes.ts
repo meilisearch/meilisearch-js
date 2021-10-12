@@ -327,13 +327,13 @@ class Index<T = Record<string, any>> {
     batchSize = 1000,
     options?: AddDocumentParams
   ): Promise<EnqueuedUpdate[]> {
-    const resultArray = []
-    for (let i = 0, n = documents.length; i < n; i += batchSize) {
-      resultArray.push(
+    const updates = []
+    for (let i = 0; i < documents.length; i += batchSize) {
+      updates.push(
         await this.addDocuments(documents.slice(i, i + batchSize), options)
       )
     }
-    return resultArray
+    return updates
   }
 
   /**
@@ -359,13 +359,13 @@ class Index<T = Record<string, any>> {
     batchSize = 1000,
     options?: AddDocumentParams
   ): Promise<EnqueuedUpdate[]> {
-    const resultArray = []
-    for (let i = 0, n = documents.length; i < n; i += batchSize) {
-      resultArray.push(
+    const updates = []
+    for (let i = 0; i < documents.length; i += batchSize) {
+      updates.push(
         await this.updateDocuments(documents.slice(i, i + batchSize), options)
       )
     }
-    return resultArray
+    return updates
   }
 
   /**
