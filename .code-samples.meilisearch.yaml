@@ -416,7 +416,7 @@ search_parameter_guide_sort_1: |-
     sort: ['price:asc'],
   })
 geosearch_guide_filter_settings_1: |-
-  client.index('movies')
+  client.index('restaurants')
   .updateFilterableAttributes([
     '_geo'
   ])
