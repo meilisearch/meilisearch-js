@@ -48,12 +48,10 @@ describe.each([
   })
 
   test(`${permission} key: Get default stop words`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .getStopWords()
-      .then((response: string[]) => {
         expect(response).toEqual([])
-      })
   })
 
   test(`${permission} key: Update stop words`, async () => {
@@ -66,12 +64,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getStopWords()
-      .then((response: string[]) => {
         expect(response).toEqual(newStopWords)
-      })
   })
 
   test(`${permission} key: Update stop words with null value`, async () => {
@@ -84,12 +80,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getStopWords()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
+       expect(response).toEqual([])
   })
 
   test(`${permission} key: Reset stop words`, async () => {
@@ -101,12 +95,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getStopWords()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
+      expect(response).toEqual([])
   })
 })
 

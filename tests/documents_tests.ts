@@ -85,42 +85,36 @@ describe.each([
   })
 
   test(`${permission} key: Get documents with array attributesToRetrieve`, async () => {
-    await client
+    const response=await client
       .index(indexNoPk.uid)
       .getDocuments({
         attributesToRetrieve: ['id'],
       })
-      .then((response) => {
-        expect(response.find((x) => Object.keys(x).length !== 1)).toEqual(
-          undefined
-        )
-      })
+     expect(response.find((x) => Object.keys(x).length !== 1)).toEqual(
+        undefined
+      )
   })
 
   test(`${permission} key: Get documents from index that has no primary key`, async () => {
     const { updateId } = await client.index(indexNoPk.uid).addDocuments(dataset)
     await client.index(indexNoPk.uid).waitForPendingUpdate(updateId)
 
-    await client
+    const response=await client
       .index(indexNoPk.uid)
       .getDocuments({
         attributesToRetrieve: 'id',
       })
-      .then((response) => {
-        expect(response.length).toEqual(dataset.length)
-      })
+    expect(response.length).toEqual(dataset.length)
   })
 
   test(`${permission} key: Get documents from index that has a primary key`, async () => {
     const { updateId } = await client.index(indexPk.uid).addDocuments(dataset)
     await client.index(indexPk.uid).waitForPendingUpdate(updateId)
 
-    await client
+    const response=await client
       .index(indexPk.uid)
       .getDocuments()
-      .then((response) => {
-        expect(response.length).toEqual(dataset.length)
-      })
+   expect(response.length).toEqual(dataset.length)
   })
 
   test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
@@ -139,13 +133,11 @@ describe.each([
         return response
       })
     await client.index(indexNoPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexNoPk.uid)
       .getDocument(id)
-      .then((response) => {
-        expect(response).toHaveProperty('id', id)
-        expect(response).toHaveProperty('title', title)
-      })
+      expect(response).toHaveProperty('id', id)
+      expect(response).toHaveProperty('title', title)
   })
 
   test(`${permission} key: Replace documents from index that has a primary key`, async () => {
@@ -159,13 +151,11 @@ describe.each([
         return response
       })
     await client.index(indexPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexPk.uid)
       .getDocument(id)
-      .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
-      })
   })
 
   test(`${permission} key: Update document from index that has NO primary key`, async () => {
@@ -179,13 +169,11 @@ describe.each([
         return response
       })
     await client.index(indexNoPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexNoPk.uid)
       .getDocument(id)
-      .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
-      })
   })
 
   test(`${permission} key: Update document from index that has a primary key`, async () => {
@@ -199,13 +187,11 @@ describe.each([
         return response
       })
     await client.index(indexPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexPk.uid)
       .getDocument(id)
-      .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
-      })
   })
 
   test(`${permission} key: Add document with update documents function from index that has NO primary key`, async () => {
@@ -224,20 +210,17 @@ describe.each([
         return response
       })
     await client.index(indexNoPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexNoPk.uid)
       .getDocument(id)
-      .then((response) => {
-        expect(response).toHaveProperty('id', id)
+      
+      expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
-      })
-    await client
+    const secondResponse=await client
       .index(indexNoPk.uid)
       .getDocuments()
-      .then((response) => {
-        expect(response.length).toEqual(dataset.length + 1)
-      })
-  })
+        expect(secondResponse.length).toEqual(dataset.length + 1)
+   })
 
   test(`${permission} key: Add document with update documents function from index that has a primary key`, async () => {
     const { updateId: addDocUpdate } = await client
@@ -255,13 +238,11 @@ describe.each([
         return response
       })
     await client.index(indexPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexPk.uid)
       .getDocument(id)
-      .then((response) => {
         expect(response).toHaveProperty('id', id)
         expect(response).toHaveProperty('title', title)
-      })
     await client
       .index(indexPk.uid)
       .getDocuments()
@@ -285,12 +266,10 @@ describe.each([
         return response
       })
     await client.index(indexNoPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexNoPk.uid)
       .getDocuments()
-      .then((response) => {
-        expect(response.length).toEqual(dataset.length)
-      })
+      expect(response.length).toEqual(dataset.length)
   })
 
   test(`${permission} key: Delete a document from index that has a primary key`, async () => {
@@ -308,12 +287,10 @@ describe.each([
         return response
       })
     await client.index(indexPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexPk.uid)
       .getDocuments()
-      .then((response) => {
-        expect(response.length).toEqual(dataset.length)
-      })
+      expect(response.length).toEqual(dataset.length)
   })
 
   test(`${permission} key: Delete some documents from index that has NO primary key`, async () => {
@@ -331,15 +308,13 @@ describe.each([
         return response
       })
     await client.index(indexNoPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexNoPk.uid)
       .getDocuments()
-      .then((response) => {
         expect(response.length).toEqual(dataset.length - 2)
         const returnedIds = response.map((x) => x.id)
         expect(returnedIds).not.toContain(ids[0])
         expect(returnedIds).not.toContain(ids[1])
-      })
   })
 
   test(`${permission} key: Delete some documents from index that has a primary key`, async () => {
@@ -357,15 +332,13 @@ describe.each([
         return response
       })
     await client.index(indexPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexPk.uid)
       .getDocuments()
-      .then((response) => {
         expect(response.length).toEqual(dataset.length - 2)
         const returnedIds = response.map((x) => x.id)
         expect(returnedIds).not.toContain(ids[0])
         expect(returnedIds).not.toContain(ids[1])
-      })
   })
 
   test(`${permission} key: Delete all document from index that has NO primary key`, async () => {
@@ -377,12 +350,10 @@ describe.each([
         return response
       })
     await client.index(indexNoPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexNoPk.uid)
       .getDocuments()
-      .then((response) => {
-        expect(response.length).toEqual(0)
-      })
+         expect(response.length).toEqual(0)
   })
 
   test(`${permission} key: Delete all document from index that has a primary key`, async () => {
@@ -394,12 +365,10 @@ describe.each([
         return response
       })
     await client.index(indexPk.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexPk.uid)
       .getDocuments()
-      .then((response) => {
-        expect(response.length).toEqual(0)
-      })
+      expect(response.length).toEqual(0)
   })
 
   test(`${permission} key: Try to get deleted document from index that has NO primary key`, async () => {
@@ -434,13 +403,11 @@ describe.each([
         return response
       })
     await client.index('updateUid').waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index('updateUid')
       .getRawInfo()
-      .then((response: IndexResponse) => {
         expect(response).toHaveProperty('uid', 'updateUid')
         expect(response).toHaveProperty('primaryKey', 'unique')
-      })
   })
 
   test(`${permission} key: Try to add documents from index with no primary key with NO valid primary key, update should fail`, async () => {

@@ -93,130 +93,114 @@ describe.each([
   })
 
   test(`${permission} key: Basic search`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('prince', {})
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 20)
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(2)
-      })
   })
 
   test(`${permission} key: Basic phrase search`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('"french book" about', {})
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 20)
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response).toHaveProperty('query', '"french book" about')
         expect(response.hits.length).toEqual(2)
-      })
   })
 
   test(`${permission} key: search with options`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('prince', { limit: 1 })
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 1)
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(1)
-      })
   })
 
   test(`${permission} key: search with sortable`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('', { sort: ['id:asc'] })
-      .then((response) => {
-        expect(response).toHaveProperty('hits', expect.any(Array))
+       expect(response).toHaveProperty('hits', expect.any(Array))
         const hit = response.hits[0]
         expect(hit.id).toEqual(1)
-      })
   })
 
   test(`${permission} key: search with array options`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('prince', {
         attributesToRetrieve: ['*'],
       })
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 20)
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(2)
-      })
   })
 
   test(`${permission} key: search with array options`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('prince', {
         attributesToRetrieve: ['*'],
       })
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 20)
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(2)
-      })
   })
 
   test(`${permission} key: search with options`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('prince', { limit: 1 })
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 1)
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(1)
-      })
   })
 
   test(`${permission} key: search with limit and offset`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('prince', {
         limit: 1,
         offset: 1,
       })
-      .then((response) => {
-        expect(response).toHaveProperty('hits', [
-          {
-            id: 4,
-            title: 'Harry Potter and the Half-Blood Prince',
-            comment: 'The best book',
-            genre: 'fantasy',
-          },
-        ])
-        expect(response).toHaveProperty('offset', 1)
-        expect(response).toHaveProperty('limit', 1)
-        expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
-        expect(response).toHaveProperty('query', 'prince')
-        expect(response.hits.length).toEqual(1)
-      })
+      expect(response).toHaveProperty('hits', [
+        {
+          id: 4,
+          title: 'Harry Potter and the Half-Blood Prince',
+          comment: 'The best book',
+          genre: 'fantasy',
+        },
+      ])
+      expect(response).toHaveProperty('offset', 1)
+      expect(response).toHaveProperty('limit', 1)
+      expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
+      expect(response).toHaveProperty('query', 'prince')
+      expect(response.hits.length).toEqual(1)
   })
 
   test(`${permission} key: search with matches parameter and small croplength`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('prince', {
         filter: 'title = "Le Petit Prince"',
@@ -224,7 +208,6 @@ describe.each([
         cropLength: 5,
         matches: true,
       })
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 20)
@@ -235,11 +218,10 @@ describe.each([
           comment: [{ start: 22, length: 6 }],
           title: [{ start: 9, length: 6 }],
         })
-      })
   })
 
   test(`${permission} key: search with all options but not all fields`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('prince', {
         limit: 5,
@@ -251,7 +233,6 @@ describe.each([
         filter: 'title = "Le Petit Prince"',
         matches: true,
       })
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 5)
@@ -274,11 +255,10 @@ describe.each([
           '_matchesInfo',
           expect.any(Object)
         )
-      })
   })
 
   test(`${permission} key: search with all options and all fields`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('prince', {
         limit: 5,
@@ -290,7 +270,6 @@ describe.each([
         filter: 'title = "Le Petit Prince"',
         matches: true,
       })
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 5)
@@ -309,11 +288,10 @@ describe.each([
           '_matchesInfo',
           expect.any(Object)
         )
-      })
   })
 
   test(`${permission} key: search with all options but specific fields`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('prince', {
         limit: 5,
@@ -325,7 +303,6 @@ describe.each([
         filter: 'title = "Le Petit Prince"',
         matches: true,
       })
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 5)
@@ -352,128 +329,111 @@ describe.each([
           '_matchesInfo',
           expect.any(Object)
         )
-      })
   })
 
   test(`${permission} key: search with filter and facetsDistribution`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('a', {
         filter: ['genre = romance'],
         facetsDistribution: ['genre'],
       })
-      .then((response) => {
-        expect(response).toHaveProperty('facetsDistribution', {
-          genre: { romance: 2 },
-        })
-        expect(response).toHaveProperty('exhaustiveFacetsCount', false)
-        expect(response).toHaveProperty('exhaustiveNbHits', false)
-        expect(response).toHaveProperty('hits', expect.any(Array))
-        expect(response.hits.length).toEqual(2)
+      expect(response).toHaveProperty('facetsDistribution', {
+        genre: { romance: 2 },
       })
+      expect(response).toHaveProperty('exhaustiveFacetsCount', false)
+      expect(response).toHaveProperty('exhaustiveNbHits', false)
+      expect(response).toHaveProperty('hits', expect.any(Array))
+      expect(response.hits.length).toEqual(2)
   })
 
   test(`${permission} key: search with filter on number`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('a', {
         filter: 'id < 0',
       })
-      .then((response) => {
         expect(response).toHaveProperty('exhaustiveNbHits', false)
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response.hits.length).toEqual(0)
-      })
   })
 
   test(`${permission} key: search with filter with spaces`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('h', {
         filter: ['genre = "sci fi"'],
       })
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response.hits.length).toEqual(1)
-      })
   })
 
   test(`${permission} key: search with multiple filter`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('a', {
         filter: ['genre = romance', ['genre = romance', 'genre = romance']],
         facetsDistribution: ['genre'],
       })
-      .then((response) => {
-        expect(response).toHaveProperty('facetsDistribution', {
-          genre: { romance: 2 },
-        })
-        expect(response).toHaveProperty('exhaustiveFacetsCount', false)
-        expect(response).toHaveProperty('exhaustiveNbHits', false)
-        expect(response).toHaveProperty('hits', expect.any(Array))
-        expect(response.hits.length).toEqual(2)
+       expect(response).toHaveProperty('facetsDistribution', {
+        genre: { romance: 2 },
       })
+      expect(response).toHaveProperty('exhaustiveFacetsCount', false)
+      expect(response).toHaveProperty('exhaustiveNbHits', false)
+      expect(response).toHaveProperty('hits', expect.any(Array))
+      expect(response.hits.length).toEqual(2)
   })
 
   test(`${permission} key: search with multiple filter and undefined query (placeholder)`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search(undefined, {
         filter: ['genre = fantasy'],
         facetsDistribution: ['genre'],
       })
-      .then((response) => {
-        expect(response).toHaveProperty('facetsDistribution', {
-          genre: { fantasy: 2 },
-        })
-        expect(response.hits.length).toEqual(2)
+      expect(response).toHaveProperty('facetsDistribution', {
+        genre: { fantasy: 2 },
       })
+      expect(response.hits.length).toEqual(2)
   })
 
   test(`${permission} key: search with multiple filter and null query (placeholder)`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search(null, {
         filter: ['genre = fantasy'],
         facetsDistribution: ['genre'],
       })
-      .then((response) => {
-        expect(response).toHaveProperty('facetsDistribution', {
-          genre: { fantasy: 2 },
-        })
-        expect(response.hits.length).toEqual(2)
-        expect(response.nbHits).toEqual(2)
+      expect(response).toHaveProperty('facetsDistribution', {
+        genre: { fantasy: 2 },
       })
+      expect(response.hits.length).toEqual(2)
+      expect(response.nbHits).toEqual(2)
   })
 
   test(`${permission} key: search with multiple filter and empty string query (placeholder)`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .search('', {
         filter: ['genre = fantasy'],
         facetsDistribution: ['genre'],
       })
-      .then((response) => {
-        expect(response).toHaveProperty('facetsDistribution', {
-          genre: { fantasy: 2 },
-        })
-        expect(response.hits.length).toEqual(2)
+      expect(response).toHaveProperty('facetsDistribution', {
+        genre: { fantasy: 2 },
       })
+      expect(response.hits.length).toEqual(2)
   })
 
   test(`${permission} key: search on index with no documents and no primary key`, async () => {
-    await client
+    const response=await client
       .index(emptyIndex.uid)
       .search('prince', {})
-      .then((response) => {
         expect(response).toHaveProperty('hits', [])
         expect(response).toHaveProperty('offset', 0)
         expect(response).toHaveProperty('limit', 20)
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response).toHaveProperty('query', 'prince')
         expect(response.hits.length).toEqual(0)
-      })
   })
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {

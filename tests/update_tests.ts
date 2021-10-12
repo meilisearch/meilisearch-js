@@ -52,10 +52,9 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getUpdateStatus(updateId)
-      .then((response: Update) => {
         expect(response).toHaveProperty('status', 'processed')
         expect(response).toHaveProperty('updateId', expect.any(Number))
         expect(response).toHaveProperty('type', expect.any(Object))
@@ -64,16 +63,14 @@ describe.each([
         expect(response).toHaveProperty('duration', expect.any(Number))
         expect(response).toHaveProperty('enqueuedAt', expect.any(String))
         expect(response).toHaveProperty('processedAt', expect.any(String))
-      })
   })
 
   test(`${permission} key: Get all updates`, async () => {
     const { updateId } = await client.index(index.uid).addDocuments([{ id: 1 }])
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getAllUpdateStatus()
-      .then((response: Update[]) => {
         expect(response.length).toEqual(1)
         expect(response[0]).toHaveProperty('status', 'processed')
         expect(response[0]).toHaveProperty('updateId', expect.any(Number))
@@ -83,7 +80,6 @@ describe.each([
         expect(response[0]).toHaveProperty('duration', expect.any(Number))
         expect(response[0]).toHaveProperty('enqueuedAt', expect.any(String))
         expect(response[0]).toHaveProperty('processedAt', expect.any(String))
-      })
   })
 
   test(`${permission} key: Try to get update that does not exist`, async () => {

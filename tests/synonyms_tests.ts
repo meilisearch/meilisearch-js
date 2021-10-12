@@ -47,12 +47,10 @@ describe.each([
     await masterClient.index(index.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Get default synonyms`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .getSynonyms()
-      .then((response: object) => {
-        expect(response).toEqual({})
-      })
+      expect(response).toEqual({})
   })
   test(`${permission} key: Update synonyms`, async () => {
     const newSynonyms = {
@@ -66,12 +64,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSynonyms()
-      .then((response: object) => {
-        expect(response).toEqual(newSynonyms)
-      })
+      expect(response).toEqual(newSynonyms)
   })
 
   test(`${permission} key: Update synonyms with null value`, async () => {
@@ -84,12 +80,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSynonyms()
-      .then((response: object) => {
-        expect(response).toEqual({})
-      })
+      expect(response).toEqual({})
   })
 
   test(`${permission} key: Reset synonyms`, async () => {
@@ -101,12 +95,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSynonyms()
-      .then((response: object) => {
-        expect(response).toEqual({})
-      })
+      expect(response).toEqual({})
   })
 })
 

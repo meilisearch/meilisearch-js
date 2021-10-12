@@ -48,12 +48,10 @@ describe.each([
   })
 
   test(`${permission} key: Get default displayed attributes`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .getDisplayedAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
+      expect(response).toEqual(['*'])
   })
 
   test(`${permission} key: Update displayed attributes`, async () => {
@@ -66,12 +64,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getDisplayedAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(newDisplayedAttribute)
-      })
+      expect(response).toEqual(newDisplayedAttribute)
   })
 
   test(`${permission} key: Update displayed attributes at null`, async () => {
@@ -83,12 +79,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getDisplayedAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
+      expect(response).toEqual(['*'])
   })
 
   test(`${permission} key: Reset displayed attributes`, async () => {
@@ -100,12 +94,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getDisplayedAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
+      expect(response).toEqual(['*'])
   })
 })
 

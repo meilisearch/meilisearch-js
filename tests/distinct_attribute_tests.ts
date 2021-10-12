@@ -48,12 +48,10 @@ describe.each([
   })
 
   test(`${permission} key: Get default distinct attribute`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .getDistinctAttribute()
-      .then((response: string | null) => {
-        expect(response).toEqual(null)
-      })
+     expect(response).toEqual(null)
   })
 
   test(`${permission} key: Update distinct attribute`, async () => {
@@ -66,12 +64,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getDistinctAttribute()
-      .then((response: string | null) => {
-        expect(response).toEqual(newDistinctAttribute)
-      })
+      expect(response).toEqual(newDistinctAttribute)
   })
 
   test(`${permission} key: Update distinct attribute at null`, async () => {
@@ -83,12 +79,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getDistinctAttribute()
-      .then((response: string | null) => {
-        expect(response).toEqual(null)
-      })
+       expect(response).toEqual(null)
   })
 
   test(`${permission} key: Reset distinct attribute`, async () => {
@@ -100,12 +94,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getDistinctAttribute()
-      .then((response: string | null) => {
-        expect(response).toEqual(null)
-      })
+       expect(response).toEqual(null)
   })
 })
 

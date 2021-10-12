@@ -48,12 +48,10 @@ describe.each([
   })
 
   test(`${permission} key: Get default searchable attributes`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
+      expect(response).toEqual(['*'])
   })
 
   test(`${permission} key: Update searchable attributes`, async () => {
@@ -66,12 +64,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(newSearchableAttributes)
-      })
+     expect(response).toEqual(newSearchableAttributes)
   })
 
   test(`${permission} key: Update searchable attributes at null`, async () => {
@@ -83,12 +79,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
+     expect(response).toEqual(['*'])
   })
 
   test(`${permission} key: Reset searchable attributes`, async () => {
@@ -100,12 +94,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
+            expect(response).toEqual(['*'])
   })
 })
 

@@ -99,10 +99,9 @@ describe.each([
   })
 
   test(`${permission} key: Get default settings of empty index with primary key`, async () => {
-    await client
+    const response=await client
       .index(indexAndPK.uid)
       .getSettings()
-      .then((response: Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty('distinctAttribute', null)
         expect(response).toHaveProperty('searchableAttributes', ['*'])
@@ -110,7 +109,6 @@ describe.each([
         expect(response).toHaveProperty('sortableAttributes', [])
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
-      })
   })
 
   test(`${permission} key: Update settings`, async () => {
@@ -128,23 +126,21 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSettings()
-      .then((response: Settings) => {
-        expect(response).toHaveProperty(
-          'rankingRules',
-          newSettings.rankingRules
-        )
-        expect(response).toHaveProperty(
-          'distinctAttribute',
-          newSettings.distinctAttribute
-        )
-        expect(response).toHaveProperty('searchableAttributes', ['*'])
-        expect(response).toHaveProperty('displayedAttributes', ['*'])
-        expect(response).toHaveProperty('stopWords', newSettings.stopWords)
-        expect(response).toHaveProperty('synonyms', {})
-      })
+      expect(response).toHaveProperty(
+        'rankingRules',
+        newSettings.rankingRules
+      )
+      expect(response).toHaveProperty(
+        'distinctAttribute',
+        newSettings.distinctAttribute
+      )
+      expect(response).toHaveProperty('searchableAttributes', ['*'])
+      expect(response).toHaveProperty('displayedAttributes', ['*'])
+      expect(response).toHaveProperty('stopWords', newSettings.stopWords)
+      expect(response).toHaveProperty('synonyms', {})
   })
 
   test(`${permission} key: Update settings on empty index with primary key`, async () => {
@@ -161,23 +157,21 @@ describe.each([
         return response
       })
     await client.index(indexAndPK.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexAndPK.uid)
       .getSettings()
-      .then((response: Settings) => {
-        expect(response).toHaveProperty(
-          'rankingRules',
-          newSettings.rankingRules
-        )
-        expect(response).toHaveProperty(
-          'distinctAttribute',
-          newSettings.distinctAttribute
-        )
-        expect(response).toHaveProperty('searchableAttributes', ['*'])
-        expect(response).toHaveProperty('displayedAttributes', ['*'])
-        expect(response).toHaveProperty('stopWords', newSettings.stopWords)
-        expect(response).toHaveProperty('synonyms', {})
-      })
+      expect(response).toHaveProperty(
+        'rankingRules',
+        newSettings.rankingRules
+      )
+      expect(response).toHaveProperty(
+        'distinctAttribute',
+        newSettings.distinctAttribute
+      )
+      expect(response).toHaveProperty('searchableAttributes', ['*'])
+      expect(response).toHaveProperty('displayedAttributes', ['*'])
+      expect(response).toHaveProperty('stopWords', newSettings.stopWords)
+      expect(response).toHaveProperty('synonyms', {})
   })
 
   test(`${permission} key: Reset settings`, async () => {
@@ -189,10 +183,9 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSettings()
-      .then((response: Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty('distinctAttribute', null)
         expect(response).toHaveProperty('searchableAttributes', ['*'])
@@ -200,7 +193,6 @@ describe.each([
         expect(response).toHaveProperty('sortableAttributes', [])
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
-      })
   })
 
   test(`${permission} key: Reset settings of empty index`, async () => {
@@ -212,17 +204,15 @@ describe.each([
         return response
       })
     await client.index(indexAndPK.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexAndPK.uid)
       .getSettings()
-      .then((response: Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty('distinctAttribute', null)
         expect(response).toHaveProperty('searchableAttributes', ['*'])
         expect(response).toHaveProperty('displayedAttributes', ['*'])
         expect(response).toHaveProperty('stopWords', [])
         expect(response).toHaveProperty('synonyms', {})
-      })
   })
 
   test(`${permission} key: Update settings that verifies no overwrite in the settings`, async () => {
@@ -237,10 +227,9 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSettings()
-      .then((response: Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty(
           'distinctAttribute',
@@ -256,7 +245,6 @@ describe.each([
         )
         expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
         expect(response).toHaveProperty('synonyms', {})
-      })
   })
 
   test(`${permission} key: Update settings that verifies no overwrite in the settings on empty index with primary key`, async () => {
@@ -271,10 +259,9 @@ describe.each([
         return response
       })
     await client.index(indexAndPK.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(indexAndPK.uid)
       .getSettings()
-      .then((response: Settings) => {
         expect(response).toHaveProperty('rankingRules', defaultRankingRules)
         expect(response).toHaveProperty(
           'distinctAttribute',
@@ -290,7 +277,6 @@ describe.each([
         )
         expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
         expect(response).toHaveProperty('synonyms', {})
-      })
   })
 })
 

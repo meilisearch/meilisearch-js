@@ -48,12 +48,10 @@ describe.each([
   })
 
   test(`${permission} key: Get default attributes for filtering`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .getFilterableAttributes()
-      .then((response: string[]) => {
-        expect(response.sort()).toEqual([])
-      })
+       expect(response.sort()).toEqual([])
   })
 
   test(`${permission} key: Update attributes for filtering`, async () => {
@@ -66,12 +64,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getFilterableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(newFilterableAttributes)
-      })
+       expect(response).toEqual(newFilterableAttributes)
   })
 
   test(`${permission} key: Update attributes for filtering at null`, async () => {
@@ -83,13 +79,12 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getFilterableAttributes()
-      .then((response: string[]) => {
-        expect(response.sort()).toEqual([])
-      })
+      expect(response.sort()).toEqual([])
   })
+  
 
   test(`${permission} key: Reset attributes for filtering`, async () => {
     const { updateId } = await client
@@ -100,12 +95,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getFilterableAttributes()
-      .then((response: string[]) => {
-        expect(response.sort()).toEqual([])
-      })
+     expect(response.sort()).toEqual([])
   })
 })
 

@@ -48,12 +48,10 @@ describe.each([
   })
 
   test(`${permission} key: Get default sortable attributes`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .getSortableAttributes()
-      .then((response: string[]) => {
         expect(response).toEqual([])
-      })
   })
 
   test(`${permission} key: Update sortable attributes`, async () => {
@@ -66,12 +64,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSortableAttributes()
-      .then((response: string[]) => {
         expect(response).toEqual(newSortableAttributes)
-      })
   })
 
   test(`${permission} key: Update sortable attributes at null`, async () => {
@@ -83,12 +79,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSortableAttributes()
-      .then((response: string[]) => {
         expect(response).toEqual([])
-      })
   })
 
   test(`${permission} key: Reset sortable attributes`, async () => {
@@ -100,12 +94,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getSortableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
+       expect(response).toEqual([])
   })
 })
 

@@ -97,39 +97,34 @@ describe.each([
   })
 
   test(`${permission} key: Basic search`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search('prince', {})
-      .then((response) => {
         expect(response.hits.length === 2).toBeTruthy()
         expect(response.offset === 0).toBeTruthy()
         expect(response.limit === 20).toBeTruthy()
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response.query === 'prince').toBeTruthy()
-      })
   })
 
   test(`${permission} key: Search with options`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search('prince', { limit: 1 })
-      .then((response) => {
         expect(response.hits.length === 1).toBeTruthy()
         expect(response.offset === 0).toBeTruthy()
         expect(response.limit === 1).toBeTruthy()
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response.query === 'prince').toBeTruthy()
-      })
   })
 
   test(`${permission} key: Search with limit and offset`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search('prince', {
         limit: 1,
         offset: 1,
       })
-      .then((response) => {
         expect(response.hits.length === 1).toBeTruthy()
         expect(response.offset === 1).toBeTruthy()
         // expect(response.bloub).toEqual(0) -> ERROR, bloub does not exist on type Response
@@ -143,11 +138,10 @@ describe.each([
         expect(response.hits[0].comment).toEqual('The best book')
         expect(response.hits[0].genre).toEqual('fantasy')
         expect(response.query === 'prince').toBeTruthy()
-      })
   })
 
   test(`${permission} key: Search with matches parameter and small croplength`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search('prince', {
         filter: 'title = "Le Petit Prince"',
@@ -155,7 +149,6 @@ describe.each([
         cropLength: 5,
         matches: true,
       })
-      .then((response) => {
         expect(response.hits.length === 1).toBeTruthy()
         expect(response.offset === 0).toBeTruthy()
         expect(response.limit === 20).toBeTruthy()
@@ -167,11 +160,10 @@ describe.each([
         expect(response.hits[0]?._matchesInfo?.title).toEqual([
           { start: 9, length: 6 },
         ])
-      })
   })
 
   test(`${permission} key: Search with all options but not all fields`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search('prince', {
         limit: 5,
@@ -183,7 +175,6 @@ describe.each([
         filter: 'title = "Le Petit Prince"',
         matches: true,
       })
-      .then((response) => {
         expect(response.hits.length === 1).toBeTruthy()
         expect(response.offset === 0).toBeTruthy()
         expect(response.limit === 5).toBeTruthy()
@@ -202,11 +193,10 @@ describe.each([
           '_matchesInfo',
           expect.any(Object)
         )
-      })
   })
 
   test(`${permission} key: Search with all options and all fields`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search('prince', {
         limit: 5,
@@ -218,7 +208,6 @@ describe.each([
         filter: 'title = "Le Petit Prince"',
         matches: true,
       })
-      .then((response) => {
         expect(response.hits.length === 1).toBeTruthy()
         expect(response.offset === 0).toBeTruthy()
         expect(response.limit === 5).toBeTruthy()
@@ -234,11 +223,10 @@ describe.each([
         expect(
           response.hits[0]?._formatted?.title === 'Petit <em>Prince</em>'
         ).toBeTruthy()
-      })
   })
 
   test(`${permission} key: Search with all options but specific fields`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search('prince', {
         limit: 5,
@@ -250,7 +238,6 @@ describe.each([
         filter: 'title = "Le Petit Prince"',
         matches: true,
       })
-      .then((response) => {
         expect(response.hits.length === 1).toBeTruthy()
         expect(response.offset === 0).toBeTruthy()
         expect(response.limit === 5).toBeTruthy()
@@ -274,86 +261,73 @@ describe.each([
           expect.any(Object)
         )
         expect(response.hits[0]._formatted).not.toHaveProperty('comment')
-      })
   })
 
   test(`${permission} key: Search with filter and facetsDistribution`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search('a', {
         filter: ['genre=romance'],
         facetsDistribution: ['genre'],
       })
-      .then((response) => {
         expect(response.facetsDistribution?.genre?.romance === 2).toBeTruthy()
         expect(response.exhaustiveFacetsCount === false).toBeTruthy()
         expect(response.hits.length === 2).toBeTruthy()
-      })
   })
 
   test(`${permission} key: Search with filter with spaces`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search('h', {
         filter: ['genre="sci fi"'],
       })
-      .then((response) => {
         expect(response).toHaveProperty('hits', expect.any(Array))
         expect(response.hits.length === 1).toBeTruthy()
-      })
   })
 
   test(`${permission} key: Search with multiple filter`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search('a', {
         filter: ['genre=romance', ['genre=romance', 'genre=romance']],
         facetsDistribution: ['genre'],
       })
-      .then((response) => {
         expect(response.facetsDistribution?.genre?.romance === 2).toBeTruthy()
         expect(response.exhaustiveFacetsCount === false).toBeTruthy()
         expect(response.hits.length === 2).toBeTruthy()
-      })
   })
 
   test(`${permission} key: Search with multiple filter and placeholder search using undefined`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search(undefined, {
         filter: ['genre = fantasy'],
         facetsDistribution: ['genre'],
       })
-      .then((response) => {
         expect(response.facetsDistribution?.genre?.fantasy === 2).toBeTruthy()
         expect(response.exhaustiveFacetsCount === false).toBeTruthy()
         expect(response.hits.length === 2).toBeTruthy()
-      })
   })
 
   test(`${permission} key: Search with multiple filter and placeholder search using NULL`, async () => {
-    await client
+    const response=await client
       .index<Movie>(index.uid)
       .search(null, {
         filter: ['genre = fantasy'],
         facetsDistribution: ['genre'],
       })
-      .then((response) => {
         expect(response.facetsDistribution?.genre?.fantasy === 2).toBeTruthy()
         expect(response.exhaustiveFacetsCount === false).toBeTruthy()
         expect(response.hits.length === 2).toBeTruthy()
-      })
   })
 
   test(`${permission} key: Search on index with no documents and no primary key`, async () => {
-    await client
+    const response=await client
       .index(emptyIndex.uid)
       .search('prince', {})
-      .then((response) => {
         expect(response.limit === 20).toBeTruthy()
         expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
         expect(response.query === 'prince').toBeTruthy()
-      })
   })
 
   test(`${permission} key: Try to Search on deleted index and fail`, async () => {

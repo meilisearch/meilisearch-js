@@ -57,12 +57,11 @@ describe.each([
   })
 
   test(`${permission} key: Get default ranking rules`, async () => {
-    await client
+    const response=await client
       .index(index.uid)
       .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
-      })
+      expect(response).toEqual(defaultRankingRules)
+
   })
 
   test(`${permission} key: Update ranking rules`, async () => {
@@ -75,12 +74,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getRankingRules()
-      .then((response: string[]) => {
         expect(response).toEqual(newRankingRules)
-      })
   })
 
   test(`${permission} key: Update ranking rules at null`, async () => {
@@ -92,12 +89,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
-      })
+       expect(response).toEqual(defaultRankingRules)
   })
 
   test(`${permission} key: Reset ranking rules`, async () => {
@@ -109,12 +104,10 @@ describe.each([
         return response
       })
     await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    const response=await client
       .index(index.uid)
       .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
-      })
+      expect(response).toEqual(defaultRankingRules)
   })
 })
 
