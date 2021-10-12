@@ -54,24 +54,24 @@ class HttpRequests {
       constructURL.search = queryParams.toString()
     }
 
-    const controller = new AbortController()
-
     if (this.timeout === undefined) {
       this.timeout = 3000
     }
 
-    setTimeout(() => {
-      controller.abort()
-    }, this.timeout)
-
     try {
-      const response: Response = await fetch(constructURL.toString(), {
-        ...config,
-        method,
-        body: JSON.stringify(body),
-        headers: this.headers,
-        signal: controller.signal,
-      }).then((res) => httpResponseErrorHandler(res))
+      // const response: Response = await fetch(constructURL.toString(), ).then((res) => httpResponseErrorHandler(res))
+      const response = await this.timeoutFetch(
+        constructURL.toString(),
+        {
+          ...config,
+          method,
+          body: JSON.stringify(body),
+          headers: this.headers,
+        },
+        this.timeout,
+        'Error: Request Timed Out'
+      ).then((res) => httpResponseErrorHandler(res))
+
       const parsedBody: string = await response.text()
 
       try {
@@ -193,6 +193,34 @@ class HttpRequests {
       body: data,
       params,
       config,
+    })
+  }
+
+  timeoutFetch(
+    url: string,
+    options: any,
+    timeout: number,
+    error: string
+  ): Promise<Response> {
+    error = error || 'Timeout error'
+
+    options = options || {}
+
+    timeout = timeout || 10000
+
+    return this.timeoutPromise(fetch(url, options), timeout, error)
+  }
+
+  timeoutPromise(
+    promise: Promise<Response> | PromiseLike<Response>,
+    timeout: number,
+    error: string
+  ): Promise<Response> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(error)
+      }, timeout)
+      promise.then(resolve, reject)
     })
   }
 }
