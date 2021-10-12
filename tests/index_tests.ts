@@ -91,9 +91,8 @@ describe.each([
 
   test(`${permission} key: Get raw index that exists`, async () => {
     await client.createIndex(indexPk.uid)
-    await client.getRawIndex(indexPk.uid).then((response) => {
-      expect(response).toHaveProperty('uid', indexPk.uid)
-    })
+    const response = await client.getRawIndex(indexPk.uid)
+    expect(response).toHaveProperty('uid', indexPk.uid)
   })
 
   test(`${permission} key: Get index that does not exist`, async () => {
@@ -124,10 +123,9 @@ describe.each([
     await client.createIndex(indexPk.uid, {
       primaryKey: indexPk.primaryKey,
     })
-    await client.getRawIndex(indexPk.uid).then((response: IndexResponse) => {
-      expect(response).toHaveProperty('uid', indexPk.uid)
-      expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
-    })
+    const response = await client.getRawIndex(indexPk.uid)
+    expect(response).toHaveProperty('uid', indexPk.uid)
+    expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
   })
 
   test(`${permission} key: Get index info with NO primary key`, async () => {
@@ -140,10 +138,9 @@ describe.each([
 
   test(`${permission} key: Get raw index info with NO primary key`, async () => {
     await client.createIndex(indexNoPk.uid)
-    await client.getRawIndex(indexNoPk.uid).then((response: IndexResponse) => {
-      expect(response).toHaveProperty('uid', indexNoPk.uid)
-      expect(response).toHaveProperty('primaryKey', null)
-    })
+    const response = await client.getRawIndex(indexNoPk.uid)
+    expect(response).toHaveProperty('uid', indexNoPk.uid)
+    expect(response).toHaveProperty('primaryKey', null)
   })
 
   test(`${permission} key: fetch index with primary key`, async () => {
