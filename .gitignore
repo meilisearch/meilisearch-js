@@ -126,5 +126,6 @@ cypress/fixtures
 dist
 package
 .vscode
+.idea
 dist_default_export_in_index
 no_default_export_in_index
