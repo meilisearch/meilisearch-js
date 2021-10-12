@@ -397,11 +397,15 @@ Or using the index object:
 
 `index.addDocuments(documents: Document<T>[]): Promise<EnqueuedUpdate>`
 
+- [Add or replace multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents):
+
 `index.addDocumentsInBatch(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedUpdate[]>`
 
 - [Add or update multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
 
 `index.updateDocuments(documents: Document<T>[]): Promise<EnqueuedUpdate>`
+
+- [Add or update multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
 
 `index.updateDocumentsInBatch(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedUpdate[]>`
 
