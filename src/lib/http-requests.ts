@@ -53,14 +53,12 @@ class HttpRequests {
     }
 
     try {
-      const response: Response = await httpResponseErrorHandler(
-        await fetch(constructURL.toString(), {
-          ...config,
-          method,
-          body: JSON.stringify(body),
-          headers: this.headers,
-        })
-      )
+      const response: Response = await fetch(constructURL.toString(), {
+        ...config,
+        method,
+        body: JSON.stringify(body),
+        headers: this.headers,
+      }).then((res) => httpResponseErrorHandler(res))
       const parsedBody: string = await response.text()
 
       try {
