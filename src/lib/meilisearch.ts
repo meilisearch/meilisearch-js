@@ -53,6 +53,16 @@ class MeiliSearch {
   }
 
   /**
+   * Gather information about an index by calling MeiliSearch and
+   * return the raw JSON response
+   * @memberof MeiliSearch
+   * @method getRawIndex
+   */
+  async getRawIndex(indexUid: string): Promise<IndexResponse> {
+    return new Index(this.config, indexUid).getRawInfo()
+  }
+
+  /**
    * Get an index or create it if it does not exist
    * @memberof MeiliSearch
    * @method getOrCreateIndex
