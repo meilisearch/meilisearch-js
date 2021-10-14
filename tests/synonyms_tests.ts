@@ -47,72 +47,44 @@ describe.each([
     await masterClient.index(index.uid).waitForPendingUpdate(updateId)
   })
   test(`${permission} key: Get default synonyms`, async () => {
-    try {
-      const response: object = await client.index(index.uid).getSynonyms()
-      expect(response).toEqual({})
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: object = await client.index(index.uid).getSynonyms()
+    expect(response).toEqual({})
   })
   test(`${permission} key: Update synonyms`, async () => {
     const newSynonyms = {
       hp: ['harry potter'],
     }
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .updateSynonyms(newSynonyms)
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const synonyms: EnqueuedUpdate = await client
+      .index(index.uid)
+      .updateSynonyms(newSynonyms)
+    expect(synonyms).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(synonyms.updateId)
 
-    try {
-      const response: object = await client.index(index.uid).getSynonyms()
-      expect(response).toEqual(newSynonyms)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: object = await client.index(index.uid).getSynonyms()
+    expect(response).toEqual(newSynonyms)
   })
 
   test(`${permission} key: Update synonyms with null value`, async () => {
     const newSynonyms = null
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .updateSynonyms(newSynonyms)
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const synonyms: EnqueuedUpdate = await client
+      .index(index.uid)
+      .updateSynonyms(newSynonyms)
+    expect(synonyms).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(synonyms.updateId)
 
-    try {
-      const response: object = await client.index(index.uid).getSynonyms()
-      expect(response).toEqual({})
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: object = await client.index(index.uid).getSynonyms()
+    expect(response).toEqual({})
   })
 
   test(`${permission} key: Reset synonyms`, async () => {
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .resetSynonyms()
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const synonyms: EnqueuedUpdate = await client
+      .index(index.uid)
+      .resetSynonyms()
+    expect(synonyms).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(synonyms.updateId)
 
-    try {
-      const response: object = await client.index(index.uid).getSynonyms()
-      expect(response).toEqual({})
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: object = await client.index(index.uid).getSynonyms()
+    expect(response).toEqual({})
   })
 })
 

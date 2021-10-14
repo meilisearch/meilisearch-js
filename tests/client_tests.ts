@@ -195,81 +195,52 @@ describe.each([
 
     describe('Test on indexes methods', () => {
       test(`${permission} key: create with no primary key`, async () => {
-        try {
-          const response = await client.createIndex(indexNoPk.uid)
-          expect(response).toHaveProperty('uid', indexNoPk.uid)
-          expect(response).toHaveProperty('primaryKey', null)
-        } catch (error) {
-          throw new Error(error)
-        }
-        try {
-          const response = await client.index(indexNoPk.uid).getRawInfo()
-          expect(response).toHaveProperty('uid', indexNoPk.uid)
-          expect(response).toHaveProperty('primaryKey', null)
-          expect(response).toHaveProperty('createdAt', expect.any(String))
-          expect(response).toHaveProperty('updatedAt', expect.any(String))
-        } catch (error) {
-          throw new Error(error)
-        }
+        const newIndex = await client.createIndex(indexNoPk.uid)
+        expect(newIndex).toHaveProperty('uid', indexNoPk.uid)
+        expect(newIndex).toHaveProperty('primaryKey', null)
 
-        try {
-          const response = await client.getIndex(indexNoPk.uid)
-          expect(response.primaryKey).toBe(null)
-          expect(response.uid).toBe(indexNoPk.uid)
-        } catch (error) {
-          throw new Error(error)
-        }
+        const rawIndex = await client.index(indexNoPk.uid).getRawInfo()
+        expect(rawIndex).toHaveProperty('uid', indexNoPk.uid)
+        expect(rawIndex).toHaveProperty('primaryKey', null)
+        expect(rawIndex).toHaveProperty('createdAt', expect.any(String))
+        expect(rawIndex).toHaveProperty('updatedAt', expect.any(String))
+
+        const response = await client.getIndex(indexNoPk.uid)
+        expect(response.primaryKey).toBe(null)
+        expect(response.uid).toBe(indexNoPk.uid)
       })
 
       test(`${permission} key: create with primary key`, async () => {
-        try {
-          const response = await client.createIndex(indexPk.uid, {
-            primaryKey: indexPk.primaryKey,
-          })
-          expect(response).toHaveProperty('uid', indexPk.uid)
-          expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
-        } catch (error) {
-          throw new Error(error)
-        }
+        const newIndex = await client.createIndex(indexPk.uid, {
+          primaryKey: indexPk.primaryKey,
+        })
+        expect(newIndex).toHaveProperty('uid', indexPk.uid)
+        expect(newIndex).toHaveProperty('primaryKey', indexPk.primaryKey)
 
-        try {
-          const response = await client.index(indexPk.uid).getRawInfo()
-          expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
-          expect(response).toHaveProperty('createdAt', expect.any(String))
-          expect(response).toHaveProperty('updatedAt', expect.any(String))
-        } catch (error) {
-          throw new Error(error)
-        }
+        const rawIndex = await client.index(indexPk.uid).getRawInfo()
+        expect(rawIndex).toHaveProperty('primaryKey', indexPk.primaryKey)
+        expect(rawIndex).toHaveProperty('createdAt', expect.any(String))
+        expect(rawIndex).toHaveProperty('updatedAt', expect.any(String))
 
-        try {
-          const response = await client.getIndex(indexPk.uid)
-          expect(response.primaryKey).toBe(indexPk.primaryKey)
-          expect(response.uid).toBe(indexPk.uid)
-        } catch (error) {
-          throw new Error(error)
-        }
+        const response = await client.getIndex(indexPk.uid)
+        expect(response.primaryKey).toBe(indexPk.primaryKey)
+        expect(response.uid).toBe(indexPk.uid)
       })
 
       test(`${permission} key: get all indexes when not empty`, async () => {
         await client.createIndex(indexPk.uid)
-        try {
-          const response: IndexResponse[] = await client.getIndexes()
-          const indexes = response.map((index) => index.uid)
-          expect(indexes).toEqual(expect.arrayContaining([indexPk.uid]))
-          expect(indexes.length).toEqual(1)
-        } catch (error) {
-          throw new Error(error)
-        }
+
+        const response: IndexResponse[] = await client.getIndexes()
+        const indexes = response.map((index) => index.uid)
+        expect(indexes).toEqual(expect.arrayContaining([indexPk.uid]))
+        expect(indexes.length).toEqual(1)
       })
 
       test(`${permission} key: Get index that exists`, async () => {
         await client.createIndex(indexPk.uid)
-        try {
-          const response = await client.getIndex(indexPk.uid)
-          expect(response).toHaveProperty('uid', indexPk.uid)
-        } catch (error) {
-          throw new Error(error)
-        }
+
+        const response = await client.getIndex(indexPk.uid)
+        expect(response).toHaveProperty('uid', indexPk.uid)
       })
 
       test(`${permission} key: Get index that does not exist`, async () => {
@@ -281,15 +252,12 @@ describe.each([
 
       test(`${permission} key: update primary key`, async () => {
         await client.createIndex(indexPk.uid)
-        try {
-          const response: Index<any> = await client.updateIndex(indexPk.uid, {
-            primaryKey: 'newPrimaryKey',
-          })
-          expect(response).toHaveProperty('uid', indexPk.uid)
-          expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
-        } catch (error) {
-          throw new Error(error)
-        }
+
+        const response: Index<any> = await client.updateIndex(indexPk.uid, {
+          primaryKey: 'newPrimaryKey',
+        })
+        expect(response).toHaveProperty('uid', indexPk.uid)
+        expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
       })
 
       test(`${permission} key: update primary key that already exists`, async () => {
@@ -308,12 +276,10 @@ describe.each([
 
       test(`${permission} key: delete index`, async () => {
         await client.createIndex(indexNoPk.uid)
-        try {
-          const response: void = await client.deleteIndex(indexNoPk.uid)
-          expect(response).toBe(undefined)
-        } catch (error) {
-          throw new Error(error)
-        }
+
+        const response: void = await client.deleteIndex(indexNoPk.uid)
+        expect(response).toBe(undefined)
+
         await expect(client.getIndexes()).resolves.toHaveLength(0)
       })
 
@@ -334,14 +300,10 @@ describe.each([
       })
       test(`${permission} key: delete index if exists on existing index`, async () => {
         await client.createIndex(indexPk.uid)
-        try {
-          const response: boolean = await client.deleteIndexIfExists(
-            indexPk.uid
-          )
-          expect(response).toBe(true)
-        } catch (error) {
-          throw new Error(error)
-        }
+
+        const response: boolean = await client.deleteIndexIfExists(indexPk.uid)
+        expect(response).toBe(true)
+
         await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
           'errorCode',
           ErrorStatusCode.INDEX_NOT_FOUND
@@ -350,12 +312,8 @@ describe.each([
 
       test(`${permission} key: delete index if exists on index that does not exist`, async () => {
         const indexes = await client.getIndexes()
-        try {
-          const response: boolean = await client.deleteIndexIfExists('badIndex')
-          expect(response).toBe(false)
-        } catch (error) {
-          throw new Error(error)
-        }
+        const response: boolean = await client.deleteIndexIfExists('badIndex')
+        expect(response).toBe(false)
 
         await expect(client.getIndex('badIndex')).rejects.toHaveProperty(
           'errorCode',
@@ -375,56 +333,36 @@ describe.each([
 
     describe('Test on base routes', () => {
       test(`${permission} key: get health`, async () => {
-        try {
-          const response: Health = await client.health()
-          expect(response).toHaveProperty(
-            'status',
-            expect.stringMatching('available')
-          )
-        } catch (error) {
-          throw new Error(error)
-        }
+        const response: Health = await client.health()
+        expect(response).toHaveProperty(
+          'status',
+          expect.stringMatching('available')
+        )
       })
 
       test(`${permission} key: is server healthy`, async () => {
-        try {
-          const response: boolean = await client.isHealthy()
-          expect(response).toBe(true)
-        } catch (error) {
-          throw new Error(error)
-        }
+        const response: boolean = await client.isHealthy()
+        expect(response).toBe(true)
       })
 
       test(`${permission} key: is healthy return false on bad host`, async () => {
         const client = new MeiliSearch({ host: 'http://localhost:9345' })
-        try {
-          const response: boolean = await client.isHealthy()
-          expect(response).toBe(false)
-        } catch (error) {
-          throw new Error(error)
-        }
+        const response: boolean = await client.isHealthy()
+        expect(response).toBe(false)
       })
 
       test(`${permission} key: get version`, async () => {
-        try {
-          const response: Version = await client.getVersion()
-          expect(response).toHaveProperty('commitSha', expect.any(String))
-          expect(response).toHaveProperty('commitDate', expect.any(String))
-          expect(response).toHaveProperty('pkgVersion', expect.any(String))
-        } catch (error) {
-          throw new Error(error)
-        }
+        const response: Version = await client.getVersion()
+        expect(response).toHaveProperty('commitSha', expect.any(String))
+        expect(response).toHaveProperty('commitDate', expect.any(String))
+        expect(response).toHaveProperty('pkgVersion', expect.any(String))
       })
 
       test(`${permission} key: get /stats information`, async () => {
-        try {
-          const response: Stats = await client.getStats()
-          expect(response).toHaveProperty('databaseSize', expect.any(Number))
-          expect(response).toHaveProperty('lastUpdate') // TODO: Could be null, find out why
-          expect(response).toHaveProperty('indexes', expect.any(Object))
-        } catch (error) {
-          throw new Error(error)
-        }
+        const response: Stats = await client.getStats()
+        expect(response).toHaveProperty('databaseSize', expect.any(Number))
+        expect(response).toHaveProperty('lastUpdate') // TODO: Could be null, find out why
+        expect(response).toHaveProperty('indexes', expect.any(Object))
       })
     })
   }
@@ -478,15 +416,11 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 
     describe('Test on misc client methods', () => {
       test(`${permission} key: get health`, async () => {
-        try {
-          const response: Health = await client.health()
-          expect(response).toHaveProperty(
-            'status',
-            expect.stringMatching('available')
-          )
-        } catch (error) {
-          throw new Error(error)
-        }
+        const response: Health = await client.health()
+        expect(response).toHaveProperty(
+          'status',
+          expect.stringMatching('available')
+        )
       })
 
       test(`${permission} key: try to get version and be denied`, async () => {
@@ -574,15 +508,11 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
 
     describe('Test on misc client methods', () => {
       test(`${permission} key: get health`, async () => {
-        try {
-          const response: Health = await client.health()
-          expect(response).toHaveProperty(
-            'status',
-            expect.stringMatching('available')
-          )
-        } catch (error) {
-          throw new Error(error)
-        }
+        const response: Health = await client.health()
+        expect(response).toHaveProperty(
+          'status',
+          expect.stringMatching('available')
+        )
       })
 
       test(`${permission} key: try to get version and be denied`, async () => {

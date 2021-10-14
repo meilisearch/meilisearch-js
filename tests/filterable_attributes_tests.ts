@@ -48,78 +48,50 @@ describe.each([
   })
 
   test(`${permission} key: Get default attributes for filtering`, async () => {
-    try {
-      const response: string[] = await client
-        .index(index.uid)
-        .getFilterableAttributes()
-      expect(response.sort()).toEqual([])
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string[] = await client
+      .index(index.uid)
+      .getFilterableAttributes()
+    expect(response.sort()).toEqual([])
   })
 
   test(`${permission} key: Update attributes for filtering`, async () => {
     const newFilterableAttributes = ['genre']
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .updateFilterableAttributes(newFilterableAttributes)
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const attributes: EnqueuedUpdate = await client
+      .index(index.uid)
+      .updateFilterableAttributes(newFilterableAttributes)
+    expect(attributes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
 
-    try {
-      const response: string[] = await client
-        .index(index.uid)
-        .getFilterableAttributes()
-      expect(response).toEqual(newFilterableAttributes)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string[] = await client
+      .index(index.uid)
+      .getFilterableAttributes()
+    expect(response).toEqual(newFilterableAttributes)
   })
 
   test(`${permission} key: Update attributes for filtering at null`, async () => {
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .updateFilterableAttributes(null)
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const attrbiutes: EnqueuedUpdate = await client
+      .index(index.uid)
+      .updateFilterableAttributes(null)
+    expect(attrbiutes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attrbiutes.updateId)
 
-    try {
-      const response: string[] = await client
-        .index(index.uid)
-        .getFilterableAttributes()
-      expect(response.sort()).toEqual([])
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string[] = await client
+      .index(index.uid)
+      .getFilterableAttributes()
+    expect(response.sort()).toEqual([])
   })
 
   test(`${permission} key: Reset attributes for filtering`, async () => {
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .resetFilterableAttributes()
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const attrbiutes: EnqueuedUpdate = await client
+      .index(index.uid)
+      .resetFilterableAttributes()
+    expect(attrbiutes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attrbiutes.updateId)
 
-    try {
-      const response: string[] = await client
-        .index(index.uid)
-        .getFilterableAttributes()
-      expect(response.sort()).toEqual([])
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string[] = await client
+      .index(index.uid)
+      .getFilterableAttributes()
+    expect(response.sort()).toEqual([])
   })
 })
 

@@ -57,68 +57,42 @@ describe.each([
   })
 
   test(`${permission} key: Get default ranking rules`, async () => {
-    try {
-      const response: string[] = await client.index(index.uid).getRankingRules()
-      expect(response).toEqual(defaultRankingRules)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string[] = await client.index(index.uid).getRankingRules()
+    expect(response).toEqual(defaultRankingRules)
   })
 
   test(`${permission} key: Update ranking rules`, async () => {
     const newRankingRules = ['title:asc', 'typo', 'description:desc']
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .updateRankingRules(newRankingRules)
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const rankingRules: EnqueuedUpdate = await client
+      .index(index.uid)
+      .updateRankingRules(newRankingRules)
+    expect(rankingRules).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(rankingRules.updateId)
 
-    try {
-      const response: string[] = await client.index(index.uid).getRankingRules()
-      expect(response).toEqual(newRankingRules)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string[] = await client.index(index.uid).getRankingRules()
+    expect(response).toEqual(newRankingRules)
   })
 
   test(`${permission} key: Update ranking rules at null`, async () => {
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .updateRankingRules(null)
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
-    try {
-      const response: string[] = await client.index(index.uid).getRankingRules()
-      expect(response).toEqual(defaultRankingRules)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const rankingRules: EnqueuedUpdate = await client
+      .index(index.uid)
+      .updateRankingRules(null)
+    expect(rankingRules).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(rankingRules.updateId)
+
+    const response: string[] = await client.index(index.uid).getRankingRules()
+    expect(response).toEqual(defaultRankingRules)
   })
 
   test(`${permission} key: Reset ranking rules`, async () => {
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .resetRankingRules()
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
-    try {
-      const response: string[] = await client.index(index.uid).getRankingRules()
-      expect(response).toEqual(defaultRankingRules)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const rankingRules: EnqueuedUpdate = await client
+      .index(index.uid)
+      .resetRankingRules()
+    expect(rankingRules).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(rankingRules.updateId)
+
+    const response: string[] = await client.index(index.uid).getRankingRules()
+    expect(response).toEqual(defaultRankingRules)
   })
 })
 

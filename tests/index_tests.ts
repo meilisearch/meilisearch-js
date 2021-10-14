@@ -32,71 +32,43 @@ describe.each([
     return clearAllIndexes(config)
   })
   test(`${permission} key: create with no primary key`, async () => {
-    try {
-      const response = await client.createIndex(indexNoPk.uid)
-      expect(response).toHaveProperty('uid', indexNoPk.uid)
-      expect(response).toHaveProperty('primaryKey', null)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const newIndex = await client.createIndex(indexNoPk.uid)
+    expect(newIndex).toHaveProperty('uid', indexNoPk.uid)
+    expect(newIndex).toHaveProperty('primaryKey', null)
 
-    try {
-      const response: IndexResponse = await client
-        .index(indexNoPk.uid)
-        .getRawInfo()
-      expect(response).toHaveProperty('uid', indexNoPk.uid)
-      expect(response).toHaveProperty('primaryKey', null)
-      expect(response).toHaveProperty('createdAt', expect.any(String))
-      expect(response).toHaveProperty('updatedAt', expect.any(String))
-    } catch (error) {
-      throw new Error(error)
-    }
-    try {
-      const response = await client.index(indexNoPk.uid).fetchInfo()
-      expect(response.primaryKey).toBe(null)
-      expect(response.uid).toBe(indexNoPk.uid)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const rawIndex: IndexResponse = await client
+      .index(indexNoPk.uid)
+      .getRawInfo()
+    expect(rawIndex).toHaveProperty('uid', indexNoPk.uid)
+    expect(rawIndex).toHaveProperty('primaryKey', null)
+    expect(rawIndex).toHaveProperty('createdAt', expect.any(String))
+    expect(rawIndex).toHaveProperty('updatedAt', expect.any(String))
+
+    const response = await client.index(indexNoPk.uid).fetchInfo()
+    expect(response.primaryKey).toBe(null)
+    expect(response.uid).toBe(indexNoPk.uid)
   })
 
   test(`${permission} key: create with primary key`, async () => {
-    try {
-      const response = await client.createIndex(indexPk.uid)
-      expect(response).toHaveProperty('uid', indexPk.uid)
-      expect(response).toHaveProperty('primaryKey', null)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const newIndex = await client.createIndex(indexPk.uid)
+    expect(newIndex).toHaveProperty('uid', indexPk.uid)
+    expect(newIndex).toHaveProperty('primaryKey', null)
 
-    try {
-      const response: IndexResponse = await client
-        .index(indexPk.uid)
-        .getRawInfo()
-      expect(response).toHaveProperty('uid', indexPk.uid)
-      expect(response).toHaveProperty('primaryKey', null)
-      expect(response).toHaveProperty('createdAt', expect.any(String))
-      expect(response).toHaveProperty('updatedAt', expect.any(String))
-    } catch (error) {
-      throw new Error(error)
-    }
-    try {
-      const response = await client.index(indexPk.uid).fetchInfo()
-      expect(response.primaryKey).toBe(null)
-      expect(response.uid).toBe(indexPk.uid)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const rawIndex: IndexResponse = await client.index(indexPk.uid).getRawInfo()
+    expect(rawIndex).toHaveProperty('uid', indexPk.uid)
+    expect(rawIndex).toHaveProperty('primaryKey', null)
+    expect(rawIndex).toHaveProperty('createdAt', expect.any(String))
+    expect(rawIndex).toHaveProperty('updatedAt', expect.any(String))
+
+    const response = await client.index(indexPk.uid).fetchInfo()
+    expect(response.primaryKey).toBe(null)
+    expect(response.uid).toBe(indexPk.uid)
   })
 
   test(`${permission} key: Get index that exists`, async () => {
     await client.createIndex(indexPk.uid)
-    try {
-      const response = await client.index(indexPk.uid).getRawInfo()
-      expect(response).toHaveProperty('uid', indexPk.uid)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response = await client.index(indexPk.uid).getRawInfo()
+    expect(response).toHaveProperty('uid', indexPk.uid)
   })
 
   test(`${permission} key: Get index that does not exist`, async () => {
@@ -110,96 +82,64 @@ describe.each([
     const index = await client.createIndex(indexPk.uid, {
       primaryKey: indexPk.primaryKey,
     })
-    try {
-      const response: IndexResponse = await index.getRawInfo()
-      expect(response).toHaveProperty('uid', indexPk.uid)
-      expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: IndexResponse = await index.getRawInfo()
+    expect(response).toHaveProperty('uid', indexPk.uid)
+    expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
   })
 
   test(`${permission} key: Get index info with NO primary key`, async () => {
     const index = await client.createIndex(indexNoPk.uid)
-    try {
-      const response: IndexResponse = await index.getRawInfo()
-      expect(response).toHaveProperty('uid', indexNoPk.uid)
-      expect(response).toHaveProperty('primaryKey', null)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: IndexResponse = await index.getRawInfo()
+    expect(response).toHaveProperty('uid', indexNoPk.uid)
+    expect(response).toHaveProperty('primaryKey', null)
   })
 
   test(`${permission} key: fetch index with primary key`, async () => {
     const index = await client.createIndex(indexPk.uid, {
       primaryKey: indexPk.primaryKey,
     })
-    try {
-      const response: Index<any> = await index.fetchInfo()
-      expect(response).toHaveProperty('uid', indexPk.uid)
-      expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: Index<any> = await index.fetchInfo()
+    expect(response).toHaveProperty('uid', indexPk.uid)
+    expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
   })
 
   test(`${permission} key: fetch primary key on an index with NO primary key`, async () => {
     const index = await client.createIndex(indexNoPk.uid)
-    try {
-      const response: string | undefined = await index.fetchPrimaryKey()
-      expect(response).toBe(null)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string | undefined = await index.fetchPrimaryKey()
+    expect(response).toBe(null)
   })
 
   test(`${permission} key: fetch primary key on an index with primary key`, async () => {
     const index = await client.createIndex(indexPk.uid, {
       primaryKey: indexPk.primaryKey,
     })
-    try {
-      const response: string | undefined = await index.fetchPrimaryKey()
-      expect(response).toBe(indexPk.primaryKey)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string | undefined = await index.fetchPrimaryKey()
+    expect(response).toBe(indexPk.primaryKey)
   })
 
   test(`${permission} key: fetch index with NO primary key`, async () => {
     const index = await client.createIndex(indexNoPk.uid)
-    try {
-      const response: Index<any> = await index.fetchInfo()
-      expect(response).toHaveProperty('uid', indexNoPk.uid)
-      expect(response).toHaveProperty('primaryKey', null)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: Index<any> = await index.fetchInfo()
+    expect(response).toHaveProperty('uid', indexNoPk.uid)
+    expect(response).toHaveProperty('primaryKey', null)
   })
 
   test(`${permission} key: update primary key on an index that has no primary key already`, async () => {
     const index = await client.createIndex(indexNoPk.uid)
-    try {
-      const response: Index<any> = await index.update({
-        primaryKey: 'newPrimaryKey',
-      })
-      expect(response).toHaveProperty('uid', indexNoPk.uid)
-      expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: Index<any> = await index.update({
+      primaryKey: 'newPrimaryKey',
+    })
+    expect(response).toHaveProperty('uid', indexNoPk.uid)
+    expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
   })
 
   test(`${permission} key: update primary key on an index that has no primary key already using client`, async () => {
     await client.createIndex(indexPk.uid)
-    try {
-      const response: Index<any> = await client.updateIndex(indexPk.uid, {
-        primaryKey: indexPk.primaryKey,
-      })
-      expect(response).toHaveProperty('uid', indexPk.uid)
-      expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: Index<any> = await client.updateIndex(indexPk.uid, {
+      primaryKey: indexPk.primaryKey,
+    })
+    expect(response).toHaveProperty('uid', indexPk.uid)
+    expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
   })
 
   test(`${permission} key: update primary key on an index that has already a primary key and fail`, async () => {
@@ -216,13 +156,9 @@ describe.each([
 
   test(`${permission} key: delete index`, async () => {
     const index = await client.createIndex(indexNoPk.uid)
-    try {
-      const response: void = await index.delete()
-      expect(response).toBe(undefined)
-      await expect(client.getIndexes()).resolves.toHaveLength(0)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: void = await index.delete()
+    expect(response).toBe(undefined)
+    await expect(client.getIndexes()).resolves.toHaveLength(0)
   })
 
   test(`${permission} key: fetch deleted index should fail`, async () => {
@@ -252,32 +188,24 @@ describe.each([
 
   test(`${permission} key: delete if exists when index is present`, async () => {
     const index = await client.createIndex(indexPk.uid)
-    try {
-      const response: boolean = await index.deleteIfExists()
-      expect(response).toBe(true)
-      await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
-        'errorCode',
-        ErrorStatusCode.INDEX_NOT_FOUND
-      )
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: boolean = await index.deleteIfExists()
+    expect(response).toBe(true)
+    await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
+      'errorCode',
+      ErrorStatusCode.INDEX_NOT_FOUND
+    )
   })
 
   test(`${permission} key: delete if exists when index is not present`, async () => {
     const indexes = await client.getIndexes()
     const index = client.index('badIndex')
-    try {
-      const response: boolean = await index.deleteIfExists()
-      expect(response).toBe(false)
-      await expect(client.getIndex('badIndex')).rejects.toHaveProperty(
-        'errorCode',
-        ErrorStatusCode.INDEX_NOT_FOUND
-      )
-      await expect(client.getIndexes()).resolves.toHaveLength(indexes.length)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: boolean = await index.deleteIfExists()
+    expect(response).toBe(false)
+    await expect(client.getIndex('badIndex')).rejects.toHaveProperty(
+      'errorCode',
+      ErrorStatusCode.INDEX_NOT_FOUND
+    )
+    await expect(client.getIndexes()).resolves.toHaveLength(indexes.length)
   })
 
   test(`${permission} key: delete if exists error`, async () => {
@@ -287,13 +215,9 @@ describe.each([
 
   test(`${permission} key: delete index using client`, async () => {
     await client.createIndex(indexPk.uid)
-    try {
-      const response: void = await client.deleteIndex(indexPk.uid)
-      expect(response).toBe(undefined)
-      await expect(client.getIndexes()).resolves.toHaveLength(0)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: void = await client.deleteIndex(indexPk.uid)
+    expect(response).toBe(undefined)
+    await expect(client.getIndexes()).resolves.toHaveLength(0)
   })
 })
 

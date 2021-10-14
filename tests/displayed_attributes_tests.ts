@@ -48,75 +48,52 @@ describe.each([
   })
 
   test(`${permission} key: Get default displayed attributes`, async () => {
-    try {
-      const response = await client.index(index.uid).getDisplayedAttributes()
-      expect(response).toEqual(['*'])
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response = await client.index(index.uid).getDisplayedAttributes()
+    expect(response).toEqual(['*'])
   })
 
   test(`${permission} key: Update displayed attributes`, async () => {
     const newDisplayedAttribute = ['title']
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .updateDisplayedAttributes(newDisplayedAttribute)
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const updatedAttributes: EnqueuedUpdate = await client
+      .index(index.uid)
+      .updateDisplayedAttributes(newDisplayedAttribute)
+    expect(updatedAttributes).toHaveProperty('updateId', expect.any(Number))
+    await client
+      .index(index.uid)
+      .waitForPendingUpdate(updatedAttributes.updateId)
 
-    try {
-      const response: string[] = await client
-        .index(index.uid)
-        .getDisplayedAttributes()
-      expect(response).toEqual(newDisplayedAttribute)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string[] = await client
+      .index(index.uid)
+      .getDisplayedAttributes()
+    expect(response).toEqual(newDisplayedAttribute)
   })
 
   test(`${permission} key: Update displayed attributes at null`, async () => {
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .updateDisplayedAttributes(null)
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const updatedAttributes: EnqueuedUpdate = await client
+      .index(index.uid)
+      .updateDisplayedAttributes(null)
+    expect(updatedAttributes).toHaveProperty('updateId', expect.any(Number))
+    await client
+      .index(index.uid)
+      .waitForPendingUpdate(updatedAttributes.updateId)
 
-    try {
-      const response: string[] = await client
-        .index(index.uid)
-        .getDisplayedAttributes()
-      expect(response).toEqual(['*'])
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string[] = await client
+      .index(index.uid)
+      .getDisplayedAttributes()
+    expect(response).toEqual(['*'])
   })
 
   test(`${permission} key: Reset displayed attributes`, async () => {
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .resetDisplayedAttributes()
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
-    try {
-      const response: string[] = await client
-        .index(index.uid)
-        .getDisplayedAttributes()
-      expect(response).toEqual(['*'])
-    } catch (error) {
-      throw new Error(error)
-    }
+    const attributes: EnqueuedUpdate = await client
+      .index(index.uid)
+      .resetDisplayedAttributes()
+    expect(attributes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
+
+    const response: string[] = await client
+      .index(index.uid)
+      .getDisplayedAttributes()
+    expect(response).toEqual(['*'])
   })
 })
 

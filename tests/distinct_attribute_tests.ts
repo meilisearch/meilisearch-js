@@ -48,76 +48,50 @@ describe.each([
   })
 
   test(`${permission} key: Get default distinct attribute`, async () => {
-    try {
-      const response: string | null = await client
-        .index(index.uid)
-        .getDistinctAttribute()
-      expect(response).toEqual(null)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string | null = await client
+      .index(index.uid)
+      .getDistinctAttribute()
+    expect(response).toEqual(null)
   })
 
   test(`${permission} key: Update distinct attribute`, async () => {
     const newDistinctAttribute = 'title'
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .updateDistinctAttribute(newDistinctAttribute)
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const attributes: EnqueuedUpdate = await client
+      .index(index.uid)
+      .updateDistinctAttribute(newDistinctAttribute)
+    expect(attributes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
 
-    try {
-      const response: string | null = await client
-        .index(index.uid)
-        .getDistinctAttribute()
-      expect(response).toEqual(newDistinctAttribute)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const response: string | null = await client
+      .index(index.uid)
+      .getDistinctAttribute()
+    expect(response).toEqual(newDistinctAttribute)
   })
 
   test(`${permission} key: Update distinct attribute at null`, async () => {
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .updateDistinctAttribute(null)
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
-    try {
-      const response: string | null = await client
-        .index(index.uid)
-        .getDistinctAttribute()
-      expect(response).toEqual(null)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const attrbiutes: EnqueuedUpdate = await client
+      .index(index.uid)
+      .updateDistinctAttribute(null)
+    expect(attrbiutes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attrbiutes.updateId)
+
+    const response: string | null = await client
+      .index(index.uid)
+      .getDistinctAttribute()
+    expect(response).toEqual(null)
   })
 
   test(`${permission} key: Reset distinct attribute`, async () => {
-    try {
-      const response: EnqueuedUpdate = await client
-        .index(index.uid)
-        .resetDistinctAttribute()
-      expect(response).toHaveProperty('updateId', expect.any(Number))
-      await client.index(index.uid).waitForPendingUpdate(response.updateId)
-    } catch (error) {
-      throw new Error(error)
-    }
-    try {
-      const response: string | null = await client
-        .index(index.uid)
-        .getDistinctAttribute()
-      expect(response).toEqual(null)
-    } catch (error) {
-      throw new Error(error)
-    }
+    const attributes: EnqueuedUpdate = await client
+      .index(index.uid)
+      .resetDistinctAttribute()
+    expect(attributes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
+
+    const response: string | null = await client
+      .index(index.uid)
+      .getDistinctAttribute()
+    expect(response).toEqual(null)
   })
 })
 

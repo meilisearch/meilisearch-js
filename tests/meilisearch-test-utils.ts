@@ -37,12 +37,8 @@ const anonymousClient = new MeiliSearch({
 const clearAllIndexes = async (config: Config): Promise<void> => {
   const client = new MeiliSearch(config)
   let indexes: string[]
-  try {
-    const response: IndexResponse[] = await client.getIndexes()
-    indexes = response.map((elem: IndexResponse) => elem.uid)
-  } catch (error) {
-    throw new Error(error)
-  }
+  const response: IndexResponse[] = await client.getIndexes()
+  indexes = response.map((elem: IndexResponse) => elem.uid)
 
   for (const indexUid of indexes) {
     await client
