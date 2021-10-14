@@ -18,6 +18,8 @@ const indexNoPk = {
 const indexPk = {
   uid: 'movies_test2',
   primaryKey: 'id',
+  createdAt: new Date(Date.now()).toISOString(),
+  updatedAt: new Date(Date.now()).toISOString(),
 }
 
 afterAll(() => {
@@ -286,6 +288,19 @@ describe.each([
       expect(response).toBe(undefined)
     })
     await expect(client.getIndexes()).resolves.toHaveLength(0)
+  })
+
+  test(`${permission} key: Get updatedAt and createdAt`, async () => {
+    await client.createIndex(indexPk.uid)
+    indexPk.createdAt = new Date(Date.now()).toISOString()
+    indexPk.updatedAt = new Date(Date.now()).toISOString()
+    await client
+      .index(indexPk.uid)
+      .getRawInfo()
+      .then((response) => {
+        expect(response).toHaveProperty('createdAt', indexPk.createdAt)
+        expect(response).toHaveProperty('updatedAt', indexPk.updatedAt)
+      })
   })
 })
 
