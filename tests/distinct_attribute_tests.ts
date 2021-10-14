@@ -48,64 +48,50 @@ describe.each([
   })
 
   test(`${permission} key: Get default distinct attribute`, async () => {
-    await client
+    const response: string | null = await client
       .index(index.uid)
       .getDistinctAttribute()
-      .then((response: string | null) => {
-        expect(response).toEqual(null)
-      })
+    expect(response).toEqual(null)
   })
 
   test(`${permission} key: Update distinct attribute`, async () => {
     const newDistinctAttribute = 'title'
-    const { updateId } = await client
+    const attributes: EnqueuedUpdate = await client
       .index(index.uid)
       .updateDistinctAttribute(newDistinctAttribute)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    expect(attributes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
+
+    const response: string | null = await client
       .index(index.uid)
       .getDistinctAttribute()
-      .then((response: string | null) => {
-        expect(response).toEqual(newDistinctAttribute)
-      })
+    expect(response).toEqual(newDistinctAttribute)
   })
 
   test(`${permission} key: Update distinct attribute at null`, async () => {
-    const { updateId } = await client
+    const attrbiutes: EnqueuedUpdate = await client
       .index(index.uid)
       .updateDistinctAttribute(null)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    expect(attrbiutes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attrbiutes.updateId)
+
+    const response: string | null = await client
       .index(index.uid)
       .getDistinctAttribute()
-      .then((response: string | null) => {
-        expect(response).toEqual(null)
-      })
+    expect(response).toEqual(null)
   })
 
   test(`${permission} key: Reset distinct attribute`, async () => {
-    const { updateId } = await client
+    const attributes: EnqueuedUpdate = await client
       .index(index.uid)
       .resetDistinctAttribute()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    expect(attributes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
+
+    const response: string | null = await client
       .index(index.uid)
       .getDistinctAttribute()
-      .then((response: string | null) => {
-        expect(response).toEqual(null)
-      })
+    expect(response).toEqual(null)
   })
 })
 

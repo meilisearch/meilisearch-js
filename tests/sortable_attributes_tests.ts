@@ -48,64 +48,50 @@ describe.each([
   })
 
   test(`${permission} key: Get default sortable attributes`, async () => {
-    await client
+    const response: string[] = await client
       .index(index.uid)
       .getSortableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
+    expect(response).toEqual([])
   })
 
   test(`${permission} key: Update sortable attributes`, async () => {
     const newSortableAttributes = ['title']
-    const { updateId } = await client
+    const attributes: EnqueuedUpdate = await client
       .index(index.uid)
       .updateSortableAttributes(newSortableAttributes)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    expect(attributes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
+
+    const response: string[] = await client
       .index(index.uid)
       .getSortableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(newSortableAttributes)
-      })
+    expect(response).toEqual(newSortableAttributes)
   })
 
   test(`${permission} key: Update sortable attributes at null`, async () => {
-    const { updateId } = await client
+    const attributes: EnqueuedUpdate = await client
       .index(index.uid)
       .updateSortableAttributes(null)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    expect(attributes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
+
+    const response: string[] = await client
       .index(index.uid)
       .getSortableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
+    expect(response).toEqual([])
   })
 
   test(`${permission} key: Reset sortable attributes`, async () => {
-    const { updateId } = await client
+    const attrbiutes: EnqueuedUpdate = await client
       .index(index.uid)
       .resetSortableAttributes()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    expect(attrbiutes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attrbiutes.updateId)
+
+    const response: string[] = await client
       .index(index.uid)
       .getSortableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
+    expect(response).toEqual([])
   })
 })
 

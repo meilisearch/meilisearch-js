@@ -34,61 +34,43 @@ describe.each([
     return clearAllIndexes(config)
   })
   test(`${permission} key: create with no primary key`, async () => {
-    await client.createIndex(indexNoPk.uid).then((response) => {
-      expect(response).toHaveProperty('uid', indexNoPk.uid)
-      expect(response).toHaveProperty('primaryKey', null)
-    })
+    const newIndex = await client.createIndex(indexNoPk.uid)
+    expect(newIndex).toHaveProperty('uid', indexNoPk.uid)
+    expect(newIndex).toHaveProperty('primaryKey', null)
 
-    await client
+    const rawIndex: IndexResponse = await client
       .index(indexNoPk.uid)
       .getRawInfo()
-      .then((response: IndexResponse) => {
-        expect(response).toHaveProperty('uid', indexNoPk.uid)
-        expect(response).toHaveProperty('primaryKey', null)
-        expect(response).toHaveProperty('createdAt', expect.any(String))
-        expect(response).toHaveProperty('updatedAt', expect.any(String))
-      })
+    expect(rawIndex).toHaveProperty('uid', indexNoPk.uid)
+    expect(rawIndex).toHaveProperty('primaryKey', null)
+    expect(rawIndex).toHaveProperty('createdAt', expect.any(String))
+    expect(rawIndex).toHaveProperty('updatedAt', expect.any(String))
 
-    await client
-      .index(indexNoPk.uid)
-      .fetchInfo()
-      .then((response) => {
-        expect(response.primaryKey).toBe(null)
-        expect(response.uid).toBe(indexNoPk.uid)
-      })
+    const response = await client.index(indexNoPk.uid).fetchInfo()
+    expect(response.primaryKey).toBe(null)
+    expect(response.uid).toBe(indexNoPk.uid)
   })
 
   test(`${permission} key: create with primary key`, async () => {
-    await client
-      .createIndex(indexPk.uid, {
-        primaryKey: indexPk.primaryKey,
-      })
-      .then((response) => {
-        expect(response).toHaveProperty('uid', indexPk.uid)
-        expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
-      })
-    await client
-      .index(indexPk.uid)
-      .getRawInfo()
-      .then((response: IndexResponse) => {
-        expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
-        expect(response).toHaveProperty('createdAt', expect.any(String))
-        expect(response).toHaveProperty('updatedAt', expect.any(String))
-      })
-    await client.getIndex(indexPk.uid).then((response) => {
-      expect(response.primaryKey).toBe(indexPk.primaryKey)
-      expect(response.uid).toBe(indexPk.uid)
-    })
+    const newIndex = await client.createIndex(indexPk.uid)
+    expect(newIndex).toHaveProperty('uid', indexPk.uid)
+    expect(newIndex).toHaveProperty('primaryKey', null)
+
+    const rawIndex: IndexResponse = await client.index(indexPk.uid).getRawInfo()
+    expect(rawIndex).toHaveProperty('uid', indexPk.uid)
+    expect(rawIndex).toHaveProperty('primaryKey', null)
+    expect(rawIndex).toHaveProperty('createdAt', expect.any(String))
+    expect(rawIndex).toHaveProperty('updatedAt', expect.any(String))
+
+    const response = await client.index(indexPk.uid).fetchInfo()
+    expect(response.primaryKey).toBe(null)
+    expect(response.uid).toBe(indexPk.uid)
   })
 
   test(`${permission} key: Get index that exists`, async () => {
     await client.createIndex(indexPk.uid)
-    await client
-      .index(indexPk.uid)
-      .getRawInfo()
-      .then((response) => {
-        expect(response).toHaveProperty('uid', indexPk.uid)
-      })
+    const response = await client.index(indexPk.uid).getRawInfo()
+    expect(response).toHaveProperty('uid', indexPk.uid)
   })
 
   test(`${permission} key: Get raw index that exists`, async () => {
@@ -115,10 +97,9 @@ describe.each([
     const index = await client.createIndex(indexPk.uid, {
       primaryKey: indexPk.primaryKey,
     })
-    await index.getRawInfo().then((response: IndexResponse) => {
-      expect(response).toHaveProperty('uid', indexPk.uid)
-      expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
-    })
+    const response: IndexResponse = await index.getRawInfo()
+    expect(response).toHaveProperty('uid', indexPk.uid)
+    expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
   })
 
   test(`${permission} key: Get raw index info with primary key`, async () => {
@@ -132,10 +113,9 @@ describe.each([
 
   test(`${permission} key: Get index info with NO primary key`, async () => {
     const index = await client.createIndex(indexNoPk.uid)
-    await index.getRawInfo().then((response: IndexResponse) => {
-      expect(response).toHaveProperty('uid', indexNoPk.uid)
-      expect(response).toHaveProperty('primaryKey', null)
-    })
+    const response: IndexResponse = await index.getRawInfo()
+    expect(response).toHaveProperty('uid', indexNoPk.uid)
+    expect(response).toHaveProperty('primaryKey', null)
   })
 
   test(`${permission} key: Get raw index info with NO primary key`, async () => {
@@ -149,56 +129,48 @@ describe.each([
     const index = await client.createIndex(indexPk.uid, {
       primaryKey: indexPk.primaryKey,
     })
-    await index.fetchInfo().then((response: Index<any>) => {
-      expect(response).toHaveProperty('uid', indexPk.uid)
-      expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
-    })
+    const response: Index<any> = await index.fetchInfo()
+    expect(response).toHaveProperty('uid', indexPk.uid)
+    expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
   })
 
   test(`${permission} key: fetch primary key on an index with NO primary key`, async () => {
     const index = await client.createIndex(indexNoPk.uid)
-    await index.fetchPrimaryKey().then((response: string | undefined) => {
-      expect(response).toBe(null)
-    })
+    const response: string | undefined = await index.fetchPrimaryKey()
+    expect(response).toBe(null)
   })
 
   test(`${permission} key: fetch primary key on an index with primary key`, async () => {
     const index = await client.createIndex(indexPk.uid, {
       primaryKey: indexPk.primaryKey,
     })
-    await index.fetchPrimaryKey().then((response: string | undefined) => {
-      expect(response).toBe(indexPk.primaryKey)
-    })
+    const response: string | undefined = await index.fetchPrimaryKey()
+    expect(response).toBe(indexPk.primaryKey)
   })
 
   test(`${permission} key: fetch index with NO primary key`, async () => {
     const index = await client.createIndex(indexNoPk.uid)
-    await index.fetchInfo().then((response: Index<any>) => {
-      expect(response).toHaveProperty('uid', indexNoPk.uid)
-      expect(response).toHaveProperty('primaryKey', null)
-    })
+    const response: Index<any> = await index.fetchInfo()
+    expect(response).toHaveProperty('uid', indexNoPk.uid)
+    expect(response).toHaveProperty('primaryKey', null)
   })
 
   test(`${permission} key: update primary key on an index that has no primary key already`, async () => {
     const index = await client.createIndex(indexNoPk.uid)
-    await index
-      .update({ primaryKey: 'newPrimaryKey' })
-      .then((response: Index<any>) => {
-        expect(response).toHaveProperty('uid', indexNoPk.uid)
-        expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
-      })
+    const response: Index<any> = await index.update({
+      primaryKey: 'newPrimaryKey',
+    })
+    expect(response).toHaveProperty('uid', indexNoPk.uid)
+    expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
   })
 
   test(`${permission} key: update primary key on an index that has no primary key already using client`, async () => {
     await client.createIndex(indexPk.uid)
-    await client
-      .updateIndex(indexPk.uid, {
-        primaryKey: indexPk.primaryKey,
-      })
-      .then((response: Index<any>) => {
-        expect(response).toHaveProperty('uid', indexPk.uid)
-        expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
-      })
+    const response: Index<any> = await client.updateIndex(indexPk.uid, {
+      primaryKey: indexPk.primaryKey,
+    })
+    expect(response).toHaveProperty('uid', indexPk.uid)
+    expect(response).toHaveProperty('primaryKey', indexPk.primaryKey)
   })
 
   test(`${permission} key: update primary key on an index that has already a primary key and fail`, async () => {
@@ -215,9 +187,8 @@ describe.each([
 
   test(`${permission} key: delete index`, async () => {
     const index = await client.createIndex(indexNoPk.uid)
-    await index.delete().then((response: void) => {
-      expect(response).toBe(undefined)
-    })
+    const response: void = await index.delete()
+    expect(response).toBe(undefined)
     await expect(client.getIndexes()).resolves.toHaveLength(0)
   })
 
@@ -255,9 +226,8 @@ describe.each([
 
   test(`${permission} key: delete if exists when index is present`, async () => {
     const index = await client.createIndex(indexPk.uid)
-    await index.deleteIfExists().then((response: boolean) => {
-      expect(response).toBe(true)
-    })
+    const response: boolean = await index.deleteIfExists()
+    expect(response).toBe(true)
     await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
       'errorCode',
       ErrorStatusCode.INDEX_NOT_FOUND
@@ -267,9 +237,8 @@ describe.each([
   test(`${permission} key: delete if exists when index is not present`, async () => {
     const indexes = await client.getIndexes()
     const index = client.index('badIndex')
-    await index.deleteIfExists().then((response: boolean) => {
-      expect(response).toBe(false)
-    })
+    const response: boolean = await index.deleteIfExists()
+    expect(response).toBe(false)
     await expect(client.getIndex('badIndex')).rejects.toHaveProperty(
       'errorCode',
       ErrorStatusCode.INDEX_NOT_FOUND
@@ -284,9 +253,8 @@ describe.each([
 
   test(`${permission} key: delete index using client`, async () => {
     await client.createIndex(indexPk.uid)
-    await client.deleteIndex(indexPk.uid).then((response: void) => {
-      expect(response).toBe(undefined)
-    })
+    const response: void = await client.deleteIndex(indexPk.uid)
+    expect(response).toBe(undefined)
     await expect(client.getIndexes()).resolves.toHaveLength(0)
   })
 
