@@ -48,64 +48,50 @@ describe.each([
   })
 
   test(`${permission} key: Get default searchable attributes`, async () => {
-    await client
+    const response: string[] = await client
       .index(index.uid)
       .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
+    expect(response).toEqual(['*'])
   })
 
   test(`${permission} key: Update searchable attributes`, async () => {
     const newSearchableAttributes = ['title']
-    const { updateId } = await client
+    const attributes: EnqueuedUpdate = await client
       .index(index.uid)
       .updateSearchableAttributes(newSearchableAttributes)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    expect(attributes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
+
+    const response: string[] = await client
       .index(index.uid)
       .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(newSearchableAttributes)
-      })
+    expect(response).toEqual(newSearchableAttributes)
   })
 
   test(`${permission} key: Update searchable attributes at null`, async () => {
-    const { updateId } = await client
+    const attributes: EnqueuedUpdate = await client
       .index(index.uid)
       .updateSearchableAttributes(null)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    expect(attributes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
+
+    const response: string[] = await client
       .index(index.uid)
       .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
+    expect(response).toEqual(['*'])
   })
 
   test(`${permission} key: Reset searchable attributes`, async () => {
-    const { updateId } = await client
+    const attributes: EnqueuedUpdate = await client
       .index(index.uid)
       .resetSearchableAttributes()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
+    expect(attributes).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
+
+    const response: string[] = await client
       .index(index.uid)
       .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
+    expect(response).toEqual(['*'])
   })
 })
 

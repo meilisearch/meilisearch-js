@@ -48,65 +48,41 @@ describe.each([
   })
 
   test(`${permission} key: Get default stop words`, async () => {
-    await client
-      .index(index.uid)
-      .getStopWords()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
+    const response: string[] = await client.index(index.uid).getStopWords()
+    expect(response).toEqual([])
   })
 
   test(`${permission} key: Update stop words`, async () => {
     const newStopWords = ['the']
-    const { updateId } = await client
+    const words: EnqueuedUpdate = await client
       .index(index.uid)
       .updateStopWords(newStopWords)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getStopWords()
-      .then((response: string[]) => {
-        expect(response).toEqual(newStopWords)
-      })
+    expect(words).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(words.updateId)
+
+    const response: string[] = await client.index(index.uid).getStopWords()
+    expect(response).toEqual(newStopWords)
   })
 
   test(`${permission} key: Update stop words with null value`, async () => {
     const newStopWords = null
-    const { updateId } = await client
+    const words: EnqueuedUpdate = await client
       .index(index.uid)
       .updateStopWords(newStopWords)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getStopWords()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
+    expect(words).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(words.updateId)
+
+    const response: string[] = await client.index(index.uid).getStopWords()
+    expect(response).toEqual([])
   })
 
   test(`${permission} key: Reset stop words`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .resetStopWords()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getStopWords()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
+    const words: EnqueuedUpdate = await client.index(index.uid).resetStopWords()
+    expect(words).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(words.updateId)
+
+    const response: string[] = await client.index(index.uid).getStopWords()
+    expect(response).toEqual([])
   })
 })
 

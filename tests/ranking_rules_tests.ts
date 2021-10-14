@@ -57,64 +57,42 @@ describe.each([
   })
 
   test(`${permission} key: Get default ranking rules`, async () => {
-    await client
-      .index(index.uid)
-      .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
-      })
+    const response: string[] = await client.index(index.uid).getRankingRules()
+    expect(response).toEqual(defaultRankingRules)
   })
 
   test(`${permission} key: Update ranking rules`, async () => {
     const newRankingRules = ['title:asc', 'typo', 'description:desc']
-    const { updateId } = await client
+    const rankingRules: EnqueuedUpdate = await client
       .index(index.uid)
       .updateRankingRules(newRankingRules)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(newRankingRules)
-      })
+    expect(rankingRules).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(rankingRules.updateId)
+
+    const response: string[] = await client.index(index.uid).getRankingRules()
+    expect(response).toEqual(newRankingRules)
   })
 
   test(`${permission} key: Update ranking rules at null`, async () => {
-    const { updateId } = await client
+    const rankingRules: EnqueuedUpdate = await client
       .index(index.uid)
       .updateRankingRules(null)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
-      })
+    expect(rankingRules).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(rankingRules.updateId)
+
+    const response: string[] = await client.index(index.uid).getRankingRules()
+    expect(response).toEqual(defaultRankingRules)
   })
 
   test(`${permission} key: Reset ranking rules`, async () => {
-    const { updateId } = await client
+    const rankingRules: EnqueuedUpdate = await client
       .index(index.uid)
       .resetRankingRules()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
-      })
+    expect(rankingRules).toHaveProperty('updateId', expect.any(Number))
+    await client.index(index.uid).waitForPendingUpdate(rankingRules.updateId)
+
+    const response: string[] = await client.index(index.uid).getRankingRules()
+    expect(response).toEqual(defaultRankingRules)
   })
 })
 
