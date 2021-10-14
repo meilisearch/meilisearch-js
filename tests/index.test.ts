@@ -13,6 +13,8 @@ const indexNoPk = {
 const indexPk = {
   uid: 'movies_test2',
   primaryKey: 'id',
+  createdAt: new Date(Date.now()).toISOString(),
+  updatedAt: new Date(Date.now()).toISOString(),
 }
 
 afterAll(async () => {
@@ -325,6 +327,28 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('numberOfDocuments', 0)
       expect(response).toHaveProperty('isIndexing', false)
       expect(response).toHaveProperty('fieldDistribution', {})
+    })
+
+    test(`${permission} key: Get updatedAt and createdAt of created index`, async () => {
+      const client = await getClient(permission)
+      const { uid } = await client.createIndex(indexNoPk.uid)
+      await client.waitForTask(uid)
+
+      const response = await client.index(indexPk.uid).getRawInfo()
+
+      expect(response).toBeInstanceOf(Date)
+      expect(response).toBeInstanceOf(Date)
+    })
+
+    test(`${permission} key: Get updatedAt and createdAt from initialized index`, async () => {
+      const client = await getClient(permission)
+      const { uid } = await client.createIndex(indexNoPk.uid)
+      await client.waitForTask(uid)
+
+      const response = await client.index(indexPk.uid).getRawInfo()
+
+      expect(response).toBeUndefined()
+      expect(response).toBeUndefined()
     })
   }
 )

@@ -43,17 +43,29 @@ import { TaskClient } from './task'
 class Index<T = Record<string, any>> {
   uid: string
   primaryKey: string | undefined
+  updatedAt: Date | undefined
+  createdAt: Date | undefined
   httpRequest: HttpRequests
   tasks: TaskClient
 
   /**
    * @param {Config} config Request configuration options
    * @param {string} uid UID of the index
-   * @param {string} primaryKey? Primary Key of the index
+   * @param {string} [primaryKey] Primary Key of the index
+   * @param {Date} [createdAt] Creation date of the index
+   * @param {Date} [updatedAt] Last update date of the index
    */
-  constructor(config: Config, uid: string, primaryKey?: string) {
+  constructor(
+    config: Config,
+    uid: string,
+    primaryKey?: string,
+    updatedAt?: Date,
+    createdAt?: Date
+  ) {
     this.uid = uid
     this.primaryKey = primaryKey
+    this.updatedAt = updatedAt
+    this.createdAt = createdAt
     this.httpRequest = new HttpRequests(config)
     this.tasks = new TaskClient(config)
   }
@@ -145,6 +157,8 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}`
     const res = await this.httpRequest.get<IndexResponse>(url)
     this.primaryKey = res.primaryKey
+    this.updatedAt = res.updatedAt
+    this.createdAt = res.createdAt
     return res
   }
 
