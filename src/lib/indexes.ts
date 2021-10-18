@@ -639,7 +639,7 @@ class Index<T = Record<string, any>> {
    * Update the distinct-attribute.
    * @memberof Index
    * @method updateDistinctAttribute
-   * @param {DisplayedAttributes} distinctAttribute Field name of the distinct-attribute
+   * @param {DistinctAttribute} distinctAttribute Field name of the distinct-attribute
    * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
    */
   async updateDistinctAttribute(
