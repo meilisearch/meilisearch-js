@@ -33,6 +33,7 @@ import {
   SortableAttributes,
   SearchableAttributes,
   DisplayedAttributes,
+  WaitForPendingUpdateOptions,
 } from '../types'
 import { sleep, removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -60,7 +61,7 @@ class Index<T = Record<string, any>> {
   /**
    * Waits for a pending update till it has been processed
    * @param {number} updateId Update identifier
-   * @param {{ timeOutMs: number | undefined; intervalMs: number | undefined }} param1 Additional configuration options
+   * @param {WaitForPendingUpdateOptions} options Additional configuration options
    * @returns {Promise<Update>} Promise containing Update object after it has been processed
    */
   async waitForPendingUpdate(
@@ -68,7 +69,7 @@ class Index<T = Record<string, any>> {
     {
       timeOutMs = 5000,
       intervalMs = 50,
-    }: { timeOutMs?: number; intervalMs?: number } = {}
+    } : WaitForPendingUpdateOptions = {}
   ): Promise<Update> {
     const startingTime = Date.now()
     while (Date.now() - startingTime < timeOutMs) {
