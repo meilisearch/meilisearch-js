@@ -26,6 +26,10 @@ class MeiliSearch {
   config: Config
   httpRequest: HttpRequests
 
+  /**
+   * Creates new MeiliSearch instance
+   * @param config Configuration object
+   */
   constructor(config: Config) {
     config.host = addProtocolIfNotPresent(config.host)
     config.host = HttpRequests.addTrailingSlash(config.host)
@@ -37,6 +41,8 @@ class MeiliSearch {
    * Return an Index instance
    * @memberof MeiliSearch
    * @method index
+   * @param indexUid The index UID
+   * @returns Instance of Index
    */
   index<T = any>(indexUid: string): Index<T> {
     return new Index<T>(this.config, indexUid)
@@ -47,6 +53,8 @@ class MeiliSearch {
    * return an Index instance with the gathered information
    * @memberof MeiliSearch
    * @method getIndex
+   * @param indexUid The index UID
+   * @returns Promise containing Index instance
    */
   async getIndex<T = any>(indexUid: string): Promise<Index<T>> {
     return new Index<T>(this.config, indexUid).fetchInfo()
@@ -57,6 +65,8 @@ class MeiliSearch {
    * return the raw JSON response
    * @memberof MeiliSearch
    * @method getRawIndex
+   * @param indexUid The index UID
+   * @returns Promise containing index information
    */
   async getRawIndex(indexUid: string): Promise<IndexResponse> {
     return new Index(this.config, indexUid).getRawInfo()
@@ -66,6 +76,9 @@ class MeiliSearch {
    * Get an index or create it if it does not exist
    * @memberof MeiliSearch
    * @method getOrCreateIndex
+   * @param uid The index UID
+   * @param options Index options
+   * @returns Promise containing Index instance
    */
   async getOrCreateIndex<T = any>(
     uid: string,
@@ -92,6 +105,7 @@ class MeiliSearch {
    * Get all indexes in the database
    * @memberof MeiliSearch
    * @method getIndexes
+   * @returns Promise containing array of raw index information
    */
   async getIndexes(): Promise<IndexResponse[]> {
     const url = `indexes`
@@ -102,6 +116,9 @@ class MeiliSearch {
    * Create a new index
    * @memberof MeiliSearch
    * @method createIndex
+   * @param uid The index UID
+   * @param options Index options
+   * @returns Promise containing Index instance
    */
   async createIndex<T = any>(
     uid: string,
@@ -114,6 +131,9 @@ class MeiliSearch {
    * Update an index
    * @memberof MeiliSearch
    * @method updateIndex
+   * @param uid The index UID
+   * @param options Index options to update
+   * @returns Promise containing Index instance after updating
    */
   async updateIndex<T = any>(
     uid: string,
@@ -126,6 +146,8 @@ class MeiliSearch {
    * Delete an index
    * @memberof MeiliSearch
    * @method deleteIndex
+   * @param uid The index UID
+   * @returns Promise which resolves when index is deleted successfully
    */
   async deleteIndex(uid: string): Promise<void> {
     return new Index(this.config, uid).delete()
@@ -135,6 +157,8 @@ class MeiliSearch {
    * Deletes an index if it already exists.
    * @memberof MeiliSearch
    * @method deleteIndexIfExists
+   * @param uid The index UID
+   * @returns Promise which resolves to true when index exists and is deleted successfully, otherwise false if it does not exist
    */
   async deleteIndexIfExists(uid: string): Promise<boolean> {
     try {
@@ -156,6 +180,7 @@ class MeiliSearch {
    * Get private and public key
    * @memberof MeiliSearch
    * @method getKey
+   * @returns Promise containing an object with keys
    */
   async getKeys(): Promise<Keys> {
     const url = `keys`
@@ -168,9 +193,9 @@ class MeiliSearch {
 
   /**
    * Checks if the server is healthy, otherwise an error will be thrown.
-   *
    * @memberof MeiliSearch
    * @method health
+   * @returns Promise containing an object with health details
    */
   async health(): Promise<Health> {
     const url = `health`
@@ -179,9 +204,9 @@ class MeiliSearch {
 
   /**
    * Checks if the server is healthy, return true or false.
-   *
    * @memberof MeiliSearch
    * @method isHealthy
+   * @returns Promise containing a boolean
    */
   async isHealthy(): Promise<boolean> {
     try {
@@ -201,6 +226,7 @@ class MeiliSearch {
    * Get the stats of all the database
    * @memberof MeiliSearch
    * @method getStats
+   * @returns Promise containing object of all the stats
    */
   async getStats(): Promise<Stats> {
     const url = `stats`
@@ -215,6 +241,7 @@ class MeiliSearch {
    * Get the version of MeiliSearch
    * @memberof MeiliSearch
    * @method getVersion
+   * @returns Promise containing object with version details
    */
   async getVersion(): Promise<Version> {
     const url = `version`
@@ -229,6 +256,7 @@ class MeiliSearch {
    * Triggers a dump creation process
    * @memberof MeiliSearch
    * @method createDump
+   * @returns Promise containing object of the enqueued update
    */
   async createDump(): Promise<EnqueuedDump> {
     const url = `dumps`
@@ -239,6 +267,8 @@ class MeiliSearch {
    * Get the status of a dump creation process
    * @memberof MeiliSearch
    * @method getDumpStatus
+   * @param dumpUid Dump UID
+   * @returns Promise containing object of the enqueued update
    */
   async getDumpStatus(dumpUid: string): Promise<EnqueuedDump> {
     const url = `dumps/${dumpUid}/status`
