@@ -66,10 +66,7 @@ class Index<T = Record<string, any>> {
    */
   async waitForPendingUpdate(
     updateId: number,
-    {
-      timeOutMs = 5000,
-      intervalMs = 50,
-    } : WaitForPendingUpdateOptions = {}
+    { timeOutMs = 5000, intervalMs = 50 }: WaitForPendingUpdateOptions = {}
   ): Promise<Update> {
     const startingTime = Date.now()
     while (Date.now() - startingTime < timeOutMs) {
