@@ -71,7 +71,7 @@ curl -L https://install.meilisearch.com | sh
 ./meilisearch
 ```
 
-NB: you can also download MeiliSearch from **Homebrew** or **APT**, or even run it using **Docker**.
+NB: you can also download MeiliSearch from **Homebrew** or **APT** or even run it using **Docker**.
 
 ### Import <!-- omit in toc -->
 
