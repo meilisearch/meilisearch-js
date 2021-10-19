@@ -234,6 +234,48 @@ await index.search(
 }
 ```
 
+#### Custom Search With Filters <!-- omit in toc -->
+
+If you want to enable filtering, you must add your attributes to the `filterableAttributes` index setting.
+
+```js
+await index.updateAttributesForFaceting([
+    'id',
+    'genres'
+  ])
+```
+
+You only need to perform this operation once.
+
+Note that MeiliSearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take time. You can track the process using the [update status](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status).
+
+Then, you can perform the search:
+
+```js
+await index.search(
+  'wonder',
+  {
+    filter: ['id > 1 AND genres = Action']
+  }
+)
+```
+
+```json
+{
+  "hits": [
+    {
+      "id": 2,
+      "title": "Wonder Woman",
+      "genres": ["Action","Adventure"]
+    }
+  ],
+  "offset": 0,
+  "limit": 20,
+  "nbHits": 1,
+  "processingTimeMs": 0,
+  "query": "wonder"
+}
+
 #### Placeholder Search <!-- omit in toc -->
 
 Placeholder search makes it possible to receive hits based on your parameters without having any query (`q`). To enable faceted search on your dataset you need to add `genres` in the [settings](https://docs.meilisearch.com/reference/features/faceted_search.html#setting-up-facets).
