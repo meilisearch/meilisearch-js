@@ -183,6 +183,11 @@ export type EnqueuedDump = {
   finishedAt: string
 }
 
+export type WaitForPendingUpdateOptions = {
+  timeOutMs?: number
+  intervalMs?: number
+}
+
 /*
  *** HEALTH
  */
