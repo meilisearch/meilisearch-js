@@ -275,6 +275,7 @@ await index.search(
   "processingTimeMs": 0,
   "query": "wonder"
 }
+```
 
 #### Placeholder Search <!-- omit in toc -->
 
