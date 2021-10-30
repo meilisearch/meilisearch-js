@@ -17,7 +17,6 @@ class HttpRequests {
   constructor(config: Config) {
     this.headers = {
       ...(config.headers || {}),
-      'Content-Type': 'application/json',
       ...(config.apiKey ? { 'X-Meili-API-Key': config.apiKey } : {}),
     }
     this.url = new URL(config.host)
@@ -36,13 +35,19 @@ class HttpRequests {
     params,
     body,
     config,
+    content_type,
   }: {
     method: string
     url: string
     params?: { [key: string]: any }
     body?: any
     config?: Partial<Request>
+    content_type?:string
   }) {
+    if(content_type)
+    {
+      this.headers['Content-Type']=content_type
+    }
     const constructURL = new URL(url, this.url)
     if (params) {
       const queryParams = new URLSearchParams()
@@ -124,6 +129,7 @@ class HttpRequests {
       body: data,
       params,
       config,
+      content_type:'application/json',
     })
   }
 
@@ -153,6 +159,7 @@ class HttpRequests {
       body: data,
       params,
       config,
+      content_type:'application/json',
     })
   }
 
