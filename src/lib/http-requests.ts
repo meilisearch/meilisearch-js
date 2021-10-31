@@ -44,9 +44,13 @@ class HttpRequests {
     config?: Partial<Request>
     content_type?:string
   }) {
-    if(content_type)
+    let headers;
+    if(content_type!==undefined)
     {
-      this.headers['Content-Type']=content_type
+      headers={...this.headers, 'Content-Type':content_type}
+    }
+    else{
+      headers=this.headers
     }
     const constructURL = new URL(url, this.url)
     if (params) {
@@ -62,7 +66,7 @@ class HttpRequests {
         ...config,
         method,
         body: JSON.stringify(body),
-        headers: this.headers,
+        headers: headers,
       }).then((res) => httpResponseErrorHandler(res))
       const parsedBody: string = await response.text()
 
@@ -122,7 +126,7 @@ class HttpRequests {
     data?: any,
     params?: { [key: string]: any },
     config?: Partial<Request>,
-    content_type?:string='application/json'
+    content_type:string='application/json'
   ): Promise<any> {
     return await this.request({
       method: 'POST',
@@ -153,7 +157,7 @@ class HttpRequests {
     data?: any,
     params?: { [key: string]: any },
     config?: Partial<Request>,
-    content_type?:string='application/json'
+    content_type:string='application/json'
   ): Promise<any> {
     return await this.request({
       method: 'PUT',
