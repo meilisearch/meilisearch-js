@@ -121,7 +121,8 @@ class HttpRequests {
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Partial<Request>
+    config?: Partial<Request>,
+    content_type?:string='application/json'
   ): Promise<any> {
     return await this.request({
       method: 'POST',
@@ -129,7 +130,7 @@ class HttpRequests {
       body: data,
       params,
       config,
-      content_type:'application/json',
+      content_type
     })
   }
 
@@ -151,7 +152,8 @@ class HttpRequests {
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Partial<Request>
+    config?: Partial<Request>,
+    content_type?:string='application/json'
   ): Promise<any> {
     return await this.request({
       method: 'PUT',
@@ -159,7 +161,7 @@ class HttpRequests {
       body: data,
       params,
       config,
-      content_type:'application/json',
+      content_type,
     })
   }
 
