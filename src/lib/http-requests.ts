@@ -35,22 +35,20 @@ class HttpRequests {
     params,
     body,
     config,
-    content_type,
+    contenttype,
   }: {
     method: string
     url: string
     params?: { [key: string]: any }
     body?: any
     config?: Partial<Request>
-    content_type?:string
+    contenttype?: string
   }) {
-    let headers;
-    if(content_type!==undefined)
-    {
-      headers={...this.headers, 'Content-Type':content_type}
-    }
-    else{
-      headers=this.headers
+    let headers
+    if (contenttype !== undefined) {
+      headers = { ...this.headers, 'Content-Type': contenttype }
+    } else {
+      headers = this.headers
     }
     const constructURL = new URL(url, this.url)
     if (params) {
@@ -126,7 +124,7 @@ class HttpRequests {
     data?: any,
     params?: { [key: string]: any },
     config?: Partial<Request>,
-    content_type:string='application/json'
+    contenttype = 'application/json'
   ): Promise<any> {
     return await this.request({
       method: 'POST',
@@ -134,7 +132,7 @@ class HttpRequests {
       body: data,
       params,
       config,
-      content_type
+      contenttype,
     })
   }
 
@@ -157,7 +155,7 @@ class HttpRequests {
     data?: any,
     params?: { [key: string]: any },
     config?: Partial<Request>,
-    content_type:string='application/json'
+    contenttype = 'application/json'
   ): Promise<any> {
     return await this.request({
       method: 'PUT',
@@ -165,7 +163,7 @@ class HttpRequests {
       body: data,
       params,
       config,
-      content_type,
+      contenttype,
     })
   }
 

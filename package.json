@@ -65,7 +65,8 @@
     ]
   },
   "dependencies": {
-    "cross-fetch": "^3.1.4"
+    "cross-fetch": "^3.1.4",
+    "query-string": "^7.0.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.15.8",
