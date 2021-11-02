@@ -434,7 +434,7 @@ describe.each([
 
     controller.abort()
 
-    searchPromise.catch((error) => {
+    searchPromise.catch((error: any) => {
       expect(error).toHaveProperty('message', 'The user aborted a request.')
     })
   })
@@ -486,7 +486,7 @@ describe.each([
       expect(response).toHaveProperty('query', searchQuery)
     })
 
-    searchBPromise.catch((error) => {
+    searchBPromise.catch((error: any) => {
       expect(error).toHaveProperty('message', 'The user aborted a request.')
     })
   })
