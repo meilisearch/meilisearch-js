@@ -206,8 +206,7 @@ All the supported options are described in the [search parameters](https://docs.
 await index.search(
   'wonder',
   {
-    attributesToHighlight: ['*'],
-    filter: 'id >= 1'
+    attributesToHighlight: ['*']
   }
 )
 ```
