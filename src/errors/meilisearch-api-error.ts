@@ -1,12 +1,6 @@
-import {
-  MSApiError,
-  MeiliSearchApiErrorResponse,
-  MSApiErrorConstructor,
-} from '../types'
+import { MSApiError, MeiliSearchApiErrorResponse } from '../types'
 
-const MeiliSearchApiError: MSApiErrorConstructor = class
-  extends Error
-  implements MSApiError {
+const MeiliSearchApiError = class extends Error implements MSApiError {
   httpStatus: number
   response?: MeiliSearchApiErrorResponse
   errorCode?: string
@@ -25,6 +19,8 @@ const MeiliSearchApiError: MSApiErrorConstructor = class
     this.errorLink = error.errorLink
     this.message = error.message
     this.httpStatus = status
+    // Make errors comparison possible. ex: error instanceof MeiliSearchApiError.
+    Object.setPrototypeOf(this, MeiliSearchApiError.prototype)
 
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, MeiliSearchApiError)

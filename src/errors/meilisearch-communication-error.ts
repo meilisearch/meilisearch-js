@@ -34,6 +34,7 @@ class MeiliSearchCommunicationError extends Error {
         'Failed to fetch',
         `request to ${url} failed, reason: connect ECONNREFUSED`
       )
+      this.stack = this.stack?.replace('Not Found', `Not Found: ${url}`)
     } else {
       if (Error.captureStackTrace) {
         Error.captureStackTrace(this, MeiliSearchCommunicationError)

@@ -236,11 +236,6 @@ export type Version = {
  ** ERROR HANDLER
  */
 
-export type MSApiErrorConstructor = new (
-  error: MSApiError,
-  status: number
-) => void
-
 export type MeiliSearchApiErrorResponse = {
   status?: number
   statusText?: string
