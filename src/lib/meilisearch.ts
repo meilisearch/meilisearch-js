@@ -8,7 +8,7 @@
 'use strict'
 
 import { Index } from './indexes'
-import { MeiliSearchApiError, MeiliSearchCommunicationError } from '../errors'
+import { MeiliSearchApiError } from '../errors'
 import {
   Config,
   IndexOptions,
@@ -90,15 +90,12 @@ class MeiliSearch {
     try {
       const index = await this.getIndex(uid)
       return index
-    } catch (e) {
-      if (e.errorCode === 'index_not_found') {
+    } catch (e: any) {
+      if (
+        e instanceof MeiliSearchApiError &&
+        e.errorCode === 'index_not_found'
+      ) {
         return this.createIndex(uid, options)
-      }
-      if (e.type !== 'MeiliSearchCommunicationError') {
-        throw new MeiliSearchApiError(e, e.status)
-      }
-      if (e.type === 'MeiliSearchCommunicationError') {
-        throw new MeiliSearchCommunicationError(e.message, e, e.stack)
       }
       throw e
     }
@@ -170,7 +167,10 @@ class MeiliSearch {
       await this.deleteIndex(uid)
       return true
     } catch (e) {
-      if (e.errorCode === 'index_not_found') {
+      if (
+        e instanceof MeiliSearchApiError &&
+        e.errorCode === 'index_not_found'
+      ) {
         return false
       }
       throw e
