@@ -245,7 +245,7 @@ describe.each([
 
       test(`${permission} key: Get index that does not exist`, async () => {
         await expect(client.getIndex('does_not_exist')).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.INDEX_NOT_FOUND
         )
       })
@@ -286,7 +286,7 @@ describe.each([
       test(`${permission} key: create index with already existing uid should fail`, async () => {
         await client.createIndex(indexPk.uid)
         await expect(client.createIndex(indexPk.uid)).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.INDEX_ALREADY_EXISTS
         )
       })
@@ -294,7 +294,7 @@ describe.each([
       test(`${permission} key: delete index with uid that does not exist should fail`, async () => {
         const index = client.index(indexNoPk.uid)
         await expect(index.delete()).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.INDEX_NOT_FOUND
         )
       })
@@ -305,7 +305,7 @@ describe.each([
         expect(response).toBe(true)
 
         await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.INDEX_NOT_FOUND
         )
       })
@@ -316,7 +316,7 @@ describe.each([
         expect(response).toBe(false)
 
         await expect(client.getIndex('badIndex')).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.INDEX_NOT_FOUND
         )
         await expect(client.getIndexes()).resolves.toHaveLength(indexes.length)
@@ -325,7 +325,7 @@ describe.each([
       test(`${permission} key: fetch deleted index should fail`, async () => {
         const index = client.index(indexPk.uid)
         await expect(index.getRawInfo()).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.INDEX_NOT_FOUND
         )
       })
@@ -378,8 +378,8 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     describe('Test on indexes methods', () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
         await expect(client.getIndexes()).rejects.toHaveProperty(
-          'errorCode',
-          ErrorStatusCode.INVALID_TOKEN
+          'code',
+          ErrorStatusCode.INVALID_API_KEY
         )
       })
 
@@ -388,20 +388,20 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
           client.createIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           })
-        ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
-          'errorCode',
-          ErrorStatusCode.INVALID_TOKEN
+          'code',
+          ErrorStatusCode.INVALID_API_KEY
         )
       })
 
       test(`${permission} key: try to delete index and be denied`, async () => {
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
-          'errorCode',
-          ErrorStatusCode.INVALID_TOKEN
+          'code',
+          ErrorStatusCode.INVALID_API_KEY
         )
       })
 
@@ -410,7 +410,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
           client.updateIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           })
-        ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
       })
     })
 
@@ -425,29 +425,29 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 
       test(`${permission} key: try to get version and be denied`, async () => {
         await expect(client.getVersion()).rejects.toHaveProperty(
-          'errorCode',
-          ErrorStatusCode.INVALID_TOKEN
+          'code',
+          ErrorStatusCode.INVALID_API_KEY
         )
       })
 
       test(`${permission} key: try to get /stats information and be denied`, async () => {
         await expect(client.getStats()).rejects.toHaveProperty(
-          'errorCode',
-          ErrorStatusCode.INVALID_TOKEN
+          'code',
+          ErrorStatusCode.INVALID_API_KEY
         )
       })
 
       test(`${permission} key: try to create dumps and be denir`, async () => {
         await expect(client.createDump()).rejects.toHaveProperty(
-          'errorCode',
-          ErrorStatusCode.INVALID_TOKEN
+          'code',
+          ErrorStatusCode.INVALID_API_KEY
         )
       })
 
       test(`${permission} key: try to create dumps and be denied`, async () => {
         await expect(client.getDumpStatus('test')).rejects.toHaveProperty(
-          'errorCode',
-          ErrorStatusCode.INVALID_TOKEN
+          'code',
+          ErrorStatusCode.INVALID_API_KEY
         )
       })
     })
@@ -464,7 +464,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     describe('Test on indexes methods', () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
         await expect(client.getIndexes()).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -475,21 +475,21 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
             primaryKey: indexPk.primaryKey,
           })
         ).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
       test(`${permission} key: try to delete index and be denied`, async () => {
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -500,7 +500,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
             primaryKey: indexPk.primaryKey,
           })
         ).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -517,28 +517,28 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
 
       test(`${permission} key: try to get version and be denied`, async () => {
         await expect(client.getVersion()).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
       test(`${permission} key: try to get /stats information and be denied`, async () => {
         await expect(client.getStats()).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
       test(`${permission} key: try to create dumps and be denir`, async () => {
         await expect(client.createDump()).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
 
       test(`${permission} key: try to create dumps and be denied`, async () => {
         await expect(client.getDumpStatus('test')).rejects.toHaveProperty(
-          'errorCode',
+          'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })

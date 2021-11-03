@@ -18,6 +18,7 @@ import {
   Stats,
   Version,
   EnqueuedDump,
+  ErrorStatusCode,
 } from '../types'
 import { HttpRequests } from './http-requests'
 import { addProtocolIfNotPresent } from './utils'
@@ -91,7 +92,7 @@ class MeiliSearch {
       const index = await this.getIndex(uid)
       return index
     } catch (e) {
-      if (e.errorCode === 'index_not_found') {
+      if (e.code === ErrorStatusCode.INDEX_ALREADY_EXISTS) {
         return this.createIndex(uid, options)
       }
       if (e.type !== 'MeiliSearchCommunicationError') {
@@ -170,7 +171,7 @@ class MeiliSearch {
       await this.deleteIndex(uid)
       return true
     } catch (e) {
-      if (e.errorCode === 'index_not_found') {
+      if (e.code === ErrorStatusCode.INDEX_ALREADY_EXISTS) {
         return false
       }
       throw e
