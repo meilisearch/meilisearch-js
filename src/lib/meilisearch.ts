@@ -92,14 +92,8 @@ class MeiliSearch {
       const index = await this.getIndex(uid)
       return index
     } catch (e) {
-      if (e.code === ErrorStatusCode.INDEX_ALREADY_EXISTS) {
+      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
         return this.createIndex(uid, options)
-      }
-      if (e.type !== 'MeiliSearchCommunicationError') {
-        throw new MeiliSearchApiError(e, e.status)
-      }
-      if (e.type === 'MeiliSearchCommunicationError') {
-        throw new MeiliSearchCommunicationError(e.message, e, e.stack)
       }
       throw e
     }
@@ -171,7 +165,7 @@ class MeiliSearch {
       await this.deleteIndex(uid)
       return true
     } catch (e) {
-      if (e.code === ErrorStatusCode.INDEX_ALREADY_EXISTS) {
+      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
         return false
       }
       throw e

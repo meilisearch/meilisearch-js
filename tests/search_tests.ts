@@ -30,6 +30,8 @@ const dataset = [
     title: 'Le Petit Prince',
     comment: 'A french book about a prince that walks on little cute planets',
     genre: 'adventure',
+    isNull: null,
+    isTrue: true,
   },
   {
     id: 2,
@@ -295,6 +297,24 @@ describe.each([
     expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
   })
 
+  test(`${permission} key: Search with specific fields in attributesToHighlight and check for types of number fields`, async () => {
+    const response = await client.index(index.uid).search('prince', {
+      attributesToHighlight: ['title'],
+    })
+    expect(response.hits[0]._formatted?.id).toEqual('456')
+    expect(response.hits[0]._formatted?.isNull).toEqual(null)
+    expect(response.hits[0]._formatted?.isTrue).toEqual(true)
+  })
+
+  test(`${permission} key: Search with specific fields in attributesToHighlight and check for types of number fields`, async () => {
+    const response = await client.index(index.uid).search('prince', {
+      attributesToHighlight: ['title', 'id'],
+    })
+    expect(response.hits[0]._formatted?.id).toEqual('456')
+    expect(response.hits[0]._formatted?.isNull).toEqual(null)
+    expect(response.hits[0]._formatted?.isTrue).toEqual(true)
+  })
+
   test(`${permission} key: search with filter and facetsDistribution`, async () => {
     const response = await client.index(index.uid).search('a', {
       filter: ['genre = romance'],
@@ -389,24 +409,6 @@ describe.each([
     await expect(
       client.index(index.uid).search('prince', {})
     ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)
-  })
-
-  test(`${permission} key: Search with specific fields in attributesToHighlight and check for types of number fields`, async () => {
-    const response = await client.index(index.uid).search('prince', {
-      attributesToHighlight: ['title'],
-    })
-    expect(response.hits[0]._formatted?.id).toEqual('456')
-    expect(response.hits[0]._formatted?.isNull).toEqual(null)
-    expect(response.hits[0]._formatted?.isTrue).toEqual(true)
-  })
-
-  test(`${permission} key: Search with specific fields in attributesToHighlight and check for types of number fields`, async () => {
-    const response = await client.index(index.uid).search('prince', {
-      attributesToHighlight: ['title', 'id'],
-    })
-    expect(response.hits[0]._formatted?.id).toEqual('456')
-    expect(response.hits[0]._formatted?.isNull).toEqual(null)
-    expect(response.hits[0]._formatted?.isTrue).toEqual(true)
   })
 })
 

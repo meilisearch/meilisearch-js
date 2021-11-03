@@ -257,7 +257,7 @@ class Index<T = Record<string, any>> {
       await this.delete()
       return true
     } catch (e) {
-      if (e.code === ErrorStatusCode.INDEX_ALREADY_EXISTS) {
+      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
         return false
       }
       throw e
