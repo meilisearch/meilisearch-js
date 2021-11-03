@@ -264,14 +264,11 @@ describe.each([
         await client.createIndex(indexPk.uid, {
           primaryKey: indexPk.primaryKey,
         })
-        await expect(
-          client.updateIndex(indexPk.uid, {
-            primaryKey: 'newPrimaryKey',
-          })
-        ).rejects.toHaveProperty(
-          'errorCode',
-          ErrorStatusCode.PRIMARY_KEY_ALREADY_PRESENT
-        )
+        const response: Index<any> = await client.updateIndex(indexPk.uid, {
+          primaryKey: 'newPrimaryKey',
+        })
+        expect(response).toHaveProperty('uid', indexPk.uid)
+        expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
       })
 
       test(`${permission} key: delete index`, async () => {

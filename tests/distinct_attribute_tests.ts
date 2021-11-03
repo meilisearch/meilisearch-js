@@ -105,19 +105,19 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).getDistinctAttribute()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).updateDistinctAttribute('title')
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       await expect(
         client.index(index.uid).resetDistinctAttribute()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
   }
 )
@@ -133,7 +133,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).getDistinctAttribute()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -142,7 +142,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).updateDistinctAttribute('title')
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -151,7 +151,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).resetDistinctAttribute()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

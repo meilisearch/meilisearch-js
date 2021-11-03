@@ -98,19 +98,19 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get synonyms and be denied`, async () => {
       await expect(
         client.index(index.uid).getSynonyms()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to update synonyms and be denied`, async () => {
       await expect(
         client.index(index.uid).updateSynonyms({})
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to reset synonyms and be denied`, async () => {
       await expect(
         client.index(index.uid).resetSynonyms()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
   }
 )
@@ -126,7 +126,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).getSynonyms()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -135,7 +135,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).updateSynonyms({})
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -144,7 +144,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).resetSynonyms()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

@@ -52,8 +52,8 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   ({ client, permission }) => {
     test(`${permission} key: try to getOrCreateIndex and be denied`, async () => {
       await expect(client.getOrCreateIndex(index.uid)).rejects.toHaveProperty(
-        'errorCode',
-        ErrorStatusCode.INVALID_TOKEN
+        'code',
+        ErrorStatusCode.INVALID_API_KEY
       )
     })
   }
@@ -64,7 +64,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   ({ client, permission }) => {
     test(`${permission} key: try to getOrCreateIndex and be denied`, async () => {
       await expect(client.getOrCreateIndex(index.uid)).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
