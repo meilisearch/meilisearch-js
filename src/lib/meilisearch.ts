@@ -8,7 +8,6 @@
 'use strict'
 
 import { Index } from './indexes'
-import { MeiliSearchApiError, MeiliSearchCommunicationError } from '../errors'
 import {
   Config,
   IndexOptions,
