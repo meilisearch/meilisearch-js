@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [ '12', '14' ]
+        node: ["12", "14"]
     name: integration-tests (Node.js ${{ matrix.node }})
     steps:
       - uses: actions/checkout@v2
@@ -29,7 +29,7 @@ jobs:
             ./node_modules
           key: ${{ hashFiles('yarn.lock') }}
       - name: Setup node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node }}
       - name: print version
@@ -63,7 +63,7 @@ jobs:
             ./node_modules
           key: ${{ hashFiles('yarn.lock') }}
       - name: Setup node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
       - name: Install dependencies
         run: yarn --dev
       - name: Run style check
