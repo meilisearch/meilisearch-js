@@ -1,106 +1,107 @@
 {
-    "name": "meilisearch",
-    "version": "0.22.2",
-    "description": "The MeiliSearch JS client for Node.js and the browser.",
-    "keywords": [
-        "meilisearch",
-        "search",
-        "instant",
-        "relevant",
-        "client",
-        "wrapper",
-        "meili"
+  "name": "meilisearch",
+  "version": "0.22.3",
+  "description": "The MeiliSearch JS client for Node.js and the browser.",
+  "keywords": [
+    "meilisearch",
+    "search",
+    "instant",
+    "relevant",
+    "client",
+    "wrapper",
+    "meili"
+  ],
+  "author": "cvermand <charlotte@meilisearch.com>",
+  "contributors": [
+    "qdequele <quentin@meilisearch.com>"
+  ],
+  "license": "MIT",
+  "main": "./dist/bundles/meilisearch.umd.js",
+  "module": "./dist/bundles/meilisearch.esm.js",
+  "browser": "./dist/bundles/meilisearch.umd.js",
+  "typings": "./dist/types/index.d.ts",
+  "types": "./dist/types/index.d.ts",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meilisearch/meilisearch-js"
+  },
+  "scripts": {
+    "playground:javascript": "yarn --cwd ./playgrounds/javascript && yarn --cwd ./playgrounds/javascript start",
+    "clear_jest": "jest --clearCache",
+    "cleanup": "shx rm -rf dist/",
+    "build": "yarn cleanup && rollup -c && rollup -c --environment NODE_ENV:production",
+    "watch": "yarn cleanup && rollup -c --watch",
+    "postbuild": "yarn size && yarn typingsheader",
+    "test": "yarn clear_jest && jest --runInBand",
+    "test:watch": "yarn clear_jest && yarn test --watch",
+    "test:coverage": "yarn test --coverage",
+    "test:ci": "yarn test --ci",
+    "test:env": "yarn build && yarn test:env:browser && yarn test:env:nodejs && yarn test:env:esm && yarn test:env:node-ts",
+    "test:env:browser": "yarn --cwd tests/env/express && yarn --cwd tests/env/express test",
+    "test:env:node-ts": "yarn --cwd tests/env/typescript-node start",
+    "test:env:nodejs": "node tests/env/node/index.js",
+    "test:env:esm": "yarn --cwd tests/env/esm && yarn --cwd tests/env/esm start",
+    "size": "node scripts/file-size ./dist/bundles/meilisearch.esm.min.js ./dist/bundles/meilisearch.umd.min.js",
+    "style": "yarn lint",
+    "style:fix": "yarn lint:fix",
+    "lint": "eslint --ext .js,.ts,.tsx .",
+    "lint:fix": "eslint --ext .js,.ts,.tsx --fix .",
+    "typingsheader": "node scripts/build.js"
+  },
+  "files": [
+    "src",
+    "dist",
+    "CONTRIBUTING.md"
+  ],
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}": [
+      "prettier --write",
+      "git add"
     ],
-    "author": "cvermand <charlotte@meilisearch.com>",
-    "contributors": [
-        "qdequele <quentin@meilisearch.com>"
-    ],
-    "license": "MIT",
-    "main": "./dist/bundles/meilisearch.umd.js",
-    "module": "./dist/bundles/meilisearch.esm.js",
-    "browser": "./dist/bundles/meilisearch.umd.js",
-    "typings": "./dist/types/index.d.ts",
-    "types": "./dist/types/index.d.ts",
-    "sideEffects": false,
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/meilisearch/meilisearch-js"
-    },
-    "scripts": {
-        "playground:javascript": "yarn --cwd ./playgrounds/javascript && yarn --cwd ./playgrounds/javascript start",
-        "clear_jest": "jest --clearCache",
-        "cleanup": "shx rm -rf dist/",
-        "build": "yarn cleanup && rollup -c && rollup -c --environment NODE_ENV:production",
-        "watch": "yarn cleanup && rollup -c --watch",
-        "postbuild": "yarn size && yarn typingsheader",
-        "test": "yarn clear_jest && jest --runInBand",
-        "test:watch": "yarn clear_jest && yarn test --watch",
-        "test:coverage": "yarn test --coverage",
-        "test:ci": "yarn test --ci",
-        "test:env": "yarn build && yarn test:env:browser && yarn test:env:nodejs && yarn test:env:esm && yarn test:env:node-ts",
-        "test:env:browser": "yarn --cwd tests/env/express && yarn --cwd tests/env/express test",
-        "test:env:node-ts": "yarn --cwd tests/env/typescript-node start",
-        "test:env:nodejs": "node tests/env/node/index.js",
-        "test:env:esm": "yarn --cwd tests/env/esm && yarn --cwd tests/env/esm start",
-        "size": "node scripts/file-size ./dist/bundles/meilisearch.esm.min.js ./dist/bundles/meilisearch.umd.min.js",
-        "style": "yarn lint",
-        "style:fix": "yarn lint:fix",
-        "lint": "eslint --ext .js,.ts,.tsx .",
-        "lint:fix": "eslint --ext .js,.ts,.tsx --fix .",
-        "typingsheader": "node scripts/build.js"
-    },
-    "files": [
-        "src",
-        "dist",
-        "CONTRIBUTING.md"
-    ],
-    "lint-staged": {
-        "**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}": [
-            "prettier --write",
-            "git add"
-        ],
-        "src/**/*.{ts,tsx}": [
-            "yarn lint:fix",
-            "git add"
-        ]
-    },
-    "dependencies": {
-        "cross-fetch": "^3.1.4"
-    },
-    "devDependencies": {
-        "@babel/preset-env": "^7.15.8",
-        "@rollup/plugin-babel": "^5.3.0",
-        "@rollup/plugin-commonjs": "21.0.1",
-        "@rollup/plugin-json": "^4.0.2",
-        "@rollup/plugin-node-resolve": "13.0.6",
-        "@types/jest": "^27.0.2",
-        "@types/prettier": "^2.2.3",
-        "@typescript-eslint/eslint-plugin": "2.34.0",
-        "@typescript-eslint/parser": "2.34.0",
-        "abort-controller": "^3.0.0",
-        "brotli-size": "^4.0.0",
-        "eslint": "^7.21.0",
-        "eslint-config-prettier": "^8.1.0",
-        "eslint-config-standard-with-typescript": "^17.0.0",
-        "eslint-plugin-import": "2",
-        "eslint-plugin-jest": "^24.1.8",
-        "eslint-plugin-jsdoc": "^32.2.0",
-        "eslint-plugin-node": "11",
-        "eslint-plugin-prettier": "^3.1.4",
-        "eslint-plugin-promise": "4",
-        "eslint-plugin-standard": "5",
-        "gzip-size": "^6.0.0",
-        "jest": "^26.6.3",
-        "jest-watch-typeahead": "^0.6.3",
-        "kleur": "^4.1.4",
-        "lint-staged": "11.1.2",
-        "prettier": "^2.2.1",
-        "pretty-bytes": "^5.6.0",
-        "rollup": "^2.58.0",
-        "rollup-plugin-terser": "^7.0.0",
-        "rollup-plugin-typescript2": "^0.30.0",
-        "shx": "^0.3.2",
-        "ts-jest": "^26.5.6",
-        "typescript": "4.4.4"
-    }
+    "src/**/*.{ts,tsx}": [
+      "yarn lint:fix",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "cross-fetch": "^3.1.4"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.0",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "21.0.1",
+    "@rollup/plugin-json": "^4.0.2",
+    "@rollup/plugin-node-resolve": "13.0.6",
+    "@types/jest": "^27.0.2",
+    "@types/prettier": "^2.2.3",
+    "@typescript-eslint/eslint-plugin": "2.34.0",
+    "@typescript-eslint/parser": "2.34.0",
+    "abort-controller": "^3.0.0",
+    "brotli-size": "^4.0.0",
+    "eslint": "^7.21.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-config-standard-with-typescript": "^17.0.0",
+    "eslint-plugin-import": "2",
+    "eslint-plugin-jest": "^24.1.8",
+    "eslint-plugin-jsdoc": "^32.2.0",
+    "eslint-plugin-node": "11",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "4",
+    "eslint-plugin-standard": "5",
+    "gzip-size": "^6.0.0",
+    "jest": "^26.6.3",
+    "jest-watch-typeahead": "^0.6.3",
+    "kleur": "^4.1.4",
+    "lint-staged": "11.1.2",
+    "prettier": "^2.2.1",
+    "pretty-bytes": "^5.6.0",
+    "rollup": "^2.58.3",
+    "rollup-plugin-terser": "^7.0.0",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "shx": "^0.3.2",
+    "ts-jest": "^26.5.6",
+    "typescript": "4.4.4"
+  }
 }
+

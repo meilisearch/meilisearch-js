@@ -74,7 +74,7 @@ class HttpRequests {
       } catch (_) {
         return
       }
-    } catch (e) {
+    } catch (e: any) {
       const stack = e.stack
       httpErrorHandler(e, stack, constructURL.toString())
     }
