@@ -108,6 +108,7 @@ class Index<T = Record<string, any>> {
       url,
       removeUndefinedFromObject({ ...options, q: query }),
       undefined,
+      undefined,
       config
     )
   }

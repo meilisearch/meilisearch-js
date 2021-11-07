@@ -109,6 +109,7 @@ class HttpRequests {
     url: string,
     data: IndexRequest,
     params?: { [key: string]: any },
+    contenttype?: string,
     config?: Partial<Request>
   ): Promise<IndexResponse>
 
@@ -116,6 +117,7 @@ class HttpRequests {
     url: string,
     data?: T,
     params?: { [key: string]: any },
+    contenttype?: string,
     config?: Partial<Request>
   ): Promise<R>
 
@@ -123,8 +125,8 @@ class HttpRequests {
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Partial<Request>,
-    contenttype = 'application/json'
+    contenttype = 'application/json',
+    config?: Partial<Request>
   ): Promise<any> {
     return await this.request({
       method: 'POST',
@@ -140,6 +142,7 @@ class HttpRequests {
     url: string,
     data: IndexOptions | IndexRequest,
     params?: { [key: string]: any },
+    contenttype?: string,
     config?: Partial<Request>
   ): Promise<IndexResponse>
 
@@ -147,6 +150,7 @@ class HttpRequests {
     url: string,
     data?: T,
     params?: { [key: string]: any },
+    contenttype?: string,
     config?: Partial<Request>
   ): Promise<R>
 
@@ -154,8 +158,8 @@ class HttpRequests {
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Partial<Request>,
-    contenttype = 'application/json'
+    contenttype = 'application/json',
+    config?: Partial<Request>
   ): Promise<any> {
     return await this.request({
       method: 'PUT',
