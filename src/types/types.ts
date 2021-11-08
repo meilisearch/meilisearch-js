@@ -174,6 +174,7 @@ export type Update = {
   duration: number
   enqueuedAt: string
   processedAt: string
+  error?: MeiliSearchErrorBody
 }
 
 export type EnqueuedDump = {
@@ -236,22 +237,11 @@ export type Version = {
  ** ERROR HANDLER
  */
 
-export type MSApiErrorConstructor = new (
-  error: MSApiError,
-  status: number
-) => void
-
-export type MeiliSearchApiErrorResponse = {
-  status?: number
-  statusText?: string
-  path?: string
-  method?: string
-  body?: object
-}
-export type MeiliSearchApiErrorRequest = {
-  url?: string
-  path?: string
-  method?: string
+export interface MeiliSearchErrorInterface extends Error {
+  code?: string
+  link?: string
+  stack?: string
+  type?: string
 }
 
 export interface FetchError extends Error {
@@ -260,14 +250,11 @@ export interface FetchError extends Error {
   code: string
 }
 
-export interface MSApiError extends Error {
-  name: string
+export type MeiliSearchErrorBody = {
+  code: string
+  link: string
   message: string
-  stack?: string
-  httpStatus: number
-  code?: string
-  type?: string
-  link?: string
+  type: string
 }
 
 export const enum ErrorStatusCode {

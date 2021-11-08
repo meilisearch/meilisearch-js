@@ -1,20 +1,13 @@
-import {
-  MSApiError,
-  MeiliSearchApiErrorResponse,
-  MSApiErrorConstructor,
-} from '../types'
+import { MeiliSearchErrorInterface } from '../types'
 
-const MeiliSearchApiError: MSApiErrorConstructor = class
-  extends Error
-  implements MSApiError {
+const MeiliSearchApiError = class extends Error {
   httpStatus: number
-  response?: MeiliSearchApiErrorResponse
   code?: string
   link?: string
   stack?: string
   type?: string
 
-  constructor(error: MSApiError, status: number) {
+  constructor(error: MeiliSearchErrorInterface, status: number) {
     super(error.message)
     this.name = 'MeiliSearchApiError'
 
