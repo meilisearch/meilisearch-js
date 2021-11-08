@@ -36,6 +36,8 @@ const dataset = [
     title: 'Le Petit Prince',
     comment: 'A french book about a prince that walks on little cute planets',
     genre: 'adventure',
+    isNull: null,
+    isTrue: true,
   },
   {
     id: 2,
@@ -173,7 +175,7 @@ describe.each([
     expect(
       response.hits[0]?._formatted?.title === 'Petit <em>Prince</em>'
     ).toBeTruthy()
-    expect(response.hits[0]._formatted?.id).toEqual(456)
+    expect(response.hits[0]._formatted?.id).toEqual('456')
     expect(response.hits[0]).not.toHaveProperty('comment')
     expect(response.hits[0]).not.toHaveProperty('description')
     expect(response.hits[0]._formatted).toHaveProperty('comment')
@@ -244,6 +246,24 @@ describe.each([
     expect(response.hits[0]._formatted).not.toHaveProperty('comment')
   })
 
+  test(`${permission} key: Search with specific fields in attributesToHighlight and check for types of number fields`, async () => {
+    const response = await client.index<Movie>(index.uid).search('prince', {
+      attributesToHighlight: ['title'],
+    })
+    expect(response.hits[0]._formatted?.id).toEqual('456')
+    expect(response.hits[0]._formatted?.isNull).toEqual(null)
+    expect(response.hits[0]._formatted?.isTrue).toEqual(true)
+  })
+
+  test(`${permission} key: Search with specific fields in attributesToHighlight and check for types of number fields`, async () => {
+    const response = await client.index<Movie>(index.uid).search('prince', {
+      attributesToHighlight: ['title', 'id'],
+    })
+    expect(response.hits[0]._formatted?.id).toEqual('456')
+    expect(response.hits[0]._formatted?.isNull).toEqual(null)
+    expect(response.hits[0]._formatted?.isTrue).toEqual(true)
+  })
+
   test(`${permission} key: Search with filter and facetsDistribution`, async () => {
     const response = await client.index<Movie>(index.uid).search('a', {
       filter: ['genre=romance'],
@@ -303,7 +323,7 @@ describe.each([
     await masterClient.index<Movie>(index.uid).delete()
     await expect(
       client.index<Movie>(index.uid).search('prince')
-    ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INDEX_NOT_FOUND)
+    ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)
   })
 })
 
@@ -317,7 +337,7 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
       await expect(
         client.index<Movie>(index.uid).search('prince')
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

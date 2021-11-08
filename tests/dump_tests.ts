@@ -42,15 +42,15 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   ({ client, permission }) => {
     test(`${permission} key: try to create dump with public key and be denied`, async () => {
       await expect(client.createDump()).rejects.toHaveProperty(
-        'errorCode',
-        ErrorStatusCode.INVALID_TOKEN
+        'code',
+        ErrorStatusCode.INVALID_API_KEY
       )
     })
 
     test(`${permission} key: try to get dump status with public key and be denied`, async () => {
       await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
-        'errorCode',
-        ErrorStatusCode.INVALID_TOKEN
+        'code',
+        ErrorStatusCode.INVALID_API_KEY
       )
     })
   }
@@ -61,14 +61,14 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   ({ client, permission }) => {
     test(`${permission} key: try to create dump with no key and be denied`, async () => {
       await expect(client.createDump()).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to get dump status with no key and be denied`, async () => {
       await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

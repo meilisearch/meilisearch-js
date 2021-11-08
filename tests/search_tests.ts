@@ -30,6 +30,8 @@ const dataset = [
     title: 'Le Petit Prince',
     comment: 'A french book about a prince that walks on little cute planets',
     genre: 'adventure',
+    isNull: null,
+    isTrue: true,
   },
   {
     id: 2,
@@ -279,7 +281,7 @@ describe.each([
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
     expect(response.hits.length).toEqual(1)
-    expect(response.hits[0]).toHaveProperty('id', 456)
+    expect(response.hits[0]._formatted?.id).toEqual('456')
     expect(response.hits[0]).toHaveProperty('title', 'Le Petit Prince')
     expect(response.hits[0]).not.toHaveProperty('comment')
     expect(response.hits[0]).toHaveProperty('_formatted', expect.any(Object))
@@ -293,6 +295,24 @@ describe.each([
     )
     expect(response.hits[0]._formatted).not.toHaveProperty('comment')
     expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
+  })
+
+  test(`${permission} key: Search with specific fields in attributesToHighlight and check for types of number fields`, async () => {
+    const response = await client.index(index.uid).search('prince', {
+      attributesToHighlight: ['title'],
+    })
+    expect(response.hits[0]._formatted?.id).toEqual('456')
+    expect(response.hits[0]._formatted?.isNull).toEqual(null)
+    expect(response.hits[0]._formatted?.isTrue).toEqual(true)
+  })
+
+  test(`${permission} key: Search with specific fields in attributesToHighlight and check for types of number fields`, async () => {
+    const response = await client.index(index.uid).search('prince', {
+      attributesToHighlight: ['title', 'id'],
+    })
+    expect(response.hits[0]._formatted?.id).toEqual('456')
+    expect(response.hits[0]._formatted?.isNull).toEqual(null)
+    expect(response.hits[0]._formatted?.isTrue).toEqual(true)
   })
 
   test(`${permission} key: search with filter and facetsDistribution`, async () => {
@@ -388,7 +408,7 @@ describe.each([
     await masterClient.index(index.uid).delete()
     await expect(
       client.index(index.uid).search('prince', {})
-    ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INDEX_NOT_FOUND)
+    ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)
   })
 })
 
@@ -404,7 +424,7 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
       await expect(
         client.index(index.uid).search('prince')
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

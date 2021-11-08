@@ -376,7 +376,7 @@ describe.each([
     await masterClient.index(index.uid).delete()
     await expect(
       client.index(index.uid).searchGet('prince')
-    ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INDEX_NOT_FOUND)
+    ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)
   })
 })
 

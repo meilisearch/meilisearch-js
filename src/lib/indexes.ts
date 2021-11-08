@@ -34,6 +34,7 @@ import {
   SearchableAttributes,
   DisplayedAttributes,
   WaitForPendingUpdateOptions,
+  ErrorStatusCode,
 } from '../types'
 import { sleep, removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -256,7 +257,7 @@ class Index<T = Record<string, any>> {
       await this.delete()
       return true
     } catch (e) {
-      if (e.errorCode === 'index_not_found') {
+      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
         return false
       }
       throw e

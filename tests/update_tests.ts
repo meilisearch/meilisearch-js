@@ -85,7 +85,7 @@ describe.each([
   test(`${permission} key: Try to get update that does not exist`, async () => {
     await expect(
       client.index(index.uid).getUpdateStatus(2545)
-    ).rejects.toHaveProperty('errorCode', ErrorStatusCode.NOT_FOUND)
+    ).rejects.toHaveProperty('code', ErrorStatusCode.TASK_NOT_FOUND)
   })
 })
 
@@ -99,7 +99,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: Try to get a update and be denied`, async () => {
       await expect(
         client.index(index.uid).getUpdateStatus(0)
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
   }
 )
@@ -115,7 +115,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).getUpdateStatus(0)
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
