@@ -45,7 +45,7 @@ It's [Hacktoberfest month](https://blog.meilisearch.com/contribute-hacktoberfest
 
 To run this project, you will need:
 
-- Node.js >= v12 and node < 15
+- Node.js >= v12 and node <= 16
 - Yarn
 
 
