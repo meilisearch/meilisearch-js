@@ -4,7 +4,6 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 
 <!-- MarkdownTOC autolink="true" style="ordered" indent="   " -->
 
-- [Hacktoberfest](#hacktoberfest)
 - [Assumptions](#assumptions)
 - [How to Contribute](#how-to-contribute)
 - [Development Workflow](#development-workflow)
@@ -12,16 +11,6 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 - [Release Process (for internal team only)](#release-process-for-internal-team-only)
 
 <!-- /MarkdownTOC -->
-
-## Hacktoberfest
-
-It's [Hacktoberfest month](https://blog.meilisearch.com/contribute-hacktoberfest-2021/)! 🥳
-
-🚀 If your PR gets accepted it will count into your participation to Hacktoberfest!
-
-✅ To be accepted it has either to have been merged, approved or tagged with the `hacktoberfest-accepted` label.
-
-🧐 Don't forget to check the [quality standards](https://hacktoberfest.digitalocean.com/resources/qualitystandards)! Low-quality PRs might get marked as `spam` or `invalid`, and will not count toward your participation in Hacktoberfest.
 
 ## Assumptions
 
