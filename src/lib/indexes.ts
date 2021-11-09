@@ -368,7 +368,6 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/documents`
     return await this.httpRequest.post(url, documents, options)
   }
-
   /**
    * Add or replace multiples documents to an index in batches
    * @memberof Index

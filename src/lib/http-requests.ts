@@ -35,18 +35,18 @@ class HttpRequests {
     params,
     body,
     config,
-    contenttype,
+    contentType,
   }: {
     method: string
     url: string
     params?: { [key: string]: any }
     body?: any
     config?: Partial<Request>
-    contenttype?: string
+    contentType?: string
   }) {
     let headers
-    if (contenttype !== undefined) {
-      headers = { ...this.headers, 'Content-Type': contenttype }
+    if (contentType !== undefined) {
+      headers = { ...this.headers, 'Content-Type': contentType }
     } else {
       headers = this.headers
     }
@@ -109,7 +109,7 @@ class HttpRequests {
     url: string,
     data: IndexRequest,
     params?: { [key: string]: any },
-    contenttype?: string,
+    contentType?: string,
     config?: Partial<Request>
   ): Promise<IndexResponse>
 
@@ -117,7 +117,7 @@ class HttpRequests {
     url: string,
     data?: T,
     params?: { [key: string]: any },
-    contenttype?: string,
+    contentType?: string,
     config?: Partial<Request>
   ): Promise<R>
 
@@ -125,7 +125,7 @@ class HttpRequests {
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    contenttype = 'application/json',
+    contentType = 'application/json',
     config?: Partial<Request>
   ): Promise<any> {
     return await this.request({
@@ -134,7 +134,7 @@ class HttpRequests {
       body: data,
       params,
       config,
-      contenttype,
+      contentType,
     })
   }
 
@@ -142,7 +142,7 @@ class HttpRequests {
     url: string,
     data: IndexOptions | IndexRequest,
     params?: { [key: string]: any },
-    contenttype?: string,
+    contentType?: string,
     config?: Partial<Request>
   ): Promise<IndexResponse>
 
@@ -150,7 +150,7 @@ class HttpRequests {
     url: string,
     data?: T,
     params?: { [key: string]: any },
-    contenttype?: string,
+    contentType?: string,
     config?: Partial<Request>
   ): Promise<R>
 
@@ -158,7 +158,7 @@ class HttpRequests {
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    contenttype = 'application/json',
+    contentType = 'application/json',
     config?: Partial<Request>
   ): Promise<any> {
     return await this.request({
@@ -167,7 +167,7 @@ class HttpRequests {
       body: data,
       params,
       config,
-      contenttype,
+      contentType,
     })
   }
 
