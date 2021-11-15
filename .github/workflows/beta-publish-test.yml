@@ -7,10 +7,6 @@ on:
       - trying
       - staging
       - main
-# on:
-#   push:
-#     tags:
-#       - "v*.*.*-beta.*"
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -22,3 +18,8 @@ jobs:
         run: |
           echo $RELEASE_VERSION
           echo ${{ env.RELEASE_VERSION }}
+
+# on:
+#   push:
+#     tags:
+#       - "v*.*.*-beta.*"
