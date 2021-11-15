@@ -1,0 +1,24 @@
+name: Tag name test
+on:
+  pull_request:
+  push:
+    # trying and staging branches are for BORS config
+    branches:
+      - trying
+      - staging
+      - main
+# on:
+#   push:
+#     tags:
+#       - "v*.*.*-beta.*"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Test
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ env.RELEASE_VERSION }}
