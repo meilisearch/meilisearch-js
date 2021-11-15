@@ -7,11 +7,7 @@
 
 'use strict'
 
-import {
-  MeiliSearchTimeOutError,
-  MeiliSearchError,
-  MeiliSearchApiError,
-} from '../errors'
+import { MeiliSearchTimeOutError, MeiliSearchError } from '../errors'
 
 import {
   Config,
