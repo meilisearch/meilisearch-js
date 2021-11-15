@@ -43,7 +43,7 @@ See our [Documentation](https://docs.meilisearch.com/learn/tutorials/getting_sta
 
 ## 🔧 Installation
 
-We only guarantee that the package works with `node` >= 12 and `node` < 15.
+We only guarantee that the package works with `node` >= 12 and `node` <= 16.
 
 With `npm`:
 
@@ -206,8 +206,7 @@ All the supported options are described in the [search parameters](https://docs.
 await index.search(
   'wonder',
   {
-    attributesToHighlight: ['*'],
-    filter: 'id >= 1'
+    attributesToHighlight: ['*']
   }
 )
 ```

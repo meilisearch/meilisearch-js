@@ -90,7 +90,7 @@ class MeiliSearch {
     try {
       const index = await this.getIndex(uid)
       return index
-    } catch (e) {
+    } catch (e: any) {
       if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
         return this.createIndex(uid, options)
       }
@@ -163,7 +163,7 @@ class MeiliSearch {
     try {
       await this.deleteIndex(uid)
       return true
-    } catch (e) {
+    } catch (e: any) {
       if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
         return false
       }
@@ -212,7 +212,7 @@ class MeiliSearch {
       const url = `health`
       await this.httpRequest.get(url)
       return true
-    } catch (e) {
+    } catch (e: any) {
       return false
     }
   }

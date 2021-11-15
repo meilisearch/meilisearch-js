@@ -7,7 +7,11 @@
 
 'use strict'
 
-import { MeiliSearchTimeOutError, MeiliSearchError } from '../errors'
+import {
+  MeiliSearchTimeOutError,
+  MeiliSearchError,
+  MeiliSearchApiError,
+} from '../errors'
 
 import {
   Config,
@@ -256,7 +260,7 @@ class Index<T = Record<string, any>> {
     try {
       await this.delete()
       return true
-    } catch (e) {
+    } catch (e: any) {
       if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
         return false
       }

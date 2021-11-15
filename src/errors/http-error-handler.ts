@@ -7,7 +7,7 @@ async function httpResponseErrorHandler(response: Response): Promise<Response> {
     let err
     try {
       err = await response.json()
-    } catch (e) {
+    } catch (e: any) {
       throw new MeiliSearchCommunicationError(
         response.statusText,
         response,
