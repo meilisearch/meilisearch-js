@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 const path = require('path')
 
-let config = {
+const config = {
   entry: './src/index.ts',
   output: {
     path: path.resolve(__dirname, './public'),

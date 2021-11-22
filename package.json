@@ -43,8 +43,8 @@
     "test:env:nodejs": "node tests/env/node/index.js",
     "test:env:esm": "yarn --cwd tests/env/esm && yarn --cwd tests/env/esm start",
     "size": "node scripts/file-size ./dist/bundles/meilisearch.esm.min.js ./dist/bundles/meilisearch.umd.min.js",
-    "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .  ",
-    "lint:fix": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx --fix .",
+    "lint": "eslint --ignore-path '.gitignore' --ext .js,.ts,.tsx .  ",
+    "lint:fix": "eslint --ignore-path '.gitignore' --ext .js,.ts,.tsx --fix .",
     "typingsheader": "node scripts/build.js"
   },
   "files": [
@@ -73,7 +73,7 @@
     "eslint-plugin-import": "2",
     "eslint-plugin-jest": "^24.1.8",
     "eslint-plugin-jsdoc": "^32.2.0",
-    "eslint-plugin-node": "11",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "4",
     "eslint-plugin-standard": "5",

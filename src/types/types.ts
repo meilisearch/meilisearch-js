@@ -345,5 +345,5 @@ export const enum ErrorStatusCode {
   DUMP_ALREADY_IN_PROGRESS = 'dump_already_in_progress',
 
   /** @see https://docs.meilisearch.com/errors/#dump_process_failed */
-  DUMP_PROCESS_FAILED = 'dump_process_failed',
+  DUMP_PROCESS_FAILED = 'dump_process_failed'
 }

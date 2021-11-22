@@ -7,12 +7,14 @@
   "include": [
     "src/**/*.ts",
     "tests/**/*.ts",
+    "src/**/*.js",
+    "tests/**/*.js",
     "examples/**/*.js",
     "scripts/**/*.js",
     "jest.config.js",
     "rollup.config.js",
     ".eslintrc.js",
     "playgrounds/**/*.js",
-    "playgrounds/**/*.ts"
+    "playgrounds/**/*.ts",
   ]
 }
