@@ -43,10 +43,8 @@
     "test:env:nodejs": "node tests/env/node/index.js",
     "test:env:esm": "yarn --cwd tests/env/esm && yarn --cwd tests/env/esm start",
     "size": "node scripts/file-size ./dist/bundles/meilisearch.esm.min.js ./dist/bundles/meilisearch.umd.min.js",
-    "style": "yarn lint",
-    "style:fix": "yarn lint:fix",
-    "lint": "eslint --ext .js,.ts,.tsx .",
-    "lint:fix": "eslint --ext .js,.ts,.tsx --fix .",
+    "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .  ",
+    "lint:fix": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx --fix .",
     "typingsheader": "node scripts/build.js"
   },
   "files": [
@@ -54,16 +52,6 @@
     "dist",
     "CONTRIBUTING.md"
   ],
-  "lint-staged": {
-    "**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "src/**/*.{ts,tsx}": [
-      "yarn lint:fix",
-      "git add"
-    ]
-  },
   "dependencies": {
     "cross-fetch": "^3.1.4"
   },

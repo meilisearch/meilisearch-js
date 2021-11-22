@@ -65,9 +65,9 @@ curl -L https://install.meilisearch.com | sh # download MeiliSearch
 ./meilisearch --master-key=masterKey --no-analytics=true # run MeiliSearch
 yarn test
 # Linter
-yarn style
+yarn lint
 # Linter with fixing
-yarn style:fix
+yarn lint:fix
 # Build the project
 yarn build
 ```
