@@ -8,7 +8,6 @@
 'use strict'
 
 import { Index } from './indexes'
-import { MeiliSearchApiError } from '../errors'
 import {
   Config,
   IndexOptions,
@@ -18,6 +17,7 @@ import {
   Stats,
   Version,
   EnqueuedDump,
+  ErrorStatusCode,
 } from '../types'
 import { HttpRequests } from './http-requests'
 import { addProtocolIfNotPresent } from './utils'
@@ -91,10 +91,7 @@ class MeiliSearch {
       const index = await this.getIndex(uid)
       return index
     } catch (e: any) {
-      if (
-        e instanceof MeiliSearchApiError &&
-        e.errorCode === 'index_not_found'
-      ) {
+      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
         return this.createIndex(uid, options)
       }
       throw e
@@ -166,11 +163,8 @@ class MeiliSearch {
     try {
       await this.deleteIndex(uid)
       return true
-    } catch (e) {
-      if (
-        e instanceof MeiliSearchApiError &&
-        e.errorCode === 'index_not_found'
-      ) {
+    } catch (e: any) {
+      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
         return false
       }
       throw e
@@ -218,7 +212,7 @@ class MeiliSearch {
       const url = `health`
       await this.httpRequest.get(url)
       return true
-    } catch (e) {
+    } catch (e: any) {
       return false
     }
   }

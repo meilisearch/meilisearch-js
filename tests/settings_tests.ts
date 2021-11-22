@@ -248,17 +248,17 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get settings and be denied`, async () => {
       await expect(
         client.index(index.uid).getSettings()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
     test(`${permission} key: try to update settings and be denied`, async () => {
       await expect(
         client.index(index.uid).updateSettings({})
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
     test(`${permission} key: try to reset settings and be denied`, async () => {
       await expect(
         client.index(index.uid).resetSettings()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
   }
 )
@@ -273,7 +273,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).getSettings()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -281,7 +281,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).updateSettings({})
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -289,7 +289,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).resetSettings()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

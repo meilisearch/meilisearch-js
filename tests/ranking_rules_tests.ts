@@ -106,19 +106,19 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     test(`${permission} key: try to get ranking rules and be denied`, async () => {
       await expect(
         client.index(index.uid).getRankingRules()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to update ranking rules and be denied`, async () => {
       await expect(
         client.index(index.uid).updateRankingRules([])
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to reset ranking rules and be denied`, async () => {
       await expect(
         client.index(index.uid).resetRankingRules()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
   }
 )
@@ -134,7 +134,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).getRankingRules()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -143,7 +143,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).updateRankingRules([])
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -152,7 +152,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       await expect(
         client.index(index.uid).resetRankingRules()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

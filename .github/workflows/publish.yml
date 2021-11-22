@@ -1,8 +1,7 @@
 name: publish to npm
 on:
-  push:
-    tags:
-      - v*
+  release:
+    types: [published]
 
 jobs:
   publish-npm:
@@ -13,13 +12,19 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-      - name: Install dependencies
-        run: yarn install
-      - name: Build
-        run: yarn build
       - name: Check release validity
         run: sh .github/scripts/check-release.sh
-      - name: Publish
+      - name: Install dependencies
+        run: yarn install
+      - name: Build meilisearch-js
+        run: yarn build
+      - name: Publish with latest tag
+        if: "github.event.release.release"
         run: npm publish .
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: Publish with beta tag
+        if: "github.event.release.prerelease"
+        run: npm publish . --tag beta
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
