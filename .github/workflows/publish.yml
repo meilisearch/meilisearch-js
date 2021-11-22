@@ -19,7 +19,7 @@ jobs:
       - name: Build meilisearch-js
         run: yarn build
       - name: Publish with latest tag
-        if: "github.event.release.release"
+        if: "!github.event.release.prerelease"
         run: npm publish .
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
