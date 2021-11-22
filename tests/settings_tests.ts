@@ -188,7 +188,7 @@ describe.each([
     expect(response).toHaveProperty('synonyms', {})
   })
 
-  test(`${permission} key: Update settings that verifies no overwrite in the settings`, async () => {
+  test(`${permission} key: Update searchableAttributes settings on empty index`, async () => {
     const newSettings = {
       searchableAttributes: ['title'],
     }
@@ -213,17 +213,28 @@ describe.each([
     expect(response).toHaveProperty('synonyms', {})
   })
 
-  test(`${permission} key: Update settings that verifies no overwrite in the settings on empty index with primary key`, async () => {
+  // FIXME: Removed until this issue is fixed: https://github.com/meilisearch/MeiliSearch/issues/1927
+  test.skip(`${permission} key: Update searchableAttributes settings on empty index with a primary key`, async () => {
     const newSettings = {
       searchableAttributes: ['title'],
     }
+    // Update settings
     const settings: EnqueuedUpdate = await client
       .index(indexAndPK.uid)
       .updateSettings(newSettings)
-    expect(settings).toHaveProperty('updateId', expect.any(Number))
+    // Wait for setting addition to be done
     await client.index(index.uid).waitForPendingUpdate(settings.updateId)
 
+    // Fetch settings
     const response: Settings = await client.index(indexAndPK.uid).getSettings()
+
+    // compare searchableAttributes
+    expect(response).toHaveProperty(
+      'searchableAttributes',
+      newSettings.searchableAttributes
+    )
+
+    expect(settings).toHaveProperty('updateId', expect.any(Number))
     expect(response).toHaveProperty('rankingRules', defaultRankingRules)
     expect(response).toHaveProperty(
       'distinctAttribute',
