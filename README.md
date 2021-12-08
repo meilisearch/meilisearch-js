@@ -411,8 +411,13 @@ Or using the index object:
 
 `client.deleteIndex(uid): Promise<void>`
 Or using the index object:
-
 `index.delete(): Promise<void>`
+
+- Delete an index if it exists:
+
+`client.deleteIndexIfExists(uid): Promise<boolean>`
+Or using the index object:
+`index.deleteIfExists(): Promise<boolean>`
 
 - [Get specific index stats](https://docs.meilisearch.com/reference/api/stats.html#get-stat-of-an-index):
 
