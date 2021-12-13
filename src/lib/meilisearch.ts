@@ -12,19 +12,23 @@ import {
   Config,
   IndexOptions,
   IndexResponse,
+  EnqueuedTask,
   Keys,
   Health,
   Stats,
   Version,
   EnqueuedDump,
   ErrorStatusCode,
+  Task,
 } from '../types'
 import { HttpRequests } from './http-requests'
 import { addProtocolIfNotPresent } from './utils'
+import { Tasks } from './task'
 
 class MeiliSearch {
   config: Config
   httpRequest: HttpRequests
+  tasks: Tasks
 
   /**
    * Creates new MeiliSearch instance
@@ -35,6 +39,7 @@ class MeiliSearch {
     config.host = HttpRequests.addTrailingSlash(config.host)
     this.config = config
     this.httpRequest = new HttpRequests(config)
+    this.tasks = new Tasks(config)
   }
 
   /**
@@ -83,20 +88,21 @@ class MeiliSearch {
    * @param {IndexOptions} options Index options
    * @returns {Promise<Index<T>>} Promise containing Index instance
    */
-  async getOrCreateIndex<T = any>(
-    uid: string,
-    options: IndexOptions = {}
-  ): Promise<Index<T>> {
-    try {
-      const index = await this.getIndex(uid)
-      return index
-    } catch (e: any) {
-      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
-        return this.createIndex(uid, options)
-      }
-      throw e
-    }
-  }
+  // TODO: to discuss
+  // async getOrCreateIndex<T = any>(
+  //   uid: string,
+  //   options: IndexOptions = {}
+  // ): Promise<Index<T>> {
+  //   try {
+  //     const index = await this.getIndex(uid)
+  //     return index
+  //   } catch (e: any) {
+  //     if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
+  //       return this.createIndex(uid, options)
+  //     }
+  //     throw e
+  //   }
+  // }
 
   /**
    * Get all indexes in the database
@@ -118,11 +124,11 @@ class MeiliSearch {
    * @param {IndexOptions} options Index options
    * @returns {Promise<Index<T>>} Promise containing Index instance
    */
-  async createIndex<T = any>(
+  async createIndex(
     uid: string,
     options: IndexOptions = {}
-  ): Promise<Index<T>> {
-    return await Index.create<T>(uid, options, this.config)
+  ): Promise<EnqueuedTask> {
+    return await Index.create(uid, options, this.config)
   }
 
   /**
@@ -134,11 +140,11 @@ class MeiliSearch {
    * @param {IndexOptions} options Index options to update
    * @returns {Promise<Index<T>>} Promise containing Index instance after updating
    */
-  async updateIndex<T = any>(
+  async updateIndex(
     uid: string,
     options: IndexOptions = {}
-  ): Promise<Index<T>> {
-    return new Index<T>(this.config, uid).update(options)
+  ): Promise<EnqueuedTask> {
+    return await new Index(this.config, uid).update(options)
   }
 
   /**
@@ -148,7 +154,7 @@ class MeiliSearch {
    * @param {string} uid The index UID
    * @returns {Promise<void>} Promise which resolves when index is deleted successfully
    */
-  async deleteIndex(uid: string): Promise<void> {
+  async deleteIndex(uid: string): Promise<EnqueuedTask> {
     return new Index(this.config, uid).delete()
   }
 
@@ -169,6 +175,40 @@ class MeiliSearch {
       }
       throw e
     }
+  }
+
+  ///
+  /// WAITS
+  ///
+
+  ///
+  /// UTILS
+  ///
+
+  async waitForTasks(
+    taskIds: number[],
+    {
+      timeOutMs = 5000,
+      intervalMs = 50,
+    }: { timeOutMs?: number; intervalMs?: number } = {}
+  ): Promise<Task[]> {
+    return await this.tasks.waitForClientTasks(taskIds, {
+      timeOutMs,
+      intervalMs,
+    })
+  }
+
+  async waitForTask(
+    taskId: number,
+    {
+      timeOutMs = 5000,
+      intervalMs = 50,
+    }: { timeOutMs?: number; intervalMs?: number } = {}
+  ): Promise<Task> {
+    return await this.tasks.waitForClientTask(taskId, {
+      timeOutMs,
+      intervalMs,
+    })
   }
 
   ///

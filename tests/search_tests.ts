@@ -1,5 +1,5 @@
 import AbortController from 'abort-controller'
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -77,7 +77,7 @@ describe.each([
     await masterClient.createIndex(emptyIndex.uid)
 
     const newFilterableAttributes = ['genre', 'title', 'id']
-    const response: EnqueuedUpdate = await masterClient
+    const response: EnqueuedTask = await masterClient
       .index(index.uid)
       .updateSettings({
         filterableAttributes: newFilterableAttributes,

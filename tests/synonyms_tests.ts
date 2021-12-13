@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -54,7 +54,7 @@ describe.each([
     const newSynonyms = {
       hp: ['harry potter'],
     }
-    const synonyms: EnqueuedUpdate = await client
+    const synonyms: EnqueuedTask = await client
       .index(index.uid)
       .updateSynonyms(newSynonyms)
     expect(synonyms).toHaveProperty('updateId', expect.any(Number))
@@ -66,7 +66,7 @@ describe.each([
 
   test(`${permission} key: Update synonyms with null value`, async () => {
     const newSynonyms = null
-    const synonyms: EnqueuedUpdate = await client
+    const synonyms: EnqueuedTask = await client
       .index(index.uid)
       .updateSynonyms(newSynonyms)
     expect(synonyms).toHaveProperty('updateId', expect.any(Number))
@@ -77,9 +77,7 @@ describe.each([
   })
 
   test(`${permission} key: Reset synonyms`, async () => {
-    const synonyms: EnqueuedUpdate = await client
-      .index(index.uid)
-      .resetSynonyms()
+    const synonyms: EnqueuedTask = await client.index(index.uid).resetSynonyms()
     expect(synonyms).toHaveProperty('updateId', expect.any(Number))
     await client.index(index.uid).waitForPendingUpdate(synonyms.updateId)
 

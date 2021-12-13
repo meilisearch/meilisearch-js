@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -56,7 +56,7 @@ describe.each([
 
   test(`${permission} key: Update attributes for filtering`, async () => {
     const newFilterableAttributes = ['genre']
-    const attributes: EnqueuedUpdate = await client
+    const attributes: EnqueuedTask = await client
       .index(index.uid)
       .updateFilterableAttributes(newFilterableAttributes)
     expect(attributes).toHaveProperty('updateId', expect.any(Number))
@@ -69,7 +69,7 @@ describe.each([
   })
 
   test(`${permission} key: Update attributes for filtering at null`, async () => {
-    const attrbiutes: EnqueuedUpdate = await client
+    const attrbiutes: EnqueuedTask = await client
       .index(index.uid)
       .updateFilterableAttributes(null)
     expect(attrbiutes).toHaveProperty('updateId', expect.any(Number))
@@ -82,7 +82,7 @@ describe.each([
   })
 
   test(`${permission} key: Reset attributes for filtering`, async () => {
-    const attrbiutes: EnqueuedUpdate = await client
+    const attrbiutes: EnqueuedTask = await client
       .index(index.uid)
       .resetFilterableAttributes()
     expect(attrbiutes).toHaveProperty('updateId', expect.any(Number))

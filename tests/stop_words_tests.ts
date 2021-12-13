@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -54,7 +54,7 @@ describe.each([
 
   test(`${permission} key: Update stop words`, async () => {
     const newStopWords = ['the']
-    const words: EnqueuedUpdate = await client
+    const words: EnqueuedTask = await client
       .index(index.uid)
       .updateStopWords(newStopWords)
     expect(words).toHaveProperty('updateId', expect.any(Number))
@@ -66,7 +66,7 @@ describe.each([
 
   test(`${permission} key: Update stop words with null value`, async () => {
     const newStopWords = null
-    const words: EnqueuedUpdate = await client
+    const words: EnqueuedTask = await client
       .index(index.uid)
       .updateStopWords(newStopWords)
     expect(words).toHaveProperty('updateId', expect.any(Number))
@@ -77,7 +77,7 @@ describe.each([
   })
 
   test(`${permission} key: Reset stop words`, async () => {
-    const words: EnqueuedUpdate = await client.index(index.uid).resetStopWords()
+    const words: EnqueuedTask = await client.index(index.uid).resetStopWords()
     expect(words).toHaveProperty('updateId', expect.any(Number))
     await client.index(index.uid).waitForPendingUpdate(words.updateId)
 

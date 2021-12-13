@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -56,7 +56,7 @@ describe.each([
 
   test(`${permission} key: Update searchable attributes`, async () => {
     const newSearchableAttributes = ['title']
-    const attributes: EnqueuedUpdate = await client
+    const attributes: EnqueuedTask = await client
       .index(index.uid)
       .updateSearchableAttributes(newSearchableAttributes)
     expect(attributes).toHaveProperty('updateId', expect.any(Number))
@@ -69,7 +69,7 @@ describe.each([
   })
 
   test(`${permission} key: Update searchable attributes at null`, async () => {
-    const attributes: EnqueuedUpdate = await client
+    const attributes: EnqueuedTask = await client
       .index(index.uid)
       .updateSearchableAttributes(null)
     expect(attributes).toHaveProperty('updateId', expect.any(Number))
@@ -82,7 +82,7 @@ describe.each([
   })
 
   test(`${permission} key: Reset searchable attributes`, async () => {
-    const attributes: EnqueuedUpdate = await client
+    const attributes: EnqueuedTask = await client
       .index(index.uid)
       .resetSearchableAttributes()
     expect(attributes).toHaveProperty('updateId', expect.any(Number))

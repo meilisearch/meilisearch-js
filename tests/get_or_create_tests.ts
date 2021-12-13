@@ -18,7 +18,7 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([
+describe.skip.each([
   { client: masterClient, permission: 'Master' },
   { client: privateClient, permission: 'Private' },
 ])('Test on getOrCreateIndex', ({ client, permission }) => {
@@ -47,7 +47,7 @@ describe.each([
   })
 })
 
-describe.each([{ client: publicClient, permission: 'Public' }])(
+describe.skip.each([{ client: publicClient, permission: 'Public' }])(
   'Test on getOrCreateIndex',
   ({ client, permission }) => {
     test(`${permission} key: try to getOrCreateIndex and be denied`, async () => {
@@ -59,7 +59,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   }
 )
 
-describe.each([{ client: anonymousClient, permission: 'No' }])(
+describe.skip.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on getOrCreateIndex',
   ({ client, permission }) => {
     test(`${permission} key: try to getOrCreateIndex and be denied`, async () => {

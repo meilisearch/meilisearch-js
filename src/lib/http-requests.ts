@@ -3,7 +3,7 @@ import 'cross-fetch/polyfill'
 import {
   Config,
   IndexRequest,
-  EnqueuedUpdate,
+  EnqueuedTask,
   IndexResponse,
   IndexOptions,
 } from '../types'
@@ -15,7 +15,7 @@ class HttpRequests {
   url: URL
 
   constructor(config: Config) {
-    this.headers = config.headers || {}
+    this.headers = Object.assign({}, config.headers || {}) // assign to avoid referencing
     this.headers['Content-Type'] = 'application/json'
     if (config.apiKey) {
       this.headers['Authorization'] = `Bearer ${config.apiKey}`
@@ -98,14 +98,7 @@ class HttpRequests {
     })
   }
 
-  async post(
-    url: string,
-    data: IndexRequest,
-    params?: { [key: string]: any },
-    config?: Record<string, any>
-  ): Promise<IndexResponse>
-
-  async post<T = any, R = EnqueuedUpdate>(
+  async post<T = any, R = EnqueuedTask>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
@@ -127,14 +120,7 @@ class HttpRequests {
     })
   }
 
-  async put(
-    url: string,
-    data: IndexOptions | IndexRequest,
-    params?: { [key: string]: any },
-    config?: Record<string, any>
-  ): Promise<IndexResponse>
-
-  async put<T = any, R = EnqueuedUpdate>(
+  async put<T = any, R = EnqueuedTask>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
@@ -161,7 +147,7 @@ class HttpRequests {
     data?: any,
     params?: { [key: string]: any },
     config?: Record<string, any>
-  ): Promise<void>
+  ): Promise<EnqueuedTask>
   async delete<T>(
     url: string,
     data?: any,

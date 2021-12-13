@@ -31,7 +31,7 @@ describe.each([
   beforeEach(() => {
     return clearAllIndexes(config)
   })
-  test(`${permission} key: create with no primary key`, async () => {
+  test.only(`${permission} key: create with no primary key`, async () => {
     const newIndex = await client.createIndex(indexNoPk.uid)
     expect(newIndex).toHaveProperty('uid', indexNoPk.uid)
     expect(newIndex).toHaveProperty('primaryKey', null)
@@ -257,7 +257,7 @@ describe.each([
   })
 })
 
-describe.each([{ client: publicClient, permission: 'Public' }])(
+describe.skip.each([{ client: publicClient, permission: 'Public' }])(
   'Test on routes with public key',
   ({ client, permission }) => {
     beforeEach(() => {
@@ -299,7 +299,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   }
 )
 
-describe.each([{ client: anonymousClient, permission: 'No' }])(
+describe.skip.each([{ client: anonymousClient, permission: 'No' }])(
   'Test on routes without an API key',
   ({ client, permission }) => {
     beforeEach(() => {
@@ -347,7 +347,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
   }
 )
 
-describe.each([
+describe.skip.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },

@@ -160,11 +160,11 @@ export type Settings = {
  ** UPDATE
  */
 
-export type EnqueuedUpdate = {
-  updateId: number
+export type EnqueuedTask = {
+  uid: number
 }
 
-export type Update = {
+export type Task = {
   status: string
   updateId: number
   type: {
@@ -184,7 +184,7 @@ export type EnqueuedDump = {
   finishedAt: string
 }
 
-export type WaitForPendingUpdateOptions = {
+export type WaitOptions = {
   timeOutMs?: number
   intervalMs?: number
 }

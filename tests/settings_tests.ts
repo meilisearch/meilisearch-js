@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedUpdate, Settings } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask, Settings } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -112,7 +112,7 @@ describe.each([
       stopWords: ['the'],
       filterableAttributes: [],
     }
-    const settings: EnqueuedUpdate = await client
+    const settings: EnqueuedTask = await client
       .index(index.uid)
       .updateSettings(newSettings)
     expect(settings).toHaveProperty('updateId', expect.any(Number))
@@ -137,7 +137,7 @@ describe.each([
       stopWords: ['the'],
     }
 
-    const settings: EnqueuedUpdate = await client
+    const settings: EnqueuedTask = await client
       .index(indexAndPK.uid)
       .updateSettings(newSettings)
     expect(settings).toHaveProperty('updateId', expect.any(Number))
@@ -156,9 +156,7 @@ describe.each([
   })
 
   test(`${permission} key: Reset settings`, async () => {
-    const settings: EnqueuedUpdate = await client
-      .index(index.uid)
-      .resetSettings()
+    const settings: EnqueuedTask = await client.index(index.uid).resetSettings()
     expect(settings).toHaveProperty('updateId', expect.any(Number))
     await client.index(index.uid).waitForPendingUpdate(settings.updateId)
 
@@ -173,7 +171,7 @@ describe.each([
   })
 
   test(`${permission} key: Reset settings of empty index`, async () => {
-    const settings: EnqueuedUpdate = await client
+    const settings: EnqueuedTask = await client
       .index(indexAndPK.uid)
       .resetSettings()
     expect(settings).toHaveProperty('updateId', expect.any(Number))
@@ -192,7 +190,7 @@ describe.each([
     const newSettings = {
       searchableAttributes: ['title'],
     }
-    const settings: EnqueuedUpdate = await client
+    const settings: EnqueuedTask = await client
       .index(index.uid)
       .updateSettings(newSettings)
     expect(settings).toHaveProperty('updateId', expect.any(Number))
@@ -219,7 +217,7 @@ describe.each([
       searchableAttributes: ['title'],
     }
     // Update settings
-    const settings: EnqueuedUpdate = await client
+    const settings: EnqueuedTask = await client
       .index(indexAndPK.uid)
       .updateSettings(newSettings)
     // Wait for setting addition to be done

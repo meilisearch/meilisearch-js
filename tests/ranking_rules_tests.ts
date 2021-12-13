@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -63,7 +63,7 @@ describe.each([
 
   test(`${permission} key: Update ranking rules`, async () => {
     const newRankingRules = ['title:asc', 'typo', 'description:desc']
-    const rankingRules: EnqueuedUpdate = await client
+    const rankingRules: EnqueuedTask = await client
       .index(index.uid)
       .updateRankingRules(newRankingRules)
     expect(rankingRules).toHaveProperty('updateId', expect.any(Number))
@@ -74,7 +74,7 @@ describe.each([
   })
 
   test(`${permission} key: Update ranking rules at null`, async () => {
-    const rankingRules: EnqueuedUpdate = await client
+    const rankingRules: EnqueuedTask = await client
       .index(index.uid)
       .updateRankingRules(null)
     expect(rankingRules).toHaveProperty('updateId', expect.any(Number))
@@ -85,7 +85,7 @@ describe.each([
   })
 
   test(`${permission} key: Reset ranking rules`, async () => {
-    const rankingRules: EnqueuedUpdate = await client
+    const rankingRules: EnqueuedTask = await client
       .index(index.uid)
       .resetRankingRules()
     expect(rankingRules).toHaveProperty('updateId', expect.any(Number))

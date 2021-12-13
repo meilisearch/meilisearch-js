@@ -1,4 +1,4 @@
-import { EnqueuedUpdate, ErrorStatusCode } from '../src/'
+import { EnqueuedTask, ErrorStatusCode } from '../src/'
 import {
   clearAllIndexes,
   config,
@@ -82,7 +82,7 @@ describe.each([
     await masterClient.createIndex(index.uid)
     await masterClient.createIndex(emptyIndex.uid)
     const newFilterableAttributes = ['genre', 'title']
-    const response: EnqueuedUpdate = await masterClient
+    const response: EnqueuedTask = await masterClient
       .index<Movie>(index.uid)
       .updateFilterableAttributes(newFilterableAttributes)
     expect(response).toHaveProperty('updateId', expect.any(Number))

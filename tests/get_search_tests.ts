@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -73,7 +73,7 @@ describe.each([
     await masterClient.createIndex(emptyIndex.uid)
 
     const newFilterableAttributes = ['genre', 'title', 'id']
-    const settings: EnqueuedUpdate = await masterClient
+    const settings: EnqueuedTask = await masterClient
       .index(index.uid)
       .updateSettings({
         filterableAttributes: newFilterableAttributes,

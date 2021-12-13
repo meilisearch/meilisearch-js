@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedUpdate, IndexResponse } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask, IndexResponse } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -43,14 +43,15 @@ describe.each([
 ])('Test on documents', ({ client, permission }) => {
   beforeEach(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(indexNoPk.uid)
+    const update = await masterClient.createIndex(indexNoPk.uid)
+
     await masterClient.createIndex(indexPk.uid, {
       primaryKey: indexPk.primaryKey,
     })
   })
 
   test(`${permission} key: Add documents to uid with NO primary key`, async () => {
-    const response: EnqueuedUpdate = await client
+    const response: EnqueuedTask = await client
       .index(indexNoPk.uid)
       .addDocuments(dataset)
     expect(response).toHaveProperty('updateId', expect.any(Number))
@@ -58,7 +59,7 @@ describe.each([
   })
 
   test(`${permission} key: Add documents to uid with primary key`, async () => {
-    const response: EnqueuedUpdate = await client
+    const response: EnqueuedTask = await client
       .index(indexPk.uid)
       .addDocuments(dataset)
     expect(response).toHaveProperty('updateId', expect.any(Number))
@@ -66,7 +67,7 @@ describe.each([
   })
 
   test(`${permission} key: Add documents to uid with primary key in batch`, async () => {
-    const response: EnqueuedUpdate[] = await client
+    const response: EnqueuedTask[] = await client
       .index(indexPk.uid)
       .addDocumentsInBatches(dataset, 4)
     expect(response).toBeInstanceOf(Array)
@@ -121,7 +122,7 @@ describe.each([
 
     const id = 2
     const title = 'The Red And The Black'
-    const documents: EnqueuedUpdate = await client
+    const documents: EnqueuedTask = await client
       .index(indexNoPk.uid)
       .addDocuments([{ id, title }])
     expect(documents).toHaveProperty('updateId', expect.any(Number))
@@ -135,7 +136,7 @@ describe.each([
   test(`${permission} key: Replace documents from index that has a primary key`, async () => {
     const id = 2
     const title = 'The Red And The Black'
-    const documents: EnqueuedUpdate = await client
+    const documents: EnqueuedTask = await client
       .index(indexPk.uid)
       .addDocuments([{ id, title }])
     expect(documents).toHaveProperty('updateId', expect.any(Number))
@@ -150,7 +151,7 @@ describe.each([
     const id = 456
     const title = 'The Little Prince'
 
-    const documents: EnqueuedUpdate = await client
+    const documents: EnqueuedTask = await client
       .index(indexNoPk.uid)
       .updateDocuments([{ id, title }])
     expect(documents).toHaveProperty('updateId', expect.any(Number))
@@ -164,7 +165,7 @@ describe.each([
   test(`${permission} key: Update document from index that has a primary key`, async () => {
     const id = 456
     const title = 'The Little Prince'
-    const documents: EnqueuedUpdate = await client
+    const documents: EnqueuedTask = await client
       .index(indexPk.uid)
       .updateDocuments([{ id, title }])
     expect(documents).toHaveProperty('updateId', expect.any(Number))
@@ -176,7 +177,7 @@ describe.each([
   })
 
   test(`${permission} key: Update document from index that has a primary key in batch`, async () => {
-    const response: EnqueuedUpdate[] = await client
+    const response: EnqueuedTask[] = await client
       .index(indexPk.uid)
       .updateDocumentsInBatches(dataset, 2)
     expect(response).toBeInstanceOf(Array)
@@ -200,7 +201,7 @@ describe.each([
     const id = 9
     const title = '1984'
 
-    const documents: EnqueuedUpdate = await client
+    const documents: EnqueuedTask = await client
       .index(indexNoPk.uid)
       .updateDocuments([{ id, title }])
     expect(documents).toHaveProperty('updateId', expect.any(Number))
@@ -222,7 +223,7 @@ describe.each([
 
     const id = 9
     const title = '1984'
-    const documents: EnqueuedUpdate = await client
+    const documents: EnqueuedTask = await client
       .index(indexPk.uid)
       .updateDocuments([{ id, title }])
     expect(documents).toHaveProperty('updateId', expect.any(Number))
@@ -244,7 +245,7 @@ describe.each([
 
     const id = 9
 
-    const document: EnqueuedUpdate = await client
+    const document: EnqueuedTask = await client
       .index(indexNoPk.uid)
       .deleteDocument(id)
     expect(document).toHaveProperty('updateId', expect.any(Number))
@@ -261,7 +262,7 @@ describe.each([
     await client.index(indexPk.uid).waitForPendingUpdate(addDocUpdate)
 
     const id = 9
-    const document: EnqueuedUpdate = await client
+    const document: EnqueuedTask = await client
       .index(indexPk.uid)
       .deleteDocument(id)
     expect(document).toHaveProperty('updateId', expect.any(Number))
@@ -279,7 +280,7 @@ describe.each([
 
     const ids = [1, 2]
 
-    const documents: EnqueuedUpdate = await client
+    const documents: EnqueuedTask = await client
       .index(indexNoPk.uid)
       .deleteDocuments(ids)
     expect(documents).toHaveProperty('updateId', expect.any(Number))
@@ -299,7 +300,7 @@ describe.each([
     await client.index(indexPk.uid).waitForPendingUpdate(addDocUpdate)
 
     const ids = [1, 2]
-    const documents: EnqueuedUpdate = await client
+    const documents: EnqueuedTask = await client
       .index(indexPk.uid)
       .deleteDocuments(ids)
     expect(documents).toHaveProperty('updateId', expect.any(Number))
@@ -313,7 +314,7 @@ describe.each([
   })
 
   test(`${permission} key: Delete all document from index that has NO primary key`, async () => {
-    const documents: EnqueuedUpdate = await client
+    const documents: EnqueuedTask = await client
       .index(indexNoPk.uid)
       .deleteAllDocuments()
     expect(documents).toHaveProperty('updateId', expect.any(Number))
@@ -324,7 +325,7 @@ describe.each([
   })
 
   test(`${permission} key: Delete all document from index that has a primary key`, async () => {
-    const documents: EnqueuedUpdate = await client
+    const documents: EnqueuedTask = await client
       .index(indexPk.uid)
       .deleteAllDocuments()
     expect(documents).toHaveProperty('updateId', expect.any(Number))
@@ -358,7 +359,7 @@ describe.each([
     const newIndex = await client.createIndex('updateUid')
     expect(newIndex).toHaveProperty('uid', 'updateUid')
 
-    const documents: EnqueuedUpdate = await client
+    const documents: EnqueuedTask = await client
       .index('updateUid')
       .addDocuments(docs, { primaryKey: 'unique' })
     expect(documents).toHaveProperty('updateId', expect.any(Number))

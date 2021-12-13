@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedUpdate, Update } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask, Task } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -44,15 +44,15 @@ describe.each([
   })
 
   test(`${permission} key: Get one update`, async () => {
-    const response: EnqueuedUpdate = await client
+    const response: EnqueuedTask = await client
       .index(index.uid)
       .addDocuments(dataset)
     expect(response).toHaveProperty('updateId', expect.any(Number))
     await client.index(index.uid).waitForPendingUpdate(response.updateId)
 
-    const stausReponse: Update = await client
+    const stausReponse: Task = await client
       .index(index.uid)
-      .getUpdateStatus(response.updateId)
+      .getTask(response.updateId)
 
     expect(stausReponse).toHaveProperty('status', 'processed')
     expect(stausReponse).toHaveProperty('updateId', expect.any(Number))
@@ -68,9 +68,7 @@ describe.each([
     const { updateId } = await client.index(index.uid).addDocuments([{ id: 1 }])
     await client.index(index.uid).waitForPendingUpdate(updateId)
 
-    const response: Update[] = await client
-      .index(index.uid)
-      .getAllUpdateStatus()
+    const response: Task[] = await client.index(index.uid).getTasks()
     expect(response.length).toEqual(1)
     expect(response[0]).toHaveProperty('status', 'processed')
     expect(response[0]).toHaveProperty('updateId', expect.any(Number))
@@ -83,9 +81,10 @@ describe.each([
   })
 
   test(`${permission} key: Try to get update that does not exist`, async () => {
-    await expect(
-      client.index(index.uid).getUpdateStatus(2545)
-    ).rejects.toHaveProperty('code', ErrorStatusCode.TASK_NOT_FOUND)
+    await expect(client.index(index.uid).getTask(2545)).rejects.toHaveProperty(
+      'code',
+      ErrorStatusCode.TASK_NOT_FOUND
+    )
   })
 })
 
@@ -97,9 +96,10 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
     })
 
     test(`${permission} key: Try to get a update and be denied`, async () => {
-      await expect(
-        client.index(index.uid).getUpdateStatus(0)
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+      await expect(client.index(index.uid).getTask(0)).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.INVALID_API_KEY
+      )
     })
   }
 )
@@ -112,9 +112,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
 
     test(`${permission} key: Try to get an update and be denied`, async () => {
-      await expect(
-        client.index(index.uid).getUpdateStatus(0)
-      ).rejects.toHaveProperty(
+      await expect(client.index(index.uid).getTask(0)).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
@@ -131,9 +129,7 @@ describe.each([
     const route = `indexes/${index.uid}/updates/1`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
-    await expect(
-      client.index(index.uid).getUpdateStatus(1)
-    ).rejects.toHaveProperty(
+    await expect(client.index(index.uid).getTask(1)).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',
@@ -146,9 +142,7 @@ describe.each([
     const route = `indexes/${index.uid}/updates`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
-    await expect(
-      client.index(index.uid).getAllUpdateStatus()
-    ).rejects.toHaveProperty(
+    await expect(client.index(index.uid).getTasks()).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',

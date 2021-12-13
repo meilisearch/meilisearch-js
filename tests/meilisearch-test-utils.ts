@@ -5,10 +5,12 @@ import { Config, IndexResponse, EnqueuedDump } from '../src/types'
 const MASTER_KEY = 'masterKey'
 const HOST = 'http://127.0.0.1:7700'
 const BAD_HOST = HOST.slice(0, -1) + `1`
+
+// TODO: Very big breaking
 const PRIVATE_KEY =
-  '8dcbb482663333d0280fa9fedf0e0c16d52185cb67db494ce4cd34da32ce2092'
+  'sw3qLtL1e2ee6b9297b2f7e849e01ea05ae56812ab8bad4d2d07fbf6184801037315843d'
 const PUBLIC_KEY =
-  '3b3bf839485f90453acc6159ba18fbed673ca88523093def11a9b4f4320e44a5'
+  'CTCsHvuX9291c3890d904199615a3a2adb4482b3c38d322750c1072922bdfa73a48d7db4'
 
 const config = {
   host: HOST,
@@ -40,14 +42,12 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
   const response: IndexResponse[] = await client.getIndexes()
   const indexes = response.map((elem: IndexResponse) => elem.uid)
 
+  const taskIds = []
   for (const indexUid of indexes) {
-    await client
-      .index(indexUid)
-      .delete()
-      .catch((err: any) => {
-        expect(err).toBe(null)
-      })
+    const { uid } = await client.index(indexUid).delete()
+    taskIds.push(uid)
   }
+  await client.waitForTasks(taskIds)
 
   await expect(client.getIndexes()).resolves.toHaveLength(0)
 }

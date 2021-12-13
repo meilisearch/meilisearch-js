@@ -1,4 +1,4 @@
-import { EnqueuedUpdate, ErrorStatusCode } from '../src/types'
+import { EnqueuedTask, ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -56,7 +56,7 @@ describe.each([
 
   test(`${permission} key: Update distinct attribute`, async () => {
     const newDistinctAttribute = 'title'
-    const attributes: EnqueuedUpdate = await client
+    const attributes: EnqueuedTask = await client
       .index(index.uid)
       .updateDistinctAttribute(newDistinctAttribute)
     expect(attributes).toHaveProperty('updateId', expect.any(Number))
@@ -69,7 +69,7 @@ describe.each([
   })
 
   test(`${permission} key: Update distinct attribute at null`, async () => {
-    const attrbiutes: EnqueuedUpdate = await client
+    const attrbiutes: EnqueuedTask = await client
       .index(index.uid)
       .updateDistinctAttribute(null)
     expect(attrbiutes).toHaveProperty('updateId', expect.any(Number))
@@ -82,7 +82,7 @@ describe.each([
   })
 
   test(`${permission} key: Reset distinct attribute`, async () => {
-    const attributes: EnqueuedUpdate = await client
+    const attributes: EnqueuedTask = await client
       .index(index.uid)
       .resetDistinctAttribute()
     expect(attributes).toHaveProperty('updateId', expect.any(Number))

@@ -1,4 +1,4 @@
-import { EnqueuedUpdate, ErrorStatusCode } from '../src/types'
+import { EnqueuedTask, ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -54,7 +54,7 @@ describe.each([
 
   test(`${permission} key: Update displayed attributes`, async () => {
     const newDisplayedAttribute = ['title']
-    const updatedAttributes: EnqueuedUpdate = await client
+    const updatedAttributes: EnqueuedTask = await client
       .index(index.uid)
       .updateDisplayedAttributes(newDisplayedAttribute)
     expect(updatedAttributes).toHaveProperty('updateId', expect.any(Number))
@@ -69,7 +69,7 @@ describe.each([
   })
 
   test(`${permission} key: Update displayed attributes at null`, async () => {
-    const updatedAttributes: EnqueuedUpdate = await client
+    const updatedAttributes: EnqueuedTask = await client
       .index(index.uid)
       .updateDisplayedAttributes(null)
     expect(updatedAttributes).toHaveProperty('updateId', expect.any(Number))
@@ -84,7 +84,7 @@ describe.each([
   })
 
   test(`${permission} key: Reset displayed attributes`, async () => {
-    const attributes: EnqueuedUpdate = await client
+    const attributes: EnqueuedTask = await client
       .index(index.uid)
       .resetDisplayedAttributes()
     expect(attributes).toHaveProperty('updateId', expect.any(Number))
