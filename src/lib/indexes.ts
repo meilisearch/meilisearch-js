@@ -7,7 +7,7 @@
 
 'use strict'
 
-import { MeiliSearchTimeOutError, MeiliSearchError } from '../errors'
+import { MeiliSearchError } from '../errors'
 
 import {
   Config,
@@ -33,10 +33,9 @@ import {
   SortableAttributes,
   SearchableAttributes,
   DisplayedAttributes,
-  WaitForPendingUpdateOptions,
   ErrorStatusCode,
 } from '../types'
-import { sleep, removeUndefinedFromObject } from './utils'
+import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
 import { Tasks } from './task'
 
@@ -272,8 +271,9 @@ class Index<T = Record<string, any>> {
    * Wait for a batch of an index tasks to be processed.
    *
    * @memberof Indexes
-   * @method getTasks
+   * @method waitForTasks
    * @param {number[]} taskIds - Tasks identifier
+   * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
    * @returns {Promise<Task[]>} - Promise containing an array of tasks
    */
@@ -294,8 +294,9 @@ class Index<T = Record<string, any>> {
    * Wait for an index task to be processed.
    *
    * @memberof Indexes
-   * @method getTask
+   * @method waitForTask
    * @param {number} taskId - Task identifier
+   * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
    * @returns {Promise<Task>} - Promise containing an array of tasks
    */

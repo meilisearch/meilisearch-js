@@ -205,8 +205,9 @@ class MeiliSearch {
   /**
    * Wait for a batch of tasks to be processed.
    * @memberof MeiliSearch
-   * @method getTasks
+   * @method waitForTasks
    * @param {number[]} taskIds - Tasks identifier
+   * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
    * @returns {Promise<Task[]>} - Promise containing an array of tasks
    */
@@ -227,8 +228,9 @@ class MeiliSearch {
    * Wait for a task to be processed.
    *
    * @memberof MeiliSearch
-   * @method getTask
+   * @method waitForTask
    * @param {number} taskId - Task identifier
+   * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
    * @returns {Promise<Task>} - Promise containing an array of tasks
    */
