@@ -2,7 +2,6 @@ import { EnqueuedTask, ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
-  anonymousClient,
   BAD_HOST,
   MeiliSearch,
   getClient,
@@ -130,7 +129,7 @@ describe.each([{ permission: 'Public' }])(
   }
 )
 
-describe.each([{ client: anonymousClient, permission: 'No' }])(
+describe.each([{ permission: 'No' }])(
   'Test on displayed attributes',
   ({ permission }) => {
     beforeEach(async () => {
