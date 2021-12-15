@@ -1,12 +1,6 @@
 import 'cross-fetch/polyfill'
 
-import {
-  Config,
-  IndexRequest,
-  EnqueuedTask,
-  IndexResponse,
-  IndexOptions,
-} from '../types'
+import { Config, EnqueuedTask } from '../types'
 
 import { httpResponseErrorHandler, httpErrorHandler } from '../errors'
 
@@ -53,12 +47,15 @@ class HttpRequests {
     }
 
     try {
-      const response: Response = await fetch(constructURL.toString(), {
-        ...config,
-        method,
-        body: JSON.stringify(body),
-        headers: this.headers,
-      }).then((res) => httpResponseErrorHandler(res))
+      const response: Record<string, any> = await fetch(
+        constructURL.toString(),
+        {
+          ...config,
+          method,
+          body: JSON.stringify(body),
+          headers: this.headers,
+        }
+      ).then((res) => httpResponseErrorHandler(res))
       const parsedBody: string = await response.text()
 
       try {

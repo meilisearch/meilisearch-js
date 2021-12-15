@@ -240,28 +240,76 @@ class Index<T = Record<string, any>> {
   }
 
   ///
-  /// UPDATES
+  /// TASKS
   ///
 
   /**
-   * Get the list of all updates
-   * @memberof Index
-   * @method getAllUpdateStatus
-   * @returns {Promise<Task[]>} Promise containing array of Update objects
+   * Get the list of all the index tasks.
+   *
+   * @memberof Indexes
+   * @method getTasks
+   *
+   * @returns {Promise<Task[]>} - Promise containing all tasks
    */
   async getTasks(): Promise<Task[]> {
     return await this.tasks.getIndexTasks(this.uid)
   }
 
   /**
-   * Get the informations about an update status
-   * @memberof Index
-   * @method getUpdateStatus
-   * @param {number} updateId Update identifier
-   * @returns {Promise<Task>} Promise containing the requested Update object
+   * Get one task of the index.
+   *
+   * @memberof Indexes
+   * @method getTask
+   * @param {number} taskId - Task identifier
+   *
+   * @returns {Promise<Task>} - Promise containing a task
    */
   async getTask(taskId: number): Promise<Task> {
     return await this.tasks.getIndexTask(this.uid, taskId)
+  }
+
+  /**
+   * Wait for a batch of an index tasks to be processed.
+   *
+   * @memberof Indexes
+   * @method getTasks
+   * @param {number[]} taskIds - Tasks identifier
+   *
+   * @returns {Promise<Task[]>} - Promise containing an array of tasks
+   */
+  async waitForTasks(
+    taskIds: number[],
+    {
+      timeOutMs = 5000,
+      intervalMs = 50,
+    }: { timeOutMs?: number; intervalMs?: number } = {}
+  ): Promise<Task[]> {
+    return await this.tasks.waitForClientTasks(taskIds, {
+      timeOutMs,
+      intervalMs,
+    })
+  }
+
+  /**
+   * Wait for an index task to be processed.
+   *
+   * @memberof Indexes
+   * @method getTask
+   * @param {number} taskId - Task identifier
+   *
+   * @returns {Promise<Task>} - Promise containing an array of tasks
+   */
+  async waitForTask(
+    taskId: number,
+    {
+      timeOutMs = 5000,
+      intervalMs = 50,
+    }: { timeOutMs?: number; intervalMs?: number } = {}
+  ): Promise<Task> {
+    return await this.tasks.waitForClientTask(taskId, {
+      timeOutMs,
+      intervalMs,
+    })
   }
 
   ///
@@ -788,36 +836,6 @@ class Index<T = Record<string, any>> {
   async resetDisplayedAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
     return await this.httpRequest.delete<EnqueuedTask>(url)
-  }
-
-  ///
-  /// UTILS
-  ///
-
-  async waitForTasks(
-    taskIds: number[],
-    {
-      timeOutMs = 5000,
-      intervalMs = 50,
-    }: { timeOutMs?: number; intervalMs?: number } = {}
-  ): Promise<Task[]> {
-    return await this.tasks.waitForClientTasks(taskIds, {
-      timeOutMs,
-      intervalMs,
-    })
-  }
-
-  async waitForTask(
-    taskId: number,
-    {
-      timeOutMs = 5000,
-      intervalMs = 50,
-    }: { timeOutMs?: number; intervalMs?: number } = {}
-  ): Promise<Task> {
-    return await this.tasks.waitForClientTask(taskId, {
-      timeOutMs,
-      intervalMs,
-    })
   }
 }
 

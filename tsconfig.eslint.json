@@ -3,6 +3,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "allowJs": false,
+    "module": "esnext",
   },
   "include": [
     "src/**/*.ts",

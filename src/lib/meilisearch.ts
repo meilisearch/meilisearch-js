@@ -178,13 +178,38 @@ class MeiliSearch {
   }
 
   ///
-  /// WAITS
+  /// TASKS
   ///
 
-  ///
-  /// UTILS
-  ///
+  /**
+   * Get the list of all client tasks
+   * @memberof MeiliSearch
+   * @method getTasks
+   * @returns {Promise<Task[]>} - Promise containing all tasks
+   */
+  async getTasks(): Promise<Task[]> {
+    return await this.tasks.getClientTasks()
+  }
 
+  /**
+   * Get one task on the client scope
+   * @memberof MeiliSearch
+   * @method getTask
+   * @param {number} taskId - Task identifier
+   * @returns {Promise<Task>} - Promise containing a task
+   */
+  async getTask(taskId: number): Promise<Task> {
+    return await this.tasks.getClientTask(taskId)
+  }
+
+  /**
+   * Wait for a batch of tasks to be processed.
+   * @memberof MeiliSearch
+   * @method getTasks
+   * @param {number[]} taskIds - Tasks identifier
+   *
+   * @returns {Promise<Task[]>} - Promise containing an array of tasks
+   */
   async waitForTasks(
     taskIds: number[],
     {
@@ -198,6 +223,15 @@ class MeiliSearch {
     })
   }
 
+  /**
+   * Wait for a task to be processed.
+   *
+   * @memberof MeiliSearch
+   * @method getTask
+   * @param {number} taskId - Task identifier
+   *
+   * @returns {Promise<Task>} - Promise containing an array of tasks
+   */
   async waitForTask(
     taskId: number,
     {
