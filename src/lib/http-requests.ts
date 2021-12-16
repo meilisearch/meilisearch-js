@@ -47,15 +47,12 @@ class HttpRequests {
     }
 
     try {
-      const response: Record<string, any> = await fetch(
-        constructURL.toString(),
-        {
-          ...config,
-          method,
-          body: JSON.stringify(body),
-          headers: this.headers,
-        }
-      ).then((res) => httpResponseErrorHandler(res))
+      const response: any = await fetch(constructURL.toString(), {
+        ...config,
+        method,
+        body: JSON.stringify(body),
+        headers: this.headers,
+      }).then((res) => httpResponseErrorHandler(res))
       const parsedBody: string = await response.text()
 
       try {

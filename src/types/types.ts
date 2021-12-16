@@ -171,6 +171,7 @@ export type Tasks = {
 export type Task = {
   status: string
   updateId: number
+  type: string
   details: {
     receivedDocuments: number
     indexedDocuments: number

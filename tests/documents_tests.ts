@@ -2,7 +2,6 @@ import { ErrorStatusCode, EnqueuedTask, IndexResponse } from '../src/types'
 import {
   clearAllIndexes,
   config,
-  masterClient,
   BAD_HOST,
   MeiliSearch,
   getClient,
@@ -41,14 +40,12 @@ describe('Documents tests', () => {
     ({ permission }) => {
       beforeEach(async () => {
         await clearAllIndexes(config)
-        const client = await getClient('master')
+        const client = await getClient('Master')
 
-        const { uid: taskCreateNoPk } = await masterClient.createIndex(
-          indexNoPk.uid
-        )
+        const { uid: taskCreateNoPk } = await client.createIndex(indexNoPk.uid)
         await client.waitForTask(taskCreateNoPk)
 
-        const { uid: taskCreateWithPk } = await masterClient.createIndex(
+        const { uid: taskCreateWithPk } = await client.createIndex(
           indexPk.uid,
           {
             primaryKey: indexPk.primaryKey,

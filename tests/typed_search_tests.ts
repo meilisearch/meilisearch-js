@@ -5,7 +5,6 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
-  masterClient,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -333,10 +332,11 @@ describe.each([
   })
 
   test(`${permission} key: Try to Search on deleted index and fail`, async () => {
-    const { uid } = await masterClient.index<Movie>(index.uid).delete()
-    await masterClient.waitForTask(uid)
+    const client = await getClient(permission)
+    const { uid } = await client.index<Movie>(index.uid).delete()
+    await client.waitForTask(uid)
     await expect(
-      masterClient.index<Movie>(index.uid).search('prince')
+      client.index<Movie>(index.uid).search('prince')
     ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)
   })
 })

@@ -3,12 +3,9 @@ import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
-  masterClient,
-  privateClient,
-  publicClient,
-  anonymousClient,
   BAD_HOST,
   MeiliSearch,
+  getClient,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -67,32 +64,31 @@ afterAll(() => {
 })
 
 describe.each([
-  { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-  { client: publicClient, permission: 'Public' },
-])('Test on POST search', ({ client, permission }) => {
+  { permission: 'Master' },
+  { permission: 'Private' },
+  { permission: 'Public' },
+])('Test on POST search', ({ permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
-    await masterClient.createIndex(index.uid)
-    await masterClient.createIndex(emptyIndex.uid)
+    const client = await getClient('Master')
+    await client.createIndex(index.uid)
+    await client.createIndex(emptyIndex.uid)
 
     const newFilterableAttributes = ['genre', 'title', 'id']
-    const response: EnqueuedTask = await masterClient
+    const { uid: task1 }: EnqueuedTask = await client
       .index(index.uid)
       .updateSettings({
         filterableAttributes: newFilterableAttributes,
         sortableAttributes: ['id'],
       })
-    expect(response).toHaveProperty('updateId', expect.any(Number))
-    await masterClient.index(index.uid).waitForPendingUpdate(response.updateId)
+    await client.waitForTask(task1)
 
-    const { updateId } = await masterClient
-      .index(index.uid)
-      .addDocuments(dataset)
-    await masterClient.index(index.uid).waitForPendingUpdate(updateId)
+    const { uid: task2 } = await client.index(index.uid).addDocuments(dataset)
+    await client.waitForTask(task2)
   })
 
   test(`${permission} key: Basic search`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {})
     expect(response).toHaveProperty('hits', expect.any(Array))
     expect(response).toHaveProperty('offset', 0)
@@ -103,6 +99,7 @@ describe.each([
   })
 
   test(`${permission} key: Basic phrase search`, async () => {
+    const client = await getClient(permission)
     const response = await client
       .index(index.uid)
       .search('"french book" about', {})
@@ -115,6 +112,7 @@ describe.each([
   })
 
   test(`${permission} key: search with options`, async () => {
+    const client = await getClient(permission)
     const response = await client
       .index(index.uid)
       .search('prince', { limit: 1 })
@@ -127,6 +125,7 @@ describe.each([
   })
 
   test(`${permission} key: search with sortable`, async () => {
+    const client = await getClient(permission)
     const response = await client
       .index(index.uid)
       .search('', { sort: ['id:asc'] })
@@ -136,6 +135,7 @@ describe.each([
   })
 
   test(`${permission} key: search with array options`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {
       attributesToRetrieve: ['*'],
     })
@@ -148,6 +148,7 @@ describe.each([
   })
 
   test(`${permission} key: search with array options`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {
       attributesToRetrieve: ['*'],
     })
@@ -160,6 +161,7 @@ describe.each([
   })
 
   test(`${permission} key: search with options`, async () => {
+    const client = await getClient(permission)
     const response = await client
       .index(index.uid)
       .search('prince', { limit: 1 })
@@ -172,6 +174,7 @@ describe.each([
   })
 
   test(`${permission} key: search with limit and offset`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {
       limit: 1,
       offset: 1,
@@ -192,6 +195,7 @@ describe.each([
   })
 
   test(`${permission} key: search with matches parameter and small croplength`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {
       filter: 'title = "Le Petit Prince"',
       attributesToCrop: ['*'],
@@ -211,6 +215,7 @@ describe.each([
   })
 
   test(`${permission} key: search with all options but not all fields`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {
       limit: 5,
       offset: 0,
@@ -240,6 +245,7 @@ describe.each([
   })
 
   test(`${permission} key: search with all options and all fields`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {
       limit: 5,
       offset: 0,
@@ -265,6 +271,7 @@ describe.each([
   })
 
   test(`${permission} key: search with all options but specific fields`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {
       limit: 5,
       offset: 0,
@@ -298,6 +305,7 @@ describe.each([
   })
 
   test(`${permission} key: Search with specific fields in attributesToHighlight and check for types of number fields`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {
       attributesToHighlight: ['title'],
     })
@@ -307,6 +315,7 @@ describe.each([
   })
 
   test(`${permission} key: Search with specific fields in attributesToHighlight and check for types of number fields`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {
       attributesToHighlight: ['title', 'id'],
     })
@@ -316,6 +325,7 @@ describe.each([
   })
 
   test(`${permission} key: search with filter and facetsDistribution`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('a', {
       filter: ['genre = romance'],
       facetsDistribution: ['genre'],
@@ -330,6 +340,7 @@ describe.each([
   })
 
   test(`${permission} key: search with filter on number`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('a', {
       filter: 'id < 0',
     })
@@ -339,6 +350,7 @@ describe.each([
   })
 
   test(`${permission} key: search with filter with spaces`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('h', {
       filter: ['genre = "sci fi"'],
     })
@@ -347,6 +359,7 @@ describe.each([
   })
 
   test(`${permission} key: search with multiple filter`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('a', {
       filter: ['genre = romance', ['genre = romance', 'genre = romance']],
       facetsDistribution: ['genre'],
@@ -361,6 +374,7 @@ describe.each([
   })
 
   test(`${permission} key: search with multiple filter and undefined query (placeholder)`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search(undefined, {
       filter: ['genre = fantasy'],
       facetsDistribution: ['genre'],
@@ -372,6 +386,7 @@ describe.each([
   })
 
   test(`${permission} key: search with multiple filter and null query (placeholder)`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search(null, {
       filter: ['genre = fantasy'],
       facetsDistribution: ['genre'],
@@ -384,6 +399,7 @@ describe.each([
   })
 
   test(`${permission} key: search with multiple filter and empty string query (placeholder)`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(index.uid).search('', {
       filter: ['genre = fantasy'],
       facetsDistribution: ['genre'],
@@ -395,6 +411,7 @@ describe.each([
   })
 
   test(`${permission} key: search on index with no documents and no primary key`, async () => {
+    const client = await getClient(permission)
     const response = await client.index(emptyIndex.uid).search('prince', {})
     expect(response).toHaveProperty('hits', [])
     expect(response).toHaveProperty('offset', 0)
@@ -405,22 +422,28 @@ describe.each([
   })
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
-    await masterClient.index(index.uid).delete()
+    const client = await getClient(permission)
+    const masterClient = await getClient('Master')
+    const { uid } = await masterClient.index(index.uid).delete()
+    await masterClient.waitForTask(uid)
+
     await expect(
       client.index(index.uid).search('prince', {})
     ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)
   })
 })
 
-describe.each([{ client: anonymousClient, permission: 'Client' }])(
+describe.each([{ permission: 'No' }])(
   'Test failing test on search',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeAll(async () => {
-      await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
+      const client = await getClient('Master')
+      const { uid } = await client.createIndex(index.uid)
+      await client.waitForTask(uid)
     })
 
     test(`${permission} key: Try Basic search and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).search('prince')
       ).rejects.toHaveProperty(
@@ -432,18 +455,20 @@ describe.each([{ client: anonymousClient, permission: 'Client' }])(
 )
 
 describe.each([
-  { client: masterClient, permission: 'Master' },
-  // { client: privateClient, permission: 'Private' },
-  // { client: publicClient, permission: 'Public' },
-])('Test on abortable search', ({ client, permission }) => {
+  { permission: 'Master' },
+  { permission: 'Private' },
+  { permission: 'Public' },
+])('Test on abortable search', ({ permission }) => {
   beforeAll(async () => {
+    const client = await getClient('Master')
     await clearAllIndexes(config)
-    await masterClient.createIndex(index.uid)
+    const { uid } = await client.createIndex(index.uid)
+    await client.waitForTask(uid)
   })
 
-  test(`${permission} key: search on index and abort`, () => {
+  test(`${permission} key: search on index and abort`, async () => {
     const controller = new AbortController()
-
+    const client = await getClient(permission)
     const searchPromise = client.index(index.uid).search(
       'unreachable',
       {},
@@ -459,11 +484,11 @@ describe.each([
     })
   })
 
-  test(`${permission} key: search on index multiple times, and abort only one request`, () => {
+  test(`${permission} key: search on index multiple times, and abort only one request`, async () => {
+    const client = await getClient(permission)
     const controllerA = new AbortController()
     const controllerB = new AbortController()
     const controllerC = new AbortController()
-
     const searchQuery = 'prince'
 
     const searchAPromise = client.index(index.uid).search(
