@@ -116,7 +116,6 @@ describe.each([{ permission: 'Public' }])(
 
 describe.each([{ permission: 'No' }])('Test on synonyms', ({ permission }) => {
   beforeEach(async () => {
-    const client = await getClient(permission)
     await clearAllIndexes(config)
   })
 

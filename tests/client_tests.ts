@@ -142,7 +142,6 @@ describe.each([
   })
 
   test(`${permission} key: bad host raise CommunicationError`, async () => {
-    const key = await getKey(permission)
     const client = new MeiliSearch({ host: 'http://localhost:9345' })
     try {
       await client.health()
@@ -152,14 +151,12 @@ describe.each([
   })
 
   test(`${permission} key: host without HTTP should not throw Invalid URL Error`, async () => {
-    const key = await getKey(permission)
     const client = new MeiliSearch({ host: 'meilisearch:7700' })
     const health = await client.isHealthy()
     expect(health).toBe(false)
   })
 
   test(`${permission} key: host without HTTP and port should not throw Invalid URL Error`, async () => {
-    const key = await getKey(permission)
     const client = new MeiliSearch({ host: 'meilisearch' })
     const health = await client.isHealthy()
     expect(health).toBe(false)

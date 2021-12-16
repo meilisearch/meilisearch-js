@@ -12,6 +12,7 @@ import { MeiliSearchError } from '../errors'
 import {
   Config,
   Task,
+  Tasks,
   SearchResponse,
   SearchParams,
   Filter,
@@ -398,7 +399,7 @@ class Index<T = Record<string, any>> {
     documents: Array<Document<T>>,
     batchSize = 1000,
     options?: AddDocumentParams
-  ): Promise<EnqueuedTasks> {
+  ): Promise<EnqueuedTask[]> {
     const updates = []
     for (let i = 0; i < documents.length; i += batchSize) {
       updates.push(
@@ -438,7 +439,7 @@ class Index<T = Record<string, any>> {
     documents: Array<Document<T>>,
     batchSize = 1000,
     options?: AddDocumentParams
-  ): Promise<EnqueuedTasks> {
+  ): Promise<EnqueuedTask[]> {
     const updates = []
     for (let i = 0; i < documents.length; i += batchSize) {
       updates.push(

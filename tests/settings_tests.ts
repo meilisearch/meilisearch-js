@@ -268,7 +268,6 @@ describe.each([{ permission: 'Public' }])(
   'Test on settings',
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient(permission)
       await clearAllIndexes(config)
     })
     test(`${permission} key: try to get settings and be denied`, async () => {
@@ -294,7 +293,6 @@ describe.each([{ permission: 'Public' }])(
 
 describe.each([{ permission: 'No' }])('Test on settings', ({ permission }) => {
   beforeEach(async () => {
-    const client = await getClient(permission)
     await clearAllIndexes(config)
   })
   test(`${permission} key: try to get settings and be denied`, async () => {

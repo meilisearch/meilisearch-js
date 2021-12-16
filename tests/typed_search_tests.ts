@@ -335,7 +335,7 @@ describe.each([
     const client = await getClient(permission)
     const masterClient = await getClient('Master')
     const { uid } = await masterClient.index<Movie>(index.uid).delete()
-    await client.waitForTask(uid)
+    await masterClient.waitForTask(uid)
     await expect(
       client.index<Movie>(index.uid).search('prince')
     ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)
