@@ -333,7 +333,8 @@ describe.each([
 
   test(`${permission} key: Try to Search on deleted index and fail`, async () => {
     const client = await getClient(permission)
-    const { uid } = await client.index<Movie>(index.uid).delete()
+    const masterClient = await getClient('Master')
+    const { uid } = await masterClient.index<Movie>(index.uid).delete()
     await client.waitForTask(uid)
     await expect(
       client.index<Movie>(index.uid).search('prince')
