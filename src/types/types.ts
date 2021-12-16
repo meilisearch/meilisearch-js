@@ -164,14 +164,18 @@ export type EnqueuedTask = {
   uid: number
 }
 
+export type Tasks = {
+  results: Task[]
+}
+
 export type Task = {
   status: string
   updateId: number
-  type: {
-    name: string
-    number: number
+  details: {
+    receivedDocuments: number
+    indexedDocuments: number
   }
-  duration: number
+  duration: string
   enqueuedAt: string
   processedAt: string
   error?: MeiliSearchErrorBody

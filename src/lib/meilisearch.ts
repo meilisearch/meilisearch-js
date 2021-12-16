@@ -20,15 +20,16 @@ import {
   EnqueuedDump,
   ErrorStatusCode,
   Task,
+  Tasks,
 } from '../types'
 import { HttpRequests } from './http-requests'
 import { addProtocolIfNotPresent } from './utils'
-import { Tasks } from './task'
+import { TaskClient } from './task'
 
 class MeiliSearch {
   config: Config
   httpRequest: HttpRequests
-  tasks: Tasks
+  tasks: TaskClient
 
   /**
    * Creates new MeiliSearch instance
@@ -39,7 +40,7 @@ class MeiliSearch {
     config.host = HttpRequests.addTrailingSlash(config.host)
     this.config = config
     this.httpRequest = new HttpRequests(config)
-    this.tasks = new Tasks(config)
+    this.tasks = new TaskClient(config)
   }
 
   /**
@@ -185,9 +186,9 @@ class MeiliSearch {
    * Get the list of all client tasks
    * @memberof MeiliSearch
    * @method getTasks
-   * @returns {Promise<Task[]>} - Promise containing all tasks
+   * @returns {Promise<Tasks>} - Promise containing all tasks
    */
-  async getTasks(): Promise<Task[]> {
+  async getTasks(): Promise<Tasks> {
     return await this.tasks.getClientTasks()
   }
 
@@ -209,7 +210,7 @@ class MeiliSearch {
    * @param {number[]} taskIds - Tasks identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Task[]>} - Promise containing an array of tasks
+   * @returns {Promise<Tasks>} - Promise containing an array of tasks
    */
   async waitForTasks(
     taskIds: number[],
@@ -217,7 +218,7 @@ class MeiliSearch {
       timeOutMs = 5000,
       intervalMs = 50,
     }: { timeOutMs?: number; intervalMs?: number } = {}
-  ): Promise<Task[]> {
+  ): Promise<Tasks> {
     return await this.tasks.waitForClientTasks(taskIds, {
       timeOutMs,
       intervalMs,

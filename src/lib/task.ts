@@ -1,9 +1,9 @@
 import { MeiliSearchTimeOutError } from '../errors'
-import { Config, Task, WaitOptions } from '../types'
+import { Config, Task, Tasks, WaitOptions } from '../types'
 import { HttpRequests } from './http-requests'
 import { sleep } from './utils'
 
-class Tasks {
+class TaskClient {
   httpRequest: HttpRequests
 
   constructor(config: Config) {
@@ -15,9 +15,9 @@ class Tasks {
     return await this.httpRequest.get<Task>(url)
   }
 
-  async getClientTasks(): Promise<Task[]> {
+  async getClientTasks(): Promise<Tasks> {
     const url = `tasks`
-    return await this.httpRequest.get<Task[]>(url)
+    return await this.httpRequest.get<Tasks>(url)
   }
 
   async getIndexTask(indexUid: string | number, taskId: number): Promise<Task> {
@@ -25,9 +25,9 @@ class Tasks {
     return await this.httpRequest.get<Task>(url)
   }
 
-  async getIndexTasks(indexUid: string | number): Promise<Task[]> {
+  async getIndexTasks(indexUid: string | number): Promise<Tasks> {
     const url = `indexes/${indexUid}/tasks`
-    return await this.httpRequest.get<Task[]>(url)
+    return await this.httpRequest.get<Tasks>(url)
   }
 
   /**
@@ -60,8 +60,8 @@ class Tasks {
   async waitForClientTasks(
     taskIds: number[],
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
-  ): Promise<Task[]> {
-    const tasks = []
+  ): Promise<Tasks> {
+    const tasks: Task[] = []
     for (const taskId of taskIds) {
       const task = await this.waitForClientTask(taskId, {
         timeOutMs,
@@ -69,7 +69,7 @@ class Tasks {
       })
       tasks.push(task)
     }
-    return tasks
+    return { results: tasks }
   }
 
   /**
@@ -95,4 +95,4 @@ class Tasks {
   }
 }
 
-export { Tasks }
+export { TaskClient }

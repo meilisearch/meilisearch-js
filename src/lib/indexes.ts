@@ -37,13 +37,13 @@ import {
 } from '../types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
-import { Tasks } from './task'
+import { TaskClient } from './task'
 
 class Index<T = Record<string, any>> {
   uid: string
   primaryKey: string | undefined
   httpRequest: HttpRequests
-  tasks: Tasks
+  tasks: TaskClient
 
   /**
    * @param {Config} config Request configuration options
@@ -54,7 +54,7 @@ class Index<T = Record<string, any>> {
     this.uid = uid
     this.primaryKey = primaryKey
     this.httpRequest = new HttpRequests(config)
-    this.tasks = new Tasks(config)
+    this.tasks = new TaskClient(config)
   }
 
   ///
@@ -248,9 +248,9 @@ class Index<T = Record<string, any>> {
    * @memberof Indexes
    * @method getTasks
    *
-   * @returns {Promise<Task[]>} - Promise containing all tasks
+   * @returns {Promise<Tasks>} - Promise containing all tasks
    */
-  async getTasks(): Promise<Task[]> {
+  async getTasks(): Promise<Tasks> {
     return await this.tasks.getIndexTasks(this.uid)
   }
 
@@ -275,7 +275,7 @@ class Index<T = Record<string, any>> {
    * @param {number[]} taskIds - Tasks identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Task[]>} - Promise containing an array of tasks
+   * @returns {Promise<Tasks>} - Promise containing an array of tasks
    */
   async waitForTasks(
     taskIds: number[],
@@ -283,7 +283,7 @@ class Index<T = Record<string, any>> {
       timeOutMs = 5000,
       intervalMs = 50,
     }: { timeOutMs?: number; intervalMs?: number } = {}
-  ): Promise<Task[]> {
+  ): Promise<Tasks> {
     return await this.tasks.waitForClientTasks(taskIds, {
       timeOutMs,
       intervalMs,
@@ -392,13 +392,13 @@ class Index<T = Record<string, any>> {
    * @param {Array<Document<T>>} documents Array of Document objects to add/replace
    * @param {number} batchSize Size of the batch
    * @param {AddDocumentParams} options? Query parameters
-   * @returns {Promise<EnqueuedTask[]>} Promise containing array of enqueued update objects for each batch
+   * @returns {Promise<EnqueuedTasks>} Promise containing array of enqueued update objects for each batch
    */
   async addDocumentsInBatches(
     documents: Array<Document<T>>,
     batchSize = 1000,
     options?: AddDocumentParams
-  ): Promise<EnqueuedTask[]> {
+  ): Promise<EnqueuedTasks> {
     const updates = []
     for (let i = 0; i < documents.length; i += batchSize) {
       updates.push(
@@ -432,13 +432,13 @@ class Index<T = Record<string, any>> {
    * @param {Array<Document<T>>} documents Array of Document objects to add/update
    * @param {number} batchSize Size of the batch
    * @param {AddDocumentParams} options? Query parameters
-   * @returns {Promise<EnqueuedTask[]>} Promise containing array of enqueued update objects for each batch
+   * @returns {Promise<EnqueuedTasks>} Promise containing array of enqueued update objects for each batch
    */
   async updateDocumentsInBatches(
     documents: Array<Document<T>>,
     batchSize = 1000,
     options?: AddDocumentParams
-  ): Promise<EnqueuedTask[]> {
+  ): Promise<EnqueuedTasks> {
     const updates = []
     for (let i = 0; i < documents.length; i += batchSize) {
       updates.push(
