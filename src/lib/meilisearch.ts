@@ -156,7 +156,7 @@ class MeiliSearch {
    * @returns {Promise<void>} Promise which resolves when index is deleted successfully
    */
   async deleteIndex(uid: string): Promise<EnqueuedTask> {
-    return new Index(this.config, uid).delete()
+    return await new Index(this.config, uid).delete()
   }
 
   /**
