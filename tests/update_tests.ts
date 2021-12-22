@@ -54,7 +54,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
       expect(stausReponse).toHaveProperty('status', 'succeeded')
       expect(stausReponse).toHaveProperty('uid', expect.any(Number))
-      expect(stausReponse).toHaveProperty('type', 'documentsAddition')
+      expect(stausReponse).toHaveProperty('type', 'documentAddition')
       expect(stausReponse).toHaveProperty('details')
       expect(stausReponse.details).toHaveProperty('indexedDocuments', 7)
       expect(stausReponse.details).toHaveProperty('receivedDocuments', 7)
@@ -73,7 +73,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
       expect(response.results[0]).toHaveProperty('status', 'succeeded')
       expect(response.results[0]).toHaveProperty('uid', expect.any(Number))
-      expect(response.results[0].type).toEqual('documentsAddition')
+      expect(response.results[0].type).toEqual('documentAddition')
       expect(response.results[0]).toHaveProperty('duration', expect.any(String))
       expect(response.results[0]).toHaveProperty(
         'enqueuedAt',

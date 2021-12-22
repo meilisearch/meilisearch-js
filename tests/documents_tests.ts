@@ -80,7 +80,7 @@ describe('Documents tests', () => {
         for (const task of tasks) {
           const { type, status } = await client.waitForTask(task.uid)
           expect(status).toBe('succeeded')
-          expect(type).toBe('documentsAddition')
+          expect(type).toBe('documentAddition')
         }
       })
 
@@ -203,7 +203,7 @@ describe('Documents tests', () => {
             .index(indexPk.uid)
             .waitForTask(enqueuedUpdate.uid)
           expect(task.status).toBe('succeeded')
-          expect(task.type).toBe('documentsPartial')
+          expect(task.type).toBe('documentPartial')
         }
       })
 
@@ -382,23 +382,23 @@ describe('Documents tests', () => {
           },
         ]
 
-        const { uid } = await client.createIndex(indexPk.uid)
+        const pkIndex = 'update_pk'
+        const { uid } = await client.createIndex(pkIndex)
         await client.waitForTask(uid)
-        const index = await client.getIndex(indexPk.uid)
-        expect(index).toHaveProperty('uid', indexPk.uid)
+
+        const index = await client.getIndex(pkIndex)
+        expect(index).toHaveProperty('uid', pkIndex)
 
         const task: EnqueuedTask = await client
-          .index(indexPk.uid)
+          .index(pkIndex)
           .addDocuments(docs, { primaryKey: 'unique' })
 
         expect(task).toHaveProperty('uid', expect.any(Number))
 
         await client.waitForTask(task.uid)
 
-        const response: IndexResponse = await client
-          .index(indexPk.uid)
-          .getRawInfo()
-        expect(response).toHaveProperty('uid', indexPk.uid)
+        const response: IndexResponse = await client.index(pkIndex).getRawInfo()
+        expect(response).toHaveProperty('uid', pkIndex)
         expect(response).toHaveProperty('primaryKey', 'unique')
       })
 
