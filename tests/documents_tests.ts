@@ -198,10 +198,10 @@ describe('Documents tests', () => {
         expect(tasks).toBeInstanceOf(Array)
         expect(tasks).toHaveLength(4)
         expect(tasks[0]).toHaveProperty('uid', expect.any(Number))
-        for (const enqueuedUpdate of tasks) {
+        for (const EnqueuedTask of tasks) {
           const task = await client
             .index(indexPk.uid)
-            .waitForTask(enqueuedUpdate.uid)
+            .waitForTask(EnqueuedTask.uid)
           expect(task.status).toBe('succeeded')
           expect(task.type).toBe('documentPartial')
         }

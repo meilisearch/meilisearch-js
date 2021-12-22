@@ -170,7 +170,7 @@ export type Tasks = {
 
 export type Task = {
   status: string
-  updateId: number
+  uid: number
   type: string
   details: {
     receivedDocuments: number
