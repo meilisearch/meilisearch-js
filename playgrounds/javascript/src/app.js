@@ -6,10 +6,13 @@ const config = {
 }
 
 const client = new MeiliSearch(config)
-const uid = 'movies'
+const indexUid = 'movies'
 
 const addDataset = async () => {
-  const index = await client.getOrCreateIndex(uid)
+  const index = await client.deleteIndex(indexUid)
+  const { uid } = await client.createIndex(indexUid)
+  await index.waitForTask(uid)
+
   const documents = await index.getDocuments()
 
   const dataset = [
