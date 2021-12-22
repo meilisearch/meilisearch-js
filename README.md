@@ -165,11 +165,11 @@ import { MeiliSearch } from 'meilisearch'
   // If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
   let response = await index.addDocuments(documents)
 
-  console.log(response) // => { "updateId": 0 }
+  console.log(response) // => { "uid": 0 }
 })()
 ```
 
-With the `updateId`, you can check the status (`enqueued`, `processing`, `processed` or `failed`) of your documents addition using the [update endpoint](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status).
+With the `uid`, you can check the status (`enqueued`, `processing`, `processed` or `failed`) of your documents addition using the [update endpoint](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status).
 
 #### Basic Search <!-- omit in toc -->
 
@@ -373,6 +373,70 @@ If you want to know more about the development workflow or want to contribute, p
 
 `client.index<T>('xxx').searchGet(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>`
 
+### Documents <!-- omit in toc -->
+
+- [Add or replace multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents):
+
+`index.addDocuments(documents: Document<T>[]): Promise<EnqueuedTask>`
+
+- [Add or replace multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents):
+
+`index.addDocumentsInBatches(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedTask[]>`
+
+- [Add or update multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
+
+`index.updateDocuments(documents: Document<T>[]): Promise<EnqueuedTask>`
+
+- [Add or update multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
+
+`index.updateDocumentsInBatches(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedTask[]>`
+
+- [Get Documents](https://docs.meilisearch.com/reference/api/documents.html#get-documents):
+
+`index.getDocuments(params: getDocumentsParams): Promise<Document<T>[]>`
+
+- [Get one document](https://docs.meilisearch.com/reference/api/documents.html#get-one-document):
+
+`index.getDocument(documentId: string): Promise<Document<T>>`
+
+- [Delete one document](https://docs.meilisearch.com/reference/api/documents.html#delete-one-document):
+
+`index.deleteDocument(documentId: string | number): Promise<EnqueuedTask>`
+
+- [Delete multiple documents](https://docs.meilisearch.com/reference/api/documents.html#delete-documents):
+
+`index.deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedTask>`
+
+- [Delete all documents](https://docs.meilisearch.com/reference/api/documents.html#delete-all-documents):
+
+`index.deleteAllDocuments(): Promise<Types.EnqueuedTask>`
+
+### Tasks <!-- omit in toc -->
+
+- [Get One update info](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status):
+
+`index.getTask(uid: number): Promise<Task>`
+
+- [Get all updates info](https://docs.meilisearch.com/reference/api/updates.html#get-all-update-status):
+
+`index.getTasks(): Promise<Tasks>`
+
+- Wait for one task:
+
+Using de client:
+`client.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>`
+
+Using de index:
+`index.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>`
+
+- Wait for multiple tasks:
+
+Using de client:
+`client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Tasks>`
+
+Using de index:
+`index.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Tasks>`
+
 ### Indexes <!-- omit in toc -->
 
 - [Get all indexes](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
@@ -381,7 +445,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Create a new index](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index):
 
-`client.createIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
+`client.createIndex<T>(uid: string, options?: IndexOptions): Promise<EnqueuedTask>`
 
 - Create a local reference to an index:
 
@@ -393,6 +457,7 @@ If you want to know more about the development workflow or want to contribute, p
 - [Get the raw index JSON response from MeiliSearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
 `client.getRawIndex(uid: string): Promise<IndexResponse>`
 
+// TODO: delete
 - Get or create an index if it does not exist:
 
 `client.getOrCreateIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
@@ -402,15 +467,18 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Update Index](https://docs.meilisearch.com/reference/api/indexes.html#update-an-index):
 
-`client.updateIndex(uid: string, options: IndexOptions): Promise<Index>`
-Or using the index object:
-`index.update(data: IndexOptions): Promise<Index>`
+Using the client
+`client.updateIndex(uid: string, options: IndexOptions): Promise<EnqueuedTask>`
+
+Using the index object:
+`index.update(data: IndexOptions): Promise<EnqueuedTask>`
 
 - [Delete Index](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index):
 
+Using the client
 `client.deleteIndex(uid): Promise<void>`
-Or using the index object:
 
+Using the index object:
 `index.delete(): Promise<void>`
 
 - [Get specific index stats](https://docs.meilisearch.com/reference/api/stats.html#get-stat-of-an-index):
@@ -425,58 +493,6 @@ Or using the index object:
 
 `index.fetchPrimaryKey(): Promise<string | undefined>`
 
-### Updates <!-- omit in toc -->
-
-- [Get One update info](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status):
-
-`index.getUpdateStatus(updateId: number): Promise<Update>`
-
-- [Get all updates info](https://docs.meilisearch.com/reference/api/updates.html#get-all-update-status):
-
-`index.getAllUpdateStatus(): Promise<Update[]>`
-
-- Wait for pending update:
-
-`index.waitForPendingUpdate(updateId: number, { timeOutMs?: number, intervalMs?: number }): Promise<Update>`
-
-### Documents <!-- omit in toc -->
-
-- [Add or replace multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents):
-
-`index.addDocuments(documents: Document<T>[]): Promise<EnqueuedUpdate>`
-
-- [Add or replace multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents):
-
-`index.addDocumentsInBatches(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedUpdate[]>`
-
-- [Add or update multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
-
-`index.updateDocuments(documents: Document<T>[]): Promise<EnqueuedUpdate>`
-
-- [Add or update multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
-
-`index.updateDocumentsInBatches(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedUpdate[]>`
-
-- [Get Documents](https://docs.meilisearch.com/reference/api/documents.html#get-documents):
-
-`index.getDocuments(params: getDocumentsParams): Promise<Document<T>[]>`
-
-- [Get one document](https://docs.meilisearch.com/reference/api/documents.html#get-one-document):
-
-`index.getDocument(documentId: string): Promise<Document<T>>`
-
-- [Delete one document](https://docs.meilisearch.com/reference/api/documents.html#delete-one-document):
-
-`index.deleteDocument(documentId: string | number): Promise<EnqueuedUpdate>`
-
-- [Delete multiple documents](https://docs.meilisearch.com/reference/api/documents.html#delete-documents):
-
-`index.deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedUpdate>`
-
-- [Delete all documents](https://docs.meilisearch.com/reference/api/documents.html#delete-all-documents):
-
-`index.deleteAllDocuments(): Promise<Types.EnqueuedUpdate>`
-
 ### Settings <!-- omit in toc -->
 
 - [Get settings](https://docs.meilisearch.com/reference/api/settings.html#get-settings):
@@ -485,11 +501,11 @@ Or using the index object:
 
 - [Update settings](https://docs.meilisearch.com/reference/api/settings.html#update-settings):
 
-`index.updateSettings(settings: Settings): Promise<EnqueuedUpdate>`
+`index.updateSettings(settings: Settings): Promise<EnqueuedTask>`
 
 - [Reset settings](https://docs.meilisearch.com/reference/api/settings.html#reset-settings):
 
-`index.resetSettings(): Promise<EnqueuedUpdate>`
+`index.resetSettings(): Promise<EnqueuedTask>`
 
 ### Synonyms <!-- omit in toc -->
 
@@ -499,11 +515,11 @@ Or using the index object:
 
 - [Update synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#update-synonyms):
 
-`index.updateSynonyms(synonyms: Synonyms): Promise<EnqueuedUpdate>`
+`index.updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask>`
 
 - [Reset synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#reset-synonyms):
 
-`index.resetSynonyms(): Promise<EnqueuedUpdate>`
+`index.resetSynonyms(): Promise<EnqueuedTask>`
 
 ### Stop-words <!-- omit in toc -->
 
@@ -511,10 +527,10 @@ Or using the index object:
   `index.getStopWords(): Promise<string[]>`
 
 - [Update Stop Words](https://docs.meilisearch.com/reference/api/stop_words.html#update-stop-words):
-  `index.updateStopWords(stopWords: string[] | null ): Promise<EnqueuedUpdate>`
+  `index.updateStopWords(stopWords: string[] | null ): Promise<EnqueuedTask>`
 
 - [Reset Stop Words](https://docs.meilisearch.com/reference/api/stop_words.html#reset-stop-words):
-  `index.resetStopWords(): Promise<EnqueuedUpdate>`
+  `index.resetStopWords(): Promise<EnqueuedTask>`
 
 ### Ranking rules <!-- omit in toc -->
 
@@ -522,10 +538,10 @@ Or using the index object:
   `index.getRankingRules(): Promise<string[]>`
 
 - [Update Ranking Rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#update-ranking-rules):
-  `index.updateRankingRules(rankingRules: string[] | null): Promise<EnqueuedUpdate>`
+  `index.updateRankingRules(rankingRules: string[] | null): Promise<EnqueuedTask>`
 
 - [Reset Ranking Rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#reset-ranking-rules):
-  `index.resetRankingRules(): Promise<EnqueuedUpdate>`
+  `index.resetRankingRules(): Promise<EnqueuedTask>`
 
 ### Distinct Attribute <!-- omit in toc -->
 
@@ -533,10 +549,10 @@ Or using the index object:
   `index.getDistinctAttribute(): Promise<string | void>`
 
 - [Update Distinct Attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#update-distinct-attribute):
-  `index.updateDistinctAttribute(distinctAttribute: string | null): Promise<EnqueuedUpdate>`
+  `index.updateDistinctAttribute(distinctAttribute: string | null): Promise<EnqueuedTask>`
 
 - [Reset Distinct Attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#reset-distinct-attribute):
-  `index.resetDistinctAttribute(): Promise<EnqueuedUpdate>`
+  `index.resetDistinctAttribute(): Promise<EnqueuedTask>`
 
 ### Searchable Attributes <!-- omit in toc -->
 
@@ -544,10 +560,10 @@ Or using the index object:
   `index.getSearchableAttributes(): Promise<string[]>`
 
 - [Update Searchable Attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#update-searchable-attributes):
-  `index.updateSearchableAttributes(searchableAttributes: string[] | null): Promise<EnqueuedUpdate>`
+  `index.updateSearchableAttributes(searchableAttributes: string[] | null): Promise<EnqueuedTask>`
 
 - [Reset Searchable Attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#reset-searchable-attributes):
-  `index.resetSearchableAttributes(): Promise<EnqueuedUpdate>`
+  `index.resetSearchableAttributes(): Promise<EnqueuedTask>`
 
 ### Displayed Attributes <!-- omit in toc -->
 
@@ -555,10 +571,10 @@ Or using the index object:
   `index.getDisplayedAttributes(): Promise<string[]>`
 
 - [Update Displayed Attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#update-displayed-attributes):
-  `index.updateDisplayedAttributes(displayedAttributes: string[] | null): Promise<EnqueuedUpdate>`
+  `index.updateDisplayedAttributes(displayedAttributes: string[] | null): Promise<EnqueuedTask>`
 
 - [Reset Displayed Attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#reset-displayed-attributes):
-  `index.resetDisplayedAttributes(): Promise<EnqueuedUpdate>`
+  `index.resetDisplayedAttributes(): Promise<EnqueuedTask>`
 
 ### Filterable Attributes <!-- omit in toc -->
 
@@ -566,10 +582,10 @@ Or using the index object:
   `index.getFilterableAttributes(): Promise<string[]>`
 
 - [Update Filterable Attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#update-filterable-attributes):
-  `index.updateFilterableAttributes(filterableAttributes: string[] | null): Promise<EnqueuedUpdate>`
+  `index.updateFilterableAttributes(filterableAttributes: string[] | null): Promise<EnqueuedTask>`
 
 - [Reset Filterable Attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#reset-filterable-attributes):
-  `index.resetFilterableAttributes(): Promise<EnqueuedUpdate>`
+  `index.resetFilterableAttributes(): Promise<EnqueuedTask>`
 
 ### Sortable Attributes <!-- omit in toc -->
 
@@ -577,10 +593,10 @@ Or using the index object:
   `index.getSortableAttributes(): Promise<string[]>`
 
 - [Update Sortable Attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#update-sortable-attributes):
-  `index.updateSortableAttributes(sortableAttributes: string[] | null): Promise<EnqueuedUpdate>`
+  `index.updateSortableAttributes(sortableAttributes: string[] | null): Promise<EnqueuedTask>`
 
 - [Reset Sortable Attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#reset-sortable-attributes):
-  `index.resetSortableAttributes(): Promise<EnqueuedUpdate>`
+  `index.resetSortableAttributes(): Promise<EnqueuedTask>`
 
 ### Keys <!-- omit in toc -->
 
