@@ -104,7 +104,7 @@ describe('Documents tests', () => {
         )
       })
 
-      test(`${permission} key: Get documents from index that has no primary key`, async () => {
+      test(`${permission} key: Get documents from index that has NO primary key`, async () => {
         const client = await getClient(permission)
         const { uid } = await client.index(indexNoPk.uid).addDocuments(dataset)
         await client.index(indexNoPk.uid).waitForTask(uid)
@@ -445,50 +445,44 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Try to add documents and be denied`, async () => {
         const client = await getClient(permission)
-        await expect(client.getIndexes()).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INVALID_API_KEY
-        )
+        await expect(
+          client.index(indexPk.uid).addDocuments([])
+        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: Try to update documents and be denied`, async () => {
         const client = await getClient(permission)
-        await expect(client.getIndexes()).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INVALID_API_KEY
-        )
+        await expect(
+          client.index(indexPk.uid).updateDocuments([])
+        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: Try to get documents and be denied`, async () => {
         const client = await getClient(permission)
-        await expect(client.getIndexes()).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INVALID_API_KEY
-        )
+        await expect(
+          client.index(indexPk.uid).getDocuments()
+        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: Try to delete one document and be denied`, async () => {
         const client = await getClient(permission)
-        await expect(client.getIndexes()).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INVALID_API_KEY
-        )
+        await expect(
+          client.index(indexPk.uid).deleteDocument(1)
+        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: Try to delete some documents and be denied`, async () => {
         const client = await getClient(permission)
-        await expect(client.getIndexes()).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INVALID_API_KEY
-        )
+        await expect(
+          client.index(indexPk.uid).deleteDocuments([1, 2])
+        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: Try to delete all documents and be denied`, async () => {
         const client = await getClient(permission)
-        await expect(client.getIndexes()).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INVALID_API_KEY
-        )
+        await expect(
+          client.index(indexPk.uid).deleteAllDocuments()
+        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
       })
     }
   )

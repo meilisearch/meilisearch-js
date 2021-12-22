@@ -31,10 +31,11 @@ class TaskClient {
   }
 
   /**
-   * Waits for a pending update till it has been processed
-   * @param {number} updateId Update identifier
-   * @param {WaitForPendingUpdateOptions} options Additional configuration options
-   * @returns {Promise<Task>} Promise containing Update object after it has been processed
+   * Wait for a task to be processed.
+   *
+   * @param {number} uid Task identifier
+   * @param {WaitOptions} options Additional configuration options
+   * @returns {Promise<Task>} Promise returning a task after it has been processed
    */
   async waitForClientTask(
     taskId: number,
@@ -47,15 +48,16 @@ class TaskClient {
       await sleep(intervalMs)
     }
     throw new MeiliSearchTimeOutError(
-      `timeout of ${timeOutMs}ms has exceeded on process ${taskId} when waiting for pending update to resolve.`
+      `timeout of ${timeOutMs}ms has exceeded on process ${taskId} when waiting a task to be resolved.`
     )
   }
 
   /**
    * Waits for multiple tasks to be processed
+   *
    * @param {number} taskIds Tasks identifier list
    * @param {WaitOptions} options Wait options
-   * @returns {Promise<Task>} Promise containing the processed or failed task
+   * @returns {Promise<Tasks>} Promise returning a list of tasks after they have been processed
    */
   async waitForClientTasks(
     taskIds: number[],
@@ -74,9 +76,10 @@ class TaskClient {
 
   /**
    * Waits for a task to be processed
+   *
    * @param {number} taskId Task identifier
    * @param {WaitOptions} options Wait options
-   * @returns {Promise<Task>} Promise containing the processed or failed task
+   * @returns {Promise<Task>} Promise returning a task after it has been processed
    */
   async waitForIndexTask(
     indexUid: number | string,
