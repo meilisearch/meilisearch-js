@@ -42,7 +42,7 @@ const addDataset = async () => {
       null,
       2
     )
-    const resp = await client.index(uid).search(
+    const resp = await client.index(indexUid).search(
       '',
       {
         attributesToHighlight: ['title'],
