@@ -36,6 +36,7 @@
     "test": "yarn clear_jest && jest --runInBand",
     "types:watch": "nodemon --config nodemon.json",
     "types": "yarn tsc",
+    "test:env:browser": "yarn --cwd tests/env/express && yarn --cwd tests/env/express test",
     "test:watch": "yarn clear_jest && yarn test --watch",
     "test:coverage": "yarn test --coverage",
     "test:ci": "yarn test --ci",

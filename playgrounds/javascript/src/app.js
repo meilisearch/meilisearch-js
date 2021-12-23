@@ -28,14 +28,14 @@ const addDataset = async () => {
     { id: 6, title: 'Philadelphia', genres: ['Drama'] },
   ]
   if (documents.length === 0) {
-    const { updateId } = await index.addDocuments(dataset)
-    await index.waitForPendingUpdate(updateId)
+    const task = await index.addDocuments(dataset)
+    await index.waitForPendingUpdate(task.uid)
   }
 }
 
 ;(async () => {
   try {
-    await addDataset()
+    // await addDataset()
     const indexes = await client.getIndexes()
     document.querySelector('.indexes').innerText = JSON.stringify(
       indexes,

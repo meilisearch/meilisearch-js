@@ -199,10 +199,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       test(`${permission} key: create with no primary key`, async () => {
         const client = await getClient(permission)
 
-        const { uid } = await client.createIndex(indexNoPk.uid)
-        await client.waitForTask(uid)
+        const task = await client.createIndex(indexNoPk.uid)
+        await client.waitForTask(task.uid)
         const newIndex = await client.getIndex(indexNoPk.uid)
-
         expect(newIndex).toHaveProperty('uid', indexNoPk.uid)
         expect(newIndex).toHaveProperty('primaryKey', null)
 
