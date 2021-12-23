@@ -35,7 +35,7 @@ const addDataset = async () => {
 
 ;(async () => {
   try {
-    // await addDataset()
+    await addDataset()
     const indexes = await client.getIndexes()
     document.querySelector('.indexes').innerText = JSON.stringify(
       indexes,

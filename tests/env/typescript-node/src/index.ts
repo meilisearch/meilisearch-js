@@ -1,11 +1,13 @@
+
 import {
+  // @ts-ignore
   MeiliSearch,
   IndexResponse,
   SearchResponse,
   Hits,
   Hit,
   SearchParams,
-} from '../../../../src'
+} from '../../../../'
 
 const config = {
   host: 'http://127.0.0.1:7700',
