@@ -1,4 +1,9 @@
-import { ErrorStatusCode, EnqueuedTask, IndexResponse } from '../src/types'
+import {
+  ErrorStatusCode,
+  EnqueuedTask,
+  IndexResponse,
+  TaskStatus,
+} from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -79,7 +84,7 @@ describe('Documents tests', () => {
         expect(tasks[0]).toHaveProperty('uid', expect.any(Number))
         for (const task of tasks) {
           const { type, status } = await client.waitForTask(task.uid)
-          expect(status).toBe('succeeded')
+          expect(status).toBe(TaskStatus.TASK_SUCCEEDED)
           expect(type).toBe('documentAddition')
         }
       })
@@ -202,7 +207,7 @@ describe('Documents tests', () => {
           const task = await client
             .index(indexPk.uid)
             .waitForTask(EnqueuedTask.uid)
-          expect(task.status).toBe('succeeded')
+          expect(task.status).toBe(TaskStatus.TASK_SUCCEEDED)
           expect(task.type).toBe('documentPartial')
         }
       })

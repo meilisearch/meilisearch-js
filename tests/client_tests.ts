@@ -1,4 +1,11 @@
-import { IndexResponse, ErrorStatusCode, Health, Version, Stats } from '../src/'
+import {
+  IndexResponse,
+  ErrorStatusCode,
+  Health,
+  Version,
+  Stats,
+  TaskStatus,
+} from '../src/'
 import {
   clearAllIndexes,
   getKey,
@@ -182,8 +189,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(client.config.headers).toStrictEqual({ Expect: '200-OK' })
       const health = await client.isHealthy()
       expect(health).toBe(true)
-      const { uid } = await client.createIndex('test')
-      await client.waitForTask(uid)
+      const status = await client.createIndex('test')
+      await client.waitForTask(status.uid)
       const indexes = await client.getIndexes()
       expect(indexes.length).toBe(1)
     })
@@ -303,7 +310,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
         const { uid: deleteTask } = await client.deleteIndex(indexNoPk.uid)
         const task = await client.waitForTask(deleteTask)
-        expect(task.status).toBe('succeeded')
+        expect(task.status).toBe(TaskStatus.TASK_SUCCEEDED)
 
         await expect(client.getIndexes()).resolves.toHaveLength(0)
       })

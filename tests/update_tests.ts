@@ -1,4 +1,10 @@
-import { ErrorStatusCode, EnqueuedTask, Task, Tasks } from '../src/types'
+import {
+  ErrorStatusCode,
+  EnqueuedTask,
+  Task,
+  Tasks,
+  TaskStatus,
+} from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -40,6 +46,34 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       await client.waitForTask(uid)
     })
 
+    test(`${permission} key: Get one enqueued task`, async () => {
+      const client = await getClient(permission)
+      const response: EnqueuedTask = await client
+        .index(index.uid)
+        .addDocuments(dataset)
+      expect(response).toHaveProperty('uid', expect.any(Number))
+      expect(response).toHaveProperty('indexUid', index.uid)
+      expect(response).toHaveProperty('status')
+      expect(response).toHaveProperty('type', 'documentAddition')
+      expect(response).toHaveProperty('enqueuedAt')
+      await client.waitForTask(response.uid)
+
+      const stausReponse: Task = await client
+        .index(index.uid)
+        .getTask(response.uid)
+
+      expect(stausReponse).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
+      expect(stausReponse).toHaveProperty('uid', expect.any(Number))
+      expect(stausReponse).toHaveProperty('type', 'documentAddition')
+      expect(stausReponse).toHaveProperty('details')
+      expect(stausReponse.details).toHaveProperty('indexedDocuments', 7)
+      expect(stausReponse.details).toHaveProperty('receivedDocuments', 7)
+      expect(stausReponse).toHaveProperty('duration', expect.any(String))
+      expect(stausReponse).toHaveProperty('enqueuedAt', expect.any(String))
+      expect(stausReponse).toHaveProperty('finishedAt', expect.any(String))
+      expect(stausReponse).toHaveProperty('startedAt', expect.any(String))
+    })
+
     test(`${permission} key: Get one update`, async () => {
       const client = await getClient(permission)
       const response: EnqueuedTask = await client
@@ -52,7 +86,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         .index(index.uid)
         .getTask(response.uid)
 
-      expect(stausReponse).toHaveProperty('status', 'succeeded')
+      expect(stausReponse).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
       expect(stausReponse).toHaveProperty('uid', expect.any(Number))
       expect(stausReponse).toHaveProperty('type', 'documentAddition')
       expect(stausReponse).toHaveProperty('details')
@@ -71,7 +105,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
       const response: Tasks = await client.index(index.uid).getTasks()
 
-      expect(response.results[0]).toHaveProperty('status', 'succeeded')
+      expect(response.results[0]).toHaveProperty(
+        'status',
+        TaskStatus.TASK_SUCCEEDED
+      )
       expect(response.results[0]).toHaveProperty('uid', expect.any(Number))
       expect(response.results[0].type).toEqual('documentAddition')
       expect(response.results[0]).toHaveProperty('duration', expect.any(String))

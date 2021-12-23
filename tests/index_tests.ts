@@ -135,21 +135,6 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('primaryKey', null)
     })
 
-    // test(`${permission} key: Get index info with NO primary key`, async () => {
-    // const client = await getClient(permission)
-    //   const { uid: firstCreateTask } = await client.createIndex(indexNoPk.uid)
-    //   const firstTask = await client.waitForTask(firstCreateTask)
-    //   const { uid: secondCreateTask } = await client.createIndex(indexNoPk.uid)
-    //   const secondTask = await client.waitForTask(secondCreateTask)
-
-    //   const index = client.index(indexNoPk.uid)
-    //   const response = await index.getRawInfo()
-    //   expect(firstTask).toHaveProperty('status', 'succeeded')
-    //   expect(secondTask).toHaveProperty('status', 'failed')
-    //   expect(response).toHaveProperty('uid', indexNoPk.uid)
-    //   expect(response).toHaveProperty('primaryKey', null)
-    // })
-
     test(`${permission} key: fetch index with primary key`, async () => {
       const client = await getClient(permission)
       const { uid } = await client.createIndex(indexPk.uid, {

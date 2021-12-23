@@ -1,3 +1,4 @@
+import { TaskStatus } from '../src'
 import { clearAllIndexes, config, getClient } from './meilisearch-test-utils'
 
 const index = {
@@ -38,7 +39,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const client = await getClient(permission)
       const { uid } = await client.index(index.uid).addDocuments(dataset)
       const update = await client.waitForTask(uid)
-      expect(update).toHaveProperty('status', 'succeeded')
+      expect(update).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
     })
 
     test(`${permission} key: Tests wait for task in client with custom interval and timeout until done and resolved`, async () => {
@@ -48,7 +49,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         timeOutMs: 6000,
         intervalMs: 100,
       })
-      expect(update).toHaveProperty('status', 'succeeded')
+      expect(update).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
     })
 
     test(`${permission} key: Tests wait for task in client with custom timeout and interval at 0 done and resolved`, async () => {
@@ -58,7 +59,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         timeOutMs: 6000,
         intervalMs: 0,
       })
-      expect(update).toHaveProperty('status', 'succeeded')
+      expect(update).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
     })
 
     test(`${permission} key: Try to wait for task in client with small timeout and raise an error`, async () => {
@@ -79,8 +80,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         .updateSettings({ searchableAttributes: [] })
       const update = await client.waitForTasks([task1, task2])
       const [update1, update2] = update.results
-      expect(update1).toHaveProperty('status', 'succeeded')
-      expect(update2).toHaveProperty('status', 'succeeded')
+      expect(update1).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
+      expect(update2).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
     })
 
     test(`${permission} key: Tests wait for tasks in client with custom interval and timeout until done and resolved`, async () => {
@@ -94,8 +95,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         intervalMs: 100,
       })
       const [update1, update2] = update.results
-      expect(update1).toHaveProperty('status', 'succeeded')
-      expect(update2).toHaveProperty('status', 'succeeded')
+      expect(update1).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
+      expect(update2).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
     })
 
     test(`${permission} key: Tests wait for tasks in client with custom timeout and interval at 0 done and resolved`, async () => {
@@ -109,8 +110,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         intervalMs: 0,
       })
       const [update1, update2] = update.results
-      expect(update1).toHaveProperty('status', 'succeeded')
-      expect(update2).toHaveProperty('status', 'succeeded')
+      expect(update1).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
+      expect(update2).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
     })
 
     test(`${permission} key: Tests to wait for tasks in client with small timeout and raise an error`, async () => {

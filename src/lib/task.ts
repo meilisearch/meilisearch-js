@@ -1,5 +1,5 @@
 import { MeiliSearchTimeOutError } from '../errors'
-import { Config, Task, Tasks, WaitOptions } from '../types'
+import { Config, Task, Tasks, WaitOptions, TaskStatus } from '../types'
 import { HttpRequests } from './http-requests'
 import { sleep } from './utils'
 
@@ -44,7 +44,12 @@ class TaskClient {
     const startingTime = Date.now()
     while (Date.now() - startingTime < timeOutMs) {
       const response = await this.getClientTask(taskId)
-      if (!['enqueued', 'processing'].includes(response.status)) return response
+      if (
+        ![TaskStatus.TASK_ENQUEUED, TaskStatus.TASK_PROCESSING].includes(
+          response.status
+        )
+      )
+        return response
       await sleep(intervalMs)
     }
     throw new MeiliSearchTimeOutError(
@@ -89,7 +94,12 @@ class TaskClient {
     const startingTime = Date.now()
     while (Date.now() - startingTime < timeOutMs) {
       const response = await this.getIndexTask(indexUid, taskId)
-      if (!['enqueued', 'processing'].includes(response.status)) return response
+      if (
+        ![TaskStatus.TASK_ENQUEUED, TaskStatus.TASK_PROCESSING].includes(
+          response.status
+        )
+      )
+        return response
       await sleep(intervalMs)
     }
     throw new MeiliSearchTimeOutError(

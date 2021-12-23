@@ -157,11 +157,22 @@ export type Settings = {
 }
 
 /*
- ** UPDATE
+ ** TASKS
  */
+
+export const enum TaskStatus {
+  TASK_SUCCEEDED = 'succeeded',
+  TASK_PROCESSING = 'processing',
+  TASK_FAILED = 'failed',
+  TASK_ENQUEUED = 'enqueued',
+}
 
 export type EnqueuedTask = {
   uid: number
+  indexUid: string
+  status: TaskStatus
+  type: string
+  enqueuedTask: string
 }
 
 export type Tasks = {
@@ -169,7 +180,7 @@ export type Tasks = {
 }
 
 export type Task = {
-  status: string
+  status: TaskStatus
   uid: number
   type: string
   details: {
