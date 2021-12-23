@@ -1,4 +1,5 @@
 
+// @ts-ignore
 import {
   // @ts-ignore
   MeiliSearch,
