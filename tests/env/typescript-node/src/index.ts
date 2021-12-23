@@ -5,7 +5,7 @@ import {
   Hits,
   Hit,
   SearchParams,
-} from '../../../../'
+} from '../../../../src'
 
 const config = {
   host: 'http://127.0.0.1:7700',
