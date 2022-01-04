@@ -457,11 +457,6 @@ Using de index:
 - [Get the raw index JSON response from MeiliSearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
 `client.getRawIndex(uid: string): Promise<IndexResponse>`
 
-// TODO: delete
-- Get or create an index if it does not exist:
-
-`client.getOrCreateIndex<T>(uid: string, options?: IndexOptions): Promise<Index<T>>`
-
 - [Get an object with information about the index](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
 `index.getRawInfo(): Promise<IndexResponse>`
 
