@@ -179,10 +179,6 @@ export type EnqueuedTask = {
   enqueuedTask: string
 }
 
-export type Tasks = {
-  results: Task[]
-}
-
 export type Task = {
   status: TaskStatus
   uid: number
