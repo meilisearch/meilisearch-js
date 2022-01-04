@@ -10,7 +10,8 @@
     ],
       "module": "commonjs",
       "moduleResolution": "node",
-      "outDir": "./dist"
+      "outDir": "./dist",
+      "types": ["../../../dist/types"]
   },
   "include": ["src/index.ts"]
 }
