@@ -315,38 +315,6 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('isIndexing', false)
       expect(response).toHaveProperty('fieldDistribution', {})
     })
-
-    // TODO: Skipped until discussed
-    test.skip(`${permission} key: delete if exists when index is present`, async () => {
-      // const client = await getClient(permission)
-      // const { uid } = await client.createIndex(indexPk.uid)
-      // const response: boolean = await index.deleteIfExists()
-      // expect(response).toBe(true)
-      // await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
-      //   'code',
-      //   ErrorStatusCode.INDEX_NOT_FOUND
-      // )
-    })
-
-    // TODO: Skipped until discussed
-    test.skip(`${permission} key: delete if exists when index is not present`, async () => {
-      // const client = await getClient(permission)
-      // const indexes = await client.getIndexes()
-      // const index = client.index('badIndex')
-      // const response: boolean = await index.deleteIfExists()
-      // expect(response).toBe(false)
-      // await expect(client.getIndex('badIndex')).rejects.toHaveProperty(
-      //   'code',
-      //   ErrorStatusCode.INDEX_NOT_FOUND
-      // )
-      // await expect(client.getIndexes()).resolves.toHaveLength(indexes.length)
-    })
-
-    // test(`${permission} key: delete if exists error`, async () => {
-    // const client = await getClient(permission)
-    //   const index = badHostClient.index(indexPk.uid)
-    //   await expect(index.deleteIfExists()).rejects.toThrow()
-    // })
   }
 )
 
