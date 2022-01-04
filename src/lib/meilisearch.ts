@@ -12,19 +12,24 @@ import {
   Config,
   IndexOptions,
   IndexResponse,
+  EnqueuedTask,
   Keys,
   Health,
   Stats,
   Version,
   EnqueuedDump,
   ErrorStatusCode,
+  Task,
+  Tasks,
 } from '../types'
 import { HttpRequests } from './http-requests'
 import { addProtocolIfNotPresent } from './utils'
+import { TaskClient } from './task'
 
 class MeiliSearch {
   config: Config
   httpRequest: HttpRequests
+  tasks: TaskClient
 
   /**
    * Creates new MeiliSearch instance
@@ -35,6 +40,7 @@ class MeiliSearch {
     config.host = HttpRequests.addTrailingSlash(config.host)
     this.config = config
     this.httpRequest = new HttpRequests(config)
+    this.tasks = new TaskClient(config)
   }
 
   /**
@@ -83,20 +89,21 @@ class MeiliSearch {
    * @param {IndexOptions} options Index options
    * @returns {Promise<Index<T>>} Promise containing Index instance
    */
-  async getOrCreateIndex<T = any>(
-    uid: string,
-    options: IndexOptions = {}
-  ): Promise<Index<T>> {
-    try {
-      const index = await this.getIndex(uid)
-      return index
-    } catch (e: any) {
-      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
-        return this.createIndex(uid, options)
-      }
-      throw e
-    }
-  }
+  // TODO: to discuss
+  // async getOrCreateIndex<T = any>(
+  //   uid: string,
+  //   options: IndexOptions = {}
+  // ): Promise<Index<T>> {
+  //   try {
+  //     const index = await this.getIndex(uid)
+  //     return index
+  //   } catch (e: any) {
+  //     if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
+  //       return this.createIndex(uid, options)
+  //     }
+  //     throw e
+  //   }
+  // }
 
   /**
    * Get all indexes in the database
@@ -118,11 +125,11 @@ class MeiliSearch {
    * @param {IndexOptions} options Index options
    * @returns {Promise<Index<T>>} Promise containing Index instance
    */
-  async createIndex<T = any>(
+  async createIndex(
     uid: string,
     options: IndexOptions = {}
-  ): Promise<Index<T>> {
-    return await Index.create<T>(uid, options, this.config)
+  ): Promise<EnqueuedTask> {
+    return await Index.create(uid, options, this.config)
   }
 
   /**
@@ -134,11 +141,11 @@ class MeiliSearch {
    * @param {IndexOptions} options Index options to update
    * @returns {Promise<Index<T>>} Promise containing Index instance after updating
    */
-  async updateIndex<T = any>(
+  async updateIndex(
     uid: string,
     options: IndexOptions = {}
-  ): Promise<Index<T>> {
-    return new Index<T>(this.config, uid).update(options)
+  ): Promise<EnqueuedTask> {
+    return await new Index(this.config, uid).update(options)
   }
 
   /**
@@ -148,8 +155,8 @@ class MeiliSearch {
    * @param {string} uid The index UID
    * @returns {Promise<void>} Promise which resolves when index is deleted successfully
    */
-  async deleteIndex(uid: string): Promise<void> {
-    return new Index(this.config, uid).delete()
+  async deleteIndex(uid: string): Promise<EnqueuedTask> {
+    return await new Index(this.config, uid).delete()
   }
 
   /**
@@ -169,6 +176,76 @@ class MeiliSearch {
       }
       throw e
     }
+  }
+
+  ///
+  /// TASKS
+  ///
+
+  /**
+   * Get the list of all client tasks
+   * @memberof MeiliSearch
+   * @method getTasks
+   * @returns {Promise<Tasks>} - Promise containing all tasks
+   */
+  async getTasks(): Promise<Tasks> {
+    return await this.tasks.getClientTasks()
+  }
+
+  /**
+   * Get one task on the client scope
+   * @memberof MeiliSearch
+   * @method getTask
+   * @param {number} taskId - Task identifier
+   * @returns {Promise<Task>} - Promise containing a task
+   */
+  async getTask(taskId: number): Promise<Task> {
+    return await this.tasks.getClientTask(taskId)
+  }
+
+  /**
+   * Wait for a batch of tasks to be processed.
+   * @memberof MeiliSearch
+   * @method waitForTasks
+   * @param {number[]} taskIds - Tasks identifier
+   * @param {WaitOptions} waitOptions - Options on timeout and interval
+   *
+   * @returns {Promise<Tasks>} - Promise containing an array of tasks
+   */
+  async waitForTasks(
+    taskIds: number[],
+    {
+      timeOutMs = 5000,
+      intervalMs = 50,
+    }: { timeOutMs?: number; intervalMs?: number } = {}
+  ): Promise<Tasks> {
+    return await this.tasks.waitForClientTasks(taskIds, {
+      timeOutMs,
+      intervalMs,
+    })
+  }
+
+  /**
+   * Wait for a task to be processed.
+   *
+   * @memberof MeiliSearch
+   * @method waitForTask
+   * @param {number} taskId - Task identifier
+   * @param {WaitOptions} waitOptions - Options on timeout and interval
+   *
+   * @returns {Promise<Task>} - Promise containing an array of tasks
+   */
+  async waitForTask(
+    taskId: number,
+    {
+      timeOutMs = 5000,
+      intervalMs = 50,
+    }: { timeOutMs?: number; intervalMs?: number } = {}
+  ): Promise<Task> {
+    return await this.tasks.waitForClientTask(taskId, {
+      timeOutMs,
+      intervalMs,
+    })
   }
 
   ///

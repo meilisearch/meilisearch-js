@@ -4,20 +4,16 @@ import {
   Health,
   Version,
   Stats,
-  Index,
+  TaskStatus,
 } from '../src/'
 import {
   clearAllIndexes,
+  getKey,
+  getClient,
   config,
-  PUBLIC_KEY,
   MeiliSearch,
   MASTER_KEY,
-  PRIVATE_KEY,
   BAD_HOST,
-  masterClient,
-  privateClient,
-  publicClient,
-  anonymousClient,
 } from './meilisearch-test-utils'
 
 const indexNoPk = {
@@ -32,7 +28,7 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe('Tests on client methods w/ master key', () => {
+describe.skip('Tests on client methods w/ master key', () => {
   beforeEach(() => {
     return clearAllIndexes(config)
   })
@@ -43,6 +39,7 @@ describe('Tests on client methods w/ master key', () => {
       apiKey: MASTER_KEY,
     })
     const keys = await client.getKeys()
+
     expect(keys).toHaveProperty(
       'private',
       '8dcbb482663333d0280fa9fedf0e0c16d52185cb67db494ce4cd34da32ce2092'
@@ -55,15 +52,16 @@ describe('Tests on client methods w/ master key', () => {
 })
 
 describe.each([
-  { key: MASTER_KEY, permission: 'Master' },
-  { key: PRIVATE_KEY, permission: 'Private' },
-  { key: PUBLIC_KEY, permission: 'Public' },
-])('Test on client instance', ({ key, permission }) => {
+  { permission: 'Master' },
+  { permission: 'Private' },
+  { permission: 'Public' },
+])('Test on client instance', ({ permission }) => {
   beforeEach(() => {
     return clearAllIndexes(config)
   })
 
   test(`${permission} key: Create client with api key`, async () => {
+    const key = await getKey(permission)
     const client = new MeiliSearch({
       ...config,
       apiKey: key,
@@ -73,6 +71,7 @@ describe.each([
   })
 
   test(`${permission} key: Create client with custom headers`, async () => {
+    const key = await getKey(permission)
     const client = new MeiliSearch({
       ...config,
       apiKey: key,
@@ -86,6 +85,7 @@ describe.each([
   })
 
   test(`${permission} key: No double slash when on host with domain and path and trailing slash`, async () => {
+    const key = await getKey(permission)
     try {
       const customHost = `${BAD_HOST}/api/`
       const client = new MeiliSearch({
@@ -101,6 +101,7 @@ describe.each([
   })
 
   test(`${permission} key: No double slash when on host with domain and path and no trailing slash`, async () => {
+    const key = await getKey(permission)
     try {
       const customHost = `${BAD_HOST}/api`
       const client = new MeiliSearch({
@@ -116,6 +117,7 @@ describe.each([
   })
 
   test(`${permission} key: host with double slash should keep double slash`, async () => {
+    const key = await getKey(permission)
     try {
       const customHost = `${BAD_HOST}//`
       const client = new MeiliSearch({
@@ -131,6 +133,7 @@ describe.each([
   })
 
   test(`${permission} key: host with one slash should not double slash`, async () => {
+    const key = await getKey(permission)
     try {
       const customHost = `${BAD_HOST}/`
       const client = new MeiliSearch({
@@ -167,17 +170,15 @@ describe.each([
   })
 })
 
-describe.each([
-  { client: masterClient, permission: 'Master', key: MASTER_KEY },
-  { client: privateClient, permission: 'Private', key: PRIVATE_KEY },
-])(
+describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   'Test on client w/ master and private key',
-  ({ client, permission, key }) => {
+  ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config)
     })
 
     test(`${permission} key: Create client with custom headers`, async () => {
+      const key = await getKey(permission)
       const client = new MeiliSearch({
         ...config,
         apiKey: key,
@@ -188,14 +189,19 @@ describe.each([
       expect(client.config.headers).toStrictEqual({ Expect: '200-OK' })
       const health = await client.isHealthy()
       expect(health).toBe(true)
-      await client.getOrCreateIndex('test')
+      const status = await client.createIndex('test')
+      await client.waitForTask(status.uid)
       const indexes = await client.getIndexes()
       expect(indexes.length).toBe(1)
     })
 
     describe('Test on indexes methods', () => {
       test(`${permission} key: create with no primary key`, async () => {
-        const newIndex = await client.createIndex(indexNoPk.uid)
+        const client = await getClient(permission)
+
+        const task = await client.createIndex(indexNoPk.uid)
+        await client.waitForTask(task.uid)
+        const newIndex = await client.getIndex(indexNoPk.uid)
         expect(newIndex).toHaveProperty('uid', indexNoPk.uid)
         expect(newIndex).toHaveProperty('primaryKey', null)
 
@@ -211,9 +217,14 @@ describe.each([
       })
 
       test(`${permission} key: create with primary key`, async () => {
-        const newIndex = await client.createIndex(indexPk.uid, {
+        const client = await getClient(permission)
+
+        const { uid } = await client.createIndex(indexPk.uid, {
           primaryKey: indexPk.primaryKey,
         })
+        await client.waitForTask(uid)
+        const newIndex = await client.getIndex(indexPk.uid)
+
         expect(newIndex).toHaveProperty('uid', indexPk.uid)
         expect(newIndex).toHaveProperty('primaryKey', indexPk.primaryKey)
 
@@ -228,7 +239,10 @@ describe.each([
       })
 
       test(`${permission} key: get all indexes when not empty`, async () => {
-        await client.createIndex(indexPk.uid)
+        const client = await getClient(permission)
+
+        const { uid } = await client.createIndex(indexPk.uid)
+        await client.waitForTask(uid)
 
         const response: IndexResponse[] = await client.getIndexes()
         const indexes = response.map((index) => index.uid)
@@ -237,13 +251,17 @@ describe.each([
       })
 
       test(`${permission} key: Get index that exists`, async () => {
-        await client.createIndex(indexPk.uid)
+        const client = await getClient(permission)
+
+        const { uid } = await client.createIndex(indexPk.uid)
+        await client.waitForTask(uid)
 
         const response = await client.getIndex(indexPk.uid)
         expect(response).toHaveProperty('uid', indexPk.uid)
       })
 
       test(`${permission} key: Get index that does not exist`, async () => {
+        const client = await getClient(permission)
         await expect(client.getIndex('does_not_exist')).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.INDEX_NOT_FOUND
@@ -251,52 +269,74 @@ describe.each([
       })
 
       test(`${permission} key: update primary key`, async () => {
-        await client.createIndex(indexPk.uid)
+        const client = await getClient(permission)
+        const { uid: createTask } = await client.createIndex(indexPk.uid)
+        await client.waitForTask(createTask)
 
-        const response: Index<any> = await client.updateIndex(indexPk.uid, {
+        const { uid: updateTask } = await client.updateIndex(indexPk.uid, {
           primaryKey: 'newPrimaryKey',
         })
-        expect(response).toHaveProperty('uid', indexPk.uid)
-        expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
+        await client.waitForTask(updateTask)
+
+        const index = await client.getIndex(indexPk.uid)
+
+        expect(index).toHaveProperty('uid', indexPk.uid)
+        expect(index).toHaveProperty('primaryKey', 'newPrimaryKey')
       })
 
       test(`${permission} key: update primary key that already exists`, async () => {
-        await client.createIndex(indexPk.uid, {
+        const client = await getClient(permission)
+        const { uid: createTask } = await client.createIndex(indexPk.uid, {
           primaryKey: indexPk.primaryKey,
         })
-        const response: Index<any> = await client.updateIndex(indexPk.uid, {
+        await client.waitForTask(createTask)
+
+        const { uid: updateTask } = await client.updateIndex(indexPk.uid, {
           primaryKey: 'newPrimaryKey',
         })
-        expect(response).toHaveProperty('uid', indexPk.uid)
-        expect(response).toHaveProperty('primaryKey', 'newPrimaryKey')
+        await client.waitForTask(updateTask)
+
+        const index = await client.getIndex(indexPk.uid)
+
+        expect(index).toHaveProperty('uid', indexPk.uid)
+        expect(index).toHaveProperty('primaryKey', 'newPrimaryKey')
       })
 
       test(`${permission} key: delete index`, async () => {
-        await client.createIndex(indexNoPk.uid)
+        const client = await getClient(permission)
+        const { uid: createTask } = await client.createIndex(indexNoPk.uid)
+        await client.waitForTask(createTask)
 
-        const response: void = await client.deleteIndex(indexNoPk.uid)
-        expect(response).toBe(undefined)
+        const { uid: deleteTask } = await client.deleteIndex(indexNoPk.uid)
+        const task = await client.waitForTask(deleteTask)
+        expect(task.status).toBe(TaskStatus.TASK_SUCCEEDED)
 
         await expect(client.getIndexes()).resolves.toHaveLength(0)
       })
 
       test(`${permission} key: create index with already existing uid should fail`, async () => {
-        await client.createIndex(indexPk.uid)
-        await expect(client.createIndex(indexPk.uid)).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INDEX_ALREADY_EXISTS
-        )
+        const client = await getClient(permission)
+        const { uid: firstCreate } = await client.createIndex(indexPk.uid)
+        await client.waitForTask(firstCreate)
+
+        const { uid: secondCreate } = await client.createIndex(indexPk.uid)
+        const task = await client.waitForTask(secondCreate)
+        expect(task.status).toBe('failed')
       })
 
       test(`${permission} key: delete index with uid that does not exist should fail`, async () => {
+        const client = await getClient(permission)
         const index = client.index(indexNoPk.uid)
-        await expect(index.delete()).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INDEX_NOT_FOUND
-        )
+        const { uid } = await index.delete()
+        const task = await client.waitForTask(uid)
+        expect(task.status).toEqual('failed')
       })
-      test(`${permission} key: delete index if exists on existing index`, async () => {
-        await client.createIndex(indexPk.uid)
+
+      // TODO: skipped because of deleteIfExists
+      test.skip(`${permission} key: delete index if exists on existing index`, async () => {
+        const client = await getClient(permission)
+        const { uid } = await client.createIndex(indexPk.uid)
+        await client.waitForTask(uid)
 
         const response: boolean = await client.deleteIndexIfExists(indexPk.uid)
         expect(response).toBe(true)
@@ -307,7 +347,9 @@ describe.each([
         )
       })
 
-      test(`${permission} key: delete index if exists on index that does not exist`, async () => {
+      // TODO: skipped because of deleteIfExists
+      test.skip(`${permission} key: delete index if exists on index that does not exist`, async () => {
+        const client = await getClient(permission)
         const indexes = await client.getIndexes()
         const response: boolean = await client.deleteIndexIfExists('badIndex')
         expect(response).toBe(false)
@@ -320,6 +362,7 @@ describe.each([
       })
 
       test(`${permission} key: fetch deleted index should fail`, async () => {
+        const client = await getClient(permission)
         const index = client.index(indexPk.uid)
         await expect(index.getRawInfo()).rejects.toHaveProperty(
           'code',
@@ -330,6 +373,7 @@ describe.each([
 
     describe('Test on base routes', () => {
       test(`${permission} key: get health`, async () => {
+        const client = await getClient(permission)
         const response: Health = await client.health()
         expect(response).toHaveProperty(
           'status',
@@ -338,6 +382,7 @@ describe.each([
       })
 
       test(`${permission} key: is server healthy`, async () => {
+        const client = await getClient(permission)
         const response: boolean = await client.isHealthy()
         expect(response).toBe(true)
       })
@@ -349,6 +394,7 @@ describe.each([
       })
 
       test(`${permission} key: get version`, async () => {
+        const client = await getClient(permission)
         const response: Version = await client.getVersion()
         expect(response).toHaveProperty('commitSha', expect.any(String))
         expect(response).toHaveProperty('commitDate', expect.any(String))
@@ -356,6 +402,7 @@ describe.each([
       })
 
       test(`${permission} key: get /stats information`, async () => {
+        const client = await getClient(permission)
         const response: Stats = await client.getStats()
         expect(response).toHaveProperty('databaseSize', expect.any(Number))
         expect(response).toHaveProperty('lastUpdate') // TODO: Could be null, find out why
@@ -365,15 +412,16 @@ describe.each([
   }
 )
 
-describe.each([{ client: publicClient, permission: 'Public' }])(
+describe.each([{ permission: 'Public' }])(
   'Test on misc client methods w/ public apikey',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config)
     })
 
     describe('Test on indexes methods', () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.getIndexes()).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.INVALID_API_KEY
@@ -381,6 +429,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
 
       test(`${permission} key: try to create Index with primary key and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(
           client.createIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
@@ -389,6 +438,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
 
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.INVALID_API_KEY
@@ -396,6 +446,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
 
       test(`${permission} key: try to delete index and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.INVALID_API_KEY
@@ -403,6 +454,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
 
       test(`${permission} key: try to update index and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(
           client.updateIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
@@ -413,6 +465,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
 
     describe('Test on misc client methods', () => {
       test(`${permission} key: get health`, async () => {
+        const client = await getClient(permission)
         const response: Health = await client.health()
         expect(response).toHaveProperty(
           'status',
@@ -421,6 +474,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
 
       test(`${permission} key: try to get version and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.getVersion()).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.INVALID_API_KEY
@@ -428,6 +482,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
 
       test(`${permission} key: try to get /stats information and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.getStats()).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.INVALID_API_KEY
@@ -435,6 +490,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
 
       test(`${permission} key: try to create dumps and be denir`, async () => {
+        const client = await getClient(permission)
         await expect(client.createDump()).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.INVALID_API_KEY
@@ -442,6 +498,7 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
       })
 
       test(`${permission} key: try to create dumps and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.getDumpStatus('test')).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.INVALID_API_KEY
@@ -451,15 +508,16 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   }
 )
 
-describe.each([{ client: anonymousClient, permission: 'No' }])(
+describe.each([{ permission: 'No' }])(
   'Test on misc client methods w/ no apiKey client',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config)
     })
 
     describe('Test on indexes methods', () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.getIndexes()).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -467,6 +525,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
 
       test(`${permission} key: try to create Index with primary key and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(
           client.createIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
@@ -478,6 +537,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
 
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -485,6 +545,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
 
       test(`${permission} key: try to delete index and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -492,6 +553,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
 
       test(`${permission} key: try to update index and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(
           client.updateIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
@@ -505,6 +567,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
 
     describe('Test on misc client methods', () => {
       test(`${permission} key: get health`, async () => {
+        const client = await getClient(permission)
         const response: Health = await client.health()
         expect(response).toHaveProperty(
           'status',
@@ -513,6 +576,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
 
       test(`${permission} key: try to get version and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.getVersion()).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -520,6 +584,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
 
       test(`${permission} key: try to get /stats information and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.getStats()).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -527,6 +592,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
 
       test(`${permission} key: try to create dumps and be denir`, async () => {
+        const client = await getClient(permission)
         await expect(client.createDump()).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -534,6 +600,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
       })
 
       test(`${permission} key: try to create dumps and be denied`, async () => {
+        const client = await getClient(permission)
         await expect(client.getDumpStatus('test')).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER

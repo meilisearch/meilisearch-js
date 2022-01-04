@@ -1,13 +1,10 @@
-import { EnqueuedUpdate, ErrorStatusCode } from '../src/types'
+import { EnqueuedTask, ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
-  masterClient,
-  privateClient,
-  publicClient,
-  anonymousClient,
   BAD_HOST,
   MeiliSearch,
+  getClient,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -34,87 +31,93 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([
-  { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-])('Test on distinct attribute', ({ client, permission }) => {
-  beforeEach(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index.uid)
-    const { updateId } = await masterClient
-      .index(index.uid)
-      .addDocuments(dataset)
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-  })
-
-  test(`${permission} key: Get default distinct attribute`, async () => {
-    const response: string | null = await client
-      .index(index.uid)
-      .getDistinctAttribute()
-    expect(response).toEqual(null)
-  })
-
-  test(`${permission} key: Update distinct attribute`, async () => {
-    const newDistinctAttribute = 'title'
-    const attributes: EnqueuedUpdate = await client
-      .index(index.uid)
-      .updateDistinctAttribute(newDistinctAttribute)
-    expect(attributes).toHaveProperty('updateId', expect.any(Number))
-    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
-
-    const response: string | null = await client
-      .index(index.uid)
-      .getDistinctAttribute()
-    expect(response).toEqual(newDistinctAttribute)
-  })
-
-  test(`${permission} key: Update distinct attribute at null`, async () => {
-    const attrbiutes: EnqueuedUpdate = await client
-      .index(index.uid)
-      .updateDistinctAttribute(null)
-    expect(attrbiutes).toHaveProperty('updateId', expect.any(Number))
-    await client.index(index.uid).waitForPendingUpdate(attrbiutes.updateId)
-
-    const response: string | null = await client
-      .index(index.uid)
-      .getDistinctAttribute()
-    expect(response).toEqual(null)
-  })
-
-  test(`${permission} key: Reset distinct attribute`, async () => {
-    const attributes: EnqueuedUpdate = await client
-      .index(index.uid)
-      .resetDistinctAttribute()
-    expect(attributes).toHaveProperty('updateId', expect.any(Number))
-    await client.index(index.uid).waitForPendingUpdate(attributes.updateId)
-
-    const response: string | null = await client
-      .index(index.uid)
-      .getDistinctAttribute()
-    expect(response).toEqual(null)
-  })
-})
-
-describe.each([{ client: publicClient, permission: 'Public' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   'Test on distinct attribute',
-  ({ client, permission }) => {
+  ({ permission }) => {
+    beforeEach(async () => {
+      await clearAllIndexes(config)
+      const client = await getClient('master')
+
+      const { uid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(uid)
+    })
+
+    test(`${permission} key: Get default distinct attribute`, async () => {
+      const client = await getClient(permission)
+      const response: string | null = await client
+        .index(index.uid)
+        .getDistinctAttribute()
+      expect(response).toEqual(null)
+    })
+
+    test(`${permission} key: Update distinct attribute`, async () => {
+      const client = await getClient(permission)
+      const newDistinctAttribute = 'title'
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateDistinctAttribute(newDistinctAttribute)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string | null = await client
+        .index(index.uid)
+        .getDistinctAttribute()
+      expect(response).toEqual(newDistinctAttribute)
+    })
+
+    test(`${permission} key: Update distinct attribute at null`, async () => {
+      const client = await getClient(permission)
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateDistinctAttribute(null)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string | null = await client
+        .index(index.uid)
+        .getDistinctAttribute()
+      expect(response).toEqual(null)
+    })
+
+    test(`${permission} key: Reset distinct attribute`, async () => {
+      const client = await getClient(permission)
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .resetDistinctAttribute()
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string | null = await client
+        .index(index.uid)
+        .getDistinctAttribute()
+      expect(response).toEqual(null)
+    })
+  }
+)
+
+describe.each([{ permission: 'Public' }])(
+  'Test on distinct attribute',
+  ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
     })
 
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).getDistinctAttribute()
       ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).updateDistinctAttribute('title')
       ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).resetDistinctAttribute()
       ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
@@ -122,14 +125,15 @@ describe.each([{ client: publicClient, permission: 'Public' }])(
   }
 )
 
-describe.each([{ client: anonymousClient, permission: 'No' }])(
+describe.each([{ permission: 'No' }])(
   'Test on distinct attribute',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
     })
 
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).getDistinctAttribute()
       ).rejects.toHaveProperty(
@@ -139,6 +143,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
 
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).updateDistinctAttribute('title')
       ).rejects.toHaveProperty(
@@ -148,6 +153,7 @@ describe.each([{ client: anonymousClient, permission: 'No' }])(
     })
 
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).resetDistinctAttribute()
       ).rejects.toHaveProperty(

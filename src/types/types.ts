@@ -157,21 +157,37 @@ export type Settings = {
 }
 
 /*
- ** UPDATE
+ ** TASKS
  */
 
-export type EnqueuedUpdate = {
-  updateId: number
+export const enum TaskStatus {
+  TASK_SUCCEEDED = 'succeeded',
+  TASK_PROCESSING = 'processing',
+  TASK_FAILED = 'failed',
+  TASK_ENQUEUED = 'enqueued',
 }
 
-export type Update = {
-  status: string
-  updateId: number
-  type: {
-    name: string
-    number: number
+export type EnqueuedTask = {
+  uid: number
+  indexUid: string
+  status: TaskStatus
+  type: string
+  enqueuedTask: string
+}
+
+export type Tasks = {
+  results: Task[]
+}
+
+export type Task = {
+  status: TaskStatus
+  uid: number
+  type: string
+  details: {
+    receivedDocuments: number
+    indexedDocuments: number
   }
-  duration: number
+  duration: string
   enqueuedAt: string
   processedAt: string
   error?: MeiliSearchErrorBody
@@ -184,7 +200,7 @@ export type EnqueuedDump = {
   finishedAt: string
 }
 
-export type WaitForPendingUpdateOptions = {
+export type WaitOptions = {
   timeOutMs?: number
   intervalMs?: number
 }
