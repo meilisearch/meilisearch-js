@@ -1,10 +1,4 @@
-import {
-  ErrorStatusCode,
-  EnqueuedTask,
-  Task,
-  Tasks,
-  TaskStatus,
-} from '../src/types'
+import { ErrorStatusCode, EnqueuedTask, Task, TaskStatus } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -103,7 +97,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const { uid } = await client.index(index.uid).addDocuments([{ id: 1 }])
       await client.waitForTask(uid)
 
-      const response: Tasks = await client.index(index.uid).getTasks()
+      const response = await client.index(index.uid).getTasks()
 
       expect(response.results[0]).toHaveProperty(
         'status',
