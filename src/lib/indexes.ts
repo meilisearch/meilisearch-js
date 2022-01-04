@@ -12,7 +12,6 @@ import { MeiliSearchError } from '../errors'
 import {
   Config,
   Task,
-  Tasks,
   SearchResponse,
   SearchParams,
   Filter,
@@ -34,6 +33,7 @@ import {
   SortableAttributes,
   SearchableAttributes,
   DisplayedAttributes,
+  Result,
 } from '../types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -230,9 +230,9 @@ class Index<T = Record<string, any>> {
    * @memberof Indexes
    * @method getTasks
    *
-   * @returns {Promise<Tasks>} - Promise containing all tasks
+   * @returns {Promise<Result<Task[]>>} - Promise containing all tasks
    */
-  async getTasks(): Promise<Tasks> {
+  async getTasks(): Promise<Result<Task[]>> {
     return await this.tasks.getIndexTasks(this.uid)
   }
 
@@ -257,7 +257,7 @@ class Index<T = Record<string, any>> {
    * @param {number[]} taskIds - Tasks identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Tasks>} - Promise containing an array of tasks
+   * @returns {Promise<Result<Task[]>>} - Promise containing an array of tasks
    */
   async waitForTasks(
     taskIds: number[],
@@ -265,7 +265,7 @@ class Index<T = Record<string, any>> {
       timeOutMs = 5000,
       intervalMs = 50,
     }: { timeOutMs?: number; intervalMs?: number } = {}
-  ): Promise<Tasks> {
+  ): Promise<Result<Task[]>> {
     return await this.tasks.waitForClientTasks(taskIds, {
       timeOutMs,
       intervalMs,
