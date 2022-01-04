@@ -84,31 +84,6 @@ class MeiliSearch {
   }
 
   /**
-   * Get an index or create it if it does not exist
-   * @memberof MeiliSearch
-   * @method getOrCreateIndex
-   * @template T
-   * @param {string} uid The index UID
-   * @param {IndexOptions} options Index options
-   * @returns {Promise<Index<T>>} Promise returning Index instance
-   */
-  // TODO: to discuss
-  // async getOrCreateIndex<T = any>(
-  //   uid: string,
-  //   options: IndexOptions = {}
-  // ): Promise<Index<T>> {
-  //   try {
-  //     const index = await this.getIndex(uid)
-  //     return index
-  //   } catch (e: any) {
-  //     if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
-  //       return this.createIndex(uid, options)
-  //     }
-  //     throw e
-  //   }
-  // }
-
-  /**
    * Get all indexes in the database
    * @memberof MeiliSearch
    * @method getIndexes
