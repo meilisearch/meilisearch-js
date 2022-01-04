@@ -88,5 +88,7 @@ jobs:
         uses: actions/setup-node@v2
       - name: Install dependencies
         run: yarn --dev
-      - name: Run style check
+      - name: Run node typescript env
+        run: yarn test:env:node-ts
+      - name: Run types check
         run: yarn types
