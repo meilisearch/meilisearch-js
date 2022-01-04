@@ -332,35 +332,6 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         expect(task.status).toEqual('failed')
       })
 
-      // TODO: skipped because of deleteIfExists
-      test.skip(`${permission} key: delete index if exists on existing index`, async () => {
-        const client = await getClient(permission)
-        const { uid } = await client.createIndex(indexPk.uid)
-        await client.waitForTask(uid)
-
-        const response: boolean = await client.deleteIndexIfExists(indexPk.uid)
-        expect(response).toBe(true)
-
-        await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INDEX_NOT_FOUND
-        )
-      })
-
-      // TODO: skipped because of deleteIfExists
-      test.skip(`${permission} key: delete index if exists on index that does not exist`, async () => {
-        const client = await getClient(permission)
-        const indexes = await client.getIndexes()
-        const response: boolean = await client.deleteIndexIfExists('badIndex')
-        expect(response).toBe(false)
-
-        await expect(client.getIndex('badIndex')).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INDEX_NOT_FOUND
-        )
-        await expect(client.getIndexes()).resolves.toHaveLength(indexes.length)
-      })
-
       test(`${permission} key: fetch deleted index should fail`, async () => {
         const client = await getClient(permission)
         const index = client.index(indexPk.uid)

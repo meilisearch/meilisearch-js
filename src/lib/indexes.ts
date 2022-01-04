@@ -34,7 +34,6 @@ import {
   SortableAttributes,
   SearchableAttributes,
   DisplayedAttributes,
-  ErrorStatusCode,
 } from '../types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -219,24 +218,6 @@ class Index<T = Record<string, any>> {
   async delete(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}`
     return await this.httpRequest.delete(url)
-  }
-
-  /**
-   * Deletes an index if it already exists.
-   * @memberof Index
-   * @method deleteIfExists
-   * @returns {Promise<boolean>} Promise which resolves to true when index exists and is deleted successfully, otherwise false if it does not exist
-   */
-  async deleteIfExists(): Promise<boolean> {
-    try {
-      await this.delete()
-      return true
-    } catch (e: any) {
-      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
-        return false
-      }
-      throw e
-    }
   }
 
   ///
