@@ -17,7 +17,6 @@ describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
   test(`${permission} key: get keys`, async () => {
     const client = await getClient(permission)
     const keys = await client.getKeys()
-    // FIXME: should be inside Result object
 
     const defaultKey = keys.find((key: Key) =>
       key.description.startsWith('Default Search API')
