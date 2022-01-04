@@ -34,7 +34,6 @@ import {
   SortableAttributes,
   SearchableAttributes,
   DisplayedAttributes,
-  ErrorStatusCode,
 } from '../types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'

@@ -258,7 +258,7 @@ class MeiliSearch {
   /**
    * Get all API keys
    * @memberof MeiliSearch
-   * @method getKey
+   * @method getKeys
    * @returns {Promise<Keys>} Promise returning an object with keys
    */
   // FIXME: should be Result<Key[]>>
@@ -310,10 +310,10 @@ class MeiliSearch {
   /**
    * Delete one API key
    * @memberof MeiliSearch
-   * @method getKey
+   * @method deleteKey
    *
    * @param {string} key - Key
-   * @returns {Promise<Key>} Promise returning a key
+   * @returns {Promise<Void>}
    */
   async deleteKey(key: string): Promise<void> {
     const url = `keys/${key}`
