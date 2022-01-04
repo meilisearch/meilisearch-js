@@ -21,9 +21,7 @@ import {
   EnqueuedDump,
   ErrorStatusCode,
   Task,
-  Tasks,
-  // FIXME: Should be used in GET /keys
-  // Result,
+  Result,
 } from '../types'
 import { HttpRequests } from './http-requests'
 import { addProtocolIfNotPresent } from './utils'
@@ -164,9 +162,9 @@ class MeiliSearch {
    * Get the list of all client tasks
    * @memberof MeiliSearch
    * @method getTasks
-   * @returns {Promise<Tasks>} - Promise returning all tasks
+   * @returns {Promise<Result<Task[]>>} - Promise returning all tasks
    */
-  async getTasks(): Promise<Tasks> {
+  async getTasks(): Promise<Result<Task[]>> {
     return await this.tasks.getClientTasks()
   }
 
@@ -188,7 +186,7 @@ class MeiliSearch {
    * @param {number[]} taskIds - Tasks identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Tasks>} - Promise returning an array of tasks
+   * @returns {Promise<Result<Task[]>>} - Promise returning an array of tasks
    */
   async waitForTasks(
     taskIds: number[],
@@ -196,7 +194,7 @@ class MeiliSearch {
       timeOutMs = 5000,
       intervalMs = 50,
     }: { timeOutMs?: number; intervalMs?: number } = {}
-  ): Promise<Tasks> {
+  ): Promise<Result<Task[]>> {
     return await this.tasks.waitForClientTasks(taskIds, {
       timeOutMs,
       intervalMs,

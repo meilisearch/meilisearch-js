@@ -419,7 +419,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Get all updates info](https://docs.meilisearch.com/reference/api/updates.html#get-all-update-status):
 
-`index.getTasks(): Promise<Tasks>`
+`index.getTasks(): Promise<Result<Task[]>>`
 
 - Wait for one task:
 
@@ -432,10 +432,10 @@ Using de index:
 - Wait for multiple tasks:
 
 Using de client:
-`client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Tasks>`
+`client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
 
 Using de index:
-`index.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Tasks>`
+`index.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
 
 ### Indexes <!-- omit in toc -->
 

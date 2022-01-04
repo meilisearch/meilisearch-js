@@ -1,5 +1,5 @@
 import { MeiliSearchTimeOutError } from '../errors'
-import { Config, Task, Tasks, WaitOptions, TaskStatus } from '../types'
+import { Config, Task, WaitOptions, TaskStatus, Result } from '../types'
 import { HttpRequests } from './http-requests'
 import { sleep } from './utils'
 
@@ -15,9 +15,9 @@ class TaskClient {
     return await this.httpRequest.get<Task>(url)
   }
 
-  async getClientTasks(): Promise<Tasks> {
+  async getClientTasks(): Promise<Result<Task[]>> {
     const url = `tasks`
-    return await this.httpRequest.get<Tasks>(url)
+    return await this.httpRequest.get<Result<Task[]>>(url)
   }
 
   async getIndexTask(indexUid: string | number, taskId: number): Promise<Task> {
@@ -25,9 +25,9 @@ class TaskClient {
     return await this.httpRequest.get<Task>(url)
   }
 
-  async getIndexTasks(indexUid: string | number): Promise<Tasks> {
+  async getIndexTasks(indexUid: string | number): Promise<Result<Task[]>> {
     const url = `indexes/${indexUid}/tasks`
-    return await this.httpRequest.get<Tasks>(url)
+    return await this.httpRequest.get<Result<Task[]>>(url)
   }
 
   /**
@@ -62,12 +62,12 @@ class TaskClient {
    *
    * @param {number} taskIds Tasks identifier list
    * @param {WaitOptions} options Wait options
-   * @returns {Promise<Tasks>} Promise returning a list of tasks after they have been processed
+   * @returns {Promise<Result<Task[]>>} Promise returning a list of tasks after they have been processed
    */
   async waitForClientTasks(
     taskIds: number[],
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
-  ): Promise<Tasks> {
+  ): Promise<Result<Task[]>> {
     const tasks: Task[] = []
     for (const taskId of taskIds) {
       const task = await this.waitForClientTask(taskId, {
