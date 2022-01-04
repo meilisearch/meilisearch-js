@@ -600,9 +600,25 @@ Using the index object:
 
 ### Keys <!-- omit in toc -->
 
-- [Get keys](https://docs.meilisearch.com/reference/api/keys.html#get-keys):
+- [Get keys](https://docs.meilisearch.com/reference/api/keys.html#get-all-keys):
 
 `client.getKeys(): Promise<Keys>`
+
+- [Get one key](https://docs.meilisearch.com/reference/api/keys.html#get-one-key):
+
+`client.getKey(key: string): Promise<Key>`
+
+- [Create a key](https://docs.meilisearch.com/reference/api/keys.html#create-a-key):
+
+`client.createKey(options: KeyPayload): Promise<Key>`
+
+- [Update a key](https://docs.meilisearch.com/reference/api/keys.html#update-a-key):
+
+`client.updateKey(key: string, options: KeyPayload): Promise<Key>`
+
+- [Delete a key](https://docs.meilisearch.com/reference/api/keys.html#delete-a-key):
+
+`client.deleteKey(key: string): Promise<void>`
 
 ### isHealthy <!-- omit in toc -->
 

@@ -136,6 +136,21 @@ class HttpRequests {
     })
   }
 
+  async patch(
+    url: string,
+    data?: any,
+    params?: { [key: string]: any },
+    config?: Record<string, any>
+  ): Promise<any> {
+    return await this.request({
+      method: 'PATCH',
+      url,
+      body: data,
+      params,
+      config,
+    })
+  }
+
   async delete(
     url: string,
     data?: any,

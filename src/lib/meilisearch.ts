@@ -9,11 +9,12 @@
 
 import { Index } from './indexes'
 import {
+  KeyPayload,
   Config,
   IndexOptions,
   IndexResponse,
   EnqueuedTask,
-  Keys,
+  Key,
   Health,
   Stats,
   Version,
@@ -21,6 +22,8 @@ import {
   ErrorStatusCode,
   Task,
   Tasks,
+  // FIXME: Should be used in GET /keys
+  // Result,
 } from '../types'
 import { HttpRequests } from './http-requests'
 import { addProtocolIfNotPresent } from './utils'
@@ -62,7 +65,7 @@ class MeiliSearch {
    * @method getIndex
    * @template T
    * @param {string} indexUid The index UID
-   * @returns {Promise<Index<T>>} Promise containing Index instance
+   * @returns {Promise<Index<T>>} Promise returning Index instance
    */
   async getIndex<T = any>(indexUid: string): Promise<Index<T>> {
     return new Index<T>(this.config, indexUid).fetchInfo()
@@ -74,7 +77,7 @@ class MeiliSearch {
    * @memberof MeiliSearch
    * @method getRawIndex
    * @param {string} indexUid The index UID
-   * @returns {Promise<IndexResponse>} Promise containing index information
+   * @returns {Promise<IndexResponse>} Promise returning index information
    */
   async getRawIndex(indexUid: string): Promise<IndexResponse> {
     return new Index(this.config, indexUid).getRawInfo()
@@ -87,7 +90,7 @@ class MeiliSearch {
    * @template T
    * @param {string} uid The index UID
    * @param {IndexOptions} options Index options
-   * @returns {Promise<Index<T>>} Promise containing Index instance
+   * @returns {Promise<Index<T>>} Promise returning Index instance
    */
   // TODO: to discuss
   // async getOrCreateIndex<T = any>(
@@ -109,7 +112,7 @@ class MeiliSearch {
    * Get all indexes in the database
    * @memberof MeiliSearch
    * @method getIndexes
-   * @returns {Promise<IndexResponse[]>} Promise containing array of raw index information
+   * @returns {Promise<IndexResponse[]>} Promise returning array of raw index information
    */
   async getIndexes(): Promise<IndexResponse[]> {
     const url = `indexes`
@@ -123,7 +126,7 @@ class MeiliSearch {
    * @template T
    * @param {string} uid The index UID
    * @param {IndexOptions} options Index options
-   * @returns {Promise<Index<T>>} Promise containing Index instance
+   * @returns {Promise<Index<T>>} Promise returning Index instance
    */
   async createIndex(
     uid: string,
@@ -139,7 +142,7 @@ class MeiliSearch {
    * @template T
    * @param {string} uid The index UID
    * @param {IndexOptions} options Index options to update
-   * @returns {Promise<Index<T>>} Promise containing Index instance after updating
+   * @returns {Promise<Index<T>>} Promise returning Index instance after updating
    */
   async updateIndex(
     uid: string,
@@ -186,7 +189,7 @@ class MeiliSearch {
    * Get the list of all client tasks
    * @memberof MeiliSearch
    * @method getTasks
-   * @returns {Promise<Tasks>} - Promise containing all tasks
+   * @returns {Promise<Tasks>} - Promise returning all tasks
    */
   async getTasks(): Promise<Tasks> {
     return await this.tasks.getClientTasks()
@@ -197,7 +200,7 @@ class MeiliSearch {
    * @memberof MeiliSearch
    * @method getTask
    * @param {number} taskId - Task identifier
-   * @returns {Promise<Task>} - Promise containing a task
+   * @returns {Promise<Task>} - Promise returning a task
    */
   async getTask(taskId: number): Promise<Task> {
     return await this.tasks.getClientTask(taskId)
@@ -210,7 +213,7 @@ class MeiliSearch {
    * @param {number[]} taskIds - Tasks identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Tasks>} - Promise containing an array of tasks
+   * @returns {Promise<Tasks>} - Promise returning an array of tasks
    */
   async waitForTasks(
     taskIds: number[],
@@ -233,7 +236,7 @@ class MeiliSearch {
    * @param {number} taskId - Task identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Task>} - Promise containing an array of tasks
+   * @returns {Promise<Task>} - Promise returning an array of tasks
    */
   async waitForTask(
     taskId: number,
@@ -253,14 +256,68 @@ class MeiliSearch {
   ///
 
   /**
-   * Get private and public key
+   * Get all API keys
+   * @memberof MeiliSearch
+   * @method getKeys
+   * @returns {Promise<Keys>} Promise returning an object with keys
+   */
+  // FIXME: should be Result<Key[]>>
+  async getKeys(): Promise<Key[]> {
+    const url = `keys`
+    return await this.httpRequest.get<Key[]>(url)
+  }
+
+  /**
+   * Get one API key
    * @memberof MeiliSearch
    * @method getKey
-   * @returns {Promise<Keys>} Promise containing an object with keys
+   *
+   * @param {string} key - Key
+   * @returns {Promise<Keys>} Promise returning a key
    */
-  async getKeys(): Promise<Keys> {
+  async getKey(key: string): Promise<Key> {
+    const url = `keys/${key}`
+    return await this.httpRequest.get<Key>(url)
+  }
+
+  /**
+   * Create one API key
+   * @memberof MeiliSearch
+   * @method createKey
+   *
+   * @param {KeyPayload} options - Key options
+   * @returns {Promise<Key>} Promise returning an object with keys
+   */
+  async createKey(options: KeyPayload): Promise<Key> {
     const url = `keys`
-    return await this.httpRequest.get<Keys>(url)
+    return await this.httpRequest.post(url, options)
+  }
+
+  /**
+   * Update one API key
+   * @memberof MeiliSearch
+   * @method updateKey
+   *
+   * @param {string} key - Key
+   * @param {KeyPayload} options - Key options
+   * @returns {Promise<Key>} Promise returning an object with keys
+   */
+  async updateKey(key: string, options: KeyPayload): Promise<Key> {
+    const url = `keys/${key}`
+    return await this.httpRequest.patch(url, options)
+  }
+
+  /**
+   * Delete one API key
+   * @memberof MeiliSearch
+   * @method deleteKey
+   *
+   * @param {string} key - Key
+   * @returns {Promise<Void>}
+   */
+  async deleteKey(key: string): Promise<void> {
+    const url = `keys/${key}`
+    return await this.httpRequest.delete<any>(url)
   }
 
   ///
@@ -271,7 +328,7 @@ class MeiliSearch {
    * Checks if the server is healthy, otherwise an error will be thrown.
    * @memberof MeiliSearch
    * @method health
-   * @returns {Promise<Health>} Promise containing an object with health details
+   * @returns {Promise<Health>} Promise returning an object with health details
    */
   async health(): Promise<Health> {
     const url = `health`
@@ -282,7 +339,7 @@ class MeiliSearch {
    * Checks if the server is healthy, return true or false.
    * @memberof MeiliSearch
    * @method isHealthy
-   * @returns {Promise<boolean>} Promise containing a boolean
+   * @returns {Promise<boolean>} Promise returning a boolean
    */
   async isHealthy(): Promise<boolean> {
     try {
@@ -302,7 +359,7 @@ class MeiliSearch {
    * Get the stats of all the database
    * @memberof MeiliSearch
    * @method getStats
-   * @returns {Promise<Stats>} Promise containing object of all the stats
+   * @returns {Promise<Stats>} Promise returning object of all the stats
    */
   async getStats(): Promise<Stats> {
     const url = `stats`
@@ -317,7 +374,7 @@ class MeiliSearch {
    * Get the version of MeiliSearch
    * @memberof MeiliSearch
    * @method getVersion
-   * @returns {Promise<Version>} Promise containing object with version details
+   * @returns {Promise<Version>} Promise returning object with version details
    */
   async getVersion(): Promise<Version> {
     const url = `version`
@@ -332,7 +389,7 @@ class MeiliSearch {
    * Triggers a dump creation process
    * @memberof MeiliSearch
    * @method createDump
-   * @returns {Promise<EnqueuedDump>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedDump>} Promise returning object of the enqueued update
    */
   async createDump(): Promise<EnqueuedDump> {
     const url = `dumps`
@@ -344,7 +401,7 @@ class MeiliSearch {
    * @memberof MeiliSearch
    * @method getDumpStatus
    * @param {string} dumpUid Dump UID
-   * @returns {Promise<EnqueuedDump>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedDump>} Promise returning object of the enqueued update
    */
   async getDumpStatus(dumpUid: string): Promise<EnqueuedDump> {
     const url = `dumps/${dumpUid}/status`
