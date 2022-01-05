@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Page Title</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+
+<body>
+  <div id="content"></div>
+</body>
+
+</html>
+<script src="./meilisearch.umd.js"></script>
+<script>
+  ; (async () => {
+    const errorDiv = document.createElement("div");
+    errorDiv.setAttribute("id", "error");
+
+    let error = 'NO ERRORS'
+    let res = undefined
+    try {
+      res = await fetch('http://localhost:7700/indexes/movies/documents', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer masterKey`,
+          'User-Agent': 'plif plouf',
+        },
+        body: []
+      })
+    } catch (e) {
+      error = e.message
+    }
+
+    errorDiv.innerHTML = error
+    document.body.insertBefore(errorDiv, document.querySelector("#content"));
+  })()
+
+
+</script>

@@ -17,15 +17,15 @@
 <script src="./meilisearch.umd.js"></script>
 <script>
   ; (async () => {
-
+    let content = ''
+    let searchDiv = undefined
+    // also works with window.MeiliSearch
+    const client = new MeiliSearch({
+      host: 'http://127.0.0.1:7700',
+      apiKey: 'masterKey',
+    })
+    const UID = "testIndex"
     try {
-      const UID = "testIndex"
-
-      // also works with window.MeiliSearch
-      const client = new MeiliSearch({
-        host: 'http://127.0.0.1:7700',
-        apiKey: 'masterKey',
-      })
       const task = await client.createIndex(UID)
       await client.waitForTask(task.uid)
 
@@ -40,17 +40,18 @@
       indexDiv.innerHTML = index.uid
       document.body.insertBefore(indexDiv, document.querySelector("#content"));
 
-      const searchDiv = document.createElement("div");
+      searchDiv = document.createElement("div");
       searchDiv.setAttribute("id", "search");
       const search = await client.index(UID).search()
-      searchDiv.innerHTML = JSON.stringify(search)
-      document.body.insertBefore(searchDiv, document.querySelector("#content"));
-
-      const deleteTask = await client.index(UID).delete()
-      await client.waitForTask(deleteTask.uid)
+      content = JSON.stringify(search)
     } catch (e) {
       console.error(e);
+      content = e.message
     }
+    searchDiv.innerHTML = content
+    document.body.insertBefore(searchDiv, document.querySelector("#content"));
+    const deleteTask = await client.index(UID).delete()
+    await client.waitForTask(deleteTask.uid)
   })()
 
 
