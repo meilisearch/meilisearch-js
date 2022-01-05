@@ -3,10 +3,17 @@ describe('MeiliSearch JS Browser test', () => {
     await page.goto('http://localhost:3000')
   })
 
-  it('Should have generated a meilisearch client and displayed', async () => {
+  it('Should have created an index and displayed it', async () => {
     await page.waitForSelector("#indexes")
     await expect(
       page.content()
       ).resolves.toMatch('testIndex')
+  })
+
+  it('Should have successfully searched on the index', async () => {
+    await page.waitForSelector("#indexes")
+    await expect(
+      page.content()
+      ).resolves.toMatch('wonder woman')
   })
 })

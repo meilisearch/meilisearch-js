@@ -1,9 +1,9 @@
 status = [
   'linter-check',
+  'types-check',
   'integration-tests (Node.js 12)',
   'integration-tests (Node.js 14)',
-  'integration-tests (Node.js 16)',
-  'types-test'
+  'integration-tests (Node.js 16)'
 ]
 # 1 hour timeout
 timeout-sec = 3600

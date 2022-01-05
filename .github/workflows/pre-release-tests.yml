@@ -68,9 +68,9 @@ jobs:
         with:
           config_file: .yamllint.yml
 
-  types_test:
+  types_check:
     runs-on: ubuntu-latest
-    name: types-test
+    name: types-check
     steps:
       - uses: actions/checkout@v2
       - name: Cache dependencies
