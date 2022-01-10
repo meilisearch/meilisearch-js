@@ -597,7 +597,7 @@ Using the index object:
 
 - [Get keys](https://docs.meilisearch.com/reference/api/keys.html#get-all-keys):
 
-`client.getKeys(): Promise<Keys>`
+`client.getKeys(): Promise<Result<Key[]>>`
 
 - [Get one key](https://docs.meilisearch.com/reference/api/keys.html#get-one-key):
 

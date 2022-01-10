@@ -1,6 +1,5 @@
 import { MeiliSearch, MeiliSearchTimeOutError, Index, sleep } from '../src/'
 import { Config, IndexResponse, EnqueuedDump } from '../src/types'
-import 'cross-fetch/polyfill'
 
 // testing
 const MASTER_KEY = 'masterKey'
@@ -28,24 +27,20 @@ async function getKey(permission: string): Promise<string> {
   if (permission === 'No') {
     return ''
   }
-  const res: Record<string, any> = await fetch('http://localhost:7700/keys', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${MASTER_KEY}`,
-    },
-  })
-  const keys = await res.json()
+  const { results: keys } = await masterClient.getKeys()
 
   if (permission === 'Public') {
-    return keys.find((key: any) =>
+    const key = keys.find((key: any) =>
       key.description.startsWith('Default Search API')
-    ).key
+    )?.key
+    return key || ''
   }
 
   if (permission === 'Private') {
-    return keys.find((key: any) =>
+    const key = keys.find((key: any) =>
       key.description.startsWith('Default Admin API')
-    ).key
+    )?.key
+    return key || ''
   }
   return MASTER_KEY
 }
