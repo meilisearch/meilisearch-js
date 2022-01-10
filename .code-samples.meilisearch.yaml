@@ -41,12 +41,45 @@ search_post_1: |-
   client.index('movies').search('American ninja')
 search_get_1: |-
   client.index('movies').search('American ninja')
-get_update_1: |-
-  client.index('movies').getUpdateStatus(1)
-get_all_updates_1: |-
-  client.index('movies').getAllUpdateStatus()
-get_keys_1: |-
+get_task_by_index_1: |-
+  client.index('movies').getTask(1)
+get_all_tasks_1: |-
+  client.index('movies').getTasks()
+get_task_1: |-
+  client.getTask(1)
+get_all_tasks_by_index_1: |-
+  curl \
+    -X GET 'http://localhost:7700/indexes/movies/tasks'
+get_one_key_1: |-
+  client.getKey(d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4)
+get_all_keys_1: |-
   client.getKeys()
+create_a_key_1: |-
+  client.createKey({
+      "description": "Add documents: Products API key",
+      "actions": [
+        "documents.add"
+      ],
+      "indexes": [
+      "products"
+      ],
+      "expiresAt": "2021-11-13T00:00:00Z"
+    })
+update_a_key_1: |-
+  client.updateKey({
+      "description": "Manage documents: Products/Reviews API key",
+      "actions": [
+        "documents.add",
+        "documents.delete"
+      ],
+      "indexes": [
+        "products",
+        "reviews"
+      ],
+      "expiresAt": "2021-12-31T23:59:59Z"
+    })
+delete_a_key_1: |-
+  client.deleteKey(d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4)
 get_settings_1: |-
   client.index('movies').getSettings()
 update_settings_1: |-
@@ -447,3 +480,27 @@ geosearch_guide_sort_usage_2: |-
   client.index('restaurants').search('', {
     sort: ['_geoPoint(48.8583701,2.2922926):asc', 'rating:desc'],
   })
+security_guide_search_key_1: |-
+  const client = new MeiliSearch({ host: "http://localhost:7700", "apiKey": apiKey })
+  client.index('patient_medical_records').search()
+security_guide_update_key_1: |-
+  const client = new MeiliSearch({ host: "http://localhost:7700", "apiKey": masterKey })
+  client.updateKey(d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4, {
+    "indexes": ["doctors"]
+  })
+security_guide_create_key_1: |-
+  const client = new MeiliSearch({ host: "http://localhost:7700", "apiKey": masterKey })
+  client.createKey({
+    "description": "Search patient records key",
+    "actions": [
+      "search"
+    ],
+    "indexes": ["patient_medical_records"],
+    "expiresAt": "2023-01-01T00:00:00Z"
+  })
+security_guide_list_keys_1: |-
+  const client = new MeiliSearch({ host: "http://localhost:7700", "apiKey": masterKey })
+  client.getKeys()
+security_guide_delete_key_1: |-
+  const client = new MeiliSearch({ host: "http://localhost:7700", "apiKey": masterKey })
+  client.getKey(d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4)
