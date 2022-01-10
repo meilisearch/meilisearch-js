@@ -16,7 +16,7 @@ describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
   })
   test(`${permission} key: get keys`, async () => {
     const client = await getClient(permission)
-    const keys = await client.getKeys()
+    const { results: keys } = await client.getKeys()
 
     const defaultKey = keys.find((key: Key) =>
       key.description.startsWith('Default Search API')
@@ -56,7 +56,6 @@ describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
     const apiKey = await getKey('Private')
 
     const key = await client.getKey(apiKey)
-    // FIXME: should be inside Result object
 
     expect(key).toBeDefined()
     expect(key).toHaveProperty(

@@ -234,10 +234,9 @@ class MeiliSearch {
    * @method getKeys
    * @returns {Promise<Keys>} Promise returning an object with keys
    */
-  // FIXME: should be Result<Key[]>>
-  async getKeys(): Promise<Key[]> {
+  async getKeys(): Promise<Result<Key[]>> {
     const url = `keys`
-    return await this.httpRequest.get<Key[]>(url)
+    return await this.httpRequest.get<Result<Key[]>>(url)
   }
 
   /**
