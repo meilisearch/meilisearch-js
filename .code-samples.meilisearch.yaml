@@ -43,13 +43,12 @@ search_get_1: |-
   client.index('movies').search('American ninja')
 get_task_by_index_1: |-
   client.index('movies').getTask(1)
-get_all_tasks_1: |-
+get_all_tasks_by_index_1: |-
   client.index('movies').getTasks()
+get_all_tasks_1: |-
+  client.getTasks()
 get_task_1: |-
   client.getTask(1)
-get_all_tasks_by_index_1: |-
-  curl \
-    -X GET 'http://localhost:7700/indexes/movies/tasks'
 get_one_key_1: |-
   client.getKey(d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4)
 get_all_keys_1: |-
@@ -66,7 +65,7 @@ create_a_key_1: |-
       "expiresAt": "2021-11-13T00:00:00Z"
     })
 update_a_key_1: |-
-  client.updateKey({
+  client.updateKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4', {
       "description": "Manage documents: Products/Reviews API key",
       "actions": [
         "documents.add",
@@ -504,3 +503,6 @@ security_guide_list_keys_1: |-
 security_guide_delete_key_1: |-
   const client = new MeiliSearch({ host: "http://localhost:7700", "apiKey": masterKey })
   client.getKey(d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4)
+authorization_header_1: |-
+  const client = new MeiliSearch({ host: "http://localhost:7700", "apiKey": masterKey })
+  client.getKeys()
