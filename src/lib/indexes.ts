@@ -500,7 +500,7 @@ class Index<T = Record<string, any>> {
    * Reset settings.
    * @memberof Index
    * @method resetSettings
-   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async resetSettings(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings`
