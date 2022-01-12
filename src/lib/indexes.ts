@@ -527,7 +527,7 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateSynonyms
    * @param {Synonyms} synonyms Mapping of synonyms with their associated words
-   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/synonyms`
