@@ -734,7 +734,7 @@ class Index<T = Record<string, any>> {
    * Reset the sortable-attributes.
    * @memberof Index
    * @method resetSortableAttributes
-   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async resetSortableAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`
