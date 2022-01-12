@@ -761,7 +761,7 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateSearchableAttributes
    * @param {SearchableAttributes} searchableAttributes Array of strings that contains searchable attributes sorted by order of importance(most to least important)
-   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async updateSearchableAttributes(
     searchableAttributes: SearchableAttributes
