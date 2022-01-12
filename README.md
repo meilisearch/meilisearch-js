@@ -169,7 +169,7 @@ import { MeiliSearch } from 'meilisearch'
 })()
 ```
 
-With the `uid`, you can check the status (`enqueued`, `processing`, `succeeded` or `failed`) of your documents addition using the [task endpoint](https://docs.meilisearch.com/reference/api/updates.html#get-one-task).
+With the `uid`, you can check the status (`enqueued`, `processing`, `succeeded` or `failed`) of your documents addition using the [task](https://docs.meilisearch.com/reference/api/tasks.html#get-task).
 
 #### Basic Search <!-- omit in toc -->
 
@@ -246,7 +246,7 @@ await index.updateAttributesForFaceting([
 
 You only need to perform this operation once.
 
-Note that MeiliSearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take time. You can track the process using the [update status](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status).
+Note that MeiliSearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take time. You can track the process using the [tasks](https://docs.meilisearch.com/reference/api/tasks.html#get-task)).
 
 Then, you can perform the search:
 
@@ -413,28 +413,36 @@ If you want to know more about the development workflow or want to contribute, p
 
 ### Tasks <!-- omit in toc -->
 
-- [Get One update info](https://docs.meilisearch.com/reference/api/updates.html#get-an-update-status):
+- [Get task info using the client](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks):
 
-`index.getTask(uid: number): Promise<Task>`
+Task list:
+`client.getTasks(): Promise<Result<Task[]>>`
 
-- [Get all updates info](https://docs.meilisearch.com/reference/api/updates.html#get-all-update-status):
+One task:
+`client.getTask(uid: number): Promise<Task>`
 
+- [Get task info using the index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index):
+
+Task list:
 `index.getTasks(): Promise<Result<Task[]>>`
+
+One task:
+`index.getTask(uid: number): Promise<Task>`
 
 - Wait for one task:
 
 Using de client:
 `client.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>`
 
-Using de index:
+Using the index:
 `index.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>`
 
 - Wait for multiple tasks:
 
-Using de client:
+Using the client:
 `client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
 
-Using de index:
+Using the index:
 `index.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
 
 ### Indexes <!-- omit in toc -->
