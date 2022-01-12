@@ -461,7 +461,7 @@ class Index<T = Record<string, any>> {
    * Delete all documents of an index
    * @memberof Index
    * @method deleteAllDocuments
-   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async deleteAllDocuments(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
