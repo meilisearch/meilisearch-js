@@ -447,7 +447,7 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method deleteDocuments
    * @param {string[] | number[]} documentsIds Array of Document Ids to delete
-   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async deleteDocuments(
     documentsIds: string[] | number[]
