@@ -538,7 +538,7 @@ class Index<T = Record<string, any>> {
    * Reset the synonym list to be empty again
    * @memberof Index
    * @method resetSynonyms
-   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async resetSynonyms(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/synonyms`
