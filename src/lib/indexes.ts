@@ -774,7 +774,7 @@ class Index<T = Record<string, any>> {
    * Reset the searchable-attributes.
    * @memberof Index
    * @method resetSearchableAttributes
-   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async resetSearchableAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`
