@@ -7,11 +7,11 @@
 
 'use strict'
 
-import { MeiliSearchTimeOutError, MeiliSearchError } from '../errors'
+import { MeiliSearchError } from '../errors'
 
 import {
   Config,
-  Update,
+  Task,
   SearchResponse,
   SearchParams,
   Filter,
@@ -23,7 +23,7 @@ import {
   GetDocumentsResponse,
   Document,
   AddDocumentParams,
-  EnqueuedUpdate,
+  EnqueuedTask,
   Settings,
   Synonyms,
   StopWords,
@@ -33,16 +33,17 @@ import {
   SortableAttributes,
   SearchableAttributes,
   DisplayedAttributes,
-  WaitForPendingUpdateOptions,
-  ErrorStatusCode,
+  Result,
 } from '../types'
-import { sleep, removeUndefinedFromObject } from './utils'
+import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
+import { TaskClient } from './task'
 
 class Index<T = Record<string, any>> {
   uid: string
   primaryKey: string | undefined
   httpRequest: HttpRequests
+  tasks: TaskClient
 
   /**
    * @param {Config} config Request configuration options
@@ -53,31 +54,7 @@ class Index<T = Record<string, any>> {
     this.uid = uid
     this.primaryKey = primaryKey
     this.httpRequest = new HttpRequests(config)
-  }
-
-  ///
-  /// UTILS
-  ///
-
-  /**
-   * Waits for a pending update till it has been processed
-   * @param {number} updateId Update identifier
-   * @param {WaitForPendingUpdateOptions} options Additional configuration options
-   * @returns {Promise<Update>} Promise containing Update object after it has been processed
-   */
-  async waitForPendingUpdate(
-    updateId: number,
-    { timeOutMs = 5000, intervalMs = 50 }: WaitForPendingUpdateOptions = {}
-  ): Promise<Update> {
-    const startingTime = Date.now()
-    while (Date.now() - startingTime < timeOutMs) {
-      const response = await this.getUpdateStatus(updateId)
-      if (!['enqueued', 'processing'].includes(response.status)) return response
-      await sleep(intervalMs)
-    }
-    throw new MeiliSearchTimeOutError(
-      `timeout of ${timeOutMs}ms has exceeded on process ${updateId} when waiting for pending update to resolve.`
-    )
+    this.tasks = new TaskClient(config)
   }
 
   ///
@@ -210,15 +187,14 @@ class Index<T = Record<string, any>> {
    * @param {Config} config Request configuration options
    * @returns {Promise<Index<T>>} Newly created Index object
    */
-  static async create<T = Record<string, any>>(
+  static async create(
     uid: string,
     options: IndexOptions = {},
     config: Config
-  ): Promise<Index<T>> {
+  ): Promise<EnqueuedTask> {
     const url = `indexes`
     const req = new HttpRequests(config)
-    const index = await req.post(url, { ...options, uid })
-    return new Index(config, uid, index.primaryKey)
+    return req.post(url, { ...options, uid })
   }
 
   /**
@@ -228,11 +204,9 @@ class Index<T = Record<string, any>> {
    * @param {IndexOptions} data Data to update
    * @returns {Promise<this>} Promise to the current Index object with updated information
    */
-  async update(data: IndexOptions): Promise<this> {
+  async update(data: IndexOptions): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}`
-    const index = await this.httpRequest.put(url, data)
-    this.primaryKey = index.primaryKey
-    return this
+    return await this.httpRequest.put(url, data)
   }
 
   /**
@@ -241,54 +215,84 @@ class Index<T = Record<string, any>> {
    * @method delete
    * @returns {Promise<void>} Promise which resolves when index is deleted successfully
    */
-  async delete(): Promise<void> {
+  async delete(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}`
     return await this.httpRequest.delete(url)
   }
 
-  /**
-   * Deletes an index if it already exists.
-   * @memberof Index
-   * @method deleteIfExists
-   * @returns {Promise<boolean>} Promise which resolves to true when index exists and is deleted successfully, otherwise false if it does not exist
-   */
-  async deleteIfExists(): Promise<boolean> {
-    try {
-      await this.delete()
-      return true
-    } catch (e: any) {
-      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
-        return false
-      }
-      throw e
-    }
-  }
-
   ///
-  /// UPDATES
+  /// TASKS
   ///
 
   /**
-   * Get the list of all updates
-   * @memberof Index
-   * @method getAllUpdateStatus
-   * @returns {Promise<Update[]>} Promise containing array of Update objects
+   * Get the list of all the index tasks.
+   *
+   * @memberof Indexes
+   * @method getTasks
+   *
+   * @returns {Promise<Result<Task[]>>} - Promise containing all tasks
    */
-  async getAllUpdateStatus(): Promise<Update[]> {
-    const url = `indexes/${this.uid}/updates`
-    return await this.httpRequest.get<Update[]>(url)
+  async getTasks(): Promise<Result<Task[]>> {
+    return await this.tasks.getIndexTasks(this.uid)
   }
 
   /**
-   * Get the informations about an update status
-   * @memberof Index
-   * @method getUpdateStatus
-   * @param {number} updateId Update identifier
-   * @returns {Promise<Update>} Promise containing the requested Update object
+   * Get one task of the index.
+   *
+   * @memberof Indexes
+   * @method getTask
+   * @param {number} taskId - Task identifier
+   *
+   * @returns {Promise<Task>} - Promise containing a task
    */
-  async getUpdateStatus(updateId: number): Promise<Update> {
-    const url = `indexes/${this.uid}/updates/${updateId}`
-    return await this.httpRequest.get<Update>(url)
+  async getTask(taskId: number): Promise<Task> {
+    return await this.tasks.getIndexTask(this.uid, taskId)
+  }
+
+  /**
+   * Wait for a batch of an index tasks to be processed.
+   *
+   * @memberof Indexes
+   * @method waitForTasks
+   * @param {number[]} taskIds - Tasks identifier
+   * @param {WaitOptions} waitOptions - Options on timeout and interval
+   *
+   * @returns {Promise<Result<Task[]>>} - Promise containing an array of tasks
+   */
+  async waitForTasks(
+    taskIds: number[],
+    {
+      timeOutMs = 5000,
+      intervalMs = 50,
+    }: { timeOutMs?: number; intervalMs?: number } = {}
+  ): Promise<Result<Task[]>> {
+    return await this.tasks.waitForClientTasks(taskIds, {
+      timeOutMs,
+      intervalMs,
+    })
+  }
+
+  /**
+   * Wait for an index task to be processed.
+   *
+   * @memberof Indexes
+   * @method waitForTask
+   * @param {number} taskId - Task identifier
+   * @param {WaitOptions} waitOptions - Options on timeout and interval
+   *
+   * @returns {Promise<Task>} - Promise containing an array of tasks
+   */
+  async waitForTask(
+    taskId: number,
+    {
+      timeOutMs = 5000,
+      intervalMs = 50,
+    }: { timeOutMs?: number; intervalMs?: number } = {}
+  ): Promise<Task> {
+    return await this.tasks.waitForClientTask(taskId, {
+      timeOutMs,
+      intervalMs,
+    })
   }
 
   ///
@@ -352,12 +356,12 @@ class Index<T = Record<string, any>> {
    * @template T
    * @param {Array<Document<T>>} documents Array of Document objects to add/replace
    * @param {AddDocumentParams} options? Query parameters
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
   async addDocuments(
     documents: Array<Document<T>>,
     options?: AddDocumentParams
-  ): Promise<EnqueuedUpdate> {
+  ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
     return await this.httpRequest.post(url, documents, options)
   }
@@ -370,13 +374,13 @@ class Index<T = Record<string, any>> {
    * @param {Array<Document<T>>} documents Array of Document objects to add/replace
    * @param {number} batchSize Size of the batch
    * @param {AddDocumentParams} options? Query parameters
-   * @returns {Promise<EnqueuedUpdate[]>} Promise containing array of enqueued update objects for each batch
+   * @returns {Promise<EnqueuedTasks>} Promise containing array of enqueued update objects for each batch
    */
   async addDocumentsInBatches(
     documents: Array<Document<T>>,
     batchSize = 1000,
     options?: AddDocumentParams
-  ): Promise<EnqueuedUpdate[]> {
+  ): Promise<EnqueuedTask[]> {
     const updates = []
     for (let i = 0; i < documents.length; i += batchSize) {
       updates.push(
@@ -392,12 +396,12 @@ class Index<T = Record<string, any>> {
    * @method updateDocuments
    * @param {Array<Document<T>>} documents Array of Document objects to add/update
    * @param {AddDocumentParams} options? Query parameters
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
   async updateDocuments(
     documents: Array<Document<T>>,
     options?: AddDocumentParams
-  ): Promise<EnqueuedUpdate> {
+  ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
     return await this.httpRequest.put(url, documents, options)
   }
@@ -410,13 +414,13 @@ class Index<T = Record<string, any>> {
    * @param {Array<Document<T>>} documents Array of Document objects to add/update
    * @param {number} batchSize Size of the batch
    * @param {AddDocumentParams} options? Query parameters
-   * @returns {Promise<EnqueuedUpdate[]>} Promise containing array of enqueued update objects for each batch
+   * @returns {Promise<EnqueuedTasks>} Promise containing array of enqueued update objects for each batch
    */
   async updateDocumentsInBatches(
     documents: Array<Document<T>>,
     batchSize = 1000,
     options?: AddDocumentParams
-  ): Promise<EnqueuedUpdate[]> {
+  ): Promise<EnqueuedTask[]> {
     const updates = []
     for (let i = 0; i < documents.length; i += batchSize) {
       updates.push(
@@ -431,11 +435,11 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method deleteDocument
    * @param {string | number} documentId Id of Document to delete
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
-  async deleteDocument(documentId: string | number): Promise<EnqueuedUpdate> {
+  async deleteDocument(documentId: string | number): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents/${documentId}`
-    return await this.httpRequest.delete<EnqueuedUpdate>(url)
+    return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 
   /**
@@ -443,11 +447,11 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method deleteDocuments
    * @param {string[] | number[]} documentsIds Array of Document Ids to delete
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async deleteDocuments(
     documentsIds: string[] | number[]
-  ): Promise<EnqueuedUpdate> {
+  ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents/delete-batch`
 
     return await this.httpRequest.post(url, documentsIds)
@@ -457,11 +461,11 @@ class Index<T = Record<string, any>> {
    * Delete all documents of an index
    * @memberof Index
    * @method deleteAllDocuments
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
-  async deleteAllDocuments(): Promise<EnqueuedUpdate> {
+  async deleteAllDocuments(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
-    return await this.httpRequest.delete<EnqueuedUpdate>(url)
+    return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 
   ///
@@ -485,9 +489,9 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateSettings
    * @param {Settings} settings Object containing parameters with their updated values
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
-  async updateSettings(settings: Settings): Promise<EnqueuedUpdate> {
+  async updateSettings(settings: Settings): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings`
     return await this.httpRequest.post(url, settings)
   }
@@ -496,11 +500,11 @@ class Index<T = Record<string, any>> {
    * Reset settings.
    * @memberof Index
    * @method resetSettings
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
-  async resetSettings(): Promise<EnqueuedUpdate> {
+  async resetSettings(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings`
-    return await this.httpRequest.delete<EnqueuedUpdate>(url)
+    return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 
   ///
@@ -523,9 +527,9 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateSynonyms
    * @param {Synonyms} synonyms Mapping of synonyms with their associated words
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
-  async updateSynonyms(synonyms: Synonyms): Promise<EnqueuedUpdate> {
+  async updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/synonyms`
     return await this.httpRequest.post(url, synonyms)
   }
@@ -534,11 +538,11 @@ class Index<T = Record<string, any>> {
    * Reset the synonym list to be empty again
    * @memberof Index
    * @method resetSynonyms
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
-  async resetSynonyms(): Promise<EnqueuedUpdate> {
+  async resetSynonyms(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/synonyms`
-    return await this.httpRequest.delete<EnqueuedUpdate>(url)
+    return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 
   ///
@@ -561,9 +565,9 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateStopWords
    * @param {StopWords} stopWords Array of strings that contains the stop-words.
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
-  async updateStopWords(stopWords: StopWords): Promise<EnqueuedUpdate> {
+  async updateStopWords(stopWords: StopWords): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/stop-words`
     return await this.httpRequest.post(url, stopWords)
   }
@@ -572,11 +576,11 @@ class Index<T = Record<string, any>> {
    * Reset the stop-words list to be empty again
    * @memberof Index
    * @method resetStopWords
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
-  async resetStopWords(): Promise<EnqueuedUpdate> {
+  async resetStopWords(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/stop-words`
-    return await this.httpRequest.delete<EnqueuedUpdate>(url)
+    return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 
   ///
@@ -599,11 +603,9 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateRankingRules
    * @param {RankingRules} rankingRules Array that contain ranking rules sorted by order of importance.
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
-  async updateRankingRules(
-    rankingRules: RankingRules
-  ): Promise<EnqueuedUpdate> {
+  async updateRankingRules(rankingRules: RankingRules): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/ranking-rules`
     return await this.httpRequest.post(url, rankingRules)
   }
@@ -612,11 +614,11 @@ class Index<T = Record<string, any>> {
    * Reset the ranking rules list to its default value
    * @memberof Index
    * @method resetRankingRules
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
-  async resetRankingRules(): Promise<EnqueuedUpdate> {
+  async resetRankingRules(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/ranking-rules`
-    return await this.httpRequest.delete<EnqueuedUpdate>(url)
+    return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 
   ///
@@ -639,11 +641,11 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateDistinctAttribute
    * @param {DistinctAttribute} distinctAttribute Field name of the distinct-attribute
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
   async updateDistinctAttribute(
     distinctAttribute: DistinctAttribute
-  ): Promise<EnqueuedUpdate> {
+  ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`
     return await this.httpRequest.post(url, distinctAttribute)
   }
@@ -652,11 +654,11 @@ class Index<T = Record<string, any>> {
    * Reset the distinct-attribute.
    * @memberof Index
    * @method resetDistinctAttribute
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
-  async resetDistinctAttribute(): Promise<EnqueuedUpdate> {
+  async resetDistinctAttribute(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`
-    return await this.httpRequest.delete<EnqueuedUpdate>(url)
+    return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 
   ///
@@ -679,11 +681,11 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateFilterableAttributes
    * @param {FilterableAttributes} filterableAttributes Array of strings containing the attributes that can be used as filters at query time
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
   async updateFilterableAttributes(
     filterableAttributes: FilterableAttributes
-  ): Promise<EnqueuedUpdate> {
+  ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`
     return await this.httpRequest.post(url, filterableAttributes)
   }
@@ -692,11 +694,11 @@ class Index<T = Record<string, any>> {
    * Reset the filterable-attributes.
    * @memberof Index
    * @method resetFilterableAttributes
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
-  async resetFilterableAttributes(): Promise<EnqueuedUpdate> {
+  async resetFilterableAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`
-    return await this.httpRequest.delete<EnqueuedUpdate>(url)
+    return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 
   ///
@@ -719,11 +721,11 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateSortableAttributes
    * @param {SortableAttributes} sortableAttributes Array of strings containing the attributes that can be used to sort search results at query time
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async updateSortableAttributes(
     sortableAttributes: SortableAttributes
-  ): Promise<EnqueuedUpdate> {
+  ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`
     return await this.httpRequest.post(url, sortableAttributes)
   }
@@ -732,11 +734,11 @@ class Index<T = Record<string, any>> {
    * Reset the sortable-attributes.
    * @memberof Index
    * @method resetSortableAttributes
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
-  async resetSortableAttributes(): Promise<EnqueuedUpdate> {
+  async resetSortableAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`
-    return await this.httpRequest.delete<EnqueuedUpdate>(url)
+    return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 
   ///
@@ -759,11 +761,11 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateSearchableAttributes
    * @param {SearchableAttributes} searchableAttributes Array of strings that contains searchable attributes sorted by order of importance(most to least important)
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async updateSearchableAttributes(
     searchableAttributes: SearchableAttributes
-  ): Promise<EnqueuedUpdate> {
+  ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`
     return await this.httpRequest.post(url, searchableAttributes)
   }
@@ -772,11 +774,11 @@ class Index<T = Record<string, any>> {
    * Reset the searchable-attributes.
    * @memberof Index
    * @method resetSearchableAttributes
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
-  async resetSearchableAttributes(): Promise<EnqueuedUpdate> {
+  async resetSearchableAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`
-    return await this.httpRequest.delete<EnqueuedUpdate>(url)
+    return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 
   ///
@@ -799,11 +801,11 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateDisplayedAttributes
    * @param {DisplayedAttributes} displayedAttributes Array of strings that contains attributes of an index to display
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
   async updateDisplayedAttributes(
     displayedAttributes: DisplayedAttributes
-  ): Promise<EnqueuedUpdate> {
+  ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
     return await this.httpRequest.post(url, displayedAttributes)
   }
@@ -812,11 +814,11 @@ class Index<T = Record<string, any>> {
    * Reset the displayed-attributes.
    * @memberof Index
    * @method resetDisplayedAttributes
-   * @returns {Promise<EnqueuedUpdate>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
-  async resetDisplayedAttributes(): Promise<EnqueuedUpdate> {
+  async resetDisplayedAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
-    return await this.httpRequest.delete<EnqueuedUpdate>(url)
+    return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 }
 

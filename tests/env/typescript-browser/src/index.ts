@@ -1,4 +1,4 @@
-import { MeiliSearch, IndexResponse } from '../../../../dist/types/types'
+import { IndexResponse, MeiliSearch } from '../../../../src/'
 
 const config = {
   host: 'http://127.0.0.1:7700',

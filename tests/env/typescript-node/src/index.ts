@@ -1,4 +1,7 @@
+
+// @ts-ignore
 import {
+  // @ts-ignore
   MeiliSearch,
   IndexResponse,
   SearchResponse,
@@ -19,10 +22,14 @@ interface Movie {
 }
 
 const client = new MeiliSearch(config)
+const indexUid = "movies"
 
 ;(async () => {
-  const index = await client.getOrCreateIndex<Movie>('movies')
+  await client.deleteIndex(indexUid)
+  const { uid } = await client.createIndex(indexUid)
+  await client.waitForTask(uid)
 
+  const index = client.index(indexUid)
   const indexes = await client.getIndexes()
   indexes.map((index: IndexResponse) => {
     console.log(index.uid)

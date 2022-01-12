@@ -10,6 +10,10 @@ export type Config = {
   headers?: object
 }
 
+export type Result<T> = {
+  results: T
+}
+
 ///
 /// Request specific interfaces
 ///
@@ -157,21 +161,33 @@ export type Settings = {
 }
 
 /*
- ** UPDATE
+ ** TASKS
  */
 
-export type EnqueuedUpdate = {
-  updateId: number
+export const enum TaskStatus {
+  TASK_SUCCEEDED = 'succeeded',
+  TASK_PROCESSING = 'processing',
+  TASK_FAILED = 'failed',
+  TASK_ENQUEUED = 'enqueued',
 }
 
-export type Update = {
-  status: string
-  updateId: number
-  type: {
-    name: string
-    number: number
+export type EnqueuedTask = {
+  uid: number
+  indexUid: string
+  status: TaskStatus
+  type: string
+  enqueuedTask: string
+}
+
+export type Task = {
+  status: TaskStatus
+  uid: number
+  type: string
+  details: {
+    receivedDocuments: number
+    indexedDocuments: number
   }
-  duration: number
+  duration: string
   enqueuedAt: string
   processedAt: string
   error?: MeiliSearchErrorBody
@@ -184,7 +200,7 @@ export type EnqueuedDump = {
   finishedAt: string
 }
 
-export type WaitForPendingUpdateOptions = {
+export type WaitOptions = {
   timeOutMs?: number
   intervalMs?: number
 }
@@ -219,9 +235,21 @@ export type Stats = {
  ** Keys
  */
 
-export type Keys = {
-  private: string | null
-  public: string | null
+export type Key = {
+  description: string
+  key: string
+  actions: string[]
+  indexes: string[]
+  expiresAt: string
+  createdAt: string
+  updateAt: string
+}
+
+export type KeyPayload = {
+  description?: string
+  actions: string[]
+  indexes: string[]
+  expiresAt: string | null
 }
 
 /*
@@ -338,6 +366,24 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#invalid_api_key */
   INVALID_API_KEY = 'invalid_api_key',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_description */
+  INVALID_API_KEY_DESCRIPTION = 'invalid_api_key_description',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_actions */
+  INVALID_API_KEY_ACTIONS = 'invalid_api_key_actions',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_indexes */
+  INVALID_API_KEY_INDEXES = 'invalid_api_key_indexes',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_expires_at */
+  INVALID_API_KEY_EXPIRES_AT = 'invalid_api_key_expires_at',
+
+  /** @see https://docs.meilisearch.com/errors/#api_key_not_found */
+  API_KEY_NOT_FOUND = 'api_key_not_found',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_parameter */
+  MISSING_PARAMETER = 'missing_parameter',
 
   /** @see https://docs.meilisearch.com/errors/#missing_authorization_header */
   MISSING_AUTHORIZATION_HEADER = 'missing_authorization_header',

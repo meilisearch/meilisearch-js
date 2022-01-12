@@ -46,10 +46,10 @@ jobs:
         run: yarn test:env:esm
       - name: Run Node.js env
         run: yarn test:env:nodejs
-      - name: Run Browser env
-        run: yarn test:env:browser
       - name: Run node typescript env
         run: yarn test:env:node-ts
+      - name: Run Browser env
+        run: yarn test:env:browser
 
   linter_check:
     runs-on: ubuntu-latest
@@ -72,3 +72,23 @@ jobs:
         uses: ibiqlik/action-yamllint@v3
         with:
           config_file: .yamllint.yml
+
+  types_check:
+    runs-on: ubuntu-latest
+    name: types-check
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./node_modules
+          key: ${{ hashFiles('yarn.lock') }}
+      - name: Setup node
+        uses: actions/setup-node@v2
+      - name: Install dependencies
+        run: yarn --dev
+      - name: Build project
+        run: yarn build
+      - name: Run types check
+        run: yarn types

@@ -1,24 +1,18 @@
 import 'cross-fetch/polyfill'
 
-import {
-  Config,
-  IndexRequest,
-  EnqueuedUpdate,
-  IndexResponse,
-  IndexOptions,
-} from '../types'
+import { Config, EnqueuedTask } from '../types'
 
 import { httpResponseErrorHandler, httpErrorHandler } from '../errors'
 
 class HttpRequests {
-  headers: {}
+  headers: Record<string, any>
   url: URL
 
   constructor(config: Config) {
-    this.headers = {
-      ...(config.headers || {}),
-      'Content-Type': 'application/json',
-      ...(config.apiKey ? { 'X-Meili-API-Key': config.apiKey } : {}),
+    this.headers = Object.assign({}, config.headers || {}) // assign to avoid referencing
+    this.headers['Content-Type'] = 'application/json'
+    if (config.apiKey) {
+      this.headers['Authorization'] = `Bearer ${config.apiKey}`
     }
     this.url = new URL(config.host)
   }
@@ -41,7 +35,7 @@ class HttpRequests {
     url: string
     params?: { [key: string]: any }
     body?: any
-    config?: Partial<Request>
+    config?: Record<string, any>
   }) {
     const constructURL = new URL(url, this.url)
     if (params) {
@@ -53,7 +47,7 @@ class HttpRequests {
     }
 
     try {
-      const response: Response = await fetch(constructURL.toString(), {
+      const response: any = await fetch(constructURL.toString(), {
         ...config,
         method,
         body: JSON.stringify(body),
@@ -76,19 +70,19 @@ class HttpRequests {
   async get(
     url: string,
     params?: { [key: string]: any },
-    config?: Partial<Request>
+    config?: Record<string, any>
   ): Promise<void>
 
   async get<T = any>(
     url: string,
     params?: { [key: string]: any },
-    config?: Partial<Request>
+    config?: Record<string, any>
   ): Promise<T>
 
   async get(
     url: string,
     params?: { [key: string]: any },
-    config?: Partial<Request>
+    config?: Record<string, any>
   ): Promise<any> {
     return await this.request({
       method: 'GET',
@@ -98,25 +92,18 @@ class HttpRequests {
     })
   }
 
-  async post(
-    url: string,
-    data: IndexRequest,
-    params?: { [key: string]: any },
-    config?: Partial<Request>
-  ): Promise<IndexResponse>
-
-  async post<T = any, R = EnqueuedUpdate>(
+  async post<T = any, R = EnqueuedTask>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
-    config?: Partial<Request>
+    config?: Record<string, any>
   ): Promise<R>
 
   async post(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Partial<Request>
+    config?: Record<string, any>
   ): Promise<any> {
     return await this.request({
       method: 'POST',
@@ -127,28 +114,36 @@ class HttpRequests {
     })
   }
 
-  async put(
-    url: string,
-    data: IndexOptions | IndexRequest,
-    params?: { [key: string]: any },
-    config?: Partial<Request>
-  ): Promise<IndexResponse>
-
-  async put<T = any, R = EnqueuedUpdate>(
+  async put<T = any, R = EnqueuedTask>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
-    config?: Partial<Request>
+    config?: Record<string, any>
   ): Promise<R>
 
   async put(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Partial<Request>
+    config?: Record<string, any>
   ): Promise<any> {
     return await this.request({
       method: 'PUT',
+      url,
+      body: data,
+      params,
+      config,
+    })
+  }
+
+  async patch(
+    url: string,
+    data?: any,
+    params?: { [key: string]: any },
+    config?: Record<string, any>
+  ): Promise<any> {
+    return await this.request({
+      method: 'PATCH',
       url,
       body: data,
       params,
@@ -160,19 +155,19 @@ class HttpRequests {
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Partial<Request>
-  ): Promise<void>
+    config?: Record<string, any>
+  ): Promise<EnqueuedTask>
   async delete<T>(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Partial<Request>
+    config?: Record<string, any>
   ): Promise<T>
   async delete(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Partial<Request>
+    config?: Record<string, any>
   ): Promise<any> {
     return await this.request({
       method: 'DELETE',
