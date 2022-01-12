@@ -721,7 +721,7 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateSortableAttributes
    * @param {SortableAttributes} sortableAttributes Array of strings containing the attributes that can be used to sort search results at query time
-   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async updateSortableAttributes(
     sortableAttributes: SortableAttributes
