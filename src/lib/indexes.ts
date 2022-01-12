@@ -489,7 +489,7 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method updateSettings
    * @param {Settings} settings Object containing parameters with their updated values
-   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
    */
   async updateSettings(settings: Settings): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings`
