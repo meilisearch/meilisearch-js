@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://images.meilisearch.workers.dev/v1587402338/SDKs/meilisearch_js.svg" alt="Meilisearch-JavaScript" width="200" height="200" />
+  <img src="https://raw.githubusercontent.com/meilisearch/integration-guides/main/assets/logos/meilisearch_js.svg" alt="Meilisearch-JavaScript" width="200" height="200" />
 </p>
 
 <h1 align="center">Meilisearch JavaScript</h1>
