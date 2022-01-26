@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="https://images.meilisearch.workers.dev/v1587402338/SDKs/meilisearch_js.svg" alt="MeiliSearch-JavaScript" width="200" height="200" />
+  <img src="https://images.meilisearch.workers.dev/v1587402338/SDKs/meilisearch_js.svg" alt="meilisearch-JavaScript" width="200" height="200" />
 </p>
 
-<h1 align="center">MeiliSearch JavaScript</h1>
+<h1 align="center">meilisearch JavaScript</h1>
 
 <h4 align="center">
-  <a href="https://github.com/meilisearch/MeiliSearch">MeiliSearch</a> |
+  <a href="https://github.com/meilisearch/meilisearch">meilisearch</a> |
   <a href="https://docs.meilisearch.com">Documentation</a> |
   <a href="https://slack.meilisearch.com">Slack</a> |
   <a href="https://roadmap.meilisearch.com/tabs/1-under-consideration">Roadmap</a> |
@@ -21,18 +21,18 @@
   <a href="https://app.bors.tech/repositories/28762"><img src="https://bors.tech/images/badge_small.svg" alt="Bors enabled"></a>
 </p>
 
-<p align="center">⚡ The MeiliSearch API client written for JavaScript</p>
+<p align="center">⚡ The meilisearch API client written for JavaScript</p>
 
-**MeiliSearch JavaScript** is the MeiliSearch API client for JavaScript developers.
+**meilisearch JavaScript** is the meilisearch API client for JavaScript developers.
 
-**MeiliSearch** is an open-source search engine. [Discover what MeiliSearch is!](https://github.com/meilisearch/MeiliSearch)
+**meilisearch** is an open-source search engine. [Discover what meilisearch is!](https://github.com/meilisearch/meilisearch)
 
 ## Table of Contents <!-- omit in toc -->
 
 - [📖 Documentation](#-documentation)
 - [🔧 Installation](#-installation)
 - [🎬 Getting Started](#-getting-started)
-- [🤖 Compatibility with MeiliSearch](#-compatibility-with-meilisearch)
+- [🤖 Compatibility with meilisearch](#-compatibility-with-meilisearch)
 - [💡 Learn More](#-learn-more)
 - [⚙️ Development Workflow and Contributing](#️-development-workflow-and-contributing)
 - [📜 API Resources](#-api-resources)
@@ -57,34 +57,34 @@ With `yarn`:
 yarn add meilisearch
 ```
 
-### 🏃‍♀️ Run MeiliSearch <!-- omit in toc -->
+### 🏃‍♀️ Run meilisearch <!-- omit in toc -->
 
-There are many easy ways to [download and run a MeiliSearch instance](https://docs.meilisearch.com/reference/features/installation.html#download-and-launch).
+There are many easy ways to [download and run a meilisearch instance](https://docs.meilisearch.com/reference/features/installation.html#download-and-launch).
 
 For example, using the `curl` command in [your Terminal](https://itconnect.uw.edu/learn/workshops/online-tutorials/web-publishing/what-is-a-terminal/):
 
 ```bash
-# Install MeiliSearch
+# Install meilisearch
 curl -L https://install.meilisearch.com | sh
 
-# Launch MeiliSearch
+# Launch meilisearch
 ./meilisearch --master-key=masterKey
 ```
 
-NB: you can also download MeiliSearch from **Homebrew** or **APT** or even run it using **Docker**.
+NB: you can also download meilisearch from **Homebrew** or **APT** or even run it using **Docker**.
 
 ### Import <!-- omit in toc -->
 
-Depending on the environment in which you are using MeiliSearch, imports may differ.
+Depending on the environment in which you are using meilisearch, imports may differ.
 
 #### Import Syntax <!-- omit in toc -->
 
 Usage in an ES module environment:
 
 ```javascript
-import { MeiliSearch } from 'meilisearch'
+import { meilisearch } from 'meilisearch'
 
-const client = new MeiliSearch({
+const client = new meilisearch({
   host: 'http://127.0.0.1:7700',
   apiKey: 'masterKey',
 })
@@ -97,7 +97,7 @@ Usage in an HTML (or alike) file:
 ```html
 <script src='https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js'></script>
 <script>
-  const client = new MeiliSearch({
+  const client = new meilisearch({
     host: 'http://127.0.0.1:7700',
     apiKey: 'masterKey',
   })
@@ -109,9 +109,9 @@ Usage in an HTML (or alike) file:
 Usage in a back-end node environment
 
 ```javascript
-const { MeiliSearch } = require('meilisearch')
+const { meilisearch } = require('meilisearch')
 
-const client = new MeiliSearch({
+const client = new meilisearch({
   host: 'http://127.0.0.1:7700',
   apiKey: 'masterKey',
 })
@@ -126,9 +126,9 @@ To make this package work with React Native, please add the [react-native-url-po
 Usage in a back-end deno environment
 
 ```ts
-import { MeiliSearch } from "https://esm.sh/meilisearch"
+import { meilisearch } from "https://esm.sh/meilisearch"
 
-const client = new MeiliSearch({
+const client = new meilisearch({
   host: 'http://127.0.0.1:7700',
   apiKey: 'masterKey',
 })
@@ -140,12 +140,12 @@ const client = new MeiliSearch({
 #### Add Documents <!-- omit in toc -->
 
 ```js
-const { MeiliSearch } = require('meilisearch')
+const { meilisearch } = require('meilisearch')
 // Or if you are in a ES environment
-import { MeiliSearch } from 'meilisearch'
+import { meilisearch } from 'meilisearch'
 
 ;(async () => {
-  const client = new MeiliSearch({
+  const client = new meilisearch({
     host: 'http://127.0.0.1:7700',
     apiKey: 'masterKey',
   })
@@ -162,7 +162,7 @@ import { MeiliSearch } from 'meilisearch'
       { id: 6, title: 'Philadelphia', genres: ['Drama'] },
   ]
 
-  // If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
+  // If the index 'movies' does not exist, meilisearch creates it when you first add the documents.
   let response = await index.addDocuments(documents)
 
   console.log(response) // => { "uid": 0 }
@@ -174,7 +174,7 @@ With the `uid`, you can check the status (`enqueued`, `processing`, `succeeded` 
 #### Basic Search <!-- omit in toc -->
 
 ```javascript
-// MeiliSearch is typo-tolerant:
+// meilisearch is typo-tolerant:
 const search = await index.search('philoudelphia')
 console.log(search)
 ```
@@ -246,7 +246,7 @@ await index.updateAttributesForFaceting([
 
 You only need to perform this operation once.
 
-Note that MeiliSearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take time. You can track the process using the [tasks](https://docs.meilisearch.com/reference/api/tasks.html#get-task)).
+Note that meilisearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take time. You can track the process using the [tasks](https://docs.meilisearch.com/reference/api/tasks.html#get-task)).
 
 Then, you can perform the search:
 
@@ -340,9 +340,9 @@ index
 controller.abort()
 ```
 
-## 🤖 Compatibility with MeiliSearch
+## 🤖 Compatibility with meilisearch
 
-This package only guarantees the compatibility with the [version v0.25.0 of MeiliSearch](https://github.com/meilisearch/MeiliSearch/releases/tag/v0.25.0).
+This package only guarantees the compatibility with the [version v0.25.0 of meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.25.0).
 
 ## 💡 Learn More
 
@@ -459,10 +459,10 @@ Using the index:
 
 `client.index<T>(uid: string): Index<T>`
 
-- [Get an index instance completed with information fetched from MeiliSearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
+- [Get an index instance completed with information fetched from meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
 `client.getIndex<T>(uid: string): Promise<Index<T>>`
 
-- [Get the raw index JSON response from MeiliSearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
+- [Get the raw index JSON response from meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
 `client.getRawIndex(uid: string): Promise<IndexResponse>`
 
 - [Get an object with information about the index](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
@@ -659,4 +659,4 @@ Using the index object:
 
 <hr>
 
-**MeiliSearch** provides and maintains many **SDKs and Integration tools** like this one. We want to provide everyone with an **amazing search experience for any kind of project**. If you want to contribute, make suggestions, or just know what's going on right now, visit us in the [integration-guides](https://github.com/meilisearch/integration-guides) repository.
+**meilisearch** provides and maintains many **SDKs and Integration tools** like this one. We want to provide everyone with an **amazing search experience for any kind of project**. If you want to contribute, make suggestions, or just know what's going on right now, visit us in the [integration-guides](https://github.com/meilisearch/integration-guides) repository.
