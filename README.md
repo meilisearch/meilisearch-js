@@ -82,9 +82,9 @@ Depending on the environment in which you are using Meilisearch, imports may dif
 Usage in an ES module environment:
 
 ```javascript
-import { Meilisearch } from 'meilisearch'
+import { MeiliSearch } from 'meilisearch'
 
-const client = new Meilisearch({
+const client = new MeiliSearch({
   host: 'http://127.0.0.1:7700',
   apiKey: 'masterKey',
 })
@@ -97,7 +97,7 @@ Usage in an HTML (or alike) file:
 ```html
 <script src='https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js'></script>
 <script>
-  const client = new Meilisearch({
+  const client = new MeiliSearch({
     host: 'http://127.0.0.1:7700',
     apiKey: 'masterKey',
   })
@@ -109,9 +109,9 @@ Usage in an HTML (or alike) file:
 Usage in a back-end node environment
 
 ```javascript
-const { Meilisearch } = require('meilisearch')
+const { MeiliSearch } = require('meilisearch')
 
-const client = new Meilisearch({
+const client = new MeiliSearch({
   host: 'http://127.0.0.1:7700',
   apiKey: 'masterKey',
 })
@@ -126,9 +126,9 @@ To make this package work with React Native, please add the [react-native-url-po
 Usage in a back-end deno environment
 
 ```ts
-import { Meilisearch } from "https://esm.sh/meilisearch"
+import { MeiliSearch } from "https://esm.sh/meilisearch"
 
-const client = new Meilisearch({
+const client = new MeiliSearch({
   host: 'http://127.0.0.1:7700',
   apiKey: 'masterKey',
 })
@@ -140,12 +140,12 @@ const client = new Meilisearch({
 #### Add Documents <!-- omit in toc -->
 
 ```js
-const { Meilisearch } = require('meilisearch')
+const { MeiliSearch } = require('meilisearch')
 // Or if you are in a ES environment
-import { Meilisearch } from 'meilisearch'
+import { MeiliSearch } from 'meilisearch'
 
 ;(async () => {
-  const client = new Meilisearch({
+  const client = new MeiliSearch({
     host: 'http://127.0.0.1:7700',
     apiKey: 'masterKey',
   })
