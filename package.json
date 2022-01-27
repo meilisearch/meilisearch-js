@@ -1,7 +1,7 @@
 {
   "name": "meilisearch",
   "version": "0.24.0",
-  "description": "The MeiliSearch JS client for Node.js and the browser.",
+  "description": "The Meilisearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
     "search",

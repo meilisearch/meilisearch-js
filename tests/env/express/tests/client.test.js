@@ -1,4 +1,4 @@
-describe('MeiliSearch JS Browser test', () => {
+describe('Meilisearch JS Browser test', () => {
   beforeAll(async () => {
     await page.goto('http://localhost:3000/meilisearch')
   })
@@ -11,7 +11,7 @@ describe('MeiliSearch JS Browser test', () => {
   })
 })
 
-describe('MeiliSearch JS Browser test', () => {
+describe('Meilisearch JS CORS test', () => {
   beforeAll(async () => {
     await page.goto('http://localhost:3000/headers')
   })

@@ -1,6 +1,6 @@
 # Contributing
 
-First of all, thank you for contributing to MeiliSearch! The goal of this document is to provide everything you need to know in order to contribute to MeiliSearch and its different integrations.
+First of all, thank you for contributing to Meilisearch! The goal of this document is to provide everything you need to know in order to contribute to Meilisearch and its different integrations.
 
 <!-- MarkdownTOC autolink="true" style="ordered" indent="   " -->
 
@@ -15,8 +15,8 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 ## Assumptions
 
 1. **You're familiar with [GitHub](https://github.com) and the [Pull Request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) (PR) workflow.**
-2. **You've read the MeiliSearch [documentation](https://docs.meilisearch.com) and the [README](/README.md).**
-3. **You know about the [MeiliSearch community](https://docs.meilisearch.com/learn/what_is_meilisearch/contact.html). Please use this for help.**
+2. **You've read the Meilisearch [documentation](https://docs.meilisearch.com) and the [README](/README.md).**
+3. **You know about the [Meilisearch community](https://docs.meilisearch.com/learn/what_is_meilisearch/contact.html). Please use this for help.**
 
 ## How to Contribute
 
@@ -50,8 +50,8 @@ Each PR should pass the tests and the linter to be accepted.
 
 ```bash
 # Tests
-curl -L https://install.meilisearch.com | sh # download MeiliSearch
-./meilisearch --master-key=masterKey --no-analytics=true # run MeiliSearch
+curl -L https://install.meilisearch.com | sh # download Meilisearch
+./meilisearch --master-key=masterKey --no-analytics=true # run Meilisearch
 yarn test
 # Linter
 yarn style
@@ -90,7 +90,7 @@ Some notes on GitHub PRs:
 
 ## Release Process (for internal team only)
 
-MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
+Meilisearch tools follow the [Semantic Versioning Convention](https://semver.org/).
 
 ### Automation to Rebase and Merge the PRs
 
@@ -120,8 +120,8 @@ GitHub Actions will be triggered and push the package to [npm](https://www.npmjs
 
 Here are the steps to release a beta version of this package:
 
-- Create a new branch originating the branch containing the "beta" changes. For example, if during the MeiliSearch pre-release, create a branch originating `bump-meilisearch-v*.*.*`.<br>
-`vX.X.X` is the next version of the package, NOT the version of MeiliSearch!
+- Create a new branch originating the branch containing the "beta" changes. For example, if during the Meilisearch pre-release, create a branch originating `bump-meilisearch-v*.*.*`.<br>
+`vX.X.X` is the next version of the package, NOT the version of Meilisearch!
 
 ```bash
 git checkout bump-meilisearch-v*.*.*

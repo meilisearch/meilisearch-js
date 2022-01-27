@@ -36,7 +36,7 @@ jobs:
         run: node -v
       - name: Install dependencies
         run: yarn --dev
-      - name: MeiliSearch (latest) setup with Docker
+      - name: Meilisearch (latest) setup with Docker
         run: docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --no-analytics=true --master-key='masterKey'
       - name: Run tests
         run: yarn test
