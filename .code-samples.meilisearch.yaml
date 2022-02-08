@@ -281,7 +281,7 @@ settings_guide_ranking_rules_1: |-
     ]
   })
 settings_guide_distinct_1: |-
-  client.index('movies').updateSettings({
+  client.index('jackets').updateSettings({
     distinctAttribute: 'product_id'
   })
 settings_guide_searchable_1: |-
