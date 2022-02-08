@@ -47,7 +47,7 @@ describe.each([{ permission: 'Public' }])(
       )
     })
 
-    test(`${permission} key: try to get dump status with Search key and be denied`, async () => {
+    test(`${permission} key: try to get dump status with search key and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
         'code',
