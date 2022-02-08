@@ -180,7 +180,7 @@ describe.each([{ permission: 'Private' }])(
   }
 )
 describe.each([{ permission: 'Public' }])(
-  'Test on keys with Search key',
+  'Test on keys with search key',
   ({ permission }) => {
     test(`${permission} key: get keys denied`, async () => {
       const client = await getClient(permission)
