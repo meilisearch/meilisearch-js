@@ -34,21 +34,21 @@ describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
     expect(defaultKey).toHaveProperty('createdAt')
     expect(defaultKey).toHaveProperty('updatedAt')
 
-    const privateKey = keys.find((key: Key) =>
+    const adminKey = keys.find((key: Key) =>
       key.description.startsWith('Default Admin API Key')
     )
 
-    expect(privateKey).toBeDefined()
-    expect(privateKey).toHaveProperty(
+    expect(adminKey).toBeDefined()
+    expect(adminKey).toHaveProperty(
       'description',
       'Default Admin API Key (Use it for all other operations. Caution! Do not use it on a public frontend)'
     )
-    expect(privateKey).toHaveProperty('key')
-    expect(privateKey).toHaveProperty('actions')
-    expect(privateKey).toHaveProperty('indexes')
-    expect(privateKey).toHaveProperty('expiresAt', null)
-    expect(privateKey).toHaveProperty('createdAt')
-    expect(privateKey).toHaveProperty('updatedAt')
+    expect(adminKey).toHaveProperty('key')
+    expect(adminKey).toHaveProperty('actions')
+    expect(adminKey).toHaveProperty('indexes')
+    expect(adminKey).toHaveProperty('expiresAt', null)
+    expect(adminKey).toHaveProperty('createdAt')
+    expect(adminKey).toHaveProperty('updatedAt')
   })
 
   test(`${permission} key: get on key`, async () => {
@@ -156,7 +156,7 @@ describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
 })
 
 describe.each([{ permission: 'Private' }])(
-  'Test on keys with Private key',
+  'Test on keys with admin key',
   ({ permission }) => {
     test(`${permission} key: get keys denied`, async () => {
       const client = await getClient(permission)
@@ -180,7 +180,7 @@ describe.each([{ permission: 'Private' }])(
   }
 )
 describe.each([{ permission: 'Public' }])(
-  'Test on keys with Public key',
+  'Test on keys with search key',
   ({ permission }) => {
     test(`${permission} key: get keys denied`, async () => {
       const client = await getClient(permission)

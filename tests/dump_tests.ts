@@ -37,9 +37,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 )
 
 describe.each([{ permission: 'Public' }])(
-  'Test on dump with public api key should not have access',
+  'Test on dump with search api key should not have access',
   ({ permission }) => {
-    test(`${permission} key: try to create dump with public key and be denied`, async () => {
+    test(`${permission} key: try to create dump with search key and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.createDump()).rejects.toHaveProperty(
         'code',
@@ -47,7 +47,7 @@ describe.each([{ permission: 'Public' }])(
       )
     })
 
-    test(`${permission} key: try to get dump status with public key and be denied`, async () => {
+    test(`${permission} key: try to get dump status with search key and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
         'code',

@@ -20,7 +20,7 @@ afterAll(async () => {
 })
 
 describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
-  'Test on indexes w/ master and private key',
+  'Test on indexes w/ master and admin key',
   ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config)
@@ -319,7 +319,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 )
 
 describe.each([{ permission: 'Public' }])(
-  'Test on routes with public key',
+  'Test on routes with search key',
   ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config)

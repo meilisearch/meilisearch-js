@@ -171,7 +171,7 @@ describe.each([
 })
 
 describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
-  'Test on client w/ master and private key',
+  'Test on client w/ master and admin key',
   ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config)
@@ -384,7 +384,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 )
 
 describe.each([{ permission: 'Public' }])(
-  'Test on misc client methods w/ public apikey',
+  'Test on misc client methods w/ search apikey',
   ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config)
