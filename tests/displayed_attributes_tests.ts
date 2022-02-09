@@ -1,13 +1,10 @@
-import { EnqueuedUpdate, ErrorStatusCode } from '../src/types'
+import { EnqueuedTask, ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
-  masterClient,
-  privateClient,
-  publicClient,
-  anonymousClient,
   BAD_HOST,
   MeiliSearch,
+  getClient,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -34,140 +31,140 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([
-  { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-])('Test on displayed attributes', ({ client, permission }) => {
-  beforeEach(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index.uid)
-    const { updateId } = await masterClient
-      .index(index.uid)
-      .addDocuments(dataset)
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-  })
-
-  test(`${permission} key: Get default displayed attributes`, async () => {
-    await client
-      .index(index.uid)
-      .getDisplayedAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
-  })
-
-  test(`${permission} key: Update displayed attributes`, async () => {
-    const newDisplayedAttribute = ['title']
-    const { updateId } = await client
-      .index(index.uid)
-      .updateDisplayedAttributes(newDisplayedAttribute)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getDisplayedAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(newDisplayedAttribute)
-      })
-  })
-
-  test(`${permission} key: Update displayed attributes at null`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .updateDisplayedAttributes(null)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getDisplayedAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
-  })
-
-  test(`${permission} key: Reset displayed attributes`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .resetDisplayedAttributes()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getDisplayedAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
-  })
-})
-
-describe.each([{ client: publicClient, permission: 'Public' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   'Test on displayed attributes',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
+      const client = await getClient('Master')
+      const { uid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(uid)
     })
 
-    test(`${permission} key: try to get displayed attributes and be denied`, async () => {
-      await expect(
-        client.index(index.uid).getDisplayedAttributes()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Get default displayed attributes`, async () => {
+      const client = await getClient(permission)
+
+      const response = await client.index(index.uid).getDisplayedAttributes()
+      expect(response).toEqual(['*'])
     })
 
-    test(`${permission} key: try to update displayed attributes and be denied`, async () => {
-      await expect(
-        client.index(index.uid).updateDisplayedAttributes([])
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Update displayed attributes`, async () => {
+      const client = await getClient(permission)
+
+      const newDisplayedAttribute = ['title']
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateDisplayedAttributes(newDisplayedAttribute)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client
+        .index(index.uid)
+        .getDisplayedAttributes()
+      expect(response).toEqual(newDisplayedAttribute)
     })
 
-    test(`${permission} key: try to reset displayed attributes and be denied`, async () => {
-      await expect(
-        client.index(index.uid).resetDisplayedAttributes()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Update displayed attributes at null`, async () => {
+      const client = await getClient(permission)
+
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateDisplayedAttributes(null)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client
+        .index(index.uid)
+        .getDisplayedAttributes()
+      expect(response).toEqual(['*'])
+    })
+
+    test(`${permission} key: Reset displayed attributes`, async () => {
+      const client = await getClient(permission)
+
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .resetDisplayedAttributes()
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client
+        .index(index.uid)
+        .getDisplayedAttributes()
+      expect(response).toEqual(['*'])
     })
   }
 )
 
-describe.each([{ client: anonymousClient, permission: 'No' }])(
+describe.each([{ permission: 'Public' }])(
   'Test on displayed attributes',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
+      const client = await getClient('Master')
+      const { uid } = await client.createIndex(index.uid)
+      await client.waitForTask(uid)
     })
 
     test(`${permission} key: try to get displayed attributes and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).getDisplayedAttributes()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+
+    test(`${permission} key: try to update displayed attributes and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).updateDisplayedAttributes([])
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+
+    test(`${permission} key: try to reset displayed attributes and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).resetDisplayedAttributes()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+  }
+)
+
+describe.each([{ permission: 'No' }])(
+  'Test on displayed attributes',
+  ({ permission }) => {
+    beforeEach(async () => {
+      await clearAllIndexes(config)
+      const client = await getClient('Master')
+      const { uid } = await client.createIndex(index.uid)
+      await client.waitForTask(uid)
+    })
+
+    test(`${permission} key: try to get displayed attributes and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).getDisplayedAttributes()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to update displayed attributes and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).updateDisplayedAttributes([])
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to reset displayed attributes and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).resetDisplayedAttributes()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

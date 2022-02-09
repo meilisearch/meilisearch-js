@@ -1,13 +1,10 @@
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
-  masterClient,
-  privateClient,
-  publicClient,
-  anonymousClient,
   BAD_HOST,
   MeiliSearch,
+  getClient,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -34,140 +31,136 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([
-  { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-])('Test on searchable attributes', ({ client, permission }) => {
-  beforeEach(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index.uid)
-    const { updateId } = await masterClient
-      .index(index.uid)
-      .addDocuments(dataset)
-    await masterClient.index(index.uid).waitForPendingUpdate(updateId)
-  })
-
-  test(`${permission} key: Get default searchable attributes`, async () => {
-    await client
-      .index(index.uid)
-      .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
-  })
-
-  test(`${permission} key: Update searchable attributes`, async () => {
-    const newSearchableAttributes = ['title']
-    const { updateId } = await client
-      .index(index.uid)
-      .updateSearchableAttributes(newSearchableAttributes)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(newSearchableAttributes)
-      })
-  })
-
-  test(`${permission} key: Update searchable attributes at null`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .updateSearchableAttributes(null)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
-  })
-
-  test(`${permission} key: Reset searchable attributes`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .resetSearchableAttributes()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getSearchableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(['*'])
-      })
-  })
-})
-
-describe.each([{ client: publicClient, permission: 'Public' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   'Test on searchable attributes',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeEach(async () => {
-      await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
+      const client = await getClient('Master')
+      const { uid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(uid)
+      await client.index(index.uid).waitForTask(uid)
     })
 
-    test(`${permission} key: try to get searchable attributes and be denied`, async () => {
-      await expect(
-        client.index(index.uid).getSearchableAttributes()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Get default searchable attributes`, async () => {
+      const client = await getClient(permission)
+      const response: string[] = await client
+        .index(index.uid)
+        .getSearchableAttributes()
+      expect(response).toEqual(['*'])
     })
 
-    test(`${permission} key: try to update searchable attributes and be denied`, async () => {
-      await expect(
-        client.index(index.uid).updateSearchableAttributes([])
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Update searchable attributes`, async () => {
+      const client = await getClient(permission)
+      const newSearchableAttributes = ['title']
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateSearchableAttributes(newSearchableAttributes)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client
+        .index(index.uid)
+        .getSearchableAttributes()
+      expect(response).toEqual(newSearchableAttributes)
     })
 
-    test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
-      await expect(
-        client.index(index.uid).resetSearchableAttributes()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Update searchable attributes at null`, async () => {
+      const client = await getClient(permission)
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateSearchableAttributes(null)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client
+        .index(index.uid)
+        .getSearchableAttributes()
+      expect(response).toEqual(['*'])
+    })
+
+    test(`${permission} key: Reset searchable attributes`, async () => {
+      const client = await getClient(permission)
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .resetSearchableAttributes()
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client
+        .index(index.uid)
+        .getSearchableAttributes()
+      expect(response).toEqual(['*'])
     })
   }
 )
 
-describe.each([{ client: anonymousClient, permission: 'No' }])(
+describe.each([{ permission: 'Public' }])(
   'Test on searchable attributes',
-  ({ client, permission }) => {
-    beforeAll(async () => {
-      await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
+  ({ permission }) => {
+    beforeEach(async () => {
+      const client = await getClient('Master')
+      const { uid } = await client.createIndex(index.uid)
+      await client.waitForTask(uid)
     })
 
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).getSearchableAttributes()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+
+    test(`${permission} key: try to update searchable attributes and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).updateSearchableAttributes([])
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+
+    test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).resetSearchableAttributes()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+  }
+)
+
+describe.each([{ permission: 'No' }])(
+  'Test on searchable attributes',
+  ({ permission }) => {
+    beforeAll(async () => {
+      const client = await getClient('Master')
+      const { uid } = await client.createIndex(index.uid)
+      await client.waitForTask(uid)
+    })
+
+    test(`${permission} key: try to get searchable attributes and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).getSearchableAttributes()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to update searchable attributes and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).updateSearchableAttributes([])
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).resetSearchableAttributes()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

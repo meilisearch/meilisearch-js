@@ -1,13 +1,10 @@
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
-  masterClient,
-  privateClient,
-  publicClient,
-  anonymousClient,
   BAD_HOST,
   MeiliSearch,
+  getClient,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -34,139 +31,123 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([
-  { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-])('Test on stop words', ({ client, permission }) => {
-  beforeEach(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index.uid)
-    const { updateId } = await masterClient
-      .index(index.uid)
-      .addDocuments(dataset)
-    await masterClient.index(index.uid).waitForPendingUpdate(updateId)
-  })
-
-  test(`${permission} key: Get default stop words`, async () => {
-    await client
-      .index(index.uid)
-      .getStopWords()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
-  })
-
-  test(`${permission} key: Update stop words`, async () => {
-    const newStopWords = ['the']
-    const { updateId } = await client
-      .index(index.uid)
-      .updateStopWords(newStopWords)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getStopWords()
-      .then((response: string[]) => {
-        expect(response).toEqual(newStopWords)
-      })
-  })
-
-  test(`${permission} key: Update stop words with null value`, async () => {
-    const newStopWords = null
-    const { updateId } = await client
-      .index(index.uid)
-      .updateStopWords(newStopWords)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getStopWords()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
-  })
-
-  test(`${permission} key: Reset stop words`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .resetStopWords()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getStopWords()
-      .then((response: string[]) => {
-        expect(response).toEqual([])
-      })
-  })
-})
-
-describe.each([{ client: publicClient, permission: 'Public' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   'Test on stop words',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeEach(async () => {
-      await clearAllIndexes(config)
+      const client = await getClient('Master')
+
+      const { uid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(uid)
     })
 
-    test(`${permission} key: try to get stop words and be denied`, async () => {
-      await expect(
-        client.index(index.uid).getStopWords()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Get default stop words`, async () => {
+      const client = await getClient(permission)
+      const response: string[] = await client.index(index.uid).getStopWords()
+      expect(response).toEqual([])
     })
 
-    test(`${permission} key: try to update stop words and be denied`, async () => {
-      await expect(
-        client.index(index.uid).updateStopWords([])
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Update stop words`, async () => {
+      const client = await getClient(permission)
+      const newStopWords = ['the']
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateStopWords(newStopWords)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client.index(index.uid).getStopWords()
+      expect(response).toEqual(newStopWords)
     })
 
-    test(`${permission} key: try to reset stop words and be denied`, async () => {
-      await expect(
-        client.index(index.uid).resetStopWords()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Update stop words with null value`, async () => {
+      const client = await getClient(permission)
+      const newStopWords = null
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateStopWords(newStopWords)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client.index(index.uid).getStopWords()
+      expect(response).toEqual([])
+    })
+
+    test(`${permission} key: Reset stop words`, async () => {
+      const client = await getClient(permission)
+      const task: EnqueuedTask = await client.index(index.uid).resetStopWords()
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client.index(index.uid).getStopWords()
+      expect(response).toEqual([])
     })
   }
 )
 
-describe.each([{ client: anonymousClient, permission: 'No' }])(
+describe.each([{ permission: 'Public' }])(
   'Test on stop words',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
     })
 
     test(`${permission} key: try to get stop words and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).getStopWords()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+
+    test(`${permission} key: try to update stop words and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).updateStopWords([])
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+
+    test(`${permission} key: try to reset stop words and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).resetStopWords()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+  }
+)
+
+describe.each([{ permission: 'No' }])(
+  'Test on stop words',
+  ({ permission }) => {
+    beforeEach(async () => {
+      await clearAllIndexes(config)
+    })
+
+    test(`${permission} key: try to get stop words and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).getStopWords()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to update stop words and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).updateStopWords([])
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to reset stop words and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).resetStopWords()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

@@ -1,6 +1,7 @@
 const config = {
   rootDir: '.',
   testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
+  verbose: true,
   testPathIgnorePatterns: ['meilisearch-test-utils', 'env'],
   coverageThreshold: {
     global: {

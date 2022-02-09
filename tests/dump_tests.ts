@@ -2,73 +2,76 @@ import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
-  masterClient,
-  privateClient,
-  publicClient,
-  anonymousClient,
   waitForDumpProcessing,
   MeiliSearch,
   BAD_HOST,
+  getClient,
 } from './meilisearch-test-utils'
 
 beforeEach(async () => {
   await clearAllIndexes(config)
 })
 
-describe.each([
-  { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-])('Test on dump', ({ client, permission }) => {
-  test(`${permission} key: create a new dump`, async () => {
-    const response = await client.createDump()
-    expect(response.uid).toBeDefined()
-    expect(response.status).toEqual('in_progress')
-    await waitForDumpProcessing(response.uid, client)
-  })
+describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+  'Test on dump',
+  ({ permission }) => {
+    test(`${permission} key: create a new dump`, async () => {
+      const client = await getClient(permission)
+      const response = await client.createDump()
+      expect(response.uid).toBeDefined()
+      expect(response.status).toEqual('in_progress')
+      await waitForDumpProcessing(response.uid, client)
+    })
 
-  test(`${permission} key: get dump status`, async () => {
-    const enqueuedDump = await client.createDump()
-    await waitForDumpProcessing(enqueuedDump.uid, client)
-    const response = await client.getDumpStatus(enqueuedDump.uid)
-    expect(response.uid).toEqual(enqueuedDump.uid)
-    expect(response.status).toBeDefined()
-    expect(response.startedAt).toBeDefined()
-    expect(response.finishedAt).toBeDefined()
-  })
-})
+    test(`${permission} key: get dump status`, async () => {
+      const client = await getClient(permission)
+      const enqueuedDump = await client.createDump()
+      await waitForDumpProcessing(enqueuedDump.uid, client)
+      const response = await client.getDumpStatus(enqueuedDump.uid)
+      expect(response.uid).toEqual(enqueuedDump.uid)
+      expect(response.status).toBeDefined()
+      expect(response.startedAt).toBeDefined()
+      expect(response.finishedAt).toBeDefined()
+    })
+  }
+)
 
-describe.each([{ client: publicClient, permission: 'Public' }])(
-  'Test on dump with public api key should not have access',
-  ({ client, permission }) => {
-    test(`${permission} key: try to create dump with public key and be denied`, async () => {
+describe.each([{ permission: 'Public' }])(
+  'Test on dump with search api key should not have access',
+  ({ permission }) => {
+    test(`${permission} key: try to create dump with search key and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(client.createDump()).rejects.toHaveProperty(
-        'errorCode',
-        ErrorStatusCode.INVALID_TOKEN
+        'code',
+        ErrorStatusCode.INVALID_API_KEY
       )
     })
 
-    test(`${permission} key: try to get dump status with public key and be denied`, async () => {
+    test(`${permission} key: try to get dump status with search key and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
-        'errorCode',
-        ErrorStatusCode.INVALID_TOKEN
+        'code',
+        ErrorStatusCode.INVALID_API_KEY
       )
     })
   }
 )
 
-describe.each([{ client: anonymousClient, permission: 'No' }])(
+describe.each([{ permission: 'No' }])(
   'Test on dump without api key should not have access',
-  ({ client, permission }) => {
+  ({ permission }) => {
     test(`${permission} key: try to create dump with no key and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(client.createDump()).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to get dump status with no key and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

@@ -1,19 +1,19 @@
-# Testing the code base against the MeiliSearch pre-releases
+# Testing the code base against the Meilisearch pre-releases
 name: Pre-Release Tests
 
 # Will only run for PRs and pushes to bump-meilisearch-v*
 on:
   push:
-    branches: bump-meilisearch-v*
+    branches: [bump-meilisearch-v*]
   pull_request:
-    branches: bump-meilisearch-v*
+    branches: [bump-meilisearch-v*]
 
 jobs:
   integration_tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ '12', '14' ]
+        node: ["12", "14", "16"]
     name: integration-tests-against-rc (Node.js ${{ matrix.node }})
     steps:
       - uses: actions/checkout@v2
@@ -24,16 +24,16 @@ jobs:
             ./node_modules
           key: ${{ hashFiles('yarn.lock') }}
       - name: Setup node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node }}
       - name: print version
         run: node -v
       - name: Install dependencies
         run: yarn --dev
-      - name: Get the latest MeiliSearch RC
+      - name: Get the latest Meilisearch RC
         run: echo "MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/main/scripts/get-latest-meilisearch-rc.sh | bash)" >> $GITHUB_ENV
-      - name: MeiliSearch (${{ env.MEILISEARCH_VERSION }}) setup with Docker
+      - name: Meilisearch (${{ env.MEILISEARCH_VERSION }}) setup with Docker
         run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_VERSION }} ./meilisearch --master-key=masterKey --no-analytics=true
       - name: Run tests
         run: yarn test
@@ -43,7 +43,49 @@ jobs:
         run: yarn test:env:esm
       - name: Run Node.js env
         run: yarn test:env:nodejs
-      - name: Run Browser env
-        run: yarn test:env:browser
       - name: Run node typescript env
         run: yarn test:env:node-ts
+      - name: Run Browser env
+        run: yarn test:env:browser
+
+  linter_check:
+    runs-on: ubuntu-latest
+    name: linter-check
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./node_modules
+          key: ${{ hashFiles('yarn.lock') }}
+      - name: Setup node
+        uses: actions/setup-node@v2
+      - name: Install dependencies
+        run: yarn --dev
+      - name: Run style check
+        run: yarn style
+      - name: yaml-lint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          config_file: .yamllint.yml
+
+  types_check:
+    runs-on: ubuntu-latest
+    name: types-check
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./node_modules
+          key: ${{ hashFiles('yarn.lock') }}
+      - name: Setup node
+        uses: actions/setup-node@v2
+      - name: Install dependencies
+        run: yarn --dev
+      - name: Build project
+        run: yarn build
+      - name: Run types check
+        run: yarn types

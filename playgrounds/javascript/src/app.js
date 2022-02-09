@@ -6,10 +6,13 @@ const config = {
 }
 
 const client = new MeiliSearch(config)
-const uid = 'movies'
+const indexUid = 'movies'
 
 const addDataset = async () => {
-  const index = await client.getOrCreateIndex(uid)
+  const index = await client.deleteIndex(indexUid)
+  const { uid } = await client.createIndex(indexUid)
+  await index.waitForTask(uid)
+
   const documents = await index.getDocuments()
 
   const dataset = [
@@ -25,27 +28,37 @@ const addDataset = async () => {
     { id: 6, title: 'Philadelphia', genres: ['Drama'] },
   ]
   if (documents.length === 0) {
-    const { updateId } = await index.addDocuments(dataset)
-    await index.waitForPendingUpdate(updateId)
+    const task = await index.addDocuments(dataset)
+    await index.waitForPendingUpdate(task.uid)
   }
 }
 
 ;(async () => {
-  await addDataset()
   try {
-    const index = await client.getOrCreateIndex('movies')
-
-    const resp = await index.search(
-      'Moana',
+    await addDataset()
+    const indexes = await client.getIndexes()
+    document.querySelector('.indexes').innerText = JSON.stringify(
+      indexes,
+      null,
+      2
+    )
+    const resp = await client.index(indexUid).search(
+      '',
       {
-        limit: 1,
         attributesToHighlight: ['title'],
       },
       'POST'
     )
     console.log({ resp })
     console.log({ hit: resp.hits[0] })
+    document.querySelector('.hits').innerText = JSON.stringify(
+      resp.hits,
+      null,
+      2
+    )
+    document.querySelector('.errors_title').style.display = 'none'
   } catch (e) {
     console.error(e)
+    document.querySelector('.errors').innerText = JSON.stringify(e, null, 2)
   }
 })()

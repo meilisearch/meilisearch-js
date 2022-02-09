@@ -1,10 +1,9 @@
 # Contributing
 
-First of all, thank you for contributing to MeiliSearch! The goal of this document is to provide everything you need to know in order to contribute to MeiliSearch and its different integrations.
+First of all, thank you for contributing to Meilisearch! The goal of this document is to provide everything you need to know in order to contribute to Meilisearch and its different integrations.
 
 <!-- MarkdownTOC autolink="true" style="ordered" indent="   " -->
 
-- [Hacktoberfest](#hacktoberfest)
 - [Assumptions](#assumptions)
 - [How to Contribute](#how-to-contribute)
 - [Development Workflow](#development-workflow)
@@ -13,21 +12,11 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 
 <!-- /MarkdownTOC -->
 
-## Hacktoberfest
-
-It's [Hacktoberfest month](https://blog.meilisearch.com/contribute-hacktoberfest-2021/)! 🥳
-
-🚀 If your PR gets accepted it will count into your participation to Hacktoberfest!
-
-✅ To be accepted it has either to have been merged, approved or tagged with the `hacktoberfest-accepted` label.
-
-🧐 Don't forget to check the [quality standards](https://hacktoberfest.digitalocean.com/resources/qualitystandards)! Low-quality PRs might get marked as `spam` or `invalid`, and will not count toward your participation in Hacktoberfest.
-
 ## Assumptions
 
 1. **You're familiar with [GitHub](https://github.com) and the [Pull Request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) (PR) workflow.**
-2. **You've read the MeiliSearch [documentation](https://docs.meilisearch.com) and the [README](/README.md).**
-3. **You know about the [MeiliSearch community](https://docs.meilisearch.com/learn/what_is_meilisearch/contact.html). Please use this for help.**
+2. **You've read the Meilisearch [documentation](https://docs.meilisearch.com) and the [README](/README.md).**
+3. **You know about the [Meilisearch community](https://docs.meilisearch.com/learn/what_is_meilisearch/contact.html). Please use this for help.**
 
 ## How to Contribute
 
@@ -45,7 +34,7 @@ It's [Hacktoberfest month](https://blog.meilisearch.com/contribute-hacktoberfest
 
 To run this project, you will need:
 
-- Node.js >= v12 and node < 15
+- Node.js >= v12 and node <= 16
 - Yarn
 
 
@@ -61,8 +50,8 @@ Each PR should pass the tests and the linter to be accepted.
 
 ```bash
 # Tests
-docker pull getmeili/meilisearch:latest # Fetch the latest version of MeiliSearch image from Docker Hub
-docker run -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=masterKey --no-analytics=true
+curl -L https://install.meilisearch.com | sh # download Meilisearch
+./meilisearch --master-key=masterKey --no-analytics=true # run Meilisearch
 yarn test
 # Linter
 yarn style
@@ -95,27 +84,27 @@ Some notes on GitHub PRs:
 
 - [Convert your PR as a draft](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/changing-the-stage-of-a-pull-request) if your changes are a work in progress: no one will review it until you pass your PR as ready for review.<br>
   The draft PR can be very useful if you want to show that you are working on something and make your work visible.
-- The branch related to the PR must be **up-to-date with `main`** before merging. Fortunately, this project [integrates a bot](https://github.com/meilisearch/integration-guides/blob/main/guides/bors.md) to automatically enforce this requirement without the PR author having to do it manually.
+- The branch related to the PR must be **up-to-date with `main`** before merging. Fortunately, this project [integrates a bot](https://github.com/meilisearch/integration-guides/blob/main/resources/bors.md) to automatically enforce this requirement without the PR author having to do it manually.
 - All PRs must be reviewed and approved by at least one maintainer.
 - The PR title should be accurate and descriptive of the changes. The title of the PR will be indeed automatically added to the next [release changelogs](https://github.com/meilisearch/meilisearch-js/releases/).
 
 ## Release Process (for internal team only)
 
-MeiliSearch tools follow the [Semantic Versioning Convention](https://semver.org/).
+Meilisearch tools follow the [Semantic Versioning Convention](https://semver.org/).
 
 ### Automation to Rebase and Merge the PRs
 
 This project integrates a bot that helps us manage pull requests merging.<br>
-_[Read more about this](https://github.com/meilisearch/integration-guides/blob/main/guides/bors.md)._
+_[Read more about this](https://github.com/meilisearch/integration-guides/blob/main/resources/bors.md)._
 
 ### Automated Changelogs
 
 This project integrates a tool to create automated changelogs.<br>
-_[Read more about this](https://github.com/meilisearch/integration-guides/blob/main/guides/release-drafter.md)._
+_[Read more about this](https://github.com/meilisearch/integration-guides/blob/main/resources/release-drafter.md)._
 
 ### How to Publish the Release
 
-⚠️ Before doing anything, make sure you got through the guide about [Releasing an Integration](https://github.com/meilisearch/integration-guides/blob/main/guides/integration-release.md).
+⚠️ Before doing anything, make sure you got through the guide about [Releasing an Integration](https://github.com/meilisearch/integration-guides/blob/main/resources/integration-release.md).
 
 Make a PR modifying the file [`package.json`](/package.json) with the right version.
 
@@ -123,9 +112,42 @@ Make a PR modifying the file [`package.json`](/package.json) with the right vers
 "version": "X.X.X",
 ```
 
-Once the changes are merged on `main`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-js/releases).
+Once the changes are merged on `main`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-js/releases): on this page, click on `Edit` (related to the draft release) > update the description (be sure you apply [these recommandations](https://github.com/meilisearch/integration-guides/blob/main/resources/integration-release.md#writting-the-release-description)) > when you are ready, click on `Publish release`.
 
 GitHub Actions will be triggered and push the package to [npm](https://www.npmjs.com/package/meilisearch).
+
+#### Release a `beta` Version
+
+Here are the steps to release a beta version of this package:
+
+- Create a new branch originating the branch containing the "beta" changes. For example, if during the Meilisearch pre-release, create a branch originating `bump-meilisearch-v*.*.*`.<br>
+`vX.X.X` is the next version of the package, NOT the version of Meilisearch!
+
+```bash
+git checkout bump-meilisearch-v*.*.*
+git pull origin bump-meilisearch-v*.*.*
+git checkout -b vX.X.X-beta.0
+```
+
+- Change the version in `package.json` by `vX.X.X-beta.0` and commit it to the `vX.X.X-beta.0` branch
+
+- Go to the [GitHub interface for releasing](https://github.com/meilisearch/meilisearch-js/releases): on this page, click on `Draft a new release`.
+
+- Create a GitHub pre-release:
+  - Fill the description with the detailed changelogs
+  - Fill the title with `vX.X.X-beta.0`
+  - Fill the tag with `vX.X.X-beta.0`
+  - ⚠️ Select the `vX.X.X-beta.0` branch and NOT `main`
+  - ⚠️ Click on the "This is a pre-release" checkbox
+  - Click on "Publish release"
+
+GitHub Actions will be triggered and push the beta version to [npm](https://www.npmjs.com/package/meilisearch).
+
+💡 If you need to release a new beta for the same version (i.e. `vX.X.X-beta.1`):
+- merge the change into `bump-meilisearch-v*.*.*`
+- rebase the `vX.X.X-beta.0` branch
+- change the version name in `package.json`
+- creata a pre-release via the GitHub interface
 
 <hr>
 

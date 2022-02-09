@@ -1,11 +1,11 @@
-# This code-samples file is used by the MeiliSearch documentation
+# This code-samples file is used by the Meilisearch documentation
 # Every example written here will be automatically fetched by
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
 get_one_index_1: |-
   client.index('movies').getRawInfo()
-get_all_indexes_1: |-
+list_all_indexes_1: |-
   client.getIndexes()
 create_an_index_1: |-
   client.createIndex('movies', { primaryKey: 'movie_id' })
@@ -41,12 +41,40 @@ search_post_1: |-
   client.index('movies').search('American ninja')
 search_get_1: |-
   client.index('movies').search('American ninja')
-get_update_1: |-
-  client.index('movies').getUpdateStatus(1)
-get_all_updates_1: |-
-  client.index('movies').getAllUpdateStatus()
-get_keys_1: |-
+get_task_by_index_1: |-
+  client.index('movies').getTask(1)
+get_all_tasks_by_index_1: |-
+  client.index('movies').getTasks()
+get_all_tasks_1: |-
+  client.getTasks()
+get_task_1: |-
+  client.getTask(1)
+get_one_key_1: |-
+  client.getKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+get_all_keys_1: |-
   client.getKeys()
+create_a_key_1: |-
+  client.createKey({
+    description: 'Add documents: Products API key',
+    actions: ['documents.add'],
+    indexes: ['products'],
+    expiresAt: '2021-11-13T00:00:00Z'
+  })
+update_a_key_1: |-
+  client.updateKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4', {
+      description: 'Manage documents: Products/Reviews API key',
+      actions: [
+        'documents.add',
+        'documents.delete'
+      ],
+      indexes: [
+        'products',
+        'reviews'
+      ],
+      expiresAt: '2021-12-31T23:59:59Z'
+  })
+delete_a_key_1: |-
+  client.deleteKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
 get_settings_1: |-
   client.index('movies').getSettings()
 update_settings_1: |-
@@ -121,11 +149,11 @@ update_ranking_rules_1: |-
 reset_ranking_rules_1: |-
   client.index('movies').resetRankingRules()
 get_distinct_attribute_1: |-
-  client.index('movies').getDistinctAttribute()
+  client.index('shoes').getDistinctAttribute()
 update_distinct_attribute_1: |-
-  client.index('movies').updateDistinctAttribute('movie_id')
+  client.index('shoes').updateDistinctAttribute('skuid')
 reset_distinct_attribute_1: |-
-  client.index('movies').resetDistinctAttribute()
+  client.index('shoes').resetDistinctAttribute()
 get_searchable_attributes_1: |-
   client.index('movies').getSearchableAttributes()
 update_searchable_attributes_1: |-
@@ -253,7 +281,7 @@ settings_guide_ranking_rules_1: |-
     ]
   })
 settings_guide_distinct_1: |-
-  client.index('movies').updateSettings({
+  client.index('jackets').updateSettings({
     distinctAttribute: 'product_id'
   })
 settings_guide_searchable_1: |-
@@ -271,6 +299,13 @@ settings_guide_displayed_1: |-
       'description',
       'genre',
       'release_date',
+    ]
+  })
+settings_guide_sortable_1: |-
+  client.index('books').updateSettings({
+    sortableAttributes: [
+      'author',
+      'price'
     ]
   })
 add_movies_json_1: |-
@@ -375,7 +410,7 @@ faceted_search_walkthrough_facets_distribution_1: |-
 post_dump_1: |-
   client.createDump()
 get_dump_status_1: |-
-  client.getDumpStatus("20201101-110357260")
+  client.getDumpStatus('20201101-110357260')
 phrase_search_1: |-
   client.index('movies')
     .search('"african american" horror')
@@ -415,3 +450,53 @@ search_parameter_guide_sort_1: |-
   client.index('books').search('science fiction', {
     sort: ['price:asc'],
   })
+geosearch_guide_filter_settings_1: |-
+  client.index('restaurants')
+  .updateFilterableAttributes([
+    '_geo'
+  ])
+geosearch_guide_filter_usage_1: |-
+  client.index('restaurants').search('', {
+    filter: ['_geoRadius(45.4628328, 9.1076931, 2000)'],
+  })
+geosearch_guide_filter_usage_2: |-
+  client.index('restaurants').search('', {
+    filter: ['_geoRadius(45.4628328, 9.1076931, 2000) AND type = pizza'],
+  })
+geosearch_guide_sort_settings_1: |-
+  client.index('restaurants').updateSortableAttributes([
+    '_geo'
+  ])
+geosearch_guide_sort_usage_1: |-
+  client.index('restaurants').search('', {
+    sort: ['_geoPoint(48.8583701,2.2922926):asc'],
+  })
+geosearch_guide_sort_usage_2: |-
+  client.index('restaurants').search('', {
+    sort: ['_geoPoint(48.8583701,2.2922926):asc', 'rating:desc'],
+  })
+security_guide_search_key_1: |-
+  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'apiKey' })
+  client.index('patient_medical_records').search()
+security_guide_update_key_1: |-
+  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
+  client.updateKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4', {
+    indexes: ['doctors']
+  })
+security_guide_create_key_1: |-
+  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
+  client.createKey({
+    description: 'Search patient records key',
+    actions: ['search'],
+    indexes: ['patient_medical_records'],
+    expiresAt: '2023-01-01T00:00:00Z'
+  })
+security_guide_list_keys_1: |-
+  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
+  client.getKeys()
+security_guide_delete_key_1: |-
+  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
+  client.getKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+authorization_header_1: |-
+  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
+  client.getKeys()

@@ -1,13 +1,10 @@
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
-  masterClient,
-  privateClient,
-  publicClient,
-  anonymousClient,
   BAD_HOST,
   MeiliSearch,
+  getClient,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -43,138 +40,124 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([
-  { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-])('Test on ranking rules', ({ client, permission }) => {
-  beforeEach(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index.uid)
-    const { updateId } = await masterClient
-      .index(index.uid)
-      .addDocuments(dataset)
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-  })
-
-  test(`${permission} key: Get default ranking rules`, async () => {
-    await client
-      .index(index.uid)
-      .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
-      })
-  })
-
-  test(`${permission} key: Update ranking rules`, async () => {
-    const newRankingRules = ['title:asc', 'typo', 'description:desc']
-    const { updateId } = await client
-      .index(index.uid)
-      .updateRankingRules(newRankingRules)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(newRankingRules)
-      })
-  })
-
-  test(`${permission} key: Update ranking rules at null`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .updateRankingRules(null)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
-      })
-  })
-
-  test(`${permission} key: Reset ranking rules`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .resetRankingRules()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getRankingRules()
-      .then((response: string[]) => {
-        expect(response).toEqual(defaultRankingRules)
-      })
-  })
-})
-
-describe.each([{ client: publicClient, permission: 'Public' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   'Test on ranking rules',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
+      const client = await getClient('master')
+      const { uid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(uid)
     })
 
-    test(`${permission} key: try to get ranking rules and be denied`, async () => {
-      await expect(
-        client.index(index.uid).getRankingRules()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Get default ranking rules`, async () => {
+      const client = await getClient(permission)
+      const response: string[] = await client.index(index.uid).getRankingRules()
+      expect(response).toEqual(defaultRankingRules)
     })
 
-    test(`${permission} key: try to update ranking rules and be denied`, async () => {
-      await expect(
-        client.index(index.uid).updateRankingRules([])
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Update ranking rules`, async () => {
+      const client = await getClient(permission)
+      const newRankingRules = ['title:asc', 'typo', 'description:desc']
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateRankingRules(newRankingRules)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client.index(index.uid).getRankingRules()
+      expect(response).toEqual(newRankingRules)
     })
 
-    test(`${permission} key: try to reset ranking rules and be denied`, async () => {
-      await expect(
-        client.index(index.uid).resetRankingRules()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Update ranking rules at null`, async () => {
+      const client = await getClient(permission)
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateRankingRules(null)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client.index(index.uid).getRankingRules()
+      expect(response).toEqual(defaultRankingRules)
+    })
+
+    test(`${permission} key: Reset ranking rules`, async () => {
+      const client = await getClient(permission)
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .resetRankingRules()
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client.index(index.uid).getRankingRules()
+      expect(response).toEqual(defaultRankingRules)
     })
   }
 )
 
-describe.each([{ client: anonymousClient, permission: 'No' }])(
+describe.each([{ permission: 'Public' }])(
   'Test on ranking rules',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
     })
 
     test(`${permission} key: try to get ranking rules and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).getRankingRules()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+
+    test(`${permission} key: try to update ranking rules and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).updateRankingRules([])
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+
+    test(`${permission} key: try to reset ranking rules and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).resetRankingRules()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+  }
+)
+
+describe.each([{ permission: 'No' }])(
+  'Test on ranking rules',
+  ({ permission }) => {
+    beforeEach(async () => {
+      await clearAllIndexes(config)
+    })
+
+    test(`${permission} key: try to get ranking rules and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).getRankingRules()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to update ranking rules and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).updateRankingRules([])
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to reset ranking rules and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).resetRankingRules()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

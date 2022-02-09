@@ -11,7 +11,7 @@ yarn build
 
 ## Credentials
 
-This example uses the following MeiliSearch address: `http://127.0.0.1:7700`. Feel free to change the credentials to meet your MeiliSearch address.
+This example uses the following Meilisearch address: `http://127.0.0.1:7700`. Feel free to change the credentials to meet your Meilisearch address.
 
 The credentials are written in `index.html`.
 

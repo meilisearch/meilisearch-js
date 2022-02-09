@@ -1,13 +1,10 @@
-import { ErrorStatusCode, EnqueuedUpdate } from '../src/types'
+import { ErrorStatusCode, EnqueuedTask } from '../src/types'
 import {
   clearAllIndexes,
   config,
-  masterClient,
-  privateClient,
-  publicClient,
-  anonymousClient,
   BAD_HOST,
   MeiliSearch,
+  getClient,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -34,140 +31,135 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([
-  { client: masterClient, permission: 'Master' },
-  { client: privateClient, permission: 'Private' },
-])('Test on searchable attributes', ({ client, permission }) => {
-  beforeEach(async () => {
-    await clearAllIndexes(config)
-    await masterClient.createIndex(index.uid)
-    const { updateId } = await masterClient
-      .index(index.uid)
-      .addDocuments(dataset)
-    await masterClient.index(index.uid).waitForPendingUpdate(updateId)
-  })
-
-  test(`${permission} key: Get default attributes for filtering`, async () => {
-    await client
-      .index(index.uid)
-      .getFilterableAttributes()
-      .then((response: string[]) => {
-        expect(response.sort()).toEqual([])
-      })
-  })
-
-  test(`${permission} key: Update attributes for filtering`, async () => {
-    const newFilterableAttributes = ['genre']
-    const { updateId } = await client
-      .index(index.uid)
-      .updateFilterableAttributes(newFilterableAttributes)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getFilterableAttributes()
-      .then((response: string[]) => {
-        expect(response).toEqual(newFilterableAttributes)
-      })
-  })
-
-  test(`${permission} key: Update attributes for filtering at null`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .updateFilterableAttributes(null)
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getFilterableAttributes()
-      .then((response: string[]) => {
-        expect(response.sort()).toEqual([])
-      })
-  })
-
-  test(`${permission} key: Reset attributes for filtering`, async () => {
-    const { updateId } = await client
-      .index(index.uid)
-      .resetFilterableAttributes()
-      .then((response: EnqueuedUpdate) => {
-        expect(response).toHaveProperty('updateId', expect.any(Number))
-        return response
-      })
-    await client.index(index.uid).waitForPendingUpdate(updateId)
-    await client
-      .index(index.uid)
-      .getFilterableAttributes()
-      .then((response: string[]) => {
-        expect(response.sort()).toEqual([])
-      })
-  })
-})
-
-describe.each([{ client: publicClient, permission: 'Public' }])(
-  'Test on attributes for filtering',
-  ({ client, permission }) => {
+describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+  'Test on searchable attributes',
+  ({ permission }) => {
     beforeEach(async () => {
-      await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
+      const client = await getClient('Master')
+      const { uid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(uid)
     })
 
-    test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
-      await expect(
-        client.index(index.uid).getFilterableAttributes()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Get default attributes for filtering`, async () => {
+      const client = await getClient(permission)
+      const response: string[] = await client
+        .index(index.uid)
+        .getFilterableAttributes()
+      expect(response.sort()).toEqual([])
     })
 
-    test(`${permission} key: try to update attributes for filtering and be denied`, async () => {
-      await expect(
-        client.index(index.uid).updateFilterableAttributes([])
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Update attributes for filtering`, async () => {
+      const client = await getClient(permission)
+      const newFilterableAttributes = ['genre']
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateFilterableAttributes(newFilterableAttributes)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client
+        .index(index.uid)
+        .getFilterableAttributes()
+      expect(response).toEqual(newFilterableAttributes)
     })
 
-    test(`${permission} key: try to reset attributes for filtering and be denied`, async () => {
-      await expect(
-        client.index(index.uid).resetFilterableAttributes()
-      ).rejects.toHaveProperty('errorCode', ErrorStatusCode.INVALID_TOKEN)
+    test(`${permission} key: Update attributes for filtering at null`, async () => {
+      const client = await getClient(permission)
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateFilterableAttributes(null)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client
+        .index(index.uid)
+        .getFilterableAttributes()
+      expect(response.sort()).toEqual([])
+    })
+
+    test(`${permission} key: Reset attributes for filtering`, async () => {
+      const client = await getClient(permission)
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .resetFilterableAttributes()
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      const response: string[] = await client
+        .index(index.uid)
+        .getFilterableAttributes()
+      expect(response.sort()).toEqual([])
     })
   }
 )
 
-describe.each([{ client: anonymousClient, permission: 'No' }])(
+describe.each([{ permission: 'Public' }])(
   'Test on attributes for filtering',
-  ({ client, permission }) => {
+  ({ permission }) => {
     beforeEach(async () => {
-      await clearAllIndexes(config)
-      await masterClient.createIndex(index.uid)
+      const client = await getClient('Master')
+      const { uid } = await client.createIndex(index.uid)
+      await client.waitForTask(uid)
     })
 
     test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).getFilterableAttributes()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+
+    test(`${permission} key: try to update attributes for filtering and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).updateFilterableAttributes([])
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+
+    test(`${permission} key: try to reset attributes for filtering and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(
+        client.index(index.uid).resetFilterableAttributes()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+    })
+  }
+)
+
+describe.each([{ permission: 'No' }])(
+  'Test on attributes for filtering',
+  ({ permission }) => {
+    beforeEach(async () => {
+      const client = await getClient('Master')
+      const { uid } = await client.createIndex(index.uid)
+      await client.waitForTask(uid)
+    })
+
+    test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).getFilterableAttributes()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to update attributes for filtering and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).updateFilterableAttributes([])
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
     test(`${permission} key: try to reset attributes for filtering and be denied`, async () => {
+      const client = await getClient(permission)
       await expect(
         client.index(index.uid).resetFilterableAttributes()
       ).rejects.toHaveProperty(
-        'errorCode',
+        'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })

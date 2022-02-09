@@ -10,6 +10,10 @@ export type Config = {
   headers?: object
 }
 
+export type Result<T> = {
+  results: T
+}
+
 ///
 /// Request specific interfaces
 ///
@@ -157,23 +161,69 @@ export type Settings = {
 }
 
 /*
- ** UPDATE
+ ** TASKS
  */
 
-export type EnqueuedUpdate = {
-  updateId: number
+export const enum TaskStatus {
+  TASK_SUCCEEDED = 'succeeded',
+  TASK_PROCESSING = 'processing',
+  TASK_FAILED = 'failed',
+  TASK_ENQUEUED = 'enqueued',
 }
 
-export type Update = {
-  status: string
-  updateId: number
-  type: {
-    name: string
-    number: number
+export type EnqueuedTask = {
+  uid: number
+  indexUid: string
+  status: TaskStatus
+  type: string
+  enqueuedTask: string
+}
+
+export type Task = {
+  status: TaskStatus
+  uid: number
+  type: string
+  details: {
+    // Number of documents sent
+    receivedDocuments?: number
+
+    // Number of documents successfully indexed/updated in Meilisearch
+    indexedDocuments?: number
+
+    // Number of deleted documents
+    deletedDocuments?: number
+
+    // Primary key on index creation
+    primaryKey?: string
+
+    // Ranking rules on settings actions
+    rankingRules: RankingRules
+
+    // Searchable attributes on settings actions
+    searchableAttributes: SearchableAttributes
+
+    // Displayed attributes on settings actions
+    displayedAttributes: DisplayedAttributes
+
+    // Filterable attributes on settings actions
+    filterableAttributes: FilterableAttributes
+
+    // Sortable attributes on settings actions
+    sortableAttributes: SortableAttributes
+
+    // Stop words on settings actions
+    stopWords: StopWords
+
+    // Stop words on settings actions
+    synonyms: Synonyms
+
+    // Distinct attribute on settings actions
+    distinctAttribute: DistinctAttribute
   }
-  duration: number
+  duration: string
   enqueuedAt: string
   processedAt: string
+  error?: MeiliSearchErrorBody
 }
 
 export type EnqueuedDump = {
@@ -181,6 +231,11 @@ export type EnqueuedDump = {
   status: 'in_progress' | 'failed' | 'done'
   startedAt: string
   finishedAt: string
+}
+
+export type WaitOptions = {
+  timeOutMs?: number
+  intervalMs?: number
 }
 
 /*
@@ -213,9 +268,21 @@ export type Stats = {
  ** Keys
  */
 
-export type Keys = {
-  private: string | null
-  public: string | null
+export type Key = {
+  description: string
+  key: string
+  actions: string[]
+  indexes: string[]
+  expiresAt: string
+  createdAt: string
+  updateAt: string
+}
+
+export type KeyPayload = {
+  description?: string
+  actions: string[]
+  indexes: string[]
+  expiresAt: string | null
 }
 
 /*
@@ -231,22 +298,11 @@ export type Version = {
  ** ERROR HANDLER
  */
 
-export type MSApiErrorConstructor = new (
-  error: MSApiError,
-  status: number
-) => void
-
-export type MeiliSearchApiErrorResponse = {
-  status?: number
-  statusText?: string
-  path?: string
-  method?: string
-  body?: object
-}
-export type MeiliSearchApiErrorRequest = {
-  url?: string
-  path?: string
-  method?: string
+export interface MeiliSearchErrorInterface extends Error {
+  code?: string
+  link?: string
+  stack?: string
+  type?: string
 }
 
 export interface FetchError extends Error {
@@ -255,14 +311,11 @@ export interface FetchError extends Error {
   code: string
 }
 
-export interface MSApiError extends Error {
-  name: string
+export type MeiliSearchErrorBody = {
+  code: string
+  link: string
   message: string
-  stack?: string
-  httpStatus: number
-  errorCode?: string
-  errorType?: string
-  errorLink?: string
+  type: string
 }
 
 export const enum ErrorStatusCode {
@@ -284,26 +337,56 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#invalid_state */
   INVALID_STATE = 'invalid_state',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_primary_key */
-  MISSING_PRIMARY_KEY = 'missing_primary_key',
+  /** @see https://docs.meilisearch.com/errors/#primary_key_inference_failed */
+  PRIMARY_KEY_INFERENCE_FAILED = 'primary_key_inference_failed',
 
-  /** @see https://docs.meilisearch.com/errors/#primary_key_already_present */
-  PRIMARY_KEY_ALREADY_PRESENT = 'primary_key_already_present',
+  /** @see https://docs.meilisearch.com/errors/#index_primary_key_already_exists */
+  INDEX_PRIMARY_KEY_ALREADY_EXISTS = 'index_primary_key_already_exists',
 
   /** @see https://docs.meilisearch.com/errors/#max_fields_limit_exceeded */
-  MAX_FIELDS_LIMIT_EXCEEDED = 'max_fields_limit_exceeded',
+  DOCUMENTS_FIELDS_LIMIT_REACHED = 'document_fields_limit_reached',
 
   /** @see https://docs.meilisearch.com/errors/#missing_document_id */
   MISSING_DOCUMENT_ID = 'missing_document_id',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_facet */
-  INVALID_FACET = 'invalid_facet',
+  /** @see https://docs.meilisearch.com/errors/#missing_document_id */
+  INVALID_DOCUMENT_ID = 'invalid_document_id',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_content_type */
+  INVALID_CONTENT_TYPE = 'invalid_content_type',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_content_type */
+  MISSING_CONTENT_TYPE = 'missing_content_type',
+
+  /** @see https://docs.meilisearch.com/errors/#payload_too_large */
+  PAYLOAD_TOO_LARGE = 'payload_too_large',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_payload */
+  MISSING_PAYLOAD = 'missing_payload',
+
+  /** @see https://docs.meilisearch.com/errors/#malformed_payload */
+  MALFORMED_PAYLOAD = 'malformed_payload',
+
+  /** @see https://docs.meilisearch.com/errors/#no_space_left_on_device */
+  NO_SPACE_LEFT_ON_DEVICE = 'no_space_left_on_device',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_store_file */
+  INVALID_STORE_FILE = 'invalid_store_file',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_ranking_rules */
+  INVALID_RANKING_RULES = 'missing_document_id',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_request */
+  INVALID_REQUEST = 'invalid_request',
 
   /** @see https://docs.meilisearch.com/errors/#invalid_filter */
   INVALID_FILTER = 'invalid_filter',
 
-  /** @see https://docs.meilisearch.com/errors/#bad_parameter */
-  BAD_PARAMETER = 'bad_parameter',
+  /** @see https://docs.meilisearch.com/errors/#invalid_sort */
+  INVALID_SORT = 'invalid_sort',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_geo_field */
+  INVALID_GEO_FIELD = 'invalid_geo_field',
 
   /** @see https://docs.meilisearch.com/errors/#bad_request */
   BAD_REQUEST = 'bad_request',
@@ -314,36 +397,45 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#internal */
   INTERNAL = 'internal',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_token */
-  INVALID_TOKEN = 'invalid_token',
+  /** @see https://docs.meilisearch.com/errors/#invalid_api_key */
+  INVALID_API_KEY = 'invalid_api_key',
 
-  /** @see https://docs.meilisearch.com/errors/#maintenance */
-  MAINTENANCE = 'maintenance',
+  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_description */
+  INVALID_API_KEY_DESCRIPTION = 'invalid_api_key_description',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_actions */
+  INVALID_API_KEY_ACTIONS = 'invalid_api_key_actions',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_indexes */
+  INVALID_API_KEY_INDEXES = 'invalid_api_key_indexes',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_expires_at */
+  INVALID_API_KEY_EXPIRES_AT = 'invalid_api_key_expires_at',
+
+  /** @see https://docs.meilisearch.com/errors/#api_key_not_found */
+  API_KEY_NOT_FOUND = 'api_key_not_found',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_parameter */
+  MISSING_PARAMETER = 'missing_parameter',
 
   /** @see https://docs.meilisearch.com/errors/#missing_authorization_header */
   MISSING_AUTHORIZATION_HEADER = 'missing_authorization_header',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_header */
-  MISSING_HEADER = 'missing_header',
-
-  /** @see https://docs.meilisearch.com/errors/#not_found */
-  NOT_FOUND = 'not_found',
-
-  /** @see https://docs.meilisearch.com/errors/#payload_too_large */
-  PAYLOAD_TOO_LARGE = 'payload_too_large',
-
   /** @see https://docs.meilisearch.com/errors/#unretrievable_document */
   UNRETRIEVABLE_DOCUMENT = 'unretrievable_document',
 
-  /** @see https://docs.meilisearch.com/errors/#search_error */
-  SEARCH_ERROR = 'search_error',
+  /** @see https://docs.meilisearch.com/errors/#database_size_limit_reached */
+  MAX_DATABASE_SIZE_LIMIT_REACHED = 'database_size_limit_reached',
 
-  /** @see https://docs.meilisearch.com/errors/#unsupported_media_type */
-  UNSUPPORTED_MEDIA_TYPE = 'unsupported_media_type',
+  /** @see https://docs.meilisearch.com/errors/#task_not_found */
+  TASK_NOT_FOUND = 'task_not_found',
 
-  /** @see https://docs.meilisearch.com/errors/#dump_already_in_progress */
-  DUMP_ALREADY_IN_PROGRESS = 'dump_already_in_progress',
+  /** @see https://docs.meilisearch.com/errors/#dump_already_processing */
+  DUMP_ALREADY_PROCESSING = 'dump_already_processing',
 
   /** @see https://docs.meilisearch.com/errors/#dump_process_failed */
   DUMP_PROCESS_FAILED = 'dump_process_failed',
+
+  /** @see https://docs.meilisearch.com/errors/#dump_not_found */
+  DUMP_NOT_FOUND = 'dump_not_found',
 }
