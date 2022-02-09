@@ -87,7 +87,21 @@ class MeiliSearch {
    * @method getIndexes
    * @returns {Promise<IndexResponse[]>} Promise returning array of raw index information
    */
-  async getIndexes(): Promise<IndexResponse[]> {
+  async getIndexes(): Promise<Index[]> {
+    const response = await this.getRawIndexes()
+    const indexedResponse: Index[] = []
+    for (const resp of response) {
+      indexedResponse.push(new Index(this.config, resp.uid, resp.primaryKey))
+    }
+    return indexedResponse
+  }
+
+  /**
+   * Get all raw indexes in the database
+   * @memberof MeiliSearch
+   * @method getRawIndexes
+   */
+  async getRawIndexes(): Promise<IndexResponse[]> {
     const url = `indexes`
     return await this.httpRequest.get<IndexResponse[]>(url)
   }

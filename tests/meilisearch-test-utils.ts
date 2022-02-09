@@ -1,5 +1,5 @@
 import { MeiliSearch, MeiliSearchTimeOutError, Index, sleep } from '../src/'
-import { Config, IndexResponse, EnqueuedDump } from '../src/types'
+import { Config, EnqueuedDump } from '../src/types'
 
 // testing
 const MASTER_KEY = 'masterKey'
