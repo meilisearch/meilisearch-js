@@ -184,8 +184,41 @@ export type Task = {
   uid: number
   type: string
   details: {
-    receivedDocuments: number
-    indexedDocuments: number
+    // Number of documents sent
+    receivedDocuments?: number
+
+    // Number of documents successfully indexed/updated in Meilisearch
+    indexedDocuments?: number
+
+    // Number of deleted documents
+    deletedDocuments?: number
+
+    // Primary key on index creation
+    primaryKey?: string
+
+    // Ranking rules on settings actions
+    rankingRules: RankingRules
+
+    // Searchable attributes on settings actions
+    searchableAttributes: SearchableAttributes
+
+    // Displayed attributes on settings actions
+    displayedAttributes: DisplayedAttributes
+
+    // Filterable attributes on settings actions
+    filterableAttributes: FilterableAttributes
+
+    // Sortable attributes on settings actions
+    sortableAttributes: SortableAttributes
+
+    // Stop words on settings actions
+    stopWords: StopWords
+
+    // Stop words on settings actions
+    synonyms: Synonyms
+
+    // Distinct attribute on settings actions
+    distinctAttribute: DistinctAttribute
   }
   duration: string
   enqueuedAt: string
