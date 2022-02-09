@@ -85,7 +85,7 @@ class MeiliSearch {
    * Get all the indexes in Index instances.
    * @memberof MeiliSearch
    * @method getIndexes
-   * @returns {Promise<IndexResponse[]>} Promise returning array of raw index information
+   * @returns {Promise<Index[]>} Promise returning array of raw index information
    */
   async getIndexes(): Promise<Index[]> {
     const response = await this.getRawIndexes()
@@ -99,6 +99,7 @@ class MeiliSearch {
    * Get all the indexes in their raw value (no Index instances).
    * @memberof MeiliSearch
    * @method getRawIndexes
+   * @returns {Promise<IndexResponse[]>} Promise returning array of raw index information
    */
   async getRawIndexes(): Promise<IndexResponse[]> {
     const url = `indexes`

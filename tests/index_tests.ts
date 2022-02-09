@@ -74,6 +74,15 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('uid', indexPk.uid)
     })
 
+    test(`${permission} key: Get all indexes in Index instances`, async () => {
+      const client = await getClient(permission)
+      const { uid } = await client.createIndex(indexPk.uid)
+      await client.waitForTask(uid)
+
+      const response = await client.getRawIndexes()
+      expect(response.length).toEqual(0)
+    })
+
     test(`${permission} key: Get index that does not exist`, async () => {
       const client = await getClient(permission)
       await expect(client.getIndex('does_not_exist')).rejects.toHaveProperty(

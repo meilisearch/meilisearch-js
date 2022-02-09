@@ -77,8 +77,8 @@ async function getClient(permission: string): Promise<MeiliSearch> {
 const clearAllIndexes = async (config: Config): Promise<void> => {
   const client = new MeiliSearch(config)
 
-  const response: IndexResponse[] = await client.getIndexes()
-  const indexes = response.map((elem: IndexResponse) => elem.uid)
+  const response = await client.getRawIndexes()
+  const indexes = response.map((elem) => elem.uid)
 
   const taskIds = []
   for (const indexUid of indexes) {
