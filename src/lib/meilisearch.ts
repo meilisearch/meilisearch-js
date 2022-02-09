@@ -79,21 +79,20 @@ class MeiliSearch {
   }
 
   /**
-   * Get all indexes in the database
+   * Get all the indexes in Index instances.
    * @memberof MeiliSearch
    * @method getIndexes
    */
   async getIndexes(): Promise<Index[]> {
     const response = await this.getRawIndexes()
-    const indexedResponse: Index[] = []
-    for (const resp of response) {
-      indexedResponse.push(new Index(this.config, resp.uid, resp.primaryKey))
-    }
-    return indexedResponse
+    const indexes: Index[] = response.map(
+      (index) => new Index(this.config, index.uid, index.primaryKey)
+    )
+    return indexes
   }
 
   /**
-   * Get all raw indexes in the database
+   * Get all the indexes in their raw value (no Index instances).
    * @memberof MeiliSearch
    * @method getRawIndexes
    */
