@@ -80,7 +80,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       await client.waitForTask(uid)
 
       const response = await client.getRawIndexes()
-      expect(response.length).toEqual(0)
+
+      expect(response.length).toEqual(1)
+      expect(response[0].uid).toEqual(indexPk.uid)
     })
 
     test(`${permission} key: Get index that does not exist`, async () => {
