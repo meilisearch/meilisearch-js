@@ -82,7 +82,7 @@ class MeiliSearch {
   }
 
   /**
-   * Get all the indexes in Index instances.
+   * Get all the indexes as Index instances.
    * @memberof MeiliSearch
    * @method getIndexes
    * @returns {Promise<Index[]>} Promise returning array of raw index information
