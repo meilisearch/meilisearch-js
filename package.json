@@ -16,7 +16,7 @@
     "qdequele <quentin@meilisearch.com>"
   ],
   "license": "MIT",
-  "main": "./dist/bundles/meilisearch.umd.js",
+  "main": "./dist/bundles/meilisearch.cjs.js",
   "module": "./dist/bundles/meilisearch.esm.js",
   "browser": "./dist/bundles/meilisearch.umd.js",
   "typings": "./dist/types/index.d.ts",

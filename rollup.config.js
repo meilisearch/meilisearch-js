@@ -80,7 +80,7 @@ module.exports = [
   // `file` and `format` for each target)
   {
     input: 'src/index.ts',
-    external: ['cross-fetch', 'cross-fetch/polyfill'],
+    external: ['cross-fetch', 'cross-fetch/polyfill', 'crypto'],
     output: [
       {
         file: getOutputFileName(
@@ -96,5 +96,19 @@ module.exports = [
       env === 'production' ? terser() : {}, // will minify the file in production mode
       ...PLUGINS,
     ],
+  },
+  {
+    input: 'src/node.ts',
+    external: ['cross-fetch', 'cross-fetch/polyfill', 'crypto'],
+    output: {
+      file: getOutputFileName(
+        // will add .min. in filename if in production env
+        resolve(ROOT, pkg.main),
+        env === 'production'
+      ),
+      exports: 'named',
+      format: 'cjs',
+    },
+    plugins: [...PLUGINS],
   },
 ]
