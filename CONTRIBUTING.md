@@ -51,7 +51,7 @@ Each PR should pass the tests and the linter to be accepted.
 ```bash
 # Tests
 curl -L https://install.meilisearch.com | sh # download Meilisearch
-./meilisearch --master-key=masterKey --no-analytics=true # run Meilisearch
+./meilisearch --master-key=masterKey --no-analytics # run Meilisearch
 yarn test
 # Linter
 yarn style
