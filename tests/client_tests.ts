@@ -12,7 +12,6 @@ import {
   getClient,
   config,
   MeiliSearch,
-  MASTER_KEY,
   BAD_HOST,
 } from './meilisearch-test-utils'
 
@@ -26,29 +25,6 @@ const indexPk = {
 
 afterAll(() => {
   return clearAllIndexes(config)
-})
-
-describe.skip('Tests on client methods w/ master key', () => {
-  beforeEach(() => {
-    return clearAllIndexes(config)
-  })
-
-  test(`Master key: Should get keys`, async () => {
-    const client = new MeiliSearch({
-      ...config,
-      apiKey: MASTER_KEY,
-    })
-    const keys = await client.getKeys()
-
-    expect(keys).toHaveProperty(
-      'private',
-      '8dcbb482663333d0280fa9fedf0e0c16d52185cb67db494ce4cd34da32ce2092'
-    )
-    expect(keys).toHaveProperty(
-      'public',
-      '3b3bf839485f90453acc6159ba18fbed673ca88523093def11a9b4f4320e44a5'
-    )
-  })
 })
 
 describe.each([
