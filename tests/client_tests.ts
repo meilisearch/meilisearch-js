@@ -168,12 +168,6 @@ describe.each([
     const health = await client.isHealthy()
     expect(health).toBe(false)
   })
-
-  test.only(`${permission} key: generate a tenant token`, async () => {
-    const client = new MeiliSearch({ host: 'meilisearch' })
-    const token = await client.generateTenantToken()
-    console.log(token)
-  })
 })
 
 describe.each([{ permission: 'Master' }, { permission: 'Private' }])(

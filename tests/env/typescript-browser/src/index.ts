@@ -19,5 +19,4 @@ function greeter(person: string) {
   document.body.innerHTML = `${greeter(
     user
   )} this is the list of all your indexes: \n ${uids.join(', ')}`
-  console.log(await client.generateTenantToken()) // Resolved using the `browser` field
 })()
