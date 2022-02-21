@@ -28,7 +28,7 @@ const PLUGINS = [
 module.exports = [
   // browser-friendly UMD build
   {
-    input: 'src/index.ts', // directory to transpilation of typescript
+    input: 'src/browser.ts', // directory to transpilation of typescript
     external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: {
       name: 'window',
@@ -72,15 +72,10 @@ module.exports = [
     ],
   },
 
-  // CommonJS (for Node) and ES module (for bundlers) build.
-  // (We could have three entries in the configuration array
-  // instead of two, but it's quicker to generate multiple
-  // builds from a single configuration where possible, using
-  // an array for the `output` option, where we can specify
-  // `file` and `format` for each target)
+  // ES module (for bundlers) build.
   {
-    input: 'src/index.ts',
-    external: ['cross-fetch', 'cross-fetch/polyfill', 'crypto'],
+    input: 'src/browser.ts',
+    external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: [
       {
         file: getOutputFileName(
@@ -97,8 +92,9 @@ module.exports = [
       ...PLUGINS,
     ],
   },
+  // Common JS module (for bundlers) build.
   {
-    input: 'src/node.ts',
+    input: 'src/index.ts',
     external: ['cross-fetch', 'cross-fetch/polyfill', 'crypto'],
     output: {
       file: getOutputFileName(

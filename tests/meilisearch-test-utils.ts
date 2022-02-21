@@ -1,4 +1,4 @@
-import { MeiliSearch, MeiliSearchTimeOutError, Index, sleep } from '../src/'
+import { MeiliSearch, MeiliSearchTimeOutError, Index, sleep } from '../src'
 import { Config, IndexResponse, EnqueuedDump } from '../src/types'
 
 // testing
