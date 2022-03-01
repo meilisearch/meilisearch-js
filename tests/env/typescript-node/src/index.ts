@@ -30,7 +30,7 @@ const indexUid = "movies"
   await client.waitForTask(uid)
 
   const index = client.index(indexUid)
-  const indexes = await client.getIndexes()
+  const indexes = await client.getRawIndexes()
   indexes.map((index: IndexResponse) => {
     console.log(index.uid)
     // console.log(index.something) -> ERROR

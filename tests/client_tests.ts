@@ -250,7 +250,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         const { uid } = await client.createIndex(indexPk.uid)
         await client.waitForTask(uid)
 
-        const response: IndexResponse[] = await client.getIndexes()
+        const response: IndexResponse[] = await client.getRawIndexes()
         const indexes = response.map((index) => index.uid)
         expect(indexes).toEqual(expect.arrayContaining([indexPk.uid]))
         expect(indexes.length).toEqual(1)
@@ -644,7 +644,7 @@ describe.each([
     )
   })
 
-  test(`Test getIndexes route`, async () => {
+  test(`Test get indexes route`, async () => {
     const route = `indexes`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host

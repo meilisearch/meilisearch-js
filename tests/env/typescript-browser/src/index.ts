@@ -13,7 +13,7 @@ function greeter(person: string) {
 }
 
 ;(async () => {
-  const indexes = await client.getIndexes()
+  const indexes = await client.getRawIndexes()
   console.log({ indexes }, 'hello')
   const uids = indexes.map((index: IndexResponse) => index.uid)
   document.body.innerHTML = `${greeter(
