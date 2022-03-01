@@ -82,12 +82,26 @@ class Client {
   }
 
   /**
-   * Get all indexes in the database
+   * Get all the indexes as Index instances.
    * @memberof MeiliSearch
    * @method getIndexes
+   * @returns {Promise<Index[]>} Promise returning array of raw index information
+   */
+  async getIndexes(): Promise<Index[]> {
+    const response = await this.getRawIndexes()
+    const indexes: Index[] = response.map(
+      (index) => new Index(this.config, index.uid, index.primaryKey)
+    )
+    return indexes
+  }
+
+  /**
+   * Get all the indexes in their raw value (no Index instances).
+   * @memberof MeiliSearch
+   * @method getRawIndexes
    * @returns {Promise<IndexResponse[]>} Promise returning array of raw index information
    */
-  async getIndexes(): Promise<IndexResponse[]> {
+  async getRawIndexes(): Promise<IndexResponse[]> {
     const url = `indexes`
     return await this.httpRequest.get<IndexResponse[]>(url)
   }

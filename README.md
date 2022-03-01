@@ -447,9 +447,13 @@ Using the index:
 
 ### Indexes <!-- omit in toc -->
 
-- [Get all indexes](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
+- [Get all indexes in Index instances](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
 
-`client.getIndexes(): Promise<IndexResponse[]>`
+`client.getIndexes(): Promise<Index[]>`
+
+- [Get raw indexes in JSON response from Meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
+
+`client.getRawIndexes(): Promise<IndexResponse[]>`
 
 - [Create a new index](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index):
 
