@@ -92,7 +92,8 @@ module.exports = [
       ...PLUGINS,
     ],
   },
-  // Common JS module (for bundlers) build.
+  // Common JS build.
+  // Compatible only in a nodeJS environment.
   {
     input: 'src/index.ts',
     external: ['cross-fetch', 'cross-fetch/polyfill', 'crypto'],
