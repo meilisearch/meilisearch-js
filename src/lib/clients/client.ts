@@ -7,7 +7,7 @@
 
 'use strict'
 
-import { Index } from './indexes'
+import { Index } from '../indexes'
 import {
   KeyPayload,
   Config,
@@ -22,12 +22,14 @@ import {
   ErrorStatusCode,
   Task,
   Result,
-} from '../types'
-import { HttpRequests } from './http-requests'
-import { addProtocolIfNotPresent } from './utils'
-import { TaskClient } from './task'
+  TokenSearchRules,
+  TokenOptions,
+} from '../../types'
+import { HttpRequests } from '../http-requests'
+import { addProtocolIfNotPresent } from '../utils'
+import { TaskClient } from '../task'
 
-class SearchClient {
+class Client {
   config: Config
   httpRequest: HttpRequests
   tasks: TaskClient
@@ -381,4 +383,4 @@ class SearchClient {
   }
 }
 
-export { SearchClient }
+export { Client }
