@@ -389,25 +389,16 @@ class Client {
    * @param {string} dumpUid Dump UID
    * @returns {String} Token
    */
-  async generateTenantToken(): Promise<string> {
+  async generateTenantToken(
+    _searchRules: TokenSearchRules,
+    _options: TokenOptions
+  ): Promise<string> {
     return new Promise((_, reject) => {
       const error = new Error()
       reject(
         `MeiliSearchApiError: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}`
       )
     })
-    // if (typeof window === 'undefined') {
-    //   // This line
-    //   return import('crypto').then((crypto) => {
-    //     const securedKey = crypto
-    //       .createHmac('sha256', 'masterKey')
-    //       .update('1221')
-    //       .digest('hex')
-    //     console.log(Buffer.from(JSON.stringify('ploug')))
-    //     return securedKey
-    //   })
-    // }
-    // return 'done'
   }
 }
 
