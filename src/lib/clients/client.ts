@@ -7,7 +7,7 @@
 
 'use strict'
 
-import { Index } from './indexes'
+import { Index } from '../indexes'
 import {
   KeyPayload,
   Config,
@@ -22,12 +22,14 @@ import {
   ErrorStatusCode,
   Task,
   Result,
-} from '../types'
-import { HttpRequests } from './http-requests'
-import { addProtocolIfNotPresent } from './utils'
-import { TaskClient } from './task'
+  TokenSearchRules,
+  TokenOptions,
+} from '../../types'
+import { HttpRequests } from '../http-requests'
+import { addProtocolIfNotPresent } from '../utils'
+import { TaskClient } from '../task'
 
-class SearchClient {
+class Client {
   config: Config
   httpRequest: HttpRequests
   tasks: TaskClient
@@ -379,6 +381,25 @@ class SearchClient {
     const url = `dumps/${dumpUid}/status`
     return await this.httpRequest.get<EnqueuedDump>(url)
   }
+
+  /**
+   * Generate a tenant token
+   * @memberof MeiliSearch
+   * @method generateTenantToken
+   * @param {string} dumpUid Dump UID
+   * @returns {String} Token
+   */
+  async generateTenantToken(
+    _searchRules: TokenSearchRules,
+    _options: TokenOptions
+  ): Promise<string> {
+    return new Promise((_, reject) => {
+      const error = new Error()
+      reject(
+        `MeiliSearchApiError: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}`
+      )
+    })
+  }
 }
 
-export { SearchClient }
+export { Client }
