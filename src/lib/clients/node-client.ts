@@ -17,19 +17,17 @@ class MeiliSearch extends Client {
    * @param {string} dumpUid Dump UID
    * @returns {String} Token
    */
-  async generateTenantToken(
+  generateTenantToken(
     searchRules: TokenSearchRules,
     options?: TokenOptions
-  ): Promise<string> {
+  ): string {
     if (typeof window === 'undefined') {
       return this.tokens.generateTenantToken(searchRules, options)
     }
-    return new Promise((_, reject) => {
-      const error = new Error()
-      reject(
-        `MeiliSearchApiError: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}`
-      )
-    })
+    const error = new Error()
+    throw new Error(
+      `MeiliSearchApiError: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}`
+    )
   }
 }
 export { MeiliSearch }

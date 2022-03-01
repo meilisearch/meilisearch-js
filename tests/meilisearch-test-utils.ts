@@ -142,6 +142,5 @@ export {
   getClient,
   getKey,
   decode64,
-  encode64,
   dataset,
 }

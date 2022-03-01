@@ -30,7 +30,7 @@ describe.each([{ permission: 'Private' }])(
 
     test(`${permission} key: create a tenant token and test header`, async () => {
       const client = await getClient(permission)
-      const token = await client.generateTenantToken([])
+      const token = client.generateTenantToken([])
       const [header64] = token.split('.')
 
       // header
@@ -41,7 +41,7 @@ describe.each([{ permission: 'Private' }])(
 
     test(`${permission} key: create a tenant token with default values and test payload`, async () => {
       const client = await getClient(permission)
-      const token = await client.generateTenantToken([])
+      const token = client.generateTenantToken([])
       const apiKey = await getKey(permission)
       const [_, payload64] = token.split('.')
 
@@ -52,9 +52,22 @@ describe.each([{ permission: 'Private' }])(
       expect(searchRules).toEqual([])
     })
 
+    test(`${permission} key: create a tenant token no api key and test payload`, () => {
+      const client = new MeiliSearch({ host: HOST })
+      const token = client.generateTenantToken([])
+      const [_, payload64] = token.split('.')
+
+      // payload
+      const { apiKeyPrefix, exp, searchRules } = JSON.parse(decode64(payload64))
+
+      expect(apiKeyPrefix).toEqual('')
+      expect(exp).toEqual(null)
+      expect(searchRules).toEqual([])
+    })
+
     test(`${permission} key: create a tenant token with array searchRules and test payload`, async () => {
       const client = await getClient(permission)
-      const token = await client.generateTenantToken([UID])
+      const token = client.generateTenantToken([UID])
       const apiKey = await getKey(permission)
       const [_, payload64] = token.split('.')
 
@@ -67,7 +80,7 @@ describe.each([{ permission: 'Private' }])(
 
     test(`${permission} key: create a tenant token with oject search rules and test payload`, async () => {
       const client = await getClient(permission)
-      const token = await client.generateTenantToken({ [UID]: {} })
+      const token = client.generateTenantToken({ [UID]: {} })
       const apiKey = await getKey(permission)
       const [_, payload64] = token.split('.')
 
@@ -80,7 +93,7 @@ describe.each([{ permission: 'Private' }])(
 
     test(`${permission} key: create a tenant token and test signature`, async () => {
       const client = await getClient(permission)
-      const token = await client.generateTenantToken([])
+      const token = client.generateTenantToken([])
       const apiKey = await getKey(permission)
       const [header64, payload64, signature64] = token.split('.')
 
@@ -98,7 +111,7 @@ describe.each([{ permission: 'Private' }])(
 
     test(`${permission} key: Search in tenant token with wildcard`, async () => {
       const client = await getClient(permission)
-      const token = await client.generateTenantToken(['*'])
+      const token = client.generateTenantToken(['*'])
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token })
 
@@ -118,7 +131,7 @@ describe.each([{ permission: 'Private' }])(
       })
 
       const client = await getClient(permission)
-      const token = await client.generateTenantToken(['*'], { apiKey: key })
+      const token = client.generateTenantToken(['*'], { apiKey: key })
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token })
 
@@ -130,7 +143,7 @@ describe.each([{ permission: 'Private' }])(
     test(`${permission} key: Search in tenant token with expire date`, async () => {
       const client = await getClient(permission)
       const date = new Date('December 17, 4000 03:24:00')
-      const token = await client.generateTenantToken(['*'], {
+      const token = client.generateTenantToken(['*'], {
         expiresAt: date,
       })
 
@@ -146,7 +159,7 @@ describe.each([{ permission: 'Private' }])(
 
     test(`${permission} key: Search in tenant token with specific index set to null`, async () => {
       const client = await getClient(permission)
-      const token = await client.generateTenantToken({
+      const token = client.generateTenantToken({
         [UID]: null,
       })
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token })
@@ -165,7 +178,7 @@ describe.each([{ permission: 'Private' }])(
       await masterClient.waitForTask(uid)
 
       const client = await getClient(permission)
-      const token = await client.generateTenantToken({
+      const token = client.generateTenantToken({
         [UID]: { filter: 'id = 2' },
       })
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token })
@@ -177,7 +190,7 @@ describe.each([{ permission: 'Private' }])(
 
     test(`${permission} key: Search in tenant token with empty array `, async () => {
       const client = await getClient(permission)
-      const token = await client.generateTenantToken([])
+      const token = client.generateTenantToken([])
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token })
 
@@ -189,7 +202,7 @@ describe.each([{ permission: 'Private' }])(
 
     test(`${permission} key: Search in tenant token on index with no permissions `, async () => {
       const client = await getClient(permission)
-      const token = await client.generateTenantToken({ misc: null })
+      const token = client.generateTenantToken({ misc: null })
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token })
 
@@ -199,4 +212,5 @@ describe.each([{ permission: 'Private' }])(
       ).rejects.toHaveProperty('code', 'invalid_api_key')
     })
   }
+  // TODO: essayer sans api key
 )

@@ -403,16 +403,14 @@ class Client {
    * @param {string} dumpUid Dump UID
    * @returns {String} Token
    */
-  async generateTenantToken(
+  generateTenantToken(
     _searchRules: TokenSearchRules,
     _options: TokenOptions
-  ): Promise<string> {
-    return new Promise((_, reject) => {
-      const error = new Error()
-      reject(
-        `MeiliSearchApiError: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}`
-      )
-    })
+  ): string {
+    const error = new Error()
+    throw new Error(
+      `MeiliSearchApiError: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}`
+    )
   }
 }
 

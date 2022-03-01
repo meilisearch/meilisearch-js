@@ -1,6 +1,7 @@
-import { MeiliSearch } from '../meilisearch.esm'
-import * as DefaultMeiliSearch from '../meilisearch.esm'
+import { MeiliSearch } from '../../../../'
+import * as DefaultMeiliSearch from '../../../../'
 
 const client = new MeiliSearch({ host:'http://localhost:7700', apiKey: 'masterKey'})
 const defaultClient = new DefaultMeiliSearch.MeiliSearch({ host:'http://localhost:7700', apiKey: 'masterKey'})
-console.log({ client, defaultClient })
+const token = client.generateTenantToken([])
+console.log({ client, token, defaultClient })
