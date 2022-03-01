@@ -1,7 +1,7 @@
-import { SearchClient } from '..'
+import { Client } from './client'
 import { Config } from '../../types'
 
-class MeiliSearch extends SearchClient {
+class MeiliSearch extends Client {
   constructor(config: Config) {
     super(config)
   }

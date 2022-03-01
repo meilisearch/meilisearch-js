@@ -35,7 +35,7 @@ module.exports = [
       extend: true,
       file: getOutputFileName(
         // will add .min. in filename if in production env
-        resolve(ROOT, pkg.browser),
+        resolve(ROOT, pkg.jsdelivr),
         env === 'production'
       ),
       format: 'umd',
@@ -74,8 +74,8 @@ module.exports = [
 
   // ES module (for bundlers) build.
   {
-    input: 'src/browser.ts',
-    external: ['cross-fetch', 'cross-fetch/polyfill'],
+    input: 'src/index.ts',
+    external: ['cross-fetch', 'cross-fetch/polyfill', 'crypto'],
     output: [
       {
         file: getOutputFileName(
