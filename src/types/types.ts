@@ -440,9 +440,12 @@ export const enum ErrorStatusCode {
   DUMP_NOT_FOUND = 'dump_not_found',
 }
 
-export type TokenSearchRules =
-  | Record<string, Record<string, string | null>>
-  | string[]
+export type TokenIndexRules = {
+  [field: string]: any // I have to check
+  filter?: Filter
+}
+export type TokenSearchRules = Record<string, TokenIndexRules | null> | string[]
+
 export type TokenOptions = {
   apiKey?: string
   expiresAt?: Date

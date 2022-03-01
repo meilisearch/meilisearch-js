@@ -7,7 +7,6 @@ class MeiliSearch extends Client {
 
   constructor(config: Config) {
     super(config)
-    console.log('NODE')
     this.tokens = new Token(config)
   }
 
@@ -20,7 +19,7 @@ class MeiliSearch extends Client {
    */
   async generateTenantToken(
     searchRules: TokenSearchRules,
-    options: TokenOptions
+    options?: TokenOptions
   ): Promise<string> {
     if (typeof window === 'undefined') {
       return this.tokens.generateTenantToken(searchRules, options)
