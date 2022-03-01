@@ -439,3 +439,11 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#dump_not_found */
   DUMP_NOT_FOUND = 'dump_not_found',
 }
+
+export type TokenSearchRules =
+  | Record<string, Record<string, string | null>>
+  | string[]
+export type TokenOptions = {
+  apiKey?: string
+  expiresAt?: Date
+}
