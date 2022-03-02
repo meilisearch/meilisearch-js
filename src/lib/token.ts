@@ -5,6 +5,39 @@ function encode64(str: any) {
   return Buffer.from(JSON.stringify(str)).toString('base64')
 }
 
+function sign(apiKey: string, encodedHeader: string, encodedPayload: string) {
+  return crypto
+    .createHmac('sha256', apiKey)
+    .update(`${encodedHeader}.${encodedPayload}`)
+    .digest('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '')
+}
+
+function createHeader() {
+  const header = {
+    alg: 'HS256',
+    typ: 'JWT',
+  }
+
+  return encode64(header).replace(/=/g, '')
+}
+
+function createPayload(
+  searchRules: TokenSearchRules,
+  apiKey: string,
+  expiresAt: Date | null
+) {
+  const payload = {
+    exp: expiresAt?.getTime() || null,
+    searchRules,
+    apiKeyPrefix: apiKey.substring(0, 8),
+  }
+
+  return encode64(payload).replace(/=/g, '')
+}
+
 class Token {
   config: Config
 
@@ -26,27 +59,10 @@ class Token {
     const apiKey = options?.apiKey || this.config.apiKey || ''
     const expiresAt = options?.expiresAt || null
 
-    const header = {
-      alg: 'HS256',
-      typ: 'JWT',
-    }
+    const encodedHeader = createHeader()
+    const encodedPayload = createPayload(searchRules, apiKey, expiresAt)
+    const signature = sign(apiKey, encodedHeader, encodedPayload)
 
-    const payload = {
-      exp: expiresAt?.getTime() || null,
-      searchRules,
-      apiKeyPrefix: apiKey.substring(0, 8),
-    }
-
-    const encodedHeader = encode64(header).replace(/=/g, '')
-    const encodedPayload = encode64(payload).replace(/=/g, '')
-
-    const signature = crypto
-      .createHmac('sha256', apiKey)
-      .update(`${encodedHeader}.${encodedPayload}`)
-      .digest('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '')
     return `${encodedHeader}.${encodedPayload}.${signature}`
   }
 }
