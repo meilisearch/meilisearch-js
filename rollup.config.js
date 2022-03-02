@@ -75,7 +75,7 @@ module.exports = [
   // ES module (for bundlers) build.
   {
     input: 'src/index.ts',
-    external: ['cross-fetch', 'cross-fetch/polyfill', 'crypto'],
+    external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: [
       {
         file: getOutputFileName(
@@ -96,7 +96,7 @@ module.exports = [
   // Compatible only in a nodeJS environment.
   {
     input: 'src/index.ts',
-    external: ['cross-fetch', 'cross-fetch/polyfill', 'crypto'],
+    external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: {
       file: getOutputFileName(
         // will add .min. in filename if in production env

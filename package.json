@@ -18,7 +18,7 @@
   "license": "MIT",
   "main": "./dist/bundles/meilisearch.cjs.js",
   "module": "./dist/bundles/meilisearch.esm.js",
-  "browser": "./dist/bundles/meilisearch.esm.js",
+  "browser": "./dist/bundles/meilisearch.umd.js",
   "typings": "./dist/types/index.d.ts",
   "types": "./dist/types/index.d.ts",
   "jsdelivr": "./dist/bundles/meilisearch.umd.js",
