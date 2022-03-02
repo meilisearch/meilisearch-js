@@ -3,7 +3,6 @@ import crypto from 'crypto'
 
 function encode64(str: any) {
   return Buffer.from(JSON.stringify(str)).toString('base64')
-  // return str
 }
 
 class Token {

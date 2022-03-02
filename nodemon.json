@@ -1,6 +1,6 @@
 {
   "extension": "ts",
   "verbose": true,
-  "ignore": ["tests/*", "*.tests.js", "fixtures/*"],
+  "ignore": ["tests/*", "*.tests.js", "dist/"],
   "exec": "yarn tsc"
 }

@@ -17,6 +17,9 @@ let config = {
       },
     ],
   },
+  devServer: {
+    static: './public',
+  },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
 

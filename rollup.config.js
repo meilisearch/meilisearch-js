@@ -92,7 +92,7 @@ module.exports = [
       ...PLUGINS,
     ],
   },
-  // Common JS build.
+  // Common JS build (Node).
   // Compatible only in a nodeJS environment.
   {
     input: 'src/index.ts',
