@@ -20,4 +20,8 @@ function addProtocolIfNotPresent(host: string): string {
   return host
 }
 
-export { sleep, removeUndefinedFromObject, addProtocolIfNotPresent }
+function encode64(str: any) {
+  return Buffer.from(JSON.stringify(str)).toString('base64')
+}
+
+export { sleep, removeUndefinedFromObject, addProtocolIfNotPresent, encode64 }

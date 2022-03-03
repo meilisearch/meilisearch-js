@@ -24,10 +24,7 @@ class MeiliSearch extends Client {
     if (typeof window === 'undefined') {
       return this.tokens.generateTenantToken(searchRules, options)
     }
-    const error = new Error()
-    throw new Error(
-      `MeiliSearchApiError: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}.`
-    )
+    return super.generateTenantToken(searchRules, options)
   }
 }
 export { MeiliSearch }
