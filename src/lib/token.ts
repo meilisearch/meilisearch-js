@@ -37,9 +37,9 @@ function createHeader() {
 /**
  * Create the payload of the token.
  *
- * @param {SearchRules} searchRules Search rules that are applied ton every search.
+ * @param {SearchRules} searchRules Search rules that are applied to every search.
  * @param {String} apiKey Api key used as issuer of the token.
- * @param {Date | undefined} apiKey Date value.
+ * @param {Date | undefined} expiresAt Date at which the token expires.
  * @returns {String} The payload encoded in base64.
  */
 function createPayload(
@@ -68,7 +68,7 @@ class Token {
    *
    * @memberof MeiliSearch
    * @method generateTenantToken
-   * @param {SearchRules} searchRules Search rules that are applied ton every search.
+   * @param {SearchRules} searchRules Search rules that are applied to every search.
    * @param {TokenOptions} options Token options to customize some aspect of the token.
    * @returns {String} The token in JWT format.
    */

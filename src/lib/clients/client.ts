@@ -401,7 +401,7 @@ class Client {
    *
    * @memberof MeiliSearch
    * @method generateTenantToken
-   * @param {SearchRules} searchRules Search rules that are applied ton every search.
+   * @param {SearchRules} searchRules Search rules that are applied to every search.
    * @param {TokenOptions} options Token options to customize some aspect of the token.
    * @returns {String} The token in JWT format.
    */
