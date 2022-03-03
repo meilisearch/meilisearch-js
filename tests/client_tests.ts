@@ -144,6 +144,12 @@ describe.each([
     const health = await client.isHealthy()
     expect(health).toBe(false)
   })
+
+  test(`${permission} key: Empty string host should throw an error`, () => {
+    expect(() => {
+      new MeiliSearch({ host: '' })
+    }).toThrow('The provided host is not valid.')
+  })
 })
 
 describe.each([{ permission: 'Master' }, { permission: 'Private' }])(

@@ -18,6 +18,5 @@ test(`Client handles host URL with domain and path and no trailing slash`, () =>
   const client = new MeiliSearch({
     host: customHost,
   })
-  expect(client.config.host).toBe(customHost + '/')
   expect(client.httpRequest.url.href).toBe(customHost + '/')
 })
