@@ -39,6 +39,24 @@ describe.each([{ permission: 'Private' }])(
       expect(typ).toEqual(TOKEN_TYP)
     })
 
+    test(`${permission} key: create a tenant token and test signature`, async () => {
+      const client = await getClient(permission)
+      const token = client.generateTenantToken([])
+      const apiKey = await getKey(permission)
+      const [header64, payload64, signature64] = token.split('.')
+
+      // signature
+      const newSignature = crypto
+        .createHmac('sha256', apiKey)
+        .update(`${header64}.${payload64}`)
+        .digest('base64')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=/g, '')
+
+      expect(signature64).toEqual(newSignature)
+    })
+
     test(`${permission} key: create a tenant token with default values and test payload`, async () => {
       const client = await getClient(permission)
       const token = client.generateTenantToken([])
@@ -48,19 +66,6 @@ describe.each([{ permission: 'Private' }])(
       // payload
       const { apiKeyPrefix, exp, searchRules } = JSON.parse(decode64(payload64))
       expect(apiKeyPrefix).toEqual(apiKey.substring(0, 8))
-      expect(exp).toBeUndefined()
-      expect(searchRules).toEqual([])
-    })
-
-    test(`${permission} key: create a tenant token no api key and test payload`, () => {
-      const client = new MeiliSearch({ host: HOST })
-      const token = client.generateTenantToken([])
-      const [_, payload64] = token.split('.')
-
-      // payload
-      const { apiKeyPrefix, exp, searchRules } = JSON.parse(decode64(payload64))
-
-      expect(apiKeyPrefix).toEqual('')
       expect(exp).toBeUndefined()
       expect(searchRules).toEqual([])
     })
@@ -89,24 +94,6 @@ describe.each([{ permission: 'Private' }])(
       expect(apiKeyPrefix).toEqual(apiKey.substring(0, 8))
       expect(exp).toBeUndefined()
       expect(searchRules).toEqual({ [UID]: {} })
-    })
-
-    test(`${permission} key: create a tenant token and test signature`, async () => {
-      const client = await getClient(permission)
-      const token = client.generateTenantToken([])
-      const apiKey = await getKey(permission)
-      const [header64, payload64, signature64] = token.split('.')
-
-      // signature
-      const newSignature = crypto
-        .createHmac('sha256', apiKey)
-        .update(`${header64}.${payload64}`)
-        .digest('base64')
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=/g, '')
-
-      expect(signature64).toEqual(newSignature)
     })
 
     test(`${permission} key: Search in tenant token with wildcard`, async () => {
@@ -138,7 +125,13 @@ describe.each([{ permission: 'Private' }])(
       expect(searchClient.index(UID).search()).resolves.not.toBeUndefined()
     })
 
-    test(`${permission} key: Search in tenant token with expire date`, async () => {
+    test(`${permission} key: create a tenant token no api key and test payload`, () => {
+      const client = new MeiliSearch({ host: HOST })
+      // Needs to be wrapped in a function for it to work.
+      expect(() => client.generateTenantToken([])).toThrow()
+    })
+
+    test(`${permission} key: Search in tenant token with expireAt`, async () => {
       const client = await getClient(permission)
       const date = new Date('December 17, 4000 03:24:00')
       const token = client.generateTenantToken(['*'], {
@@ -152,6 +145,16 @@ describe.each([{ permission: 'Private' }])(
 
       // search
       expect(searchClient.index(UID).search()).resolves.not.toBeUndefined()
+    })
+
+    test(`${permission} key: Search in tenant token with expireAt value set in the past`, async () => {
+      const client = await getClient(permission)
+      const date = new Date('December 17, 2000 03:24:00')
+      expect(() =>
+        client.generateTenantToken(['*'], {
+          expiresAt: date,
+        })
+      ).toThrow()
     })
 
     test(`${permission} key: Search in tenant token with specific index set to null`, async () => {

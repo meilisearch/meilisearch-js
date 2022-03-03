@@ -35,6 +35,44 @@ function createHeader() {
 }
 
 /**
+ * Validate the parameter used for the payload of the token.
+ *
+ * @param {SearchRules} searchRules Search rules that are applied to every search.
+ * @param {String} apiKey Api key used as issuer of the token.
+ * @param {Date | undefined} expiresAt Date at which the token expires.
+ */
+function validatePayload(payloadParams: {
+  searchRules: TokenSearchRules
+  apiKey: string
+  expiresAt?: Date
+}) {
+  const { searchRules, apiKey, expiresAt } = payloadParams
+  const error = new Error()
+
+  if (expiresAt) {
+    if (!(expiresAt instanceof Date) || expiresAt.getTime() < Date.now()) {
+      throw new Error(
+        `Meilisearch: When the expiresAt field in the token generation has a value, it must be a date set in the future and not in the past. \n ${error.stack}.`
+      )
+    }
+  }
+
+  if (searchRules) {
+    if (!(typeof searchRules === 'object' || Array.isArray(searchRules))) {
+      throw new Error(
+        `Meilisearch: The search rules added in the token generation must be of type array or object. \n ${error.stack}.`
+      )
+    }
+  }
+
+  if (!apiKey || typeof apiKey !== 'string') {
+    throw new Error(
+      `Meilisearch: The API key used for the token generation must exist and be of type string. \n ${error.stack}.`
+    )
+  }
+}
+
+/**
  * Create the payload of the token.
  *
  * @param {SearchRules} searchRules Search rules that are applied to every search.
@@ -42,11 +80,13 @@ function createHeader() {
  * @param {Date | undefined} expiresAt Date at which the token expires.
  * @returns {String} The payload encoded in base64.
  */
-function createPayload(
-  searchRules: TokenSearchRules,
-  apiKey: string,
+function createPayload(payloadParams: {
+  searchRules: TokenSearchRules
+  apiKey: string
   expiresAt?: Date
-): string {
+}): string {
+  const { searchRules, apiKey, expiresAt } = payloadParams
+  validatePayload(payloadParams)
   const payload = {
     searchRules,
     apiKeyPrefix: apiKey.substring(0, 8),
@@ -80,7 +120,7 @@ class Token {
     const expiresAt = options?.expiresAt
 
     const encodedHeader = createHeader()
-    const encodedPayload = createPayload(searchRules, apiKey, expiresAt)
+    const encodedPayload = createPayload({ searchRules, apiKey, expiresAt })
     const signature = sign(apiKey, encodedHeader, encodedPayload)
 
     return `${encodedHeader}.${encodedPayload}.${signature}`
