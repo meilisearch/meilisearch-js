@@ -24,7 +24,6 @@ import {
   Result,
 } from '../types'
 import { HttpRequests } from './http-requests'
-import { addProtocolIfNotPresent } from './utils'
 import { TaskClient } from './task'
 
 class MeiliSearch {
@@ -37,8 +36,6 @@ class MeiliSearch {
    * @param {Config} config Configuration object
    */
   constructor(config: Config) {
-    config.host = addProtocolIfNotPresent(config.host)
-    config.host = HttpRequests.addTrailingSlash(config.host)
     this.config = config
     this.httpRequest = new HttpRequests(config)
     this.tasks = new TaskClient(config)

@@ -20,4 +20,16 @@ function addProtocolIfNotPresent(host: string): string {
   return host
 }
 
-export { sleep, removeUndefinedFromObject, addProtocolIfNotPresent }
+function addTrailingSlash(url: string): string {
+  if (!url.endsWith('/')) {
+    url += '/'
+  }
+  return url
+}
+
+export {
+  sleep,
+  removeUndefinedFromObject,
+  addProtocolIfNotPresent,
+  addTrailingSlash,
+}

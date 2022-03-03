@@ -2,7 +2,23 @@ import 'cross-fetch/polyfill'
 
 import { Config, EnqueuedTask } from '../types'
 
-import { httpResponseErrorHandler, httpErrorHandler } from '../errors'
+import {
+  MeiliSearchError,
+  httpResponseErrorHandler,
+  httpErrorHandler,
+} from '../errors'
+
+import { addTrailingSlash, addProtocolIfNotPresent } from './utils'
+
+function constructHostURL(host: string): string {
+  try {
+    host = addProtocolIfNotPresent(host)
+    host = addTrailingSlash(host)
+    return host
+  } catch (e) {
+    throw new MeiliSearchError('The provided host is not valid.')
+  }
+}
 
 class HttpRequests {
   headers: Record<string, any>
@@ -14,14 +30,12 @@ class HttpRequests {
     if (config.apiKey) {
       this.headers['Authorization'] = `Bearer ${config.apiKey}`
     }
-    this.url = new URL(config.host)
-  }
-
-  static addTrailingSlash(url: string): string {
-    if (!url.endsWith('/')) {
-      url += '/'
+    try {
+      const host = constructHostURL(config.host)
+      this.url = new URL(host)
+    } catch (e) {
+      throw new MeiliSearchError('The provided host is not valid.')
     }
-    return url
   }
 
   async request({
