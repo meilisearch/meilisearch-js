@@ -1,4 +1,4 @@
-import { EnqueuedTask, ErrorStatusCode } from '../src/'
+import { EnqueuedTask, ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,

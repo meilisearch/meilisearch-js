@@ -7,7 +7,7 @@
 
 'use strict'
 
-import { Index } from './indexes'
+import { Index } from '../indexes'
 import {
   KeyPayload,
   Config,
@@ -22,12 +22,12 @@ import {
   ErrorStatusCode,
   Task,
   Result,
-} from '../types'
-import { HttpRequests } from './http-requests'
-import { addProtocolIfNotPresent } from './utils'
-import { TaskClient } from './task'
+} from '../../types'
+import { HttpRequests } from '../http-requests'
+import { addProtocolIfNotPresent } from '../utils'
+import { TaskClient } from '../task'
 
-class MeiliSearch {
+class Client {
   config: Config
   httpRequest: HttpRequests
   tasks: TaskClient
@@ -395,4 +395,4 @@ class MeiliSearch {
   }
 }
 
-export { MeiliSearch }
+export { Client }
