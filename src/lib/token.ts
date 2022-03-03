@@ -1,10 +1,15 @@
 import { Config, TokenSearchRules, TokenOptions } from '../types'
+import { encode64 } from './utils'
 import crypto from 'crypto'
 
-function encode64(str: any) {
-  return Buffer.from(JSON.stringify(str)).toString('base64')
-}
-
+/**
+ * Create the header of the token.
+ *
+ * @param {String} apiKey API key used to sign the token.
+ * @param {String} encodedHeader Header of the token in base64.
+ * @param {String} encodedPayload Payload of the token in base64.
+ * @returns {String} The signature of the token in base64.
+ */
 function sign(apiKey: string, encodedHeader: string, encodedPayload: string) {
   return crypto
     .createHmac('sha256', apiKey)
@@ -15,6 +20,11 @@ function sign(apiKey: string, encodedHeader: string, encodedPayload: string) {
     .replace(/=/g, '')
 }
 
+/**
+ * Create the header of the token.
+ *
+ * @returns {String} The header encoded in base64.
+ */
 function createHeader() {
   const header = {
     alg: 'HS256',
@@ -24,15 +34,23 @@ function createHeader() {
   return encode64(header).replace(/=/g, '')
 }
 
+/**
+ * Create the payload of the token.
+ *
+ * @param {SearchRules} searchRules Search rules that are applied ton every search.
+ * @param {String} apiKey Api key used as issuer of the token.
+ * @param {Date | undefined} apiKey Date value.
+ * @returns {String} The payload encoded in base64.
+ */
 function createPayload(
   searchRules: TokenSearchRules,
   apiKey: string,
-  expiresAt: Date | null
-) {
+  expiresAt?: Date
+): string {
   const payload = {
-    exp: expiresAt?.getTime() || null,
     searchRules,
     apiKeyPrefix: apiKey.substring(0, 8),
+    exp: expiresAt?.getTime(),
   }
 
   return encode64(payload).replace(/=/g, '')
@@ -47,17 +65,19 @@ class Token {
 
   /**
    * Generate a tenant token
+   *
    * @memberof MeiliSearch
    * @method generateTenantToken
-   * @param {string} dumpUid Dump UID
-   * @returns {String} Token
+   * @param {SearchRules} searchRules Search rules that are applied ton every search.
+   * @param {TokenOptions} options Token options to customize some aspect of the token.
+   * @returns {String} The token in JWT format.
    */
   generateTenantToken(
     searchRules: TokenSearchRules,
     options?: TokenOptions
   ): string {
     const apiKey = options?.apiKey || this.config.apiKey || ''
-    const expiresAt = options?.expiresAt || null
+    const expiresAt = options?.expiresAt
 
     const encodedHeader = createHeader()
     const encodedPayload = createPayload(searchRules, apiKey, expiresAt)
