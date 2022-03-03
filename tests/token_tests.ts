@@ -180,9 +180,7 @@ describe.each([{ permission: 'Private' }])(
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token })
 
       // search
-      // const { hits } = await searchClient.index(UID).search()
       expect(searchClient.index(UID).search()).resolves.not.toBeUndefined()
-      // toEqual('Le Rouge et le Noir')
     })
 
     test(`${permission} key: Search in tenant token with empty array `, async () => {
