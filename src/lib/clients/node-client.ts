@@ -12,10 +12,12 @@ class MeiliSearch extends Client {
 
   /**
    * Generate a tenant token
+   *
    * @memberof MeiliSearch
    * @method generateTenantToken
-   * @param {string} dumpUid Dump UID
-   * @returns {String} Token
+   * @param {SearchRules} searchRules Search rules that are applied to every search.
+   * @param {TokenOptions} options Token options to customize some aspect of the token.
+   * @returns {String} The token in JWT format.
    */
   generateTenantToken(
     searchRules: TokenSearchRules,
@@ -24,10 +26,7 @@ class MeiliSearch extends Client {
     if (typeof window === 'undefined') {
       return this.tokens.generateTenantToken(searchRules, options)
     }
-    const error = new Error()
-    throw new Error(
-      `MeiliSearchApiError: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}.`
-    )
+    return super.generateTenantToken(searchRules, options)
   }
 }
 export { MeiliSearch }

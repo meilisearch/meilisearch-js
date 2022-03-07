@@ -441,7 +441,7 @@ export const enum ErrorStatusCode {
 }
 
 export type TokenIndexRules = {
-  [field: string]: any // I have to check
+  [field: string]: any
   filter?: Filter
 }
 export type TokenSearchRules = Record<string, TokenIndexRules | null> | string[]
