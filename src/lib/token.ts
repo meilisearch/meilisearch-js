@@ -1,8 +1,8 @@
 import { Config, TokenSearchRules, TokenOptions } from '../types'
 import crypto from 'crypto'
 
-function encode64(str: any) {
-  return Buffer.from(JSON.stringify(str)).toString('base64')
+function encode64(data: any) {
+  return Buffer.from(JSON.stringify(data)).toString('base64')
 }
 
 function sign(apiKey: string, encodedHeader: string, encodedPayload: string) {
