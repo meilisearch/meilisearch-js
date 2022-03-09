@@ -500,3 +500,18 @@ security_guide_delete_key_1: |-
 authorization_header_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
   client.getKeys()
+tenant_token_guide_generate_sdk_1: |-
+  const searchRules = {
+    'patient_medical_records': {
+      filter: 'user_id = 1'
+    }
+  }
+  const apiKey = 'B5KdX2MY2jV6EXfUs6scSfmC...'
+  const expiresAt = new Date('2025-12-20') // optional
+  const token = client.generateTenantToken(searchRules, {
+    apiKey: apiKey,
+    expiresAt: expiresAt,
+  })
+tenant_token_guide_search_sdk_1: |-
+  const frontEndClient = new MeiliSearch({ host: 'http://127.0.0.1:7700', apiKey: token })
+  frontEndClient.index('patient_medical_records').search('blood test')
