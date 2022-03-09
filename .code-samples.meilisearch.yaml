@@ -508,6 +508,7 @@ tenant_token_guide_generate_sdk_1: |-
   }
   const apiKey = 'B5KdX2MY2jV6EXfUs6scSfmC...'
   const expiresAt = new Date('2025-12-20') // optional
+
   const token = client.generateTenantToken(searchRules, {
     apiKey: apiKey,
     expiresAt: expiresAt,
