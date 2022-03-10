@@ -28,14 +28,14 @@ const PLUGINS = [
 module.exports = [
   // browser-friendly UMD build
   {
-    input: 'src/index.ts', // directory to transpilation of typescript
+    input: 'src/browser.ts', // directory to transpilation of typescript
     external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: {
       name: 'window',
       extend: true,
       file: getOutputFileName(
         // will add .min. in filename if in production env
-        resolve(ROOT, pkg.browser),
+        resolve(ROOT, pkg.jsdelivr),
         env === 'production'
       ),
       format: 'umd',
@@ -72,12 +72,7 @@ module.exports = [
     ],
   },
 
-  // CommonJS (for Node) and ES module (for bundlers) build.
-  // (We could have three entries in the configuration array
-  // instead of two, but it's quicker to generate multiple
-  // builds from a single configuration where possible, using
-  // an array for the `output` option, where we can specify
-  // `file` and `format` for each target)
+  // ES module (for bundlers) build.
   {
     input: 'src/index.ts',
     external: ['cross-fetch', 'cross-fetch/polyfill'],
@@ -96,5 +91,21 @@ module.exports = [
       env === 'production' ? terser() : {}, // will minify the file in production mode
       ...PLUGINS,
     ],
+  },
+  // Common JS build (Node).
+  // Compatible only in a nodeJS environment.
+  {
+    input: 'src/index.ts',
+    external: ['cross-fetch', 'cross-fetch/polyfill'],
+    output: {
+      file: getOutputFileName(
+        // will add .min. in filename if in production env
+        resolve(ROOT, pkg.main),
+        env === 'production'
+      ),
+      exports: 'named',
+      format: 'cjs',
+    },
+    plugins: [...PLUGINS],
   },
 ]
