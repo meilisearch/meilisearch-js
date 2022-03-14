@@ -31,6 +31,12 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-throw-literal': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      // argsIgnorePattern: arguments whose names match a regexp pattern
+      // varsIgnorePattern: variables whose names match a regexp pattern
+      { args: 'all', argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    ],
     '@typescript-eslint/member-delimiter-style': [
       'error',
       {

@@ -17,9 +17,12 @@ let config = {
       },
     ],
   },
+  devServer: {
+    static: './public',
+  },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
-    mainFields: ['module', 'browser'], // the `module` field has priority on the browser field
+
   },
 }
 

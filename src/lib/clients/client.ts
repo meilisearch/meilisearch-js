@@ -7,7 +7,7 @@
 
 'use strict'
 
-import { Index } from './indexes'
+import { Index } from '../indexes'
 import {
   KeyPayload,
   Config,
@@ -22,11 +22,13 @@ import {
   ErrorStatusCode,
   Task,
   Result,
-} from '../types'
-import { HttpRequests } from './http-requests'
-import { TaskClient } from './task'
+  TokenSearchRules,
+  TokenOptions,
+} from '../../types'
+import { HttpRequests } from '../http-requests'
+import { TaskClient } from '../task'
 
-class MeiliSearch {
+class Client {
   config: Config
   httpRequest: HttpRequests
   tasks: TaskClient
@@ -390,6 +392,25 @@ class MeiliSearch {
     const url = `dumps/${dumpUid}/status`
     return await this.httpRequest.get<EnqueuedDump>(url)
   }
+
+  /**
+   * Generate a tenant token
+   *
+   * @memberof MeiliSearch
+   * @method generateTenantToken
+   * @param {SearchRules} searchRules Search rules that are applied to every search.
+   * @param {TokenOptions} options Token options to customize some aspect of the token.
+   * @returns {String} The token in JWT format.
+   */
+  generateTenantToken(
+    _searchRules: TokenSearchRules,
+    _options?: TokenOptions
+  ): string {
+    const error = new Error()
+    throw new Error(
+      `Meilisearch: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}.`
+    )
+  }
 }
 
-export { MeiliSearch }
+export { Client }

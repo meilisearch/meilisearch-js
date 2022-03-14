@@ -18,10 +18,14 @@ const config = {
   projects: [
     {
       preset: 'ts-jest',
-      displayName: 'dom',
+      displayName: 'browser',
       testEnvironment: 'jsdom',
       testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
-      testPathIgnorePatterns: ['meilisearch-test-utils', 'env/'],
+      testPathIgnorePatterns: [
+        'meilisearch-test-utils',
+        'env/',
+        'token_tests.ts',
+      ],
     },
     {
       preset: 'ts-jest',
