@@ -503,7 +503,7 @@ authorization_header_1: |-
 tenant_token_guide_generate_sdk_1: |-
   const searchRules = {
     'patient_medical_records': {
-      filter: 'user_id = 1'
+      'filter': 'user_id = 1'
     }
   }
   const apiKey = 'B5KdX2MY2jV6EXfUs6scSfmC...'
