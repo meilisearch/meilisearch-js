@@ -313,8 +313,8 @@ add_movies_json_1: |-
   client.index('movies').addDocuments(movies).then((res) => console.log(res))
 documents_guide_add_movie_1: |-
   client.index('movies').addDocuments([{
-    'movie_id': '123sq178',
-    'title': 'Amelie Poulain'
+    movie_id: '123sq178',
+    title: 'Amelie Poulain'
   }])
 search_guide_1: |-
   client.index('movies').search('shifu', {
@@ -502,7 +502,7 @@ authorization_header_1: |-
   client.getKeys()
 tenant_token_guide_generate_sdk_1: |-
   const searchRules = {
-    'patient_medical_records': {
+    patient_medical_records: {
       filter: 'user_id = 1'
     }
   }
