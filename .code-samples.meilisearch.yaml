@@ -395,8 +395,8 @@ getting_started_add_meteorites: |-
   client.index('meteorites').addDocuments(meteorites)
 getting_started_configure_settings: |-
   client.index('meteorites').updateSettings({
-    filterable_attributes: ['mass', '_geo'],
-    sortable_attributes: ['mass', '_geo']
+    filterableAttributes: ['mass', '_geo'],
+    sortableAttributes: ['mass', '_geo']
   })
 getting_started_geoRadius: |-
   client.index('meteorites').search('', { filter: '_geoRadius(46.9480, 7.4474, 210000)' })
@@ -549,3 +549,15 @@ tenant_token_guide_generate_sdk_1: |-
 tenant_token_guide_search_sdk_1: |-
   const frontEndClient = new MeiliSearch({ host: 'http://127.0.0.1:7700', apiKey: token })
   frontEndClient.index('patient_medical_records').search('blood test')
+
+landing_getting_started_1: |-
+  const client = new MeiliSearch('http://127.0.0.1:7700', 'masterKey')
+
+  client.index('movies').addDocuments([
+    { 'id': 1, 'title': 'Carol' },
+    { 'id': 2, 'title': 'Wonder Woman' },
+    { 'id': 3, 'title': 'Life of Pi' },
+    { 'id': 4, 'title': 'Mad Max: Fury Road' },
+    { 'id': 5, 'title': 'Moana' },
+    { 'id': 6, 'title': 'Philadelphia'}
+  ])
