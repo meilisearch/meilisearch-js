@@ -372,7 +372,7 @@ getting_started_update_searchableAttributes: |-
 getting_started_update_stop_words: |-
   client.index('movies').updateStopWords(['the'])
 getting_started_check_task_status_md: |-
-  ```rb
+  ```js
   client.index('movies').getTask(0)
   ```
 getting_started_synonyms: |-
@@ -388,7 +388,7 @@ getting_started_update_displayedAttributes: |-
   ])
 getting_started_communicating_with_a_protected_instance: |-
   const client = new MeiliSearch('http://127.0.0.1:7700', 'apiKey')
-  client.index('movies').search
+  client.index('movies').search()
 getting_started_add_meteorites: |-
   const meteorites = require('./meteorites.json')
 
@@ -549,7 +549,6 @@ tenant_token_guide_generate_sdk_1: |-
 tenant_token_guide_search_sdk_1: |-
   const frontEndClient = new MeiliSearch({ host: 'http://127.0.0.1:7700', apiKey: token })
   frontEndClient.index('patient_medical_records').search('blood test')
-
 landing_getting_started_1: |-
   const client = new MeiliSearch('http://127.0.0.1:7700', 'masterKey')
 
