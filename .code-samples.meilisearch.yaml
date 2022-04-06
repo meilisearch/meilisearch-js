@@ -552,7 +552,7 @@ tenant_token_guide_search_sdk_1: |-
 landing_getting_started_1: |-
   const client = new MeiliSearch('http://127.0.0.1:7700', 'masterKey')
 
-  client.index('movies').addDocuments([
+  await client.index('movies').addDocuments([
     { 'id': 1, 'title': 'Carol' },
     { 'id': 2, 'title': 'Wonder Woman' },
     { 'id': 3, 'title': 'Life of Pi' },
@@ -560,3 +560,7 @@ landing_getting_started_1: |-
     { 'id': 5, 'title': 'Moana' },
     { 'id': 6, 'title': 'Philadelphia'}
   ])
+
+  // be aware this client is using the masterKey, it should not be used in front end
+  const search = await index.search('philodelphia')
+  console.log(search)
