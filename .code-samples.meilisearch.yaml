@@ -371,10 +371,8 @@ getting_started_update_searchableAttributes: |-
   ])
 getting_started_update_stop_words: |-
   client.index('movies').updateStopWords(['the'])
-getting_started_check_task_status_md: |-
-  ```js
+getting_started_check_task_status: |-
   client.index('movies').getTask(0)
-  ```
 getting_started_synonyms: |-
   client.index('movies').updateSynonyms({
     winnie: ['piglet'],
