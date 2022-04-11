@@ -8,9 +8,9 @@ get_one_index_1: |-
 list_all_indexes_1: |-
   client.getIndexes()
 create_an_index_1: |-
-  client.createIndex('movies', { primaryKey: 'movie_id' })
+  client.createIndex('movies', { primaryKey: 'id' })
 update_an_index_1: |-
-  client.updateIndex('movies', { primaryKey: 'movie_review_id' })
+  client.updateIndex('movies', { primaryKey: 'id' })
 delete_an_index_1: |-
   client.deleteIndex('movies')
 get_one_document_1: |-
@@ -92,13 +92,13 @@ update_settings_1: |-
       distinctAttribute: 'movie_id',
       searchableAttributes: [
           'title',
-          'description',
-          'genre'
+          'overview',
+          'genres'
       ],
       displayedAttributes: [
           'title',
-          'description',
-          'genre',
+          'overview',
+          'genres'
           'release_date'
       ],
       stopWords: [
@@ -159,8 +159,8 @@ get_searchable_attributes_1: |-
 update_searchable_attributes_1: |-
   client.index('movies').updateSearchableAttributes([
     'title',
-    'description',
-    'genre',
+    'overview',
+    'genres'
   ])
 reset_searchable_attributes_1: |-
   client.index('movies').resetSearchableAttributes()
@@ -169,9 +169,9 @@ get_displayed_attributes_1: |-
 update_displayed_attributes_1: |-
   client.index('movies').updateDisplayedAttributes([
     'title',
-    'description',
-    'genre',
-    'release_date',
+    'overview',
+    'genres',
+    'release_date'
   ])
 reset_displayed_attributes_1: |-
   client.index('movies').resetDisplayedAttributes()
@@ -189,16 +189,16 @@ field_properties_guide_searchable_1: |-
   client.index('movies').updateSettings({
     searchableAttributes: [
         'title',
-        'description',
-        'genre'
+        'overview',
+        'genres'
     ]
   })
 field_properties_guide_displayed_1: |-
   client.index('movies').updateSettings({
       displayedAttributes: [
           'title',
-          'description',
-          'genre',
+          'overview',
+          'genres',
           'release_date'
       ]
   })
@@ -211,10 +211,6 @@ filtering_guide_2: |-
     filter: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")'
   })
 filtering_guide_3: |-
-  client.index('movies').search('horror', {
-    filter: 'director = "Jordan Peele"'
-  })
-filtering_guide_4: |-
   client.index('movies').search('Planet of the Apes', {
     filter: 'rating >= 3 AND (NOT director = "Tim Burton")'
   })
@@ -240,14 +236,6 @@ search_parameter_guide_crop_1: |-
 search_parameter_guide_highlight_1: |-
   client.index('movies').search('winter feast', {
     attributesToHighlight: ['overview']
-  })
-search_parameter_guide_filter_1: |-
-  client.index('movies').search('n', {
-    filter: 'title = Nightshift'
-  })
-search_parameter_guide_filter_2: |-
-  client.index('movies').search('n', {
-    filter: 'title="Kung Fu Panda"'
   })
 search_parameter_guide_matches_1: |-
   client.index('movies').search('winter feast', {
@@ -288,16 +276,16 @@ settings_guide_searchable_1: |-
   client.index('movies').updateSettings({
     searchableAttributes: [
       'title',
-      'description',
-      'genre'
+      'overview',
+      'genres'
     ]
   })
 settings_guide_displayed_1: |-
   client.index('movies').updateSettings({
     displayedAttributes: [
       'title',
-      'description',
-      'genre',
+      'overview',
+      'genres',
       'release_date',
     ]
   })
@@ -316,15 +304,18 @@ documents_guide_add_movie_1: |-
     movie_id: '123sq178',
     title: 'Amelie Poulain'
   }])
-search_guide_1: |-
-  client.index('movies').search('shifu', {
-    limit: 5,
-    offset: 10
-  })
-search_guide_2: |-
-  client.index('movies').search('Avengers', {
-    filter: 'release_date > 795484800',
-  })
+document_guide_create_index_primary_key: |-
+  client.createIndex('movies', { primaryKey: 'reference_number' })
+document_guide_add_document_primary_key: |-
+  client.index('movies').addDocuments([
+    {
+      reference_number: 287947,
+      title: 'Shazam',
+      poster: 'https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg',
+      overview: 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
+      release_date: '2019-03-23'
+    }
+  ], { primaryKey: 'reference_number' })
 getting_started_add_documents_md: |-
   ```bash
   npm install meilisearch
@@ -363,6 +354,59 @@ getting_started_search_md: |-
   ```
 
   [About this SDK](https://github.com/meilisearch/meilisearch-js/)
+getting_started_update_rankingRules: |-
+  client.index('movies').updateRankingRules([
+    'exactness',
+    'words',
+    'typo',
+    'proximity',
+    'attribute',
+    'sort',
+    'release_date:asc',
+    'rank:desc'
+  ])
+getting_started_update_searchableAttributes: |-
+  client.index('movies').updateSearchableAttributes([
+    'title'
+  ])
+getting_started_update_stop_words: |-
+  client.index('movies').updateStopWords(['the'])
+getting_started_check_task_status: |-
+  client.index('movies').getTask(0)
+getting_started_synonyms: |-
+  client.index('movies').updateSynonyms({
+    winnie: ['piglet'],
+    piglet: ['winnie']
+  })
+getting_started_update_displayedAttributes: |-
+  client.index('movies').updateDisplayedAttributes([
+    'title',
+    'overview',
+    'poster'
+  ])
+getting_started_communicating_with_a_protected_instance: |-
+  const client = new MeiliSearch('http://127.0.0.1:7700', 'apiKey')
+  client.index('movies').search()
+getting_started_add_meteorites: |-
+  const meteorites = require('./meteorites.json')
+
+  client.index('meteorites').addDocuments(meteorites)
+getting_started_configure_settings: |-
+  client.index('meteorites').updateSettings({
+    filterableAttributes: ['mass', '_geo'],
+    sortableAttributes: ['mass', '_geo']
+  })
+getting_started_geoRadius: |-
+  client.index('meteorites').search('', { filter: '_geoRadius(46.9480, 7.4474, 210000)' })
+getting_started_geoPoint: |-
+  client.index('meteorites').search('', { sort: ['_geoPoint(48.8583701, 2.2922926):asc'] })
+getting_started_sorting: |-
+  client.index('meteorites').search('', {
+    sort: ['mass:asc'],
+    filter: 'mass < 200'
+  })
+getting_started_filtering: |-
+  client.index('meteorites').search('', { filter: 'mass < 200' })
 get_filterable_attributes_1: |-
   client.index('movies').getFilterableAttributes()
 update_filterable_attributes_1: |-
@@ -389,23 +433,10 @@ faceted_search_facets_distribution_1: |-
     .search('Batman', {
       facetsDistribution: ['genres']
     })
-faceted_search_walkthrough_filterable_attributes_1: |-
-  client.index('movies')
-    .updateFilterableAttributes([
-      'director',
-      'producer',
-      'genres',
-      'production_companies'
-    ])
 faceted_search_walkthrough_filter_1: |-
   client.index('movies')
     .search('thriller', {
       filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
-    })
-faceted_search_walkthrough_facets_distribution_1: |-
-  client.index('movies')
-    .search('Batman', {
-      facetsDistribution: ['genres']
     })
 post_dump_1: |-
   client.createDump()
@@ -457,11 +488,11 @@ geosearch_guide_filter_settings_1: |-
   ])
 geosearch_guide_filter_usage_1: |-
   client.index('restaurants').search('', {
-    filter: ['_geoRadius(45.4628328, 9.1076931, 2000)'],
+    filter: ['_geoRadius(45.472735, 9.184019, 2000)'],
   })
 geosearch_guide_filter_usage_2: |-
   client.index('restaurants').search('', {
-    filter: ['_geoRadius(45.4628328, 9.1076931, 2000) AND type = pizza'],
+    filter: ['_geoRadius(45.472735, 9.184019, 2000) AND type = pizza'],
   })
 geosearch_guide_sort_settings_1: |-
   client.index('restaurants').updateSortableAttributes([
@@ -469,11 +500,11 @@ geosearch_guide_sort_settings_1: |-
   ])
 geosearch_guide_sort_usage_1: |-
   client.index('restaurants').search('', {
-    sort: ['_geoPoint(48.8583701,2.2922926):asc'],
+    sort: ['_geoPoint(48.8561446, 2.2978204):asc'],
   })
 geosearch_guide_sort_usage_2: |-
   client.index('restaurants').search('', {
-    sort: ['_geoPoint(48.8583701,2.2922926):asc', 'rating:desc'],
+    sort: ['_geoPoint(48.8561446, 2.2978204):asc', 'rating:desc'],
   })
 security_guide_search_key_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'apiKey' })
@@ -516,3 +547,18 @@ tenant_token_guide_generate_sdk_1: |-
 tenant_token_guide_search_sdk_1: |-
   const frontEndClient = new MeiliSearch({ host: 'http://127.0.0.1:7700', apiKey: token })
   frontEndClient.index('patient_medical_records').search('blood test')
+landing_getting_started_1: |-
+  const client = new MeiliSearch('http://127.0.0.1:7700', 'masterKey')
+
+  await client.index('movies').addDocuments([
+    { 'id': 1, 'title': 'Carol' },
+    { 'id': 2, 'title': 'Wonder Woman' },
+    { 'id': 3, 'title': 'Life of Pi' },
+    { 'id': 4, 'title': 'Mad Max: Fury Road' },
+    { 'id': 5, 'title': 'Moana' },
+    { 'id': 6, 'title': 'Philadelphia'}
+  ])
+
+  // be aware this client is using the masterKey, it should not be used in front end
+  const search = await index.search('philodelphia')
+  console.log(search)
