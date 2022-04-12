@@ -34,7 +34,7 @@ jobs:
       - name: Get the latest Meilisearch RC
         run: echo "MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/main/scripts/get-latest-meilisearch-rc.sh | bash)" >> $GITHUB_ENV
       - name: Meilisearch (${{ env.MEILISEARCH_VERSION }}) setup with Docker
-        run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_VERSION }} ./meilisearch --master-key=masterKey --no-analytics
+        run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_VERSION }} meilisearch --master-key=masterKey --no-analytics
       - name: Run tests
         run: yarn test
       - name: Build project
