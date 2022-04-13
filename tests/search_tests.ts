@@ -244,6 +244,47 @@ describe.each([
     expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
   })
 
+  test(`${permission} key: search on default cropping parameters`, async () => {
+    const client = await getClient(permission)
+    const response = await client.index(index.uid).search('prince', {
+      attributesToCrop: ['*'],
+      cropLength: 6,
+    })
+
+    expect(response.hits[0]._formatted).toHaveProperty(
+      'comment',
+      '…book about a prince that walks…'
+    )
+  })
+
+  test(`${permission} key: search on customized cropMarker`, async () => {
+    const client = await getClient(permission)
+    const response = await client.index(index.uid).search('prince', {
+      attributesToCrop: ['*'],
+      cropLength: 6,
+      cropMarker: '(ꈍᴗꈍ)',
+    })
+
+    expect(response.hits[0]._formatted).toHaveProperty(
+      'comment',
+      '(ꈍᴗꈍ)book about a prince that walks(ꈍᴗꈍ)'
+    )
+  })
+
+  test(`${permission} key: search on customized highlight tags`, async () => {
+    const client = await getClient(permission)
+    const response = await client.index(index.uid).search('prince', {
+      attributesToHighlight: ['*'],
+      highlightPreTag: '(⊃｡•́‿•̀｡)⊃ ',
+      highlightPostTag: ' ⊂(´• ω •`⊂)',
+    })
+
+    expect(response.hits[0]._formatted).toHaveProperty(
+      'comment',
+      'A french book about a (⊃｡•́‿•̀｡)⊃ prince ⊂(´• ω •`⊂) that walks on little cute planets'
+    )
+  })
+
   test(`${permission} key: search with all options and all fields`, async () => {
     const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {
@@ -408,6 +449,17 @@ describe.each([
       genre: { fantasy: 2 },
     })
     expect(response.hits.length).toEqual(2)
+  })
+
+  test(`${permission} key: search on index with no documents and no primary key`, async () => {
+    const client = await getClient(permission)
+    const response = await client.index(emptyIndex.uid).search('prince', {})
+    expect(response).toHaveProperty('hits', [])
+    expect(response).toHaveProperty('offset', 0)
+    expect(response).toHaveProperty('limit', 20)
+    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
+    expect(response).toHaveProperty('query', 'prince')
+    expect(response.hits.length).toEqual(0)
   })
 
   test(`${permission} key: search on index with no documents and no primary key`, async () => {
