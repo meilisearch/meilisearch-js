@@ -39,6 +39,10 @@ export type AddDocumentParams = {
   primaryKey?: string
 }
 
+/*
+ * SEARCH PARAMETERS
+ */
+
 export type Filter = string | Array<string | string[]>
 
 export type Pagination = {
