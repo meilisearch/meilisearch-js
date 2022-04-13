@@ -5,6 +5,7 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
+  dataset,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -14,20 +15,6 @@ const indexAndPK = {
   uid: 'movies_test_with_pk',
   primaryKey: 'id',
 }
-
-const dataset = [
-  { id: 123, title: 'Pride and Prejudice', comment: 'A great book' },
-  { id: 456, title: 'Le Petit Prince', comment: 'A french book' },
-  { id: 2, title: 'Le Rouge et le Noir', comment: 'Another french book' },
-  { id: 1, title: 'Alice In Wonderland', comment: 'A weird book' },
-  { id: 1344, title: 'The Hobbit', comment: 'An awesome book' },
-  {
-    id: 4,
-    title: 'Harry Potter and the Half-Blood Prince',
-    comment: 'The best book',
-  },
-  { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
-]
 
 const defaultRankingRules = [
   'words',

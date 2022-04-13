@@ -5,25 +5,12 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
+  dataset,
 } from './meilisearch-test-utils'
 
 const index = {
   uid: 'movies_test',
 }
-
-const dataset = [
-  { id: 123, title: 'Pride and Prejudice', genre: 'romance' },
-  { id: 456, title: 'Le Petit Prince', genre: 'adventure' },
-  { id: 2, title: 'Le Rouge et le Noir', genre: 'romance' },
-  { id: 1, title: 'Alice In Wonderland', genre: 'adventure' },
-  { id: 1344, title: 'The Hobbit', genre: 'adventure' },
-  {
-    id: 4,
-    title: 'Harry Potter and the Half-Blood Prince',
-    genre: 'fantasy',
-  },
-  { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
-]
 
 jest.setTimeout(100 * 1000)
 
