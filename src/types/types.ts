@@ -41,46 +41,41 @@ export type AddDocumentParams = {
 
 export type Filter = string | Array<string | string[]>
 
-export type SearchParams = {
+export type Pagination = {
   offset?: number
   limit?: number
-  attributesToRetrieve?: string[]
-  attributesToCrop?: string[]
-  cropLength?: number
-  attributesToHighlight?: string[]
+}
+
+export type Query = {
+  q?: string | null
+}
+
+export type SearchParams = Pagination & {
   filter?: Filter
   sort?: string[]
   facetsDistribution?: string[]
-  matches?: boolean
-}
-
-export type SearchRequestGET = {
-  q?: string | null
-  offset?: number
-  limit?: number
-  attributesToRetrieve?: string
-  attributesToCrop?: string
-  cropLength?: number
-  attributesToHighlight?: string
-  facetsDistribution?: string
-  filter?: string
-  sort?: string
-  matches?: boolean
-}
-
-export type SearchRequest = {
-  q?: string | null
-  offset?: number
-  limit?: number
-  cropLength?: number
   attributesToRetrieve?: string[]
-  attributesToCrop?: string[]
   attributesToHighlight?: string[]
-  facetsDistribution?: string[]
-  filter?: Filter
-  sort?: string[]
+  attributesToCrop?: string[]
+  cropLength?: number
   matches?: boolean
 }
+
+export type SearchRequest = SearchParams & Query
+
+// Search parameters for searches made with the GET method
+// Are different than the parameters for the POST method
+export type SearchRequestGET = Pagination &
+  Query & {
+    filter?: string
+    sort?: string
+    facetsDistribution?: string
+    attributesToRetrieve?: string
+    attributesToHighlight?: string
+    attributesToCrop?: string
+    cropLength?: number
+    matches?: boolean
+  }
 
 export type CategoriesDistribution = {
   [category: string]: number
