@@ -239,7 +239,7 @@ describe.each([
     expect(response.hits[0]).toHaveProperty('_formatted', expect.any(Object))
     expect(response.hits[0]._formatted).toHaveProperty(
       'title',
-      'Petit <em>Prince</em>'
+      'Le Petit <em>Prince</em>'
     )
     expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
   })
@@ -265,7 +265,7 @@ describe.each([
     expect(response.hits[0]).toHaveProperty('_formatted', expect.any(Object))
     expect(response.hits[0]._formatted).toHaveProperty(
       'title',
-      'Petit <em>Prince</em>'
+      'Le Petit <em>Prince</em>'
     )
     expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
   })
@@ -298,7 +298,7 @@ describe.each([
     )
     expect(response.hits[0]._formatted).toHaveProperty(
       'title',
-      'Petit <em>Prince</em>'
+      'Le Petit <em>Prince</em>'
     )
     expect(response.hits[0]._formatted).not.toHaveProperty('comment')
     expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))

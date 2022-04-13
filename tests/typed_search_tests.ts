@@ -157,7 +157,8 @@ describe.each([
     ])
   })
 
-  test(`${permission} key: Search with all options but not all fields`, async () => {
+  // TODO: enable again on rc1
+  test.skip(`${permission} key: Search with all options but not all fields`, async () => {
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search('prince', {
       limit: 5,
@@ -174,9 +175,10 @@ describe.each([
     expect(response.limit === 5).toBeTruthy()
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response.query === 'prince').toBeTruthy()
-    expect(
-      response.hits[0]?._formatted?.title === 'Petit <em>Prince</em>'
-    ).toBeTruthy()
+    expect(response.hits[0]._formatted).toHaveProperty(
+      'title',
+      'Le Petit <em>Prince</em>'
+    )
     expect(response.hits[0]._formatted?.id).toEqual('456')
     expect(response.hits[0]).not.toHaveProperty('comment')
     expect(response.hits[0]).not.toHaveProperty('description')
@@ -208,9 +210,10 @@ describe.each([
     expect(
       response.hits[0]?._matchesInfo?.title?.[0]?.length === 6
     ).toBeTruthy()
-    expect(
-      response.hits[0]?._formatted?.title === 'Petit <em>Prince</em>'
-    ).toBeTruthy()
+    expect(response.hits[0]._formatted).toHaveProperty(
+      'title',
+      'Le Petit <em>Prince</em>'
+    )
   })
 
   test(`${permission} key: Search with all options but specific fields`, async () => {
@@ -240,9 +243,10 @@ describe.each([
     expect(response.hits[0]?._matchesInfo?.title).toEqual([
       { start: 9, length: 6 },
     ])
-    expect(
-      response.hits[0]?._formatted?.title === 'Petit <em>Prince</em>'
-    ).toBeTruthy()
+    expect(response.hits[0]._formatted).toHaveProperty(
+      'title',
+      'Le Petit <em>Prince</em>'
+    )
     expect(response.hits[0]).not.toHaveProperty(
       'description',
       expect.any(Object)
