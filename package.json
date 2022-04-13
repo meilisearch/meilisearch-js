@@ -35,7 +35,7 @@
     "build": "yarn cleanup && rollup -c && rollup -c --environment NODE_ENV:production",
     "watch": "yarn cleanup && rollup -c --watch",
     "postbuild": "yarn size && yarn typingsheader",
-    "test": "yarn clear_jest && jest --runInBand",
+    "test": "yarn clear_jest && jest --runInBand --verbose",
     "types:watch": "nodemon --config nodemon.json",
     "types": "yarn tsc",
     "test:env:browser": "yarn --cwd tests/env/express && yarn --cwd tests/env/express test",
