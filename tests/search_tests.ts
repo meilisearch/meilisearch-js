@@ -512,8 +512,6 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         sort: ['info.reviewNb:desc'],
       })
 
-      console.log(response)
-
       expect(response.hits[0]).toEqual({
         id: 6,
         title: 'Harry Potter and the Half-Blood Prince',
