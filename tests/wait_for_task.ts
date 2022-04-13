@@ -1,23 +1,14 @@
 import { TaskStatus } from '../src'
-import { clearAllIndexes, config, getClient } from './meilisearch-test-utils'
+import {
+  clearAllIndexes,
+  config,
+  getClient,
+  dataset,
+} from './meilisearch-test-utils'
 
 const index = {
   uid: 'movies_test',
 }
-
-const dataset = [
-  { id: 123, title: 'Pride and Prejudice', comment: 'A great book' },
-  { id: 456, title: 'Le Petit Prince', comment: 'A french book' },
-  { id: 2, title: 'Le Rouge et le Noir', comment: 'Another french book' },
-  { id: 1, title: 'Alice In Wonderland', comment: 'A weird book' },
-  { id: 1344, title: 'The Hobbit', comment: 'An awesome book' },
-  {
-    id: 4,
-    title: 'Harry Potter and the Half-Blood Prince',
-    comment: 'The best book',
-  },
-  { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
-]
 
 jest.setTimeout(100 * 1000)
 
