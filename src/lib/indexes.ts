@@ -830,7 +830,7 @@ class Index<T = Record<string, any>> {
    * Get the typo tolerance settings.
    * @memberof Index
    * @method getTypoTolerance
-   * @returns {Promise<string[]>} Promise containing containing the typo tolerance settings.
+   * @returns {Promise<string[]>} Promise containing the typo tolerance settings.
    */
   async getTypoTolerance(): Promise<string[]> {
     const url = `indexes/${this.uid}/settings/typo-tolerance`
