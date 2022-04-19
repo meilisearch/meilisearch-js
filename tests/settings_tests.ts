@@ -41,7 +41,7 @@ const defaultSettings = {
   ],
   stopWords: [],
   synonyms: {},
-  typo: {
+  typoTolerance: {
     enabled: true,
     minWordLengthForTypo: {
       oneTypo: 5,
@@ -114,7 +114,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         rankingRules: ['id:asc', 'typo'],
         stopWords: ['the'],
         synonyms: { harry: ['potter'] },
-        typo: {
+        typoTolerance: {
           enabled: false,
           minWordLengthForTypo: {
             oneTypo: 1,
@@ -149,7 +149,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         rankingRules: null,
         stopWords: null,
         synonyms: null,
-        typo: {
+        typoTolerance: {
           enabled: null,
           minWordLengthForTypo: {
             oneTypo: null,

@@ -162,7 +162,7 @@ export type Settings = {
   rankingRules?: RankingRules
   stopWords?: StopWords
   synonyms?: Synonyms
-  typo?: TypoTolerance
+  typoTolerance?: TypoTolerance
 }
 
 /*
