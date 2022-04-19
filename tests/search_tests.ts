@@ -6,6 +6,7 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
+  datasetWithNests,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -56,12 +57,6 @@ const dataset = [
   },
   { id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: 'fantasy' },
 ]
-
-jest.setTimeout(100 * 1000)
-
-afterAll(() => {
-  return clearAllIndexes(config)
-})
 
 describe.each([
   { permission: 'Master' },
@@ -506,6 +501,81 @@ describe.each([{ permission: 'No' }])(
   }
 )
 
+describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+  'Tests on documents with nested objects',
+  ({ permission }) => {
+    beforeEach(async () => {
+      await clearAllIndexes(config)
+      const client = await getClient('Master')
+      await client.createIndex(index.uid)
+
+      const { uid: documentAdditionTask } = await client
+        .index(index.uid)
+        .addDocuments(datasetWithNests)
+      await client.waitForTask(documentAdditionTask)
+    })
+
+    test(`${permission} key: search on nested content with no parameters`, async () => {
+      const client = await getClient(permission)
+      const response = await client.index(index.uid).search('An awesome', {})
+
+      expect(response.hits[0]).toEqual({
+        id: 5,
+        title: 'The Hobbit',
+        info: {
+          comment: 'An awesome book',
+          reviewNb: 900,
+        },
+      })
+    })
+
+    test(`${permission} key: search on nested content with searchable on specific nested field`, async () => {
+      const client = await getClient(permission)
+      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+        .index(index.uid)
+        .updateSettings({
+          searchableAttributes: ['title', 'info.comment'],
+        })
+      await client.waitForTask(settingsUpdateTask)
+
+      const response = await client.index(index.uid).search('An awesome', {})
+
+      expect(response.hits[0]).toEqual({
+        id: 5,
+        title: 'The Hobbit',
+        info: {
+          comment: 'An awesome book',
+          reviewNb: 900,
+        },
+      })
+    })
+
+    test(`${permission} key: search on nested content with sort`, async () => {
+      const client = await getClient(permission)
+      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+        .index(index.uid)
+        .updateSettings({
+          searchableAttributes: ['title', 'info.comment'],
+          sortableAttributes: ['info.reviewNb'],
+        })
+      await client.waitForTask(settingsUpdateTask)
+
+      const response = await client.index(index.uid).search('', {
+        sort: ['info.reviewNb:desc'],
+      })
+
+      expect(response.hits[0]).toEqual({
+        id: 6,
+        title: 'Harry Potter and the Half-Blood Prince',
+        info: {
+          comment: 'The best book',
+          reviewNb: 1000,
+        },
+      })
+    })
+  }
+)
+
 describe.each([
   { permission: 'Master' },
   { permission: 'Private' },
@@ -619,4 +689,10 @@ describe.each([
       )}`
     )
   })
+})
+
+jest.setTimeout(100 * 1000)
+
+afterAll(() => {
+  return clearAllIndexes(config)
 })

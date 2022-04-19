@@ -1,10 +1,11 @@
-import { EnqueuedTask, ErrorStatusCode } from '../src/types'
+import { EnqueuedTask, ErrorStatusCode, SearchResponse } from '../src/types'
 import {
   clearAllIndexes,
   config,
   BAD_HOST,
   MeiliSearch,
   getClient,
+  datasetWithNests,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -19,6 +20,15 @@ interface Movie {
   title: string
   comment?: string
   genre?: string
+}
+
+interface NestedDocument {
+  id: number
+  title: string
+  info: {
+    comment?: string
+    reviewNb?: number
+  }
 }
 
 const dataset = [
@@ -345,6 +355,69 @@ describe.each([
     ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)
   })
 })
+
+describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+  'Tests on documents with nested objects',
+  ({ permission }) => {
+    beforeEach(async () => {
+      await clearAllIndexes(config)
+      const client = await getClient('Master')
+      await client.createIndex(index.uid)
+
+      const { uid: documentAdditionTask } = await client
+        .index(index.uid)
+        .addDocuments(datasetWithNests)
+      await client.waitForTask(documentAdditionTask)
+    })
+
+    test(`${permission} key: search on nested content with no parameters`, async () => {
+      const client = await getClient(permission)
+      const response: SearchResponse<NestedDocument> = await client
+        .index<NestedDocument>(index.uid)
+        .search('An awesome', {})
+
+      expect(response.hits[0].info?.comment === 'An awesome book').toBeTruthy()
+      expect(response.hits[0].info?.reviewNb === 900).toBeTruthy()
+    })
+
+    test(`${permission} key: search on nested content with searchable on specific nested field`, async () => {
+      const client = await getClient(permission)
+      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+        .index(index.uid)
+        .updateSettings({
+          searchableAttributes: ['title', 'info.comment'],
+        })
+      await client.waitForTask(settingsUpdateTask)
+
+      const response: SearchResponse<NestedDocument> = await client
+        .index<NestedDocument>(index.uid)
+        .search('An awesome', {})
+
+      expect(response.hits[0].info?.comment === 'An awesome book').toBeTruthy()
+      expect(response.hits[0].info?.reviewNb === 900).toBeTruthy()
+    })
+
+    test(`${permission} key: search on nested content with sort`, async () => {
+      const client = await getClient(permission)
+      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+        .index(index.uid)
+        .updateSettings({
+          searchableAttributes: ['title', 'info.comment'],
+          sortableAttributes: ['info.reviewNb'],
+        })
+      await client.waitForTask(settingsUpdateTask)
+
+      const response: SearchResponse<NestedDocument> = await client
+        .index<NestedDocument>(index.uid)
+        .search('', {
+          sort: ['info.reviewNb:desc'],
+        })
+
+      expect(response.hits[0].info?.comment === 'The best book').toBeTruthy()
+      expect(response.hits[0].info?.reviewNb === 1000).toBeTruthy()
+    })
+  }
+)
 
 describe.each([{ permission: 'No' }])(
   'Test failing test on search',
