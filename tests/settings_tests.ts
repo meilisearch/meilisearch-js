@@ -279,7 +279,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         .index(indexAndPK.uid)
         .getSettings()
 
-      // compare searchableAttributes
+      // Compare searchableAttributes
       expect(response).toHaveProperty(
         'searchableAttributes',
         newSettings.searchableAttributes
