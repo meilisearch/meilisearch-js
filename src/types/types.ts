@@ -159,6 +159,15 @@ export type StopWords = string[] | null
 export type Synonyms = {
   [field: string]: string[]
 } | null
+export type TypoTolerance = {
+  enabled?: boolean | null
+  disabledOnAttributes?: string[] | null
+  disableOnWords?: string[] | null
+  minWordSizeForTypos?: {
+    oneTypo?: number | null
+    twoTypos?: number | null
+  }
+} | null
 
 export type Settings = {
   filterableAttributes?: FilterableAttributes
@@ -169,6 +178,7 @@ export type Settings = {
   rankingRules?: RankingRules
   stopWords?: StopWords
   synonyms?: Synonyms
+  typoTolerance?: TypoTolerance
 }
 
 /*
