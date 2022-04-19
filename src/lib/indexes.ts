@@ -33,6 +33,7 @@ import {
   SortableAttributes,
   SearchableAttributes,
   DisplayedAttributes,
+  TypoTolerance,
   Result,
 } from '../types'
 import { removeUndefinedFromObject } from './utils'
@@ -818,6 +819,46 @@ class Index<T = Record<string, any>> {
    */
   async resetDisplayedAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
+    return await this.httpRequest.delete<EnqueuedTask>(url)
+  }
+
+  ///
+  /// TYPO TOLERANCE
+  ///
+
+  /**
+   * Get the typo tolerance settings.
+   * @memberof Index
+   * @method getTypoTolerance
+   * @returns {Promise<string[]>} Promise containing containing the typo tolerance settings.
+   */
+  async getTypoTolerance(): Promise<string[]> {
+    const url = `indexes/${this.uid}/settings/typo-tolerance`
+    return await this.httpRequest.get<string[]>(url)
+  }
+
+  /**
+   * Update the typo tolerance settings.
+   * @memberof Index
+   * @method updateTypoTolerance
+   * @param {TypoTolerance} typoTolerance Object containing the custom typo tolerance settings.
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   */
+  async updateTypoTolerance(
+    typoTolerance: TypoTolerance
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/typo-tolerance`
+    return await this.httpRequest.post(url, typoTolerance)
+  }
+
+  /**
+   * Reset the typo tolerance settings.
+   * @memberof Index
+   * @method resetTypoTolerance
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
+   */
+  async resetTypoTolerance(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/typo-tolerance`
     return await this.httpRequest.delete<EnqueuedTask>(url)
   }
 }
