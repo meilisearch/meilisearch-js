@@ -129,7 +129,7 @@ git pull origin bump-meilisearch-v*.*.*
 git checkout -b vX.X.X-beta.0
 ```
 
-- Change the version in `package.json` by `vX.X.X-beta.0` and commit it to the `vX.X.X-beta.0` branch
+- Change the version in `package.json` with `X.X.X-beta.0` and commit it to the `vX.X.X-beta.0` branch
 
 - Go to the [GitHub interface for releasing](https://github.com/meilisearch/meilisearch-js/releases): on this page, click on `Draft a new release`.
 
