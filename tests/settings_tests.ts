@@ -43,7 +43,7 @@ const defaultSettings = {
   synonyms: {},
   typoTolerance: {
     enabled: true,
-    minWordLengthForTypo: {
+    minWordSizeForTypos: {
       oneTypo: 5,
       twoTypos: 9,
     },
@@ -116,7 +116,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         synonyms: { harry: ['potter'] },
         typoTolerance: {
           enabled: false,
-          minWordLengthForTypo: {
+          minWordSizeForTypos: {
             oneTypo: 1,
             twoTypos: 100,
           },
@@ -151,7 +151,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         synonyms: null,
         typoTolerance: {
           enabled: null,
-          minWordLengthForTypo: {
+          minWordSizeForTypos: {
             oneTypo: null,
             twoTypos: null,
           },

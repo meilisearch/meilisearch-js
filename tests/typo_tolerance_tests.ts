@@ -14,7 +14,7 @@ const index = {
 
 const defaultTypoTolerance = {
   enabled: true,
-  minWordLengthForTypo: {
+  minWordSizeForTypos: {
     oneTypo: 5,
     twoTypos: 9,
   },
@@ -50,7 +50,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const client = await getClient(permission)
       const newTypoTolerance = {
         enabled: false,
-        minWordLengthForTypo: {
+        minWordSizeForTypos: {
           oneTypo: 1,
           twoTypos: 2,
         },
