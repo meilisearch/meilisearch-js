@@ -167,8 +167,7 @@ describe.each([
     ])
   })
 
-  // TODO: enable again on rc1
-  test.skip(`${permission} key: Search with all options but not all fields`, async () => {
+  test(`${permission} key: Search with all options but not all fields`, async () => {
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search('prince', {
       limit: 5,
