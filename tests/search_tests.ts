@@ -501,7 +501,7 @@ describe.each([{ permission: 'No' }])(
   }
 )
 
-describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+describe.each([{ permission: 'Master' }])(
   'Tests on documents with nested objects',
   ({ permission }) => {
     beforeEach(async () => {

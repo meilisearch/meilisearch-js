@@ -141,7 +141,6 @@ const datasetWithNests = [
   {
     id: 4,
     title: 'Alice In Wonderland',
-    comment: 'A weird book',
     info: {
       comment: 'A weird book',
       reviewNb: 800,
