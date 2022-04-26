@@ -127,6 +127,12 @@ const dataset = [
   { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
 ]
 
+export type Book = {
+  id: number
+  title: string
+  comment: string
+}
+
 export {
   clearAllIndexes,
   config,

@@ -394,12 +394,12 @@ class Index<T = Record<string, any>> {
    * Add or update multiples documents to an index
    * @memberof Index
    * @method updateDocuments
-   * @param {Array<Document<T>>} documents Array of Document objects to add/update
+   * @param {Array<Document<Partial<T>>>} documents Array of Document objects to add/update
    * @param {AddDocumentParams} options? Query parameters
    * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued update
    */
   async updateDocuments(
-    documents: Array<Document<T>>,
+    documents: Array<Document<Partial<T>>>,
     options?: AddDocumentParams
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
@@ -417,7 +417,7 @@ class Index<T = Record<string, any>> {
    * @returns {Promise<EnqueuedTasks>} Promise containing array of enqueued update objects for each batch
    */
   async updateDocumentsInBatches(
-    documents: Array<Document<T>>,
+    documents: Array<Document<Partial<T>>>,
     batchSize = 1000,
     options?: AddDocumentParams
   ): Promise<EnqueuedTask[]> {
