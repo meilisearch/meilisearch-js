@@ -113,6 +113,15 @@ update_settings_1: |-
       synonyms: {
           'wolverine': ['xmen', 'logan'],
           'logan': ['wolverine']
+      },
+      typoTolerance: {
+          'minWordSizeForTypos': {
+              'oneTypo': 8,
+              'twoTypos': 10
+          },
+          'disableOnAttributes': [
+              'title'
+          ]
       }
   })
 reset_settings_1: |-
