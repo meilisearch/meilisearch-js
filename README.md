@@ -385,11 +385,11 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Add or update multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
 
-`index.updateDocuments(documents: Document<T>[]): Promise<EnqueuedTask>`
+`index.updateDocuments(documents: Array<Document<Partial<T>>>): Promise<EnqueuedTask>`
 
 - [Add or update multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
 
-`index.updateDocumentsInBatches(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedTask[]>`
+`index.updateDocumentsInBatches(documents: Array<Document<Partial<T>>>, batchSize = 1000): Promise<EnqueuedTask[]>`
 
 - [Get Documents](https://docs.meilisearch.com/reference/api/documents.html#get-documents):
 

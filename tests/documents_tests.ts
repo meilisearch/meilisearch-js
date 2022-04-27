@@ -11,6 +11,7 @@ import {
   MeiliSearch,
   getClient,
   dataset,
+  Book,
 } from './meilisearch-test-utils'
 
 const indexNoPk = {
@@ -183,6 +184,20 @@ describe('Documents tests', () => {
         expect(response).toHaveProperty('title', title)
       })
 
+      test(`${permission} key: Partial update of a document`, async () => {
+        const client = await getClient(permission)
+        const id = 456
+        const documents: EnqueuedTask = await client
+          .index<Book>(indexPk.uid)
+          .updateDocuments([{ id }])
+        await client.index(indexPk.uid).waitForTask(documents.uid)
+
+        const response = await client.index(indexPk.uid).getDocument(id)
+
+        expect(response).toHaveProperty('id', id)
+        expect(response).not.toHaveProperty('title')
+      })
+
       test(`${permission} key: Update document from index that has a primary key in batch`, async () => {
         const client = await getClient(permission)
         const tasks = await client
@@ -195,6 +210,28 @@ describe('Documents tests', () => {
           const task = await client
             .index(indexPk.uid)
             .waitForTask(EnqueuedTask.uid)
+          expect(task.status).toBe(TaskStatus.TASK_SUCCEEDED)
+          expect(task.type).toBe('documentPartial')
+        }
+      })
+
+      test(`${permission} key: Partial update of a document in batch`, async () => {
+        const client = await getClient(permission)
+        const partialDocument = { id: 1 }
+
+        const tasks = await client
+          .index<Book>(indexPk.uid)
+          .updateDocumentsInBatches([partialDocument], 2)
+
+        expect(tasks).toBeInstanceOf(Array)
+        expect(tasks).toHaveLength(1)
+        expect(tasks[0]).toHaveProperty('uid', expect.any(Number))
+
+        for (const EnqueuedTask of tasks) {
+          const task = await client
+            .index(indexPk.uid)
+            .waitForTask(EnqueuedTask.uid)
+
           expect(task.status).toBe(TaskStatus.TASK_SUCCEEDED)
           expect(task.type).toBe('documentPartial')
         }
