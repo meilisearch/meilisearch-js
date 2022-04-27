@@ -184,7 +184,7 @@ describe('Documents tests', () => {
         expect(response).toHaveProperty('title', title)
       })
 
-      test(`${permission} key: Partial update a document`, async () => {
+      test(`${permission} key: Partial update of a document`, async () => {
         const client = await getClient(permission)
         const id = 456
         const documents: EnqueuedTask = await client
@@ -215,7 +215,7 @@ describe('Documents tests', () => {
         }
       })
 
-      test(`${permission} key: Update partial document in batch`, async () => {
+      test(`${permission} key: Partial update of a document in batch`, async () => {
         const client = await getClient(permission)
         const partialDocument = { id: 1 }
 
