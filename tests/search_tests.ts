@@ -124,6 +124,27 @@ describe.each([
     expect(response.hits.length).toEqual(1)
   })
 
+  test(`${permission} key: search with options as first argument`, async () => {
+    const client = await getClient(permission)
+    const response = await client
+      .index(index.uid)
+      .search({ q: 'prince', limit: 1 })
+    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('offset', 0)
+    expect(response).toHaveProperty('limit', 1)
+    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
+    expect(response).toHaveProperty('query', 'prince')
+    expect(response.hits.length).toEqual(1)
+  })
+
+  test(`${permission} key: search with query and options with q property ignores q in options argument`, async () => {
+    const client = await getClient(permission)
+    const response = await client
+      .index(index.uid)
+      .search('prince', { q: 'charles' })
+    expect(response).toHaveProperty('query', 'prince')
+  })
+
   test(`${permission} key: search with sortable`, async () => {
     const client = await getClient(permission)
     const response = await client

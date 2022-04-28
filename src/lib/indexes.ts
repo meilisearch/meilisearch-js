@@ -66,6 +66,20 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method search
    * @template T
+   * @param {SearchParams} options? Search options
+   * @param {Partial<Request>} config? Additional request configuration options
+   * @returns {Promise<SearchResponse<T>>} Promise containing the search response
+   */
+  async search<T = Record<string, any>>(
+    options?: SearchParams,
+    config?: Partial<Request>
+  ): Promise<SearchResponse<T>>
+
+  /**
+   * Search for documents into an index
+   * @memberof Index
+   * @method search
+   * @template T
    * @param {string | null} query? Query string
    * @param {SearchParams} options? Search options
    * @param {Partial<Request>} config? Additional request configuration options
@@ -75,10 +89,39 @@ class Index<T = Record<string, any>> {
     query?: string | null,
     options?: SearchParams,
     config?: Partial<Request>
+  ): Promise<SearchResponse<T>>
+
+  /**
+   * Search for documents into an index
+   * @memberof Index
+   * @method search
+   * @template T
+   * @param {SearchParams | string | null} query? Query string
+   * @param {Partial<Request> | SearchParams} options? Search options
+   * @param {Partial<Request>} config? Additional request configuration options
+   * @returns {Promise<SearchResponse<T>>} Promise containing the search response
+   */
+  async search<T = Record<string, any>>(
+    query?: SearchParams | string | null,
+    options?: SearchParams | Partial<Request>,
+    config?: Partial<Request>
   ): Promise<SearchResponse<T>> {
     const url = `indexes/${this.uid}/search`
 
-    if (query !== null && options) {
+    if (arguments.length > 0) {
+      if (query !== null && typeof query === 'object') {
+        if (arguments.length === 1) {
+          options = query
+        } else {
+          config = options as Partial<Request>
+          options = query
+        }
+
+        query = null
+      }
+    }
+
+    if (query !== null && options && 'q' in options) {
       delete options.q
     }
 
@@ -100,6 +143,20 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method search
    * @template T
+   * @param {SearchParams} options? Search options
+   * @param {Partial<Request>} config? Additional request configuration options
+   * @returns {Promise<SearchResponse<T>>} Promise containing the search response
+   */
+  async searchGet<T = Record<string, any>>(
+    options?: SearchParams,
+    config?: Partial<Request>
+  ): Promise<SearchResponse<T>>
+
+  /**
+   * Search for documents into an index using the GET method
+   * @memberof Index
+   * @method search
+   * @template T
    * @param {string | null} query? Query string
    * @param {SearchParams} options? Search options
    * @param {Partial<Request>} config? Additional request configuration options
@@ -108,6 +165,22 @@ class Index<T = Record<string, any>> {
   async searchGet<T = Record<string, any>>(
     query?: string | null,
     options?: SearchParams,
+    config?: Partial<Request>
+  ): Promise<SearchResponse<T>>
+
+  /**
+   * Search for documents into an index using the GET method
+   * @memberof Index
+   * @method search
+   * @template T
+   * @param {SearchParams | string | null} query? Query string
+   * @param {Partial<Request> | SearchParams} options? Search options
+   * @param {Partial<Request>} config? Additional request configuration options
+   * @returns {Promise<SearchResponse<T>>} Promise containing the search response
+   */
+  async searchGet<T = Record<string, any>>(
+    query?: SearchParams | string | null,
+    options?: Partial<Request> | SearchParams,
     config?: Partial<Request>
   ): Promise<SearchResponse<T>> {
     const url = `indexes/${this.uid}/search`
@@ -121,7 +194,24 @@ class Index<T = Record<string, any>> {
       else return undefined
     }
 
-    if (query !== null && options) {
+    if (arguments.length > 0) {
+      if (query !== null && typeof query === 'object') {
+        if (arguments.length === 1) {
+          options = query
+        } else {
+          config = options as Partial<Request>
+          options = query
+        }
+
+        query = null
+      }
+    }
+
+    query = query as string | null
+    options = options as SearchParams
+    config = config as Partial<Request>
+
+    if (query !== null && options && 'q' in options) {
       delete options.q
     }
 
