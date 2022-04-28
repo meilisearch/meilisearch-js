@@ -14,7 +14,7 @@ update_an_index_1: |-
 delete_an_index_1: |-
   client.deleteIndex('movies')
 get_one_document_1: |-
-  client.getDocument(25684)
+  client.index('movies').getDocument(25684)
 get_documents_1: |-
   client.index('movies').getDocuments({ limit: 2 })
 add_or_replace_documents_1: |-
