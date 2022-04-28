@@ -113,6 +113,15 @@ update_settings_1: |-
       synonyms: {
           'wolverine': ['xmen', 'logan'],
           'logan': ['wolverine']
+      },
+      typoTolerance: {
+          'minWordSizeForTypos': {
+              'oneTypo': 8,
+              'twoTypos': 10
+          },
+          'disableOnAttributes': [
+              'title'
+          ]
       }
   })
 reset_settings_1: |-
@@ -175,6 +184,20 @@ update_displayed_attributes_1: |-
   ])
 reset_displayed_attributes_1: |-
   client.index('movies').resetDisplayedAttributes()
+get_typo_tolerance_1: |-
+  client.index('books').getTypoTolerance()
+update_typo_tolerance_1: |-
+  client.index('books').updateTypoTolerance({
+    minWordSizeForTypos: {
+        oneTypo: 4,
+        twoTypos: 10
+      },
+      disableOnAttributes: [
+        'title'
+    ]
+  })
+reset_typo_tolerance_1: |-
+  client.index('books').resetTypoTolerance()
 get_index_stats_1: |-
   client.index('movies').getStats()
 get_indexes_stats_1: |-
@@ -231,11 +254,22 @@ search_parameter_guide_retrieve_1: |-
 search_parameter_guide_crop_1: |-
   client.index('movies').search('shifu', {
     attributesToCrop: ['overview'],
-    cropLength: 10
+    cropLength: 5
+  })
+search_parameter_guide_crop_marker_1: |-
+  client.index('movies').search('shifu', {
+    attributesToCrop: ['overview'],
+    cropMarker: '[…]'
   })
 search_parameter_guide_highlight_1: |-
   client.index('movies').search('winter feast', {
     attributesToHighlight: ['overview']
+  })
+search_parameter_guide_highlight_tag_1: |-
+  client.index('movies').search('winter feast', {
+    attributesToHighlight: ['overview'],
+    highlightPreTag: '<span class="highlight">',
+    highlightPostTag: '</span>'
   })
 search_parameter_guide_matches_1: |-
   client.index('movies').search('winter feast', {
@@ -295,6 +329,34 @@ settings_guide_sortable_1: |-
       'author',
       'price'
     ]
+  })
+settings_guide_typo_tolerance_1: |-
+  client.index('movies').updateTypoTolerance({
+    minWordSizeForTypos: {
+      twoTypos: 12
+    },
+    disableOnAttributes: [
+      'title'
+    ]
+  })
+typo_tolerance_guide_1: |-
+  client.index('movies').updateTypoTolerance({
+    enabled: false
+  })
+typo_tolerance_guide_2: |-
+  client.index('movies').updateTypoTolerance({
+    disableOnAttributes: ['title']
+  })
+typo_tolerance_guide_3: |-
+  client.index('movies').updateTypoTolerance({
+    disableOnWords: ['shrek']
+  })
+typo_tolerance_guide_4: |-
+  client.index('movies').updateTypoTolerance({
+    minWordSizeForTypos: {
+      oneTypo: 4,
+      twoTypos: 10
+    }
   })
 add_movies_json_1: |-
   const movies = require('./movies.json')
