@@ -78,9 +78,18 @@ class Index<T = Record<string, any>> {
   ): Promise<SearchResponse<T>> {
     const url = `indexes/${this.uid}/search`
 
+    if (query !== null && options) {
+      delete options.q
+    }
+
+    const data = {
+      q: query,
+      ...options,
+    }
+
     return await this.httpRequest.post(
       url,
-      removeUndefinedFromObject({ ...options, q: query }),
+      removeUndefinedFromObject(data),
       undefined,
       config
     )
@@ -110,6 +119,10 @@ class Index<T = Record<string, any>> {
           'The filter query parameter should be in string format when using searchGet'
         )
       else return undefined
+    }
+
+    if (query !== null && options) {
+      delete options.q
     }
 
     const getParams: SearchRequestGET = {

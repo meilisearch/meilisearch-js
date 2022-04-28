@@ -50,18 +50,19 @@ export type Query = {
   q?: string | null
 }
 
-export type SearchParams = Pagination & {
-  filter?: Filter
-  sort?: string[]
-  facetsDistribution?: string[]
-  attributesToRetrieve?: string[]
-  attributesToHighlight?: string[]
-  attributesToCrop?: string[]
-  cropLength?: number
-  matches?: boolean
-}
+export type SearchParams = Pagination &
+  Query & {
+    filter?: Filter
+    sort?: string[]
+    facetsDistribution?: string[]
+    attributesToRetrieve?: string[]
+    attributesToHighlight?: string[]
+    attributesToCrop?: string[]
+    cropLength?: number
+    matches?: boolean
+  }
 
-export type SearchRequest = SearchParams & Query
+export type SearchRequest = SearchParams
 
 // Search parameters for searches made with the GET method
 // Are different than the parameters for the POST method
