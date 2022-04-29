@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
       "module": "esnext",
-      "target": "ES6",
       "noEmit": true,
       "allowJs": false,
       "removeComments": false,

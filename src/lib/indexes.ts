@@ -102,15 +102,17 @@ class Index<T = Record<string, any>> {
    * @returns {Promise<SearchResponse<T>>} Promise containing the search response
    */
   async search<T = Record<string, any>>(
-    query?: SearchParams | string | null,
-    options?: SearchParams | Partial<Request>,
-    config?: Partial<Request>
+    ...args: Array<Partial<Request> | SearchParams | string | null | undefined>
   ): Promise<SearchResponse<T>> {
     const url = `indexes/${this.uid}/search`
+    let query = args?.[0] as SearchParams | string | null | undefined
+    let options = args?.[1] as Partial<Request> | SearchParams | undefined
+    let config = args?.[2] as Partial<Request> | undefined
 
-    if (arguments.length > 0) {
+    if (args.length > 0) {
       if (query !== null && typeof query === 'object') {
-        if (arguments.length === 1) {
+        /** @ts-ignore */
+        if (args.length === 1) {
           options = query
         } else {
           config = options as Partial<Request>
@@ -179,9 +181,7 @@ class Index<T = Record<string, any>> {
    * @returns {Promise<SearchResponse<T>>} Promise containing the search response
    */
   async searchGet<T = Record<string, any>>(
-    query?: SearchParams | string | null,
-    options?: Partial<Request> | SearchParams,
-    config?: Partial<Request>
+    ...args: Array<Partial<Request> | SearchParams | string | null | undefined>
   ): Promise<SearchResponse<T>> {
     const url = `indexes/${this.uid}/search`
 
@@ -194,9 +194,14 @@ class Index<T = Record<string, any>> {
       else return undefined
     }
 
-    if (arguments.length > 0) {
+    let query = args?.[0] as string | null | undefined
+    let options = args?.[1] as Partial<Request> | SearchParams | undefined
+    let config = args?.[2] as Partial<Request> | undefined
+
+    if (args.length > 0) {
       if (query !== null && typeof query === 'object') {
-        if (arguments.length === 1) {
+        /** @ts-ignore */
+        if (args.length === 1) {
           options = query
         } else {
           config = options as Partial<Request>
@@ -207,9 +212,7 @@ class Index<T = Record<string, any>> {
       }
     }
 
-    query = query as string | null
-    options = options as SearchParams
-    config = config as Partial<Request>
+    options = options as SearchParams | undefined
 
     if (query !== null && options && 'q' in options) {
       delete options.q
