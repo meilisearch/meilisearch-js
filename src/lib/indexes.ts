@@ -116,19 +116,11 @@ class Index<T = Record<string, any>> {
       q: query,
       ...options,
       filter: parseFilter(options?.filter),
-      sort: options?.sort ? options.sort.join(',') : undefined,
-      facetsDistribution: options?.facetsDistribution
-        ? options.facetsDistribution.join(',')
-        : undefined,
-      attributesToRetrieve: options?.attributesToRetrieve
-        ? options.attributesToRetrieve.join(',')
-        : undefined,
-      attributesToCrop: options?.attributesToCrop
-        ? options.attributesToCrop.join(',')
-        : undefined,
-      attributesToHighlight: options?.attributesToHighlight
-        ? options.attributesToHighlight.join(',')
-        : undefined,
+      sort: options?.sort?.join(','),
+      facetsDistribution: options?.facetsDistribution?.join(','),
+      attributesToRetrieve: options?.attributesToRetrieve?.join(','),
+      attributesToCrop: options?.attributesToCrop?.join(','),
+      attributesToHighlight: options?.attributesToHighlight?.join(','),
     }
 
     return await this.httpRequest.get<SearchResponse<T>>(
