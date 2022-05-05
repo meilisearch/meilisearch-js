@@ -98,7 +98,7 @@
     "jest-watch-typeahead": "^0.6.3",
     "kleur": "^4.1.4",
     "lint-staged": "11.1.2",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.16",
     "prettier": "^2.2.1",
     "pretty-bytes": "^5.6.0",
     "rollup": "^2.70.0",
