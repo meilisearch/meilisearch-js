@@ -171,7 +171,7 @@ export type EnqueuedTask = {
   indexUid: string
   status: TaskStatus
   type: string
-  enqueuedTask: string
+  enqueuedAt: string
 }
 
 export type Task = {
