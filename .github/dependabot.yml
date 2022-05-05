@@ -16,4 +16,4 @@ updates:
       - dependency-name: "babel-eslint"
       - dependency-name: "*prettier*"
       - dependency-name: "lint-staged"
-      - dependency-name: "nodemon"      
+      - dependency-name: "nodemon"
