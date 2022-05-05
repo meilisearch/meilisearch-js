@@ -43,8 +43,8 @@ import { TaskClient } from './task'
 class Index<T = Record<string, any>> {
   uid: string
   primaryKey: string | undefined
-  updatedAt: Date | undefined
   createdAt: Date | undefined
+  updatedAt: Date | undefined
   httpRequest: HttpRequests
   tasks: TaskClient
 
