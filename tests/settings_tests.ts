@@ -25,24 +25,31 @@ const defaultRankingRules = [
   'exactness',
 ]
 
-const defaultSettingsEmpty = {
-  rankingRules: defaultRankingRules,
-  distinctAttribute: null,
-  searchableAttributes: [],
-  displayedAttributes: [],
-  sortableAttributes: [],
-  stopWords: [],
-  synonyms: {},
-}
-
 const defaultSettings = {
-  rankingRules: defaultRankingRules,
+  filterableAttributes: [],
+  sortableAttributes: [],
   distinctAttribute: null,
-  searchableAttributes: ['id', 'title', 'comment'],
-  displayedAttributes: ['comment', 'title', 'id'],
-  sortableAttributes: ['id'],
+  searchableAttributes: ['*'],
+  displayedAttributes: ['*'],
+  rankingRules: [
+    'words',
+    'typo',
+    'proximity',
+    'attribute',
+    'sort',
+    'exactness',
+  ],
   stopWords: [],
   synonyms: {},
+  typoTolerance: {
+    enabled: true,
+    minWordSizeForTypos: {
+      oneTypo: 5,
+      twoTypos: 9,
+    },
+    disableOnWords: [],
+    disableOnAttributes: [],
+  },
 }
 
 jest.setTimeout(100 * 1000)
@@ -99,27 +106,71 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
     test(`${permission} key: Update settings`, async () => {
       const client = await getClient(permission)
       const newSettings = {
+        filterableAttributes: ['title'],
+        sortableAttributes: ['title'],
         distinctAttribute: 'title',
+        searchableAttributes: ['title'],
+        displayedAttributes: ['title'],
         rankingRules: ['id:asc', 'typo'],
         stopWords: ['the'],
-        filterableAttributes: [],
+        synonyms: { harry: ['potter'] },
+        typoTolerance: {
+          enabled: false,
+          minWordSizeForTypos: {
+            oneTypo: 1,
+            twoTypos: 100,
+          },
+          disableOnWords: ['prince'],
+          disableOnAttributes: ['comment'],
+        },
       }
+      // Add the settings
       const task: EnqueuedTask = await client
         .index(index.uid)
         .updateSettings(newSettings)
       expect(task).toHaveProperty('uid', expect.any(Number))
       await client.index(index.uid).waitForTask(task.uid)
 
+      // Fetch the settings
       const response: Settings = await client.index(index.uid).getSettings()
-      expect(response).toHaveProperty('rankingRules', newSettings.rankingRules)
-      expect(response).toHaveProperty(
-        'distinctAttribute',
-        newSettings.distinctAttribute
-      )
-      expect(response).toHaveProperty('searchableAttributes', ['*'])
-      expect(response).toHaveProperty('displayedAttributes', ['*'])
-      expect(response).toHaveProperty('stopWords', newSettings.stopWords)
-      expect(response).toHaveProperty('synonyms', {})
+
+      // tests
+      expect(response).toEqual(newSettings)
+    })
+
+    test(`${permission} key: Update settings with all null values`, async () => {
+      const client = await getClient(permission)
+      const newSettings = {
+        filterableAttributes: null,
+        sortableAttributes: null,
+        distinctAttribute: null,
+        searchableAttributes: null,
+        displayedAttributes: null,
+        rankingRules: null,
+        stopWords: null,
+        synonyms: null,
+        typoTolerance: {
+          enabled: null,
+          minWordSizeForTypos: {
+            oneTypo: null,
+            twoTypos: null,
+          },
+          disableOnWords: null,
+          disableOnAttributes: null,
+        },
+      }
+      // Add the settings
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateSettings(newSettings)
+      expect(task).toHaveProperty('uid', expect.any(Number))
+      await client.index(index.uid).waitForTask(task.uid)
+
+      // Fetch the settings
+      const response: Settings = await client.index(index.uid).getSettings()
+
+      // tests
+      expect(response).toEqual(defaultSettings)
     })
 
     test(`${permission} key: Update settings on empty index with primary key`, async () => {
@@ -228,7 +279,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         .index(indexAndPK.uid)
         .getSettings()
 
-      // compare searchableAttributes
+      // Compare searchableAttributes
       expect(response).toHaveProperty(
         'searchableAttributes',
         newSettings.searchableAttributes
@@ -238,7 +289,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('rankingRules', defaultRankingRules)
       expect(response).toHaveProperty(
         'distinctAttribute',
-        defaultSettingsEmpty.distinctAttribute
+        defaultSettings.distinctAttribute
       )
       expect(response).toHaveProperty(
         'searchableAttributes',

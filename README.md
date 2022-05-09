@@ -342,7 +342,7 @@ controller.abort()
 
 ## 🤖 Compatibility with Meilisearch
 
-This package only guarantees the compatibility with the [version v0.26.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.26.0).
+This package only guarantees the compatibility with the [version v0.27.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.27.0).
 
 ## 💡 Learn More
 
@@ -604,6 +604,17 @@ Using the index object:
 
 - [Reset Sortable Attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#reset-sortable-attributes):
   `index.resetSortableAttributes(): Promise<EnqueuedTask>`
+
+### Typo Tolerance <!-- omit in toc -->
+
+- [Get Typo Tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#get-typo-tolerance):
+  `index.getTypoTolerance(): Promise<TypoTolerance>`
+
+- [Update Typo Tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#update-typo-tolerance):
+  `index.updateTypoTolerance(typoTolerance: TypoTolerance | null): Promise<EnqueuedTask>`
+
+- [Reset Typo Tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#reset-typo-tolerance):
+  `index.resetTypoTolerance(): Promise<EnqueuedTask>`
 
 ### Keys <!-- omit in toc -->
 

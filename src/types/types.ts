@@ -39,6 +39,10 @@ export type AddDocumentParams = {
   primaryKey?: string
 }
 
+/*
+ * SEARCH PARAMETERS
+ */
+
 export type Filter = string | Array<string | string[]>
 
 export type Pagination = {
@@ -50,30 +54,42 @@ export type Query = {
   q?: string | null
 }
 
-export type SearchParams = Pagination & {
-  filter?: Filter
-  sort?: string[]
-  facetsDistribution?: string[]
-  attributesToRetrieve?: string[]
+export type Highlight = {
   attributesToHighlight?: string[]
+  highlightPreTag?: string
+  highlightPostTag?: string
+}
+
+export type Crop = {
   attributesToCrop?: string[]
   cropLength?: number
-  matches?: boolean
+  cropMarker?: string
 }
+
+export type SearchParams = Pagination &
+  Highlight &
+  Crop & {
+    filter?: Filter
+    sort?: string[]
+    facetsDistribution?: string[]
+    attributesToRetrieve?: string[]
+    matches?: boolean
+  }
 
 export type SearchRequest = SearchParams & Query
 
 // Search parameters for searches made with the GET method
 // Are different than the parameters for the POST method
 export type SearchRequestGET = Pagination &
-  Query & {
+  Query &
+  Omit<Highlight, 'attributesToHighlight'> &
+  Omit<Crop, 'attributesToCrop'> & {
     filter?: string
     sort?: string
     facetsDistribution?: string
     attributesToRetrieve?: string
     attributesToHighlight?: string
     attributesToCrop?: string
-    cropLength?: number
     matches?: boolean
   }
 
@@ -143,6 +159,15 @@ export type StopWords = string[] | null
 export type Synonyms = {
   [field: string]: string[]
 } | null
+export type TypoTolerance = {
+  enabled?: boolean | null
+  disabledOnAttributes?: string[] | null
+  disableOnWords?: string[] | null
+  minWordSizeForTypos?: {
+    oneTypo?: number | null
+    twoTypos?: number | null
+  }
+} | null
 
 export type Settings = {
   filterableAttributes?: FilterableAttributes
@@ -153,6 +178,7 @@ export type Settings = {
   rankingRules?: RankingRules
   stopWords?: StopWords
   synonyms?: Synonyms
+  typoTolerance?: TypoTolerance
 }
 
 /*

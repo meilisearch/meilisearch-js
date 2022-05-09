@@ -6,6 +6,7 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
+  datasetWithNests,
 } from './meilisearch-test-utils'
 
 const index = {
@@ -56,12 +57,6 @@ const dataset = [
   },
   { id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: 'fantasy' },
 ]
-
-jest.setTimeout(100 * 1000)
-
-afterAll(() => {
-  return clearAllIndexes(config)
-})
 
 describe.each([
   { permission: 'Master' },
@@ -239,9 +234,50 @@ describe.each([
     expect(response.hits[0]).toHaveProperty('_formatted', expect.any(Object))
     expect(response.hits[0]._formatted).toHaveProperty(
       'title',
-      'Petit <em>Prince</em>'
+      'Le Petit <em>Prince</em>'
     )
     expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
+  })
+
+  test(`${permission} key: search on default cropping parameters`, async () => {
+    const client = await getClient(permission)
+    const response = await client.index(index.uid).search('prince', {
+      attributesToCrop: ['*'],
+      cropLength: 6,
+    })
+
+    expect(response.hits[0]._formatted).toHaveProperty(
+      'comment',
+      '…book about a prince that walks…'
+    )
+  })
+
+  test(`${permission} key: search on customized cropMarker`, async () => {
+    const client = await getClient(permission)
+    const response = await client.index(index.uid).search('prince', {
+      attributesToCrop: ['*'],
+      cropLength: 6,
+      cropMarker: '(ꈍᴗꈍ)',
+    })
+
+    expect(response.hits[0]._formatted).toHaveProperty(
+      'comment',
+      '(ꈍᴗꈍ)book about a prince that walks(ꈍᴗꈍ)'
+    )
+  })
+
+  test(`${permission} key: search on customized highlight tags`, async () => {
+    const client = await getClient(permission)
+    const response = await client.index(index.uid).search('prince', {
+      attributesToHighlight: ['*'],
+      highlightPreTag: '(⊃｡•́‿•̀｡)⊃ ',
+      highlightPostTag: ' ⊂(´• ω •`⊂)',
+    })
+
+    expect(response.hits[0]._formatted).toHaveProperty(
+      'comment',
+      'A french book about a (⊃｡•́‿•̀｡)⊃ prince ⊂(´• ω •`⊂) that walks on little cute planets'
+    )
   })
 
   test(`${permission} key: search with all options and all fields`, async () => {
@@ -265,7 +301,7 @@ describe.each([
     expect(response.hits[0]).toHaveProperty('_formatted', expect.any(Object))
     expect(response.hits[0]._formatted).toHaveProperty(
       'title',
-      'Petit <em>Prince</em>'
+      'Le Petit <em>Prince</em>'
     )
     expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
   })
@@ -298,7 +334,7 @@ describe.each([
     )
     expect(response.hits[0]._formatted).toHaveProperty(
       'title',
-      'Petit <em>Prince</em>'
+      'Le Petit <em>Prince</em>'
     )
     expect(response.hits[0]._formatted).not.toHaveProperty('comment')
     expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
@@ -421,6 +457,17 @@ describe.each([
     expect(response.hits.length).toEqual(0)
   })
 
+  test(`${permission} key: search on index with no documents and no primary key`, async () => {
+    const client = await getClient(permission)
+    const response = await client.index(emptyIndex.uid).search('prince', {})
+    expect(response).toHaveProperty('hits', [])
+    expect(response).toHaveProperty('offset', 0)
+    expect(response).toHaveProperty('limit', 20)
+    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
+    expect(response).toHaveProperty('query', 'prince')
+    expect(response.hits.length).toEqual(0)
+  })
+
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission)
     const masterClient = await getClient('Master')
@@ -450,6 +497,81 @@ describe.each([{ permission: 'No' }])(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
+    })
+  }
+)
+
+describe.each([{ permission: 'Master' }])(
+  'Tests on documents with nested objects',
+  ({ permission }) => {
+    beforeEach(async () => {
+      await clearAllIndexes(config)
+      const client = await getClient('Master')
+      await client.createIndex(index.uid)
+
+      const { uid: documentAdditionTask } = await client
+        .index(index.uid)
+        .addDocuments(datasetWithNests)
+      await client.waitForTask(documentAdditionTask)
+    })
+
+    test(`${permission} key: search on nested content with no parameters`, async () => {
+      const client = await getClient(permission)
+      const response = await client.index(index.uid).search('An awesome', {})
+
+      expect(response.hits[0]).toEqual({
+        id: 5,
+        title: 'The Hobbit',
+        info: {
+          comment: 'An awesome book',
+          reviewNb: 900,
+        },
+      })
+    })
+
+    test(`${permission} key: search on nested content with searchable on specific nested field`, async () => {
+      const client = await getClient(permission)
+      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+        .index(index.uid)
+        .updateSettings({
+          searchableAttributes: ['title', 'info.comment'],
+        })
+      await client.waitForTask(settingsUpdateTask)
+
+      const response = await client.index(index.uid).search('An awesome', {})
+
+      expect(response.hits[0]).toEqual({
+        id: 5,
+        title: 'The Hobbit',
+        info: {
+          comment: 'An awesome book',
+          reviewNb: 900,
+        },
+      })
+    })
+
+    test(`${permission} key: search on nested content with sort`, async () => {
+      const client = await getClient(permission)
+      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+        .index(index.uid)
+        .updateSettings({
+          searchableAttributes: ['title', 'info.comment'],
+          sortableAttributes: ['info.reviewNb'],
+        })
+      await client.waitForTask(settingsUpdateTask)
+
+      const response = await client.index(index.uid).search('', {
+        sort: ['info.reviewNb:desc'],
+      })
+
+      expect(response.hits[0]).toEqual({
+        id: 6,
+        title: 'Harry Potter and the Half-Blood Prince',
+        info: {
+          comment: 'The best book',
+          reviewNb: 1000,
+        },
+      })
     })
   }
 )
@@ -567,4 +689,10 @@ describe.each([
       )}`
     )
   })
+})
+
+jest.setTimeout(100 * 1000)
+
+afterAll(() => {
+  return clearAllIndexes(config)
 })
