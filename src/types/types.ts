@@ -163,7 +163,7 @@ export type TypoTolerance = {
   enabled?: boolean | null
   disabledOnAttributes?: string[] | null
   disableOnWords?: string[] | null
-  minWordSizeForTypos?: {
+  minWordLengthForTypo?: {
     oneTypo?: number | null
     twoTypos?: number | null
   }
