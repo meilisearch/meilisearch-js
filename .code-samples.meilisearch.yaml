@@ -6,7 +6,7 @@
 get_one_index_1: |-
   client.index('movies').getRawInfo()
 list_all_indexes_1: |-
-  client.getIndexes()
+  client.getRawIndexes()
 create_an_index_1: |-
   client.createIndex('movies', { primaryKey: 'id' })
 update_an_index_1: |-
