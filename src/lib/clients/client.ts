@@ -374,7 +374,7 @@ class Client {
    * Triggers a dump creation process
    * @memberof MeiliSearch
    * @method createDump
-   * @returns {Promise<EnqueuedDump>} Promise returning object of the enqueued update
+   * @returns {Promise<EnqueuedDump>} Promise returning object of the enqueued task
    */
   async createDump(): Promise<EnqueuedDump> {
     const url = `dumps`
@@ -386,7 +386,7 @@ class Client {
    * @memberof MeiliSearch
    * @method getDumpStatus
    * @param {string} dumpUid Dump UID
-   * @returns {Promise<EnqueuedDump>} Promise returning object of the enqueued update
+   * @returns {Promise<EnqueuedDump>} Promise returning object of the enqueued task
    */
   async getDumpStatus(dumpUid: string): Promise<EnqueuedDump> {
     const url = `dumps/${dumpUid}/status`
