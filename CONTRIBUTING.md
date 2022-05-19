@@ -40,25 +40,77 @@ To run this project, you will need:
 
 ### Setup
 
+A running Meilisearch instance is required to be able to run the tests.
+
+Either you run a whole environment with a running Meilisearch and the required tools to run this project using docker in an interactively mode.
+
 ```bash
-yarn --dev
+docker-compose run --rm package bash
 ```
 
-### Tests and Linter
+Or you prefer working locally in which case you still need a running Meilisearch:
+
+```bash
+docker pull getmeili/meilisearch:latest # Fetch the latest version of Meilisearch image from Docker Hub
+docker run -p 7700:7700 getmeili/meilisearch:latest meilisearch --master-key=masterKey --no-analytics
+```
+
+After which, the dependencies must be installed:
+
+```bash
+yarn install
+```
+
+### Tests
 
 Each PR should pass the tests and the linter to be accepted.
 
 ```bash
 # Tests
-curl -L https://install.meilisearch.com | sh # download Meilisearch
-./meilisearch --master-key=masterKey --no-analytics # run Meilisearch
 yarn test
+
+# Watch mode
+yarn test:watch
+```
+
+or with docker:
+
+```bash
+docker-compose run --rm package yarn test
+```
+
+### Linter
+
+Each PR should pass the linter to be accepted.
+
+```bash
 # Linter
 yarn style
 # Linter with fixing
 yarn style:fix
+```
+
+or with docker:
+
+```bash
+# Linter
+docker-compose run --rm package yarn style
+# Linter with fixing
+docker-compose run --rm package yarn style:fix
+```
+
+### Build
+
+```bash
 # Build the project
 yarn build
+```
+
+or with docker:
+
+```bash
+# Build the project
+docker-compose run --rm package yarn build
 ```
 
 ## Git Guidelines
