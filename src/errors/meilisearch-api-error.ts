@@ -1,4 +1,4 @@
-import { MeiliSearchErrorInterface } from '../types'
+import { MeiliSearchError } from '../types'
 
 const MeiliSearchApiError = class extends Error {
   httpStatus: number
@@ -7,7 +7,7 @@ const MeiliSearchApiError = class extends Error {
   stack?: string
   type?: string
 
-  constructor(error: MeiliSearchErrorInterface, status: number) {
+  constructor(error: MeiliSearchError, status: number) {
     super(error.message)
     this.name = 'MeiliSearchApiError'
 

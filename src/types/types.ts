@@ -319,7 +319,7 @@ export type Version = {
  ** ERROR HANDLER
  */
 
-export interface MeiliSearchErrorInterface extends Error {
+export interface MeiliSearchError extends Error {
   code?: string
   link?: string
   stack?: string
