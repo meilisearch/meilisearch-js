@@ -244,7 +244,7 @@ export type Task = {
   duration: string
   enqueuedAt: string
   processedAt: string
-  error?: MeiliSearchErrorBody
+  error?: MeiliSearchErrorInfo
 }
 
 export type EnqueuedDump = {
@@ -319,20 +319,13 @@ export type Version = {
  ** ERROR HANDLER
  */
 
-export interface MeiliSearchError extends Error {
-  code?: string
-  link?: string
-  stack?: string
-  type?: string
-}
-
 export interface FetchError extends Error {
   type: string
   errno: string
   code: string
 }
 
-export type MeiliSearchErrorBody = {
+export type MeiliSearchErrorInfo = {
   code: string
   link: string
   message: string

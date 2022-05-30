@@ -1,13 +1,13 @@
-import { MeiliSearchError } from '../types'
+import { MeiliSearchErrorInfo } from '../types'
 
 const MeiliSearchApiError = class extends Error {
   httpStatus: number
-  code?: string
-  link?: string
+  code: string
+  link: string
+  type: string
   stack?: string
-  type?: string
 
-  constructor(error: MeiliSearchError, status: number) {
+  constructor(error: MeiliSearchErrorInfo, status: number) {
     super(error.message)
     this.name = 'MeiliSearchApiError'
 
