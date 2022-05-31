@@ -584,7 +584,7 @@ class Index<T = Record<string, any>> {
    * Get the list of all ranking-rules
    * @memberof Index
    * @method getRankingRules
-   * @returns {Promise<string[]} Promise containing array of ranking-rules
+   * @returns {Promise<string[]>} Promise containing array of ranking-rules
    */
   async getRankingRules(): Promise<string[]> {
     const url = `indexes/${this.uid}/settings/ranking-rules`
