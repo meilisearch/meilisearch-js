@@ -10,6 +10,7 @@ async function httpResponseErrorHandler(response: Response): Promise<Response> {
       // In which case it is a communication error with the Meilisearch instance
       err = await response.json()
     } catch (e: any) {
+      // Not sure on how to test this part of the code.
       throw new MeiliSearchCommunicationError(
         response.statusText,
         response,

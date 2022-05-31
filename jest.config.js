@@ -10,7 +10,6 @@ const config = {
       },
     },
   },
-  setupFiles: [],
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
