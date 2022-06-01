@@ -362,11 +362,9 @@ The following sections may interest you:
 
 This repository also contains [more examples](./examples).
 
-## ⚙️ Development Workflow and Contributing
+## ⚙️ Contributing
 
-We welcome all contributions, big and small!
-
-If you want to know more about `meilisearch-js`'s development workflow or want to contribute, please visit our [contributing guidelines](/CONTRIBUTING.md) for detailed instructions.
+We welcome all contributions, big and small! If you want to know more about `meilisearch-js`'s development workflow or want to contribute to the repo, please visit our [contributing guidelines](/CONTRIBUTING.md) for detailed instructions.
 
 ## 📜 API Resources
 
