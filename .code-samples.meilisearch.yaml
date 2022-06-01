@@ -3,6 +3,16 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
+updating_guide_get_displayed_attributes_old: |-
+updating_guide_reset_displayed_attributes_old: |-
+updating_guide_check_version: |-
+updating_guide_create_dump: |-
+updating_guide_get_dump_status: |-
+updating_guide_get_settings: |-
+updating_guide_retrieve_documents: |-
+updating_guide_update_settings: |-
+updating_guide_add_documents: |-
+
 get_one_index_1: |-
   client.index('movies').getRawInfo()
 list_all_indexes_1: |-
@@ -382,6 +392,16 @@ primary_field_guide_add_document_primary_key: |-
       price: 5.00
     }
   ], { primaryKey: 'reference_number' })
+primary_field_guide_update_document_primary_key: |-
+  client.index('books').updateDocuments([
+    {
+      reference_number: 287947,
+      title: 'Diary of a Wimpy Kid',
+      author: 'Jeff Kinney',
+      genres: ['comedy','humor'],
+      price: 5.00
+    }
+  ], { primaryKey: 'reference_number' })
 getting_started_add_documents_md: |-
   ```bash
   npm install meilisearch
@@ -420,7 +440,7 @@ getting_started_search_md: |-
   ```
 
   [About this SDK](https://github.com/meilisearch/meilisearch-js/)
-getting_started_update_rankingRules: |-
+getting_started_update_ranking_rules: |-
   client.index('movies').updateRankingRules([
     'exactness',
     'words',
@@ -431,7 +451,7 @@ getting_started_update_rankingRules: |-
     'release_date:asc',
     'rank:desc'
   ])
-getting_started_update_searchableAttributes: |-
+getting_started_update_searchable_attributes: |-
   client.index('movies').updateSearchableAttributes([
     'title'
   ])
@@ -444,7 +464,7 @@ getting_started_synonyms: |-
     winnie: ['piglet'],
     piglet: ['winnie']
   })
-getting_started_update_displayedAttributes: |-
+getting_started_update_displayed_attributes: |-
   client.index('movies').updateDisplayedAttributes([
     'title',
     'overview',
@@ -462,9 +482,9 @@ getting_started_configure_settings: |-
     filterableAttributes: ['mass', '_geo'],
     sortableAttributes: ['mass', '_geo']
   })
-getting_started_geoRadius: |-
+getting_started_geo_radius: |-
   client.index('meteorites').search('', { filter: '_geoRadius(46.9480, 7.4474, 210000)' })
-getting_started_geoPoint: |-
+getting_started_geo_point: |-
   client.index('meteorites').search('', { sort: ['_geoPoint(48.8583701, 2.2922926):asc'] })
 getting_started_sorting: |-
   client.index('meteorites').search('', {
