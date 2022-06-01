@@ -25,43 +25,49 @@
 
 **Meilisearch JavaScript** is the Meilisearch API client for JavaScript developers.
 
-**Meilisearch** is an open-source search engine. [Discover what Meilisearch is!](https://github.com/meilisearch/meilisearch)
+**Meilisearch** is an open-source search engine. [Learn more about Meilisearch.](https://github.com/meilisearch/meilisearch)
 
 ## Table of Contents <!-- omit in toc -->
 
 - [📖 Documentation](#-documentation)
 - [🔧 Installation](#-installation)
-- [🎬 Getting Started](#-getting-started)
-- [🤖 Compatibility with Meilisearch](#-compatibility-with-meilisearch)
-- [💡 Learn More](#-learn-more)
-- [⚙️ Development Workflow and Contributing](#️-development-workflow-and-contributing)
+- [🎬 Getting started](#-getting-started)
+- [🤖 Compatibility](#-compatibility-with-meilisearch)
+- [💡 Learn more](#-learn-more)
+- [⚙️ Contributing](#️-development-workflow-and-contributing)
 - [📜 API Resources](#-api-resources)
 
 ## 📖 Documentation
 
-See our [Documentation](https://docs.meilisearch.com/learn/tutorials/getting_started.html) or our [API References](https://docs.meilisearch.com/reference/api/).
+This readme contains all the documentation you need to start using Meilisearch's Javascript SDK.
+
+For general information on how to use Meilisearch, refer to our [main documentation website](https://docs.meilisearch.com/learn/) and the [Meilisearch API Reference](https://docs.meilisearch.com/reference/api/).
 
 ## 🔧 Installation
 
-We only guarantee that the package works with `node` >= 12 and `node` <= 16.
+We recommend installing `meilisearch-js` in your project with your package manager of choice.
 
-With `npm`:
+If you use `npm`:
 
 ```sh
 npm install meilisearch
 ```
 
-With `yarn`:
+If you prefer `yarn`:
 
 ```sh
 yarn add meilisearch
 ```
 
-### 🏃‍♀️ Run Meilisearch <!-- omit in toc -->
+`meilisearch-js` officially supports `node` versions >= 12 and <= 16.
 
-There are many easy ways to [download and run a Meilisearch instance](https://docs.meilisearch.com/reference/features/installation.html#download-and-launch).
+Instead of using a package manager, you may also import the library directly into your HTML via a CDN.
 
-For example, using the `curl` command in [your Terminal](https://itconnect.uw.edu/learn/workshops/online-tutorials/web-publishing/what-is-a-terminal/):
+### Run Meilisearch <!-- omit in toc -->
+
+To use `meilisearch-js`, you must have a running Meilisearch instance.
+
+You can install Meilisearch in your local machine using the `curl` command in [your terminal](https://itconnect.uw.edu/learn/workshops/online-tutorials/web-publishing/what-is-a-terminal/):
 
 ```bash
 # Install Meilisearch
@@ -71,11 +77,11 @@ curl -L https://install.meilisearch.com | sh
 ./meilisearch --master-key=masterKey
 ```
 
-NB: you can also download Meilisearch from **Homebrew** or **APT** or even run it using **Docker**.
+You can also install Meilisearch using [Homebrew](https://brew.sh), [APT](https://ubuntu.com/server/docs/package-management), or [Docker](https://www.docker.com/). Consult the official documentation for more information on [downloading and running Meilisearch](https://docs.meilisearch.com/reference/features/installation.html#download-and-launch).
 
 ### Import <!-- omit in toc -->
 
-Depending on the environment in which you are using Meilisearch, imports may differ.
+After installing `meilisearch-js`, you must import it into your application. There are many ways of doing that depending on your development environment.
 
 #### Import Syntax <!-- omit in toc -->
 
@@ -106,7 +112,7 @@ Usage in an HTML (or alike) file:
 
 #### Require Syntax <!-- omit in toc -->
 
-Usage in a back-end node environment
+Usage in a back-end node.js or another environment supporting CommonJS modules:
 
 ```javascript
 const { MeiliSearch } = require('meilisearch')
@@ -119,13 +125,13 @@ const client = new MeiliSearch({
 
 #### React Native <!-- omit in toc -->
 
-To make this package work with React Native, please add the [react-native-url-polyfill](https://www.npmjs.com/package/react-native-url-polyfill).
+To use `meilisearch-js` with React Native, you must also install [react-native-url-polyfill](https://www.npmjs.com/package/react-native-url-polyfill).
 
 #### Deno<!-- omit in toc -->
 
-Usage in a back-end deno environment
+Usage in a deno environment:
 
-```ts
+```js
 import { MeiliSearch } from "https://esm.sh/meilisearch"
 
 const client = new MeiliSearch({
@@ -134,10 +140,9 @@ const client = new MeiliSearch({
 })
 ```
 
-
 ## 🎬 Getting Started
 
-#### Add Documents <!-- omit in toc -->
+### Add Documents <!-- omit in toc -->
 
 ```js
 const { MeiliSearch } = require('meilisearch')
@@ -169,9 +174,9 @@ import { MeiliSearch } from 'meilisearch'
 })()
 ```
 
-With the `uid`, you can check the status (`enqueued`, `processing`, `succeeded` or `failed`) of your documents addition using the [task](https://docs.meilisearch.com/reference/api/tasks.html#get-task).
+Tasks such as document addition always return a unique identifier. You can use this identifier `uid` to check the status (`enqueued`, `processing`, `succeeded` or `failed`) of a [task](https://docs.meilisearch.com/reference/api/tasks.html#get-task).
 
-#### Basic Search <!-- omit in toc -->
+### Basic Search <!-- omit in toc -->
 
 ```javascript
 // Meilisearch is typo-tolerant:
@@ -198,9 +203,9 @@ Output:
 }
 ```
 
-#### Custom Search <!-- omit in toc -->
+### Using search parameters <!-- omit in toc -->
 
-All the supported options are described in the [search parameters](https://docs.meilisearch.com/reference/features/search_parameters.html) section of the documentation.
+`meilisearch-js` supports all [search parameters](https://docs.meilisearch.com/reference/features/search_parameters.html) described in our official documentation.
 
 ```javascript
 await index.search(
@@ -233,9 +238,9 @@ await index.search(
 }
 ```
 
-#### Custom Search With Filters <!-- omit in toc -->
+### Custom Search With Filters <!-- omit in toc -->
 
-If you want to enable filtering, you must add your attributes to the `filterableAttributes` index setting.
+To enable filtering, you must first add your attributes to the [`filterableAttributes` index setting](https://docs.meilisearch.com/reference/api/filterable_attributes.html).
 
 ```js
 await index.updateAttributesForFaceting([
@@ -244,11 +249,11 @@ await index.updateAttributesForFaceting([
   ])
 ```
 
-You only need to perform this operation once.
+You only need to perform this operation once per index.
 
-Note that Meilisearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take time. You can track the process using the [tasks](https://docs.meilisearch.com/reference/api/tasks.html#get-task)).
+Note that Meilisearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take considerable time. You can track the process using the [tasks API](https://docs.meilisearch.com/reference/api/tasks.html#get-task)).
 
-Then, you can perform the search:
+After you configured `filterableAttributes`, you can use the [`filter` search parameter](https://docs.meilisearch.com/reference/api/search.html#filter) to refine your search:
 
 ```js
 await index.search(
@@ -276,9 +281,9 @@ await index.search(
 }
 ```
 
-#### Placeholder Search <!-- omit in toc -->
+### Placeholder Search <!-- omit in toc -->
 
-Placeholder search makes it possible to receive hits based on your parameters without having any query (`q`). To enable faceted search on your dataset you need to add `genres` in the [settings](https://docs.meilisearch.com/reference/features/faceted_search.html#setting-up-facets).
+Placeholder search makes it possible to receive hits based on your parameters without having any query (`q`). For example, in a movies database you can run an empty query to receive all results filtered by `genre`.
 
 ```javascript
 await index.search(
@@ -319,6 +324,8 @@ await index.search(
 }
 ```
 
+Note that to enable faceted search on your dataset you need to add `genres` to the `filterableAttributes` index setting. For more information on filtering and faceting, [consult our documentation settings](https://docs.meilisearch.com/reference/features/faceted_search.html#setting-up-facets).
+
 #### Abortable Search <!-- omit in toc -->
 
 You can abort a pending search request by providing an [AbortSignal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) to the request.
@@ -357,9 +364,9 @@ This repository also contains [more examples](./examples).
 
 ## ⚙️ Development Workflow and Contributing
 
-Any new contribution is more than welcome to this project!
+We welcome all contributions, big and small!
 
-If you want to know more about the development workflow or want to contribute, please visit our [contributing guidelines](/CONTRIBUTING.md) for detailed instructions!
+If you want to know more about `meilisearch-js`'s development workflow or want to contribute, please visit our [contributing guidelines](/CONTRIBUTING.md) for detailed instructions.
 
 ## 📜 API Resources
 
