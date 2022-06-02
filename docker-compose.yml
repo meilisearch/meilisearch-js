@@ -1,12 +1,8 @@
 version: "3.8"
 
-# remove this line if you don't need a volume to map your dependencies
-# volumes:
-#   bundle:
-
 services:
   package:
-    image: language-name:version
+    image: node:16
     tty: true
     stdin_open: true
     working_dir: /home/package
@@ -18,7 +14,6 @@ services:
     links:
       - meilisearch
     volumes:
-      # - bundle:/vendor/bundle
       - ./:/home/package
 
   meilisearch:
