@@ -4,7 +4,7 @@ import { Config, EnqueuedDump } from '../src/types'
 // testing
 const MASTER_KEY = 'masterKey'
 const HOST = process.env.MEILISEARCH_HOST || 'http://127.0.0.1:7700'
-const BAD_HOST = HOST.slice(0, -1) + `1`
+const BAD_HOST = 'http://127.0.0.1:7701'
 
 const config = {
   host: HOST,
