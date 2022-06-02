@@ -3,16 +3,6 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
-updating_guide_get_displayed_attributes_old: |-
-updating_guide_reset_displayed_attributes_old: |-
-updating_guide_check_version: |-
-updating_guide_create_dump: |-
-updating_guide_get_dump_status: |-
-updating_guide_get_settings: |-
-updating_guide_retrieve_documents: |-
-updating_guide_update_settings: |-
-updating_guide_add_documents: |-
-
 get_one_index_1: |-
   client.index('movies').getRawInfo()
 list_all_indexes_1: |-
@@ -376,7 +366,7 @@ documents_guide_add_movie_1: |-
     movie_id: '123sq178',
     title: 'Amelie Poulain'
   }])
-primary_field_guide_update_primary_key: |-
+primary_field_guide_update_document_primary_key: |-
   client.updateIndex('books', {
     primaryKey: 'title'
   })
@@ -384,16 +374,6 @@ primary_field_guide_create_index_primary_key: |-
   client.createIndex('books', { primaryKey: 'reference_number' })
 primary_field_guide_add_document_primary_key: |-
   client.index('books').addDocuments([
-    {
-      reference_number: 287947,
-      title: 'Diary of a Wimpy Kid',
-      author: 'Jeff Kinney',
-      genres: ['comedy','humor'],
-      price: 5.00
-    }
-  ], { primaryKey: 'reference_number' })
-primary_field_guide_update_document_primary_key: |-
-  client.index('books').updateDocuments([
     {
       reference_number: 287947,
       title: 'Diary of a Wimpy Kid',
