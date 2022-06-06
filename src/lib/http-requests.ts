@@ -67,7 +67,7 @@ class HttpRequests {
         body: JSON.stringify(body),
         headers: this.headers,
       }).then((res) => httpResponseErrorHandler(res))
-      const parsedBody = await response.json().catch(() => null)
+      const parsedBody = await response.json().catch(() => undefined)
 
       return parsedBody
     } catch (e: any) {
