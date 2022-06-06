@@ -366,16 +366,20 @@ documents_guide_add_movie_1: |-
     movie_id: '123sq178',
     title: 'Amelie Poulain'
   }])
-document_guide_create_index_primary_key: |-
-  client.createIndex('movies', { primaryKey: 'reference_number' })
-document_guide_add_document_primary_key: |-
-  client.index('movies').addDocuments([
+primary_field_guide_update_document_primary_key: |-
+  client.updateIndex('books', {
+    primaryKey: 'title'
+  })
+primary_field_guide_create_index_primary_key: |-
+  client.createIndex('books', { primaryKey: 'reference_number' })
+primary_field_guide_add_document_primary_key: |-
+  client.index('books').addDocuments([
     {
       reference_number: 287947,
-      title: 'Shazam',
-      poster: 'https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg',
-      overview: 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
-      release_date: '2019-03-23'
+      title: 'Diary of a Wimpy Kid',
+      author: 'Jeff Kinney',
+      genres: ['comedy','humor'],
+      price: 5.00
     }
   ], { primaryKey: 'reference_number' })
 getting_started_add_documents_md: |-
@@ -416,7 +420,7 @@ getting_started_search_md: |-
   ```
 
   [About this SDK](https://github.com/meilisearch/meilisearch-js/)
-getting_started_update_rankingRules: |-
+getting_started_update_ranking_rules: |-
   client.index('movies').updateRankingRules([
     'exactness',
     'words',
@@ -427,7 +431,7 @@ getting_started_update_rankingRules: |-
     'release_date:asc',
     'rank:desc'
   ])
-getting_started_update_searchableAttributes: |-
+getting_started_update_searchable_attributes: |-
   client.index('movies').updateSearchableAttributes([
     'title'
   ])
@@ -440,7 +444,7 @@ getting_started_synonyms: |-
     winnie: ['piglet'],
     piglet: ['winnie']
   })
-getting_started_update_displayedAttributes: |-
+getting_started_update_displayed_attributes: |-
   client.index('movies').updateDisplayedAttributes([
     'title',
     'overview',
@@ -458,9 +462,9 @@ getting_started_configure_settings: |-
     filterableAttributes: ['mass', '_geo'],
     sortableAttributes: ['mass', '_geo']
   })
-getting_started_geoRadius: |-
+getting_started_geo_radius: |-
   client.index('meteorites').search('', { filter: '_geoRadius(46.9480, 7.4474, 210000)' })
-getting_started_geoPoint: |-
+getting_started_geo_point: |-
   client.index('meteorites').search('', { sort: ['_geoPoint(48.8583701, 2.2922926):asc'] })
 getting_started_sorting: |-
   client.index('meteorites').search('', {
