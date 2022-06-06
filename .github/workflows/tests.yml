@@ -50,12 +50,6 @@ jobs:
         run: yarn test:env:node-ts
       - name: Run Browser env
         run: yarn test:env:browser
-  docker_compose_check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run docker
-        run: docker-compose run --rm package bash -c "yarn install && yarn test && yarn lint"
   linter_check:
     runs-on: ubuntu-latest
     name: linter-check
