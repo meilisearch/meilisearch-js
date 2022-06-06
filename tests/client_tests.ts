@@ -13,6 +13,7 @@ import {
   config,
   MeiliSearch,
   BAD_HOST,
+  HOST,
 } from './meilisearch-test-utils'
 
 const indexNoPk = {
@@ -134,15 +135,17 @@ describe.each([
   })
 
   test(`${permission} key: host without HTTP should not throw Invalid URL Error`, async () => {
-    const client = new MeiliSearch({ host: 'meilisearch:7700' })
-    const health = await client.isHealthy()
-    expect(health).toBe(false)
+    const strippedHost = HOST.replace('http://', '')
+    expect(() => {
+      new MeiliSearch({ host: strippedHost })
+    }).not.toThrow('The provided host is not valid.')
   })
 
   test(`${permission} key: host without HTTP and port should not throw Invalid URL Error`, async () => {
-    const client = new MeiliSearch({ host: 'meilisearch' })
-    const health = await client.isHealthy()
-    expect(health).toBe(false)
+    const strippedHost = HOST.replace('http://', '').replace(':7700', '')
+    expect(() => {
+      new MeiliSearch({ host: strippedHost })
+    }).not.toThrow('The provided host is not valid.')
   })
 
   test(`${permission} key: Empty string host should throw an error`, () => {

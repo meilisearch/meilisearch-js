@@ -8,7 +8,6 @@ services:
     working_dir: /home/package
     environment:
       - MEILISEARCH_HOST=http://meilisearch:7700
-      - MEILISEARCH_PORT=7700
     depends_on:
       - meilisearch
     links:
