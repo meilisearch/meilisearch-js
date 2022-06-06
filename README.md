@@ -129,7 +129,7 @@ To use `meilisearch-js` with React Native, you must also install [react-native-u
 
 #### Deno<!-- omit in toc -->
 
-Usage in a deno environment:
+Usage in a Deno environment:
 
 ```js
 import { MeiliSearch } from "https://esm.sh/meilisearch"
