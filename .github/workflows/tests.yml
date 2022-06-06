@@ -50,7 +50,6 @@ jobs:
         run: yarn test:env:node-ts
       - name: Run Browser env
         run: yarn test:env:browser
-
   linter_check:
     runs-on: ubuntu-latest
     name: linter-check

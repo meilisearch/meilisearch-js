@@ -40,6 +40,15 @@ To run this project, you will need:
 
 ### Setup
 
+You can set up your local environment natively or using `docker`, check out the [`docker-compose.yml`](/docker-compose.yml).
+
+Example of running all the checks with docker:
+```bash
+docker-compose run --rm package bash -c "yarn install && yarn test && yarn lint"
+```
+
+To install dependencies:
+
 ```bash
 yarn --dev
 ```
