@@ -4,11 +4,11 @@ import { FetchError } from '../types'
 
 async function httpResponseErrorHandler(response: Response): Promise<Response> {
   if (!response.ok) {
-    let err
+    let responseBody
     try {
       // If it is not possible to parse the return body it means there is none
       // In which case it is a communication error with the Meilisearch instance
-      err = await response.json()
+      responseBody = await response.json()
     } catch (e: any) {
       // Not sure on how to test this part of the code.
       throw new MeiliSearchCommunicationError(
@@ -19,8 +19,9 @@ async function httpResponseErrorHandler(response: Response): Promise<Response> {
     }
     // If the body is parsable, then it means Meilisearch returned a body with
     // information on the error.
-    throw new MeiliSearchApiError(err, response.status)
+    throw new MeiliSearchApiError(responseBody, response.status)
   }
+
   return response
 }
 

@@ -67,14 +67,9 @@ class HttpRequests {
         body: JSON.stringify(body),
         headers: this.headers,
       }).then((res) => httpResponseErrorHandler(res))
-      const parsedBody: string = await response.text()
+      const parsedBody = await response.json().catch(() => null)
 
-      try {
-        const parsedJson = JSON.parse(parsedBody)
-        return parsedJson
-      } catch (_) {
-        return
-      }
+      return parsedBody
     } catch (e: any) {
       const stack = e.stack
       httpErrorHandler(e, stack, constructURL.toString())
