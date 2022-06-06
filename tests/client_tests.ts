@@ -134,14 +134,14 @@ describe.each([
     }
   })
 
-  test(`${permission} key: host without HTTP should not throw Invalid URL Error`, async () => {
+  test(`${permission} key: host without HTTP should not throw Invalid URL Error`, () => {
     const strippedHost = HOST.replace('http://', '')
     expect(() => {
       new MeiliSearch({ host: strippedHost })
     }).not.toThrow('The provided host is not valid.')
   })
 
-  test(`${permission} key: host without HTTP and port should not throw Invalid URL Error`, async () => {
+  test(`${permission} key: host without HTTP and port should not throw Invalid URL Error`, () => {
     const strippedHost = HOST.replace('http://', '').replace(':7700', '')
     expect(() => {
       new MeiliSearch({ host: strippedHost })
