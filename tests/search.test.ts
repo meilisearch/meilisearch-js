@@ -93,6 +93,32 @@ describe.each([
     expect(response.hits.length).toEqual(2)
   })
 
+  test(`${permission} key: Search with query in searchParams overwriting query`, async () => {
+    const client = await getClient(permission)
+    const response = await client
+      .index(index.uid)
+      .search('other', { q: 'prince' })
+
+    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('offset', 0)
+    expect(response).toHaveProperty('limit', 20)
+    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
+    expect(response).toHaveProperty('query', 'prince')
+    expect(response.hits.length).toEqual(2)
+  })
+
+  test(`${permission} key: Search with query in searchParams overwriting null query`, async () => {
+    const client = await getClient(permission)
+    const response = await client.index(index.uid).search(null, { q: 'prince' })
+
+    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('offset', 0)
+    expect(response).toHaveProperty('limit', 20)
+    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
+    expect(response).toHaveProperty('query', 'prince')
+    expect(response.hits.length).toEqual(2)
+  })
+
   test(`${permission} key: Basic phrase search`, async () => {
     const client = await getClient(permission)
     const response = await client

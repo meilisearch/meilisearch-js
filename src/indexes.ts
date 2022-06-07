@@ -81,7 +81,7 @@ class Index<T = Record<string, any>> {
 
     return await this.httpRequest.post(
       url,
-      removeUndefinedFromObject({ ...options, q: query }),
+      removeUndefinedFromObject({ q: query, ...options }),
       undefined,
       config
     )
