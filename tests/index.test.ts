@@ -13,8 +13,6 @@ const indexNoPk = {
 const indexPk = {
   uid: 'movies_test2',
   primaryKey: 'id',
-  createdAt: new Date(Date.now()).toISOString(),
-  updatedAt: new Date(Date.now()).toISOString(),
 }
 
 afterAll(async () => {
