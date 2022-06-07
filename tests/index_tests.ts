@@ -459,7 +459,7 @@ describe.each([
       )}`
     )
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
-      'type',
+      'name',
       'MeiliSearchCommunicationError'
     )
   })
@@ -476,7 +476,7 @@ describe.each([
       )}`
     )
     await expect(client.getRawIndex(indexPk.uid)).rejects.toHaveProperty(
-      'type',
+      'name',
       'MeiliSearchCommunicationError'
     )
   })

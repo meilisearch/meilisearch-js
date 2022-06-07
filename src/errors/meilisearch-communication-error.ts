@@ -2,7 +2,6 @@ import 'cross-fetch/polyfill'
 import { FetchError } from '../types'
 
 class MeiliSearchCommunicationError extends Error {
-  type: string
   statusCode?: number
   errno?: string
   code?: string
@@ -17,7 +16,6 @@ class MeiliSearchCommunicationError extends Error {
     super(message)
 
     this.name = 'MeiliSearchCommunicationError'
-    this.type = 'MeiliSearchCommunicationError'
 
     if (body instanceof Response) {
       this.message = body.statusText

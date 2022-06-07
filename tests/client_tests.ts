@@ -73,7 +73,7 @@ describe.each([
       expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}/api/health`)
-      expect(e.type).toBe('MeiliSearchCommunicationError')
+      expect(e.name).toBe('MeiliSearchCommunicationError')
     }
   })
 
@@ -89,7 +89,7 @@ describe.each([
       expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}/api/health`)
-      expect(e.type).toBe('MeiliSearchCommunicationError')
+      expect(e.name).toBe('MeiliSearchCommunicationError')
     }
   })
 
@@ -105,7 +105,7 @@ describe.each([
       expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}//health`)
-      expect(e.type).toBe('MeiliSearchCommunicationError')
+      expect(e.name).toBe('MeiliSearchCommunicationError')
     }
   })
 
@@ -121,7 +121,7 @@ describe.each([
       expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}/health`)
-      expect(e.type).toBe('MeiliSearchCommunicationError')
+      expect(e.name).toBe('MeiliSearchCommunicationError')
     }
   })
 
@@ -130,7 +130,7 @@ describe.each([
     try {
       await client.health()
     } catch (e: any) {
-      expect(e.type).toEqual('MeiliSearchCommunicationError')
+      expect(e.name).toEqual('MeiliSearchCommunicationError')
     }
   })
 

@@ -10,7 +10,6 @@
       "allowSyntheticDefaultImports": true,
       "lib": ["ES2019", "ESNext", "dom"],
       "moduleResolution": "node",
-
       "noImplicitAny": true,
       "strictNullChecks": true,
       "strictFunctionTypes": true,
