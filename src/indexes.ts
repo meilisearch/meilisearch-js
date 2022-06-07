@@ -7,7 +7,7 @@
 
 'use strict'
 
-import { MeiliSearchError } from '../errors'
+import { MeiliSearchError } from './errors'
 
 import {
   Config,
@@ -35,7 +35,7 @@ import {
   DisplayedAttributes,
   TypoTolerance,
   Result,
-} from '../types'
+} from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
 import { TaskClient } from './task'

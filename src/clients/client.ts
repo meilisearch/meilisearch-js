@@ -24,7 +24,7 @@ import {
   Result,
   TokenSearchRules,
   TokenOptions,
-} from '../../types'
+} from '../types'
 import { HttpRequests } from '../http-requests'
 import { TaskClient } from '../task'
 

@@ -1,4 +1,4 @@
-import { Config, TokenSearchRules, TokenOptions } from '../types'
+import { Config, TokenSearchRules, TokenOptions } from './types'
 import crypto from 'crypto'
 
 function encode64(data: any) {

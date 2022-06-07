@@ -1,5 +1,5 @@
-import { MeiliSearchTimeOutError } from '../errors'
-import { Config, Task, WaitOptions, TaskStatus, Result } from '../types'
+import { MeiliSearchTimeOutError } from './errors'
+import { Config, Task, WaitOptions, TaskStatus, Result } from './types'
 import { HttpRequests } from './http-requests'
 import { sleep } from './utils'
 

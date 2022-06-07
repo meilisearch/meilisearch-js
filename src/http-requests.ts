@@ -1,12 +1,12 @@
 import 'cross-fetch/polyfill'
 
-import { Config, EnqueuedTask } from '../types'
+import { Config, EnqueuedTask } from './types'
 
 import {
   MeiliSearchError,
   httpResponseErrorHandler,
   httpErrorHandler,
-} from '../errors'
+} from './errors'
 
 import { addTrailingSlash, addProtocolIfNotPresent } from './utils'
 

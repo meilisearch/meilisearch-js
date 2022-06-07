@@ -1,5 +1,5 @@
 import { Client } from './client'
-import { Config, TokenSearchRules, TokenOptions } from '../../types'
+import { Config, TokenSearchRules, TokenOptions } from '../types'
 import { Token } from '../token'
 
 class MeiliSearch extends Client {

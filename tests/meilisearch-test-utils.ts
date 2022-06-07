@@ -1,5 +1,9 @@
-import { MeiliSearch, MeiliSearchTimeOutError, Index, sleep } from '../src/'
+import { MeiliSearch, MeiliSearchTimeOutError, Index } from '../src/'
 import { Config, EnqueuedDump } from '../src/types'
+
+async function sleep(ms: number): Promise<void> {
+  return await new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 // testing
 const MASTER_KEY = 'masterKey'
