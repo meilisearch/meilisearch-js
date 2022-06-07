@@ -334,19 +334,27 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const { uid } = await client.createIndex(indexPk.uid)
       await client.waitForTask(uid)
 
-      const response = await client.index(indexPk.uid).getRawInfo()
+      const index = client.index(indexPk.uid)
+      await index.getRawInfo()
 
-      expect(response).toBeDefined()
-      expect(response).toBeDefined()
+      expect(index.createdAt).toBeInstanceOf(Date)
+      expect(index.updatedAt).toBeInstanceOf(Date)
     })
 
-    test(`${permission} key: Get updatedAt and createdAt from initialized index`, async () => {
+    test(`${permission} key: Get updatedAt and createdAt index witch fetched information`, async () => {
       const client = await getClient(permission)
+      const { uid } = await client.createIndex(indexPk.uid)
+      await client.waitForTask(uid)
 
-      const response = await client.index(indexPk.uid)
+      const index = client.index(indexPk.uid)
 
-      expect(response.createdAt).toBeUndefined()
-      expect(response.updatedAt).toBeUndefined()
+      expect(index.createdAt).toBe(undefined)
+      expect(index.updatedAt).toBe(undefined)
+
+      await index.getRawInfo()
+
+      expect(index.createdAt).toBeInstanceOf(Date)
+      expect(index.updatedAt).toBeInstanceOf(Date)
     })
   }
 )
