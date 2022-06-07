@@ -1,4 +1,8 @@
-import { clearAllIndexes, config, MeiliSearch } from './meilisearch-test-utils'
+import {
+  clearAllIndexes,
+  config,
+  MeiliSearch,
+} from './utils/meilisearch-test-utils'
 
 afterAll(() => {
   return clearAllIndexes(config)

@@ -4,7 +4,7 @@ import {
   config,
   getClient,
   getKey,
-} from './meilisearch-test-utils'
+} from './utils/meilisearch-test-utils'
 
 beforeEach(async () => {
   await clearAllIndexes(config)

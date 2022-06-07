@@ -6,7 +6,7 @@ import {
   MeiliSearch,
   getClient,
   datasetWithNests,
-} from './meilisearch-test-utils'
+} from './utils/meilisearch-test-utils'
 
 const index = {
   uid: 'movies_test',

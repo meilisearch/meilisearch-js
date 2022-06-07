@@ -1,5 +1,5 @@
-import { MeiliSearch, MeiliSearchTimeOutError, Index } from '../src/'
-import { Config, EnqueuedDump } from '../src/types'
+import { MeiliSearch, MeiliSearchTimeOutError, Index } from '../../src'
+import { Config, EnqueuedDump } from '../../src/types'
 
 async function sleep(ms: number): Promise<void> {
   return await new Promise((resolve) => setTimeout(resolve, ms))

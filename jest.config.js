@@ -23,7 +23,7 @@ const config = {
       testPathIgnorePatterns: [
         'meilisearch-test-utils',
         'env/',
-        'token_tests.ts',
+        'token.test.ts',
       ],
     },
     {

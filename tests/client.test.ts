@@ -5,7 +5,7 @@ import {
   Version,
   Stats,
   TaskStatus,
-} from '../src/'
+} from '../src'
 import {
   clearAllIndexes,
   getKey,
@@ -14,7 +14,7 @@ import {
   MeiliSearch,
   BAD_HOST,
   HOST,
-} from './meilisearch-test-utils'
+} from './utils/meilisearch-test-utils'
 
 const indexNoPk = {
   uid: 'movies_test',

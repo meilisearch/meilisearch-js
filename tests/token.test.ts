@@ -6,7 +6,7 @@ import {
   clearAllIndexes,
   config,
   HOST,
-} from './meilisearch-test-utils'
+} from './utils/meilisearch-test-utils'
 import crypto from 'crypto'
 import MeiliSearch from '../src'
 

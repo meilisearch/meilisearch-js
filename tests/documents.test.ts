@@ -12,7 +12,7 @@ import {
   getClient,
   dataset,
   Book,
-} from './meilisearch-test-utils'
+} from './utils/meilisearch-test-utils'
 
 const indexNoPk = {
   uid: 'movies_test',

@@ -5,7 +5,7 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
-} from './meilisearch-test-utils'
+} from './utils/meilisearch-test-utils'
 
 const indexNoPk = {
   uid: 'movies_test',

@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedTask } from '../src/types'
+import { EnqueuedTask, ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -6,20 +6,11 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './meilisearch-test-utils'
+} from './utils/meilisearch-test-utils'
 
 const index = {
   uid: 'movies_test',
 }
-
-const defaultRankingRules = [
-  'words',
-  'typo',
-  'proximity',
-  'attribute',
-  'sort',
-  'exactness',
-]
 
 jest.setTimeout(100 * 1000)
 
@@ -28,121 +19,130 @@ afterAll(() => {
 })
 
 describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
-  'Test on ranking rules',
+  'Test on distinct attribute',
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
       const client = await getClient('master')
+
       const { uid } = await client.index(index.uid).addDocuments(dataset)
       await client.waitForTask(uid)
     })
 
-    test(`${permission} key: Get default ranking rules`, async () => {
+    test(`${permission} key: Get default distinct attribute`, async () => {
       const client = await getClient(permission)
-      const response: string[] = await client.index(index.uid).getRankingRules()
-      expect(response).toEqual(defaultRankingRules)
+      const response: string | null = await client
+        .index(index.uid)
+        .getDistinctAttribute()
+      expect(response).toEqual(null)
     })
 
-    test(`${permission} key: Update ranking rules`, async () => {
+    test(`${permission} key: Update distinct attribute`, async () => {
       const client = await getClient(permission)
-      const newRankingRules = ['title:asc', 'typo', 'description:desc']
+      const newDistinctAttribute = 'title'
       const task: EnqueuedTask = await client
         .index(index.uid)
-        .updateRankingRules(newRankingRules)
+        .updateDistinctAttribute(newDistinctAttribute)
       expect(task).toHaveProperty('uid', expect.any(Number))
       await client.index(index.uid).waitForTask(task.uid)
 
-      const response: string[] = await client.index(index.uid).getRankingRules()
-      expect(response).toEqual(newRankingRules)
+      const response: string | null = await client
+        .index(index.uid)
+        .getDistinctAttribute()
+      expect(response).toEqual(newDistinctAttribute)
     })
 
-    test(`${permission} key: Update ranking rules at null`, async () => {
+    test(`${permission} key: Update distinct attribute at null`, async () => {
       const client = await getClient(permission)
       const task: EnqueuedTask = await client
         .index(index.uid)
-        .updateRankingRules(null)
+        .updateDistinctAttribute(null)
       expect(task).toHaveProperty('uid', expect.any(Number))
       await client.index(index.uid).waitForTask(task.uid)
 
-      const response: string[] = await client.index(index.uid).getRankingRules()
-      expect(response).toEqual(defaultRankingRules)
+      const response: string | null = await client
+        .index(index.uid)
+        .getDistinctAttribute()
+      expect(response).toEqual(null)
     })
 
-    test(`${permission} key: Reset ranking rules`, async () => {
+    test(`${permission} key: Reset distinct attribute`, async () => {
       const client = await getClient(permission)
       const task: EnqueuedTask = await client
         .index(index.uid)
-        .resetRankingRules()
+        .resetDistinctAttribute()
       expect(task).toHaveProperty('uid', expect.any(Number))
       await client.index(index.uid).waitForTask(task.uid)
 
-      const response: string[] = await client.index(index.uid).getRankingRules()
-      expect(response).toEqual(defaultRankingRules)
+      const response: string | null = await client
+        .index(index.uid)
+        .getDistinctAttribute()
+      expect(response).toEqual(null)
     })
   }
 )
 
 describe.each([{ permission: 'Public' }])(
-  'Test on ranking rules',
+  'Test on distinct attribute',
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
     })
 
-    test(`${permission} key: try to get ranking rules and be denied`, async () => {
+    test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).getRankingRules()
+        client.index(index.uid).getDistinctAttribute()
       ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
-    test(`${permission} key: try to update ranking rules and be denied`, async () => {
+    test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).updateRankingRules([])
+        client.index(index.uid).updateDistinctAttribute('title')
       ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
-    test(`${permission} key: try to reset ranking rules and be denied`, async () => {
+    test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).resetRankingRules()
+        client.index(index.uid).resetDistinctAttribute()
       ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
   }
 )
 
 describe.each([{ permission: 'No' }])(
-  'Test on ranking rules',
+  'Test on distinct attribute',
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config)
     })
 
-    test(`${permission} key: try to get ranking rules and be denied`, async () => {
+    test(`${permission} key: try to get distinct attribute and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).getRankingRules()
+        client.index(index.uid).getDistinctAttribute()
       ).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
-    test(`${permission} key: try to update ranking rules and be denied`, async () => {
+    test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).updateRankingRules([])
+        client.index(index.uid).updateDistinctAttribute('title')
       ).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
-    test(`${permission} key: try to reset ranking rules and be denied`, async () => {
+    test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).resetRankingRules()
+        client.index(index.uid).resetDistinctAttribute()
       ).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -156,12 +156,12 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])('Tests on url construction', ({ host, trailing }) => {
-  test(`Test getRankingRules route`, async () => {
-    const route = `indexes/${index.uid}/settings/ranking-rules`
+  test(`Test getDistinctAttribute route`, async () => {
+    const route = `indexes/${index.uid}/settings/distinct-attribute`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).getRankingRules()
+      client.index(index.uid).getDistinctAttribute()
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
@@ -171,12 +171,12 @@ describe.each([
     )
   })
 
-  test(`Test updateRankingRules route`, async () => {
-    const route = `indexes/${index.uid}/settings/ranking-rules`
+  test(`Test updateDistinctAttribute route`, async () => {
+    const route = `indexes/${index.uid}/settings/distinct-attribute`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).updateRankingRules([])
+      client.index(index.uid).updateDistinctAttribute('a')
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
@@ -186,12 +186,12 @@ describe.each([
     )
   })
 
-  test(`Test resetRankingRules route`, async () => {
-    const route = `indexes/${index.uid}/settings/ranking-rules`
+  test(`Test resetDistinctAttribute route`, async () => {
+    const route = `indexes/${index.uid}/settings/distinct-attribute`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).resetRankingRules()
+      client.index(index.uid).resetDistinctAttribute()
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(

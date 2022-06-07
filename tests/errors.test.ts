@@ -1,4 +1,4 @@
-import { MeiliSearch } from './meilisearch-test-utils'
+import { MeiliSearch } from './utils/meilisearch-test-utils'
 import { MeiliSearchApiError } from '../src/errors'
 import 'jest-fetch-mock'
 import fetchMock from 'jest-fetch-mock'

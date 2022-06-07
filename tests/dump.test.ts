@@ -6,7 +6,7 @@ import {
   MeiliSearch,
   BAD_HOST,
   getClient,
-} from './meilisearch-test-utils'
+} from './utils/meilisearch-test-utils'
 
 beforeEach(async () => {
   await clearAllIndexes(config)
