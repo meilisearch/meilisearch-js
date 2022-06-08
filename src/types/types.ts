@@ -66,7 +66,8 @@ export type Crop = {
   cropMarker?: string
 }
 
-export type SearchParams = Pagination &
+export type SearchParams = Query &
+  Pagination &
   Highlight &
   Crop & {
     filter?: Filter
@@ -75,8 +76,6 @@ export type SearchParams = Pagination &
     attributesToRetrieve?: string[]
     matches?: boolean
   }
-
-export type SearchRequest = SearchParams & Query
 
 // Search parameters for searches made with the GET method
 // Are different than the parameters for the POST method

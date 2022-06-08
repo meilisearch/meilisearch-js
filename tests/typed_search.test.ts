@@ -113,6 +113,15 @@ describe.each([
     expect(response.query === 'prince').toBeTruthy()
   })
 
+  test(`${permission} key: Search with query in searchParams`, async () => {
+    const client = await getClient(permission)
+    const response = await client
+      .index(index.uid)
+      .search('other', { q: 'prince' }) // ensures `q` is a valid field in SearchParams type
+
+    expect(response).toHaveProperty('query', 'prince')
+  })
+
   test(`${permission} key: Search with options`, async () => {
     const client = await getClient(permission)
     const response = await client
