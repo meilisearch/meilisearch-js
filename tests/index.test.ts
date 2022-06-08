@@ -326,6 +326,33 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('isIndexing', false)
       expect(response).toHaveProperty('fieldDistribution', {})
     })
+
+    test(`${permission} key: Get updatedAt and createdAt through fetch info`, async () => {
+      const client = await getClient(permission)
+      const { uid } = await client.createIndex(indexPk.uid)
+      await client.waitForTask(uid)
+
+      const index = await client.index(indexPk.uid).fetchInfo()
+
+      expect(index.createdAt).toBeInstanceOf(Date)
+      expect(index.updatedAt).toBeInstanceOf(Date)
+    })
+
+    test(`${permission} key: Get updatedAt and createdAt index through getRawInfo`, async () => {
+      const client = await getClient(permission)
+      const { uid } = await client.createIndex(indexPk.uid)
+      await client.waitForTask(uid)
+
+      const index = client.index(indexPk.uid)
+
+      expect(index.createdAt).toBe(undefined)
+      expect(index.updatedAt).toBe(undefined)
+
+      await index.getRawInfo()
+
+      expect(index.createdAt).toBeInstanceOf(Date)
+      expect(index.updatedAt).toBeInstanceOf(Date)
+    })
   }
 )
 
