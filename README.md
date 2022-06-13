@@ -61,7 +61,7 @@ yarn add meilisearch
 
 `meilisearch-js` officially supports `node` versions >= 12 and <= 16.
 
-Instead of using a package manager, you may also import the library directly into your HTML via a CDN.
+Instead of using a package manager, you may also import the library directly into your [HTML via a CDN](#include-script-tag).
 
 ### Run Meilisearch <!-- omit in toc -->
 
@@ -251,7 +251,7 @@ await index.updateAttributesForFaceting([
 
 You only need to perform this operation once per index.
 
-Note that Meilisearch will rebuild your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take considerable time. You can track the process using the [tasks API](https://docs.meilisearch.com/reference/api/tasks.html#get-task)).
+Note that Meilisearch rebuilds your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take considerable time. You can track the process using the [tasks API](https://docs.meilisearch.com/reference/api/tasks.html#get-task)).
 
 After you configured `filterableAttributes`, you can use the [`filter` search parameter](https://docs.meilisearch.com/reference/api/search.html#filter) to refine your search:
 
