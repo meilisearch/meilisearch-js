@@ -34,14 +34,14 @@
 - [🎬 Getting started](#-getting-started)
 - [🤖 Compatibility](#-compatibility-with-meilisearch)
 - [💡 Learn more](#-learn-more)
-- [⚙️ Contributing](#️-development-workflow-and-contributing)
+- [⚙️ Contributing](#️-contributing)
 - [📜 API Resources](#-api-resources)
 
 ## 📖 Documentation
 
-This readme contains all the documentation you need to start using Meilisearch's Javascript SDK.
+This readme contains all the documentation you need to start using this Meilisearch SDK.
 
-For general information on how to use Meilisearch, refer to our [main documentation website](https://docs.meilisearch.com/learn/) and the [Meilisearch API Reference](https://docs.meilisearch.com/reference/api/).
+For general information on how to use Meilisearch—such as our API reference, tutorials, guides, and in-depth articles—refer to our [main documentation website](https://docs.meilisearch.com/).
 
 ## 🔧 Installation
 
@@ -65,19 +65,7 @@ Instead of using a package manager, you may also import the library directly int
 
 ### Run Meilisearch <!-- omit in toc -->
 
-To use `meilisearch-js`, you must have a running Meilisearch instance.
-
-You can install Meilisearch in your local machine using the `curl` command in [your terminal](https://itconnect.uw.edu/learn/workshops/online-tutorials/web-publishing/what-is-a-terminal/):
-
-```bash
-# Install Meilisearch
-curl -L https://install.meilisearch.com | sh
-
-# Launch Meilisearch
-./meilisearch --master-key=masterKey
-```
-
-You can also install Meilisearch using [Homebrew](https://brew.sh), [APT](https://ubuntu.com/server/docs/package-management), or [Docker](https://www.docker.com/). Consult the official documentation for more information on [downloading and running Meilisearch](https://docs.meilisearch.com/reference/features/installation.html#download-and-launch).
+To use one our SDKS, you must first have a running Meilisearch instance. Consult our documentation for [instructions on how to download and launch Meilisearch](https://docs.meilisearch.com/reference/features/installation.html#download-and-launch).
 
 ### Import <!-- omit in toc -->
 
@@ -205,7 +193,7 @@ Output:
 
 ### Using search parameters <!-- omit in toc -->
 
-`meilisearch-js` supports all [search parameters](https://docs.meilisearch.com/reference/features/search_parameters.html) described in our official documentation.
+`meilisearch-js` supports all [search parameters](https://docs.meilisearch.com/reference/features/search_parameters.html) described in our main documentation website.
 
 ```javascript
 await index.search(
@@ -353,7 +341,7 @@ This package only guarantees the compatibility with the [version v0.27.0 of Meil
 
 ## 💡 Learn More
 
-The following sections may interest you:
+The following sections in our main documentation website may interest you:
 
 - **Manipulate documents**: see the [API references](https://docs.meilisearch.com/reference/api/documents.html) or read more about [documents](https://docs.meilisearch.com/learn/core_concepts/documents.html).
 - **Search**: see the [API references](https://docs.meilisearch.com/reference/api/search.html) or follow our guide on [search parameters](https://docs.meilisearch.com/reference/features/search_parameters.html).
@@ -364,7 +352,7 @@ This repository also contains [more examples](./examples).
 
 ## ⚙️ Contributing
 
-We welcome all contributions, big and small! If you want to know more about `meilisearch-js`'s development workflow or want to contribute to the repo, please visit our [contributing guidelines](/CONTRIBUTING.md) for detailed instructions.
+We welcome all contributions, big and small! If you want to know more about this SDK's development workflow or want to contribute to the repo, please visit our [contributing guidelines](/CONTRIBUTING.md) for detailed instructions.
 
 ## 📜 API Resources
 
@@ -679,4 +667,4 @@ Using the index object:
 
 <hr>
 
-Meilisearch provides and maintains many SDKs and Integration tools like this one. We want to provide everyone with an **amazing search experience for any kind of project**. For a full overview of everything we create and maintain, take a look at the [integration-guides](https://github.com/meilisearch/integration-guides) repository.
+Meilisearch provides and maintains many SDKs and integration tools like this one. We want to provide everyone with an **amazing search experience for any kind of project**. For a full overview of everything we create and maintain, take a look at the [integration-guides](https://github.com/meilisearch/integration-guides) repository.
