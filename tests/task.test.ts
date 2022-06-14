@@ -12,6 +12,10 @@ const index = {
   uid: 'movies_test',
 }
 
+const index2 = {
+  uid: 'movies_test2',
+}
+
 jest.setTimeout(100 * 1000)
 
 afterAll(() => {
@@ -111,19 +115,23 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: Get all tasks with type filter`, async () => {
       const client = await getClient(permission)
-      const enqueuedTask = await client
-        .index(index.uid)
-        .addDocuments([{ id: 1 }])
-      await client.waitForTask(enqueuedTask.taskUid)
+      const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
+      await client.waitForTask(task1.taskUid)
+
+      const task2 = await client.index(index.uid).deleteDocument(1)
+      await client.waitForTask(task2.taskUid)
 
       const tasks = await client.getTasks({
-        type: TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE,
+        type: [
+          TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE,
+          TaskTypes.DOCUMENT_DELETION,
+        ],
       })
       const onlyDocumentAddition = new Set(
         tasks.results.map((task) => task.type)
       )
 
-      expect(onlyDocumentAddition.size).toEqual(1)
+      expect(onlyDocumentAddition.size).toEqual(2)
     })
 
     test(`${permission} key: Get all tasks with status filter`, async () => {
@@ -134,30 +142,30 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       await client.waitForTask(enqueuedTask.taskUid)
 
       const tasks = await client.getTasks({
-        status: TaskStatus.TASK_SUCCEEDED,
+        status: [TaskStatus.TASK_SUCCEEDED, TaskStatus.TASK_FAILED],
       })
       const onlySuccesFullTasks = new Set(
         tasks.results.map((task) => task.status)
       )
 
-      expect(onlySuccesFullTasks.size).toEqual(1)
+      expect(onlySuccesFullTasks.size).toEqual(2)
     })
 
     test(`${permission} key: Get all tasks with indexUid filter`, async () => {
       const client = await getClient(permission)
-      const enqueuedTask = await client
-        .index(index.uid)
-        .addDocuments([{ id: 1 }])
-      await client.waitForTask(enqueuedTask.taskUid)
+      const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
+      const task2 = await client.index(index2.uid).addDocuments([{ id: 1 }])
+      await client.waitForTask(task1.taskUid)
+      await client.waitForTask(task2.taskUid)
 
       const tasks = await client.getTasks({
-        indexUid: index.uid,
+        indexUid: [index.uid, index2.uid],
       })
       const onlyTaskWithSameUid = new Set(
         tasks.results.map((task) => task.indexUid)
       )
 
-      expect(onlyTaskWithSameUid.size).toEqual(1)
+      expect(onlyTaskWithSameUid.size).toEqual(2)
     })
 
     test(`${permission} key: Get all indexes tasks with index instance`, async () => {

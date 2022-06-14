@@ -231,7 +231,7 @@ class Index<T = Record<string, any>> {
    * @returns {Promise<Result<Task[]>>} - Promise containing all tasks
    */
   async getTasks(): Promise<Result<Task[]>> {
-    return await this.tasks.getTasks({ indexUid: this.uid })
+    return await this.tasks.getTasks({ indexUid: [this.uid] })
   }
 
   /**

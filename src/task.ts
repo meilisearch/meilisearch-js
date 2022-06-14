@@ -8,7 +8,7 @@ import {
   TaskParams,
 } from './types'
 import { HttpRequests } from './http-requests'
-import { sleep } from './utils'
+import { removeUndefinedFromObject, sleep } from './utils'
 
 class TaskClient {
   httpRequest: HttpRequests
@@ -37,7 +37,16 @@ class TaskClient {
    */
   async getTasks(params: TaskParams = {}): Promise<Result<Task[]>> {
     const url = `tasks`
-    return await this.httpRequest.get<Result<Task[]>>(url, params)
+
+    const queryParams = {
+      indexUid: params?.indexUid?.join(','),
+      type: params?.type?.join(','),
+      status: params?.status?.join(','),
+    }
+    return await this.httpRequest.get<Result<Task[]>>(
+      url,
+      removeUndefinedFromObject(queryParams)
+    )
   }
 
   /**
