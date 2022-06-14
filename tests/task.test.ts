@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedTask, Task, TaskStatus } from '../src/types'
+import { ErrorStatusCode, TaskTypes, TaskStatus } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -35,7 +35,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(enqueuedTask.taskUid).toBeDefined()
       expect(enqueuedTask.indexUid).toEqual(index.uid)
       expect(enqueuedTask.status).toBeDefined()
-      expect(enqueuedTask.type).toEqual('documentAdditionOrUpdate')
+      expect(enqueuedTask.type).toEqual(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE)
       expect(enqueuedTask.enqueuedAt).toBeDefined()
     })
 
@@ -44,11 +44,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const enqueuedTask = await client.index(index.uid).addDocuments(dataset)
       await client.waitForTask(enqueuedTask.taskUid)
 
-      const task: Task = await client.getTask(enqueuedTask.taskUid)
+      const task = await client.getTask(enqueuedTask.taskUid)
 
       expect(task.indexUid).toEqual(index.uid)
       expect(task.status).toEqual(TaskStatus.TASK_SUCCEEDED)
-      expect(task.type).toEqual('documentAdditionOrUpdate')
+      expect(task.type).toEqual(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE)
       expect(task.enqueuedAt).toBeDefined()
       expect(task.uid).toEqual(enqueuedTask.taskUid)
       expect(task).toHaveProperty('details')
@@ -65,13 +65,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const enqueuedTask = await client.index(index.uid).addDocuments(dataset)
       await client.waitForTask(enqueuedTask.taskUid)
 
-      const task: Task = await client
-        .index(index.uid)
-        .getTask(enqueuedTask.taskUid)
+      const task = await client.index(index.uid).getTask(enqueuedTask.taskUid)
 
       expect(task.indexUid).toEqual(index.uid)
       expect(task.status).toEqual(TaskStatus.TASK_SUCCEEDED)
-      expect(task.type).toEqual('documentAdditionOrUpdate')
+      expect(task.type).toEqual(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE)
       expect(task.enqueuedAt).toBeDefined()
       expect(task.uid).toEqual(enqueuedTask.taskUid)
       expect(task).toHaveProperty('details')
@@ -98,10 +96,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       )
       expect(tasks.results[0].indexUid).toEqual(index.uid)
       expect(tasks.results[0].status).toEqual(TaskStatus.TASK_SUCCEEDED)
-      expect(tasks.results[0].type).toEqual('documentAdditionOrUpdate')
+      expect(tasks.results[0].type).toEqual(
+        TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE
+      )
       expect(tasks.results[0].enqueuedAt).toBeDefined()
       expect(tasks.results[0].uid).toBeDefined()
-      expect(tasks.results[0].type).toEqual('documentAdditionOrUpdate')
+      expect(tasks.results[0].type).toEqual(
+        TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE
+      )
       expect(tasks.results[0].duration).toBeDefined()
       expect(tasks.results[0].finishedAt).toBeDefined()
       expect(tasks.results[0].startedAt).toBeDefined()
@@ -122,10 +124,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       )
       expect(tasks.results[0].indexUid).toEqual(index.uid)
       expect(tasks.results[0].status).toEqual(TaskStatus.TASK_SUCCEEDED)
-      expect(tasks.results[0].type).toEqual('documentAdditionOrUpdate')
+      expect(tasks.results[0].type).toEqual(
+        TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE
+      )
       expect(tasks.results[0].enqueuedAt).toBeDefined()
       expect(tasks.results[0].uid).toBeDefined()
-      expect(tasks.results[0].type).toEqual('documentAdditionOrUpdate')
+      expect(tasks.results[0].type).toEqual(
+        TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE
+      )
       expect(tasks.results[0].duration).toBeDefined()
       expect(tasks.results[0].finishedAt).toBeDefined()
       expect(tasks.results[0].startedAt).toBeDefined()
@@ -146,10 +152,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       )
       expect(tasks.results[0].indexUid).toEqual(index.uid)
       expect(tasks.results[0].status).toEqual(TaskStatus.TASK_SUCCEEDED)
-      expect(tasks.results[0].type).toEqual('documentAdditionOrUpdate')
+      expect(tasks.results[0].type).toEqual(
+        TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE
+      )
       expect(tasks.results[0].enqueuedAt).toBeDefined()
       expect(tasks.results[0].uid).toBeDefined()
-      expect(tasks.results[0].type).toEqual('documentAdditionOrUpdate')
+      expect(tasks.results[0].type).toEqual(
+        TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE
+      )
       expect(tasks.results[0].duration).toBeDefined()
       expect(tasks.results[0].finishedAt).toBeDefined()
       expect(tasks.results[0].startedAt).toBeDefined()

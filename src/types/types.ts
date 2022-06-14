@@ -197,10 +197,19 @@ export type TaskParams = {
 
 export type EnqueuedTask = {
   taskUid: number
-  indexUid: string
+  indexUid?: string
   status: TaskStatus
-  type: string
+  type: TaskTypes
   enqueuedAt: string
+}
+
+export const enum TaskTypes {
+  INDEX_CREATION = 'indexCreation',
+  INDEX_UPDATE = 'indexUpdate',
+  INDEX_DELETION = 'indexDeletion',
+  DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
+  DOCUMENTS_DELETION = 'documentsDeletion',
+  SETTINGS_UPDATE = 'settingsUpdate',
 }
 
 export type Task = Omit<EnqueuedTask, 'taskUid'> & {

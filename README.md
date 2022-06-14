@@ -425,7 +425,7 @@ If you want to know more about the development workflow or want to contribute, p
 
   `index.getTasks(): Promise<Result<Task[]>>`
 
-- [Get on task of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-task)
+- [Get one task of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-task)
 
   `index.getTask(uid: number): Promise<Task>`
 
