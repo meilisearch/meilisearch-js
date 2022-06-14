@@ -413,37 +413,35 @@ If you want to know more about the development workflow or want to contribute, p
 
 ### Tasks <!-- omit in toc -->
 
-- [Get task info using the client](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks):
+- [Get all tasks](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks)
 
-Task list:
-`client.getTasks(): Promise<Result<Task[]>>`
+  `client.getTasks(): Promise<Result<Task[]>>`
 
-One task:
-`client.getTask(uid: number): Promise<Task>`
+- [Get one task](https://docs.meilisearch.com/reference/api/tasks.html#get-task)
 
-- [Get task info using the index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index):
+  `client.getTask(uid: number): Promise<Task>`
 
-Task list:
-`index.getTasks(): Promise<Result<Task[]>>`
+- [Get all tasks of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index)
 
-One task:
-`index.getTask(uid: number): Promise<Task>`
+  `index.getTasks(): Promise<Result<Task[]>>`
+
+- [Get on task of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-task)
+
+  `index.getTask(uid: number): Promise<Task>`
 
 - Wait for one task:
 
-Using de client:
-`client.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>`
+  `client.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>`
 
-Using the index:
-`index.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>`
+  With an index instance:
+  `index.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>`
 
 - Wait for multiple tasks:
 
-Using the client:
-`client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
+  `client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
 
-Using the index:
-`index.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
+  With an index instance:
+  `index.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
 
 ### Indexes <!-- omit in toc -->
 
