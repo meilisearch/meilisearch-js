@@ -211,6 +211,15 @@ export type EnqueuedTask = {
   enqueuedAt: string
 }
 
+export const enum TaskTypes {
+  INDEX_CREATION = 'indexCreation',
+  INDEX_UPDATE = 'indexUpdate',
+  INDEX_DELETION = 'indexDeletion',
+  DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
+  DOCUMENTS_DELETION = 'documentsDeletion',
+  SETTINGS_UPDATE = 'settingsUpdate',
+}
+
 export type Task = Omit<EnqueuedTask, 'taskUid'> & {
   uid: number
   batchUid: number
