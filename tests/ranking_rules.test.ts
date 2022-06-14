@@ -33,8 +33,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
     beforeEach(async () => {
       await clearAllIndexes(config)
       const client = await getClient('master')
-      const { uid } = await client.index(index.uid).addDocuments(dataset)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: Get default ranking rules`, async () => {
@@ -49,10 +49,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const task: EnqueuedTask = await client
         .index(index.uid)
         .updateRankingRules(newRankingRules)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client.index(index.uid).getRankingRules()
+
       expect(response).toEqual(newRankingRules)
     })
 
@@ -61,10 +61,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const task: EnqueuedTask = await client
         .index(index.uid)
         .updateRankingRules(null)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client.index(index.uid).getRankingRules()
+
       expect(response).toEqual(defaultRankingRules)
     })
 
@@ -73,10 +73,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const task: EnqueuedTask = await client
         .index(index.uid)
         .resetRankingRules()
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client.index(index.uid).getRankingRules()
+
       expect(response).toEqual(defaultRankingRules)
     })
   }

@@ -68,13 +68,13 @@ describe.each([
   beforeAll(async () => {
     await clearAllIndexes(config)
     const client = await getClient('Master')
-    const { uid: task1 } = await client.createIndex(index.uid)
+    const { taskUid: task1 } = await client.createIndex(index.uid)
     await client.waitForTask(task1)
-    const { uid: task2 } = await client.createIndex(emptyIndex.uid)
+    const { taskUid: task2 } = await client.createIndex(emptyIndex.uid)
     await client.waitForTask(task2)
 
     const newFilterableAttributes = ['genre', 'title', 'id']
-    const { uid: task3 }: EnqueuedTask = await client
+    const { taskUid: task3 }: EnqueuedTask = await client
       .index(index.uid)
       .updateSettings({
         filterableAttributes: newFilterableAttributes,
@@ -82,7 +82,9 @@ describe.each([
       })
     await client.waitForTask(task3)
 
-    const { uid: task4 } = await client.index(index.uid).addDocuments(dataset)
+    const { taskUid: task4 } = await client
+      .index(index.uid)
+      .addDocuments(dataset)
     await client.waitForTask(task4)
   })
 
@@ -433,8 +435,8 @@ describe.each([
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission)
     const masterClient = await getClient('Master')
-    const { uid } = await masterClient.index(index.uid).delete()
-    await masterClient.waitForTask(uid)
+    const { taskUid } = await masterClient.index(index.uid).delete()
+    await masterClient.waitForTask(taskUid)
     await expect(
       client.index(index.uid).searchGet('prince')
     ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)

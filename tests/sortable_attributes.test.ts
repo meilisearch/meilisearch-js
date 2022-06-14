@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedTask } from '../src/types'
+import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -23,10 +23,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.createIndex(index.uid)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.createIndex(index.uid)
+      await client.waitForTask(taskUid)
 
-      const { uid: docTask } = await client
+      const { taskUid: docTask } = await client
         .index(index.uid)
         .addDocuments(dataset)
       await client.waitForTask(docTask)
@@ -34,52 +34,41 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: Get default sortable attributes`, async () => {
       const client = await getClient(permission)
-      const response: string[] = await client
-        .index(index.uid)
-        .getSortableAttributes()
+
+      const response = await client.index(index.uid).getSortableAttributes()
+
       expect(response).toEqual([])
     })
 
     test(`${permission} key: Update sortable attributes`, async () => {
       const client = await getClient(permission)
       const newSortableAttributes = ['title']
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
         .updateSortableAttributes(newSortableAttributes)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
-      const response: string[] = await client
-        .index(index.uid)
-        .getSortableAttributes()
+      const response = await client.index(index.uid).getSortableAttributes()
       expect(response).toEqual(newSortableAttributes)
     })
 
     test(`${permission} key: Update sortable attributes at null`, async () => {
       const client = await getClient(permission)
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateSortableAttributes(null)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      const task = await client.index(index.uid).updateSortableAttributes(null)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
-      const response: string[] = await client
-        .index(index.uid)
-        .getSortableAttributes()
+      const response = await client.index(index.uid).getSortableAttributes()
+
       expect(response).toEqual([])
     })
 
     test(`${permission} key: Reset sortable attributes`, async () => {
       const client = await getClient(permission)
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .resetSortableAttributes()
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      const task = await client.index(index.uid).resetSortableAttributes()
+      await client.index(index.uid).waitForTask(task.taskUid)
 
-      const response: string[] = await client
-        .index(index.uid)
-        .getSortableAttributes()
+      const response = await client.index(index.uid).getSortableAttributes()
+
       expect(response).toEqual([])
     })
   }
@@ -90,8 +79,8 @@ describe.each([{ permission: 'Public' }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.createIndex(index.uid)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.createIndex(index.uid)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: try to get sortable attributes and be denied`, async () => {
@@ -122,8 +111,8 @@ describe.each([{ permission: 'No' }])(
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.createIndex(index.uid)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.createIndex(index.uid)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: try to get sortable attributes and be denied`, async () => {

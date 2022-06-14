@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedTask, Settings } from '../src/types'
+import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -64,14 +64,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
     beforeEach(async () => {
       await clearAllIndexes(config)
       const client = await getClient('Master')
-      const { uid: AddDocPkTask } = await client
+      const { taskUid: AddDocPkTask } = await client
         .index(indexAndPK.uid)
         .addDocuments(dataset, {
           primaryKey: indexAndPK.primaryKey,
         })
       await client.waitForTask(AddDocPkTask)
 
-      const { uid: AddDocTask } = await client
+      const { taskUid: AddDocTask } = await client
         .index(index.uid)
         .addDocuments(dataset, {})
       await client.waitForTask(AddDocTask)
@@ -79,7 +79,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: Get default settings of an index`, async () => {
       const client = await getClient(permission)
-      const response: Settings = await client.index(index.uid).getSettings()
+
+      const response = await client.index(index.uid).getSettings()
+
       expect(response).toHaveProperty('rankingRules', defaultRankingRules)
       expect(response).toHaveProperty('distinctAttribute', null)
       expect(response).toHaveProperty('searchableAttributes', ['*'])
@@ -91,9 +93,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: Get default settings of empty index with primary key`, async () => {
       const client = await getClient(permission)
-      const response: Settings = await client
-        .index(indexAndPK.uid)
-        .getSettings()
+
+      const response = await client.index(indexAndPK.uid).getSettings()
+
       expect(response).toHaveProperty('rankingRules', defaultRankingRules)
       expect(response).toHaveProperty('distinctAttribute', null)
       expect(response).toHaveProperty('searchableAttributes', ['*'])
@@ -125,14 +127,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         },
       }
       // Add the settings
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateSettings(newSettings)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      const task = await client.index(index.uid).updateSettings(newSettings)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       // Fetch the settings
-      const response: Settings = await client.index(index.uid).getSettings()
+      const response = await client.index(index.uid).getSettings()
 
       // tests
       expect(response).toEqual(newSettings)
@@ -160,14 +159,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         },
       }
       // Add the settings
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateSettings(newSettings)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      const task = await client.index(index.uid).updateSettings(newSettings)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       // Fetch the settings
-      const response: Settings = await client.index(index.uid).getSettings()
+      const response = await client.index(index.uid).getSettings()
 
       // tests
       expect(response).toEqual(defaultSettings)
@@ -180,16 +176,13 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         rankingRules: ['title:asc', 'typo'],
         stopWords: ['the'],
       }
-
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(indexAndPK.uid)
         .updateSettings(newSettings)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(indexAndPK.uid).waitForTask(task.uid)
+      await client.index(indexAndPK.uid).waitForTask(task.taskUid)
 
-      const response: Settings = await client
-        .index(indexAndPK.uid)
-        .getSettings()
+      const response = await client.index(indexAndPK.uid).getSettings()
+
       expect(response).toHaveProperty('rankingRules', newSettings.rankingRules)
       expect(response).toHaveProperty(
         'distinctAttribute',
@@ -203,11 +196,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: Reset settings`, async () => {
       const client = await getClient(permission)
-      const task: EnqueuedTask = await client.index(index.uid).resetSettings()
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      const task = await client.index(index.uid).resetSettings()
+      await client.index(index.uid).waitForTask(task.taskUid)
 
-      const response: Settings = await client.index(index.uid).getSettings()
+      const response = await client.index(index.uid).getSettings()
+
       expect(response).toHaveProperty('rankingRules', defaultRankingRules)
       expect(response).toHaveProperty('distinctAttribute', null)
       expect(response).toHaveProperty('searchableAttributes', ['*'])
@@ -219,15 +212,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: Reset settings of empty index`, async () => {
       const client = await getClient(permission)
-      const task: EnqueuedTask = await client
-        .index(indexAndPK.uid)
-        .resetSettings()
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      const task = await client.index(indexAndPK.uid).resetSettings()
+      await client.index(index.uid).waitForTask(task.taskUid)
 
-      const response: Settings = await client
-        .index(indexAndPK.uid)
-        .getSettings()
+      const response = await client.index(indexAndPK.uid).getSettings()
+
       expect(response).toHaveProperty('rankingRules', defaultRankingRules)
       expect(response).toHaveProperty('distinctAttribute', null)
       expect(response).toHaveProperty('searchableAttributes', ['*'])
@@ -241,13 +230,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const newSettings = {
         searchableAttributes: ['title'],
       }
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateSettings(newSettings)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      const task = await client.index(index.uid).updateSettings(newSettings)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
-      const response: Settings = await client.index(index.uid).getSettings()
+      const response = await client.index(index.uid).getSettings()
+
       expect(response).toHaveProperty('rankingRules', defaultRankingRules)
       expect(response).toHaveProperty(
         'distinctAttribute',
@@ -268,24 +255,20 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         searchableAttributes: ['title'],
       }
       // Update settings
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(indexAndPK.uid)
         .updateSettings(newSettings)
       // Wait for setting addition to be done
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       // Fetch settings
-      const response: Settings = await client
-        .index(indexAndPK.uid)
-        .getSettings()
+      const response = await client.index(indexAndPK.uid).getSettings()
 
       // Compare searchableAttributes
       expect(response).toHaveProperty(
         'searchableAttributes',
         newSettings.searchableAttributes
       )
-
-      expect(task).toHaveProperty('uid', expect.any(Number))
       expect(response).toHaveProperty('rankingRules', defaultRankingRules)
       expect(response).toHaveProperty(
         'distinctAttribute',

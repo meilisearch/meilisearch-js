@@ -173,19 +173,22 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       })
       expect(client.config.headers).toStrictEqual({ Expect: '200-OK' })
       const health = await client.isHealthy()
+
       expect(health).toBe(true)
-      const status = await client.createIndex('test')
-      await client.waitForTask(status.uid)
+
+      const task = await client.createIndex('test')
+      await client.waitForTask(task.taskUid)
       const indexes = await client.getIndexes()
+
       expect(indexes.length).toBe(1)
     })
 
     describe('Test on indexes methods', () => {
       test(`${permission} key: create with no primary key`, async () => {
         const client = await getClient(permission)
-
         const task = await client.createIndex(indexNoPk.uid)
-        await client.waitForTask(task.uid)
+        await client.waitForTask(task.taskUid)
+
         const newIndex = await client.getIndex(indexNoPk.uid)
         expect(newIndex).toHaveProperty('uid', indexNoPk.uid)
         expect(newIndex).toHaveProperty('primaryKey', null)
@@ -203,11 +206,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
       test(`${permission} key: create with primary key`, async () => {
         const client = await getClient(permission)
-
-        const { uid } = await client.createIndex(indexPk.uid, {
+        const { taskUid } = await client.createIndex(indexPk.uid, {
           primaryKey: indexPk.primaryKey,
         })
-        await client.waitForTask(uid)
+        await client.waitForTask(taskUid)
+
         const newIndex = await client.getIndex(indexPk.uid)
 
         expect(newIndex).toHaveProperty('uid', indexPk.uid)
@@ -226,8 +229,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       test(`${permission} key: get all indexes when not empty`, async () => {
         const client = await getClient(permission)
 
-        const { uid } = await client.createIndex(indexPk.uid)
-        await client.waitForTask(uid)
+        const { taskUid } = await client.createIndex(indexPk.uid)
+        await client.waitForTask(taskUid)
 
         const response: IndexResponse[] = await client.getRawIndexes()
         const indexes = response.map((index) => index.uid)
@@ -238,15 +241,17 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       test(`${permission} key: Get index that exists`, async () => {
         const client = await getClient(permission)
 
-        const { uid } = await client.createIndex(indexPk.uid)
-        await client.waitForTask(uid)
+        const { taskUid } = await client.createIndex(indexPk.uid)
+        await client.waitForTask(taskUid)
 
         const response = await client.getIndex(indexPk.uid)
+
         expect(response).toHaveProperty('uid', indexPk.uid)
       })
 
       test(`${permission} key: Get index that does not exist`, async () => {
         const client = await getClient(permission)
+
         await expect(client.getIndex('does_not_exist')).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.INDEX_NOT_FOUND
@@ -255,10 +260,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
       test(`${permission} key: update primary key`, async () => {
         const client = await getClient(permission)
-        const { uid: createTask } = await client.createIndex(indexPk.uid)
+        const { taskUid: createTask } = await client.createIndex(indexPk.uid)
         await client.waitForTask(createTask)
-
-        const { uid: updateTask } = await client.updateIndex(indexPk.uid, {
+        const { taskUid: updateTask } = await client.updateIndex(indexPk.uid, {
           primaryKey: 'newPrimaryKey',
         })
         await client.waitForTask(updateTask)
@@ -271,12 +275,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
       test(`${permission} key: update primary key that already exists`, async () => {
         const client = await getClient(permission)
-        const { uid: createTask } = await client.createIndex(indexPk.uid, {
+        const { taskUid: createTask } = await client.createIndex(indexPk.uid, {
           primaryKey: indexPk.primaryKey,
         })
         await client.waitForTask(createTask)
-
-        const { uid: updateTask } = await client.updateIndex(indexPk.uid, {
+        const { taskUid: updateTask } = await client.updateIndex(indexPk.uid, {
           primaryKey: 'newPrimaryKey',
         })
         await client.waitForTask(updateTask)
@@ -289,31 +292,34 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
       test(`${permission} key: delete index`, async () => {
         const client = await getClient(permission)
-        const { uid: createTask } = await client.createIndex(indexNoPk.uid)
+        const { taskUid: createTask } = await client.createIndex(indexNoPk.uid)
         await client.waitForTask(createTask)
 
-        const { uid: deleteTask } = await client.deleteIndex(indexNoPk.uid)
+        const { taskUid: deleteTask } = await client.deleteIndex(indexNoPk.uid)
         const task = await client.waitForTask(deleteTask)
-        expect(task.status).toBe(TaskStatus.TASK_SUCCEEDED)
 
+        expect(task.status).toBe(TaskStatus.TASK_SUCCEEDED)
         await expect(client.getIndexes()).resolves.toHaveLength(0)
       })
 
       test(`${permission} key: create index with already existing uid should fail`, async () => {
         const client = await getClient(permission)
-        const { uid: firstCreate } = await client.createIndex(indexPk.uid)
+        const { taskUid: firstCreate } = await client.createIndex(indexPk.uid)
         await client.waitForTask(firstCreate)
 
-        const { uid: secondCreate } = await client.createIndex(indexPk.uid)
+        const { taskUid: secondCreate } = await client.createIndex(indexPk.uid)
         const task = await client.waitForTask(secondCreate)
+
         expect(task.status).toBe('failed')
       })
 
       test(`${permission} key: delete index with uid that does not exist should fail`, async () => {
         const client = await getClient(permission)
         const index = client.index(indexNoPk.uid)
-        const { uid } = await index.delete()
-        const task = await client.waitForTask(uid)
+        const { taskUid } = await index.delete()
+
+        const task = await client.waitForTask(taskUid)
+
         expect(task.status).toEqual('failed')
       })
 

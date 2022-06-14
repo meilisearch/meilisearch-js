@@ -28,6 +28,8 @@ const { MeiliSearch } = require('../../../dist/bundles/meilisearch.umd.js')
 
   console.log(response) // => { "updateId": 0 }
 
+  await client.waitForTask(response.taskUid)
+
   const search = await index.search('philoudelphia')
   console.log({ search, hit: search.hits })
   const filteredSearch = await index.search('Wonder', {

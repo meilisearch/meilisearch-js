@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedTask } from '../src/types'
+import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -23,8 +23,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.index(index.uid).addDocuments(dataset)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: Get default attributes for filtering`, async () => {
@@ -32,17 +32,17 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const response: string[] = await client
         .index(index.uid)
         .getFilterableAttributes()
+
       expect(response.sort()).toEqual([])
     })
 
     test(`${permission} key: Update attributes for filtering`, async () => {
       const client = await getClient(permission)
       const newFilterableAttributes = ['genre']
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
         .updateFilterableAttributes(newFilterableAttributes)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client
         .index(index.uid)
@@ -52,29 +52,29 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: Update attributes for filtering at null`, async () => {
       const client = await getClient(permission)
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
         .updateFilterableAttributes(null)
       expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client
         .index(index.uid)
         .getFilterableAttributes()
+
       expect(response.sort()).toEqual([])
     })
 
     test(`${permission} key: Reset attributes for filtering`, async () => {
       const client = await getClient(permission)
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .resetFilterableAttributes()
+      const task = await client.index(index.uid).resetFilterableAttributes()
       expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client
         .index(index.uid)
         .getFilterableAttributes()
+
       expect(response.sort()).toEqual([])
     })
   }
@@ -85,8 +85,8 @@ describe.each([{ permission: 'Public' }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.createIndex(index.uid)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.createIndex(index.uid)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
@@ -117,8 +117,8 @@ describe.each([{ permission: 'No' }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.createIndex(index.uid)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.createIndex(index.uid)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: try to get attributes for filtering and be denied`, async () => {

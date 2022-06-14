@@ -70,7 +70,7 @@ describe.each([
     await client.createIndex(emptyIndex.uid)
 
     const newFilterableAttributes = ['genre', 'title', 'id']
-    const { uid: task1 }: EnqueuedTask = await client
+    const { taskUid: task1 }: EnqueuedTask = await client
       .index(index.uid)
       .updateSettings({
         filterableAttributes: newFilterableAttributes,
@@ -78,7 +78,9 @@ describe.each([
       })
     await client.waitForTask(task1)
 
-    const { uid: task2 } = await client.index(index.uid).addDocuments(dataset)
+    const { taskUid: task2 } = await client
+      .index(index.uid)
+      .addDocuments(dataset)
     await client.waitForTask(task2)
   })
 
@@ -497,8 +499,8 @@ describe.each([
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission)
     const masterClient = await getClient('Master')
-    const { uid } = await masterClient.index(index.uid).delete()
-    await masterClient.waitForTask(uid)
+    const { taskUid } = await masterClient.index(index.uid).delete()
+    await masterClient.waitForTask(taskUid)
 
     await expect(
       client.index(index.uid).search('prince', {})
@@ -511,8 +513,8 @@ describe.each([{ permission: 'No' }])(
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.createIndex(index.uid)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.createIndex(index.uid)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: Try Basic search and be denied`, async () => {
@@ -535,7 +537,7 @@ describe.each([{ permission: 'Master' }])(
       const client = await getClient('Master')
       await client.createIndex(index.uid)
 
-      const { uid: documentAdditionTask } = await client
+      const { taskUid: documentAdditionTask } = await client
         .index(index.uid)
         .addDocuments(datasetWithNests)
       await client.waitForTask(documentAdditionTask)
@@ -557,7 +559,7 @@ describe.each([{ permission: 'Master' }])(
 
     test(`${permission} key: search on nested content with searchable on specific nested field`, async () => {
       const client = await getClient(permission)
-      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ['title', 'info.comment'],
@@ -578,7 +580,7 @@ describe.each([{ permission: 'Master' }])(
 
     test(`${permission} key: search on nested content with sort`, async () => {
       const client = await getClient(permission)
-      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ['title', 'info.comment'],
@@ -610,8 +612,8 @@ describe.each([
   beforeAll(async () => {
     const client = await getClient('Master')
     await clearAllIndexes(config)
-    const { uid } = await client.createIndex(index.uid)
-    await client.waitForTask(uid)
+    const { taskUid } = await client.createIndex(index.uid)
+    await client.waitForTask(taskUid)
   })
 
   test(`${permission} key: search on index and abort`, async () => {
