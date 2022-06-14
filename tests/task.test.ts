@@ -30,9 +30,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
     test(`${permission} key: Get one enqueued task`, async () => {
       const client = await getClient(permission)
 
-      const enqueuedTask: EnqueuedTask = await client
-        .index(index.uid)
-        .addDocuments(dataset)
+      const enqueuedTask = await client.index(index.uid).addDocuments(dataset)
 
       expect(enqueuedTask.taskUid).toBeDefined()
       expect(enqueuedTask.indexUid).toEqual(index.uid)
@@ -43,12 +41,33 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: Get one task`, async () => {
       const client = await getClient(permission)
-      const enqueuedTask: EnqueuedTask = await client
-        .index(index.uid)
-        .addDocuments(dataset)
+      const enqueuedTask = await client.index(index.uid).addDocuments(dataset)
       await client.waitForTask(enqueuedTask.taskUid)
 
       const task: Task = await client.getTask(enqueuedTask.taskUid)
+
+      expect(task.indexUid).toEqual(index.uid)
+      expect(task.status).toEqual(TaskStatus.TASK_SUCCEEDED)
+      expect(task.type).toEqual('documentAdditionOrUpdate')
+      expect(task.enqueuedAt).toBeDefined()
+      expect(task.uid).toEqual(enqueuedTask.taskUid)
+      expect(task).toHaveProperty('details')
+      expect(task.details.indexedDocuments).toEqual(7)
+      expect(task.details.receivedDocuments).toEqual(7)
+      expect(task.duration).toBeDefined()
+      expect(task.enqueuedAt).toBeDefined()
+      expect(task.finishedAt).toBeDefined()
+      expect(task.startedAt).toBeDefined()
+    })
+
+    test(`${permission} key: Get one task with index instance`, async () => {
+      const client = await getClient(permission)
+      const enqueuedTask = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(enqueuedTask.taskUid)
+
+      const task: Task = await client
+        .index(index.uid)
+        .getTask(enqueuedTask.taskUid)
 
       expect(task.indexUid).toEqual(index.uid)
       expect(task.status).toEqual(TaskStatus.TASK_SUCCEEDED)
@@ -77,7 +96,6 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         'status',
         TaskStatus.TASK_SUCCEEDED
       )
-      // should be replaced with taskUid in v0.28.0rc1
       expect(tasks.results[0].indexUid).toEqual(index.uid)
       expect(tasks.results[0].status).toEqual(TaskStatus.TASK_SUCCEEDED)
       expect(tasks.results[0].type).toEqual('documentAdditionOrUpdate')
@@ -89,7 +107,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(tasks.results[0].startedAt).toBeDefined()
     })
 
-    test(`${permission} key: Get all indexes tasks`, async () => {
+    test(`${permission} key: Get all indexes tasks with query parameters`, async () => {
       const client = await getClient(permission)
       const enqueuedTask = await client
         .index(index.uid)
@@ -102,7 +120,30 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         'status',
         TaskStatus.TASK_SUCCEEDED
       )
-      // should be replaced with taskUid in v0.28.0rc1
+      expect(tasks.results[0].indexUid).toEqual(index.uid)
+      expect(tasks.results[0].status).toEqual(TaskStatus.TASK_SUCCEEDED)
+      expect(tasks.results[0].type).toEqual('documentAdditionOrUpdate')
+      expect(tasks.results[0].enqueuedAt).toBeDefined()
+      expect(tasks.results[0].uid).toBeDefined()
+      expect(tasks.results[0].type).toEqual('documentAdditionOrUpdate')
+      expect(tasks.results[0].duration).toBeDefined()
+      expect(tasks.results[0].finishedAt).toBeDefined()
+      expect(tasks.results[0].startedAt).toBeDefined()
+    })
+
+    test(`${permission} key: Get all indexes tasks with index instance`, async () => {
+      const client = await getClient(permission)
+      const enqueuedTask = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+      await client.waitForTask(enqueuedTask.taskUid)
+
+      const tasks = await client.index(index.uid).getTasks()
+
+      expect(tasks.results[0]).toHaveProperty(
+        'status',
+        TaskStatus.TASK_SUCCEEDED
+      )
       expect(tasks.results[0].indexUid).toEqual(index.uid)
       expect(tasks.results[0].status).toEqual(TaskStatus.TASK_SUCCEEDED)
       expect(tasks.results[0].type).toEqual('documentAdditionOrUpdate')
