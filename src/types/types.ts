@@ -191,8 +191,19 @@ export const enum TaskStatus {
   TASK_ENQUEUED = 'enqueued',
 }
 
+export const enum TaskTypes {
+  INDEX_CREATION = 'indexCreation',
+  INDEX_UPDATE = 'indexUpdate',
+  INDEX_DELETION = 'indexDeletion',
+  DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
+  DOCUMENTS_DELETION = 'documentsDeletion',
+  SETTINGS_UPDATE = 'settingsUpdate',
+}
+
 export type TaskParams = {
   indexUid?: string
+  type?: TaskTypes
+  status?: TaskStatus
 }
 
 export type EnqueuedTask = {
@@ -201,15 +212,6 @@ export type EnqueuedTask = {
   status: TaskStatus
   type: TaskTypes
   enqueuedAt: string
-}
-
-export const enum TaskTypes {
-  INDEX_CREATION = 'indexCreation',
-  INDEX_UPDATE = 'indexUpdate',
-  INDEX_DELETION = 'indexDeletion',
-  DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
-  DOCUMENTS_DELETION = 'documentsDeletion',
-  SETTINGS_UPDATE = 'settingsUpdate',
 }
 
 export type Task = Omit<EnqueuedTask, 'taskUid'> & {
