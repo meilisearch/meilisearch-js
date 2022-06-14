@@ -24,6 +24,8 @@ import {
   Result,
   TokenSearchRules,
   TokenOptions,
+  TaskParams,
+  WaitOptions,
 } from '../types'
 import { HttpRequests } from '../http-requests'
 import { TaskClient } from '../task'
@@ -87,8 +89,8 @@ class Client {
    * @returns {Promise<Index[]>} Promise returning array of raw index information
    */
   async getIndexes(): Promise<Index[]> {
-    const response = await this.getRawIndexes()
-    const indexes: Index[] = response.map(
+    const { results } = await this.getRawIndexes()
+    const indexes: Index[] = results.map(
       (index) => new Index(this.config, index.uid, index.primaryKey)
     )
     return indexes
@@ -98,11 +100,11 @@ class Client {
    * Get all the indexes in their raw value (no Index instances).
    * @memberof MeiliSearch
    * @method getRawIndexes
-   * @returns {Promise<IndexResponse[]>} Promise returning array of raw index information
+   * @returns {Promise<Result<IndexResponse[]>>} Promise returning array of raw index information
    */
-  async getRawIndexes(): Promise<IndexResponse[]> {
+  async getRawIndexes(): Promise<Result<IndexResponse[]>> {
     const url = `indexes`
-    return await this.httpRequest.get<IndexResponse[]>(url)
+    return await this.httpRequest.get<Result<IndexResponse[]>>(url)
   }
 
   /**
@@ -177,61 +179,57 @@ class Client {
    * @method getTasks
    * @returns {Promise<Result<Task[]>>} - Promise returning all tasks
    */
-  async getTasks(): Promise<Result<Task[]>> {
-    return await this.tasks.getClientTasks()
+  async getTasks(params?: TaskParams): Promise<Result<Task[]>> {
+    return await this.tasks.getTasks(params)
   }
 
   /**
    * Get one task on the client scope
    * @memberof MeiliSearch
    * @method getTask
-   * @param {number} taskId - Task identifier
+   * @param {number} taskUid - Task identifier
    * @returns {Promise<Task>} - Promise returning a task
    */
-  async getTask(taskId: number): Promise<Task> {
-    return await this.tasks.getClientTask(taskId)
+  async getTask(taskUid: number): Promise<Task> {
+    return await this.tasks.getTask(taskUid)
   }
 
   /**
-   * Wait for a batch of tasks to be processed.
+   * Wait for multiple tasks to be finished.
+   *
    * @memberof MeiliSearch
    * @method waitForTasks
-   * @param {number[]} taskIds - Tasks identifier
+   * @param {number[]} taskUids - Tasks identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
    * @returns {Promise<Result<Task[]>>} - Promise returning an array of tasks
    */
   async waitForTasks(
-    taskIds: number[],
-    {
-      timeOutMs = 5000,
-      intervalMs = 50,
-    }: { timeOutMs?: number; intervalMs?: number } = {}
+    taskUids: number[],
+    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
   ): Promise<Result<Task[]>> {
-    return await this.tasks.waitForClientTasks(taskIds, {
+    return await this.tasks.waitForTasks(taskUids, {
       timeOutMs,
       intervalMs,
     })
   }
 
   /**
-   * Wait for a task to be processed.
+   * Wait for a task to be finished.
    *
    * @memberof MeiliSearch
    * @method waitForTask
-   * @param {number} taskId - Task identifier
+   *
+   * @param {number} taskUid - Task identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
    * @returns {Promise<Task>} - Promise returning an array of tasks
    */
   async waitForTask(
-    taskId: number,
-    {
-      timeOutMs = 5000,
-      intervalMs = 50,
-    }: { timeOutMs?: number; intervalMs?: number } = {}
+    taskUid: number,
+    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
   ): Promise<Task> {
-    return await this.tasks.waitForClientTask(taskId, {
+    return await this.tasks.waitForTask(taskUid, {
       timeOutMs,
       intervalMs,
     })

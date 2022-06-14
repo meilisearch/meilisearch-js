@@ -191,18 +191,21 @@ export const enum TaskStatus {
   TASK_ENQUEUED = 'enqueued',
 }
 
+export type TaskParams = {
+  indexUid?: string
+}
+
 export type EnqueuedTask = {
-  uid: number
+  taskUid: number
   indexUid: string
   status: TaskStatus
   type: string
   enqueuedAt: string
 }
 
-export type Task = {
-  status: TaskStatus
+export type Task = Omit<EnqueuedTask, 'taskUid'> & {
   uid: number
-  type: string
+  batchUid: number
   details: {
     // Number of documents sent
     receivedDocuments?: number
@@ -240,10 +243,10 @@ export type Task = {
     // Distinct attribute on settings actions
     distinctAttribute: DistinctAttribute
   }
-  duration: string
-  enqueuedAt: string
-  processedAt: string
   error?: MeiliSearchErrorInfo
+  duration: string
+  startedAt: string
+  finishedAt: string
 }
 
 export type EnqueuedDump = {

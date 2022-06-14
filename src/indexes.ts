@@ -35,6 +35,7 @@ import {
   DisplayedAttributes,
   TypoTolerance,
   Result,
+  WaitOptions,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -222,7 +223,7 @@ class Index<T = Record<string, any>> {
   ///
 
   /**
-   * Get the list of all the index tasks.
+   * Get the list of all the tasks of the index.
    *
    * @memberof Indexes
    * @method getTasks
@@ -230,7 +231,7 @@ class Index<T = Record<string, any>> {
    * @returns {Promise<Result<Task[]>>} - Promise containing all tasks
    */
   async getTasks(): Promise<Result<Task[]>> {
-    return await this.tasks.getIndexTasks(this.uid)
+    return await this.tasks.getTasks({ indexUid: this.uid })
   }
 
   /**
@@ -238,55 +239,49 @@ class Index<T = Record<string, any>> {
    *
    * @memberof Indexes
    * @method getTask
-   * @param {number} taskId - Task identifier
+   * @param {number} taskUid - Task identifier
    *
    * @returns {Promise<Task>} - Promise containing a task
    */
-  async getTask(taskId: number): Promise<Task> {
-    return await this.tasks.getIndexTask(this.uid, taskId)
+  async getTask(taskUid: number): Promise<Task> {
+    return await this.tasks.getTask(taskUid)
   }
 
   /**
-   * Wait for a batch of an index tasks to be processed.
+   * Wait for multiple tasks to be processed.
    *
    * @memberof Indexes
    * @method waitForTasks
-   * @param {number[]} taskIds - Tasks identifier
+   * @param {number[]} taskUids - Tasks identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
    * @returns {Promise<Result<Task[]>>} - Promise containing an array of tasks
    */
   async waitForTasks(
-    taskIds: number[],
-    {
-      timeOutMs = 5000,
-      intervalMs = 50,
-    }: { timeOutMs?: number; intervalMs?: number } = {}
+    taskUids: number[],
+    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
   ): Promise<Result<Task[]>> {
-    return await this.tasks.waitForClientTasks(taskIds, {
+    return await this.tasks.waitForTasks(taskUids, {
       timeOutMs,
       intervalMs,
     })
   }
 
   /**
-   * Wait for an index task to be processed.
+   * Wait for a task to be processed.
    *
    * @memberof Indexes
    * @method waitForTask
-   * @param {number} taskId - Task identifier
+   * @param {number} taskuid - Task identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
    * @returns {Promise<Task>} - Promise containing an array of tasks
    */
   async waitForTask(
-    taskId: number,
-    {
-      timeOutMs = 5000,
-      intervalMs = 50,
-    }: { timeOutMs?: number; intervalMs?: number } = {}
+    taskuid: number,
+    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
   ): Promise<Task> {
-    return await this.tasks.waitForClientTask(taskId, {
+    return await this.tasks.waitForTask(taskuid, {
       timeOutMs,
       intervalMs,
     })
