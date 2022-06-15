@@ -10,8 +10,8 @@ const indexUid = 'movies'
 
 const addDataset = async () => {
   await client.deleteIndex(indexUid)
-  const task = await client.createIndex(indexUid)
-  await client.index(indexUid).waitForTask(task.taskUid)
+  const { taskUid } = await client.createIndex(indexUid)
+  await client.index(indexUid).waitForTask(taskUid)
 
   const documents = await client.index(indexUid).getDocuments()
 
@@ -28,8 +28,8 @@ const addDataset = async () => {
     { id: 6, title: 'Philadelphia', genres: ['Drama'] },
   ]
   if (documents.length === 0) {
-    const task = await client.index(indexUid).addDocuments(dataset)
-    await client.index(indexUid).waitForTask(task.taskUid)
+    const { taskUid } = await client.index(indexUid).addDocuments(dataset)
+    await client.index(indexUid).waitForTask(taskUid)
   }
 }
 
