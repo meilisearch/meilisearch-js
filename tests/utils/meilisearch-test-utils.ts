@@ -87,10 +87,7 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
     const { taskUid } = await client.index(indexUid).delete()
     taskIds.push(taskUid)
   }
-
   await client.waitForTasks(taskIds)
-
-  await expect(client.getIndexes()).resolves.toHaveLength(0)
 }
 
 async function waitForDumpProcessing(

@@ -29,7 +29,6 @@ export type IndexOptions = {
 
 export type IndexResponse = {
   uid: string
-  name?: string
   primaryKey?: string
   createdAt: Date
   updatedAt: Date
