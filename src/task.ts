@@ -1,7 +1,14 @@
 import { MeiliSearchTimeOutError } from './errors'
-import { Config, Task, WaitOptions, TaskStatus, Result } from './types'
+import {
+  Config,
+  Task,
+  WaitOptions,
+  TaskStatus,
+  Result,
+  TaskParams,
+} from './types'
 import { HttpRequests } from './http-requests'
-import { sleep } from './utils'
+import { removeUndefinedFromObject, sleep } from './utils'
 
 class TaskClient {
   httpRequest: HttpRequests
@@ -10,24 +17,36 @@ class TaskClient {
     this.httpRequest = new HttpRequests(config)
   }
 
-  async getClientTask(uid: string | number): Promise<Task> {
+  /**
+   * Get one task
+   *
+   * @param  {number} uid - unique identifier of the task
+   *
+   * @returns { Promise<Result<Task[]>> }
+   */
+  async getTask(uid: number): Promise<Task> {
     const url = `tasks/${uid}`
     return await this.httpRequest.get<Task>(url)
   }
-
-  async getClientTasks(): Promise<Result<Task[]>> {
+  /**
+   * Get tasks
+   *
+   * @param  {TaskParams} params - query parameters
+   *
+   * @returns { Promise<Result<Task[]>> }
+   */
+  async getTasks(params: TaskParams = {}): Promise<Result<Task[]>> {
     const url = `tasks`
-    return await this.httpRequest.get<Result<Task[]>>(url)
-  }
 
-  async getIndexTask(indexUid: string | number, taskId: number): Promise<Task> {
-    const url = `indexes/${indexUid}/tasks/${taskId}`
-    return await this.httpRequest.get<Task>(url)
-  }
-
-  async getIndexTasks(indexUid: string | number): Promise<Result<Task[]>> {
-    const url = `indexes/${indexUid}/tasks`
-    return await this.httpRequest.get<Result<Task[]>>(url)
+    const queryParams = {
+      indexUid: params?.indexUid?.join(','),
+      type: params?.type?.join(','),
+      status: params?.status?.join(','),
+    }
+    return await this.httpRequest.get<Result<Task[]>>(
+      url,
+      removeUndefinedFromObject(queryParams)
+    )
   }
 
   /**
@@ -35,15 +54,16 @@ class TaskClient {
    *
    * @param {number} uid Task identifier
    * @param {WaitOptions} options Additional configuration options
+   *
    * @returns {Promise<Task>} Promise returning a task after it has been processed
    */
-  async waitForClientTask(
-    taskId: number,
+  async waitForTask(
+    taskUid: number,
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
   ): Promise<Task> {
     const startingTime = Date.now()
     while (Date.now() - startingTime < timeOutMs) {
-      const response = await this.getClientTask(taskId)
+      const response = await this.getTask(taskUid)
       if (
         ![TaskStatus.TASK_ENQUEUED, TaskStatus.TASK_PROCESSING].includes(
           response.status
@@ -53,58 +73,31 @@ class TaskClient {
       await sleep(intervalMs)
     }
     throw new MeiliSearchTimeOutError(
-      `timeout of ${timeOutMs}ms has exceeded on process ${taskId} when waiting a task to be resolved.`
+      `timeout of ${timeOutMs}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`
     )
   }
 
   /**
    * Waits for multiple tasks to be processed
    *
-   * @param {number} taskIds Tasks identifier list
+   * @param {number} taskUids Tasks identifier list
    * @param {WaitOptions} options Wait options
+   *
    * @returns {Promise<Result<Task[]>>} Promise returning a list of tasks after they have been processed
    */
-  async waitForClientTasks(
-    taskIds: number[],
+  async waitForTasks(
+    taskUids: number[],
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
   ): Promise<Result<Task[]>> {
     const tasks: Task[] = []
-    for (const taskId of taskIds) {
-      const task = await this.waitForClientTask(taskId, {
+    for (const taskUid of taskUids) {
+      const task = await this.waitForTask(taskUid, {
         timeOutMs,
         intervalMs,
       })
       tasks.push(task)
     }
     return { results: tasks }
-  }
-
-  /**
-   * Waits for a task to be processed
-   *
-   * @param {number} taskId Task identifier
-   * @param {WaitOptions} options Wait options
-   * @returns {Promise<Task>} Promise returning a task after it has been processed
-   */
-  async waitForIndexTask(
-    indexUid: number | string,
-    taskId: number,
-    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
-  ): Promise<Task> {
-    const startingTime = Date.now()
-    while (Date.now() - startingTime < timeOutMs) {
-      const response = await this.getIndexTask(indexUid, taskId)
-      if (
-        ![TaskStatus.TASK_ENQUEUED, TaskStatus.TASK_PROCESSING].includes(
-          response.status
-        )
-      )
-        return response
-      await sleep(intervalMs)
-    }
-    throw new MeiliSearchTimeOutError(
-      `timeout of ${timeOutMs}ms has exceeded on process ${taskId} when waiting for pending update to resolve.`
-    )
   }
 }
 

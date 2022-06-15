@@ -191,18 +191,32 @@ export const enum TaskStatus {
   TASK_ENQUEUED = 'enqueued',
 }
 
+export const enum TaskTypes {
+  INDEX_CREATION = 'indexCreation',
+  INDEX_UPDATE = 'indexUpdate',
+  INDEX_DELETION = 'indexDeletion',
+  DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
+  DOCUMENT_DELETION = 'documentDeletion',
+  SETTINGS_UPDATE = 'settingsUpdate',
+}
+
+export type TaskParams = {
+  indexUid?: string[]
+  type?: TaskTypes[]
+  status?: TaskStatus[]
+}
+
 export type EnqueuedTask = {
-  uid: number
-  indexUid: string
+  taskUid: number
+  indexUid?: string
   status: TaskStatus
-  type: string
+  type: TaskTypes
   enqueuedAt: string
 }
 
-export type Task = {
-  status: TaskStatus
+export type Task = Omit<EnqueuedTask, 'taskUid'> & {
   uid: number
-  type: string
+  batchUid: number
   details: {
     // Number of documents sent
     receivedDocuments?: number
@@ -240,10 +254,10 @@ export type Task = {
     // Distinct attribute on settings actions
     distinctAttribute: DistinctAttribute
   }
-  duration: string
-  enqueuedAt: string
-  processedAt: string
   error?: MeiliSearchErrorInfo
+  duration: string
+  startedAt: string
+  finishedAt: string
 }
 
 export type EnqueuedDump = {
