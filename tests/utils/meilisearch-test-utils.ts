@@ -83,7 +83,6 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
     const { taskUid } = await client.index(indexUid).delete()
     taskIds.push(taskUid)
   }
-
   await client.waitForTasks(taskIds)
 }
 
