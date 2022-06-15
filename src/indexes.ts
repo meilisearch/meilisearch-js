@@ -355,7 +355,7 @@ class Index<T = Record<string, any>> {
     options?: AddDocumentParams
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
-    return await this.httpRequest.post(url, documents, options)
+    return await this.httpRequest.put(url, documents, options)
   }
 
   /**
@@ -446,7 +446,7 @@ class Index<T = Record<string, any>> {
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents/delete-batch`
 
-    return await this.httpRequest.post(url, documentsIds)
+    return await this.httpRequest.put(url, documentsIds)
   }
 
   /**
@@ -485,7 +485,7 @@ class Index<T = Record<string, any>> {
    */
   async updateSettings(settings: Settings): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings`
-    return await this.httpRequest.post(url, settings)
+    return await this.httpRequest.patch(url, settings)
   }
 
   /**
@@ -523,7 +523,7 @@ class Index<T = Record<string, any>> {
    */
   async updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/synonyms`
-    return await this.httpRequest.post(url, synonyms)
+    return await this.httpRequest.put(url, synonyms)
   }
 
   /**
@@ -561,7 +561,7 @@ class Index<T = Record<string, any>> {
    */
   async updateStopWords(stopWords: StopWords): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/stop-words`
-    return await this.httpRequest.post(url, stopWords)
+    return await this.httpRequest.put(url, stopWords)
   }
 
   /**
@@ -599,7 +599,7 @@ class Index<T = Record<string, any>> {
    */
   async updateRankingRules(rankingRules: RankingRules): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/ranking-rules`
-    return await this.httpRequest.post(url, rankingRules)
+    return await this.httpRequest.put(url, rankingRules)
   }
 
   /**
@@ -639,7 +639,7 @@ class Index<T = Record<string, any>> {
     distinctAttribute: DistinctAttribute
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`
-    return await this.httpRequest.post(url, distinctAttribute)
+    return await this.httpRequest.put(url, distinctAttribute)
   }
 
   /**
@@ -679,7 +679,7 @@ class Index<T = Record<string, any>> {
     filterableAttributes: FilterableAttributes
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`
-    return await this.httpRequest.post(url, filterableAttributes)
+    return await this.httpRequest.put(url, filterableAttributes)
   }
 
   /**
@@ -719,7 +719,7 @@ class Index<T = Record<string, any>> {
     sortableAttributes: SortableAttributes
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`
-    return await this.httpRequest.post(url, sortableAttributes)
+    return await this.httpRequest.put(url, sortableAttributes)
   }
 
   /**
@@ -759,7 +759,7 @@ class Index<T = Record<string, any>> {
     searchableAttributes: SearchableAttributes
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`
-    return await this.httpRequest.post(url, searchableAttributes)
+    return await this.httpRequest.put(url, searchableAttributes)
   }
 
   /**
@@ -799,7 +799,7 @@ class Index<T = Record<string, any>> {
     displayedAttributes: DisplayedAttributes
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
-    return await this.httpRequest.post(url, displayedAttributes)
+    return await this.httpRequest.put(url, displayedAttributes)
   }
 
   /**
@@ -839,7 +839,7 @@ class Index<T = Record<string, any>> {
     typoTolerance: TypoTolerance
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/typo-tolerance`
-    return await this.httpRequest.post(url, typoTolerance)
+    return await this.httpRequest.patch(url, typoTolerance)
   }
 
   /**
