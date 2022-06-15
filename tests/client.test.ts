@@ -171,6 +171,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
       const task = await client.createIndex('test')
       await client.waitForTask(task.taskUid)
+
       const { results } = await client.getIndexes()
 
       expect(results.length).toBe(1)

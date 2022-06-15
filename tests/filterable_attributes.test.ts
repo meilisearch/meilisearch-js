@@ -55,7 +55,6 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const task = await client
         .index(index.uid)
         .updateFilterableAttributes(null)
-      expect(task).toHaveProperty('uid', expect.any(Number))
       await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client
@@ -68,7 +67,6 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
     test(`${permission} key: Reset attributes for filtering`, async () => {
       const client = await getClient(permission)
       const task = await client.index(index.uid).resetFilterableAttributes()
-      expect(task).toHaveProperty('uid', expect.any(Number))
       await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client
