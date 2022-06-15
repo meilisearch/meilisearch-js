@@ -121,7 +121,7 @@ class Index<T = Record<string, any>> {
       ...options,
       filter: parseFilter(options?.filter),
       sort: options?.sort?.join(','),
-      facetsDistribution: options?.facetsDistribution?.join(','),
+      facets: options?.facets?.join(','),
       attributesToRetrieve: options?.attributesToRetrieve?.join(','),
       attributesToCrop: options?.attributesToCrop?.join(','),
       attributesToHighlight: options?.attributesToHighlight?.join(','),

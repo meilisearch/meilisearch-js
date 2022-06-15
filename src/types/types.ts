@@ -71,9 +71,9 @@ export type SearchParams = Query &
   Crop & {
     filter?: Filter
     sort?: string[]
-    facetsDistribution?: string[]
+    facets?: string[]
     attributesToRetrieve?: string[]
-    matches?: boolean
+    showMatchesPosition?: boolean
   }
 
 // Search parameters for searches made with the GET method
@@ -84,11 +84,11 @@ export type SearchRequestGET = Pagination &
   Omit<Crop, 'attributesToCrop'> & {
     filter?: string
     sort?: string
-    facetsDistribution?: string
+    facets?: string
     attributesToRetrieve?: string
     attributesToHighlight?: string
     attributesToCrop?: string
-    matches?: boolean
+    showMatchesPosition?: boolean
   }
 
 export type CategoriesDistribution = {
@@ -107,7 +107,7 @@ export type document = {
 
 export type Hit<T = document> = T & {
   _formatted?: Partial<T>
-  _matchesInfo?: _matchesInfo<T>
+  _matchesPosition?: _matchesInfo<T>
 }
 
 export type Hits<T = document> = Array<Hit<T>>
@@ -117,11 +117,9 @@ export type SearchResponse<T = Record<string, any>> = {
   offset: number
   limit: number
   processingTimeMs: number
-  facetsDistribution?: FacetsDistribution
-  exhaustiveFacetsCount?: boolean
+  facetDistribution?: FacetsDistribution
   query: string
-  nbHits: number
-  exhaustiveNbHits: boolean
+  estimatedTotalHits: number
 }
 
 export type FieldDistribution = {
