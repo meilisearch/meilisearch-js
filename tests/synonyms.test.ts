@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedTask } from '../src/types'
+import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -26,46 +26,45 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const { uid } = await client.index(index.uid).addDocuments(dataset)
       await client.waitForTask(uid)
     })
+
     test(`${permission} key: Get default synonyms`, async () => {
       const client = await getClient(permission)
       const response: object = await client.index(index.uid).getSynonyms()
+
       expect(response).toEqual({})
     })
+
     test(`${permission} key: Update synonyms`, async () => {
       const client = await getClient(permission)
       const newSynonyms = {
         hp: ['harry potter'],
       }
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateSynonyms(newSynonyms)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.waitForTask(task.uid)
+      const task = await client.index(index.uid).updateSynonyms(newSynonyms)
+      await client.waitForTask(task.taskUid)
 
       const response: object = await client.index(index.uid).getSynonyms()
+
       expect(response).toEqual(newSynonyms)
     })
 
     test(`${permission} key: Update synonyms with null value`, async () => {
       const client = await getClient(permission)
       const newSynonyms = null
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateSynonyms(newSynonyms)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.waitForTask(task.uid)
+      const task = await client.index(index.uid).updateSynonyms(newSynonyms)
+      await client.waitForTask(task.taskUid)
 
       const response: object = await client.index(index.uid).getSynonyms()
+
       expect(response).toEqual({})
     })
 
     test(`${permission} key: Reset synonyms`, async () => {
       const client = await getClient(permission)
-      const task: EnqueuedTask = await client.index(index.uid).resetSynonyms()
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.waitForTask(task.uid)
+      const task = await client.index(index.uid).resetSynonyms()
+      await client.waitForTask(task.taskUid)
 
       const response: object = await client.index(index.uid).getSynonyms()
+
       expect(response).toEqual({})
     })
   }

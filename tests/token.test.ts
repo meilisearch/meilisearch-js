@@ -24,8 +24,8 @@ describe.each([{ permission: 'Private' }])(
     beforeEach(async () => {
       const client = await getClient('Master')
       await client.index(UID).delete()
-      const { uid } = await client.index(UID).addDocuments(dataset)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.index(UID).addDocuments(dataset)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: create a tenant token and test header`, async () => {
@@ -171,10 +171,10 @@ describe.each([{ permission: 'Private' }])(
     test(`${permission} key: Search in tenant token with specific index and specific rules`, async () => {
       // add filterable
       const masterClient = await getClient('master')
-      const { uid } = await masterClient
+      const { taskUid } = await masterClient
         .index(UID)
         .updateFilterableAttributes(['id'])
-      await masterClient.waitForTask(uid)
+      await masterClient.waitForTask(taskUid)
 
       const client = await getClient(permission)
       const token = client.generateTenantToken({
