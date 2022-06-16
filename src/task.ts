@@ -22,7 +22,7 @@ class TaskClient {
    *
    * @param  {number} uid - unique identifier of the task
    *
-   * @returns { Promise<Result<Task[]>> }
+   * @returns { Promise<Task> }
    */
   async getTask(uid: number): Promise<Task> {
     const url = `tasks/${uid}`
@@ -52,7 +52,7 @@ class TaskClient {
   /**
    * Wait for a task to be processed.
    *
-   * @param {number} uid Task identifier
+   * @param {number} taskUid Task identifier
    * @param {WaitOptions} options Additional configuration options
    *
    * @returns {Promise<Task>} Promise returning a task after it has been processed
@@ -80,7 +80,7 @@ class TaskClient {
   /**
    * Waits for multiple tasks to be processed
    *
-   * @param {number} taskUids Tasks identifier list
+   * @param {number[]} taskUids Tasks identifier list
    * @param {WaitOptions} options Wait options
    *
    * @returns {Promise<Result<Task[]>>} Promise returning a list of tasks after they have been processed
