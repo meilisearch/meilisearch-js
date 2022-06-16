@@ -397,13 +397,12 @@ describe.each([
     expect(response.hits[0]._formatted?.isTrue).toEqual(true)
   })
 
-  test.only(`${permission} key: search with filter and facetDistribution`, async () => {
+  test(`${permission} key: search with filter and facetDistribution`, async () => {
     const client = await getClient(permission)
     const response = await client.index(index.uid).search('a', {
       filter: ['genre = romance'],
       facets: ['genre'],
     })
-    console.log(JSON.stringify(response, null, 2))
 
     expect(response).toHaveProperty('facetDistribution', {
       genre: { romance: 2 },
