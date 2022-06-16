@@ -129,17 +129,14 @@ export type FieldDistribution = {
 /*
  ** Documents
  */
-export type GetDocumentsParams<T = Record<string, any>> = {
-  offset?: number
-  limit?: number
-  attributesToRetrieve?:
-    | Array<Extract<keyof T, string>>
-    | Extract<keyof T, string>
+// TODO: This is going to be updated in the PR about pagination in resource routes
+export type DocumentsParams<T = Record<string, any>> = Pagination & {
+  fields?: Array<Extract<keyof T, string>> | Extract<keyof T, string>
 }
-
-export type GetDocumentsResponse<T = Record<string, any>> = Array<Document<T>>
-
 export type Document<T = Record<string, any>> = T
+
+// TODO: This is going to be updated in the PR about pagination in resource routes
+export type Documents<T = Record<string, any>> = Array<Document<T>>
 
 /*
  ** Settings

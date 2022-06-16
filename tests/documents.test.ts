@@ -57,28 +57,28 @@ describe('Documents tests', () => {
         }
       })
 
-      test(`${permission} key: Get documents with string attributesToRetrieve`, async () => {
+      test(`${permission} key: Get documents with string fields`, async () => {
         const client = await getClient(permission)
 
         const documents = await client.index(indexNoPk.uid).getDocuments({
-          attributesToRetrieve: 'id',
+          fields: 'id',
         })
 
-        expect(documents.find((x) => Object.keys(x).length !== 1)).toEqual(
-          undefined
-        )
+        expect(
+          documents.results.find((x) => Object.keys(x).length !== 1)
+        ).toEqual(undefined)
       })
 
-      test(`${permission} key: Get documents with array attributesToRetrieve`, async () => {
+      test(`${permission} key: Get documents with array fields`, async () => {
         const client = await getClient(permission)
 
         const documents = await client.index(indexNoPk.uid).getDocuments({
-          attributesToRetrieve: ['id'],
+          fields: ['id'],
         })
 
-        expect(documents.find((x) => Object.keys(x).length !== 1)).toEqual(
-          undefined
-        )
+        expect(
+          documents.results.find((x) => Object.keys(x).length !== 1)
+        ).toEqual(undefined)
       })
 
       test(`${permission} key: Get documents from index that has NO primary key`, async () => {
@@ -89,10 +89,10 @@ describe('Documents tests', () => {
         await client.index(indexNoPk.uid).waitForTask(taskUid)
 
         const documents = await client.index(indexNoPk.uid).getDocuments({
-          attributesToRetrieve: 'id',
+          fields: 'id',
         })
 
-        expect(documents.length).toEqual(dataset.length)
+        expect(documents.results.length).toEqual(dataset.length)
       })
 
       test(`${permission} key: Get documents from index that has a primary key`, async () => {
@@ -103,7 +103,7 @@ describe('Documents tests', () => {
         await client.index(indexPk.uid).waitForTask(taskUid)
 
         const documents = await client.index(indexPk.uid).getDocuments()
-        expect(documents.length).toEqual(dataset.length)
+        expect(documents.results.length).toEqual(dataset.length)
       })
 
       test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
@@ -236,7 +236,7 @@ describe('Documents tests', () => {
 
         expect(document).toHaveProperty('id', id)
         expect(document).toHaveProperty('title', title)
-        expect(documents.length).toEqual(dataset.length + 1)
+        expect(documents.results.length).toEqual(dataset.length + 1)
       })
 
       test(`${permission} key: Add document with update documents function from index that has a primary key`, async () => {
@@ -257,7 +257,7 @@ describe('Documents tests', () => {
 
         expect(document).toHaveProperty('id', id)
         expect(document).toHaveProperty('title', title)
-        expect(documents.length).toEqual(dataset.length + 1)
+        expect(documents.results.length).toEqual(dataset.length + 1)
       })
 
       test(`${permission} key: Delete a document from index that has NO primary key`, async () => {
@@ -272,7 +272,7 @@ describe('Documents tests', () => {
         await client.index(indexNoPk.uid).waitForTask(task.taskUid)
         const documents = await client.index(indexNoPk.uid).getDocuments()
 
-        expect(documents.length).toEqual(dataset.length)
+        expect(documents.results.length).toEqual(dataset.length)
       })
 
       test(`${permission} key: Delete a document from index that has a primary key`, async () => {
@@ -287,7 +287,7 @@ describe('Documents tests', () => {
         await client.index(indexPk.uid).waitForTask(task.taskUid)
         const response = await client.index(indexPk.uid).getDocuments()
 
-        expect(response.length).toEqual(dataset.length)
+        expect(response.results.length).toEqual(dataset.length)
       })
 
       test(`${permission} key: Delete some documents from index that has NO primary key`, async () => {
@@ -302,9 +302,9 @@ describe('Documents tests', () => {
         await client.index(indexNoPk.uid).waitForTask(task.taskUid)
 
         const documents = await client.index(indexNoPk.uid).getDocuments()
-        const returnedIds = documents.map((x) => x.id)
+        const returnedIds = documents.results.map((x) => x.id)
 
-        expect(documents.length).toEqual(dataset.length - 2)
+        expect(documents.results.length).toEqual(dataset.length - 2)
         expect(returnedIds).not.toContain(ids[0])
         expect(returnedIds).not.toContain(ids[1])
       })
@@ -320,9 +320,9 @@ describe('Documents tests', () => {
         const task = await client.index(indexPk.uid).deleteDocuments(ids)
         await client.index(indexPk.uid).waitForTask(task.taskUid)
         const documents = await client.index(indexPk.uid).getDocuments()
-        const returnedIds = documents.map((x) => x.id)
+        const returnedIds = documents.results.map((x) => x.id)
 
-        expect(documents.length).toEqual(dataset.length - 2)
+        expect(documents.results.length).toEqual(dataset.length - 2)
         expect(returnedIds).not.toContain(ids[0])
         expect(returnedIds).not.toContain(ids[1])
       })
@@ -333,7 +333,7 @@ describe('Documents tests', () => {
         await client.index(indexNoPk.uid).waitForTask(task.taskUid)
 
         const documents = await client.index(indexNoPk.uid).getDocuments()
-        expect(documents.length).toEqual(0)
+        expect(documents.results.length).toEqual(0)
       })
 
       test(`${permission} key: Delete all document from index that has a primary key`, async () => {
@@ -342,7 +342,7 @@ describe('Documents tests', () => {
         await client.index(indexPk.uid).waitForTask(task.taskUid)
 
         const documents = await client.index(indexPk.uid).getDocuments()
-        expect(documents.length).toEqual(0)
+        expect(documents.results.length).toEqual(0)
       })
 
       test(`${permission} key: Try to get deleted document from index that has NO primary key`, async () => {

@@ -19,8 +19,8 @@ import {
   IndexResponse,
   IndexOptions,
   IndexStats,
-  GetDocumentsParams,
-  GetDocumentsResponse,
+  DocumentsParams,
+  Documents,
   Document,
   AddDocumentParams,
   EnqueuedTask,
@@ -310,22 +310,26 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method getDocuments
    * @template T
-   * @param {GetDocumentsParams<T>} options? Options to browse the documents
-   * @returns {Promise<GetDocumentsResponse<T>>} Promise containing Document responses
+   * @param {DocumentsParams<T>} options? Options to browse the documents
+   * @returns {Promise<Result<Documents<T>>>} Promise containing Document responses
    */
   async getDocuments<T = Record<string, any>>(
-    options?: GetDocumentsParams<T>
-  ): Promise<GetDocumentsResponse<T>> {
+    options?: DocumentsParams<T>
+  ): Promise<Result<Documents<T>>> {
     const url = `indexes/${this.uid}/documents`
-    let attr
-    if (options !== undefined && Array.isArray(options.attributesToRetrieve)) {
-      attr = options.attributesToRetrieve.join(',')
+
+    let fields = undefined
+    if (Array.isArray(options?.fields)) {
+      fields = options?.fields?.join(',')
     }
 
-    return await this.httpRequest.get<GetDocumentsResponse<T>>(url, {
-      ...options,
-      ...(attr !== undefined ? { attributesToRetrieve: attr } : {}),
-    })
+    return await this.httpRequest.get<Promise<Result<Documents<T>>>>(
+      url,
+      removeUndefinedFromObject({
+        ...options,
+        fields,
+      })
+    )
   }
 
   /**

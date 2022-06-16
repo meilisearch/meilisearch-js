@@ -27,7 +27,7 @@ const addDataset = async () => {
     { id: 5, title: 'Moana', genres: ['Fantasy', 'Action'] },
     { id: 6, title: 'Philadelphia', genres: ['Drama'] },
   ]
-  if (documents.length === 0) {
+  if (documents.results.length === 0) {
     const { taskUid } = await client.index(indexUid).addDocuments(dataset)
     await client.index(indexUid).waitForTask(taskUid)
   }
