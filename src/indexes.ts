@@ -355,7 +355,7 @@ class Index<T = Record<string, any>> {
     options?: AddDocumentParams
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
-    return await this.httpRequest.put(url, documents, options)
+    return await this.httpRequest.post(url, documents, options)
   }
 
   /**
@@ -446,7 +446,7 @@ class Index<T = Record<string, any>> {
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents/delete-batch`
 
-    return await this.httpRequest.put(url, documentsIds)
+    return await this.httpRequest.post(url, documentsIds)
   }
 
   /**
