@@ -9,7 +9,7 @@
 
 import { Index } from '../indexes'
 import {
-  KeyPayload,
+  KeyCreation,
   Config,
   IndexOptions,
   IndexResponse,
@@ -26,6 +26,7 @@ import {
   TokenOptions,
   TaskParams,
   WaitOptions,
+  KeyUpdate,
 } from '../types'
 import { HttpRequests } from '../http-requests'
 import { TaskClient } from '../task'
@@ -257,11 +258,11 @@ class Client {
    * @memberof MeiliSearch
    * @method getKey
    *
-   * @param {string} key - Key
+   * @param {string} keyOrUid - Key or uid of the API key
    * @returns {Promise<Keys>} Promise returning a key
    */
-  async getKey(key: string): Promise<Key> {
-    const url = `keys/${key}`
+  async getKey(keyOrUid: string): Promise<Key> {
+    const url = `keys/${keyOrUid}`
     return await this.httpRequest.get<Key>(url)
   }
 
@@ -270,10 +271,10 @@ class Client {
    * @memberof MeiliSearch
    * @method createKey
    *
-   * @param {KeyPayload} options - Key options
+   * @param {KeyCreation} options - Key options
    * @returns {Promise<Key>} Promise returning an object with keys
    */
-  async createKey(options: KeyPayload): Promise<Key> {
+  async createKey(options: KeyCreation): Promise<Key> {
     const url = `keys`
     return await this.httpRequest.post(url, options)
   }
@@ -284,10 +285,10 @@ class Client {
    * @method updateKey
    *
    * @param {string} key - Key
-   * @param {KeyPayload} options - Key options
+   * @param {KeyUpdate} options - Key options
    * @returns {Promise<Key>} Promise returning an object with keys
    */
-  async updateKey(key: string, options: KeyPayload): Promise<Key> {
+  async updateKey(key: string, options: KeyUpdate): Promise<Key> {
     const url = `keys/${key}`
     return await this.httpRequest.patch(url, options)
   }

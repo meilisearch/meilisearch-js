@@ -1,4 +1,4 @@
-import { ErrorStatusCode, Key } from '../src/types'
+import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -12,36 +12,49 @@ beforeEach(async () => {
 
 describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
   beforeEach(async () => {
+    const client = await getClient('Master')
     await clearAllIndexes(config)
+
+    const keys = await client.getKeys()
+
+    const customKeys = keys.results.filter(
+      (key) =>
+        key.name !== 'Default Search API Key' &&
+        key.name !== 'Default Admin API Key'
+    )
+
+    // Delete all custom keys
+    await Promise.all(customKeys.map((key) => client.deleteKey(key.uid)))
   })
+
   test(`${permission} key: get keys`, async () => {
     const client = await getClient(permission)
     const { results: keys } = await client.getKeys()
 
-    const defaultKey = keys.find((key: Key) =>
-      key.description.startsWith('Default Search API')
+    const searchKey = keys.find(
+      (key: any) => key.name === 'Default Search API Key'
     )
 
-    expect(defaultKey).toBeDefined()
-    expect(defaultKey).toHaveProperty(
+    expect(searchKey).toBeDefined()
+    expect(searchKey).toHaveProperty(
       'description',
-      'Default Search API Key (Use it to search from the frontend)'
+      'Use it to search from the frontend'
     )
-    expect(defaultKey).toHaveProperty('key')
-    expect(defaultKey).toHaveProperty('actions')
-    expect(defaultKey).toHaveProperty('indexes')
-    expect(defaultKey).toHaveProperty('expiresAt', null)
-    expect(defaultKey).toHaveProperty('createdAt')
-    expect(defaultKey).toHaveProperty('updatedAt')
+    expect(searchKey).toHaveProperty('key')
+    expect(searchKey).toHaveProperty('actions')
+    expect(searchKey).toHaveProperty('indexes')
+    expect(searchKey).toHaveProperty('expiresAt', null)
+    expect(searchKey).toHaveProperty('createdAt')
+    expect(searchKey).toHaveProperty('updatedAt')
 
-    const adminKey = keys.find((key: Key) =>
-      key.description.startsWith('Default Admin API Key')
+    const adminKey = keys.find(
+      (key: any) => key.name === 'Default Admin API Key'
     )
 
     expect(adminKey).toBeDefined()
     expect(adminKey).toHaveProperty(
       'description',
-      'Default Admin API Key (Use it for all other operations. Caution! Do not use it on a public frontend)'
+      'Use it for anything that is not a search operation. Caution! Do not expose it on a public frontend'
     )
     expect(adminKey).toHaveProperty('key')
     expect(adminKey).toHaveProperty('actions')
@@ -60,7 +73,7 @@ describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
     expect(key).toBeDefined()
     expect(key).toHaveProperty(
       'description',
-      'Default Admin API Key (Use it for all other operations. Caution! Do not use it on a public frontend)'
+      'Use it for anything that is not a search operation. Caution! Do not expose it on a public frontend'
     )
     expect(key).toHaveProperty('key')
     expect(key).toHaveProperty('actions')
@@ -72,8 +85,10 @@ describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
 
   test(`${permission} key: create key with no expiresAt`, async () => {
     const client = await getClient(permission)
+    const uid = '3db051e0-423d-4b5c-a63a-f82a7043dce6'
 
     const key = await client.createKey({
+      uid,
       description: 'Indexing Products API key',
       actions: ['documents.add'],
       indexes: ['products'],
@@ -82,6 +97,7 @@ describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
 
     expect(key).toBeDefined()
     expect(key).toHaveProperty('description', 'Indexing Products API key')
+    expect(key).toHaveProperty('uid', uid)
     expect(key).toHaveProperty('key')
     expect(key).toHaveProperty('actions')
     expect(key).toHaveProperty('indexes')
@@ -121,23 +137,16 @@ describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
     })
 
     const updatedKey = await client.updateKey(key.key, {
-      description: 'Indexing Products API key',
-      actions: ['documents.add'],
-      indexes: ['products'],
-      expiresAt: '2050-11-13T00:00:00Z', // Test will fail in 2050
+      description: 'Indexing Products API key 2',
+      name: 'Product admin',
     })
 
     expect(updatedKey).toBeDefined()
     expect(updatedKey).toHaveProperty(
       'description',
-      'Indexing Products API key'
+      'Indexing Products API key 2'
     )
-    expect(updatedKey).toHaveProperty('key')
-    expect(updatedKey).toHaveProperty('actions')
-    expect(updatedKey).toHaveProperty('indexes')
-    expect(updatedKey).toHaveProperty('expiresAt', '2050-11-13T00:00:00Z')
-    expect(updatedKey).toHaveProperty('createdAt')
-    expect(updatedKey).toHaveProperty('updatedAt')
+    expect(updatedKey).toHaveProperty('name', 'Product admin')
   })
 
   test(`${permission} key: delete a key`, async () => {
@@ -151,6 +160,7 @@ describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
     })
 
     const deletedKey = await client.deleteKey(key.key)
+
     expect(deletedKey).toBeUndefined()
   })
 })
@@ -158,16 +168,20 @@ describe.each([{ permission: 'Master' }])('Test on keys', ({ permission }) => {
 describe.each([{ permission: 'Private' }])(
   'Test on keys with admin key',
   ({ permission }) => {
-    test(`${permission} key: get keys denied`, async () => {
+    // TODO: unskip when fixed by Meilisearch
+    test.skip(`${permission} key: get keys denied`, async () => {
       const client = await getClient(permission)
+
       await expect(client.getKeys()).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.INVALID_API_KEY
       )
     })
 
-    test(`${permission} key: create key denied`, async () => {
+    // TODO: unskip when fixed by Meilisearch
+    test.skip(`${permission} key: create key denied`, async () => {
       const client = await getClient(permission)
+
       await expect(
         client.createKey({
           description: 'Indexing Products API key',
