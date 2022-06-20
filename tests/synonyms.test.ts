@@ -23,8 +23,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.index(index.uid).addDocuments(dataset)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: Get default synonyms`, async () => {
