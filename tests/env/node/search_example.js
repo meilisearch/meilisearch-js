@@ -17,7 +17,7 @@ const addDataset = async () => {
   const index = client.index(indexUid)
 
   const documents = await index.getDocuments()
-  if (documents.length === 0) {
+  if (documents.results.length === 0) {
     const { taskUid } = await index.addDocuments(dataset)
     await index.waitForTask(taskUid)
   }
@@ -29,7 +29,7 @@ const addDataset = async () => {
   const resp = await index.search('Avengers', {
     limit: 1,
     attributesToHighlight: ['title'],
-  }, 'GET')
+  })
   console.log({ resp })
   console.log({ hit: resp.hits[0] })
 })()

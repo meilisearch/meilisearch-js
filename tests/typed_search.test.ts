@@ -163,17 +163,17 @@ describe.each([
       filter: 'title = "Le Petit Prince"',
       attributesToCrop: ['*'],
       cropLength: 5,
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response.hits.length === 1).toBeTruthy()
     expect(response.offset === 0).toBeTruthy()
     expect(response.limit === 20).toBeTruthy()
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response.query === 'prince').toBeTruthy()
-    expect(response.hits[0]?._matchesInfo?.comment).toEqual([
+    expect(response.hits[0]?._matchesPosition?.comment).toEqual([
       { start: 22, length: 6 },
     ])
-    expect(response.hits[0]?._matchesInfo?.title).toEqual([
+    expect(response.hits[0]?._matchesPosition?.title).toEqual([
       { start: 9, length: 6 },
     ])
   })
@@ -188,7 +188,7 @@ describe.each([
       cropLength: 6,
       attributesToHighlight: ['*'],
       filter: 'title = "Le Petit Prince"',
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response.hits.length === 1).toBeTruthy()
     expect(response.offset === 0).toBeTruthy()
@@ -205,7 +205,10 @@ describe.each([
     expect(response.hits[0]._formatted).toHaveProperty('comment')
     expect(response.hits[0]._formatted).not.toHaveProperty('description')
     expect(response.hits.length === 1).toBeTruthy()
-    expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
+    expect(response.hits[0]).toHaveProperty(
+      '_matchesPosition',
+      expect.any(Object)
+    )
   })
 
   test(`${permission} key: Search with all options and all fields`, async () => {
@@ -218,7 +221,7 @@ describe.each([
       cropLength: 6,
       attributesToHighlight: ['*'],
       filter: 'title = "Le Petit Prince"',
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response.hits.length === 1).toBeTruthy()
     expect(response.offset === 0).toBeTruthy()
@@ -226,9 +229,11 @@ describe.each([
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response.query === 'prince').toBeTruthy()
     expect(response.hits[0]?.title === 'Le Petit Prince').toBeTruthy()
-    expect(response.hits[0]?._matchesInfo?.title?.[0]?.start === 9).toBeTruthy()
     expect(
-      response.hits[0]?._matchesInfo?.title?.[0]?.length === 6
+      response.hits[0]?._matchesPosition?.title?.[0]?.start === 9
+    ).toBeTruthy()
+    expect(
+      response.hits[0]?._matchesPosition?.title?.[0]?.length === 6
     ).toBeTruthy()
     expect(response.hits[0]._formatted).toHaveProperty(
       'title',
@@ -246,7 +251,7 @@ describe.each([
       cropLength: 6,
       attributesToHighlight: ['id', 'title'],
       filter: 'title = "Le Petit Prince"',
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response.hits.length === 1).toBeTruthy()
     expect(response.offset === 0).toBeTruthy()
@@ -260,7 +265,7 @@ describe.each([
     // expect(response.hits[0].comment).toEqual('comment')
 
     expect(response.hits[0]?.title === 'Le Petit Prince').toBeTruthy()
-    expect(response.hits[0]?._matchesInfo?.title).toEqual([
+    expect(response.hits[0]?._matchesPosition?.title).toEqual([
       { start: 9, length: 6 },
     ])
     expect(response.hits[0]._formatted).toHaveProperty(
@@ -298,10 +303,9 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search('a', {
       filter: ['genre=romance'],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response.facetsDistribution?.genre?.romance === 2).toBeTruthy()
-    expect(response.exhaustiveFacetsCount === false).toBeTruthy()
+    expect(response.facetDistribution?.genre?.romance === 2).toBeTruthy()
     expect(response.hits.length === 2).toBeTruthy()
   })
 
@@ -318,10 +322,9 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search('a', {
       filter: ['genre=romance', ['genre=romance', 'genre=romance']],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response.facetsDistribution?.genre?.romance === 2).toBeTruthy()
-    expect(response.exhaustiveFacetsCount === false).toBeTruthy()
+    expect(response.facetDistribution?.genre?.romance === 2).toBeTruthy()
     expect(response.hits.length === 2).toBeTruthy()
   })
 
@@ -329,10 +332,9 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search(undefined, {
       filter: ['genre = fantasy'],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response.facetsDistribution?.genre?.fantasy === 2).toBeTruthy()
-    expect(response.exhaustiveFacetsCount === false).toBeTruthy()
+    expect(response.facetDistribution?.genre?.fantasy === 2).toBeTruthy()
     expect(response.hits.length === 2).toBeTruthy()
   })
 
@@ -340,10 +342,9 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search(null, {
       filter: ['genre = fantasy'],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response.facetsDistribution?.genre?.fantasy === 2).toBeTruthy()
-    expect(response.exhaustiveFacetsCount === false).toBeTruthy()
+    expect(response.facetDistribution?.genre?.fantasy === 2).toBeTruthy()
     expect(response.hits.length === 2).toBeTruthy()
   })
 
