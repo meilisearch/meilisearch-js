@@ -79,10 +79,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const { taskUid } = await client.createIndex(indexPk.uid)
       await client.waitForTask(taskUid)
 
-      const response = await client.getRawIndexes()
+      const { results } = await client.getRawIndexes()
 
-      expect(response.length).toEqual(1)
-      expect(response[0].uid).toEqual(indexPk.uid)
+      expect(results.length).toEqual(1)
+      expect(results[0].uid).toEqual(indexPk.uid)
     })
 
     test(`${permission} key: Get index that does not exist`, async () => {
@@ -280,11 +280,13 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
     test(`${permission} key: delete index`, async () => {
       const client = await getClient(permission)
       const { taskUid: createTask } = await client.createIndex(indexNoPk.uid)
-      const { taskUid: updateTask } = await client.index(indexNoPk.uid).delete()
+      const { taskUid: deleteTask } = await client.index(indexNoPk.uid).delete()
       await client.waitForTask(createTask)
-      await client.waitForTask(updateTask)
+      await client.waitForTask(deleteTask)
 
-      await expect(client.getIndexes()).resolves.toHaveLength(0)
+      const { results } = await client.getIndexes()
+
+      expect(results).toHaveLength(0)
     })
 
     test(`${permission} key: delete index using client`, async () => {
@@ -293,7 +295,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       await client.createIndex(indexPk.uid)
       await client.waitForTask(taskUid)
 
-      await expect(client.getIndexes()).resolves.toHaveLength(0)
+      const { results } = await client.getIndexes()
+
+      expect(results).toHaveLength(0)
     })
 
     test(`${permission} key: fetch deleted index should fail`, async () => {

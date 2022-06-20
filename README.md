@@ -445,13 +445,13 @@ If you want to know more about the development workflow or want to contribute, p
 
 ### Indexes <!-- omit in toc -->
 
-- [Get all indexes in Index instances](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
+- [Get all indexes as Index instances](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
 
-`client.getIndexes(): Promise<Index[]>`
+`client.getIndexes(): Promise<Result<Index[]>>`
 
-- [Get raw indexes in JSON response from Meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
+- [Get all indexes](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
 
-`client.getRawIndexes(): Promise<IndexResponse[]>`
+`client.getRawIndexes(): Promise<Result<IndexResponse[]>>`
 
 - [Create a new index](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index):
 

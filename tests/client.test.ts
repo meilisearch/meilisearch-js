@@ -1,11 +1,4 @@
-import {
-  IndexResponse,
-  ErrorStatusCode,
-  Health,
-  Version,
-  Stats,
-  TaskStatus,
-} from '../src'
+import { ErrorStatusCode, Health, Version, Stats } from '../src'
 import {
   clearAllIndexes,
   getKey,
@@ -178,9 +171,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
       const task = await client.createIndex('test')
       await client.waitForTask(task.taskUid)
-      const indexes = await client.getIndexes()
 
-      expect(indexes.length).toBe(1)
+      const { results } = await client.getIndexes()
+
+      expect(results.length).toBe(1)
     })
 
     describe('Test on indexes methods', () => {
@@ -232,8 +226,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         const { taskUid } = await client.createIndex(indexPk.uid)
         await client.waitForTask(taskUid)
 
-        const response: IndexResponse[] = await client.getRawIndexes()
-        const indexes = response.map((index) => index.uid)
+        const { results } = await client.getRawIndexes()
+        const indexes = results.map((index) => index.uid)
         expect(indexes).toEqual(expect.arrayContaining([indexPk.uid]))
         expect(indexes.length).toEqual(1)
       })
@@ -296,10 +290,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         await client.waitForTask(createTask)
 
         const { taskUid: deleteTask } = await client.deleteIndex(indexNoPk.uid)
-        const task = await client.waitForTask(deleteTask)
+        await client.waitForTask(deleteTask)
+        const { results } = await client.getIndexes()
 
-        expect(task.status).toBe(TaskStatus.TASK_SUCCEEDED)
-        await expect(client.getIndexes()).resolves.toHaveLength(0)
+        expect(results).toHaveLength(0)
       })
 
       test(`${permission} key: create index with already existing uid should fail`, async () => {

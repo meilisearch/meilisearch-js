@@ -204,7 +204,7 @@ class Index<T = Record<string, any>> {
    */
   async update(data: IndexOptions): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}`
-    return await this.httpRequest.put(url, data)
+    return await this.httpRequest.patch(url, data)
   }
 
   /**
