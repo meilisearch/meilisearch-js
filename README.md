@@ -664,11 +664,7 @@ Using the index object:
 
 - [Trigger a dump creation process](https://docs.meilisearch.com/reference/api/dump.html#create-a-dump):
 
-`client.createDump(): Promise<Types.EnqueuedDump>`
-
-- [Get the status of a dump creation process](https://docs.meilisearch.com/reference/api/dump.html#get-dump-status):
-
-`client.getDumpStatus(dumpUid: string): Promise<Types.EnqueuedDump>`
+`client.createDump(): Promise<EnqueuedTask>`
 
 <hr>
 

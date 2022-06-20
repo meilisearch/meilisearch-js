@@ -444,22 +444,6 @@ describe.each([{ permission: 'Public' }])(
           ErrorStatusCode.INVALID_API_KEY
         )
       })
-
-      test(`${permission} key: try to create dumps and be denir`, async () => {
-        const client = await getClient(permission)
-        await expect(client.createDump()).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INVALID_API_KEY
-        )
-      })
-
-      test(`${permission} key: try to create dumps and be denied`, async () => {
-        const client = await getClient(permission)
-        await expect(client.getDumpStatus('test')).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.INVALID_API_KEY
-        )
-      })
     })
   }
 )
@@ -542,22 +526,6 @@ describe.each([{ permission: 'No' }])(
       test(`${permission} key: try to get /stats information and be denied`, async () => {
         const client = await getClient(permission)
         await expect(client.getStats()).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
-        )
-      })
-
-      test(`${permission} key: try to create dumps and be denir`, async () => {
-        const client = await getClient(permission)
-        await expect(client.createDump()).rejects.toHaveProperty(
-          'code',
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
-        )
-      })
-
-      test(`${permission} key: try to create dumps and be denied`, async () => {
-        const client = await getClient(permission)
-        await expect(client.getDumpStatus('test')).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
@@ -680,32 +648,6 @@ describe.each([
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.getVersion()).rejects.toHaveProperty(
-      'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
-    )
-  })
-
-  test(`Test createDump route`, async () => {
-    const route = `dumps`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
-    await expect(client.createDump()).rejects.toHaveProperty(
-      'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
-    )
-  })
-
-  test(`Test getDumpStatus route`, async () => {
-    const route = `dumps/1/status`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
-    await expect(client.getDumpStatus('1')).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',

@@ -254,13 +254,6 @@ export type Task = Omit<EnqueuedTask, 'taskUid'> & {
   finishedAt: string
 }
 
-export type EnqueuedDump = {
-  uid: string
-  status: 'in_progress' | 'failed' | 'done'
-  startedAt: string
-  finishedAt: string
-}
-
 export type WaitOptions = {
   timeOutMs?: number
   intervalMs?: number
@@ -459,9 +452,6 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#task_not_found */
   TASK_NOT_FOUND = 'task_not_found',
-
-  /** @see https://docs.meilisearch.com/errors/#dump_already_processing */
-  DUMP_ALREADY_PROCESSING = 'dump_already_processing',
 
   /** @see https://docs.meilisearch.com/errors/#dump_process_failed */
   DUMP_PROCESS_FAILED = 'dump_process_failed',
