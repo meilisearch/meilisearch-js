@@ -66,7 +66,7 @@ describe('Documents tests', () => {
 
         expect(
           documents.results.find((x) => Object.keys(x).length !== 1)
-        ).toEqual(undefined)
+        ).toBeUndefined()
       })
 
       test(`${permission} key: Get documents with array fields`, async () => {
@@ -78,7 +78,7 @@ describe('Documents tests', () => {
 
         expect(
           documents.results.find((x) => Object.keys(x).length !== 1)
-        ).toEqual(undefined)
+        ).toBeUndefined()
       })
 
       test(`${permission} key: Get documents from index that has NO primary key`, async () => {

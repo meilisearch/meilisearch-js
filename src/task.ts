@@ -22,7 +22,7 @@ class TaskClient {
    *
    * @param  {number} uid - unique identifier of the task
    *
-   * @returns { Promise<Result<Task[]>> }
+   * @returns { Promise<Task> }
    */
   async getTask(uid: number): Promise<Task> {
     const url = `tasks/${uid}`

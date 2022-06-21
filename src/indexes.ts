@@ -318,10 +318,12 @@ class Index<T = Record<string, any>> {
   ): Promise<Result<Documents<T>>> {
     const url = `indexes/${this.uid}/documents`
 
-    let fields = undefined
-    if (Array.isArray(options?.fields)) {
-      fields = options?.fields?.join(',')
-    }
+    const fields = (() => {
+      if (Array.isArray(options?.fields)) {
+        return options?.fields?.join(',')
+      }
+      return undefined
+    })()
 
     return await this.httpRequest.get<Promise<Result<Documents<T>>>>(
       url,
