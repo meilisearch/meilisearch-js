@@ -100,12 +100,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(key).toBeDefined()
       expect(key).toHaveProperty('description', 'Indexing Products API key')
       expect(key).toHaveProperty('uid', uid)
-      expect(key).toHaveProperty('key')
-      expect(key).toHaveProperty('actions')
-      expect(key).toHaveProperty('indexes')
       expect(key).toHaveProperty('expiresAt', null)
-      expect(key).toHaveProperty('createdAt')
-      expect(key).toHaveProperty('updatedAt')
     })
 
     test(`${permission} key: create key with an expiresAt`, async () => {
@@ -120,12 +115,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
       expect(key).toBeDefined()
       expect(key).toHaveProperty('description', 'Indexing Products API key')
-      expect(key).toHaveProperty('key')
-      expect(key).toHaveProperty('actions', ['documents.add'])
-      expect(key).toHaveProperty('indexes')
       expect(key).toHaveProperty('expiresAt', '2050-11-13T00:00:00Z')
-      expect(key).toHaveProperty('createdAt')
-      expect(key).toHaveProperty('updatedAt')
     })
 
     test(`${permission} key: update a key`, async () => {
