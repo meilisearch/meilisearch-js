@@ -626,11 +626,11 @@ Using the index object:
 
 - [Create a key](https://docs.meilisearch.com/reference/api/keys.html#create-a-key):
 
-`client.createKey(options: KeyPayload): Promise<Key>`
+`client.createKey(options: KeyCreation): Promise<Key>`
 
 - [Update a key](https://docs.meilisearch.com/reference/api/keys.html#update-a-key):
 
-`client.updateKey(key: string, options: KeyPayload): Promise<Key>`
+`client.updateKey(key: string, options: KeyUpdate): Promise<Key>`
 
 - [Delete a key](https://docs.meilisearch.com/reference/api/keys.html#delete-a-key):
 

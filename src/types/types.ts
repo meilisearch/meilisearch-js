@@ -297,7 +297,9 @@ export type Stats = {
  */
 
 export type Key = {
+  uid: string
   description: string
+  name: string | null
   key: string
   actions: string[]
   indexes: string[]
@@ -306,11 +308,18 @@ export type Key = {
   updateAt: string
 }
 
-export type KeyPayload = {
+export type KeyCreation = {
+  uid?: string
+  name?: string
   description?: string
   actions: string[]
   indexes: string[]
   expiresAt: string | null
+}
+
+export type KeyUpdate = {
+  name?: string
+  description?: string
 }
 
 /*
