@@ -142,7 +142,6 @@ class Token {
     const apiKey = options?.apiKey || this.config.apiKey || ''
     const uid = apiKeyUid || ''
     const expiresAt = options?.expiresAt
-    // console.log({ expiresAt })
 
     validateTokenParameters({ apiKey, uid, expiresAt, searchRules })
 
