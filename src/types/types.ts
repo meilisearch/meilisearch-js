@@ -10,12 +10,23 @@ export type Config = {
   headers?: object
 }
 
-export type Result<T> = {
+///
+/// Resources
+///
+
+export type ResourceQuery = Pagination & {}
+
+export type Result<T> = Pagination & {
   results: T
+  total: number
+}
+export type ResourceResults<T> = Pagination & {
+  results: T
+  total: number
 }
 
 ///
-/// Request specific interfaces
+/// Indexes
 ///
 
 export type IndexRequest = {
@@ -101,16 +112,12 @@ export type _matchesInfo<T> = Partial<
   Record<keyof T, Array<{ start: number; length: number }>>
 >
 
-export type document = {
-  [field: string]: any
-}
-
-export type Hit<T = document> = T & {
+export type Hit<T = Record<string, any>> = T & {
   _formatted?: Partial<T>
   _matchesPosition?: _matchesInfo<T>
 }
 
-export type Hits<T = document> = Array<Hit<T>>
+export type Hits<T = Record<string, any>> = Array<Hit<T>>
 
 export type SearchResponse<T = Record<string, any>> = {
   hits: Hits<T>
@@ -129,14 +136,18 @@ export type FieldDistribution = {
 /*
  ** Documents
  */
-// TODO: This is going to be updated in the PR about pagination in resource routes
-export type DocumentsParams<T = Record<string, any>> = Pagination & {
+
+export type DocumentsQuery<T = Record<string, any>> = Pagination & {
   fields?: Array<Extract<keyof T, string>> | Extract<keyof T, string>
 }
-export type Document<T = Record<string, any>> = T
 
-// TODO: This is going to be updated in the PR about pagination in resource routes
 export type Documents<T = Record<string, any>> = Array<Document<T>>
+
+export type DocumentsResults<T = Record<string, any>> = ResourceResults<
+  Documents<T>
+> & {}
+
+export type Document<T = Record<string, any>> = T
 
 /*
  ** Settings
