@@ -255,12 +255,12 @@ class Index<T = Record<string, any>> {
    * @param {number[]} taskUids - Tasks identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Result<Task[]>>} - Promise containing an array of tasks
+   * @returns {Promise<Task[]>} - Promise containing an array of tasks
    */
   async waitForTasks(
     taskUids: number[],
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
-  ): Promise<Result<Task[]>> {
+  ): Promise<Task[]> {
     return await this.tasks.waitForTasks(taskUids, {
       timeOutMs,
       intervalMs,
