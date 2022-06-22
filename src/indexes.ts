@@ -19,8 +19,8 @@ import {
   IndexResponse,
   IndexOptions,
   IndexStats,
-  GetDocumentsParams,
-  GetDocumentsResponse,
+  DocumentsParams,
+  Documents,
   Document,
   AddDocumentParams,
   EnqueuedTask,
@@ -310,22 +310,28 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method getDocuments
    * @template T
-   * @param {GetDocumentsParams<T>} options? Options to browse the documents
-   * @returns {Promise<GetDocumentsResponse<T>>} Promise containing Document responses
+   * @param {DocumentsParams<T>} options? Options to browse the documents
+   * @returns {Promise<Result<Documents<T>>>} Promise containing Document responses
    */
   async getDocuments<T = Record<string, any>>(
-    options?: GetDocumentsParams<T>
-  ): Promise<GetDocumentsResponse<T>> {
+    options?: DocumentsParams<T>
+  ): Promise<Result<Documents<T>>> {
     const url = `indexes/${this.uid}/documents`
-    let attr
-    if (options !== undefined && Array.isArray(options.attributesToRetrieve)) {
-      attr = options.attributesToRetrieve.join(',')
-    }
 
-    return await this.httpRequest.get<GetDocumentsResponse<T>>(url, {
-      ...options,
-      ...(attr !== undefined ? { attributesToRetrieve: attr } : {}),
-    })
+    const fields = (() => {
+      if (Array.isArray(options?.fields)) {
+        return options?.fields?.join(',')
+      }
+      return undefined
+    })()
+
+    return await this.httpRequest.get<Promise<Result<Documents<T>>>>(
+      url,
+      removeUndefinedFromObject({
+        ...options,
+        fields,
+      })
+    )
   }
 
   /**
@@ -355,7 +361,7 @@ class Index<T = Record<string, any>> {
     options?: AddDocumentParams
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
-    return await this.httpRequest.put(url, documents, options)
+    return await this.httpRequest.post(url, documents, options)
   }
 
   /**
@@ -446,7 +452,7 @@ class Index<T = Record<string, any>> {
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents/delete-batch`
 
-    return await this.httpRequest.put(url, documentsIds)
+    return await this.httpRequest.post(url, documentsIds)
   }
 
   /**
