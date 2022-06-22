@@ -89,8 +89,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         .index(index.uid)
         .addDocuments(dataset)
 
-      const update = await client.waitForTasks([task1, task2])
-      const [update1, update2] = update.results
+      const tasks = await client.waitForTasks([task1, task2])
+      const [update1, update2] = tasks
 
       expect(update1).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
       expect(update2).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
@@ -105,11 +105,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         .index(index.uid)
         .addDocuments(dataset)
 
-      const update = await client.waitForTasks([task1, task2], {
+      const tasks = await client.waitForTasks([task1, task2], {
         timeOutMs: 6000,
         intervalMs: 100,
       })
-      const [update1, update2] = update.results
+      const [update1, update2] = tasks
 
       expect(update1).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
       expect(update2).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
@@ -124,11 +124,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         .index(index.uid)
         .addDocuments(dataset)
 
-      const update = await client.waitForTasks([task1, task2], {
+      const tasks = await client.waitForTasks([task1, task2], {
         timeOutMs: 6000,
         intervalMs: 0,
       })
-      const [update1, update2] = update.results
+      const [update1, update2] = tasks
 
       expect(update1).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
       expect(update2).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
@@ -159,8 +159,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         .index(index.uid)
         .addDocuments(dataset)
 
-      const update = await client.index(index.uid).waitForTasks([task1, task2])
-      const [update1, update2] = update.results
+      const tasks = await client.index(index.uid).waitForTasks([task1, task2])
+      const [update1, update2] = tasks
 
       expect(update1).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
       expect(update2).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED)
