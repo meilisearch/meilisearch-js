@@ -19,8 +19,7 @@ import {
   IndexResponse,
   IndexOptions,
   IndexStats,
-  DocumentsParams,
-  Documents,
+  DocumentsQuery,
   Document,
   AddDocumentParams,
   EnqueuedTask,
@@ -36,6 +35,7 @@ import {
   TypoTolerance,
   Result,
   WaitOptions,
+  DocumentsResults,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -310,12 +310,12 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method getDocuments
    * @template T
-   * @param {DocumentsParams<T>} options? Options to browse the documents
-   * @returns {Promise<Result<Documents<T>>>} Promise containing Document responses
+   * @param {DocumentsQuery<T>} options? Options to browse the documents
+   * @returns {Promise<DocumentsResults<T>>>} Promise containing Document responses
    */
   async getDocuments<T = Record<string, any>>(
-    options?: DocumentsParams<T>
-  ): Promise<Result<Documents<T>>> {
+    options?: DocumentsQuery<T>
+  ): Promise<DocumentsResults<T>> {
     const url = `indexes/${this.uid}/documents`
 
     const fields = (() => {
@@ -325,7 +325,7 @@ class Index<T = Record<string, any>> {
       return undefined
     })()
 
-    return await this.httpRequest.get<Promise<Result<Documents<T>>>>(
+    return await this.httpRequest.get<Promise<DocumentsResults<T>>>(
       url,
       removeUndefinedFromObject({
         ...options,

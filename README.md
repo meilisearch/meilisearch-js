@@ -393,7 +393,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Get Documents](https://docs.meilisearch.com/reference/api/documents.html#get-documents):
 
-`index.getDocuments(params: DocumentsParams): Promise<Result<Documents<T>>>`
+`index.getDocuments(params: DocumentsQuery): Promise<Result<Documents<T>>>`
 
 - [Get one document](https://docs.meilisearch.com/reference/api/documents.html#get-one-document):
 
