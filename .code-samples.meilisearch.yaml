@@ -506,8 +506,6 @@ faceted_search_walkthrough_filter_1: |-
     })
 post_dump_1: |-
   client.createDump()
-get_dump_status_1: |-
-  client.getDumpStatus('20201101-110357260')
 phrase_search_1: |-
   client.index('movies')
     .search('"african american" horror')

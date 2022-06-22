@@ -2,7 +2,6 @@ import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
-  waitForDumpProcessing,
   MeiliSearch,
   BAD_HOST,
   getClient,
@@ -17,21 +16,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   ({ permission }) => {
     test(`${permission} key: create a new dump`, async () => {
       const client = await getClient(permission)
-      const response = await client.createDump()
-      expect(response.uid).toBeDefined()
-      expect(response.status).toEqual('in_progress')
-      await waitForDumpProcessing(response.uid, client)
-    })
+      const { taskUid } = await client.createDump()
 
-    test(`${permission} key: get dump status`, async () => {
-      const client = await getClient(permission)
-      const enqueuedDump = await client.createDump()
-      await waitForDumpProcessing(enqueuedDump.uid, client)
-      const response = await client.getDumpStatus(enqueuedDump.uid)
-      expect(response.uid).toEqual(enqueuedDump.uid)
-      expect(response.status).toBeDefined()
-      expect(response.startedAt).toBeDefined()
-      expect(response.finishedAt).toBeDefined()
+      await client.waitForTask(taskUid)
     })
   }
 )
@@ -46,14 +33,6 @@ describe.each([{ permission: 'Public' }])(
         ErrorStatusCode.INVALID_API_KEY
       )
     })
-
-    test(`${permission} key: try to get dump status with search key and be denied`, async () => {
-      const client = await getClient(permission)
-      await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
-        'code',
-        ErrorStatusCode.INVALID_API_KEY
-      )
-    })
   }
 )
 
@@ -63,14 +42,6 @@ describe.each([{ permission: 'No' }])(
     test(`${permission} key: try to create dump with no key and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.createDump()).rejects.toHaveProperty(
-        'code',
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
-      )
-    })
-
-    test(`${permission} key: try to get dump status with no key and be denied`, async () => {
-      const client = await getClient(permission)
-      await expect(client.getDumpStatus('dumpUid')).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
@@ -89,19 +60,6 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
 
     await expect(client.createDump()).rejects.toHaveProperty(
-      'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
-    )
-  })
-
-  test(`Test getDumpStatus route`, async () => {
-    const route = `dumps/1/status`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
-    await expect(client.getDumpStatus('1')).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
         'http://',

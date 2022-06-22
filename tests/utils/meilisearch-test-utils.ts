@@ -1,9 +1,5 @@
-import { MeiliSearch, MeiliSearchTimeOutError, Index } from '../../src'
-import { Config, EnqueuedDump } from '../../src/types'
-
-async function sleep(ms: number): Promise<void> {
-  return await new Promise((resolve) => setTimeout(resolve, ms))
-}
+import { MeiliSearch, Index } from '../../src'
+import { Config } from '../../src/types'
 
 // testing
 const MASTER_KEY = 'masterKey'
@@ -88,25 +84,6 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
     taskIds.push(taskUid)
   }
   await client.waitForTasks(taskIds)
-}
-
-async function waitForDumpProcessing(
-  dumpId: string,
-  client: MeiliSearch,
-  {
-    timeOutMs = 5000,
-    intervalMs = 50,
-  }: { timeOutMs?: number; intervalMs?: number } = {}
-): Promise<EnqueuedDump> {
-  const startingTime = Date.now()
-  while (Date.now() - startingTime < timeOutMs) {
-    const response = await client.getDumpStatus(dumpId)
-    if (response.status !== 'in_progress') return response
-    await sleep(intervalMs)
-  }
-  throw new MeiliSearchTimeOutError(
-    `timeout of ${timeOutMs}ms has exceeded on process ${dumpId} when waiting for the dump creation process to be done.`
-  )
 }
 
 function decode64(buff: string) {
@@ -196,7 +173,6 @@ export {
   MASTER_KEY,
   MeiliSearch,
   Index,
-  waitForDumpProcessing,
   getClient,
   getKey,
   decode64,
