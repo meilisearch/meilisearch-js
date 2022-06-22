@@ -390,11 +390,14 @@ class Client {
    *
    * @memberof MeiliSearch
    * @method generateTenantToken
+   * @param {apiKeyUid} apiKeyUid The uid of the api key used as issuer of the token.
    * @param {SearchRules} searchRules Search rules that are applied to every search.
    * @param {TokenOptions} options Token options to customize some aspect of the token.
+
    * @returns {String} The token in JWT format.
    */
   generateTenantToken(
+    _apiKeyuid: string,
     _searchRules: TokenSearchRules,
     _options?: TokenOptions
   ): string {
