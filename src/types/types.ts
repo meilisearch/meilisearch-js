@@ -467,6 +467,6 @@ export type TokenIndexRules = {
 export type TokenSearchRules = Record<string, TokenIndexRules | null> | string[]
 
 export type TokenOptions = {
-  apiKey?: string
+  uid?: string
   expiresAt?: Date
 }
