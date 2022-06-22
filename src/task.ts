@@ -83,12 +83,12 @@ class TaskClient {
    * @param {number[]} taskUids Tasks identifier list
    * @param {WaitOptions} options Wait options
    *
-   * @returns {Promise<Result<Task[]>>} Promise returning a list of tasks after they have been processed
+   * @returns {Promise<Task[]>} Promise returning a list of tasks after they have been processed
    */
   async waitForTasks(
     taskUids: number[],
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
-  ): Promise<Result<Task[]>> {
+  ): Promise<Task[]> {
     const tasks: Task[] = []
     for (const taskUid of taskUids) {
       const task = await this.waitForTask(taskUid, {
@@ -97,7 +97,7 @@ class TaskClient {
       })
       tasks.push(task)
     }
-    return { results: tasks }
+    return tasks
   }
 }
 

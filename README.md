@@ -438,10 +438,10 @@ If you want to know more about the development workflow or want to contribute, p
 
 - Wait for multiple tasks:
 
-  `client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
+  `client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Task[]>`
 
   With an index instance:
-  `index.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
+  `index.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Task[]>`
 
 ### Indexes <!-- omit in toc -->
 
