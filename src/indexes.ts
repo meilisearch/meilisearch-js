@@ -315,7 +315,7 @@ class Index<T = Record<string, any>> {
    * @returns {Promise<DocumentsResults<T>>>} Promise containing Document responses
    */
   async getDocuments<T = Record<string, any>>(
-    parameters?: DocumentsQuery<T>
+    parameters: DocumentsQuery<T> = {}
   ): Promise<DocumentsResults<T>> {
     const url = `indexes/${this.uid}/documents`
 

@@ -94,7 +94,9 @@ class Client {
    *
    * @returns {Promise<IndexesResults<Index[]>>} Promise returning array of raw index information
    */
-  async getIndexes(parameters: IndexesQuery): Promise<IndexesResults<Index[]>> {
+  async getIndexes(
+    parameters: IndexesQuery = {}
+  ): Promise<IndexesResults<Index[]>> {
     const rawIndexes = await this.getRawIndexes(parameters)
     const indexes: Index[] = rawIndexes.results.map(
       (index) => new Index(this.config, index.uid, index.primaryKey)
@@ -111,7 +113,7 @@ class Client {
    * @returns {Promise<IndexesResults<IndexObject[]>>} Promise returning array of raw index information
    */
   async getRawIndexes(
-    parameters: IndexesQuery
+    parameters: IndexesQuery = {}
   ): Promise<IndexesResults<IndexObject[]>> {
     const url = `indexes`
     return await this.httpRequest.get<IndexesResults<IndexObject[]>>(
@@ -260,7 +262,7 @@ class Client {
    *
    * @returns {Promise<KeysResults>} Promise returning an object with keys
    */
-  async getKeys(parameters: KeysQuery): Promise<KeysResults> {
+  async getKeys(parameters: KeysQuery = {}): Promise<KeysResults> {
     const url = `keys`
     return await this.httpRequest.get<KeysResults>(url, parameters)
   }
