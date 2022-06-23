@@ -7,7 +7,7 @@
 export type Config = {
   host: string
   apiKey?: string
-  headers?: object
+  headers?: Record<string, any>
 }
 
 ///

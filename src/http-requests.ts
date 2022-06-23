@@ -1,6 +1,7 @@
 import 'cross-fetch/polyfill'
 
 import { Config, EnqueuedTask } from './types'
+import { PACKAGE_VERSION } from './package-version'
 
 import {
   MeiliSearchError,
@@ -20,16 +21,34 @@ function constructHostURL(host: string): string {
   }
 }
 
+function createHeaders(config: Config): Record<string, any> {
+  config.headers = Object.assign({}, config.headers || {}) // assign to avoid referencing)
+  const defaultHeaders = {
+    'X-Meilisearch-Client': `Meilisearch JS (v${PACKAGE_VERSION})`,
+    'Content-Type': 'application/json',
+  }
+  const headers: Record<string, any> = {}
+
+  if (config.apiKey) {
+    headers['Authorization'] = `Bearer ${config.apiKey}`
+  }
+
+  if (config.headers['X-Meilisearch-Client']) {
+    headers[
+      'X-Meilisearch-Client'
+    ] = `${config.headers['X-Meilisearch-Client']} ; ${defaultHeaders['X-Meilisearch-Client']}`
+  }
+
+  return { ...defaultHeaders, ...headers }
+}
+
 class HttpRequests {
   headers: Record<string, any>
   url: URL
 
   constructor(config: Config) {
-    this.headers = Object.assign({}, config.headers || {}) // assign to avoid referencing
-    this.headers['Content-Type'] = 'application/json'
-    if (config.apiKey) {
-      this.headers['Authorization'] = `Bearer ${config.apiKey}`
-    }
+    this.headers = createHeaders(config)
+
     try {
       const host = constructHostURL(config.host)
       this.url = new URL(host)

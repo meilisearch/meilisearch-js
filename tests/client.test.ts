@@ -1,4 +1,5 @@
 import { ErrorStatusCode, Health, Version, Stats } from '../src'
+import { PACKAGE_VERSION } from '../src/package-version'
 import {
   clearAllIndexes,
   getKey,
@@ -175,6 +176,34 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const { results } = await client.getIndexes()
 
       expect(results.length).toBe(1)
+    })
+
+    test(`${permission} key: Create client with no custom X-Meilisearch-Client`, async () => {
+      const key = await getKey(permission)
+      const client = new MeiliSearch({
+        ...config,
+        apiKey: key,
+        headers: {},
+      })
+
+      expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
+        `Meilisearch JS (v${PACKAGE_VERSION})`
+      )
+    })
+
+    test(`${permission} key: Create client with custom X-Meilisearch-Client`, async () => {
+      const key = await getKey(permission)
+      const client = new MeiliSearch({
+        ...config,
+        apiKey: key,
+        headers: {
+          'X-Meilisearch-Client': 'random plugin',
+        },
+      })
+
+      expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
+        `random plugin ; Meilisearch JS (v${PACKAGE_VERSION})`
+      )
     })
 
     describe('Test on indexes methods', () => {
