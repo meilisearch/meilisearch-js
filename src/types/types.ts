@@ -203,6 +203,8 @@ export type TaskParams = {
   indexUid?: string[]
   type?: TaskTypes[]
   status?: TaskStatus[]
+  limit?: number
+  from?: number
 }
 
 export type EnqueuedTask = {

@@ -31,7 +31,7 @@ const indexUid = "movies"
 
   const index = client.index(indexUid)
   const indexes = await client.getRawIndexes()
-  indexes.map((index: IndexObject) => {
+  indexes.results.map((index: IndexObject) => {
     console.log(index.uid)
     // console.log(index.something) -> ERROR
   })
@@ -42,7 +42,7 @@ const indexUid = "movies"
     attributesToHighlight: ['title'],
     // test: true -> ERROR Test does not exist on type SearchParams
   }
-  indexes.map((index: IndexObject) => index.uid)
+  indexes.results.map((index: IndexObject) => index.uid)
   const res: SearchResponse<Movie> = await index.search(
     'avenger',
     searchParams

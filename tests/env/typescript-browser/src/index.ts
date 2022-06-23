@@ -15,7 +15,7 @@ function greeter(person: string) {
 ;(async () => {
   const indexes = await client.getRawIndexes()
   console.log({ indexes }, 'hello')
-  const uids = indexes.map((index: IndexObject) => index.uid)
+  const uids = indexes.results.map((index: IndexObject) => index.uid)
   document.body.innerHTML = `${greeter(
     user
   )} this is the list of all your indexes: \n ${uids.join(', ')}`
