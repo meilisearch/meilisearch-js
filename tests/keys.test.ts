@@ -31,9 +31,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: get keys`, async () => {
       const client = await getClient(permission)
-      const { results: keys } = await client.getKeys()
+      const keys = await client.getKeys()
 
-      const searchKey = keys.find(
+      const searchKey = keys.results.find(
         (key: any) => key.name === 'Default Search API Key'
       )
 
@@ -49,7 +49,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(searchKey).toHaveProperty('createdAt')
       expect(searchKey).toHaveProperty('updatedAt')
 
-      const adminKey = keys.find(
+      const adminKey = keys.results.find(
         (key: any) => key.name === 'Default Admin API Key'
       )
 

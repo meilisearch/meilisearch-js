@@ -264,6 +264,15 @@ export type Task = Omit<EnqueuedTask, 'taskUid'> & {
   finishedAt: string
 }
 
+export type TasksParams = {}
+
+export type TasksResults = {
+  results: Task[]
+  limit: number
+  from: number
+  next: number
+}
+
 export type WaitOptions = {
   timeOutMs?: number
   intervalMs?: number

@@ -20,7 +20,6 @@ import {
   Version,
   ErrorStatusCode,
   Task,
-  Result,
   TokenSearchRules,
   TokenOptions,
   TaskParams,
@@ -30,6 +29,7 @@ import {
   IndexesResults,
   KeysQuery,
   KeysResults,
+  TasksResults,
 } from '../types'
 import { HttpRequests } from '../http-requests'
 import { TaskClient } from '../task'
@@ -192,10 +192,12 @@ class Client {
    * Get the list of all client tasks
    * @memberof MeiliSearch
    * @method getTasks
-   * @returns {Promise<Result<Task[]>>} - Promise returning all tasks
+   * @param {TasksQuery} parameters - Parameters to browse the tasks
+   *
+   * @returns {Promise<TasksResults>} - Promise returning all tasks
    */
-  async getTasks(params?: TaskParams): Promise<Result<Task[]>> {
-    return await this.tasks.getTasks(params)
+  async getTasks(parameters: TaskParams = {}): Promise<TasksResults> {
+    return await this.tasks.getTasks(parameters)
   }
 
   /**
@@ -203,7 +205,7 @@ class Client {
    * @memberof MeiliSearch
    * @method getTask
    * @param {number} taskUid - Task identifier
-   * @returns {Promise<Task>} - Promise returning a task
+   * @returns {Promise<TasksResults>} - Promise returning a task
    */
   async getTask(taskUid: number): Promise<Task> {
     return await this.tasks.getTask(taskUid)

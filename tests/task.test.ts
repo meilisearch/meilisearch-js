@@ -111,6 +111,27 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(onlyDocumentAddition.size).toEqual(2)
     })
 
+    test(`${permission} key: Get all tasks with type filter on an index`, async () => {
+      const client = await getClient(permission)
+      await client.deleteIndex(index2.uid)
+      await client.createIndex(index2.uid)
+      await client.index(index.uid).addDocuments([{ id: 1 }])
+      await client.index(index2.uid).addDocuments([{ id: 1 }])
+      await client.index(index2.uid).deleteDocument(1)
+
+      const tasks = await client.index(index.uid).getTasks({
+        type: [
+          TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE,
+          TaskTypes.DOCUMENT_DELETION,
+        ],
+      })
+      const onlyDocumentAddition = new Set(
+        tasks.results.map((task) => task.type)
+      )
+
+      expect(onlyDocumentAddition.size).toEqual(2)
+    })
+
     test(`${permission} key: Get all tasks with status filter`, async () => {
       const client = await getClient(permission)
       const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
@@ -126,6 +147,29 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       )
 
       expect(onlySuccesfullTasks.size).toEqual(2)
+    })
+
+    test(`${permission} key: Get all tasks with status filter on an index`, async () => {
+      const client = await getClient(permission)
+      const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
+      const task2 = await client.index(index.uid).addDocuments([{}])
+      const task3 = await client.index(index2.uid).addDocuments([{}])
+      await client.waitForTask(task1.taskUid)
+      await client.waitForTask(task2.taskUid)
+      await client.waitForTask(task3.taskUid)
+
+      const tasks = await client.index(index.uid).getTasks({
+        status: [TaskStatus.TASK_SUCCEEDED, TaskStatus.TASK_FAILED],
+      })
+      const onlySuccesfullTasks = new Set(
+        tasks.results.map((task) => task.status)
+      )
+      const onlyTaskWithSameUid = new Set(
+        tasks.results.map((task) => task.indexUid)
+      )
+
+      expect(onlySuccesfullTasks.size).toEqual(2)
+      expect(onlyTaskWithSameUid.size).toEqual(1)
     })
 
     test(`${permission} key: Get all tasks with indexUid filter`, async () => {

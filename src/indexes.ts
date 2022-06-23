@@ -33,9 +33,10 @@ import {
   SearchableAttributes,
   DisplayedAttributes,
   TypoTolerance,
-  Result,
   WaitOptions,
   DocumentsResults,
+  TaskParams,
+  TasksResults,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -228,11 +229,12 @@ class Index<T = Record<string, any>> {
    *
    * @memberof Indexes
    * @method getTasks
+   * @param {TasksQuery} parameters - Parameters to browse the tasks
    *
-   * @returns {Promise<Result<Task[]>>} - Promise containing all tasks
+   * @returns {Promise<TasksResults>} - Promise containing all tasks
    */
-  async getTasks(): Promise<Result<Task[]>> {
-    return await this.tasks.getTasks({ indexUid: [this.uid] })
+  async getTasks(parameters: TaskParams = {}): Promise<TasksResults> {
+    return await this.tasks.getTasks({ ...parameters, indexUid: [this.uid] })
   }
 
   /**
