@@ -20,6 +20,7 @@ export type Result<T> = Pagination & {
   results: T
   total: number
 }
+
 export type ResourceResults<T> = Pagination & {
   results: T
   total: number
@@ -29,25 +30,20 @@ export type ResourceResults<T> = Pagination & {
 /// Indexes
 ///
 
-export type IndexRequest = {
-  uid: string
-  primaryKey?: string
-}
-
 export type IndexOptions = {
   primaryKey?: string
 }
 
-export type IndexResponse = {
+export type IndexObject = {
   uid: string
   primaryKey?: string
   createdAt: Date
   updatedAt: Date
 }
 
-export type AddDocumentParams = {
-  primaryKey?: string
-}
+export type IndexesQuery = ResourceQuery & {}
+
+export type IndexesResults<T> = ResourceResults<T> & {}
 
 /*
  * SEARCH PARAMETERS
@@ -137,17 +133,20 @@ export type FieldDistribution = {
  ** Documents
  */
 
-export type DocumentsQuery<T = Record<string, any>> = Pagination & {
+export type DocumentOptions = {
+  primaryKey?: string
+}
+
+export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   fields?: Array<Extract<keyof T, string>> | Extract<keyof T, string>
 }
 
+export type Document<T = Record<string, any>> = T
 export type Documents<T = Record<string, any>> = Array<Document<T>>
 
 export type DocumentsResults<T = Record<string, any>> = ResourceResults<
   Documents<T>
 > & {}
-
-export type Document<T = Record<string, any>> = T
 
 /*
  ** Settings
@@ -325,6 +324,10 @@ export type KeyUpdate = {
   name?: string
   description?: string
 }
+
+export type KeysQuery = ResourceQuery & {}
+
+export type KeysResults = ResourceResults<Key[]> & {}
 
 /*
  ** version
