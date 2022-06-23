@@ -71,14 +71,42 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Get documents with array fields`, async () => {
         const client = await getClient(permission)
+        const { taskUid } = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset)
+        await client.waitForTask(taskUid)
 
-        const documents = await client.index(indexNoPk.uid).getDocuments<Book>({
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
           fields: ['id'],
         })
+        const onlyIdFields = Array.from(
+          new Set(
+            documents.results.reduce<string[]>(
+              (acc, document) => [...acc, ...Object.keys(document)],
+              []
+            )
+          )
+        )
 
-        expect(
-          documents.results.find((x) => Object.keys(x).length !== 1)
-        ).toBeUndefined()
+        expect(onlyIdFields.length).toEqual(1)
+        expect(onlyIdFields[0]).toEqual('id')
+      })
+
+      test(`${permission} key: Get documents with pagination`, async () => {
+        const client = await getClient(permission)
+        const { taskUid } = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset)
+        await client.waitForTask(taskUid)
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          limit: 1,
+          offset: 2,
+        })
+
+        expect(documents.results.length).toEqual(1)
+        expect(documents.limit).toEqual(1)
+        expect(documents.offset).toEqual(2)
       })
 
       test(`${permission} key: Get documents from index that has NO primary key`, async () => {

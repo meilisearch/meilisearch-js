@@ -213,6 +213,31 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('primaryKey', null)
     })
 
+    test(`${permission} key: get all indexes`, async () => {
+      const client = await getClient(permission)
+      const task1 = await client.createIndex(indexNoPk.uid)
+      const task2 = await client.createIndex(indexPk.uid)
+      await client.waitForTask(task1.taskUid)
+      await client.waitForTask(task2.taskUid)
+
+      const indexes = await client.getIndexes()
+
+      expect(indexes.results.length).toEqual(2)
+    })
+
+    test(`${permission} key: get all indexes with filters`, async () => {
+      const client = await getClient(permission)
+      const task1 = await client.createIndex(indexNoPk.uid)
+      const task2 = await client.createIndex(indexPk.uid)
+      await client.waitForTask(task1.taskUid)
+      await client.waitForTask(task2.taskUid)
+
+      const indexes = await client.getIndexes({ limit: 1, offset: 1 })
+
+      expect(indexes.results.length).toEqual(1)
+      expect(indexes.results[0].uid).toEqual(indexPk.uid)
+    })
+
     test(`${permission} key: update primary key on an index that has no primary key already`, async () => {
       const client = await getClient(permission)
       const { taskUid: createTask } = await client.createIndex(indexNoPk.uid)

@@ -66,6 +66,15 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(adminKey).toHaveProperty('updatedAt')
     })
 
+    test(`${permission} key: get keys with pagination`, async () => {
+      const client = await getClient(permission)
+      const keys = await client.getKeys({ limit: 1, offset: 2 })
+
+      expect(keys.limit).toEqual(1)
+      expect(keys.offset).toEqual(2)
+      expect(keys.total).toEqual(2)
+    })
+
     test(`${permission} key: get on key`, async () => {
       const client = await getClient(permission)
       const apiKey = await getKey('Private')

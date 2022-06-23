@@ -14,12 +14,12 @@ export type Config = {
 /// Resources
 ///
 
-export type ResourceQuery = Pagination & {}
-
-export type Result<T> = Pagination & {
-  results: T
-  total: number
+export type Pagination = {
+  offset?: number
+  limit?: number
 }
+
+export type ResourceQuery = Pagination & {}
 
 export type ResourceResults<T> = Pagination & {
   results: T
@@ -50,11 +50,6 @@ export type IndexesResults<T> = ResourceResults<T> & {}
  */
 
 export type Filter = string | Array<string | string[]>
-
-export type Pagination = {
-  offset?: number
-  limit?: number
-}
 
 export type Query = {
   q?: string | null
@@ -263,8 +258,6 @@ export type Task = Omit<EnqueuedTask, 'taskUid'> & {
   startedAt: string
   finishedAt: string
 }
-
-export type TasksParams = {}
 
 export type TasksResults = {
   results: Task[]

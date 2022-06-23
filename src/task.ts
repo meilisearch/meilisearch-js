@@ -28,6 +28,7 @@ class TaskClient {
     const url = `tasks/${uid}`
     return await this.httpRequest.get<Task>(url)
   }
+
   /**
    * Get tasks
    *
@@ -42,7 +43,10 @@ class TaskClient {
       indexUid: parameters?.indexUid?.join(','),
       type: parameters?.type?.join(','),
       status: parameters?.status?.join(','),
+      from: parameters.from,
+      limit: parameters.limit,
     }
+
     return await this.httpRequest.get<Promise<TasksResults>>(
       url,
       removeUndefinedFromObject(queryParams)

@@ -132,6 +132,21 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(onlyDocumentAddition.size).toEqual(2)
     })
 
+    test(`${permission} key: Get all tasks with pagination`, async () => {
+      const client = await getClient(permission)
+      const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
+      const task2 = await client.index(index.uid).addDocuments([{ id: 1 }])
+      await client.waitForTask(task1.taskUid)
+      await client.waitForTask(task2.taskUid)
+
+      const tasks = await client.getTasks({ from: 1, limit: 1 })
+
+      expect(tasks.results.length).toEqual(1)
+      expect(tasks.from).toEqual(1)
+      expect(tasks.limit).toEqual(1)
+      expect(tasks.next).toEqual(0)
+    })
+
     test(`${permission} key: Get all tasks with status filter`, async () => {
       const client = await getClient(permission)
       const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
