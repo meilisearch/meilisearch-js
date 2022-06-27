@@ -187,7 +187,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       })
 
       expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
-        `Meilisearch JS (v${PACKAGE_VERSION})`
+        `Meilisearch JavaScript (v${PACKAGE_VERSION})`
       )
     })
 
@@ -202,7 +202,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       })
 
       expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
-        `random plugin ; Meilisearch JS (v${PACKAGE_VERSION})`
+        `random plugin ; Meilisearch JavaScript (v${PACKAGE_VERSION})`
       )
     })
 

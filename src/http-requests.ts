@@ -22,10 +22,13 @@ function constructHostURL(host: string): string {
 }
 
 function createHeaders(config: Config): Record<string, any> {
-  config.headers = Object.assign({}, config.headers || {}) // assign to avoid referencing)
+  config.headers = config.headers || {}
+  const clientHeader = 'X-Meilisearch-Client'
+  const contentType = 'Content-Type'
+
   const defaultHeaders = {
-    'X-Meilisearch-Client': `Meilisearch JS (v${PACKAGE_VERSION})`,
-    'Content-Type': 'application/json',
+    [clientHeader]: `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
+    [contentType]: 'application/json',
   }
   const headers: Record<string, any> = {}
 
@@ -33,10 +36,10 @@ function createHeaders(config: Config): Record<string, any> {
     headers['Authorization'] = `Bearer ${config.apiKey}`
   }
 
-  if (config.headers['X-Meilisearch-Client']) {
+  if (config.headers[clientHeader]) {
     headers[
-      'X-Meilisearch-Client'
-    ] = `${config.headers['X-Meilisearch-Client']} ; ${defaultHeaders['X-Meilisearch-Client']}`
+      clientHeader
+    ] = `${config.headers[clientHeader]} ; ${defaultHeaders[clientHeader]}`
   }
 
   return { ...defaultHeaders, ...headers }
