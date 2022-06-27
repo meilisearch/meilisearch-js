@@ -1,4 +1,5 @@
-import { IndexObject, MeiliSearch } from '../../../../'
+import { MeiliSearch } from '../../../../'
+import { IndexObject } from '../../../../src'
 
 const config = {
   host: 'http://127.0.0.1:7700',
@@ -20,5 +21,5 @@ function greeter(person: string) {
     user
   )} this is the list of all your indexes: \n ${uids.join(', ')}`
 
-  console.log(await client.generateTenantToken([])) // Resolved using the `browser` field
+  console.log(await client.generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', [])) // Resolved using the `browser` field
 })()
