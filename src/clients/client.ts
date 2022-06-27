@@ -22,7 +22,7 @@ import {
   Task,
   TokenSearchRules,
   TokenOptions,
-  TasksQuery,
+  TaskParams,
   WaitOptions,
   KeyUpdate,
   IndexesQuery,
@@ -90,7 +90,7 @@ class Client {
    * Get all the indexes as Index instances.
    * @memberof MeiliSearch
    * @method getIndexes
-   * @param {IndexesQuery} [parameters={}] - Parameters to browse the indexes
+   * @param {IndexesQuery} parameters - Parameters to browse the indexes
    *
    * @returns {Promise<IndexesResults<Index[]>>} Promise returning array of raw index information
    */
@@ -108,7 +108,7 @@ class Client {
    * Get all the indexes in their raw value (no Index instances).
    * @memberof MeiliSearch
    * @method getRawIndexes
-   * @param {IndexesQuery} [parameters={}] - Parameters to browse the indexes
+   * @param {IndexesQuery} parameters - Parameters to browse the indexes
    *
    * @returns {Promise<IndexesResults<IndexObject[]>>} Promise returning array of raw index information
    */
@@ -192,11 +192,11 @@ class Client {
    * Get the list of all client tasks
    * @memberof MeiliSearch
    * @method getTasks
-   * @param {TasksQuery} [parameters={}] - Parameters to browse the tasks
+   * @param {TasksQuery} parameters - Parameters to browse the tasks
    *
    * @returns {Promise<TasksResults>} - Promise returning all tasks
    */
-  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
+  async getTasks(parameters: TaskParams = {}): Promise<TasksResults> {
     return await this.tasks.getTasks(parameters)
   }
 
@@ -205,7 +205,7 @@ class Client {
    * @memberof MeiliSearch
    * @method getTask
    * @param {number} taskUid - Task identifier
-   * @returns {Promise<Task>} - Promise returning a task
+   * @returns {Promise<TasksResults>} - Promise returning a task
    */
   async getTask(taskUid: number): Promise<Task> {
     return await this.tasks.getTask(taskUid)
@@ -260,7 +260,7 @@ class Client {
    * Get all API keys
    * @memberof MeiliSearch
    * @method getKeys
-   * @param {KeysQuery} [parameters={}] - Parameters to browse the indexes
+   * @param {KeysQuery} parameters - Parameters to browse the indexes
    *
    * @returns {Promise<KeysResults>} Promise returning an object with keys
    */

@@ -199,7 +199,7 @@ export const enum TaskTypes {
   SETTINGS_UPDATE = 'settingsUpdate',
 }
 
-export type TasksQuery = {
+export type TaskParams = {
   indexUid?: string[]
   type?: TaskTypes[]
   status?: TaskStatus[]

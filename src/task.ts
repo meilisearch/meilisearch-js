@@ -4,7 +4,7 @@ import {
   Task,
   WaitOptions,
   TaskStatus,
-  TasksQuery,
+  TaskParams,
   TasksResults,
 } from './types'
 import { HttpRequests } from './http-requests'
@@ -32,11 +32,11 @@ class TaskClient {
   /**
    * Get tasks
    *
-   * @param  {TasksQuery} [parameters={}] - Parameters to browse the tasks
+   * @param  {TaskParams} parameters - Parameters to browse the tasks
    *
    * @returns {Promise<TasksResults>} - Promise containing all tasks
    */
-  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
+  async getTasks(parameters: TaskParams = {}): Promise<TasksResults> {
     const url = `tasks`
 
     const queryParams = {

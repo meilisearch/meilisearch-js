@@ -35,7 +35,7 @@ import {
   TypoTolerance,
   WaitOptions,
   DocumentsResults,
-  TasksQuery,
+  TaskParams,
   TasksResults,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
@@ -229,11 +229,11 @@ class Index<T = Record<string, any>> {
    *
    * @memberof Indexes
    * @method getTasks
-   * @param {TasksQuery} [parameters={}] - Parameters to browse the tasks
+   * @param {TasksQuery} parameters - Parameters to browse the tasks
    *
    * @returns {Promise<TasksResults>} - Promise containing all tasks
    */
-  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
+  async getTasks(parameters: TaskParams = {}): Promise<TasksResults> {
     return await this.tasks.getTasks({ ...parameters, indexUid: [this.uid] })
   }
 
