@@ -1,4 +1,10 @@
-import { ErrorStatusCode, Health, Version, Stats } from '../src'
+import {
+  ErrorStatusCode,
+  Health,
+  Version,
+  Stats,
+  MeiliSearchError,
+} from '../src'
 import { PACKAGE_VERSION } from '../src/package-version'
 import {
   clearAllIndexes,
@@ -197,12 +203,30 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         ...config,
         apiKey: key,
         headers: {
-          'X-Meilisearch-Client': 'random plugin',
+          'X-Meilisearch-Client': ['random plugin'],
         },
       })
 
       expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
         `random plugin ; Meilisearch JavaScript (v${PACKAGE_VERSION})`
+      )
+    })
+
+    test(`${permission} key: Creates client with custom X-Meilisearch-Client with wrong type throws an error`, async () => {
+      const key = await getKey(permission)
+      expect(
+        () =>
+          new MeiliSearch({
+            ...config,
+            apiKey: key,
+            headers: {
+              'X-Meilisearch-Client': 'random plugin',
+            },
+          })
+      ).toThrowError(
+        new MeiliSearchError(
+          `Meilisearch: The header "X-Meilisearch-Client" should be an array of string(s).\n`
+        )
       )
     })
 

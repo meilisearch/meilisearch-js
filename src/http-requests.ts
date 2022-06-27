@@ -36,10 +36,24 @@ function createHeaders(config: Config): Record<string, any> {
     headers['Authorization'] = `Bearer ${config.apiKey}`
   }
 
-  if (config.headers[clientHeader]) {
-    headers[
-      clientHeader
-    ] = `${config.headers[clientHeader]} ; ${defaultHeaders[clientHeader]}`
+  // Creates the custom user agent with information on the package used.
+  if (
+    config.headers[clientHeader] &&
+    Array.isArray(config.headers[clientHeader])
+  ) {
+    const clients = config.headers[clientHeader].concat(
+      defaultHeaders[clientHeader]
+    )
+
+    headers[clientHeader] = clients.join(' ; ')
+  } else if (
+    config.headers[clientHeader] &&
+    !Array.isArray(config.headers[clientHeader])
+  ) {
+    // If the header is defined but not an array
+    throw new MeiliSearchError(
+      `Meilisearch: The header "${clientHeader}" should be an array of string(s).\n`
+    )
   }
 
   return { ...defaultHeaders, ...headers }
