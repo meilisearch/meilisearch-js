@@ -58,11 +58,11 @@ function validateTokenParameters(tokenParams: {
   if (expiresAt) {
     if (!(expiresAt instanceof Date)) {
       throw new MeiliSearchError(
-        `Meilisearch: The expiredAt field must be an instance of Date.\n`
+        `Meilisearch: The expiredAt field must be an instance of Date.`
       )
     } else if (expiresAt.getTime() < Date.now()) {
       throw new MeiliSearchError(
-        `Meilisearch: The expiresAt field must be a date in the futur.\n`
+        `Meilisearch: The expiresAt field must be a date in the future.`
       )
     }
   }
@@ -70,26 +70,26 @@ function validateTokenParameters(tokenParams: {
   if (searchRules) {
     if (!(typeof searchRules === 'object' || Array.isArray(searchRules))) {
       throw new MeiliSearchError(
-        `Meilisearch: The search rules added in the token generation must be of type array or object.\n`
+        `Meilisearch: The search rules added in the token generation must be of type array or object.`
       )
     }
   }
 
   if (!apiKey || typeof apiKey !== 'string') {
     throw new MeiliSearchError(
-      `Meilisearch: The API key used for the token generation must exist and be of type string.\n`
+      `Meilisearch: The API key used for the token generation must exist and be of type string.`
     )
   }
 
   if (!uid || typeof uid !== 'string') {
     throw new MeiliSearchError(
-      `Meilisearch: The uid of the api key used for the token generation must exist, be of type string and comply to the uuid4 format.\n`
+      `Meilisearch: The uid of the api key used for the token generation must exist, be of type string and comply to the uuid4 format.`
     )
   }
 
   if (!validateUuid4(uid)) {
     throw new MeiliSearchError(
-      `Meilisearch: The uid of your key is not a valid uuid4. To find out the uid of your key use getKey().\n`
+      `Meilisearch: The uid of your key is not a valid uuid4. To find out the uid of your key use getKey().`
     )
   }
 }

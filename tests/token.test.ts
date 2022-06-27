@@ -254,7 +254,9 @@ describe.each([{ permission: 'Private' }])(
           }
         )
       ).toThrowError(
-        new MeiliSearchError(`Meilisearch: The token has expired.\n`)
+        new MeiliSearchError(
+          `Meilisearch: The expiresAt field must be a date in the future.`
+        )
       )
     })
 
@@ -263,7 +265,7 @@ describe.each([{ permission: 'Private' }])(
 
       expect(() => client.generateTenantToken('1234', ['*'])).toThrowError(
         new MeiliSearchError(
-          `Meilisearch: The uid of your key is not a valid uuid4. To find out the uid of your key use getKey().\n`
+          `Meilisearch: The uid of your key is not a valid uuid4. To find out the uid of your key use getKey().`
         )
       )
     })
@@ -273,7 +275,7 @@ describe.each([{ permission: 'Private' }])(
 
       expect(() => client.generateTenantToken('123', [])).toThrowError(
         new MeiliSearchError(
-          `Meilisearch: The API key used for the token generation must exist and be of type string.\n`
+          `Meilisearch: The API key used for the token generation must exist and be of type string.`
         )
       )
     })
