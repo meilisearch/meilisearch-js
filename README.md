@@ -415,7 +415,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Get all tasks](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks)
 
-  `client.getTasks(parameters: TaskParams): Promise<TasksResults>`
+  `client.getTasks(parameters: TasksQuery): Promise<TasksResults>`
 
 - [Get one task](https://docs.meilisearch.com/reference/api/tasks.html#get-task)
 
@@ -423,7 +423,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Get all tasks of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index)
 
-  `index.getTasks(parameters: TaskParams): Promise<TasksResults>`
+  `index.getTasks(parameters: TasksQuery): Promise<TasksResults>`
 
 - [Get one task of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-task)
 
@@ -450,7 +450,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Get all indexes](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
 
-`client.getRawIndexes(parameters: IndexesQuery): Promise<Result<IndexObject[]>>`
+`client.getRawIndexes(parameters: IndexesQuery): Promise<IndexesResults<IndexObject[]>>`
 
 - [Create a new index](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index):
 
