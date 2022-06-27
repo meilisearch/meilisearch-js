@@ -202,7 +202,7 @@ describe.each([
     })
   })
 
-  test.skip(`${permission} key: search with all options but not all fields`, async () => {
+  test(`${permission} key: search with all options but not all fields`, async () => {
     const client = await getClient(permission)
     const response = await client.index(index.uid).searchGet('prince', {
       limit: 5,
@@ -236,7 +236,7 @@ describe.each([
     )
   })
 
-  test.skip(`${permission} key: search on default cropping parameters`, async () => {
+  test(`${permission} key: search on default cropping parameters`, async () => {
     const client = await getClient(permission)
     const response = await client.index(index.uid).searchGet('prince', {
       attributesToCrop: ['*'],
@@ -249,7 +249,7 @@ describe.each([
     )
   })
 
-  test.skip(`${permission} key: search on customized cropMarker`, async () => {
+  test(`${permission} key: search on customized cropMarker`, async () => {
     const client = await getClient(permission)
     const response = await client.index(index.uid).searchGet('prince', {
       attributesToCrop: ['*'],
@@ -263,7 +263,7 @@ describe.each([
     )
   })
 
-  test.skip(`${permission} key: search on customized highlight tags`, async () => {
+  test(`${permission} key: search on customized highlight tags`, async () => {
     const client = await getClient(permission)
     const response = await client.index(index.uid).searchGet('prince', {
       attributesToHighlight: ['*'],
@@ -277,7 +277,7 @@ describe.each([
     )
   })
 
-  test.skip(`${permission} key: search with all options and all fields`, async () => {
+  test(`${permission} key: search with all options and all fields`, async () => {
     const client = await getClient(permission)
     const response = await client.index(index.uid).searchGet('prince', {
       limit: 5,

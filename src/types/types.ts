@@ -10,44 +10,46 @@ export type Config = {
   headers?: object
 }
 
-export type Result<T> = {
+///
+/// Resources
+///
+
+export type Pagination = {
+  offset?: number
+  limit?: number
+}
+
+export type ResourceQuery = Pagination & {}
+
+export type ResourceResults<T> = Pagination & {
   results: T
+  total: number
 }
 
 ///
-/// Request specific interfaces
+/// Indexes
 ///
-
-export type IndexRequest = {
-  uid: string
-  primaryKey?: string
-}
 
 export type IndexOptions = {
   primaryKey?: string
 }
 
-export type IndexResponse = {
+export type IndexObject = {
   uid: string
   primaryKey?: string
   createdAt: Date
   updatedAt: Date
 }
 
-export type AddDocumentParams = {
-  primaryKey?: string
-}
+export type IndexesQuery = ResourceQuery & {}
+
+export type IndexesResults<T> = ResourceResults<T> & {}
 
 /*
  * SEARCH PARAMETERS
  */
 
 export type Filter = string | Array<string | string[]>
-
-export type Pagination = {
-  offset?: number
-  limit?: number
-}
 
 export type Query = {
   q?: string | null
@@ -101,16 +103,12 @@ export type _matchesInfo<T> = Partial<
   Record<keyof T, Array<{ start: number; length: number }>>
 >
 
-export type document = {
-  [field: string]: any
-}
-
-export type Hit<T = document> = T & {
+export type Hit<T = Record<string, any>> = T & {
   _formatted?: Partial<T>
   _matchesPosition?: _matchesInfo<T>
 }
 
-export type Hits<T = document> = Array<Hit<T>>
+export type Hits<T = Record<string, any>> = Array<Hit<T>>
 
 export type SearchResponse<T = Record<string, any>> = {
   hits: Hits<T>
@@ -129,14 +127,21 @@ export type FieldDistribution = {
 /*
  ** Documents
  */
-// TODO: This is going to be updated in the PR about pagination in resource routes
-export type DocumentsParams<T = Record<string, any>> = Pagination & {
+
+export type DocumentOptions = {
+  primaryKey?: string
+}
+
+export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   fields?: Array<Extract<keyof T, string>> | Extract<keyof T, string>
 }
-export type Document<T = Record<string, any>> = T
 
-// TODO: This is going to be updated in the PR about pagination in resource routes
+export type Document<T = Record<string, any>> = T
 export type Documents<T = Record<string, any>> = Array<Document<T>>
+
+export type DocumentsResults<T = Record<string, any>> = ResourceResults<
+  Documents<T>
+> & {}
 
 /*
  ** Settings
@@ -203,10 +208,12 @@ export const enum TaskTypes {
   SETTINGS_UPDATE = 'settingsUpdate',
 }
 
-export type TaskParams = {
+export type TasksQuery = {
   indexUid?: string[]
   type?: TaskTypes[]
   status?: TaskStatus[]
+  limit?: number
+  from?: number
 }
 
 export type EnqueuedTask = {
@@ -261,6 +268,13 @@ export type Task = Omit<EnqueuedTask, 'taskUid'> & {
   duration: string
   startedAt: string
   finishedAt: string
+}
+
+export type TasksResults = {
+  results: Task[]
+  limit: number
+  from: number
+  next: number
 }
 
 export type WaitOptions = {
@@ -323,6 +337,10 @@ export type KeyUpdate = {
   name?: string
   description?: string
 }
+
+export type KeysQuery = ResourceQuery & {}
+
+export type KeysResults = ResourceResults<Key[]> & {}
 
 /*
  ** version

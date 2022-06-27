@@ -4,8 +4,8 @@ import {
   Task,
   WaitOptions,
   TaskStatus,
-  Result,
-  TaskParams,
+  TasksQuery,
+  TasksResults,
 } from './types'
 import { HttpRequests } from './http-requests'
 import { removeUndefinedFromObject, sleep } from './utils'
@@ -28,22 +28,26 @@ class TaskClient {
     const url = `tasks/${uid}`
     return await this.httpRequest.get<Task>(url)
   }
+
   /**
    * Get tasks
    *
-   * @param  {TaskParams} params - query parameters
+   * @param  {TasksQuery} [parameters={}] - Parameters to browse the tasks
    *
-   * @returns { Promise<Result<Task[]>> }
+   * @returns {Promise<TasksResults>} - Promise containing all tasks
    */
-  async getTasks(params: TaskParams = {}): Promise<Result<Task[]>> {
+  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     const url = `tasks`
 
     const queryParams = {
-      indexUid: params?.indexUid?.join(','),
-      type: params?.type?.join(','),
-      status: params?.status?.join(','),
+      indexUid: parameters?.indexUid?.join(','),
+      type: parameters?.type?.join(','),
+      status: parameters?.status?.join(','),
+      from: parameters.from,
+      limit: parameters.limit,
     }
-    return await this.httpRequest.get<Result<Task[]>>(
+
+    return await this.httpRequest.get<Promise<TasksResults>>(
       url,
       removeUndefinedFromObject(queryParams)
     )

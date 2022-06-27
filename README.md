@@ -393,7 +393,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Get Documents](https://docs.meilisearch.com/reference/api/documents.html#get-documents):
 
-`index.getDocuments(params: DocumentsParams): Promise<Result<Documents<T>>>`
+`index.getDocuments(parameters: DocumentsQuery = {}): Promise<DocumentsResults<T>>>`
 
 - [Get one document](https://docs.meilisearch.com/reference/api/documents.html#get-one-document):
 
@@ -415,7 +415,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Get all tasks](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks)
 
-  `client.getTasks(): Promise<Result<Task[]>>`
+  `client.getTasks(parameters: TasksQuery): Promise<TasksResults>`
 
 - [Get one task](https://docs.meilisearch.com/reference/api/tasks.html#get-task)
 
@@ -423,7 +423,7 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Get all tasks of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index)
 
-  `index.getTasks(): Promise<Result<Task[]>>`
+  `index.getTasks(parameters: TasksQuery): Promise<TasksResults>`
 
 - [Get one task of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-task)
 
@@ -446,11 +446,11 @@ If you want to know more about the development workflow or want to contribute, p
 
 - [Get all indexes as Index instances](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
 
-`client.getIndexes(): Promise<Result<Index[]>>`
+`client.getIndexes(parameters: IndexesQuery): Promise<IndexesResults<Index[]>>`
 
 - [Get all indexes](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
 
-`client.getRawIndexes(): Promise<Result<IndexResponse[]>>`
+`client.getRawIndexes(parameters: IndexesQuery): Promise<IndexesResults<IndexObject[]>>`
 
 - [Create a new index](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index):
 
@@ -464,10 +464,10 @@ If you want to know more about the development workflow or want to contribute, p
 `client.getIndex<T>(uid: string): Promise<Index<T>>`
 
 - [Get the raw index JSON response from Meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
-`client.getRawIndex(uid: string): Promise<IndexResponse>`
+`client.getRawIndex(uid: string): Promise<IndexObject>`
 
 - [Get an object with information about the index](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
-`index.getRawInfo(): Promise<IndexResponse>`
+`index.getRawInfo(): Promise<IndexObject>`
 
 - [Update Index](https://docs.meilisearch.com/reference/api/indexes.html#update-an-index):
 
@@ -617,7 +617,7 @@ Using the index object:
 
 - [Get keys](https://docs.meilisearch.com/reference/api/keys.html#get-all-keys):
 
-`client.getKeys(): Promise<Result<Key[]>>`
+`client.getKeys(parameters: KeysQuery): Promise<KeysResults>`
 
 - [Get one key](https://docs.meilisearch.com/reference/api/keys.html#get-one-key):
 

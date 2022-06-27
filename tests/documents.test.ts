@@ -60,7 +60,7 @@ describe('Documents tests', () => {
       test(`${permission} key: Get documents with string fields`, async () => {
         const client = await getClient(permission)
 
-        const documents = await client.index(indexNoPk.uid).getDocuments({
+        const documents = await client.index(indexNoPk.uid).getDocuments<Book>({
           fields: 'id',
         })
 
@@ -71,14 +71,42 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Get documents with array fields`, async () => {
         const client = await getClient(permission)
+        const { taskUid } = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset)
+        await client.waitForTask(taskUid)
 
-        const documents = await client.index(indexNoPk.uid).getDocuments({
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
           fields: ['id'],
         })
+        const onlyIdFields = Array.from(
+          new Set(
+            documents.results.reduce<string[]>(
+              (acc, document) => [...acc, ...Object.keys(document)],
+              []
+            )
+          )
+        )
 
-        expect(
-          documents.results.find((x) => Object.keys(x).length !== 1)
-        ).toBeUndefined()
+        expect(onlyIdFields.length).toEqual(1)
+        expect(onlyIdFields[0]).toEqual('id')
+      })
+
+      test(`${permission} key: Get documents with pagination`, async () => {
+        const client = await getClient(permission)
+        const { taskUid } = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset)
+        await client.waitForTask(taskUid)
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          limit: 1,
+          offset: 2,
+        })
+
+        expect(documents.results.length).toEqual(1)
+        expect(documents.limit).toEqual(1)
+        expect(documents.offset).toEqual(2)
       })
 
       test(`${permission} key: Get documents from index that has NO primary key`, async () => {
@@ -88,7 +116,7 @@ describe('Documents tests', () => {
           .addDocuments(dataset)
         await client.index(indexNoPk.uid).waitForTask(taskUid)
 
-        const documents = await client.index(indexNoPk.uid).getDocuments({
+        const documents = await client.index(indexNoPk.uid).getDocuments<Book>({
           fields: 'id',
         })
 
@@ -102,7 +130,7 @@ describe('Documents tests', () => {
           .addDocuments(dataset)
         await client.index(indexPk.uid).waitForTask(taskUid)
 
-        const documents = await client.index(indexPk.uid).getDocuments()
+        const documents = await client.index(indexPk.uid).getDocuments<Book>()
         expect(documents.results.length).toEqual(dataset.length)
       })
 
@@ -232,7 +260,7 @@ describe('Documents tests', () => {
           .updateDocuments([{ id, title }])
         await client.index(indexNoPk.uid).waitForTask(task.taskUid)
         const document = await client.index(indexNoPk.uid).getDocument(id)
-        const documents = await client.index(indexNoPk.uid).getDocuments()
+        const documents = await client.index(indexNoPk.uid).getDocuments<Book>()
 
         expect(document).toHaveProperty('id', id)
         expect(document).toHaveProperty('title', title)
@@ -253,7 +281,7 @@ describe('Documents tests', () => {
         await client.index(indexPk.uid).waitForTask(task.taskUid)
 
         const document = await client.index(indexPk.uid).getDocument(id)
-        const documents = await client.index(indexPk.uid).getDocuments()
+        const documents = await client.index(indexPk.uid).getDocuments<Book>()
 
         expect(document).toHaveProperty('id', id)
         expect(document).toHaveProperty('title', title)
@@ -270,7 +298,7 @@ describe('Documents tests', () => {
 
         const task = await client.index(indexNoPk.uid).deleteDocument(id)
         await client.index(indexNoPk.uid).waitForTask(task.taskUid)
-        const documents = await client.index(indexNoPk.uid).getDocuments()
+        const documents = await client.index(indexNoPk.uid).getDocuments<Book>()
 
         expect(documents.results.length).toEqual(dataset.length)
       })
@@ -285,7 +313,7 @@ describe('Documents tests', () => {
         const id = 9
         const task = await client.index(indexPk.uid).deleteDocument(id)
         await client.index(indexPk.uid).waitForTask(task.taskUid)
-        const response = await client.index(indexPk.uid).getDocuments()
+        const response = await client.index(indexPk.uid).getDocuments<Book>()
 
         expect(response.results.length).toEqual(dataset.length)
       })
@@ -301,7 +329,7 @@ describe('Documents tests', () => {
         const task = await client.index(indexNoPk.uid).deleteDocuments(ids)
         await client.index(indexNoPk.uid).waitForTask(task.taskUid)
 
-        const documents = await client.index(indexNoPk.uid).getDocuments()
+        const documents = await client.index(indexNoPk.uid).getDocuments<Book>()
         const returnedIds = documents.results.map((x) => x.id)
 
         expect(documents.results.length).toEqual(dataset.length - 2)
@@ -319,7 +347,7 @@ describe('Documents tests', () => {
         const ids = [1, 2]
         const task = await client.index(indexPk.uid).deleteDocuments(ids)
         await client.index(indexPk.uid).waitForTask(task.taskUid)
-        const documents = await client.index(indexPk.uid).getDocuments()
+        const documents = await client.index(indexPk.uid).getDocuments<Book>()
         const returnedIds = documents.results.map((x) => x.id)
 
         expect(documents.results.length).toEqual(dataset.length - 2)
@@ -332,7 +360,7 @@ describe('Documents tests', () => {
         const task = await client.index(indexNoPk.uid).deleteAllDocuments()
         await client.index(indexNoPk.uid).waitForTask(task.taskUid)
 
-        const documents = await client.index(indexNoPk.uid).getDocuments()
+        const documents = await client.index(indexNoPk.uid).getDocuments<Book>()
         expect(documents.results.length).toEqual(0)
       })
 
@@ -341,7 +369,7 @@ describe('Documents tests', () => {
         const task = await client.index(indexPk.uid).deleteAllDocuments()
         await client.index(indexPk.uid).waitForTask(task.taskUid)
 
-        const documents = await client.index(indexPk.uid).getDocuments()
+        const documents = await client.index(indexPk.uid).getDocuments<Book>()
         expect(documents.results.length).toEqual(0)
       })
 
@@ -442,7 +470,7 @@ describe('Documents tests', () => {
       test(`${permission} key: Try to get documents and be denied`, async () => {
         const client = await getClient(permission)
         await expect(
-          client.index(indexPk.uid).getDocuments()
+          client.index(indexPk.uid).getDocuments<Book>()
         ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
       })
 
@@ -499,7 +527,7 @@ describe('Documents tests', () => {
       test(`${permission} key: Try to get documents and be denied`, async () => {
         const client = await getClient(permission)
         await expect(
-          client.index(indexPk.uid).getDocuments()
+          client.index(indexPk.uid).getDocuments<Book>()
         ).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -563,7 +591,7 @@ describe('Documents tests', () => {
       const client = new MeiliSearch({ host })
       const strippedHost = trailing ? host.slice(0, -1) : host
       await expect(
-        client.index(indexPk.uid).getDocuments()
+        client.index(indexPk.uid).getDocuments<Book>()
       ).rejects.toHaveProperty(
         'message',
         `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
