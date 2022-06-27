@@ -22,7 +22,7 @@ import {
   Task,
   TokenSearchRules,
   TokenOptions,
-  TaskParams,
+  TasksQuery,
   WaitOptions,
   KeyUpdate,
   IndexesQuery,
@@ -196,7 +196,7 @@ class Client {
    *
    * @returns {Promise<TasksResults>} - Promise returning all tasks
    */
-  async getTasks(parameters: TaskParams = {}): Promise<TasksResults> {
+  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     return await this.tasks.getTasks(parameters)
   }
 
