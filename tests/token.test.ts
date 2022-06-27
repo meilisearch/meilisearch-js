@@ -211,7 +211,7 @@ describe.each([{ permission: 'Private' }])(
       expect(searchClient.index(UID).search()).resolves.not.toBeUndefined()
     })
 
-    test(`${permission} key: Search in tenant token with empty array `, async () => {
+    test(`${permission} key: Search in tenant token with empty array throws an error`, async () => {
       const client = await getClient(permission)
       const apiKey = await getKey(permission)
       const { uid } = await client.getKey(apiKey)
@@ -239,7 +239,7 @@ describe.each([{ permission: 'Private' }])(
       ).rejects.toHaveProperty('code', 'invalid_api_key')
     })
 
-    test(`${permission} key: Search in tenant token with expired token`, async () => {
+    test(`${permission} key: Creates tenant token with an expiration date in the past throws an error`, async () => {
       const client = await getClient(permission)
       const apiKey = await getKey(permission)
       const { uid } = await client.getKey(apiKey)
@@ -258,7 +258,7 @@ describe.each([{ permission: 'Private' }])(
       )
     })
 
-    test(`${permission} key: Search in tenant token with wrong uid type`, async () => {
+    test(`${permission} key: Creates tenant token with wrong uid type throws an error`, async () => {
       const client = await getClient(permission)
 
       expect(() => client.generateTenantToken('1234', ['*'])).toThrowError(
@@ -268,7 +268,7 @@ describe.each([{ permission: 'Private' }])(
       )
     })
 
-    test(`${permission} key: create a tenant token no api key and test payload`, () => {
+    test(`${permission} key: Creates a tenant token with no api key in client and in parameters throws an error`, () => {
       const client = new MeiliSearch({ host: HOST })
 
       expect(() => client.generateTenantToken('123', [])).toThrowError(

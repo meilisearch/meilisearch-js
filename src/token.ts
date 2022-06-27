@@ -61,7 +61,9 @@ function validateTokenParameters(tokenParams: {
         `Meilisearch: The expiredAt field must be an instance of Date.\n`
       )
     } else if (expiresAt.getTime() < Date.now()) {
-      throw new MeiliSearchError(`Meilisearch: The token has expired.\n`)
+      throw new MeiliSearchError(
+        `Meilisearch: The expiresAt field must be a date in the futur.\n`
+      )
     }
   }
 
