@@ -229,7 +229,7 @@ class Index<T = Record<string, any>> {
    *
    * @memberof Indexes
    * @method getTasks
-   * @param {TasksQuery} parameters - Parameters to browse the tasks
+   * @param {TasksQuery} [parameters={}] - Parameters to browse the tasks
    *
    * @returns {Promise<TasksResults>} - Promise containing all tasks
    */
@@ -313,7 +313,7 @@ class Index<T = Record<string, any>> {
    * @memberof Index
    * @method getDocuments
    * @template T
-   * @param {DocumentsQuery<T>} parameters? Parameters to browse the documents
+   * @param {DocumentsQuery<T>} [parameters={}] Parameters to browse the documents
    * @returns {Promise<DocumentsResults<T>>>} Promise containing Document responses
    */
   async getDocuments<T = Record<string, any>>(

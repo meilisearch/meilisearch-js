@@ -32,7 +32,7 @@ class TaskClient {
   /**
    * Get tasks
    *
-   * @param  {TaskParams} parameters - Parameters to browse the tasks
+   * @param  {TaskParams} [parameters={}] - Parameters to browse the tasks
    *
    * @returns {Promise<TasksResults>} - Promise containing all tasks
    */
