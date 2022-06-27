@@ -205,7 +205,7 @@ class Client {
    * @memberof MeiliSearch
    * @method getTask
    * @param {number} taskUid - Task identifier
-   * @returns {Promise<TasksResults>} - Promise returning a task
+   * @returns {Promise<Task>} - Promise returning a task
    */
   async getTask(taskUid: number): Promise<Task> {
     return await this.tasks.getTask(taskUid)
