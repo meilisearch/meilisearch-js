@@ -160,7 +160,7 @@ export type Synonyms = {
 } | null
 export type TypoTolerance = {
   enabled?: boolean | null
-  disabledOnAttributes?: string[] | null
+  disableOnAttributes?: string[] | null
   disableOnWords?: string[] | null
   minWordSizeForTypos?: {
     oneTypo?: number | null
