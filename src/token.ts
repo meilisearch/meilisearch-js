@@ -1,5 +1,7 @@
 import { Config, TokenSearchRules, TokenOptions } from './types'
 import crypto from 'crypto'
+import { MeiliSearchError } from './errors'
+import { validateUuid4 } from './utils'
 
 function encode64(data: any) {
   return Buffer.from(JSON.stringify(data)).toString('base64')
@@ -42,35 +44,52 @@ function createHeader() {
  *
  * @param {SearchRules} searchRules Search rules that are applied to every search.
  * @param {String} apiKey Api key used as issuer of the token.
+ * @param {String} uid The uid of the api key used as issuer of the token.
  * @param {Date | undefined} expiresAt Date at which the token expires.
  */
-function validatePayload(payloadParams: {
+function validateTokenParameters(tokenParams: {
   searchRules: TokenSearchRules
+  uid: string
   apiKey: string
   expiresAt?: Date
 }) {
-  const { searchRules, apiKey, expiresAt } = payloadParams
-  const error = new Error()
+  const { searchRules, uid, apiKey, expiresAt } = tokenParams
 
   if (expiresAt) {
-    if (!(expiresAt instanceof Date) || expiresAt.getTime() < Date.now()) {
-      throw new Error(
-        `Meilisearch: When the expiresAt field in the token generation has a value, it must be a date set in the future and not in the past. \n ${error.stack}.`
+    if (!(expiresAt instanceof Date)) {
+      throw new MeiliSearchError(
+        `Meilisearch: The expiredAt field must be an instance of Date.`
+      )
+    } else if (expiresAt.getTime() < Date.now()) {
+      throw new MeiliSearchError(
+        `Meilisearch: The expiresAt field must be a date in the future.`
       )
     }
   }
 
   if (searchRules) {
     if (!(typeof searchRules === 'object' || Array.isArray(searchRules))) {
-      throw new Error(
-        `Meilisearch: The search rules added in the token generation must be of type array or object. \n ${error.stack}.`
+      throw new MeiliSearchError(
+        `Meilisearch: The search rules added in the token generation must be of type array or object.`
       )
     }
   }
 
   if (!apiKey || typeof apiKey !== 'string') {
-    throw new Error(
-      `Meilisearch: The API key used for the token generation must exist and be of type string. \n ${error.stack}.`
+    throw new MeiliSearchError(
+      `Meilisearch: The API key used for the token generation must exist and be of type string.`
+    )
+  }
+
+  if (!uid || typeof uid !== 'string') {
+    throw new MeiliSearchError(
+      `Meilisearch: The uid of the api key used for the token generation must exist, be of type string and comply to the uuid4 format.`
+    )
+  }
+
+  if (!validateUuid4(uid)) {
+    throw new MeiliSearchError(
+      `Meilisearch: The uid of your key is not a valid uuid4. To find out the uid of your key use getKey().`
     )
   }
 }
@@ -79,20 +98,20 @@ function validatePayload(payloadParams: {
  * Create the payload of the token.
  *
  * @param {SearchRules} searchRules Search rules that are applied to every search.
- * @param {String} apiKey Api key used as issuer of the token.
+ * @param {String} uid The uid of the api key used as issuer of the token.
  * @param {Date | undefined} expiresAt Date at which the token expires.
  * @returns {String} The payload encoded in base64.
  */
 function createPayload(payloadParams: {
   searchRules: TokenSearchRules
-  apiKey: string
+  uid: string
   expiresAt?: Date
 }): string {
-  const { searchRules, apiKey, expiresAt } = payloadParams
-  validatePayload(payloadParams)
+  const { searchRules, uid, expiresAt } = payloadParams
+
   const payload = {
     searchRules,
-    apiKeyPrefix: apiKey.substring(0, 8),
+    apiKeyUid: uid,
     exp: expiresAt?.getTime(),
   }
 
@@ -111,19 +130,25 @@ class Token {
    *
    * @memberof MeiliSearch
    * @method generateTenantToken
+   * @param {apiKeyUid} apiKeyUid The uid of the api key used as issuer of the token.
    * @param {SearchRules} searchRules Search rules that are applied to every search.
    * @param {TokenOptions} options Token options to customize some aspect of the token.
+   *
    * @returns {String} The token in JWT format.
    */
   generateTenantToken(
+    apiKeyUid: string,
     searchRules: TokenSearchRules,
     options?: TokenOptions
   ): string {
     const apiKey = options?.apiKey || this.config.apiKey || ''
+    const uid = apiKeyUid || ''
     const expiresAt = options?.expiresAt
 
+    validateTokenParameters({ apiKey, uid, expiresAt, searchRules })
+
     const encodedHeader = createHeader()
-    const encodedPayload = createPayload({ searchRules, apiKey, expiresAt })
+    const encodedPayload = createPayload({ searchRules, uid, expiresAt })
     const signature = sign(apiKey, encodedHeader, encodedPayload)
 
     return `${encodedHeader}.${encodedPayload}.${signature}`
