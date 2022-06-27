@@ -59,7 +59,7 @@ const indexUid = "movies"
     console.log(hit?._formatted?.title)
   })
 
-  console.log(await client.generateTenantToken([]))
+  console.log(await client.generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', []))
 
   await index.delete()
 })()
