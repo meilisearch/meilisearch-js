@@ -12,7 +12,7 @@ import {
   KeyCreation,
   Config,
   IndexOptions,
-  IndexResponse,
+  IndexObject,
   EnqueuedTask,
   Key,
   Health,
@@ -20,12 +20,16 @@ import {
   Version,
   ErrorStatusCode,
   Task,
-  Result,
   TokenSearchRules,
   TokenOptions,
-  TaskParams,
+  TasksQuery,
   WaitOptions,
   KeyUpdate,
+  IndexesQuery,
+  IndexesResults,
+  KeysQuery,
+  KeysResults,
+  TasksResults,
 } from '../types'
 import { HttpRequests } from '../http-requests'
 import { TaskClient } from '../task'
@@ -76,9 +80,9 @@ class Client {
    * @memberof MeiliSearch
    * @method getRawIndex
    * @param {string} indexUid The index UID
-   * @returns {Promise<IndexResponse>} Promise returning index information
+   * @returns {Promise<IndexObject>} Promise returning index information
    */
-  async getRawIndex(indexUid: string): Promise<IndexResponse> {
+  async getRawIndex(indexUid: string): Promise<IndexObject> {
     return new Index(this.config, indexUid).getRawInfo()
   }
 
@@ -86,11 +90,14 @@ class Client {
    * Get all the indexes as Index instances.
    * @memberof MeiliSearch
    * @method getIndexes
+   * @param {IndexesQuery} [parameters={}] - Parameters to browse the indexes
    *
-   * @returns {Promise<Result<Index[]>>} Promise returning array of raw index information
+   * @returns {Promise<IndexesResults<Index[]>>} Promise returning array of raw index information
    */
-  async getIndexes(): Promise<Result<Index[]>> {
-    const rawIndexes = await this.getRawIndexes()
+  async getIndexes(
+    parameters: IndexesQuery = {}
+  ): Promise<IndexesResults<Index[]>> {
+    const rawIndexes = await this.getRawIndexes(parameters)
     const indexes: Index[] = rawIndexes.results.map(
       (index) => new Index(this.config, index.uid, index.primaryKey)
     )
@@ -101,12 +108,18 @@ class Client {
    * Get all the indexes in their raw value (no Index instances).
    * @memberof MeiliSearch
    * @method getRawIndexes
+   * @param {IndexesQuery} [parameters={}] - Parameters to browse the indexes
    *
-   * @returns {Promise<Result<IndexResponse[]>>} Promise returning array of raw index information
+   * @returns {Promise<IndexesResults<IndexObject[]>>} Promise returning array of raw index information
    */
-  async getRawIndexes(): Promise<Result<IndexResponse[]>> {
+  async getRawIndexes(
+    parameters: IndexesQuery = {}
+  ): Promise<IndexesResults<IndexObject[]>> {
     const url = `indexes`
-    return await this.httpRequest.get<Result<IndexResponse[]>>(url)
+    return await this.httpRequest.get<IndexesResults<IndexObject[]>>(
+      url,
+      parameters
+    )
   }
 
   /**
@@ -179,10 +192,12 @@ class Client {
    * Get the list of all client tasks
    * @memberof MeiliSearch
    * @method getTasks
-   * @returns {Promise<Result<Task[]>>} - Promise returning all tasks
+   * @param {TasksQuery} [parameters={}] - Parameters to browse the tasks
+   *
+   * @returns {Promise<TasksResults>} - Promise returning all tasks
    */
-  async getTasks(params?: TaskParams): Promise<Result<Task[]>> {
-    return await this.tasks.getTasks(params)
+  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
+    return await this.tasks.getTasks(parameters)
   }
 
   /**
@@ -245,11 +260,13 @@ class Client {
    * Get all API keys
    * @memberof MeiliSearch
    * @method getKeys
-   * @returns {Promise<Keys>} Promise returning an object with keys
+   * @param {KeysQuery} [parameters={}] - Parameters to browse the indexes
+   *
+   * @returns {Promise<KeysResults>} Promise returning an object with keys
    */
-  async getKeys(): Promise<Result<Key[]>> {
+  async getKeys(parameters: KeysQuery = {}): Promise<KeysResults> {
     const url = `keys`
-    return await this.httpRequest.get<Result<Key[]>>(url)
+    return await this.httpRequest.get<KeysResults>(url, parameters)
   }
 
   /**
