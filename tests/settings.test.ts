@@ -50,6 +50,12 @@ const defaultSettings = {
     disableOnWords: [],
     disableOnAttributes: [],
   },
+  pagination: {
+    maxTotalHits: 1000,
+  },
+  faceting: {
+    maxValuesPerFacet: 100,
+  },
 }
 
 jest.setTimeout(100 * 1000)
@@ -124,6 +130,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
           },
           disableOnWords: ['prince'],
           disableOnAttributes: ['comment'],
+        },
+        pagination: {
+          maxTotalHits: 1000,
+        },
+        faceting: {
+          maxValuesPerFacet: 100,
         },
       }
       // Add the settings

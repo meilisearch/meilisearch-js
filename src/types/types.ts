@@ -167,6 +167,13 @@ export type TypoTolerance = {
   }
 } | null
 
+export type Faceting = {
+  maxValuesPerFacet?: number | null
+}
+export type PaginationSettings = {
+  maxTotalHits?: number | null
+}
+
 export type Settings = {
   filterableAttributes?: FilterableAttributes
   distinctAttribute?: DistinctAttribute
@@ -177,6 +184,8 @@ export type Settings = {
   stopWords?: StopWords
   synonyms?: Synonyms
   typoTolerance?: TypoTolerance
+  faceting?: Faceting
+  pagination?: PaginationSettings
 }
 
 /*
