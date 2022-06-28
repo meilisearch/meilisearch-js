@@ -23,22 +23,23 @@ function constructHostURL(host: string): string {
 
 function createHeaders(config: Config): Record<string, any> {
   const agentHeader = 'X-Meilisearch-Client'
+  const packageAgent = `Meilisearch JavaScript (v${PACKAGE_VERSION})`
   const contentType = 'Content-Type'
   config.headers = config.headers || {}
 
-  const defaultHeaders = {
-    [agentHeader]: `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
-    [contentType]: 'application/json',
-  }
-  const headers: Record<string, any> = {}
+  const headers: Record<string, any> = Object.assign({}, config.headers) // Create a hard copy and not a reference to config.headers
 
   if (config.apiKey) {
     headers['Authorization'] = `Bearer ${config.apiKey}`
   }
 
+  if (!config.headers[contentType]) {
+    headers['Content-Type'] = 'application/json'
+  }
+
   // Creates the custom user agent with information on the package used.
   if (config.clientAgents && Array.isArray(config.clientAgents)) {
-    const clients = config.clientAgents.concat(defaultHeaders[agentHeader])
+    const clients = config.clientAgents.concat(packageAgent)
 
     headers[agentHeader] = clients.join(' ; ')
   } else if (config.clientAgents && !Array.isArray(config.clientAgents)) {
@@ -46,9 +47,11 @@ function createHeaders(config: Config): Record<string, any> {
     throw new MeiliSearchError(
       `Meilisearch: The header "${agentHeader}" should be an array of string(s).\n`
     )
+  } else {
+    headers[agentHeader] = packageAgent
   }
 
-  return { ...defaultHeaders, ...headers }
+  return headers
 }
 
 class HttpRequests {
