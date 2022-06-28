@@ -22,12 +22,12 @@ function constructHostURL(host: string): string {
 }
 
 function createHeaders(config: Config): Record<string, any> {
-  config.headers = config.headers || {}
-  const clientHeader = 'X-Meilisearch-Client'
+  const agentHeader = 'X-Meilisearch-Client'
   const contentType = 'Content-Type'
+  config.headers = config.headers || {}
 
   const defaultHeaders = {
-    [clientHeader]: `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
+    [agentHeader]: `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
     [contentType]: 'application/json',
   }
   const headers: Record<string, any> = {}
@@ -37,22 +37,14 @@ function createHeaders(config: Config): Record<string, any> {
   }
 
   // Creates the custom user agent with information on the package used.
-  if (
-    config.headers[clientHeader] &&
-    Array.isArray(config.headers[clientHeader])
-  ) {
-    const clients = config.headers[clientHeader].concat(
-      defaultHeaders[clientHeader]
-    )
+  if (config.clientAgents && Array.isArray(config.clientAgents)) {
+    const clients = config.clientAgents.concat(defaultHeaders[agentHeader])
 
-    headers[clientHeader] = clients.join(' ; ')
-  } else if (
-    config.headers[clientHeader] &&
-    !Array.isArray(config.headers[clientHeader])
-  ) {
+    headers[agentHeader] = clients.join(' ; ')
+  } else if (config.clientAgents && !Array.isArray(config.clientAgents)) {
     // If the header is defined but not an array
     throw new MeiliSearchError(
-      `Meilisearch: The header "${clientHeader}" should be an array of string(s).\n`
+      `Meilisearch: The header "${agentHeader}" should be an array of string(s).\n`
     )
   }
 

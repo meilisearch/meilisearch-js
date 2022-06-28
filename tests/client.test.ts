@@ -1,10 +1,4 @@
-import {
-  ErrorStatusCode,
-  Health,
-  Version,
-  Stats,
-  MeiliSearchError,
-} from '../src'
+import { ErrorStatusCode, Health, Version, Stats } from '../src'
 import { PACKAGE_VERSION } from '../src/package-version'
 import {
   clearAllIndexes,
@@ -184,7 +178,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(results.length).toBe(1)
     })
 
-    test(`${permission} key: Create client with no custom X-Meilisearch-Client`, async () => {
+    test(`${permission} key: Create client with no custom client agents`, async () => {
       const key = await getKey(permission)
       const client = new MeiliSearch({
         ...config,
@@ -197,36 +191,29 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       )
     })
 
-    test(`${permission} key: Create client with custom X-Meilisearch-Client`, async () => {
+    test(`${permission} key: Create client with empty custom client agents`, async () => {
       const key = await getKey(permission)
       const client = new MeiliSearch({
         ...config,
         apiKey: key,
-        headers: {
-          'X-Meilisearch-Client': ['random plugin'],
-        },
+        clientAgents: [],
       })
 
       expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
-        `random plugin ; Meilisearch JavaScript (v${PACKAGE_VERSION})`
+        `Meilisearch JavaScript (v${PACKAGE_VERSION})`
       )
     })
 
-    test(`${permission} key: Creates client with custom X-Meilisearch-Client with wrong type throws an error`, async () => {
+    test(`${permission} key: Create client with custom client agents`, async () => {
       const key = await getKey(permission)
-      expect(
-        () =>
-          new MeiliSearch({
-            ...config,
-            apiKey: key,
-            headers: {
-              'X-Meilisearch-Client': 'random plugin',
-            },
-          })
-      ).toThrowError(
-        new MeiliSearchError(
-          `Meilisearch: The header "X-Meilisearch-Client" should be an array of string(s).\n`
-        )
+      const client = new MeiliSearch({
+        ...config,
+        apiKey: key,
+        clientAgents: ['random plugin 1', 'random plugin 2'],
+      })
+
+      expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
+        `random plugin 1 ; random plugin 2 ; Meilisearch JavaScript (v${PACKAGE_VERSION})`
       )
     })
 

@@ -7,6 +7,7 @@
 export type Config = {
   host: string
   apiKey?: string
+  clientAgents?: string[]
   headers?: Record<string, any>
 }
 
