@@ -99,7 +99,7 @@ export type CategoriesDistribution = {
 }
 
 export type Facet = string
-export type FacetsDistribution = Record<Facet, CategoriesDistribution>
+export type FacetDistribution = Record<Facet, CategoriesDistribution>
 export type MatchesPosition<T> = Partial<
   Record<keyof T, Array<{ start: number; length: number }>>
 >
@@ -116,7 +116,7 @@ export type SearchResponse<T = Record<string, any>> = {
   offset: number
   limit: number
   processingTimeMs: number
-  facetDistribution?: FacetsDistribution
+  facetDistribution?: FacetDistribution
   query: string
   estimatedTotalHits: number
 }
