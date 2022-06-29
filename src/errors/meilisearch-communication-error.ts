@@ -15,6 +15,9 @@ class MeiliSearchCommunicationError extends Error {
   ) {
     super(message)
 
+    // Make errors comparison possible. ex: error instanceof MeiliSearchCommunicationError.
+    Object.setPrototypeOf(this, MeiliSearchCommunicationError.prototype)
+
     this.name = 'MeiliSearchCommunicationError'
 
     if (body instanceof Response) {

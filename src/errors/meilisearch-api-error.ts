@@ -9,6 +9,10 @@ const MeiliSearchApiError = class extends Error {
 
   constructor(error: MeiliSearchErrorInfo, status: number) {
     super(error.message)
+
+    // Make errors comparison possible. ex: error instanceof MeiliSearchApiError.
+    Object.setPrototypeOf(this, MeiliSearchApiError.prototype)
+
     this.name = 'MeiliSearchApiError'
 
     this.code = error.code
@@ -16,8 +20,6 @@ const MeiliSearchApiError = class extends Error {
     this.link = error.link
     this.message = error.message
     this.httpStatus = status
-    // Make errors comparison possible. ex: error instanceof MeiliSearchApiError.
-    Object.setPrototypeOf(this, MeiliSearchApiError.prototype)
 
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, MeiliSearchApiError)
