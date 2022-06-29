@@ -629,11 +629,11 @@ Using the index object:
 
 - [Update a key](https://docs.meilisearch.com/reference/api/keys.html#update-a-key):
 
-`client.updateKey(key: string, options: KeyUpdate): Promise<Key>`
+`client.updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key>`
 
 - [Delete a key](https://docs.meilisearch.com/reference/api/keys.html#delete-a-key):
 
-`client.deleteKey(key: string): Promise<void>`
+`client.deleteKey(keyOrUid: string): Promise<void>`
 
 ### isHealthy <!-- omit in toc -->
 
