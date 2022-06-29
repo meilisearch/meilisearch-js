@@ -41,7 +41,7 @@ const { MeiliSearch } = require('../../../dist/bundles/meilisearch.umd.js')
     '',
     {
       filter: ['genres = action'],
-      facetsDistribution: ['genres']
+      facets: ['genres']
     }
   )
   console.log(JSON.stringify(facetedSearch))

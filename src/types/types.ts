@@ -100,13 +100,13 @@ export type CategoriesDistribution = {
 
 export type Facet = string
 export type FacetsDistribution = Record<Facet, CategoriesDistribution>
-export type _matchesInfo<T> = Partial<
+export type MatchesPosition<T> = Partial<
   Record<keyof T, Array<{ start: number; length: number }>>
 >
 
 export type Hit<T = Record<string, any>> = T & {
   _formatted?: Partial<T>
-  _matchesPosition?: _matchesInfo<T>
+  _matchesPosition?: MatchesPosition<T>
 }
 
 export type Hits<T = Record<string, any>> = Array<Hit<T>>

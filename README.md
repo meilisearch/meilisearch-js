@@ -192,7 +192,7 @@ Output:
   ],
   "offset": 0,
   "limit": 20,
-  "nbHits": 1,
+  "estimatedTotalHits": 1,
   "processingTimeMs": 1,
   "query": "philoudelphia"
 }
@@ -227,7 +227,7 @@ await index.search(
   ],
   "offset": 0,
   "limit": 20,
-  "nbHits": 1,
+  "estimatedTotalHits": 1,
   "processingTimeMs": 0,
   "query": "wonder"
 }
@@ -270,7 +270,7 @@ await index.search(
   ],
   "offset": 0,
   "limit": 20,
-  "nbHits": 1,
+  "estimatedTotalHits": 1,
   "processingTimeMs": 0,
   "query": "wonder"
 }
@@ -285,7 +285,7 @@ await index.search(
   '',
   {
     filter: ['genres = fantasy'],
-    facetsDistribution: ['genres']
+    facets: ['genres']
   }
 )
 ```
@@ -306,10 +306,10 @@ await index.search(
   ],
   "offset": 0,
   "limit": 20,
-  "nbHits": 2,
+  "estimatedTotalHits": 2,
   "processingTimeMs": 0,
   "query": "",
-  "facetsDistribution": {
+  "facetDistribution": {
     "genres": {
       "Action": 2,
       "Fantasy": 1,
@@ -621,7 +621,7 @@ Using the index object:
 
 - [Get one key](https://docs.meilisearch.com/reference/api/keys.html#get-one-key):
 
-`client.getKey(key: string): Promise<Key>`
+`client.getKey(keyOrUid: string): Promise<Key>`
 
 - [Create a key](https://docs.meilisearch.com/reference/api/keys.html#create-a-key):
 

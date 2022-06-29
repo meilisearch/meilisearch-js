@@ -273,7 +273,7 @@ search_parameter_guide_highlight_tag_1: |-
   })
 search_parameter_guide_matches_1: |-
   client.index('movies').search('winter feast', {
-    matches: true
+    showMatchesPosition: true
   })
 settings_guide_synonyms_1: |-
   client.index('tops').updateSettings({
@@ -497,7 +497,7 @@ faceted_search_filter_1: |-
 faceted_search_facets_distribution_1: |-
   client.index('movies')
     .search('Batman', {
-      facetsDistribution: ['genres']
+      facets: ['genres']
     })
 faceted_search_walkthrough_filter_1: |-
   client.index('movies')

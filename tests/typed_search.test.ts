@@ -299,7 +299,7 @@ describe.each([
     expect(response.hits[0]._formatted?.isTrue).toEqual(true)
   })
 
-  test(`${permission} key: Search with filter and facetsDistribution`, async () => {
+  test(`${permission} key: Search with filter and facets`, async () => {
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search('a', {
       filter: ['genre=romance'],
