@@ -258,7 +258,7 @@ class Client {
    * @method getKey
    *
    * @param {string} key - Key
-   * @returns {Promise<Keys>} Promise returning a key
+   * @returns {Promise<Key>} Promise returning a key
    */
   async getKey(key: string): Promise<Key> {
     const url = `keys/${key}`
@@ -271,7 +271,7 @@ class Client {
    * @method createKey
    *
    * @param {KeyPayload} options - Key options
-   * @returns {Promise<Key>} Promise returning an object with keys
+   * @returns {Promise<Key>} Promise returning a key
    */
   async createKey(options: KeyPayload): Promise<Key> {
     const url = `keys`
@@ -285,7 +285,7 @@ class Client {
    *
    * @param {string} key - Key
    * @param {KeyPayload} options - Key options
-   * @returns {Promise<Key>} Promise returning an object with keys
+   * @returns {Promise<Key>} Promise returning a key
    */
   async updateKey(key: string, options: KeyPayload): Promise<Key> {
     const url = `keys/${key}`
