@@ -300,12 +300,12 @@ class Client {
    * @memberof MeiliSearch
    * @method updateKey
    *
-   * @param {string} key - Key
+   * @param {string} keyOrUid - Key
    * @param {KeyUpdate} options - Key options
    * @returns {Promise<Key>} Promise returning an object with keys
    */
-  async updateKey(key: string, options: KeyUpdate): Promise<Key> {
-    const url = `keys/${key}`
+  async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
+    const url = `keys/${keyOrUid}`
     return await this.httpRequest.patch(url, options)
   }
 
@@ -314,11 +314,11 @@ class Client {
    * @memberof MeiliSearch
    * @method deleteKey
    *
-   * @param {string} key - Key
+   * @param {string} keyOrUid - Key
    * @returns {Promise<Void>}
    */
-  async deleteKey(key: string): Promise<void> {
-    const url = `keys/${key}`
+  async deleteKey(keyOrUid: string): Promise<void> {
+    const url = `keys/${keyOrUid}`
     return await this.httpRequest.delete<any>(url)
   }
 
