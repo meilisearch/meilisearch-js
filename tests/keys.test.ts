@@ -10,6 +10,10 @@ beforeEach(async () => {
   await clearAllIndexes(config)
 })
 
+afterAll(() => {
+  return clearAllIndexes(config)
+})
+
 describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   'Test on keys',
   ({ permission }) => {
