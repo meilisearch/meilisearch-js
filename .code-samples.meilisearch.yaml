@@ -284,7 +284,7 @@ search_parameter_guide_highlight_tag_1: |-
     highlightPreTag: '<span class="highlight">',
     highlightPostTag: '</span>'
   })
-PLEASE_UPDATE_ME>>>>>>>>>>>>>search_parameter_guide_matches_1: |-
+search_parameter_guide_show_matches_position_1: |-
   client.index('movies').search('winter feast', {
     showMatchesPosition: true
   })
@@ -507,7 +507,7 @@ faceted_search_filter_1: |-
     .search('thriller', {
       filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
     })
-PLEASE_UPDATE_ME>>>>>>>>>>>>>faceted_search_facets_distribution_1: |-
+faceted_search_facets_1: |-
   client.index('movies')
     .search('Batman', {
       facets: ['genres']
