@@ -90,7 +90,7 @@ PLEASE_UPDATE_ME>>>>>>>>>>>>>delete_a_key_1: |-
   client.deleteKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
 get_settings_1: |-
   client.index('movies').getSettings()
-PLEASE_UPDATE_ME>>>>>>>>>>>>>update_settings_1: |-
+update_settings_1: |-
   client.index('movies').updateSettings({
       rankingRules: [
           'words',
@@ -135,6 +135,12 @@ PLEASE_UPDATE_ME>>>>>>>>>>>>>update_settings_1: |-
           'disableOnAttributes': [
               'title'
           ]
+      },
+      pagination: {
+          maxTotalHits: 5000
+      },
+      faceting: {
+          maxValuesPerFacet: 200
       }
   })
 reset_settings_1: |-
@@ -450,7 +456,8 @@ getting_started_update_searchable_attributes: |-
   ])
 getting_started_update_stop_words: |-
   client.index('movies').updateStopWords(['the'])
-PLEASE_UPDATE_ME>>>>>>>>>>>>>PLEASE_UPDATE_ME>>>>>>>>>>>>>getting_started_check_task_status: |-
+? PLEASE_UPDATE_ME>>>>>>>>>>>>>PLEASE_UPDATE_ME>>>>>>>>>>>>>getting_started_check_task_status
+: |-
   client.index('movies').getTask(0)
 getting_started_synonyms: |-
   client.index('movies').updateSynonyms({
