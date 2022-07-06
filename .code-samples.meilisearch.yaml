@@ -63,9 +63,9 @@ get_all_tasks_1: |-
 get_task_1: |-
   client.getTask(1)
 get_one_key_1: |-
-  client.getKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
-PLEASE_UPDATE_ME>>>>>>>>>>>>>get_all_keys_1: |-
-  client.getKeys()
+  client.getKey('6062abda-a5aa-4414-ac91-ecd7944c0f8d')
+get_all_keys_1: |-
+  client.getKeys({ limit: 3 })
 create_a_key_1: |-
   client.createKey({
     description: 'Add documents: Products API key',
@@ -73,21 +73,13 @@ create_a_key_1: |-
     indexes: ['products'],
     expiresAt: '2021-11-13T00:00:00Z'
   })
-PLEASE_UPDATE_ME>>>>>>>>>>>>>update_a_key_1: |-
-  client.updateKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4', {
+update_a_key_1: |-
+  client.updateKey('6062abda-a5aa-4414-ac91-ecd7944c0f8d', {
+      name: 'Products/Reviews API key',
       description: 'Manage documents: Products/Reviews API key',
-      actions: [
-        'documents.add',
-        'documents.delete'
-      ],
-      indexes: [
-        'products',
-        'reviews'
-      ],
-      expiresAt: '2021-12-31T23:59:59Z'
   })
-PLEASE_UPDATE_ME>>>>>>>>>>>>>delete_a_key_1: |-
-  client.deleteKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+delete_a_key_1: |-
+  client.deleteKey('6062abda-a5aa-4414-ac91-ecd7944c0f8d')
 get_settings_1: |-
   client.index('movies').getSettings()
 PLEASE_UPDATE_ME>>>>>>>>>>>>>update_settings_1: |-
@@ -587,10 +579,10 @@ geosearch_guide_sort_usage_2: |-
 security_guide_search_key_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'apiKey' })
   client.index('patient_medical_records').search()
-PLEASE_UPDATE_ME>>>>>>>>>>>>>security_guide_update_key_1: |-
+security_guide_update_key_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
-  client.updateKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4', {
-    indexes: ['doctors']
+  client.updateKey('74c9c733-3368-4738-bbe5-1d18a5fecb37', {
+    description: 'Default Search API Key'
   })
 security_guide_create_key_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
@@ -603,9 +595,9 @@ security_guide_create_key_1: |-
 security_guide_list_keys_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
   client.getKeys()
-PLEASE_UPDATE_ME>>>>>>>>>>>>>security_guide_delete_key_1: |-
+security_guide_delete_key_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
-  client.getKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+  client.getKey('ac5cd97d-5a4b-4226-a868-2d0eb6d197ab')
 authorization_header_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
   client.getKeys()
