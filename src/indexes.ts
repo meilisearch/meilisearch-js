@@ -20,6 +20,7 @@ import {
   IndexOptions,
   IndexStats,
   DocumentsQuery,
+  DocumentQuery,
   Document,
   DocumentOptions,
   EnqueuedTask,
@@ -343,11 +344,29 @@ class Index<T = Record<string, any>> {
    * @method getDocument
    * @template T
    * @param {string | number} documentId Document ID
+   * @param {DocumentQuery<T>} [parameters={}] Parameters applied on a document
    * @returns {Promise<Document<T>>} Promise containing Document response
    */
-  async getDocument(documentId: string | number): Promise<Document<T>> {
+  async getDocument<T = Record<string, any>>(
+    documentId: string | number,
+    parameters?: DocumentQuery<T>
+  ): Promise<Document<T>> {
     const url = `indexes/${this.uid}/documents/${documentId}`
-    return await this.httpRequest.get<Document<T>>(url)
+
+    const fields = (() => {
+      if (Array.isArray(parameters?.fields)) {
+        return parameters?.fields?.join(',')
+      }
+      return undefined
+    })()
+
+    return await this.httpRequest.get<Document<T>>(
+      url,
+      removeUndefinedFromObject({
+        ...parameters,
+        fields,
+      })
+    )
   }
 
   /**

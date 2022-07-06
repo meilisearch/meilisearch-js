@@ -129,12 +129,20 @@ export type FieldDistribution = {
  ** Documents
  */
 
+type Fields<T = Record<string, any>> =
+  | Array<Extract<keyof T, string>>
+  | Extract<keyof T, string>
+
 export type DocumentOptions = {
   primaryKey?: string
 }
 
 export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
-  fields?: Array<Extract<keyof T, string>> | Extract<keyof T, string>
+  fields?: Fields<T>
+}
+
+export type DocumentQuery<T = Record<string, any>> = {
+  fields?: Fields<T>
 }
 
 export type Document<T = Record<string, any>> = T
