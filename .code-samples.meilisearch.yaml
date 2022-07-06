@@ -18,8 +18,8 @@ settings_guide_pagination_1: |-
 
 get_one_index_1: |-
   client.index('movies').getRawInfo()
-PLEASE_UPDATE_ME>>>>>>>>>>>>>list_all_indexes_1: |-
-  client.getIndexes()
+list_all_indexes_1: |-
+  client.getIndexes({ limit: 3 })
 create_an_index_1: |-
   client.createIndex('movies', { primaryKey: 'id' })
 update_an_index_1: |-
@@ -450,7 +450,8 @@ getting_started_update_searchable_attributes: |-
   ])
 getting_started_update_stop_words: |-
   client.index('movies').updateStopWords(['the'])
-PLEASE_UPDATE_ME>>>>>>>>>>>>>PLEASE_UPDATE_ME>>>>>>>>>>>>>getting_started_check_task_status: |-
+? PLEASE_UPDATE_ME>>>>>>>>>>>>>PLEASE_UPDATE_ME>>>>>>>>>>>>>getting_started_check_task_status
+: |-
   client.index('movies').getTask(0)
 getting_started_synonyms: |-
   client.index('movies').updateSynonyms({
