@@ -26,8 +26,10 @@ update_an_index_1: |-
   client.updateIndex('movies', { primaryKey: 'id' })
 delete_an_index_1: |-
   client.deleteIndex('movies')
-PLEASE_UPDATE_ME>>>>>>>>>>>>>get_one_document_1: |-
-  client.index('movies').getDocument(25684)
+get_one_document_1: |-
+  client
+      .index('movies')
+      .getDocument(25684, { fields: ['id', 'title', 'poster', 'release_date'] })
 get_documents_1: |-
   client.index('movies').getDocuments({ limit: 2 })
 add_or_replace_documents_1: |-
@@ -450,7 +452,8 @@ getting_started_update_searchable_attributes: |-
   ])
 getting_started_update_stop_words: |-
   client.index('movies').updateStopWords(['the'])
-PLEASE_UPDATE_ME>>>>>>>>>>>>>PLEASE_UPDATE_ME>>>>>>>>>>>>>getting_started_check_task_status: |-
+? PLEASE_UPDATE_ME>>>>>>>>>>>>>PLEASE_UPDATE_ME>>>>>>>>>>>>>getting_started_check_task_status
+: |-
   client.index('movies').getTask(0)
 getting_started_synonyms: |-
   client.index('movies').updateSynonyms({
