@@ -3,10 +3,6 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
-get_all_tasks_filtering_1: |-
-get_all_tasks_filtering_2: |-
-get_all_tasks_paginating_1: |-
-get_all_tasks_paginating_2: |-
 get_pagination_settings_1: |-
 update_pagination_settings_1: |-
 reset_pagination_settings_1: |-
@@ -54,14 +50,18 @@ search_post_1: |-
   client.index('movies').search('American ninja')
 search_get_1: |-
   client.index('movies').search('American ninja')
-PLEASE_REMOVE_ME>>>>>>>>>>>>>get_task_by_index_1: |-
-  client.index('movies').getTask(1)
-PLEASE_REMOVE_ME>>>>>>>>>>>>>get_all_tasks_by_index_1: |-
-  client.index('movies').getTasks()
 get_all_tasks_1: |-
   client.getTasks()
 get_task_1: |-
   client.getTask(1)
+get_all_tasks_filtering_1: |-
+  client.getTasks({ indexUid: ['movies'] })
+get_all_tasks_filtering_2: |-
+  client.getTasks({ status: ['succeeded', 'failed'], type: ['documentAdditionOrUpdate'] })
+get_all_tasks_paginating_1: |-
+  client.getTasks({ limit: 2, from: 10 })
+get_all_tasks_paginating_2: |-
+  client.getTasks({ limit: 2, from: 8 })
 get_one_key_1: |-
   client.getKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
 PLEASE_UPDATE_ME>>>>>>>>>>>>>get_all_keys_1: |-
@@ -450,8 +450,8 @@ getting_started_update_searchable_attributes: |-
   ])
 getting_started_update_stop_words: |-
   client.index('movies').updateStopWords(['the'])
-PLEASE_UPDATE_ME>>>>>>>>>>>>>PLEASE_UPDATE_ME>>>>>>>>>>>>>getting_started_check_task_status: |-
-  client.index('movies').getTask(0)
+getting_started_check_task_status: |-
+  client.getTask(0)
 getting_started_synonyms: |-
   client.index('movies').updateSynonyms({
     winnie: ['piglet'],
