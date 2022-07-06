@@ -16,7 +16,7 @@ const TOKEN_TYP = 'JWT'
 const UID = 'movies_test'
 
 afterAll(() => {
-  clearAllIndexes(config)
+  return clearAllIndexes(config)
 })
 
 describe.each([{ permission: 'Private' }])(

@@ -316,8 +316,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: delete index using client`, async () => {
       const client = await getClient(permission)
-      const { taskUid } = await client.deleteIndex(indexPk.uid)
       await client.createIndex(indexPk.uid)
+      const { taskUid } = await client.deleteIndex(indexPk.uid)
       await client.waitForTask(taskUid)
 
       const { results } = await client.getIndexes()
