@@ -57,6 +57,37 @@ describe('Documents tests', () => {
         }
       })
 
+      test(`${permission} key: Get one document `, async () => {
+        const client = await getClient(permission)
+        const { taskUid } = await client
+          .index(indexNoPk.uid)
+          .addDocuments(dataset)
+        await client.index(indexNoPk.uid).waitForTask(taskUid)
+
+        const documentId = 1
+        const document = await client
+          .index(indexNoPk.uid)
+          .getDocument<Book>(documentId)
+
+        expect(document.title).toEqual('Alice In Wonderland')
+      })
+
+      test(`${permission} key: Get one document with fields parameter`, async () => {
+        const client = await getClient(permission)
+        const { taskUid } = await client
+          .index(indexNoPk.uid)
+          .addDocuments(dataset)
+        await client.index(indexNoPk.uid).waitForTask(taskUid)
+
+        const documentId = 1
+        const document = await client
+          .index(indexNoPk.uid)
+          .getDocument<Book>(documentId, { fields: ['title'] })
+
+        expect(document.title).toEqual('Alice In Wonderland')
+        expect(document.id).toBeUndefined()
+      })
+
       test(`${permission} key: Get documents with string fields`, async () => {
         const client = await getClient(permission)
 
@@ -136,10 +167,10 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
         const client = await getClient(permission)
-        const { taskUid: addDocUpdate } = await client
+        const { taskUid: addDocTask } = await client
           .index(indexNoPk.uid)
           .addDocuments(dataset)
-        await client.index(indexNoPk.uid).waitForTask(addDocUpdate)
+        await client.index(indexNoPk.uid).waitForTask(addDocTask)
         const id = 2
         const title = 'The Red And The Black'
 
@@ -248,10 +279,10 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Add document with update documents function from index that has NO primary key`, async () => {
         const client = await getClient(permission)
-        const { taskUid: addDocUpdate } = await client
+        const { taskUid: addDocTask } = await client
           .index(indexNoPk.uid)
           .addDocuments(dataset)
-        await client.index(indexNoPk.uid).waitForTask(addDocUpdate)
+        await client.index(indexNoPk.uid).waitForTask(addDocTask)
         const id = 9
         const title = '1984'
 
@@ -269,10 +300,10 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Add document with update documents function from index that has a primary key`, async () => {
         const client = await getClient(permission)
-        const { taskUid: addDocUpdate } = await client
+        const { taskUid: addDocTask } = await client
           .index(indexPk.uid)
           .addDocuments(dataset)
-        await client.index(indexPk.uid).waitForTask(addDocUpdate)
+        await client.index(indexPk.uid).waitForTask(addDocTask)
         const id = 9
         const title = '1984'
         const task = await client
@@ -290,10 +321,10 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Delete a document from index that has NO primary key`, async () => {
         const client = await getClient(permission)
-        const { taskUid: addDocUpdate } = await client
+        const { taskUid: addDocTask } = await client
           .index(indexNoPk.uid)
           .addDocuments(dataset)
-        await client.index(indexNoPk.uid).waitForTask(addDocUpdate)
+        await client.index(indexNoPk.uid).waitForTask(addDocTask)
         const id = 9
 
         const task = await client.index(indexNoPk.uid).deleteDocument(id)
@@ -305,10 +336,10 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Delete a document from index that has a primary key`, async () => {
         const client = await getClient(permission)
-        const { taskUid: addDocUpdate } = await client
+        const { taskUid: addDocTask } = await client
           .index(indexPk.uid)
           .addDocuments(dataset)
-        await client.index(indexPk.uid).waitForTask(addDocUpdate)
+        await client.index(indexPk.uid).waitForTask(addDocTask)
 
         const id = 9
         const task = await client.index(indexPk.uid).deleteDocument(id)
@@ -320,10 +351,10 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Delete some documents from index that has NO primary key`, async () => {
         const client = await getClient(permission)
-        const { taskUid: addDocUpdate } = await client
+        const { taskUid: addDocTask } = await client
           .index(indexNoPk.uid)
           .addDocuments(dataset)
-        await client.index(indexNoPk.uid).waitForTask(addDocUpdate)
+        await client.index(indexNoPk.uid).waitForTask(addDocTask)
 
         const ids = [1, 2]
         const task = await client.index(indexNoPk.uid).deleteDocuments(ids)
@@ -339,10 +370,10 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Delete some documents from index that has a primary key`, async () => {
         const client = await getClient(permission)
-        const { taskUid: addDocUpdate } = await client
+        const { taskUid: addDocTask } = await client
           .index(indexPk.uid)
           .addDocuments(dataset)
-        await client.index(indexPk.uid).waitForTask(addDocUpdate)
+        await client.index(indexPk.uid).waitForTask(addDocTask)
 
         const ids = [1, 2]
         const task = await client.index(indexPk.uid).deleteDocuments(ids)
@@ -410,7 +441,7 @@ describe('Documents tests', () => {
         expect(response).toHaveProperty('primaryKey', 'unique')
       })
 
-      test(`${permission} key: Add a document without a primary key and check response in update status`, async () => {
+      test(`${permission} key: Add a document without a primary key and check response in task status`, async () => {
         const client = await getClient(permission)
         const docs = [
           {
@@ -427,7 +458,7 @@ describe('Documents tests', () => {
         expect(error).toHaveProperty('type')
       })
 
-      test(`${permission} key: Try to add documents from index with no primary key with NO valid primary key, update should fail`, async () => {
+      test(`${permission} key: Try to add documents from index with no primary key with NO valid primary key, task should fail`, async () => {
         const client = await getClient(permission)
         const { taskUid } = await client.index(indexNoPk.uid).addDocuments([
           {
