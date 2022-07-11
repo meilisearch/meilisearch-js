@@ -1,6 +1,7 @@
 import 'cross-fetch/polyfill'
 
 import { Config, EnqueuedTask } from './types'
+import { PACKAGE_VERSION } from './package-version'
 
 import {
   MeiliSearchError,
@@ -20,16 +21,46 @@ function constructHostURL(host: string): string {
   }
 }
 
+function createHeaders(config: Config): Record<string, any> {
+  const agentHeader = 'X-Meilisearch-Client'
+  const packageAgent = `Meilisearch JavaScript (v${PACKAGE_VERSION})`
+  const contentType = 'Content-Type'
+  config.headers = config.headers || {}
+
+  const headers: Record<string, any> = Object.assign({}, config.headers) // Create a hard copy and not a reference to config.headers
+
+  if (config.apiKey) {
+    headers['Authorization'] = `Bearer ${config.apiKey}`
+  }
+
+  if (!config.headers[contentType]) {
+    headers['Content-Type'] = 'application/json'
+  }
+
+  // Creates the custom user agent with information on the package used.
+  if (config.clientAgents && Array.isArray(config.clientAgents)) {
+    const clients = config.clientAgents.concat(packageAgent)
+
+    headers[agentHeader] = clients.join(' ; ')
+  } else if (config.clientAgents && !Array.isArray(config.clientAgents)) {
+    // If the header is defined but not an array
+    throw new MeiliSearchError(
+      `Meilisearch: The header "${agentHeader}" should be an array of string(s).\n`
+    )
+  } else {
+    headers[agentHeader] = packageAgent
+  }
+
+  return headers
+}
+
 class HttpRequests {
   headers: Record<string, any>
   url: URL
 
   constructor(config: Config) {
-    this.headers = Object.assign({}, config.headers || {}) // assign to avoid referencing
-    this.headers['Content-Type'] = 'application/json'
-    if (config.apiKey) {
-      this.headers['Authorization'] = `Bearer ${config.apiKey}`
-    }
+    this.headers = createHeaders(config)
+
     try {
       const host = constructHostURL(config.host)
       this.url = new URL(host)

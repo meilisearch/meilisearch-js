@@ -70,7 +70,7 @@ describe.each([
     await client.createIndex(emptyIndex.uid)
 
     const newFilterableAttributes = ['genre', 'title', 'id']
-    const { uid: task1 }: EnqueuedTask = await client
+    const { taskUid: task1 }: EnqueuedTask = await client
       .index(index.uid)
       .updateSettings({
         filterableAttributes: newFilterableAttributes,
@@ -78,7 +78,9 @@ describe.each([
       })
     await client.waitForTask(task1)
 
-    const { uid: task2 } = await client.index(index.uid).addDocuments(dataset)
+    const { taskUid: task2 } = await client
+      .index(index.uid)
+      .addDocuments(dataset)
     await client.waitForTask(task2)
   })
 
@@ -221,7 +223,7 @@ describe.each([
       filter: 'title = "Le Petit Prince"',
       attributesToCrop: ['*'],
       cropLength: 5,
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response).toHaveProperty('hits', expect.any(Array))
     expect(response).toHaveProperty('offset', 0)
@@ -229,7 +231,7 @@ describe.each([
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
     expect(response.hits.length).toEqual(1)
-    expect(response.hits[0]).toHaveProperty('_matchesInfo', {
+    expect(response.hits[0]).toHaveProperty('_matchesPosition', {
       comment: [{ start: 22, length: 6 }],
       title: [{ start: 9, length: 6 }],
     })
@@ -245,7 +247,7 @@ describe.each([
       cropLength: 6,
       attributesToHighlight: ['*'],
       filter: 'title = "Le Petit Prince"',
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response).toHaveProperty('hits', expect.any(Array))
     expect(response).toHaveProperty('offset', 0)
@@ -262,7 +264,10 @@ describe.each([
       'title',
       'Le Petit <em>Prince</em>'
     )
-    expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
+    expect(response.hits[0]).toHaveProperty(
+      '_matchesPosition',
+      expect.any(Object)
+    )
   })
 
   test(`${permission} key: search on default cropping parameters`, async () => {
@@ -316,7 +321,7 @@ describe.each([
       cropLength: 6,
       attributesToHighlight: ['*'],
       filter: 'title = "Le Petit Prince"',
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response).toHaveProperty('hits', expect.any(Array))
     expect(response).toHaveProperty('offset', 0)
@@ -329,7 +334,10 @@ describe.each([
       'title',
       'Le Petit <em>Prince</em>'
     )
-    expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
+    expect(response.hits[0]).toHaveProperty(
+      '_matchesPosition',
+      expect.any(Object)
+    )
   })
 
   test(`${permission} key: search with all options but specific fields`, async () => {
@@ -342,7 +350,7 @@ describe.each([
       cropLength: 6,
       attributesToHighlight: ['id', 'title'],
       filter: 'title = "Le Petit Prince"',
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response).toHaveProperty('hits', expect.any(Array))
     expect(response).toHaveProperty('offset', 0)
@@ -363,7 +371,10 @@ describe.each([
       'Le Petit <em>Prince</em>'
     )
     expect(response.hits[0]._formatted).not.toHaveProperty('comment')
-    expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
+    expect(response.hits[0]).toHaveProperty(
+      '_matchesPosition',
+      expect.any(Object)
+    )
   })
 
   test(`${permission} key: Search with specific fields in attributesToHighlight and check for types of number fields`, async () => {
@@ -386,17 +397,16 @@ describe.each([
     expect(response.hits[0]._formatted?.isTrue).toEqual(true)
   })
 
-  test(`${permission} key: search with filter and facetsDistribution`, async () => {
+  test(`${permission} key: search with filter and facetDistribution`, async () => {
     const client = await getClient(permission)
     const response = await client.index(index.uid).search('a', {
       filter: ['genre = romance'],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response).toHaveProperty('facetsDistribution', {
+
+    expect(response).toHaveProperty('facetDistribution', {
       genre: { romance: 2 },
     })
-    expect(response).toHaveProperty('exhaustiveFacetsCount', false)
-    expect(response).toHaveProperty('exhaustiveNbHits', false)
     expect(response).toHaveProperty('hits', expect.any(Array))
     expect(response.hits.length).toEqual(2)
   })
@@ -406,7 +416,6 @@ describe.each([
     const response = await client.index(index.uid).search('a', {
       filter: 'id < 0',
     })
-    expect(response).toHaveProperty('exhaustiveNbHits', false)
     expect(response).toHaveProperty('hits', expect.any(Array))
     expect(response.hits.length).toEqual(0)
   })
@@ -424,13 +433,11 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index(index.uid).search('a', {
       filter: ['genre = romance', ['genre = romance', 'genre = romance']],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response).toHaveProperty('facetsDistribution', {
+    expect(response).toHaveProperty('facetDistribution', {
       genre: { romance: 2 },
     })
-    expect(response).toHaveProperty('exhaustiveFacetsCount', false)
-    expect(response).toHaveProperty('exhaustiveNbHits', false)
     expect(response).toHaveProperty('hits', expect.any(Array))
     expect(response.hits.length).toEqual(2)
   })
@@ -439,9 +446,9 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index(index.uid).search(undefined, {
       filter: ['genre = fantasy'],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response).toHaveProperty('facetsDistribution', {
+    expect(response).toHaveProperty('facetDistribution', {
       genre: { fantasy: 2 },
     })
     expect(response.hits.length).toEqual(2)
@@ -451,22 +458,22 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index(index.uid).search(null, {
       filter: ['genre = fantasy'],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response).toHaveProperty('facetsDistribution', {
+    expect(response).toHaveProperty('facetDistribution', {
       genre: { fantasy: 2 },
     })
     expect(response.hits.length).toEqual(2)
-    expect(response.nbHits).toEqual(2)
+    expect(response.estimatedTotalHits).toEqual(2)
   })
 
   test(`${permission} key: search with multiple filter and empty string query (placeholder)`, async () => {
     const client = await getClient(permission)
     const response = await client.index(index.uid).search('', {
       filter: ['genre = fantasy'],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response).toHaveProperty('facetsDistribution', {
+    expect(response).toHaveProperty('facetDistribution', {
       genre: { fantasy: 2 },
     })
     expect(response.hits.length).toEqual(2)
@@ -497,8 +504,8 @@ describe.each([
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission)
     const masterClient = await getClient('Master')
-    const { uid } = await masterClient.index(index.uid).delete()
-    await masterClient.waitForTask(uid)
+    const { taskUid } = await masterClient.index(index.uid).delete()
+    await masterClient.waitForTask(taskUid)
 
     await expect(
       client.index(index.uid).search('prince', {})
@@ -511,8 +518,8 @@ describe.each([{ permission: 'No' }])(
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.createIndex(index.uid)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.createIndex(index.uid)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: Try Basic search and be denied`, async () => {
@@ -535,7 +542,7 @@ describe.each([{ permission: 'Master' }])(
       const client = await getClient('Master')
       await client.createIndex(index.uid)
 
-      const { uid: documentAdditionTask } = await client
+      const { taskUid: documentAdditionTask } = await client
         .index(index.uid)
         .addDocuments(datasetWithNests)
       await client.waitForTask(documentAdditionTask)
@@ -557,7 +564,7 @@ describe.each([{ permission: 'Master' }])(
 
     test(`${permission} key: search on nested content with searchable on specific nested field`, async () => {
       const client = await getClient(permission)
-      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ['title', 'info.comment'],
@@ -578,7 +585,7 @@ describe.each([{ permission: 'Master' }])(
 
     test(`${permission} key: search on nested content with sort`, async () => {
       const client = await getClient(permission)
-      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ['title', 'info.comment'],
@@ -610,8 +617,8 @@ describe.each([
   beforeAll(async () => {
     const client = await getClient('Master')
     await clearAllIndexes(config)
-    const { uid } = await client.createIndex(index.uid)
-    await client.waitForTask(uid)
+    const { taskUid } = await client.createIndex(index.uid)
+    await client.waitForTask(taskUid)
   })
 
   test(`${permission} key: search on index and abort`, async () => {

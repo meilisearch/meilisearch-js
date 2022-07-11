@@ -1,9 +1,5 @@
-import { MeiliSearch, MeiliSearchTimeOutError, Index } from '../../src'
-import { Config, EnqueuedDump } from '../../src/types'
-
-async function sleep(ms: number): Promise<void> {
-  return await new Promise((resolve) => setTimeout(resolve, ms))
-}
+import { MeiliSearch, Index } from '../../src'
+import { Config } from '../../src/types'
 
 // testing
 const MASTER_KEY = 'masterKey'
@@ -34,16 +30,14 @@ async function getKey(permission: string): Promise<string> {
   const { results: keys } = await masterClient.getKeys()
 
   if (permission === 'Public') {
-    const key = keys.find((key: any) =>
-      key.description.startsWith('Default Search API')
-    )?.key
+    const key = keys.find((key: any) => key.name === 'Default Search API Key')
+      ?.key
     return key || ''
   }
 
   if (permission === 'Private') {
-    const key = keys.find((key: any) =>
-      key.description.startsWith('Default Admin API')
-    )?.key
+    const key = keys.find((key: any) => key.name === 'Default Admin API Key')
+      ?.key
     return key || ''
   }
   return MASTER_KEY
@@ -81,36 +75,15 @@ async function getClient(permission: string): Promise<MeiliSearch> {
 const clearAllIndexes = async (config: Config): Promise<void> => {
   const client = new MeiliSearch(config)
 
-  const response = await client.getRawIndexes()
-  const indexes = response.map((elem) => elem.uid)
+  const { results } = await client.getRawIndexes()
+  const indexes = results.map((elem) => elem.uid)
 
   const taskIds = []
   for (const indexUid of indexes) {
-    const { uid } = await client.index(indexUid).delete()
-    taskIds.push(uid)
+    const { taskUid } = await client.index(indexUid).delete()
+    taskIds.push(taskUid)
   }
   await client.waitForTasks(taskIds)
-
-  await expect(client.getIndexes()).resolves.toHaveLength(0)
-}
-
-async function waitForDumpProcessing(
-  dumpId: string,
-  client: MeiliSearch,
-  {
-    timeOutMs = 5000,
-    intervalMs = 50,
-  }: { timeOutMs?: number; intervalMs?: number } = {}
-): Promise<EnqueuedDump> {
-  const startingTime = Date.now()
-  while (Date.now() - startingTime < timeOutMs) {
-    const response = await client.getDumpStatus(dumpId)
-    if (response.status !== 'in_progress') return response
-    await sleep(intervalMs)
-  }
-  throw new MeiliSearchTimeOutError(
-    `timeout of ${timeOutMs}ms has exceeded on process ${dumpId} when waiting for the dump creation process to be done.`
-  )
 }
 
 function decode64(buff: string) {
@@ -200,7 +173,6 @@ export {
   MASTER_KEY,
   MeiliSearch,
   Index,
-  waitForDumpProcessing,
   getClient,
   getKey,
   decode64,

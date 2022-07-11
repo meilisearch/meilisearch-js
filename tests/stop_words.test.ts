@@ -23,14 +23,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient('Master')
-
-      const { uid } = await client.index(index.uid).addDocuments(dataset)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: Get default stop words`, async () => {
       const client = await getClient(permission)
       const response: string[] = await client.index(index.uid).getStopWords()
+
       expect(response).toEqual([])
     })
 
@@ -40,10 +40,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const task: EnqueuedTask = await client
         .index(index.uid)
         .updateStopWords(newStopWords)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client.index(index.uid).getStopWords()
+
       expect(response).toEqual(newStopWords)
     })
 
@@ -53,20 +53,20 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const task: EnqueuedTask = await client
         .index(index.uid)
         .updateStopWords(newStopWords)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client.index(index.uid).getStopWords()
+
       expect(response).toEqual([])
     })
 
     test(`${permission} key: Reset stop words`, async () => {
       const client = await getClient(permission)
       const task: EnqueuedTask = await client.index(index.uid).resetStopWords()
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client.index(index.uid).getStopWords()
+
       expect(response).toEqual([])
     })
   }

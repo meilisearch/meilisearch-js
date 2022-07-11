@@ -9,21 +9,27 @@
 
 import { Index } from '../indexes'
 import {
-  KeyPayload,
+  KeyCreation,
   Config,
   IndexOptions,
-  IndexResponse,
+  IndexObject,
   EnqueuedTask,
   Key,
   Health,
   Stats,
   Version,
-  EnqueuedDump,
   ErrorStatusCode,
   Task,
-  Result,
   TokenSearchRules,
   TokenOptions,
+  TasksQuery,
+  WaitOptions,
+  KeyUpdate,
+  IndexesQuery,
+  IndexesResults,
+  KeysQuery,
+  KeysResults,
+  TasksResults,
 } from '../types'
 import { HttpRequests } from '../http-requests'
 import { TaskClient } from '../task'
@@ -74,9 +80,9 @@ class Client {
    * @memberof MeiliSearch
    * @method getRawIndex
    * @param {string} indexUid The index UID
-   * @returns {Promise<IndexResponse>} Promise returning index information
+   * @returns {Promise<IndexObject>} Promise returning index information
    */
-  async getRawIndex(indexUid: string): Promise<IndexResponse> {
+  async getRawIndex(indexUid: string): Promise<IndexObject> {
     return new Index(this.config, indexUid).getRawInfo()
   }
 
@@ -84,25 +90,36 @@ class Client {
    * Get all the indexes as Index instances.
    * @memberof MeiliSearch
    * @method getIndexes
-   * @returns {Promise<Index[]>} Promise returning array of raw index information
+   * @param {IndexesQuery} [parameters={}] - Parameters to browse the indexes
+   *
+   * @returns {Promise<IndexesResults<Index[]>>} Promise returning array of raw index information
    */
-  async getIndexes(): Promise<Index[]> {
-    const response = await this.getRawIndexes()
-    const indexes: Index[] = response.map(
+  async getIndexes(
+    parameters: IndexesQuery = {}
+  ): Promise<IndexesResults<Index[]>> {
+    const rawIndexes = await this.getRawIndexes(parameters)
+    const indexes: Index[] = rawIndexes.results.map(
       (index) => new Index(this.config, index.uid, index.primaryKey)
     )
-    return indexes
+    return { ...rawIndexes, results: indexes }
   }
 
   /**
    * Get all the indexes in their raw value (no Index instances).
    * @memberof MeiliSearch
    * @method getRawIndexes
-   * @returns {Promise<IndexResponse[]>} Promise returning array of raw index information
+   * @param {IndexesQuery} [parameters={}] - Parameters to browse the indexes
+   *
+   * @returns {Promise<IndexesResults<IndexObject[]>>} Promise returning array of raw index information
    */
-  async getRawIndexes(): Promise<IndexResponse[]> {
+  async getRawIndexes(
+    parameters: IndexesQuery = {}
+  ): Promise<IndexesResults<IndexObject[]>> {
     const url = `indexes`
-    return await this.httpRequest.get<IndexResponse[]>(url)
+    return await this.httpRequest.get<IndexesResults<IndexObject[]>>(
+      url,
+      parameters
+    )
   }
 
   /**
@@ -175,63 +192,61 @@ class Client {
    * Get the list of all client tasks
    * @memberof MeiliSearch
    * @method getTasks
-   * @returns {Promise<Result<Task[]>>} - Promise returning all tasks
+   * @param {TasksQuery} [parameters={}] - Parameters to browse the tasks
+   *
+   * @returns {Promise<TasksResults>} - Promise returning all tasks
    */
-  async getTasks(): Promise<Result<Task[]>> {
-    return await this.tasks.getClientTasks()
+  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
+    return await this.tasks.getTasks(parameters)
   }
 
   /**
    * Get one task on the client scope
    * @memberof MeiliSearch
    * @method getTask
-   * @param {number} taskId - Task identifier
+   * @param {number} taskUid - Task identifier
    * @returns {Promise<Task>} - Promise returning a task
    */
-  async getTask(taskId: number): Promise<Task> {
-    return await this.tasks.getClientTask(taskId)
+  async getTask(taskUid: number): Promise<Task> {
+    return await this.tasks.getTask(taskUid)
   }
 
   /**
-   * Wait for a batch of tasks to be processed.
+   * Wait for multiple tasks to be finished.
+   *
    * @memberof MeiliSearch
    * @method waitForTasks
-   * @param {number[]} taskIds - Tasks identifier
+   * @param {number[]} taskUids - Tasks identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Result<Task[]>>} - Promise returning an array of tasks
+   * @returns {Promise<Task[]>} - Promise returning an array of tasks
    */
   async waitForTasks(
-    taskIds: number[],
-    {
-      timeOutMs = 5000,
-      intervalMs = 50,
-    }: { timeOutMs?: number; intervalMs?: number } = {}
-  ): Promise<Result<Task[]>> {
-    return await this.tasks.waitForClientTasks(taskIds, {
+    taskUids: number[],
+    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
+  ): Promise<Task[]> {
+    return await this.tasks.waitForTasks(taskUids, {
       timeOutMs,
       intervalMs,
     })
   }
 
   /**
-   * Wait for a task to be processed.
+   * Wait for a task to be finished.
    *
    * @memberof MeiliSearch
    * @method waitForTask
-   * @param {number} taskId - Task identifier
+   *
+   * @param {number} taskUid - Task identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
    * @returns {Promise<Task>} - Promise returning an array of tasks
    */
   async waitForTask(
-    taskId: number,
-    {
-      timeOutMs = 5000,
-      intervalMs = 50,
-    }: { timeOutMs?: number; intervalMs?: number } = {}
+    taskUid: number,
+    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
   ): Promise<Task> {
-    return await this.tasks.waitForClientTask(taskId, {
+    return await this.tasks.waitForTask(taskUid, {
       timeOutMs,
       intervalMs,
     })
@@ -245,11 +260,13 @@ class Client {
    * Get all API keys
    * @memberof MeiliSearch
    * @method getKeys
-   * @returns {Promise<Keys>} Promise returning an object with keys
+   * @param {KeysQuery} [parameters={}] - Parameters to browse the indexes
+   *
+   * @returns {Promise<KeysResults>} Promise returning an object with keys
    */
-  async getKeys(): Promise<Result<Key[]>> {
+  async getKeys(parameters: KeysQuery = {}): Promise<KeysResults> {
     const url = `keys`
-    return await this.httpRequest.get<Result<Key[]>>(url)
+    return await this.httpRequest.get<KeysResults>(url, parameters)
   }
 
   /**
@@ -257,11 +274,11 @@ class Client {
    * @memberof MeiliSearch
    * @method getKey
    *
-   * @param {string} key - Key
+   * @param {string} keyOrUid - Key or uid of the API key
    * @returns {Promise<Key>} Promise returning a key
    */
-  async getKey(key: string): Promise<Key> {
-    const url = `keys/${key}`
+  async getKey(keyOrUid: string): Promise<Key> {
+    const url = `keys/${keyOrUid}`
     return await this.httpRequest.get<Key>(url)
   }
 
@@ -270,10 +287,10 @@ class Client {
    * @memberof MeiliSearch
    * @method createKey
    *
-   * @param {KeyPayload} options - Key options
+   * @param {KeyCreation} options - Key options
    * @returns {Promise<Key>} Promise returning a key
    */
-  async createKey(options: KeyPayload): Promise<Key> {
+  async createKey(options: KeyCreation): Promise<Key> {
     const url = `keys`
     return await this.httpRequest.post(url, options)
   }
@@ -283,12 +300,12 @@ class Client {
    * @memberof MeiliSearch
    * @method updateKey
    *
-   * @param {string} key - Key
-   * @param {KeyPayload} options - Key options
+   * @param {string} keyOrUid - Key
+   * @param {KeyUpdate} options - Key options
    * @returns {Promise<Key>} Promise returning a key
    */
-  async updateKey(key: string, options: KeyPayload): Promise<Key> {
-    const url = `keys/${key}`
+  async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
+    const url = `keys/${keyOrUid}`
     return await this.httpRequest.patch(url, options)
   }
 
@@ -297,11 +314,11 @@ class Client {
    * @memberof MeiliSearch
    * @method deleteKey
    *
-   * @param {string} key - Key
+   * @param {string} keyOrUid - Key
    * @returns {Promise<Void>}
    */
-  async deleteKey(key: string): Promise<void> {
-    const url = `keys/${key}`
+  async deleteKey(keyOrUid: string): Promise<void> {
+    const url = `keys/${keyOrUid}`
     return await this.httpRequest.delete<any>(url)
   }
 
@@ -371,38 +388,33 @@ class Client {
   ///
 
   /**
-   * Triggers a dump creation process
+   * Creates a dump
    * @memberof MeiliSearch
    * @method createDump
-   * @returns {Promise<EnqueuedDump>} Promise returning object of the enqueued task
+   * @returns {Promise<EnqueuedTask>} Promise returning object of the enqueued task
    */
-  async createDump(): Promise<EnqueuedDump> {
+  async createDump(): Promise<EnqueuedTask> {
     const url = `dumps`
-    return await this.httpRequest.post<undefined, EnqueuedDump>(url)
+    return await this.httpRequest.post<undefined, EnqueuedTask>(url)
   }
 
-  /**
-   * Get the status of a dump creation process
-   * @memberof MeiliSearch
-   * @method getDumpStatus
-   * @param {string} dumpUid Dump UID
-   * @returns {Promise<EnqueuedDump>} Promise returning object of the enqueued task
-   */
-  async getDumpStatus(dumpUid: string): Promise<EnqueuedDump> {
-    const url = `dumps/${dumpUid}/status`
-    return await this.httpRequest.get<EnqueuedDump>(url)
-  }
+  ///
+  /// TOKENS
+  ///
 
   /**
    * Generate a tenant token
    *
    * @memberof MeiliSearch
    * @method generateTenantToken
+   * @param {apiKeyUid} apiKeyUid The uid of the api key used as issuer of the token.
    * @param {SearchRules} searchRules Search rules that are applied to every search.
    * @param {TokenOptions} options Token options to customize some aspect of the token.
+   *
    * @returns {String} The token in JWT format.
    */
   generateTenantToken(
+    _apiKeyUid: string,
     _searchRules: TokenSearchRules,
     _options?: TokenOptions
   ): string {

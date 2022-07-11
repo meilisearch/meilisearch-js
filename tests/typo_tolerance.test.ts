@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedTask } from '../src/types'
+import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -34,8 +34,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
     beforeEach(async () => {
       await clearAllIndexes(config)
       const client = await getClient('master')
-      const { uid } = await client.index(index.uid).addDocuments(dataset)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: Get default typo tolerance settings`, async () => {
@@ -57,43 +57,33 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         disableOnWords: ['title'],
         disableOnAttributes: ['hello'],
       }
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
         .updateTypoTolerance(newTypoTolerance)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
-      const response: string[] = await client
-        .index(index.uid)
-        .getTypoTolerance()
+      const response = await client.index(index.uid).getTypoTolerance()
+
       expect(response).toEqual(newTypoTolerance)
     })
 
     test(`${permission} key: Update typo tolerance using null as value`, async () => {
       const client = await getClient(permission)
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateTypoTolerance(null)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      const task = await client.index(index.uid).updateTypoTolerance(null)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
-      const response: string[] = await client
-        .index(index.uid)
-        .getTypoTolerance()
+      const response = await client.index(index.uid).getTypoTolerance()
+
       expect(response).toEqual(defaultTypoTolerance)
     })
 
     test(`${permission} key: Reset typo tolerance settings`, async () => {
       const client = await getClient(permission)
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .resetTypoTolerance()
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      const task = await client.index(index.uid).resetTypoTolerance()
+      await client.index(index.uid).waitForTask(task.taskUid)
 
-      const response: string[] = await client
-        .index(index.uid)
-        .getTypoTolerance()
+      const response = await client.index(index.uid).getTypoTolerance()
+
       expect(response).toEqual(defaultTypoTolerance)
     })
   }

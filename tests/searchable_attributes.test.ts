@@ -1,4 +1,4 @@
-import { ErrorStatusCode, EnqueuedTask } from '../src/types'
+import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -23,59 +23,58 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.index(index.uid).addDocuments(dataset)
-      await client.waitForTask(uid)
-      await client.index(index.uid).waitForTask(uid)
+      const { taskUid } = await client.index(index.uid).addDocuments(dataset)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: Get default searchable attributes`, async () => {
       const client = await getClient(permission)
+
       const response: string[] = await client
         .index(index.uid)
         .getSearchableAttributes()
+
       expect(response).toEqual(['*'])
     })
 
     test(`${permission} key: Update searchable attributes`, async () => {
       const client = await getClient(permission)
       const newSearchableAttributes = ['title']
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
         .updateSearchableAttributes(newSearchableAttributes)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client
         .index(index.uid)
         .getSearchableAttributes()
+
       expect(response).toEqual(newSearchableAttributes)
     })
 
     test(`${permission} key: Update searchable attributes at null`, async () => {
       const client = await getClient(permission)
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
         .updateSearchableAttributes(null)
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client
         .index(index.uid)
         .getSearchableAttributes()
+
       expect(response).toEqual(['*'])
     })
 
     test(`${permission} key: Reset searchable attributes`, async () => {
       const client = await getClient(permission)
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .resetSearchableAttributes()
-      expect(task).toHaveProperty('uid', expect.any(Number))
-      await client.index(index.uid).waitForTask(task.uid)
+      const task = await client.index(index.uid).resetSearchableAttributes()
+      await client.index(index.uid).waitForTask(task.taskUid)
 
       const response: string[] = await client
         .index(index.uid)
         .getSearchableAttributes()
+
       expect(response).toEqual(['*'])
     })
   }
@@ -86,8 +85,8 @@ describe.each([{ permission: 'Public' }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.createIndex(index.uid)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.createIndex(index.uid)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {
@@ -118,8 +117,8 @@ describe.each([{ permission: 'No' }])(
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient('Master')
-      const { uid } = await client.createIndex(index.uid)
-      await client.waitForTask(uid)
+      const { taskUid } = await client.createIndex(index.uid)
+      await client.waitForTask(taskUid)
     })
 
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {

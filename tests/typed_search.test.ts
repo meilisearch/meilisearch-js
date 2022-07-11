@@ -89,18 +89,20 @@ describe.each([
     await clearAllIndexes(config)
 
     const task1 = await client.createIndex(index.uid)
-    await client.waitForTask(task1.uid)
+    await client.waitForTask(task1.taskUid)
     const task2 = await client.createIndex(emptyIndex.uid)
-    await client.waitForTask(task2.uid)
+    await client.waitForTask(task2.taskUid)
 
     const newFilterableAttributes = ['genre', 'title']
-    const response: EnqueuedTask = await client
+    const task: EnqueuedTask = await client
       .index<Movie>(index.uid)
       .updateFilterableAttributes(newFilterableAttributes)
 
-    await client.waitForTask(response.uid)
-    const { uid } = await client.index<Movie>(index.uid).addDocuments(dataset)
-    await client.waitForTask(uid)
+    await client.waitForTask(task.taskUid)
+    const { taskUid } = await client
+      .index<Movie>(index.uid)
+      .addDocuments(dataset)
+    await client.waitForTask(taskUid)
   })
 
   test(`${permission} key: Basic search`, async () => {
@@ -161,17 +163,17 @@ describe.each([
       filter: 'title = "Le Petit Prince"',
       attributesToCrop: ['*'],
       cropLength: 5,
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response.hits.length === 1).toBeTruthy()
     expect(response.offset === 0).toBeTruthy()
     expect(response.limit === 20).toBeTruthy()
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response.query === 'prince').toBeTruthy()
-    expect(response.hits[0]?._matchesInfo?.comment).toEqual([
+    expect(response.hits[0]?._matchesPosition?.comment).toEqual([
       { start: 22, length: 6 },
     ])
-    expect(response.hits[0]?._matchesInfo?.title).toEqual([
+    expect(response.hits[0]?._matchesPosition?.title).toEqual([
       { start: 9, length: 6 },
     ])
   })
@@ -186,7 +188,7 @@ describe.each([
       cropLength: 6,
       attributesToHighlight: ['*'],
       filter: 'title = "Le Petit Prince"',
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response.hits.length === 1).toBeTruthy()
     expect(response.offset === 0).toBeTruthy()
@@ -203,7 +205,10 @@ describe.each([
     expect(response.hits[0]._formatted).toHaveProperty('comment')
     expect(response.hits[0]._formatted).not.toHaveProperty('description')
     expect(response.hits.length === 1).toBeTruthy()
-    expect(response.hits[0]).toHaveProperty('_matchesInfo', expect.any(Object))
+    expect(response.hits[0]).toHaveProperty(
+      '_matchesPosition',
+      expect.any(Object)
+    )
   })
 
   test(`${permission} key: Search with all options and all fields`, async () => {
@@ -216,7 +221,7 @@ describe.each([
       cropLength: 6,
       attributesToHighlight: ['*'],
       filter: 'title = "Le Petit Prince"',
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response.hits.length === 1).toBeTruthy()
     expect(response.offset === 0).toBeTruthy()
@@ -224,9 +229,11 @@ describe.each([
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response.query === 'prince').toBeTruthy()
     expect(response.hits[0]?.title === 'Le Petit Prince').toBeTruthy()
-    expect(response.hits[0]?._matchesInfo?.title?.[0]?.start === 9).toBeTruthy()
     expect(
-      response.hits[0]?._matchesInfo?.title?.[0]?.length === 6
+      response.hits[0]?._matchesPosition?.title?.[0]?.start === 9
+    ).toBeTruthy()
+    expect(
+      response.hits[0]?._matchesPosition?.title?.[0]?.length === 6
     ).toBeTruthy()
     expect(response.hits[0]._formatted).toHaveProperty(
       'title',
@@ -244,7 +251,7 @@ describe.each([
       cropLength: 6,
       attributesToHighlight: ['id', 'title'],
       filter: 'title = "Le Petit Prince"',
-      matches: true,
+      showMatchesPosition: true,
     })
     expect(response.hits.length === 1).toBeTruthy()
     expect(response.offset === 0).toBeTruthy()
@@ -258,7 +265,7 @@ describe.each([
     // expect(response.hits[0].comment).toEqual('comment')
 
     expect(response.hits[0]?.title === 'Le Petit Prince').toBeTruthy()
-    expect(response.hits[0]?._matchesInfo?.title).toEqual([
+    expect(response.hits[0]?._matchesPosition?.title).toEqual([
       { start: 9, length: 6 },
     ])
     expect(response.hits[0]._formatted).toHaveProperty(
@@ -292,14 +299,13 @@ describe.each([
     expect(response.hits[0]._formatted?.isTrue).toEqual(true)
   })
 
-  test(`${permission} key: Search with filter and facetsDistribution`, async () => {
+  test(`${permission} key: Search with filter and facets`, async () => {
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search('a', {
       filter: ['genre=romance'],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response.facetsDistribution?.genre?.romance === 2).toBeTruthy()
-    expect(response.exhaustiveFacetsCount === false).toBeTruthy()
+    expect(response.facetDistribution?.genre?.romance === 2).toBeTruthy()
     expect(response.hits.length === 2).toBeTruthy()
   })
 
@@ -316,10 +322,9 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search('a', {
       filter: ['genre=romance', ['genre=romance', 'genre=romance']],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response.facetsDistribution?.genre?.romance === 2).toBeTruthy()
-    expect(response.exhaustiveFacetsCount === false).toBeTruthy()
+    expect(response.facetDistribution?.genre?.romance === 2).toBeTruthy()
     expect(response.hits.length === 2).toBeTruthy()
   })
 
@@ -327,10 +332,9 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search(undefined, {
       filter: ['genre = fantasy'],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response.facetsDistribution?.genre?.fantasy === 2).toBeTruthy()
-    expect(response.exhaustiveFacetsCount === false).toBeTruthy()
+    expect(response.facetDistribution?.genre?.fantasy === 2).toBeTruthy()
     expect(response.hits.length === 2).toBeTruthy()
   })
 
@@ -338,10 +342,9 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search(null, {
       filter: ['genre = fantasy'],
-      facetsDistribution: ['genre'],
+      facets: ['genre'],
     })
-    expect(response.facetsDistribution?.genre?.fantasy === 2).toBeTruthy()
-    expect(response.exhaustiveFacetsCount === false).toBeTruthy()
+    expect(response.facetDistribution?.genre?.fantasy === 2).toBeTruthy()
     expect(response.hits.length === 2).toBeTruthy()
   })
 
@@ -356,8 +359,9 @@ describe.each([
   test(`${permission} key: Try to Search on deleted index and fail`, async () => {
     const client = await getClient(permission)
     const masterClient = await getClient('Master')
-    const { uid } = await masterClient.index<Movie>(index.uid).delete()
-    await masterClient.waitForTask(uid)
+    const { taskUid } = await masterClient.index<Movie>(index.uid).delete()
+    await masterClient.waitForTask(taskUid)
+
     await expect(
       client.index<Movie>(index.uid).search('prince')
     ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)
@@ -372,7 +376,7 @@ describe.each([{ permission: 'Master' }])(
       const client = await getClient('Master')
       await client.createIndex(index.uid)
 
-      const { uid: documentAdditionTask } = await client
+      const { taskUid: documentAdditionTask } = await client
         .index(index.uid)
         .addDocuments(datasetWithNests)
       await client.waitForTask(documentAdditionTask)
@@ -390,7 +394,7 @@ describe.each([{ permission: 'Master' }])(
 
     test(`${permission} key: search on nested content with searchable on specific nested field`, async () => {
       const client = await getClient(permission)
-      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ['title', 'info.comment'],
@@ -407,7 +411,7 @@ describe.each([{ permission: 'Master' }])(
 
     test(`${permission} key: search on nested content with sort`, async () => {
       const client = await getClient(permission)
-      const { uid: settingsUpdateTask }: EnqueuedTask = await client
+      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ['title', 'info.comment'],
