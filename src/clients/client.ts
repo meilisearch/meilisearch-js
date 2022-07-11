@@ -275,7 +275,7 @@ class Client {
    * @method getKey
    *
    * @param {string} keyOrUid - Key or uid of the API key
-   * @returns {Promise<Keys>} Promise returning a key
+   * @returns {Promise<Key>} Promise returning a key
    */
   async getKey(keyOrUid: string): Promise<Key> {
     const url = `keys/${keyOrUid}`
@@ -288,7 +288,7 @@ class Client {
    * @method createKey
    *
    * @param {KeyCreation} options - Key options
-   * @returns {Promise<Key>} Promise returning an object with keys
+   * @returns {Promise<Key>} Promise returning a key
    */
   async createKey(options: KeyCreation): Promise<Key> {
     const url = `keys`
@@ -302,7 +302,7 @@ class Client {
    *
    * @param {string} keyOrUid - Key
    * @param {KeyUpdate} options - Key options
-   * @returns {Promise<Key>} Promise returning an object with keys
+   * @returns {Promise<Key>} Promise returning a key
    */
   async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
     const url = `keys/${keyOrUid}`
