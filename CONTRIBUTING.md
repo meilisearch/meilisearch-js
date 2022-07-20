@@ -138,11 +138,11 @@ Here are the steps to release a beta version of this package:
 - Create a new branch containing the "beta" changes with the following format `xxx-beta` where `xxx` explains the context.
 
   For example:
-    - When implementing a beta feature create a branch `my-feature-beta` where you implement the feature.
+    - When implementing a beta feature, create a branch `my-feature-beta` where you implement the feature.
       ```bash
         git checkout -b my-feature-beta
       ```
-    - During the Meilisearch pre-release create a branch originating from `bump-meilisearch-v*.*.*` named `meilisearch-v*.*.*-beta`. <br>
+    - During the Meilisearch pre-release, create a branch originating from `bump-meilisearch-v*.*.*` named `meilisearch-v*.*.*-beta`. <br>
     `v*.*.*` is the next version of the package, NOT the version of Meilisearch!
 
       ```bash
