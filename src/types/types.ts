@@ -120,7 +120,7 @@ export type SearchResponse<T = Record<string, any>> = {
   processingTimeMs: number
   facetDistribution?: FacetDistribution
   query: string
-  estimatedTotalHits: number
+  estimatedTotalHits?: number
   hitsPerPage?: 20
   page?: 1
   totalPages?: 4
