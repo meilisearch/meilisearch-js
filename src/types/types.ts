@@ -121,9 +121,10 @@ export type SearchResponse<T = Record<string, any>> = {
   facetDistribution?: FacetDistribution
   query: string
   estimatedTotalHits?: number
-  hitsPerPage?: 20
-  page?: 1
-  totalPages?: 4
+  totalHits?: number
+  hitsPerPage?: number
+  page?: number
+  totalPages?: number
 }
 
 export type FieldDistribution = {
