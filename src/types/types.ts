@@ -115,8 +115,8 @@ export type Hits<T = Record<string, any>> = Array<Hit<T>>
 
 export type SearchResponse<T = Record<string, any>> = {
   hits: Hits<T>
-  offset: number
-  limit: number
+  offset?: number
+  limit?: number
   processingTimeMs: number
   facetDistribution?: FacetDistribution
   query: string
