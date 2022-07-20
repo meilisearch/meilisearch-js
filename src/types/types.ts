@@ -77,6 +77,8 @@ export type SearchParams = Query &
     facets?: string[]
     attributesToRetrieve?: string[]
     showMatchesPosition?: boolean
+    hitsPerPage?: number
+    page?: number
   }
 
 // Search parameters for searches made with the GET method
@@ -119,6 +121,9 @@ export type SearchResponse<T = Record<string, any>> = {
   facetDistribution?: FacetDistribution
   query: string
   estimatedTotalHits: number
+  hitsPerPage?: 20
+  page?: 1
+  totalPages?: 4
 }
 
 export type FieldDistribution = {
