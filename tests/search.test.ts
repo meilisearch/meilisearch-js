@@ -133,7 +133,7 @@ describe.each([
     expect(response.hits.length).toEqual(2)
   })
 
-  test.skip(`${permission} key: Basic phrase search`, async () => {
+  test(`${permission} key: Basic phrase search`, async () => {
     const client = await getClient(permission)
     const response = await client
       .index(index.uid)
@@ -143,7 +143,7 @@ describe.each([
     expect(response).not.toHaveProperty('limit')
     expect(response).toHaveProperty('hitsPerPage', 20)
     expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 0)
+    expect(response).toHaveProperty('totalPages', 1)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', '"french book" about')
     expect(response.hits.length).toEqual(2)
@@ -546,6 +546,51 @@ describe.each([
     expect(response.totalPages).toEqual(7)
     expect(response.hitsPerPage).toEqual(1)
     expect(response.page).toEqual(1)
+    expect(response.totalHits).toEqual(7)
+  })
+
+  test(`${permission} key: search with pagination parameters: hitsPerPage at 0 and page at 1`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).search('', {
+      hitsPerPage: 0,
+      page: 1,
+    })
+
+    expect(response.hits.length).toEqual(0)
+    expect(response.hitsPerPage).toEqual(0)
+    expect(response.page).toEqual(1)
+    expect(response.totalPages).toEqual(0)
+    expect(response.totalHits).toEqual(7)
+  })
+
+  test(`${permission} key: search with pagination parameters: hitsPerPage at 1 and page at 0`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).search('', {
+      hitsPerPage: 1,
+      page: 0,
+    })
+
+    expect(response.hits.length).toEqual(0)
+    expect(response.hitsPerPage).toEqual(1)
+    expect(response.page).toEqual(0)
+    expect(response.totalPages).toEqual(7)
+    expect(response.totalHits).toEqual(7)
+  })
+
+  test(`${permission} key: search with pagination parameters: hitsPerPage at 0 and page at 0`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).search('', {
+      hitsPerPage: 0,
+      page: 0,
+    })
+
+    expect(response.hits.length).toEqual(0)
+    expect(response.hitsPerPage).toEqual(0)
+    expect(response.page).toEqual(0)
+    expect(response.totalPages).toEqual(0)
     expect(response.totalHits).toEqual(7)
   })
 

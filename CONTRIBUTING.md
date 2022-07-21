@@ -142,7 +142,7 @@ Here are the steps to release a beta version of this package:
       ```bash
         git checkout -b my-feature-beta
       ```
-    - During the Meilisearch pre-release, create a branch originating from `bump-meilisearch-v*.*.*` named `meilisearch-v*.*.*-beta`. <br>
+    - During the Meilisearch pre-release, create a branch originating from `bump-meilisearch-v*.*.*` named `bump-meilisearch-v*.*.*-beta`. <br>
     `v*.*.*` is the next version of the package, NOT the version of Meilisearch!
 
       ```bash
