@@ -14,17 +14,19 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Check release validity
         run: sh .github/scripts/check-release.sh
+      - name: Check tag format
+        run: sh .github/scripts/check-tag-format.sh "${{ github.event.release.prerelease }}"
       - name: Install dependencies
         run: yarn install
       - name: Build meilisearch-js
         run: yarn build
       - name: Publish with latest tag
-        if: "!github.event.release.prerelease"
+        if: "!github.event.release.prerelease && !contains(github.ref, 'beta')"
         run: npm publish .
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - name: Publish with beta tag
-        if: "github.event.release.prerelease"
-        run: npm publish . --tag beta
+        if: "github.event.release.prerelease && contains(github.ref, 'beta')"
+        run: npm publish . --tag beta --dry-run
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
