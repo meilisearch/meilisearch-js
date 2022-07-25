@@ -18,20 +18,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["12", "14", "16"]
+        node: ['14', '16', '18']
     name: integration-tests (Node.js ${{ matrix.node }})
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ./node_modules
-          key: ${{ hashFiles('yarn.lock') }}
+      - uses: actions/checkout@v3
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
+          cache: 'yarn'
       - name: print version
         run: node -v
       - name: Install dependencies
@@ -50,19 +45,17 @@ jobs:
         run: yarn test:env:node-ts
       - name: Run Browser env
         run: yarn test:env:browser
+
   linter_check:
     runs-on: ubuntu-latest
     name: linter-check
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ./node_modules
-          key: ${{ hashFiles('yarn.lock') }}
+      - uses: actions/checkout@v3
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
       - name: Install dependencies
         run: yarn --dev
       - name: Run style check
@@ -76,15 +69,12 @@ jobs:
     runs-on: ubuntu-latest
     name: types-check
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ./node_modules
-          key: ${{ hashFiles('yarn.lock') }}
+      - uses: actions/checkout@v3
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
       - name: Install dependencies
         run: yarn --dev
       - name: Build project
