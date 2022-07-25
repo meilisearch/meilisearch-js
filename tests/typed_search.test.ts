@@ -371,10 +371,6 @@ describe.each([
     })
 
     expect(response.hits.length).toEqual(1)
-    expect(response.totalPages === undefined).toBeTruthy()
-    expect(response.hitsPerPage === undefined).toBeTruthy()
-    expect(response.page === undefined).toBeTruthy()
-    expect(response.totalHits === undefined).toBeTruthy()
     expect(response.limit === 1).toBeTruthy()
     expect(response.offset === 0).toBeTruthy()
     expect(response.estimatedTotalHits).toEqual(7)
