@@ -1,0 +1,47 @@
+# Testing the code base against a specific Meilisearch feature
+name: Beta tests
+
+# Will only run for PRs and pushes to *-beta
+on:
+  push:
+    branches: ['!bump-meilisearch-v*.*.*-beta', '**-beta']
+  pull_request:
+    branches: ['!bump-meilisearch-v*.*.*-beta', '**-beta']
+
+jobs:
+  integration_tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['12', '14', '16']
+    name: integration-tests (Node.js ${{ matrix.node }})
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./node_modules
+          key: ${{ hashFiles('yarn.lock') }}
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Grep beta version of Meilisearch
+        run: echo "MEILISEARCH_IMAGE=$(sh .github/scripts/beta-docker-version.sh)" >> $GITHUB_ENV
+      - name: Meilisearch (${{ env.MEILISEARCH_IMAGE }}) setup with Docker
+        run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_IMAGE }} meilisearch --master-key=masterKey --no-analytics
+      - name: Install dependencies
+        run: yarn --dev
+      - name: Run tests
+        run: yarn test
+      - name: Build project
+        run: yarn build
+      - name: Run ESM env
+        run: yarn test:env:esm
+      - name: Run Node.js env
+        run: yarn test:env:nodejs
+      - name: Run node typescript env
+        run: yarn test:env:node-ts
+      - name: Run Browser env
+        run: yarn test:env:browser
