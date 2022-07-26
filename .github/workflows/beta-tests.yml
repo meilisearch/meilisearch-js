@@ -9,8 +9,21 @@ on:
     branches: ['!bump-meilisearch-v*.*.*-beta', '**-beta']
 
 jobs:
+  grep-docker-version:
+    runs-on: ubuntu-latest
+    outputs:
+      docker-version: ${{ steps.grep-step.outputs.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Grep docker beta version of Meilisearch
+        id: grep-step
+        run: |
+          MEILISEARCH_IMAGE=$(sh .github/scripts/beta-docker-version.sh)
+          echo $MEILISEARCH_IMAGE
+          echo ::set-output name=version::$MEILISEARCH_IMAGE
   integration_tests:
     runs-on: ubuntu-latest
+    needs: ['grep-docker-version']
     strategy:
       matrix:
         node: ['12', '14', '16']
@@ -27,10 +40,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node }}
-      - name: Grep beta version of Meilisearch
-        run: echo "MEILISEARCH_IMAGE=$(sh .github/scripts/beta-docker-version.sh)" >> $GITHUB_ENV
-      - name: Meilisearch (${{ env.MEILISEARCH_IMAGE }}) setup with Docker
-        run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_IMAGE }} meilisearch --master-key=masterKey --no-analytics
+      - name: Meilisearch (${{ needs.grep-docker-version.outputs.docker-version }}) setup with Docker
+        run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ needs.grep-docker-version.outputs.docker-version }} meilisearch --master-key=masterKey --no-analytics
       - name: Install dependencies
         run: yarn --dev
       - name: Run tests
