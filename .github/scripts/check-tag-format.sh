@@ -12,13 +12,11 @@ if [ $is_pre_release = false ]; then
   echo "$current_tag" | grep -E "[0-9]*\.[0-9]*\.[0-9]*$"
   if [ $? != 0 ]; then
     echo "Error: Your tag: $current_tag is wrongly formatted."
-    echo "Please refer to the contributing guide for help."
+    echo 'Please refer to the contributing guide for help.'
     exit 1
   fi
   exit 0
-fi
-
-if [ $is_pre_release = true ]; then
+elif [ $is_pre_release = true ]; then
   # Works with the format vX.X.X-xxx-beta.X
   # none or multiple -xxx are valid
   #
@@ -30,8 +28,10 @@ if [ $is_pre_release = true ]; then
 
   if [ $? != 0 ]; then
     echo "Error: Your beta tag: $current_tag is wrongly formatted."
-    echo "Please refer to the contributing guide for help."
+    echo 'Please refer to the contributing guide for help.'
     exit 1
   fi
   exit 0
 fi
+
+exit 0
