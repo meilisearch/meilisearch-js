@@ -27,6 +27,6 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - name: Publish with beta tag
         if: "github.event.release.prerelease && contains(github.ref, 'beta')"
-        run: npm publish . --tag beta --dry-run
+        run: npm publish . --tag beta
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
