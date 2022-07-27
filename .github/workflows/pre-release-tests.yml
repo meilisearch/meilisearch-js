@@ -2,20 +2,11 @@
 name: Pre-Release Tests
 
 # # Will only run for PRs and pushes to bump-meilisearch-v*
-# on:
-#   push:
-#     branches: [bump-meilisearch-v*]
-#   pull_request:
-#     branches: [bump-meilisearch-v*]
-
 on:
-  pull_request:
   push:
-    # trying and staging branches are for BORS config
-    branches:
-      - trying
-      - staging
-      - main
+    branches: [bump-meilisearch-v*]
+  pull_request:
+    branches: [bump-meilisearch-v*]
 
 jobs:
   meilisearch-version:
@@ -29,8 +20,7 @@ jobs:
         run: |
           MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/main/scripts/get-latest-meilisearch-rc.sh | sh)
           echo $MEILISEARCH_VERSION
-          # TODO: CHANGE  to version::$MEILISEARCH_VERSION
-          echo ::set-output name=version::latest
+          echo ::set-output name=version::$MEILISEARCH_VERSION
   integration_tests:
     runs-on: ubuntu-latest
     needs: ['meilisearch-version']
