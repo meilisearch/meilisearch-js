@@ -68,6 +68,11 @@ export type Crop = {
   cropMarker?: string
 }
 
+export const enum OptionalWords {
+  NONE = 'none',
+  LAST = 'last',
+}
+
 export type SearchParams = Query &
   Pagination &
   Highlight &
@@ -77,6 +82,7 @@ export type SearchParams = Query &
     facets?: string[]
     attributesToRetrieve?: string[]
     showMatchesPosition?: boolean
+    optionalWords?: OptionalWords
   }
 
 // Search parameters for searches made with the GET method
