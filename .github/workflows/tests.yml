@@ -51,7 +51,7 @@ jobs:
         run: yarn test:env:browser
   style_tests:
     runs-on: ubuntu-latest
-    name: styling check
+    name: style-check
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
