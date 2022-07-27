@@ -1,14 +1,36 @@
 # Testing the code base against the Meilisearch pre-releases
 name: Pre-Release Tests
 
-# Will only run for PRs and pushes to bump-meilisearch-v*
+# # Will only run for PRs and pushes to bump-meilisearch-v*
+# on:
+#   push:
+#     branches: [bump-meilisearch-v*]
+#   pull_request:
+#     branches: [bump-meilisearch-v*]
+
 on:
-  push:
-    branches: [bump-meilisearch-v*]
   pull_request:
-    branches: [bump-meilisearch-v*]
+  push:
+    # trying and staging branches are for BORS config
+    branches:
+      - trying
+      - staging
+      - main
 
 jobs:
+  meilisearch-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.grep-step.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Grep docker beta version of Meilisearch
+        id: grep-step
+        run: |
+          MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/main/scripts/get-latest-meilisearch-rc.sh | sh)
+          echo $MEILISEARCH_VERSION
+          # TODO: CHANGE  to version::$MEILISEARCH_VERSION
+          echo ::set-output name=version::latest
   integration_tests:
     runs-on: ubuntu-latest
     strategy:
@@ -21,15 +43,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-          cache: 'yarn'
-      - name: print version
-        run: node -v
+          cache: yarn
       - name: Install dependencies
         run: yarn --dev
-      - name: Get the latest Meilisearch RC
-        run: echo "MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/main/scripts/get-latest-meilisearch-rc.sh | bash)" >> $GITHUB_ENV
-      - name: Meilisearch (${{ env.MEILISEARCH_VERSION }}) setup with Docker
-        run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_VERSION }} meilisearch --master-key=masterKey --no-analytics
       - name: Run tests
         run: yarn test
       - name: Build project
@@ -42,39 +58,3 @@ jobs:
         run: yarn test:env:node-ts
       - name: Run Browser env
         run: yarn test:env:browser
-
-  linter_check:
-    runs-on: ubuntu-latest
-    name: linter-check
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn --dev
-      - name: Run style check
-        run: yarn style
-      - name: yaml-lint
-        uses: ibiqlik/action-yamllint@v3
-        with:
-          config_file: .yamllint.yml
-
-  types_check:
-    runs-on: ubuntu-latest
-    name: types-check
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn --dev
-      - name: Build project
-        run: yarn build
-      - name: Run types check
-        run: yarn types

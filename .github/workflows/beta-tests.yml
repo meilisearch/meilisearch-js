@@ -1,14 +1,37 @@
 # Testing the code base against a specific Meilisearch feature
 name: Beta tests
 
-# Will only run for PRs and pushes to *-beta
 on:
-  push:
-    branches: ['!bump-meilisearch-v*.*.*-beta', '**-beta']
   pull_request:
-    branches: ['!bump-meilisearch-v*.*.*-beta', '**-beta']
+  push:
+    # trying and staging branches are for BORS config
+    branches:
+      - trying
+      - staging
+      - main
+
+        # TODO: CHANGE
+# Will only run for PRs and pushes to *-beta
+# on:
+#   push:
+#     branches: ['!bump-meilisearch-v*.*.*-beta', '**-beta']
+#   pull_request:
+#     branches: ['!bump-meilisearch-v*.*.*-beta', '**-beta']
 
 jobs:
+  meilisearch-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.grep-step.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Grep docker beta version of Meilisearch
+        id: grep-step
+        run: |
+          MEILISEARCH_VERSION=$(sh .github/scripts/beta-docker-version.sh)
+          echo $MEILISEARCH_VERSION
+          # TODO: CHANGE  to version::$MEILISEARCH_VERSION
+          echo ::set-output name=version::latest
   integration_tests:
     runs-on: ubuntu-latest
     strategy:
@@ -21,11 +44,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-          cache: 'yarn'
-      - name: Grep beta version of Meilisearch
-        run: echo "MEILISEARCH_IMAGE=$(sh .github/scripts/beta-docker-version.sh)" >> $GITHUB_ENV
-      - name: Meilisearch (${{ env.MEILISEARCH_IMAGE }}) setup with Docker
-        run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_IMAGE }} meilisearch --master-key=masterKey --no-analytics
+          cache: yarn
       - name: Install dependencies
         run: yarn --dev
       - name: Run tests

@@ -15,6 +15,14 @@ jobs:
     # Will still run for each push to bump-meilisearch-v*
     if: github.event_name != 'pull_request' || !startsWith(github.base_ref, 'bump-meilisearch-v')
     runs-on: ubuntu-latest
+    services:
+      meilisearch:
+        image: getmeili/meilisearch:latest
+        env:
+          MEILI_MASTER_KEY: 'masterKey'
+          MEILI_NO_ANALYTICS: 'true'
+        ports:
+          - '7700:7700'
     strategy:
       fail-fast: false
       matrix:
@@ -27,12 +35,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'yarn'
-      - name: print version
-        run: node -v
       - name: Install dependencies
         run: yarn --dev
-      - name: Meilisearch (latest) setup with Docker
-        run: docker run -d -p 7700:7700 getmeili/meilisearch:latest meilisearch --no-analytics --master-key='masterKey'
       - name: Run tests
         run: yarn test
       - name: Build project
@@ -45,10 +49,9 @@ jobs:
         run: yarn test:env:node-ts
       - name: Run Browser env
         run: yarn test:env:browser
-
-  linter_check:
+  style_tests:
     runs-on: ubuntu-latest
-    name: linter-check
+    name: styling check
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -58,14 +61,13 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies
         run: yarn --dev
-      - name: Run style check
+      - name: Run code style check
         run: yarn style
-      - name: yaml-lint
+      - name: Run yaml style check
         uses: ibiqlik/action-yamllint@v3
         with:
           config_file: .yamllint.yml
-
-  types_check:
+  types_tests:
     runs-on: ubuntu-latest
     name: types-check
     steps:
