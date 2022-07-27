@@ -2,7 +2,7 @@ status = [
   'style-check',
   'types-check',
   'integration-tests (Node.js 14)',
-  'integration-tests (Node.js 16)'
+  'integration-tests (Node.js 16)',
   'integration-tests (Node.js 18)',
 ]
 # 1 hour timeout
