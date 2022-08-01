@@ -167,7 +167,7 @@ GitHub Actions will be triggered and push the beta version to [npm](https://www.
 
 💡 If you need to release a new beta for the same version (i.e. `vX.X.X-beta.1`):
 - merge the change into your beta branch
-- change the version name in `package.json`
+- change the version name in [`package.json`](/package.json) and in [`src/package-version`](/src/package-version.ts)
 - creata a pre-release via the GitHub interface
 
 <hr>
