@@ -151,7 +151,7 @@ Here are the steps to release a beta version of this package:
       git checkout -b bump-meilisearch-v*.*.*-beta
       ```
 
-- Change the version in `package.json` with `*.*.*-xxx-beta.0` and commit it to the `v*.*.*-beta` branch. None or multiple `-xxx`are valid. Examples:
+- Change the version in [`package.json`](/package.json) and in [`src/package-version`](/src/package-version.ts) with `*.*.*-xxx-beta.0` and commit it to the `v*.*.*-beta` branch. None or multiple `-xxx`are valid. Examples:
   - `v*.*.*-my-feature-beta.0`
   - `v*.*.*-beta.0`
 

@@ -35,7 +35,7 @@ jobs:
     strategy:
       matrix:
         node: ['14', '16', '18']
-    name: integration-tests-against-rc (Node.js ${{ matrix.node }})
+    name: integration-tests (Node.js ${{ matrix.node }})
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
