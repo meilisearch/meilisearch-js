@@ -32,10 +32,10 @@
 - [📖 Documentation](#-documentation)
 - [🔧 Installation](#-installation)
 - [🎬 Getting started](#-getting-started)
-- [🤖 Compatibility](#-compatibility-with-meilisearch)
+- [🤖 Compatibility with Meilisearch](#-compatibility-with-meilisearch)
 - [💡 Learn more](#-learn-more)
 - [⚙️ Contributing](#️-contributing)
-- [📜 API Resources](#-api-resources)
+- [📜 API resources](#-api-resources)
 
 ## 📖 Documentation
 
@@ -71,7 +71,7 @@ To use one our SDKS, you must first have a running Meilisearch instance. Consult
 
 After installing `meilisearch-js`, you must import it into your application. There are many ways of doing that depending on your development environment.
 
-#### Import Syntax <!-- omit in toc -->
+#### `import` syntax <!-- omit in toc -->
 
 Usage in an ES module environment:
 
@@ -84,7 +84,7 @@ const client = new MeiliSearch({
 })
 ```
 
-#### Include Script Tag <!-- omit in toc -->
+#### `<script>` tag <!-- omit in toc -->
 
 Usage in an HTML (or alike) file:
 
@@ -98,7 +98,7 @@ Usage in an HTML (or alike) file:
 </script>
 ```
 
-#### Require Syntax <!-- omit in toc -->
+#### `require` syntax <!-- omit in toc -->
 
 Usage in a back-end node.js or another environment supporting CommonJS modules:
 
@@ -128,9 +128,9 @@ const client = new MeiliSearch({
 })
 ```
 
-## 🎬 Getting Started
+## 🎬 Getting started
 
-### Add Documents <!-- omit in toc -->
+### Add documents <!-- omit in toc -->
 
 ```js
 const { MeiliSearch } = require('meilisearch')
@@ -164,7 +164,7 @@ import { MeiliSearch } from 'meilisearch'
 
 Tasks such as document addition always return a unique identifier. You can use this identifier `uid` to check the status (`enqueued`, `processing`, `succeeded` or `failed`) of a [task](https://docs.meilisearch.com/reference/api/tasks.html#get-task).
 
-### Basic Search <!-- omit in toc -->
+### Basic search <!-- omit in toc -->
 
 ```javascript
 // Meilisearch is typo-tolerant:
@@ -226,7 +226,7 @@ await index.search(
 }
 ```
 
-### Custom Search With Filters <!-- omit in toc -->
+### Custom search with filters <!-- omit in toc -->
 
 To enable filtering, you must first add your attributes to the [`filterableAttributes` index setting](https://docs.meilisearch.com/reference/api/filterable_attributes.html).
 
@@ -269,7 +269,7 @@ await index.search(
 }
 ```
 
-### Placeholder Search <!-- omit in toc -->
+### Placeholder search <!-- omit in toc -->
 
 Placeholder search makes it possible to receive hits based on your parameters without having any query (`q`). For example, in a movies database you can run an empty query to receive all results filtered by `genre`.
 
@@ -314,7 +314,7 @@ await index.search(
 
 Note that to enable faceted search on your dataset you need to add `genres` to the `filterableAttributes` index setting. For more information on filtering and faceting, [consult our documentation settings](https://docs.meilisearch.com/reference/features/faceted_search.html#setting-up-facets).
 
-#### Abortable Search <!-- omit in toc -->
+#### Abortable search <!-- omit in toc -->
 
 You can abort a pending search request by providing an [AbortSignal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) to the request.
 
@@ -339,7 +339,7 @@ controller.abort()
 
 This package only guarantees the compatibility with the [version v0.27.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.27.0).
 
-## 💡 Learn More
+## 💡 Learn more
 
 The following sections in our main documentation website may interest you:
 
@@ -354,317 +354,500 @@ This repository also contains [more examples](./examples).
 
 We welcome all contributions, big and small! If you want to know more about this SDK's development workflow or want to contribute to the repo, please visit our [contributing guidelines](/CONTRIBUTING.md) for detailed instructions.
 
-## 📜 API Resources
+## 📜 API resources
 
 ### Search <!-- omit in toc -->
 
-- [Make a search request](https://docs.meilisearch.com/reference/api/search.html):
+#### [Make a search request](https://docs.meilisearch.com/reference/api/search.html)
 
-`client.index<T>('xxx').search(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>`
+```ts
+client.index<T>('xxx').search(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>
+```
 
-- [Make a search request using the GET method (slower than the search method)](https://docs.meilisearch.com/reference/api/search.html#search-in-an-index-with-get-route):
+#### [Make a search request using the GET method (slower than the search method)](https://docs.meilisearch.com/reference/api/search.html#search-in-an-index-with-get-route)
 
-`client.index<T>('xxx').searchGet(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>`
+```ts
+client.index<T>('xxx').searchGet(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>
+```
 
 ### Documents <!-- omit in toc -->
 
-- [Add or replace multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents):
+#### [Add or replace multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents)
 
-`index.addDocuments(documents: Document<T>[]): Promise<EnqueuedTask>`
+```ts
+client.index.addDocuments(documents: Document<T>[]): Promise<EnqueuedTask>
+```
 
-- [Add or replace multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents):
+#### [Add or replace multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents)
 
-`index.addDocumentsInBatches(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedTask[]>`
+```ts
+client.index.addDocumentsInBatches(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedTask[]>
+```
 
-- [Add or update multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
+#### [Add or update multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents)
 
-`index.updateDocuments(documents: Array<Document<Partial<T>>>): Promise<EnqueuedTask>`
+```ts
+client.index.updateDocuments(documents: Array<Document<Partial<T>>>): Promise<EnqueuedTask>
+```
 
-- [Add or update multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents):
+#### [Add or update multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents)
 
-`index.updateDocumentsInBatches(documents: Array<Document<Partial<T>>>, batchSize = 1000): Promise<EnqueuedTask[]>`
+```ts
+client.index.updateDocumentsInBatches(documents: Array<Document<Partial<T>>>, batchSize = 1000): Promise<EnqueuedTask[]>
+```
 
-- [Get Documents](https://docs.meilisearch.com/reference/api/documents.html#get-documents):
+#### [Get Documents](https://docs.meilisearch.com/reference/api/documents.html#get-documents)
 
-`index.getDocuments(params: getDocumentsParams): Promise<Document<T>[]>`
+```ts
+client.index.getDocuments(params: getDocumentsParams): Promise<Document<T>[]>
+```
 
-- [Get one document](https://docs.meilisearch.com/reference/api/documents.html#get-one-document):
+#### [Get one document](https://docs.meilisearch.com/reference/api/documents.html#get-one-document)
 
-`index.getDocument(documentId: string): Promise<Document<T>>`
+```ts
+client.index.getDocument(documentId: string): Promise<Document<T>>
+```
 
-- [Delete one document](https://docs.meilisearch.com/reference/api/documents.html#delete-one-document):
+#### [Delete one document](https://docs.meilisearch.com/reference/api/documents.html#delete-one-document)
 
-`index.deleteDocument(documentId: string | number): Promise<EnqueuedTask>`
+```ts
+client.index.deleteDocument(documentId: string | number): Promise<EnqueuedTask>
+```
 
-- [Delete multiple documents](https://docs.meilisearch.com/reference/api/documents.html#delete-documents):
+#### [Delete multiple documents](https://docs.meilisearch.com/reference/api/documents.html#delete-documents)
 
-`index.deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedTask>`
+```ts
+client.index.deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedTask>
+```
 
-- [Delete all documents](https://docs.meilisearch.com/reference/api/documents.html#delete-all-documents):
+#### [Delete all documents](https://docs.meilisearch.com/reference/api/documents.html#delete-all-documents)
 
-`index.deleteAllDocuments(): Promise<Types.EnqueuedTask>`
+```ts
+client.index.deleteAllDocuments(): Promise<Types.EnqueuedTask>
+```
 
 ### Tasks <!-- omit in toc -->
 
-- [Get task info using the client](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks):
+#### [Get task info using the client](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks)
 
-Task list:
-`client.getTasks(): Promise<Result<Task[]>>`
+##### Task list
+```ts
+client.getTasks(): Promise<Result<Task[]>>
+```
 
-One task:
-`client.getTask(uid: number): Promise<Task>`
+##### One task
+```ts
+client.getTask(uid: number): Promise<Task>
+```
 
-- [Get task info using the index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index):
+#### [Get task info using the index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index)
 
-Task list:
-`index.getTasks(): Promise<Result<Task[]>>`
+##### Task list
 
-One task:
-`index.getTask(uid: number): Promise<Task>`
+```ts
+client.index.getTasks(): Promise<Result<Task[]>>
+```
 
-- Wait for one task:
+##### One task
 
-Using de client:
-`client.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>`
+```ts
+client.index.getTask(uid: number): Promise<Task>
+```
 
-Using the index:
-`index.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>`
+#### Wait for one task
 
-- Wait for multiple tasks:
+##### Using the client
 
-Using the client:
-`client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
+```ts
+client.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>
+```
 
-Using the index:
-`index.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>`
+##### Using the index
+
+```ts
+client.index.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>
+```
+
+#### Wait for multiple tasks
+
+##### Using the client
+
+```ts
+client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>
+```
+
+##### Using the index
+
+```ts
+client.index.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>
+```
 
 ### Indexes <!-- omit in toc -->
 
-- [Get all indexes in Index instances](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
+#### [Get all indexes in Index instances](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes)
 
-`client.getIndexes(): Promise<Index[]>`
+```ts
+client.getIndexes(): Promise<Index[]>
+```
 
-- [Get raw indexes in JSON response from Meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes):
+#### [Get raw indexes in JSON response from Meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes)
 
-`client.getRawIndexes(): Promise<IndexResponse[]>`
+```ts
+client.getRawIndexes(): Promise<IndexResponse[]>
+```
 
-- [Create a new index](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index):
+#### [Create a new index](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)
 
-`client.createIndex<T>(uid: string, options?: IndexOptions): Promise<EnqueuedTask>`
+```ts
+client.createIndex<T>(uid: string, options?: IndexOptions): Promise<EnqueuedTask>
+```
 
-- Create a local reference to an index:
+#### Create a local reference to an index
 
-`client.index<T>(uid: string): Index<T>`
+```ts
+client.index<T>(uid: string): Index<T>
+```
 
-- [Get an index instance completed with information fetched from Meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
-`client.getIndex<T>(uid: string): Promise<Index<T>>`
+#### [Get an index instance completed with information fetched from Meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index)
 
-- [Get the raw index JSON response from Meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
-`client.getRawIndex(uid: string): Promise<IndexResponse>`
+```ts
+client.getIndex<T>(uid: string): Promise<Index<T>>
+```
 
-- [Get an object with information about the index](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index):
-`index.getRawInfo(): Promise<IndexResponse>`
+#### [Get the raw index JSON response from Meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index)
 
-- [Update Index](https://docs.meilisearch.com/reference/api/indexes.html#update-an-index):
+```ts
+client.getRawIndex(uid: string): Promise<IndexResponse>
+```
 
-Using the client
-`client.updateIndex(uid: string, options: IndexOptions): Promise<EnqueuedTask>`
+#### [Get an object with information about the index](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index)
 
-Using the index object:
-`index.update(data: IndexOptions): Promise<EnqueuedTask>`
+```ts
+client.index.getRawInfo(): Promise<IndexResponse>
+```
 
-- [Delete Index](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index):
+#### [Update Index](https://docs.meilisearch.com/reference/api/indexes.html#update-an-index)
 
-Using the client
-`client.deleteIndex(uid): Promise<void>`
+##### Using the client
 
-Using the index object:
-`index.delete(): Promise<void>`
+```ts
+client.updateIndex(uid: string, options: IndexOptions): Promise<EnqueuedTask>
+```
 
-- [Get specific index stats](https://docs.meilisearch.com/reference/api/stats.html#get-stat-of-an-index):
+##### Using the index object
 
-`index.getStats(): Promise<IndexStats>`
+```ts
+client.index.update(data: IndexOptions): Promise<EnqueuedTask>
+```
 
-- Return Index instance with updated information:
+#### [Delete index](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index)
 
-`index.fetchInfo(): Promise<Index>`
+##### Using the client
+```ts
+client.deleteIndex(uid): Promise<void>
+```
 
-- Get Primary Key of an Index:
+##### Using the index object
+```ts
+client.index.delete(): Promise<void>
+```
 
-`index.fetchPrimaryKey(): Promise<string | undefined>`
+#### [Get specific index stats](https://docs.meilisearch.com/reference/api/stats.html#get-stat-of-an-index)
+
+```ts
+client.index.getStats(): Promise<IndexStats>
+```
+
+##### Return Index instance with updated information
+
+```ts
+client.index.fetchInfo(): Promise<Index>
+```
+
+##### Get Primary Key of an Index
+
+```ts
+client.index.fetchPrimaryKey(): Promise<string | undefined>
+```
 
 ### Settings <!-- omit in toc -->
 
-- [Get settings](https://docs.meilisearch.com/reference/api/settings.html#get-settings):
+#### [Get settings](https://docs.meilisearch.com/reference/api/settings.html#get-settings)
 
-`index.getSettings(): Promise<Settings>`
+```ts
+client.index.getSettings(): Promise<Settings>
+```
 
-- [Update settings](https://docs.meilisearch.com/reference/api/settings.html#update-settings):
+#### [Update settings](https://docs.meilisearch.com/reference/api/settings.html#update-settings)
 
-`index.updateSettings(settings: Settings): Promise<EnqueuedTask>`
+```ts
+client.index.updateSettings(settings: Settings): Promise<EnqueuedTask>
+```
 
-- [Reset settings](https://docs.meilisearch.com/reference/api/settings.html#reset-settings):
+#### [Reset settings](https://docs.meilisearch.com/reference/api/settings.html#reset-settings)
 
-`index.resetSettings(): Promise<EnqueuedTask>`
+```ts
+client.index.resetSettings(): Promise<EnqueuedTask>
+```
 
 ### Synonyms <!-- omit in toc -->
 
-- [Get synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#get-synonyms):
+#### [Get synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#get-synonyms)
 
-`index.getSynonyms(): Promise<object>`
+```ts
+client.index.getSynonyms(): Promise<object>
+```
 
-- [Update synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#update-synonyms):
+#### [Update synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#update-synonyms)
 
-`index.updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask>`
+```ts
+client.index.updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask>
+```
 
-- [Reset synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#reset-synonyms):
+#### [Reset synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#reset-synonyms)
 
-`index.resetSynonyms(): Promise<EnqueuedTask>`
+```ts
+client.index.resetSynonyms(): Promise<EnqueuedTask>
+```
 
 ### Stop-words <!-- omit in toc -->
 
-- [Get Stop Words](https://docs.meilisearch.com/reference/api/stop_words.html#get-stop-words):
-  `index.getStopWords(): Promise<string[]>`
+#### [Get stop-words](https://docs.meilisearch.com/reference/api/stop_words.html#get-stop-words)
 
-- [Update Stop Words](https://docs.meilisearch.com/reference/api/stop_words.html#update-stop-words):
-  `index.updateStopWords(stopWords: string[] | null ): Promise<EnqueuedTask>`
+```ts
+client.index.getStopWords(): Promise<string[]>
+```
 
-- [Reset Stop Words](https://docs.meilisearch.com/reference/api/stop_words.html#reset-stop-words):
-  `index.resetStopWords(): Promise<EnqueuedTask>`
+#### [Update stop-words](https://docs.meilisearch.com/reference/api/stop_words.html#update-stop-words)
+
+```ts
+client.index.updateStopWords(stopWords: string[] | null ): Promise<EnqueuedTask>
+```
+
+#### [Reset stop-words](https://docs.meilisearch.com/reference/api/stop_words.html#reset-stop-words)
+
+```ts
+client.index.resetStopWords(): Promise<EnqueuedTask>
+```
 
 ### Ranking rules <!-- omit in toc -->
 
-- [Get Ranking Rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#get-ranking-rules):
-  `index.getRankingRules(): Promise<string[]>`
+#### [Get ranking rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#get-ranking-rules)
 
-- [Update Ranking Rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#update-ranking-rules):
-  `index.updateRankingRules(rankingRules: string[] | null): Promise<EnqueuedTask>`
+```ts
+client.index.getRankingRules(): Promise<string[]>
+```
 
-- [Reset Ranking Rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#reset-ranking-rules):
-  `index.resetRankingRules(): Promise<EnqueuedTask>`
+#### [Update ranking rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#update-ranking-rules)
+
+```ts
+client.index.updateRankingRules(rankingRules: string[] | null): Promise<EnqueuedTask>
+```
+
+#### [Reset ranking rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#reset-ranking-rules)
+
+```ts
+client.index.resetRankingRules(): Promise<EnqueuedTask>
+```
 
 ### Distinct Attribute <!-- omit in toc -->
 
-- [Get Distinct Attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#get-distinct-attribute):
-  `index.getDistinctAttribute(): Promise<string | void>`
+#### [Get distinct attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#get-distinct-attribute)
 
-- [Update Distinct Attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#update-distinct-attribute):
-  `index.updateDistinctAttribute(distinctAttribute: string | null): Promise<EnqueuedTask>`
+```ts
+client.index.getDistinctAttribute(): Promise<string | void>
+```
 
-- [Reset Distinct Attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#reset-distinct-attribute):
-  `index.resetDistinctAttribute(): Promise<EnqueuedTask>`
+#### [Update distinct attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#update-distinct-attribute)
 
-### Searchable Attributes <!-- omit in toc -->
+```ts
+client.index.updateDistinctAttribute(distinctAttribute: string | null): Promise<EnqueuedTask>
+```
 
-- [Get Searchable Attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#get-searchable-attributes):
-  `index.getSearchableAttributes(): Promise<string[]>`
+#### [Reset distinct attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#reset-distinct-attribute)
 
-- [Update Searchable Attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#update-searchable-attributes):
-  `index.updateSearchableAttributes(searchableAttributes: string[] | null): Promise<EnqueuedTask>`
+```ts
+client.index.resetDistinctAttribute(): Promise<EnqueuedTask>
+```
 
-- [Reset Searchable Attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#reset-searchable-attributes):
-  `index.resetSearchableAttributes(): Promise<EnqueuedTask>`
+### Searchable attributes <!-- omit in toc -->
 
-### Displayed Attributes <!-- omit in toc -->
+#### [Get searchable attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#get-searchable-attributes)
 
-- [Get Displayed Attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#get-displayed-attributes):
-  `index.getDisplayedAttributes(): Promise<string[]>`
+```ts
+client.index.getSearchableAttributes(): Promise<string[]>
+```
 
-- [Update Displayed Attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#update-displayed-attributes):
-  `index.updateDisplayedAttributes(displayedAttributes: string[] | null): Promise<EnqueuedTask>`
+#### [Update searchable attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#update-searchable-attributes)
 
-- [Reset Displayed Attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#reset-displayed-attributes):
-  `index.resetDisplayedAttributes(): Promise<EnqueuedTask>`
+```ts
+client.index.updateSearchableAttributes(searchableAttributes: string[] | null): Promise<EnqueuedTask>
+```
 
-### Filterable Attributes <!-- omit in toc -->
+#### [Reset searchable attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#reset-searchable-attributes)
 
-- [Get Filterable Attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#get-filterable-attributes):
-  `index.getFilterableAttributes(): Promise<string[]>`
+```ts
+client.index.resetSearchableAttributes(): Promise<EnqueuedTask>
+```
 
-- [Update Filterable Attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#update-filterable-attributes):
-  `index.updateFilterableAttributes(filterableAttributes: string[] | null): Promise<EnqueuedTask>`
+### Displayed attributes <!-- omit in toc -->
 
-- [Reset Filterable Attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#reset-filterable-attributes):
-  `index.resetFilterableAttributes(): Promise<EnqueuedTask>`
+#### [Get displayed attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#get-displayed-attributes)
 
-### Sortable Attributes <!-- omit in toc -->
+```ts
+client.index.getDisplayedAttributes(): Promise<string[]>
+```
 
-- [Get Sortable Attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#get-sortable-attributes):
-  `index.getSortableAttributes(): Promise<string[]>`
+#### [Update displayed attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#update-displayed-attributes)
 
-- [Update Sortable Attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#update-sortable-attributes):
-  `index.updateSortableAttributes(sortableAttributes: string[] | null): Promise<EnqueuedTask>`
+```ts
+client.index.updateDisplayedAttributes(displayedAttributes: string[] | null): Promise<EnqueuedTask>
+```
 
-- [Reset Sortable Attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#reset-sortable-attributes):
-  `index.resetSortableAttributes(): Promise<EnqueuedTask>`
+#### [Reset displayed attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#reset-displayed-attributes)
 
-### Typo Tolerance <!-- omit in toc -->
+```ts
+client.index.resetDisplayedAttributes(): Promise<EnqueuedTask>
+```
 
-- [Get Typo Tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#get-typo-tolerance):
-  `index.getTypoTolerance(): Promise<TypoTolerance>`
+### Filterable attributes <!-- omit in toc -->
 
-- [Update Typo Tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#update-typo-tolerance):
-  `index.updateTypoTolerance(typoTolerance: TypoTolerance | null): Promise<EnqueuedTask>`
+#### [Get filterable attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#get-filterable-attributes)
 
-- [Reset Typo Tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#reset-typo-tolerance):
-  `index.resetTypoTolerance(): Promise<EnqueuedTask>`
+```ts
+client.index.getFilterableAttributes(): Promise<string[]>
+```
+
+#### [Update filterable attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#update-filterable-attributes)
+
+```ts
+client.index.updateFilterableAttributes(filterableAttributes: string[] | null): Promise<EnqueuedTask>
+```
+
+#### [Reset filterable attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#reset-filterable-attributes)
+
+```ts
+client.index.resetFilterableAttributes(): Promise<EnqueuedTask>
+```
+
+### Sortable attributes <!-- omit in toc -->
+
+#### [Get sortable attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#get-sortable-attributes)
+
+```ts
+client.index.getSortableAttributes(): Promise<string[]>
+```
+
+#### [Update sortable attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#update-sortable-attributes)
+
+```ts
+client.index.updateSortableAttributes(sortableAttributes: string[] | null): Promise<EnqueuedTask>
+```
+
+#### [Reset sortable attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#reset-sortable-attributes)
+
+```ts
+client.index.resetSortableAttributes(): Promise<EnqueuedTask>
+```
+
+### Typo tolerance <!-- omit in toc -->
+
+#### [Get typo tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#get-typo-tolerance)
+
+```ts
+client.index.getTypoTolerance(): Promise<TypoTolerance>
+```
+
+#### [Update typo tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#update-typo-tolerance)
+
+```ts
+client.index.updateTypoTolerance(typoTolerance: TypoTolerance | null): Promise<EnqueuedTask>
+```
+
+#### [Reset typo tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#reset-typo-tolerance)
+
+```ts
+client.index.resetTypoTolerance(): Promise<EnqueuedTask>
+```
 
 ### Keys <!-- omit in toc -->
 
-- [Get keys](https://docs.meilisearch.com/reference/api/keys.html#get-all-keys):
+#### [Get keys](https://docs.meilisearch.com/reference/api/keys.html#get-all-keys)
 
-`client.getKeys(): Promise<Result<Key[]>>`
+```ts
+client.getKeys(): Promise<Result<Key[]>>
+```
 
-- [Get one key](https://docs.meilisearch.com/reference/api/keys.html#get-one-key):
+#### [Get one key](https://docs.meilisearch.com/reference/api/keys.html#get-one-key)
 
-`client.getKey(key: string): Promise<Key>`
+```ts
+client.getKey(key: string): Promise<Key>
+```
 
-- [Create a key](https://docs.meilisearch.com/reference/api/keys.html#create-a-key):
+#### [Create a key](https://docs.meilisearch.com/reference/api/keys.html#create-a-key)
 
-`client.createKey(options: KeyPayload): Promise<Key>`
+```ts
+client.createKey(options: KeyPayload): Promise<Key>
+```
 
-- [Update a key](https://docs.meilisearch.com/reference/api/keys.html#update-a-key):
+#### [Update a key](https://docs.meilisearch.com/reference/api/keys.html#update-a-key)
 
-`client.updateKey(key: string, options: KeyPayload): Promise<Key>`
+```ts
+client.updateKey(key: string, options: KeyPayload): Promise<Key>
+```
 
-- [Delete a key](https://docs.meilisearch.com/reference/api/keys.html#delete-a-key):
+#### [Delete a key](https://docs.meilisearch.com/reference/api/keys.html#delete-a-key)
 
-`client.deleteKey(key: string): Promise<void>`
+```ts
+client.deleteKey(key: string): Promise<void>
+```
 
-### isHealthy <!-- omit in toc -->
+### `isHealthy` <!-- omit in toc -->
 
-- [Return `true` or `false` depending on the health of the server](https://docs.meilisearch.com/reference/api/health.html#get-health):
+#### [Return `true` or `false` depending on the health of the server](https://docs.meilisearch.com/reference/api/health.html#get-health)
 
-`client.isHealthy(): Promise<boolean>`
+```ts
+client.isHealthy(): Promise<boolean>
+```
 
 ### Health <!-- omit in toc -->
 
-- [Check if the server is healthy](https://docs.meilisearch.com/reference/api/health.html#get-health):
+#### [Check if the server is healthy](https://docs.meilisearch.com/reference/api/health.html#get-health)
 
-`client.health(): Promise<Health>`
+```ts
+client.health(): Promise<Health>
+```
 
 ### Stats <!-- omit in toc -->
 
-- [Get database stats](https://docs.meilisearch.com/reference/api/stats.html#get-stats-of-all-indexes):
+#### [Get database stats](https://docs.meilisearch.com/reference/api/stats.html#get-stats-of-all-indexes)
 
-`client.getStats(): Promise<Stats>`
+```ts
+client.getStats(): Promise<Stats>
+```
 
 ### Version <!-- omit in toc -->
 
-- [Get binary version](https://docs.meilisearch.com/reference/api/version.html#get-version-of-meilisearch):
+#### [Get binary version](https://docs.meilisearch.com/reference/api/version.html#get-version-of-meilisearch)
 
-`client.getVersion(): Promise<Version>`
+```ts
+client.getVersion(): Promise<Version>
+```
 
 ### Dumps <!-- omit in toc -->
 
-- [Trigger a dump creation process](https://docs.meilisearch.com/reference/api/dump.html#create-a-dump):
+#### [Trigger a dump creation process](https://docs.meilisearch.com/reference/api/dump.html#create-a-dump)
 
-`client.createDump(): Promise<Types.EnqueuedDump>`
+```ts
+client.createDump(): Promise<Types.EnqueuedDump>
+```
 
-- [Get the status of a dump creation process](https://docs.meilisearch.com/reference/api/dump.html#get-dump-status):
+#### [Get the status of a dump creation process](https://docs.meilisearch.com/reference/api/dump.html#get-dump-status)
 
-`client.getDumpStatus(dumpUid: string): Promise<Types.EnqueuedDump>`
+```ts
+client.getDumpStatus(dumpUid: string): Promise<Types.EnqueuedDump>
+```
 
-<hr>
+---
 
 Meilisearch provides and maintains many SDKs and integration tools like this one. We want to provide everyone with an **amazing search experience for any kind of project**. For a full overview of everything we create and maintain, take a look at the [integration-guides](https://github.com/meilisearch/integration-guides) repository.
