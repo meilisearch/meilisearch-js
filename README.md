@@ -602,21 +602,21 @@ client.index('myIndex').updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask
 client.index('myIndex').resetSynonyms(): Promise<EnqueuedTask>
 ```
 
-### Stop-words <!-- omit in toc -->
+### Stop words <!-- omit in toc -->
 
-#### [Get stop-words](https://docs.meilisearch.com/reference/api/stop_words.html#get-stop-words)
+#### [Get stop words](https://docs.meilisearch.com/reference/api/stop_words.html#get-stop-words)
 
 ```ts
 client.index('myIndex').getStopWords(): Promise<string[]>
 ```
 
-#### [Update stop-words](https://docs.meilisearch.com/reference/api/stop_words.html#update-stop-words)
+#### [Update stop words](https://docs.meilisearch.com/reference/api/stop_words.html#update-stop-words)
 
 ```ts
 client.index('myIndex').updateStopWords(stopWords: string[] | null ): Promise<EnqueuedTask>
 ```
 
-#### [Reset stop-words](https://docs.meilisearch.com/reference/api/stop_words.html#reset-stop-words)
+#### [Reset stop words](https://docs.meilisearch.com/reference/api/stop_words.html#reset-stop-words)
 
 ```ts
 client.index('myIndex').resetStopWords(): Promise<EnqueuedTask>
