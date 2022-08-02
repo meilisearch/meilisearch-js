@@ -381,49 +381,49 @@ client.index('myIndex').addDocuments(documents: Document<T>[]): Promise<Enqueued
 #### [Add or replace multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents)
 
 ```ts
-client.index.addDocumentsInBatches(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedTask[]>
+client.index('myIndex').addDocumentsInBatches(documents: Document<T>[], batchSize = 1000): Promise<EnqueuedTask[]>
 ```
 
 #### [Add or update multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents)
 
 ```ts
-client.index.updateDocuments(documents: Array<Document<Partial<T>>>): Promise<EnqueuedTask>
+client.index('myIndex').updateDocuments(documents: Array<Document<Partial<T>>>): Promise<EnqueuedTask>
 ```
 
 #### [Add or update multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents)
 
 ```ts
-client.index.updateDocumentsInBatches(documents: Array<Document<Partial<T>>>, batchSize = 1000): Promise<EnqueuedTask[]>
+client.index('myIndex').updateDocumentsInBatches(documents: Array<Document<Partial<T>>>, batchSize = 1000): Promise<EnqueuedTask[]>
 ```
 
 #### [Get Documents](https://docs.meilisearch.com/reference/api/documents.html#get-documents)
 
 ```ts
-client.index.getDocuments(params: getDocumentsParams): Promise<Document<T>[]>
+client.index('myIndex').getDocuments(params: getDocumentsParams): Promise<Document<T>[]>
 ```
 
 #### [Get one document](https://docs.meilisearch.com/reference/api/documents.html#get-one-document)
 
 ```ts
-client.index.getDocument(documentId: string): Promise<Document<T>>
+client.index('myIndex').getDocument(documentId: string): Promise<Document<T>>
 ```
 
 #### [Delete one document](https://docs.meilisearch.com/reference/api/documents.html#delete-one-document)
 
 ```ts
-client.index.deleteDocument(documentId: string | number): Promise<EnqueuedTask>
+client.index('myIndex').deleteDocument(documentId: string | number): Promise<EnqueuedTask>
 ```
 
 #### [Delete multiple documents](https://docs.meilisearch.com/reference/api/documents.html#delete-documents)
 
 ```ts
-client.index.deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedTask>
+client.index('myIndex').deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedTask>
 ```
 
 #### [Delete all documents](https://docs.meilisearch.com/reference/api/documents.html#delete-all-documents)
 
 ```ts
-client.index.deleteAllDocuments(): Promise<Types.EnqueuedTask>
+client.index('myIndex').deleteAllDocuments(): Promise<Types.EnqueuedTask>
 ```
 
 ### Tasks <!-- omit in toc -->
@@ -445,13 +445,13 @@ client.getTask(uid: number): Promise<Task>
 ##### Task list
 
 ```ts
-client.index.getTasks(): Promise<Result<Task[]>>
+client.index('myIndex').getTasks(): Promise<Result<Task[]>>
 ```
 
 ##### One task
 
 ```ts
-client.index.getTask(uid: number): Promise<Task>
+client.index('myIndex').getTask(uid: number): Promise<Task>
 ```
 
 #### Wait for one task
@@ -465,7 +465,7 @@ client.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Pr
 ##### Using the index
 
 ```ts
-client.index.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>
+client.index('myIndex').waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>
 ```
 
 #### Wait for multiple tasks
@@ -479,7 +479,7 @@ client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number })
 ##### Using the index
 
 ```ts
-client.index.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>
+client.index('myIndex').waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>
 ```
 
 ### Indexes <!-- omit in toc -->
@@ -523,7 +523,7 @@ client.getRawIndex(uid: string): Promise<IndexResponse>
 #### [Get an object with information about the index](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index)
 
 ```ts
-client.index.getRawInfo(): Promise<IndexResponse>
+client.index('myIndex').getRawInfo(): Promise<IndexResponse>
 ```
 
 #### [Update Index](https://docs.meilisearch.com/reference/api/indexes.html#update-an-index)
@@ -549,25 +549,25 @@ client.deleteIndex(uid): Promise<void>
 
 ##### Using the index object
 ```ts
-client.index.delete(): Promise<void>
+client.index('myIndex').delete(): Promise<void>
 ```
 
 #### [Get specific index stats](https://docs.meilisearch.com/reference/api/stats.html#get-stat-of-an-index)
 
 ```ts
-client.index.getStats(): Promise<IndexStats>
+client.index('myIndex').getStats(): Promise<IndexStats>
 ```
 
 ##### Return Index instance with updated information
 
 ```ts
-client.index.fetchInfo(): Promise<Index>
+client.index('myIndex').fetchInfo(): Promise<Index>
 ```
 
 ##### Get Primary Key of an Index
 
 ```ts
-client.index.fetchPrimaryKey(): Promise<string | undefined>
+client.index('myIndex').fetchPrimaryKey(): Promise<string | undefined>
 ```
 
 ### Settings <!-- omit in toc -->
@@ -575,19 +575,19 @@ client.index.fetchPrimaryKey(): Promise<string | undefined>
 #### [Get settings](https://docs.meilisearch.com/reference/api/settings.html#get-settings)
 
 ```ts
-client.index.getSettings(): Promise<Settings>
+client.index('myIndex').getSettings(): Promise<Settings>
 ```
 
 #### [Update settings](https://docs.meilisearch.com/reference/api/settings.html#update-settings)
 
 ```ts
-client.index.updateSettings(settings: Settings): Promise<EnqueuedTask>
+client.index('myIndex').updateSettings(settings: Settings): Promise<EnqueuedTask>
 ```
 
 #### [Reset settings](https://docs.meilisearch.com/reference/api/settings.html#reset-settings)
 
 ```ts
-client.index.resetSettings(): Promise<EnqueuedTask>
+client.index('myIndex').resetSettings(): Promise<EnqueuedTask>
 ```
 
 ### Synonyms <!-- omit in toc -->
@@ -595,19 +595,19 @@ client.index.resetSettings(): Promise<EnqueuedTask>
 #### [Get synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#get-synonyms)
 
 ```ts
-client.index.getSynonyms(): Promise<object>
+client.index('myIndex').getSynonyms(): Promise<Synonyms>
 ```
 
 #### [Update synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#update-synonyms)
 
 ```ts
-client.index.updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask>
+client.index('myIndex').updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask>
 ```
 
 #### [Reset synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#reset-synonyms)
 
 ```ts
-client.index.resetSynonyms(): Promise<EnqueuedTask>
+client.index('myIndex').resetSynonyms(): Promise<EnqueuedTask>
 ```
 
 ### Stop-words <!-- omit in toc -->
@@ -615,19 +615,19 @@ client.index.resetSynonyms(): Promise<EnqueuedTask>
 #### [Get stop-words](https://docs.meilisearch.com/reference/api/stop_words.html#get-stop-words)
 
 ```ts
-client.index.getStopWords(): Promise<string[]>
+client.index('myIndex').getStopWords(): Promise<string[]>
 ```
 
 #### [Update stop-words](https://docs.meilisearch.com/reference/api/stop_words.html#update-stop-words)
 
 ```ts
-client.index.updateStopWords(stopWords: string[] | null ): Promise<EnqueuedTask>
+client.index('myIndex').updateStopWords(stopWords: string[] | null ): Promise<EnqueuedTask>
 ```
 
 #### [Reset stop-words](https://docs.meilisearch.com/reference/api/stop_words.html#reset-stop-words)
 
 ```ts
-client.index.resetStopWords(): Promise<EnqueuedTask>
+client.index('myIndex').resetStopWords(): Promise<EnqueuedTask>
 ```
 
 ### Ranking rules <!-- omit in toc -->
@@ -635,19 +635,19 @@ client.index.resetStopWords(): Promise<EnqueuedTask>
 #### [Get ranking rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#get-ranking-rules)
 
 ```ts
-client.index.getRankingRules(): Promise<string[]>
+client.index('myIndex').getRankingRules(): Promise<string[]>
 ```
 
 #### [Update ranking rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#update-ranking-rules)
 
 ```ts
-client.index.updateRankingRules(rankingRules: string[] | null): Promise<EnqueuedTask>
+client.index('myIndex').updateRankingRules(rankingRules: string[] | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset ranking rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#reset-ranking-rules)
 
 ```ts
-client.index.resetRankingRules(): Promise<EnqueuedTask>
+client.index('myIndex').resetRankingRules(): Promise<EnqueuedTask>
 ```
 
 ### Distinct Attribute <!-- omit in toc -->
@@ -655,19 +655,19 @@ client.index.resetRankingRules(): Promise<EnqueuedTask>
 #### [Get distinct attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#get-distinct-attribute)
 
 ```ts
-client.index.getDistinctAttribute(): Promise<string | void>
+client.index('myIndex').getDistinctAttribute(): Promise<string | void>
 ```
 
 #### [Update distinct attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#update-distinct-attribute)
 
 ```ts
-client.index.updateDistinctAttribute(distinctAttribute: string | null): Promise<EnqueuedTask>
+client.index('myIndex').updateDistinctAttribute(distinctAttribute: string | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset distinct attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#reset-distinct-attribute)
 
 ```ts
-client.index.resetDistinctAttribute(): Promise<EnqueuedTask>
+client.index('myIndex').resetDistinctAttribute(): Promise<EnqueuedTask>
 ```
 
 ### Searchable attributes <!-- omit in toc -->
@@ -675,19 +675,19 @@ client.index.resetDistinctAttribute(): Promise<EnqueuedTask>
 #### [Get searchable attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#get-searchable-attributes)
 
 ```ts
-client.index.getSearchableAttributes(): Promise<string[]>
+client.index('myIndex').getSearchableAttributes(): Promise<string[]>
 ```
 
 #### [Update searchable attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#update-searchable-attributes)
 
 ```ts
-client.index.updateSearchableAttributes(searchableAttributes: string[] | null): Promise<EnqueuedTask>
+client.index('myIndex').updateSearchableAttributes(searchableAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset searchable attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#reset-searchable-attributes)
 
 ```ts
-client.index.resetSearchableAttributes(): Promise<EnqueuedTask>
+client.index('myIndex').resetSearchableAttributes(): Promise<EnqueuedTask>
 ```
 
 ### Displayed attributes <!-- omit in toc -->
@@ -695,19 +695,19 @@ client.index.resetSearchableAttributes(): Promise<EnqueuedTask>
 #### [Get displayed attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#get-displayed-attributes)
 
 ```ts
-client.index.getDisplayedAttributes(): Promise<string[]>
+client.index('myIndex').getDisplayedAttributes(): Promise<string[]>
 ```
 
 #### [Update displayed attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#update-displayed-attributes)
 
 ```ts
-client.index.updateDisplayedAttributes(displayedAttributes: string[] | null): Promise<EnqueuedTask>
+client.index('myIndex').updateDisplayedAttributes(displayedAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset displayed attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#reset-displayed-attributes)
 
 ```ts
-client.index.resetDisplayedAttributes(): Promise<EnqueuedTask>
+client.index('myIndex').resetDisplayedAttributes(): Promise<EnqueuedTask>
 ```
 
 ### Filterable attributes <!-- omit in toc -->
@@ -715,19 +715,19 @@ client.index.resetDisplayedAttributes(): Promise<EnqueuedTask>
 #### [Get filterable attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#get-filterable-attributes)
 
 ```ts
-client.index.getFilterableAttributes(): Promise<string[]>
+client.index('myIndex').getFilterableAttributes(): Promise<string[]>
 ```
 
 #### [Update filterable attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#update-filterable-attributes)
 
 ```ts
-client.index.updateFilterableAttributes(filterableAttributes: string[] | null): Promise<EnqueuedTask>
+client.index('myIndex').updateFilterableAttributes(filterableAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset filterable attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#reset-filterable-attributes)
 
 ```ts
-client.index.resetFilterableAttributes(): Promise<EnqueuedTask>
+client.index('myIndex').resetFilterableAttributes(): Promise<EnqueuedTask>
 ```
 
 ### Sortable attributes <!-- omit in toc -->
@@ -735,19 +735,19 @@ client.index.resetFilterableAttributes(): Promise<EnqueuedTask>
 #### [Get sortable attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#get-sortable-attributes)
 
 ```ts
-client.index.getSortableAttributes(): Promise<string[]>
+client.index('myIndex').getSortableAttributes(): Promise<string[]>
 ```
 
 #### [Update sortable attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#update-sortable-attributes)
 
 ```ts
-client.index.updateSortableAttributes(sortableAttributes: string[] | null): Promise<EnqueuedTask>
+client.index('myIndex').updateSortableAttributes(sortableAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset sortable attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#reset-sortable-attributes)
 
 ```ts
-client.index.resetSortableAttributes(): Promise<EnqueuedTask>
+client.index('myIndex').resetSortableAttributes(): Promise<EnqueuedTask>
 ```
 
 ### Typo tolerance <!-- omit in toc -->
@@ -755,19 +755,19 @@ client.index.resetSortableAttributes(): Promise<EnqueuedTask>
 #### [Get typo tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#get-typo-tolerance)
 
 ```ts
-client.index.getTypoTolerance(): Promise<TypoTolerance>
+client.index('myIndex').getTypoTolerance(): Promise<TypoTolerance>
 ```
 
 #### [Update typo tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#update-typo-tolerance)
 
 ```ts
-client.index.updateTypoTolerance(typoTolerance: TypoTolerance | null): Promise<EnqueuedTask>
+client.index('myIndex').updateTypoTolerance(typoTolerance: TypoTolerance | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset typo tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#reset-typo-tolerance)
 
 ```ts
-client.index.resetTypoTolerance(): Promise<EnqueuedTask>
+client.index('myIndex').resetTypoTolerance(): Promise<EnqueuedTask>
 ```
 
 ### Keys <!-- omit in toc -->
