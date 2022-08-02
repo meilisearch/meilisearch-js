@@ -537,7 +537,7 @@ client.updateIndex(uid: string, options: IndexOptions): Promise<EnqueuedTask>
 ##### Using the index object
 
 ```ts
-client.index.update(data: IndexOptions): Promise<EnqueuedTask>
+client.index('myIndex').update(data: IndexOptions): Promise<EnqueuedTask>
 ```
 
 #### [Delete index](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index)
