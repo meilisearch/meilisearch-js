@@ -59,13 +59,13 @@ If you prefer `yarn`:
 yarn add meilisearch
 ```
 
-`meilisearch-js` officially supports `node` versions >= 12 and <= 16.
+`meilisearch-js` officially supports `node` versions >= 14 and <= 18.
 
 Instead of using a package manager, you may also import the library directly into your [HTML via a CDN](#include-script-tag).
 
 ### Run Meilisearch <!-- omit in toc -->
 
-To use one our SDKS, you must first have a running Meilisearch instance. Consult our documentation for [instructions on how to download and launch Meilisearch](https://docs.meilisearch.com/reference/features/installation.html#download-and-launch).
+To use one of our SDKs, you must first have a running Meilisearch instance. Consult our documentation for [instructions on how to download and launch Meilisearch](https://docs.meilisearch.com/reference/features/installation.html#download-and-launch).
 
 ### Import <!-- omit in toc -->
 
@@ -162,7 +162,7 @@ import { MeiliSearch } from 'meilisearch'
 })()
 ```
 
-Tasks such as document addition always return a unique identifier. You can use this identifier `uid` to check the status (`enqueued`, `processing`, `succeeded` or `failed`) of a [task](https://docs.meilisearch.com/reference/api/tasks.html#get-task).
+Tasks such as document addition always return a unique identifier. You can use this identifier `taskUid` to check the status (`enqueued`, `processing`, `succeeded` or `failed`) of a [task](https://docs.meilisearch.com/reference/api/tasks.html#get-task).
 
 ### Basic search <!-- omit in toc -->
 
@@ -375,7 +375,7 @@ client.index<T>('xxx').searchGet(query: string, options: SearchParams = {}, conf
 #### [Add or replace multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents)
 
 ```ts
-client.index.addDocuments(documents: Document<T>[]): Promise<EnqueuedTask>
+client.index('myIndex').addDocuments(documents: Document<T>[]): Promise<EnqueuedTask>
 ```
 
 #### [Add or replace multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents)
