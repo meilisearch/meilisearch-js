@@ -43,7 +43,7 @@ See our [Documentation](https://docs.meilisearch.com/learn/tutorials/getting_sta
 
 ## 🔧 Installation
 
-We only guarantee that the package works with `node` >= 12 and `node` <= 16.
+We only guarantee that the package works with `node` >= 14 and `node` <= 18.
 
 With `npm`:
 

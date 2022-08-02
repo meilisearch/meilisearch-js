@@ -34,7 +34,7 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 
 To run this project, you will need:
 
-- Node.js >= v12 and node <= 16
+- Node.js >= v14 and node <= 18
 - Yarn
 
 
@@ -151,9 +151,7 @@ Here are the steps to release a beta version of this package:
       git checkout -b bump-meilisearch-v*.*.*-beta
       ```
 
-- Change the version in `package.json` with `*.*.*-xxx-beta.0` and commit it to the `v*.*.*-beta` branch. None or multiple `-xxx`are valid. Examples:
-  - `v*.*.*-my-feature-beta.0`
-  - `v*.*.*-beta.0`
+- Change the version in [`package.json`](/package.json) and in [`src/package-version`](/src/package-version.ts) with `*.*.*-xxx-beta.0` and commit it to the `beta` branch.
 
 - Go to the [GitHub interface for releasing](https://github.com/meilisearch/meilisearch-js/releases): on this page, click on `Draft a new release`.
 
@@ -169,7 +167,7 @@ GitHub Actions will be triggered and push the beta version to [npm](https://www.
 
 💡 If you need to release a new beta for the same version (i.e. `vX.X.X-beta.1`):
 - merge the change into your beta branch
-- change the version name in `package.json`
+- change the version name in [`package.json`](/package.json) and in [`src/package-version`](/src/package-version.ts)
 - creata a pre-release via the GitHub interface
 
 <hr>
