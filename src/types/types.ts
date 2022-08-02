@@ -71,6 +71,7 @@ export type Crop = {
 export const enum OptionalWords {
   NONE = 'none',
   LAST = 'last',
+  ANY = 'any',
 }
 
 export type SearchParams = Query &

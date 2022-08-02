@@ -149,6 +149,20 @@ describe.each([
     expect(response.hits.length).toEqual(1)
   })
 
+  test(`${permission} key: Basic phrase searchwith optionalWords at any`, async () => {
+    const client = await getClient(permission)
+    const response = await client
+      .index(index.uid)
+      .search('french book', { optionalWords: OptionalWords.ANY })
+
+    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('offset', 0)
+    expect(response).toHaveProperty('limit', 20)
+    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
+    expect(response).toHaveProperty('query', 'french book')
+    expect(response.hits.length).toEqual(6)
+  })
+
   test(`${permission} key: search with options`, async () => {
     const client = await getClient(permission)
     const response = await client
