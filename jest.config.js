@@ -10,7 +10,6 @@ const config = {
       },
     },
   },
-  setupFiles: [],
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
@@ -24,7 +23,7 @@ const config = {
       testPathIgnorePatterns: [
         'meilisearch-test-utils',
         'env/',
-        'token_tests.ts',
+        'token.test.ts',
       ],
     },
     {

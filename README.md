@@ -177,7 +177,7 @@ Output:
   ],
   "offset": 0,
   "limit": 20,
-  "nbHits": 1,
+  "estimatedTotalHits": 1,
   "processingTimeMs": 1,
   "query": "philoudelphia"
 }
@@ -212,7 +212,7 @@ await index.search(
   ],
   "offset": 0,
   "limit": 20,
-  "nbHits": 1,
+  "estimatedTotalHits": 1,
   "processingTimeMs": 0,
   "query": "wonder"
 }
@@ -255,7 +255,7 @@ await index.search(
   ],
   "offset": 0,
   "limit": 20,
-  "nbHits": 1,
+  "estimatedTotalHits": 1,
   "processingTimeMs": 0,
   "query": "wonder"
 }
@@ -291,10 +291,10 @@ await index.search(
   ],
   "offset": 0,
   "limit": 20,
-  "nbHits": 2,
+  "estimatedTotalHits": 2,
   "processingTimeMs": 0,
   "query": "",
-  "facetsDistribution": {
+  "facetDistribution": {
     "genres": {
       "Action": 2,
       "Fantasy": 1,
@@ -329,7 +329,7 @@ controller.abort()
 
 ## 🤖 Compatibility with Meilisearch
 
-This package only guarantees the compatibility with the [version v0.27.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.27.0).
+This package only guarantees the compatibility with the [version v0.28.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.28.0).
 
 ## 💡 Learn more
 
@@ -391,7 +391,7 @@ client.index('myIndex').updateDocumentsInBatches(documents: Array<Document<Parti
 #### [Get Documents](https://docs.meilisearch.com/reference/api/documents.html#get-documents)
 
 ```ts
-client.index('myIndex').getDocuments(params: getDocumentsParams): Promise<Document<T>[]>
+client.index.getDocuments(parameters: DocumentsQuery = {}): Promise<DocumentsResults<T>>>
 ```
 
 #### [Get one document](https://docs.meilisearch.com/reference/api/documents.html#get-one-document)
@@ -420,33 +420,32 @@ client.index('myIndex').deleteAllDocuments(): Promise<Types.EnqueuedTask>
 
 ### Tasks <!-- omit in toc -->
 
-#### [Get task info using the client](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks)
+#### [Get all tasks](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks)
 
-##### Task list
 ```ts
-client.getTasks(): Promise<Result<Task[]>>
+client.getTasks(parameters: TasksQuery): Promise<TasksResults>
 ```
 
-##### One task
+#### [Get one task](https://docs.meilisearch.com/reference/api/tasks.html#get-task)
+
 ```ts
 client.getTask(uid: number): Promise<Task>
 ```
 
-#### [Get task info using the index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index)
-
-##### Task list
+#### [Get all tasks of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index)
 
 ```ts
-client.index('myIndex').getTasks(): Promise<Result<Task[]>>
+client.index('myIndex').getTasks(parameters: TasksQuery): Promise<TasksResults>
 ```
 
-##### One task
+#### [Get one task of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-task)
 
 ```ts
 client.index('myIndex').getTask(uid: number): Promise<Task>
 ```
 
 #### Wait for one task
+
 
 ##### Using the client
 
@@ -465,13 +464,13 @@ client.index('myIndex').waitForTask(uid: number, { timeOutMs?: number, intervalM
 ##### Using the client
 
 ```ts
-client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>
+client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Task[]>
 ```
 
 ##### Using the index
 
 ```ts
-client.index('myIndex').waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Result<Task[]>>
+client.index('myIndex').waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Task[]>
 ```
 
 ### Indexes <!-- omit in toc -->
@@ -479,14 +478,15 @@ client.index('myIndex').waitForTasks(uids: number[], { timeOutMs?: number, inter
 #### [Get all indexes in Index instances](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes)
 
 ```ts
-client.getIndexes(): Promise<Index[]>
+client.getIndexes(parameters: IndexesQuery): Promise<IndexesResults<Index[]>>
 ```
 
-#### [Get raw indexes in JSON response from Meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes)
+#### [Get all indexes](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes)
 
 ```ts
-client.getRawIndexes(): Promise<IndexResponse[]>
+client.getRawIndexes(parameters: IndexesQuery): Promise<IndexesResults<IndexObject[]>>
 ```
+
 
 #### [Create a new index](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)
 
@@ -509,13 +509,13 @@ client.getIndex<T>(uid: string): Promise<Index<T>>
 #### [Get the raw index JSON response from Meilisearch](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index)
 
 ```ts
-client.getRawIndex(uid: string): Promise<IndexResponse>
+client.getRawIndex(uid: string): Promise<IndexObject>
 ```
 
 #### [Get an object with information about the index](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index)
 
 ```ts
-client.index('myIndex').getRawInfo(): Promise<IndexResponse>
+client.index('myIndex').getRawInfo(): Promise<IndexObject>
 ```
 
 #### [Update Index](https://docs.meilisearch.com/reference/api/indexes.html#update-an-index)
@@ -767,31 +767,31 @@ client.index('myIndex').resetTypoTolerance(): Promise<EnqueuedTask>
 #### [Get keys](https://docs.meilisearch.com/reference/api/keys.html#get-all-keys)
 
 ```ts
-client.getKeys(): Promise<Result<Key[]>>
+client.getKeys(parameters: KeysQuery): Promise<KeysResults>
 ```
 
 #### [Get one key](https://docs.meilisearch.com/reference/api/keys.html#get-one-key)
 
 ```ts
-client.getKey(key: string): Promise<Key>
+client.getKey(keyOrUid: string): Promise<Key>
 ```
 
 #### [Create a key](https://docs.meilisearch.com/reference/api/keys.html#create-a-key)
 
 ```ts
-client.createKey(options: KeyPayload): Promise<Key>
+client.createKey(options: KeyCreation): Promise<Key>
 ```
 
 #### [Update a key](https://docs.meilisearch.com/reference/api/keys.html#update-a-key)
 
 ```ts
-client.updateKey(key: string, options: KeyPayload): Promise<Key>
+client.updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key>
 ```
 
 #### [Delete a key](https://docs.meilisearch.com/reference/api/keys.html#delete-a-key)
 
 ```ts
-client.deleteKey(key: string): Promise<void>
+client.deleteKey(keyOrUid: string): Promise<void>
 ```
 
 ### `isHealthy` <!-- omit in toc -->
@@ -831,13 +831,7 @@ client.getVersion(): Promise<Version>
 #### [Trigger a dump creation process](https://docs.meilisearch.com/reference/api/dump.html#create-a-dump)
 
 ```ts
-client.createDump(): Promise<Types.EnqueuedDump>
-```
-
-#### [Get the status of a dump creation process](https://docs.meilisearch.com/reference/api/dump.html#get-dump-status)
-
-```ts
-client.getDumpStatus(dumpUid: string): Promise<Types.EnqueuedDump>
+client.createDump(): Promise<EnqueuedTask>
 ```
 
 ---

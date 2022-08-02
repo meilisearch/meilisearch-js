@@ -1,9 +1,11 @@
 class MeiliSearchError extends Error {
-  type: string
   constructor(message: string) {
     super(message)
+
+    // Make errors comparison possible. ex: error instanceof MeiliSearchError.
+    Object.setPrototypeOf(this, MeiliSearchError.prototype)
+
     this.name = 'MeiliSearchError'
-    this.type = 'MeiliSearchError'
 
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, MeiliSearchError)

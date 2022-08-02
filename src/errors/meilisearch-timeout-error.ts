@@ -1,9 +1,11 @@
 class MeiliSearchTimeOutError extends Error {
-  type: string
   constructor(message: string) {
     super(message)
+
+    // Make errors comparison possible. ex: error instanceof MeiliSearchTimeOutError.
+    Object.setPrototypeOf(this, MeiliSearchTimeOutError.prototype)
+
     this.name = 'MeiliSearchTimeOutError'
-    this.type = this.constructor.name
 
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, MeiliSearchTimeOutError)

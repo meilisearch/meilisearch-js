@@ -34,11 +34,20 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 
 To run this project, you will need:
 
-- Node.js >= v12 and node <= 16
+- Node.js >= v14 and node <= 18
 - Yarn
 
 
 ### Setup
+
+You can set up your local environment natively or using `docker`, check out the [`docker-compose.yml`](/docker-compose.yml).
+
+Example of running all the checks with docker:
+```bash
+docker-compose run --rm package bash -c "yarn install && yarn test && yarn lint"
+```
+
+To install dependencies:
 
 ```bash
 yarn --dev
@@ -106,10 +115,16 @@ _[Read more about this](https://github.com/meilisearch/integration-guides/blob/m
 
 ⚠️ Before doing anything, make sure you got through the guide about [Releasing an Integration](https://github.com/meilisearch/integration-guides/blob/main/resources/integration-release.md).
 
-Make a PR modifying the file [`package.json`](/package.json) with the right version.
+Make a PR modifying the following files with the right version:
 
+[`package.json`](/package.json):
 ```javascript
 "version": "X.X.X",
+```
+
+[`src/package-version`](/src/package-version.ts)
+```javascript
+export const PACKAGE_VERSION = 'X.X.X'
 ```
 
 Once the changes are merged on `main`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-js/releases): on this page, click on `Edit` (related to the draft release) > update the description (be sure you apply [these recommandations](https://github.com/meilisearch/integration-guides/blob/main/resources/integration-release.md#writting-the-release-description)) > when you are ready, click on `Publish release`.
@@ -120,16 +135,23 @@ GitHub Actions will be triggered and push the package to [npm](https://www.npmjs
 
 Here are the steps to release a beta version of this package:
 
-- Create a new branch originating the branch containing the "beta" changes. For example, if during the Meilisearch pre-release, create a branch originating `bump-meilisearch-v*.*.*`.<br>
-`vX.X.X` is the next version of the package, NOT the version of Meilisearch!
+- Create a new branch containing the "beta" changes with the following format `xxx-beta` where `xxx` explains the context.
 
-```bash
-git checkout bump-meilisearch-v*.*.*
-git pull origin bump-meilisearch-v*.*.*
-git checkout -b vX.X.X-beta.0
-```
+  For example:
+    - When implementing a beta feature, create a branch `my-feature-beta` where you implement the feature.
+      ```bash
+        git checkout -b my-feature-beta
+      ```
+    - During the Meilisearch pre-release, create a branch originating from `bump-meilisearch-v*.*.*` named `meilisearch-v*.*.*-beta`. <br>
+    `v*.*.*` is the next version of the package, NOT the version of Meilisearch!
 
-- Change the version in `package.json` with `X.X.X-beta.0` and commit it to the `vX.X.X-beta.0` branch
+      ```bash
+      git checkout bump-meilisearch-v*.*.*
+      git pull origin bump-meilisearch-v*.*.*
+      git checkout -b bump-meilisearch-v*.*.*-beta
+      ```
+
+- Change the version in [`package.json`](/package.json) and in [`src/package-version`](/src/package-version.ts) with `*.*.*-xxx-beta.0` and commit it to the `beta` branch.
 
 - Go to the [GitHub interface for releasing](https://github.com/meilisearch/meilisearch-js/releases): on this page, click on `Draft a new release`.
 
@@ -144,9 +166,8 @@ git checkout -b vX.X.X-beta.0
 GitHub Actions will be triggered and push the beta version to [npm](https://www.npmjs.com/package/meilisearch).
 
 💡 If you need to release a new beta for the same version (i.e. `vX.X.X-beta.1`):
-- merge the change into `bump-meilisearch-v*.*.*`
-- rebase the `vX.X.X-beta.0` branch
-- change the version name in `package.json`
+- merge the change into your beta branch
+- change the version name in [`package.json`](/package.json) and in [`src/package-version`](/src/package-version.ts)
 - creata a pre-release via the GitHub interface
 
 <hr>

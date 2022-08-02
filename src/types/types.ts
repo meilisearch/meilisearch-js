@@ -7,48 +7,50 @@
 export type Config = {
   host: string
   apiKey?: string
-  headers?: object
+  clientAgents?: string[]
+  headers?: Record<string, any>
 }
 
-export type Result<T> = {
+///
+/// Resources
+///
+
+export type Pagination = {
+  offset?: number
+  limit?: number
+}
+
+export type ResourceQuery = Pagination & {}
+
+export type ResourceResults<T> = Pagination & {
   results: T
+  total: number
 }
 
 ///
-/// Request specific interfaces
+/// Indexes
 ///
-
-export type IndexRequest = {
-  uid: string
-  primaryKey?: string
-}
 
 export type IndexOptions = {
   primaryKey?: string
 }
 
-export type IndexResponse = {
+export type IndexObject = {
   uid: string
-  name?: string
   primaryKey?: string
   createdAt: Date
   updatedAt: Date
 }
 
-export type AddDocumentParams = {
-  primaryKey?: string
-}
+export type IndexesQuery = ResourceQuery & {}
+
+export type IndexesResults<T> = ResourceResults<T> & {}
 
 /*
  * SEARCH PARAMETERS
  */
 
 export type Filter = string | Array<string | string[]>
-
-export type Pagination = {
-  offset?: number
-  limit?: number
-}
 
 export type Query = {
   q?: string | null
@@ -66,17 +68,16 @@ export type Crop = {
   cropMarker?: string
 }
 
-export type SearchParams = Pagination &
+export type SearchParams = Query &
+  Pagination &
   Highlight &
   Crop & {
     filter?: Filter
     sort?: string[]
-    facetsDistribution?: string[]
+    facets?: string[]
     attributesToRetrieve?: string[]
-    matches?: boolean
+    showMatchesPosition?: boolean
   }
-
-export type SearchRequest = SearchParams & Query
 
 // Search parameters for searches made with the GET method
 // Are different than the parameters for the POST method
@@ -86,11 +87,11 @@ export type SearchRequestGET = Pagination &
   Omit<Crop, 'attributesToCrop'> & {
     filter?: string
     sort?: string
-    facetsDistribution?: string
+    facets?: string
     attributesToRetrieve?: string
     attributesToHighlight?: string
     attributesToCrop?: string
-    matches?: boolean
+    showMatchesPosition?: boolean
   }
 
 export type CategoriesDistribution = {
@@ -98,32 +99,26 @@ export type CategoriesDistribution = {
 }
 
 export type Facet = string
-export type FacetsDistribution = Record<Facet, CategoriesDistribution>
-export type _matchesInfo<T> = Partial<
+export type FacetDistribution = Record<Facet, CategoriesDistribution>
+export type MatchesPosition<T> = Partial<
   Record<keyof T, Array<{ start: number; length: number }>>
 >
 
-export type document = {
-  [field: string]: any
-}
-
-export type Hit<T = document> = T & {
+export type Hit<T = Record<string, any>> = T & {
   _formatted?: Partial<T>
-  _matchesInfo?: _matchesInfo<T>
+  _matchesPosition?: MatchesPosition<T>
 }
 
-export type Hits<T = document> = Array<Hit<T>>
+export type Hits<T = Record<string, any>> = Array<Hit<T>>
 
 export type SearchResponse<T = Record<string, any>> = {
   hits: Hits<T>
   offset: number
   limit: number
   processingTimeMs: number
-  facetsDistribution?: FacetsDistribution
-  exhaustiveFacetsCount?: boolean
+  facetDistribution?: FacetDistribution
   query: string
-  nbHits: number
-  exhaustiveNbHits: boolean
+  estimatedTotalHits: number
 }
 
 export type FieldDistribution = {
@@ -133,17 +128,29 @@ export type FieldDistribution = {
 /*
  ** Documents
  */
-export type GetDocumentsParams<T = Record<string, any>> = {
-  offset?: number
-  limit?: number
-  attributesToRetrieve?:
-    | Array<Extract<keyof T, string>>
-    | Extract<keyof T, string>
+
+type Fields<T = Record<string, any>> =
+  | Array<Extract<keyof T, string>>
+  | Extract<keyof T, string>
+
+export type DocumentOptions = {
+  primaryKey?: string
 }
 
-export type GetDocumentsResponse<T = Record<string, any>> = Array<Document<T>>
+export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
+  fields?: Fields<T>
+}
+
+export type DocumentQuery<T = Record<string, any>> = {
+  fields?: Fields<T>
+}
 
 export type Document<T = Record<string, any>> = T
+export type Documents<T = Record<string, any>> = Array<Document<T>>
+
+export type DocumentsResults<T = Record<string, any>> = ResourceResults<
+  Documents<T>
+> & {}
 
 /*
  ** Settings
@@ -161,13 +168,20 @@ export type Synonyms = {
 } | null
 export type TypoTolerance = {
   enabled?: boolean | null
-  disabledOnAttributes?: string[] | null
+  disableOnAttributes?: string[] | null
   disableOnWords?: string[] | null
   minWordSizeForTypos?: {
     oneTypo?: number | null
     twoTypos?: number | null
   }
 } | null
+
+export type Faceting = {
+  maxValuesPerFacet?: number | null
+}
+export type PaginationSettings = {
+  maxTotalHits?: number | null
+}
 
 export type Settings = {
   filterableAttributes?: FilterableAttributes
@@ -179,6 +193,8 @@ export type Settings = {
   stopWords?: StopWords
   synonyms?: Synonyms
   typoTolerance?: TypoTolerance
+  faceting?: Faceting
+  pagination?: PaginationSettings
 }
 
 /*
@@ -192,18 +208,34 @@ export const enum TaskStatus {
   TASK_ENQUEUED = 'enqueued',
 }
 
+export const enum TaskTypes {
+  INDEX_CREATION = 'indexCreation',
+  INDEX_UPDATE = 'indexUpdate',
+  INDEX_DELETION = 'indexDeletion',
+  DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
+  DOCUMENT_DELETION = 'documentDeletion',
+  SETTINGS_UPDATE = 'settingsUpdate',
+}
+
+export type TasksQuery = {
+  indexUid?: string[]
+  type?: TaskTypes[]
+  status?: TaskStatus[]
+  limit?: number
+  from?: number
+}
+
 export type EnqueuedTask = {
-  uid: number
-  indexUid: string
+  taskUid: number
+  indexUid?: string
   status: TaskStatus
-  type: string
+  type: TaskTypes
   enqueuedAt: string
 }
 
-export type Task = {
-  status: TaskStatus
+export type Task = Omit<EnqueuedTask, 'taskUid'> & {
   uid: number
-  type: string
+  batchUid: number
   details: {
     // Number of documents sent
     receivedDocuments?: number
@@ -241,17 +273,17 @@ export type Task = {
     // Distinct attribute on settings actions
     distinctAttribute: DistinctAttribute
   }
+  error?: MeiliSearchErrorInfo
   duration: string
-  enqueuedAt: string
-  processedAt: string
-  error?: MeiliSearchErrorBody
-}
-
-export type EnqueuedDump = {
-  uid: string
-  status: 'in_progress' | 'failed' | 'done'
   startedAt: string
   finishedAt: string
+}
+
+export type TasksResults = {
+  results: Task[]
+  limit: number
+  from: number
+  next: number
 }
 
 export type WaitOptions = {
@@ -290,7 +322,9 @@ export type Stats = {
  */
 
 export type Key = {
+  uid: string
   description: string
+  name: string | null
   key: string
   actions: string[]
   indexes: string[]
@@ -299,12 +333,23 @@ export type Key = {
   updateAt: string
 }
 
-export type KeyPayload = {
+export type KeyCreation = {
+  uid?: string
+  name?: string
   description?: string
   actions: string[]
   indexes: string[]
   expiresAt: string | null
 }
+
+export type KeyUpdate = {
+  name?: string
+  description?: string
+}
+
+export type KeysQuery = ResourceQuery & {}
+
+export type KeysResults = ResourceResults<Key[]> & {}
 
 /*
  ** version
@@ -319,20 +364,13 @@ export type Version = {
  ** ERROR HANDLER
  */
 
-export interface MeiliSearchErrorInterface extends Error {
-  code?: string
-  link?: string
-  stack?: string
-  type?: string
-}
-
 export interface FetchError extends Error {
   type: string
   errno: string
   code: string
 }
 
-export type MeiliSearchErrorBody = {
+export type MeiliSearchErrorInfo = {
   code: string
   link: string
   message: string
@@ -450,9 +488,6 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#task_not_found */
   TASK_NOT_FOUND = 'task_not_found',
-
-  /** @see https://docs.meilisearch.com/errors/#dump_already_processing */
-  DUMP_ALREADY_PROCESSING = 'dump_already_processing',
 
   /** @see https://docs.meilisearch.com/errors/#dump_process_failed */
   DUMP_PROCESS_FAILED = 'dump_process_failed',

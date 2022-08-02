@@ -3,7 +3,7 @@
 import {
   // @ts-ignore
   MeiliSearch,
-  IndexResponse,
+  IndexObject,
   SearchResponse,
   Hits,
   Hit,
@@ -26,12 +26,12 @@ const indexUid = "movies"
 
 ;(async () => {
   await client.deleteIndex(indexUid)
-  const { uid } = await client.createIndex(indexUid)
-  await client.waitForTask(uid)
+  const { taskUid } = await client.createIndex(indexUid)
+  await client.waitForTask(taskUid)
 
   const index = client.index(indexUid)
   const indexes = await client.getRawIndexes()
-  indexes.map((index: IndexResponse) => {
+  indexes.results.map((index: IndexObject) => {
     console.log(index.uid)
     // console.log(index.something) -> ERROR
   })
@@ -42,7 +42,7 @@ const indexUid = "movies"
     attributesToHighlight: ['title'],
     // test: true -> ERROR Test does not exist on type SearchParams
   }
-  indexes.map((index: IndexResponse) => index.uid)
+  indexes.results.map((index: IndexObject) => index.uid)
   const res: SearchResponse<Movie> = await index.search(
     'avenger',
     searchParams
@@ -59,7 +59,7 @@ const indexUid = "movies"
     console.log(hit?._formatted?.title)
   })
 
-  console.log(await client.generateTenantToken([]))
+  console.log(await client.generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', []))
 
   await index.delete()
 })()

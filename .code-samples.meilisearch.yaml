@@ -6,7 +6,7 @@
 get_one_index_1: |-
   client.index('movies').getRawInfo()
 list_all_indexes_1: |-
-  client.getIndexes()
+  client.getIndexes({ limit: 3 })
 create_an_index_1: |-
   client.createIndex('movies', { primaryKey: 'id' })
 update_an_index_1: |-
@@ -14,7 +14,9 @@ update_an_index_1: |-
 delete_an_index_1: |-
   client.deleteIndex('movies')
 get_one_document_1: |-
-  client.index('movies').getDocument(25684)
+  client
+      .index('movies')
+      .getDocument(25684, { fields: ['id', 'title', 'poster', 'release_date'] })
 get_documents_1: |-
   client.index('movies').getDocuments({ limit: 2 })
 add_or_replace_documents_1: |-
@@ -41,18 +43,22 @@ search_post_1: |-
   client.index('movies').search('American ninja')
 search_get_1: |-
   client.index('movies').search('American ninja')
-get_task_by_index_1: |-
-  client.index('movies').getTask(1)
-get_all_tasks_by_index_1: |-
-  client.index('movies').getTasks()
 get_all_tasks_1: |-
   client.getTasks()
 get_task_1: |-
   client.getTask(1)
+get_all_tasks_filtering_1: |-
+  client.getTasks({ indexUid: ['movies'] })
+get_all_tasks_filtering_2: |-
+  client.getTasks({ status: ['succeeded', 'failed'], type: ['documentAdditionOrUpdate'] })
+get_all_tasks_paginating_1: |-
+  client.getTasks({ limit: 2, from: 10 })
+get_all_tasks_paginating_2: |-
+  client.getTasks({ limit: 2, from: 8 })
 get_one_key_1: |-
-  client.getKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+  client.getKey('6062abda-a5aa-4414-ac91-ecd7944c0f8d')
 get_all_keys_1: |-
-  client.getKeys()
+  client.getKeys({ limit: 3 })
 create_a_key_1: |-
   client.createKey({
     description: 'Add documents: Products API key',
@@ -61,20 +67,12 @@ create_a_key_1: |-
     expiresAt: '2021-11-13T00:00:00Z'
   })
 update_a_key_1: |-
-  client.updateKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4', {
+  client.updateKey('6062abda-a5aa-4414-ac91-ecd7944c0f8d', {
+      name: 'Products/Reviews API key',
       description: 'Manage documents: Products/Reviews API key',
-      actions: [
-        'documents.add',
-        'documents.delete'
-      ],
-      indexes: [
-        'products',
-        'reviews'
-      ],
-      expiresAt: '2021-12-31T23:59:59Z'
   })
 delete_a_key_1: |-
-  client.deleteKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+  client.deleteKey('6062abda-a5aa-4414-ac91-ecd7944c0f8d')
 get_settings_1: |-
   client.index('movies').getSettings()
 update_settings_1: |-
@@ -122,6 +120,12 @@ update_settings_1: |-
           'disableOnAttributes': [
               'title'
           ]
+      },
+      pagination: {
+          maxTotalHits: 5000
+      },
+      faceting: {
+          maxValuesPerFacet: 200
       }
   })
 reset_settings_1: |-
@@ -271,9 +275,9 @@ search_parameter_guide_highlight_tag_1: |-
     highlightPreTag: '<span class="highlight">',
     highlightPostTag: '</span>'
   })
-search_parameter_guide_matches_1: |-
+search_parameter_guide_show_matches_position_1: |-
   client.index('movies').search('winter feast', {
-    matches: true
+    showMatchesPosition: true
   })
 settings_guide_synonyms_1: |-
   client.index('tops').updateSettings({
@@ -366,16 +370,20 @@ documents_guide_add_movie_1: |-
     movie_id: '123sq178',
     title: 'Amelie Poulain'
   }])
-document_guide_create_index_primary_key: |-
-  client.createIndex('movies', { primaryKey: 'reference_number' })
-document_guide_add_document_primary_key: |-
-  client.index('movies').addDocuments([
+primary_field_guide_update_document_primary_key: |-
+  client.updateIndex('books', {
+    primaryKey: 'title'
+  })
+primary_field_guide_create_index_primary_key: |-
+  client.createIndex('books', { primaryKey: 'reference_number' })
+primary_field_guide_add_document_primary_key: |-
+  client.index('books').addDocuments([
     {
       reference_number: 287947,
-      title: 'Shazam',
-      poster: 'https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg',
-      overview: 'A boy is given the ability to become an adult superhero in times of need with a single magic word.',
-      release_date: '2019-03-23'
+      title: 'Diary of a Wimpy Kid',
+      author: 'Jeff Kinney',
+      genres: ['comedy','humor'],
+      price: 5.00
     }
   ], { primaryKey: 'reference_number' })
 getting_started_add_documents_md: |-
@@ -416,7 +424,7 @@ getting_started_search_md: |-
   ```
 
   [About this SDK](https://github.com/meilisearch/meilisearch-js/)
-getting_started_update_rankingRules: |-
+getting_started_update_ranking_rules: |-
   client.index('movies').updateRankingRules([
     'exactness',
     'words',
@@ -427,20 +435,20 @@ getting_started_update_rankingRules: |-
     'release_date:asc',
     'rank:desc'
   ])
-getting_started_update_searchableAttributes: |-
+getting_started_update_searchable_attributes: |-
   client.index('movies').updateSearchableAttributes([
     'title'
   ])
 getting_started_update_stop_words: |-
   client.index('movies').updateStopWords(['the'])
 getting_started_check_task_status: |-
-  client.index('movies').getTask(0)
+  client.getTask(0)
 getting_started_synonyms: |-
   client.index('movies').updateSynonyms({
     winnie: ['piglet'],
     piglet: ['winnie']
   })
-getting_started_update_displayedAttributes: |-
+getting_started_update_displayed_attributes: |-
   client.index('movies').updateDisplayedAttributes([
     'title',
     'overview',
@@ -458,9 +466,9 @@ getting_started_configure_settings: |-
     filterableAttributes: ['mass', '_geo'],
     sortableAttributes: ['mass', '_geo']
   })
-getting_started_geoRadius: |-
+getting_started_geo_radius: |-
   client.index('meteorites').search('', { filter: '_geoRadius(46.9480, 7.4474, 210000)' })
-getting_started_geoPoint: |-
+getting_started_geo_point: |-
   client.index('meteorites').search('', { sort: ['_geoPoint(48.8583701, 2.2922926):asc'] })
 getting_started_sorting: |-
   client.index('meteorites').search('', {
@@ -490,10 +498,10 @@ faceted_search_filter_1: |-
     .search('thriller', {
       filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
     })
-faceted_search_facets_distribution_1: |-
+faceted_search_facets_1: |-
   client.index('movies')
     .search('Batman', {
-      facetsDistribution: ['genres']
+      facets: ['genres']
     })
 faceted_search_walkthrough_filter_1: |-
   client.index('movies')
@@ -502,8 +510,6 @@ faceted_search_walkthrough_filter_1: |-
     })
 post_dump_1: |-
   client.createDump()
-get_dump_status_1: |-
-  client.getDumpStatus('20201101-110357260')
 phrase_search_1: |-
   client.index('movies')
     .search('"african american" horror')
@@ -539,6 +545,18 @@ update_sortable_attributes_1: |-
     ])
 reset_sortable_attributes_1: |-
   client.index('books').resetSortableAttributes()
+get_pagination_settings_1: |-
+update_pagination_settings_1: |-
+  client.index('books').updateSettings({ pagination: { maxTotalHits: 100 }})
+reset_pagination_settings_1: |-
+get_faceting_settings_1: |-
+update_faceting_settings_1: |-
+  client.index('books').updateSettings({ faceting: { maxValuesPerFacet: 2 }})
+reset_faceting_settings_1: |-
+settings_guide_faceting_1: |-
+  client.index('books').updateSettings({ faceting: { maxValuesPerFacet: 5 }})
+settings_guide_pagination_1: |-
+  client.index('books').updateSettings({ pagination: { maxTotalHits: 50 }})
 search_parameter_guide_sort_1: |-
   client.index('books').search('science fiction', {
     sort: ['price:asc'],
@@ -573,8 +591,8 @@ security_guide_search_key_1: |-
   client.index('patient_medical_records').search()
 security_guide_update_key_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
-  client.updateKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4', {
-    indexes: ['doctors']
+  client.updateKey('74c9c733-3368-4738-bbe5-1d18a5fecb37', {
+    description: 'Default Search API Key'
   })
 security_guide_create_key_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
@@ -589,7 +607,7 @@ security_guide_list_keys_1: |-
   client.getKeys()
 security_guide_delete_key_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
-  client.getKey('d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4')
+  client.getKey('ac5cd97d-5a4b-4226-a868-2d0eb6d197ab')
 authorization_header_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
   client.getKeys()
@@ -600,9 +618,10 @@ tenant_token_guide_generate_sdk_1: |-
     }
   }
   const apiKey = 'B5KdX2MY2jV6EXfUs6scSfmC...'
+  const apiKeyUid = '85c3c2f9-bdd6-41f1-abd8-11fcf80e0f76'
   const expiresAt = new Date('2025-12-20') // optional
 
-  const token = client.generateTenantToken(searchRules, {
+  const token = client.generateTenantToken(apiKeyUid, searchRules, {
     apiKey: apiKey,
     expiresAt: expiresAt,
   })

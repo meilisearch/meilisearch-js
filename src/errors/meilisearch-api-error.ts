@@ -1,14 +1,18 @@
-import { MeiliSearchErrorInterface } from '../types'
+import { MeiliSearchErrorInfo } from '../types'
 
 const MeiliSearchApiError = class extends Error {
   httpStatus: number
-  code?: string
-  link?: string
+  code: string
+  link: string
+  type: string
   stack?: string
-  type?: string
 
-  constructor(error: MeiliSearchErrorInterface, status: number) {
+  constructor(error: MeiliSearchErrorInfo, status: number) {
     super(error.message)
+
+    // Make errors comparison possible. ex: error instanceof MeiliSearchApiError.
+    Object.setPrototypeOf(this, MeiliSearchApiError.prototype)
+
     this.name = 'MeiliSearchApiError'
 
     this.code = error.code
@@ -16,8 +20,6 @@ const MeiliSearchApiError = class extends Error {
     this.link = error.link
     this.message = error.message
     this.httpStatus = status
-    // Make errors comparison possible. ex: error instanceof MeiliSearchApiError.
-    Object.setPrototypeOf(this, MeiliSearchApiError.prototype)
 
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, MeiliSearchApiError)

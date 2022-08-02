@@ -17,3 +17,4 @@ updates:
       - dependency-name: "*prettier*"
       - dependency-name: "lint-staged"
       - dependency-name: "nodemon"
+      - dependency-name: "*jest*"

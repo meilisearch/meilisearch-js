@@ -1,7 +1,7 @@
 # Testing the code base against the Meilisearch pre-releases
 name: Pre-Release Tests
 
-# Will only run for PRs and pushes to bump-meilisearch-v*
+# # Will only run for PRs and pushes to bump-meilisearch-v*
 on:
   push:
     branches: [bump-meilisearch-v*]
@@ -9,32 +9,42 @@ on:
     branches: [bump-meilisearch-v*]
 
 jobs:
+  meilisearch-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.grep-step.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Grep docker beta version of Meilisearch
+        id: grep-step
+        run: |
+          MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/main/scripts/get-latest-meilisearch-rc.sh | sh)
+          echo $MEILISEARCH_VERSION
+          echo ::set-output name=version::$MEILISEARCH_VERSION
   integration_tests:
     runs-on: ubuntu-latest
+    needs: ['meilisearch-version']
+    services:
+      meilisearch:
+        image: getmeili/meilisearch:${{ needs.meilisearch-version.outputs.version }}
+        env:
+          MEILI_MASTER_KEY: 'masterKey'
+          MEILI_NO_ANALYTICS: 'true'
+        ports:
+          - '7700:7700'
     strategy:
       matrix:
-        node: ["12", "14", "16"]
-    name: integration-tests-against-rc (Node.js ${{ matrix.node }})
+        node: ['14', '16', '18']
+    name: integration-tests (Node.js ${{ matrix.node }})
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ./node_modules
-          key: ${{ hashFiles('yarn.lock') }}
+      - uses: actions/checkout@v3
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      - name: print version
-        run: node -v
+          cache: yarn
       - name: Install dependencies
         run: yarn --dev
-      - name: Get the latest Meilisearch RC
-        run: echo "MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/main/scripts/get-latest-meilisearch-rc.sh | bash)" >> $GITHUB_ENV
-      - name: Meilisearch (${{ env.MEILISEARCH_VERSION }}) setup with Docker
-        run: docker run -d -p 7700:7700 getmeili/meilisearch:${{ env.MEILISEARCH_VERSION }} meilisearch --master-key=masterKey --no-analytics
       - name: Run tests
         run: yarn test
       - name: Build project
@@ -47,45 +57,3 @@ jobs:
         run: yarn test:env:node-ts
       - name: Run Browser env
         run: yarn test:env:browser
-
-  linter_check:
-    runs-on: ubuntu-latest
-    name: linter-check
-    steps:
-      - uses: actions/checkout@v2
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ./node_modules
-          key: ${{ hashFiles('yarn.lock') }}
-      - name: Setup node
-        uses: actions/setup-node@v2
-      - name: Install dependencies
-        run: yarn --dev
-      - name: Run style check
-        run: yarn style
-      - name: yaml-lint
-        uses: ibiqlik/action-yamllint@v3
-        with:
-          config_file: .yamllint.yml
-
-  types_check:
-    runs-on: ubuntu-latest
-    name: types-check
-    steps:
-      - uses: actions/checkout@v2
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ./node_modules
-          key: ${{ hashFiles('yarn.lock') }}
-      - name: Setup node
-        uses: actions/setup-node@v2
-      - name: Install dependencies
-        run: yarn --dev
-      - name: Build project
-        run: yarn build
-      - name: Run types check
-        run: yarn types
