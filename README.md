@@ -47,16 +47,8 @@ For general information on how to use Meilisearch—such as our API reference, t
 
 We recommend installing `meilisearch-js` in your project with your package manager of choice.
 
-If you use `npm`:
-
 ```sh
 npm install meilisearch
-```
-
-If you prefer `yarn`:
-
-```sh
-yarn add meilisearch
 ```
 
 `meilisearch-js` officially supports `node` versions >= 14 and <= 18.
@@ -212,7 +204,7 @@ await index.search(
       "title": "Wonder Woman",
       "genres": ["Action", "Adventure"],
       "_formatted": {
-        "id": 2,
+        "id": "2",
         "title": "<em>Wonder</em> Woman",
         "genres": ["Action", "Adventure"]
       }
@@ -278,7 +270,7 @@ await index.search(
   '',
   {
     filter: ['genres = fantasy'],
-    facetsDistribution: ['genres']
+    facets: ['genres']
   }
 )
 ```
