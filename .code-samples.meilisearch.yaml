@@ -3,6 +3,8 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
+getting_started_typo_tolerance: |-
+
 get_one_index_1: |-
   client.index('movies').getRawInfo()
 list_all_indexes_1: |-
@@ -412,7 +414,7 @@ getting_started_add_documents_md: |-
 
   **Use**
   ```js
-  const client = new MeiliSearch({ host: 'http://127.0.0.1:7700' })
+  const client = new MeiliSearch({ host: 'http://localhost:7700' })
   client.index('movies').addDocuments(movies)
     .then((res) => console.log(res))
   ```
@@ -455,7 +457,7 @@ getting_started_update_displayed_attributes: |-
     'poster'
   ])
 getting_started_communicating_with_a_protected_instance: |-
-  const client = new MeiliSearch('http://127.0.0.1:7700', 'apiKey')
+  const client = new MeiliSearch('http://localhost:7700', 'apiKey')
   client.index('movies').search()
 getting_started_add_meteorites: |-
   const meteorites = require('./meteorites.json')
@@ -626,10 +628,10 @@ tenant_token_guide_generate_sdk_1: |-
     expiresAt: expiresAt,
   })
 tenant_token_guide_search_sdk_1: |-
-  const frontEndClient = new MeiliSearch({ host: 'http://127.0.0.1:7700', apiKey: token })
+  const frontEndClient = new MeiliSearch({ host: 'http://localhost:7700', apiKey: token })
   frontEndClient.index('patient_medical_records').search('blood test')
 landing_getting_started_1: |-
-  const client = new MeiliSearch('http://127.0.0.1:7700', 'masterKey')
+  const client = new MeiliSearch('http://localhost:7700', 'masterKey')
 
   await client.index('movies').addDocuments([
     { 'id': 1, 'title': 'Carol' },
