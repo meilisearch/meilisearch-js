@@ -4,9 +4,9 @@ name: Beta tests
 # Will only run for PRs and pushes to *-beta and not the bump betas
 on:
   push:
-    branches: ['!bump-meilisearch-v[0-9]*.[0-9]*.[0-9]*-beta', '**-beta']
+    branches: ['**-beta', '!bump-meilisearch-v[0-9]*.[0-9]*.[0-9]*-beta']
   pull_request:
-    branches: ['!bump-meilisearch-v[0-9]*.[0-9]*.[0-9]*-beta', '**-beta']
+    branches: ['**-beta', '!bump-meilisearch-v[0-9]*.[0-9]*.[0-9]*-beta']
 
 jobs:
   meilisearch-version:
