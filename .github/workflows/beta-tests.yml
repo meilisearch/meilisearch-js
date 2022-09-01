@@ -1,12 +1,12 @@
 # Testing the code base against a specific Meilisearch feature
 name: Beta tests
 
-# Will only run for PRs and pushes to *-beta
+# Will only run for PRs and pushes to *-beta and not the bump betas
 on:
   push:
-    branches: ['!bump-meilisearch-v*.*.*-beta', '**-beta']
+    branches: ['!bump-meilisearch-v[0-9]*.[0-9]*.[0-9]*-beta', '**-beta']
   pull_request:
-    branches: ['!bump-meilisearch-v*.*.*-beta', '**-beta']
+    branches: ['!bump-meilisearch-v[0-9]*.[0-9]*.[0-9]*-beta', '**-beta']
 
 jobs:
   meilisearch-version:
