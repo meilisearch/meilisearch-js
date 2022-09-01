@@ -50,6 +50,11 @@ export type IndexesResults<T> = ResourceResults<T> & {}
  * SEARCH PARAMETERS
  */
 
+export const enum MatchingStrategies {
+  ALL = 'all',
+  LAST = 'last',
+}
+
 export type Filter = string | Array<string | string[]>
 
 export type Query = {
@@ -77,6 +82,7 @@ export type SearchParams = Query &
     facets?: string[]
     attributesToRetrieve?: string[]
     showMatchesPosition?: boolean
+    matchingStrategy?: MatchingStrategies
   }
 
 // Search parameters for searches made with the GET method
