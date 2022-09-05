@@ -147,8 +147,7 @@ describe.each([
     expect(response.hits.length).toEqual(2)
   })
 
-  // TODO: remove skip when bug is fixed by core
-  test.skip(`${permission} key: Basic phrase search`, async () => {
+  test(`${permission} key: Basic phrase search`, async () => {
     const client = await getClient(permission)
     const response = await client
       .index(index.uid)
