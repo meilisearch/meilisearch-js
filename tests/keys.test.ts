@@ -1,9 +1,11 @@
+import MeiliSearch from '../src/browser'
 import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
   getClient,
   getKey,
+  HOST,
 } from './utils/meilisearch-test-utils'
 
 beforeEach(async () => {
@@ -111,6 +113,32 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       })
 
       expect(key).toBeDefined()
+      expect(key).toHaveProperty('description', 'Indexing Products API key')
+      expect(key).toHaveProperty('uid', uid)
+      expect(key).toHaveProperty('expiresAt', null)
+    })
+
+    test(`${permission} key: create key with actions using wildcards to provide rights`, async () => {
+      const client = await getClient(permission)
+      const uid = '3db051e0-423d-4b5c-a63a-f82a7043dce6'
+
+      const key = await client.createKey({
+        uid,
+        description: 'Indexing Products API key',
+        actions: ['indexes.*', 'tasks.*', 'documents.*'],
+        indexes: ['wildcard_keys_permission'],
+        expiresAt: null,
+      })
+
+      const newClient = new MeiliSearch({ host: HOST, apiKey: key.key })
+      await newClient.createIndex('wildcard_keys_permission') // test index creation
+      const taskInfo = await newClient
+        .index('wildcard_keys_permission')
+        .addDocuments([{ id: 1 }]) // test document addition
+      const task = await newClient.waitForTask(taskInfo.taskUid) // test fetching of tasks
+
+      expect(key).toBeDefined()
+      expect(task.status).toBe('succeeded')
       expect(key).toHaveProperty('description', 'Indexing Products API key')
       expect(key).toHaveProperty('uid', uid)
       expect(key).toHaveProperty('expiresAt', null)
