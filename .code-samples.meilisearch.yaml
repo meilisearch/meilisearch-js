@@ -409,7 +409,7 @@ getting_started_add_documents_md: |-
   `import` syntax:
   ```js
   import { MeiliSearch } from 'meilisearch'
-  import movies from '../small_movies.json'
+  import movies from './movies.json'
   ```
 
   **Use**
