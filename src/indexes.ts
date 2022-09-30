@@ -195,7 +195,11 @@ class Index<T = Record<string, any>> {
   ): Promise<EnqueuedTask> {
     const url = `indexes`
     const req = new HttpRequests(config)
-    return req.post(url, { ...options, uid })
+    const taskItem = await req.post(url, { ...options, uid })
+
+    taskItem.enqueuedAt = new Date(taskItem.enqueuedAt)
+
+    return taskItem
   }
 
   /**
@@ -384,7 +388,11 @@ class Index<T = Record<string, any>> {
     options?: DocumentOptions
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
-    return await this.httpRequest.post(url, documents, options)
+    const documentItem = await this.httpRequest.post(url, documents, options)
+
+    documentItem.enqueuedAt = new Date(documentItem.enqueuedAt)
+
+    return documentItem
   }
 
   /**
@@ -424,7 +432,11 @@ class Index<T = Record<string, any>> {
     options?: DocumentOptions
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
-    return await this.httpRequest.put(url, documents, options)
+    const taskItem = await this.httpRequest.put(url, documents, options)
+
+    taskItem.enqueuedAt = new Date(taskItem.enqueuedAt)
+
+    return taskItem
   }
 
   /**

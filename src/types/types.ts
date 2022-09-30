@@ -230,7 +230,7 @@ export type EnqueuedTask = {
   indexUid?: string
   status: TaskStatus
   type: TaskTypes
-  enqueuedAt: string
+  enqueuedAt: Date
 }
 
 export type Task = Omit<EnqueuedTask, 'taskUid'> & {
@@ -275,8 +275,8 @@ export type Task = Omit<EnqueuedTask, 'taskUid'> & {
   }
   error?: MeiliSearchErrorInfo
   duration: string
-  startedAt: string
-  finishedAt: string
+  startedAt: Date
+  finishedAt: Date
 }
 
 export type TasksResults = {
@@ -328,9 +328,9 @@ export type Key = {
   key: string
   actions: string[]
   indexes: string[]
-  expiresAt: string
-  createdAt: string
-  updateAt: string
+  expiresAt: Date
+  createdAt: Date
+  updateAt: Date
 }
 
 export type KeyCreation = {
@@ -339,7 +339,7 @@ export type KeyCreation = {
   description?: string
   actions: string[]
   indexes: string[]
-  expiresAt: string | null
+  expiresAt: Date | null
 }
 
 export type KeyUpdate = {
