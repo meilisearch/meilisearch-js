@@ -38,6 +38,7 @@ import {
   DocumentsResults,
   TasksQuery,
   TasksResults,
+  PaginationSettings,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -568,6 +569,45 @@ class Index<T = Record<string, any>> {
     return task
   }
 
+  ///
+  /// PAGINATION SETTINGS
+  ///
+
+  /**
+   * Get the pagination settings
+   * @memberof Index
+   * @method getPagination
+   * @returns {Promise<object>} Promise containing object of pagination settings
+   */
+  async getPagination(): Promise<object> {
+    const url = `indexes/${this.uid}/settings/pagination`
+    return await this.httpRequest.get<object>(url)
+  }
+
+  /**
+   * Update the pagination settings.
+   * @memberof Index
+   * @method updatePagination
+   * @param {PaginationSettings} pagination Pagination object
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
+   */
+  async updatePagination(
+    pagination: PaginationSettings
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/pagination`
+    return await this.httpRequest.patch(url, pagination)
+  }
+
+  /**
+   * Reset the pagination settings
+   * @memberof Index
+   * @method resetPagination
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
+   */
+  async resetPagination(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/pagination`
+    return await this.httpRequest.delete<EnqueuedTask>(url)
+  }
   ///
   /// SYNONYMS
   ///
