@@ -132,6 +132,14 @@ update_settings_1: |-
   })
 reset_settings_1: |-
   client.index('movies').resetSettings()
+get_pagination_1: |-
+  client.index('movies').getPagination()
+update_pagination_1: |-
+  client.index('movies').updatePagination({
+    maxTotalHits: 100
+  })
+reset_pagination_1: |-
+  client.index('movies').resetPagination()
 get_synonyms_1: |-
   client.index('movies').getSynonyms()
 update_synonyms_1: |-
