@@ -388,11 +388,11 @@ class Index<T = Record<string, any>> {
     options?: DocumentOptions
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
-    const documentItem = await this.httpRequest.post(url, documents, options)
+    const task = await this.httpRequest.post(url, documents, options)
 
-    documentItem.enqueuedAt = new Date(documentItem.enqueuedAt)
+    task.enqueuedAt = new Date(documentItem.enqueuedAt)
 
-    return documentItem
+    return task
   }
 
   /**
