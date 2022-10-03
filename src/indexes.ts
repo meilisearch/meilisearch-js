@@ -197,7 +197,7 @@ class Index<T = Record<string, any>> {
     const req = new HttpRequests(config)
     const task = await req.post(url, { ...options, uid })
 
-    task.enqueuedAt = new Date(taskItem.enqueuedAt)
+    task.enqueuedAt = new Date(task.enqueuedAt)
 
     return task
   }
@@ -211,7 +211,11 @@ class Index<T = Record<string, any>> {
    */
   async update(data: IndexOptions): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}`
-    return await this.httpRequest.patch(url, data)
+    const task = await this.httpRequest.patch(url, data)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -222,7 +226,11 @@ class Index<T = Record<string, any>> {
    */
   async delete(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}`
-    return await this.httpRequest.delete(url)
+    const task = await this.httpRequest.delete(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
@@ -390,7 +398,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/documents`
     const task = await this.httpRequest.post(url, documents, options)
 
-    task.enqueuedAt = new Date(documentItem.enqueuedAt)
+    task.enqueuedAt = new Date(task.enqueuedAt)
 
     return task
   }
@@ -436,7 +444,7 @@ class Index<T = Record<string, any>> {
 
     task.enqueuedAt = new Date(task.enqueuedAt)
 
-    return taskItem
+    return task
   }
 
   /**
@@ -472,7 +480,11 @@ class Index<T = Record<string, any>> {
    */
   async deleteDocument(documentId: string | number): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents/${documentId}`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -487,7 +499,11 @@ class Index<T = Record<string, any>> {
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents/delete-batch`
 
-    return await this.httpRequest.post(url, documentsIds)
+    const task = await this.httpRequest.post(url, documentsIds)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -498,7 +514,11 @@ class Index<T = Record<string, any>> {
    */
   async deleteAllDocuments(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
@@ -526,7 +546,11 @@ class Index<T = Record<string, any>> {
    */
   async updateSettings(settings: Settings): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings`
-    return await this.httpRequest.patch(url, settings)
+    const task = await this.httpRequest.patch(url, settings)
+
+    task.enqueued = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -537,7 +561,11 @@ class Index<T = Record<string, any>> {
    */
   async resetSettings(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
@@ -564,7 +592,11 @@ class Index<T = Record<string, any>> {
    */
   async updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/synonyms`
-    return await this.httpRequest.put(url, synonyms)
+    const task = await this.httpRequest.put(url, synonyms)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -575,7 +607,11 @@ class Index<T = Record<string, any>> {
    */
   async resetSynonyms(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/synonyms`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
@@ -602,7 +638,11 @@ class Index<T = Record<string, any>> {
    */
   async updateStopWords(stopWords: StopWords): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/stop-words`
-    return await this.httpRequest.put(url, stopWords)
+    const task = await this.httpRequest.put(url, stopWords)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -613,7 +653,11 @@ class Index<T = Record<string, any>> {
    */
   async resetStopWords(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/stop-words`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
@@ -640,7 +684,11 @@ class Index<T = Record<string, any>> {
    */
   async updateRankingRules(rankingRules: RankingRules): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/ranking-rules`
-    return await this.httpRequest.put(url, rankingRules)
+    const task = await this.httpRequest.put(url, rankingRules)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -651,7 +699,11 @@ class Index<T = Record<string, any>> {
    */
   async resetRankingRules(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/ranking-rules`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
@@ -680,7 +732,11 @@ class Index<T = Record<string, any>> {
     distinctAttribute: DistinctAttribute
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`
-    return await this.httpRequest.put(url, distinctAttribute)
+    const task = await this.httpRequest.put(url, distinctAttribute)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -691,7 +747,11 @@ class Index<T = Record<string, any>> {
    */
   async resetDistinctAttribute(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
@@ -720,7 +780,11 @@ class Index<T = Record<string, any>> {
     filterableAttributes: FilterableAttributes
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`
-    return await this.httpRequest.put(url, filterableAttributes)
+    const task = await this.httpRequest.put(url, filterableAttributes)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -731,7 +795,11 @@ class Index<T = Record<string, any>> {
    */
   async resetFilterableAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
@@ -760,7 +828,11 @@ class Index<T = Record<string, any>> {
     sortableAttributes: SortableAttributes
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`
-    return await this.httpRequest.put(url, sortableAttributes)
+    const task = await this.httpRequest.put(url, sortableAttributes)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -771,7 +843,11 @@ class Index<T = Record<string, any>> {
    */
   async resetSortableAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
@@ -800,7 +876,11 @@ class Index<T = Record<string, any>> {
     searchableAttributes: SearchableAttributes
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`
-    return await this.httpRequest.put(url, searchableAttributes)
+    const task = await this.httpRequest.put(url, searchableAttributes)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -811,7 +891,11 @@ class Index<T = Record<string, any>> {
    */
   async resetSearchableAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
@@ -840,7 +924,11 @@ class Index<T = Record<string, any>> {
     displayedAttributes: DisplayedAttributes
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
-    return await this.httpRequest.put(url, displayedAttributes)
+    const task = await this.httpRequest.put(url, displayedAttributes)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -851,7 +939,11 @@ class Index<T = Record<string, any>> {
    */
   async resetDisplayedAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
@@ -880,7 +972,11 @@ class Index<T = Record<string, any>> {
     typoTolerance: TypoTolerance
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/typo-tolerance`
-    return await this.httpRequest.patch(url, typoTolerance)
+    const task = await this.httpRequest.patch(url, typoTolerance)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   /**
@@ -891,7 +987,11 @@ class Index<T = Record<string, any>> {
    */
   async resetTypoTolerance(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/typo-tolerance`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 }
 
