@@ -266,15 +266,15 @@ class Client {
    */
   async getKeys(parameters: KeysQuery = {}): Promise<KeysResults> {
     const url = `keys`
-    const allKeys = await this.httpRequest.get<KeysResults>(url, parameters)
+    const keys = await this.httpRequest.get<KeysResults>(url, parameters)
 
-    allKeys.results = allKeys.results.map((key) => ({
+    keys.results = keys.results.map((key) => ({
       ...key,
       createdAt: new Date(key.createdAt),
       updateAt: new Date(key.updateAt),
     }))
 
-    return allKeys
+    return keys
   }
 
   /**
