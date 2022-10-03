@@ -58,14 +58,14 @@ class TaskClient {
       removeUndefinedFromObject(queryParams)
     )
 
-    taskList.results = taskList.results.map((task) => ({
+    tasks.results = tasks.results.map((task) => ({
       ...task,
       startedAt: new Date(task.startedAt),
       enqueuedAt: new Date(task.enqueuedAt),
       finishedAt: new Date(task.finishedAt),
     }))
 
-    return taskList
+    return tasks
   }
 
   /**
