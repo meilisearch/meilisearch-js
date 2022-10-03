@@ -19,6 +19,7 @@ describe.each([{ permission: 'Master' }])(
   'Test on pagination',
   ({ permission }) => {
     beforeEach(async () => {
+      await clearAllIndexes(config)
       const client = await getClient('Master')
       const { taskUid } = await client.index(index.uid).addDocuments(dataset)
       await client.waitForTask(taskUid)
