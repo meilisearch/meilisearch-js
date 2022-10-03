@@ -95,6 +95,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('sortableAttributes', [])
       expect(response).toHaveProperty('stopWords', [])
       expect(response).toHaveProperty('synonyms', {})
+      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
     })
 
     test(`${permission} key: Get default settings of empty index with primary key`, async () => {
@@ -109,6 +110,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('sortableAttributes', [])
       expect(response).toHaveProperty('stopWords', [])
       expect(response).toHaveProperty('synonyms', {})
+      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
     })
 
     test(`${permission} key: Update settings`, async () => {
@@ -135,7 +137,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
           maxTotalHits: 1000,
         },
         faceting: {
-          maxValuesPerFacet: 100,
+          maxValuesPerFacet: 50,
         },
       }
       // Add the settings
@@ -168,6 +170,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
           },
           disableOnWords: null,
           disableOnAttributes: null,
+        },
+        faceting: {
+          maxValuesPerFacet: null,
         },
       }
       // Add the settings
@@ -204,6 +209,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('displayedAttributes', ['*'])
       expect(response).toHaveProperty('stopWords', newSettings.stopWords)
       expect(response).toHaveProperty('synonyms', {})
+      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
     })
 
     test(`${permission} key: Reset settings`, async () => {
@@ -220,6 +226,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('sortableAttributes', [])
       expect(response).toHaveProperty('stopWords', [])
       expect(response).toHaveProperty('synonyms', {})
+      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
     })
 
     test(`${permission} key: Reset settings of empty index`, async () => {
@@ -235,6 +242,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('displayedAttributes', ['*'])
       expect(response).toHaveProperty('stopWords', [])
       expect(response).toHaveProperty('synonyms', {})
+      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
     })
 
     test(`${permission} key: Update searchableAttributes settings on empty index`, async () => {
@@ -259,6 +267,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('displayedAttributes', expect.any(Array))
       expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
       expect(response).toHaveProperty('synonyms', {})
+      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
     })
 
     test(`${permission} key: Update searchableAttributes settings on empty index with a primary key`, async () => {
@@ -293,6 +302,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(response).toHaveProperty('displayedAttributes', expect.any(Array))
       expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
       expect(response).toHaveProperty('synonyms', {})
+      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
     })
   }
 )

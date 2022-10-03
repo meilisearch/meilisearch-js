@@ -36,6 +36,7 @@ import {
   DocumentsResults,
   TasksQuery,
   TasksResults,
+  Faceting,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -960,6 +961,52 @@ class Index<T = Record<string, any>> {
    */
   async resetTypoTolerance(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/typo-tolerance`
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
+  }
+
+  ///
+  /// FACETING
+  ///
+
+  /**
+   * Get the faceting settings.
+   * @memberof Index
+   * @method getFaceting
+   * @returns {Promise<Faceting>} Promise containing object of faceting index settings
+   */
+  async getFaceting(): Promise<Faceting> {
+    const url = `indexes/${this.uid}/settings/faceting`
+    return await this.httpRequest.get<Faceting>(url)
+  }
+
+  /**
+   * Update the faceting settings.
+   * @memberof Index
+   * @method updateFaceting
+   * @param {Faceting} faceting Faceting index settings object
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
+   */
+  async updateFaceting(faceting: Faceting): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/faceting`
+    const task = await this.httpRequest.patch(url, faceting)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
+  }
+
+  /**
+   * Reset the faceting settings.
+   * @memberof Index
+   * @method resetFaceting
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
+   */
+  async resetFaceting(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/faceting`
     const task = await this.httpRequest.delete<EnqueuedTask>(url)
 
     task.enqueuedAt = new Date(task.enqueuedAt)

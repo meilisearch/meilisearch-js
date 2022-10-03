@@ -190,6 +190,12 @@ update_displayed_attributes_1: |-
   ])
 reset_displayed_attributes_1: |-
   client.index('movies').resetDisplayedAttributes()
+get_faceting_1: |-
+  client.index('books').getFaceting()
+update_faceting_1: |-
+  client.index('books').updateFaceting({ maxValuesPerFacet: 2 })
+reset_faceting_1: |-
+  client.index('books').resetFaceting()
 get_typo_tolerance_1: |-
   client.index('books').getTypoTolerance()
 update_typo_tolerance_1: |-
