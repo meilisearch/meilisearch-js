@@ -11,7 +11,6 @@ import { MeiliSearchError } from './errors'
 
 import {
   Config,
-  Task,
   SearchResponse,
   SearchParams,
   Filter,
@@ -23,7 +22,6 @@ import {
   DocumentQuery,
   Document,
   DocumentOptions,
-  EnqueuedTask,
   Settings,
   Synonyms,
   StopWords,
@@ -41,7 +39,8 @@ import {
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
-import { TaskClient } from './task'
+import { Task, TaskClient } from './task'
+import { EnqueuedTask } from './EnqueuedTask'
 
 class Index<T = Record<string, any>> {
   uid: string
@@ -197,9 +196,7 @@ class Index<T = Record<string, any>> {
     const req = new HttpRequests(config)
     const task = await req.post(url, { ...options, uid })
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -228,9 +225,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}`
     const task = await this.httpRequest.delete(url)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   ///
@@ -291,7 +286,7 @@ class Index<T = Record<string, any>> {
    * @param {number} taskUid - Task identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Task>} - Promise containing an array of tasks
+   * @returns {Promise<TaskObject>} - Promise containing an array of tasks
    */
   async waitForTask(
     taskUid: number,
@@ -398,9 +393,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/documents`
     const task = await this.httpRequest.post(url, documents, options)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -442,9 +435,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/documents`
     const task = await this.httpRequest.put(url, documents, options)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -501,9 +492,7 @@ class Index<T = Record<string, any>> {
 
     const task = await this.httpRequest.post(url, documentsIds)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -594,9 +583,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/synonyms`
     const task = await this.httpRequest.put(url, synonyms)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -640,9 +627,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/stop-words`
     const task = await this.httpRequest.put(url, stopWords)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -686,9 +671,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/ranking-rules`
     const task = await this.httpRequest.put(url, rankingRules)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -734,9 +717,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`
     const task = await this.httpRequest.put(url, distinctAttribute)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -782,9 +763,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`
     const task = await this.httpRequest.put(url, filterableAttributes)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -830,9 +809,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`
     const task = await this.httpRequest.put(url, sortableAttributes)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -878,9 +855,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`
     const task = await this.httpRequest.put(url, searchableAttributes)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -926,9 +901,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
     const task = await this.httpRequest.put(url, displayedAttributes)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**

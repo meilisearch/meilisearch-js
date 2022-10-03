@@ -1,14 +1,44 @@
 import { MeiliSearchTimeOutError } from './errors'
 import {
   Config,
-  Task,
   WaitOptions,
   TaskStatus,
   TasksQuery,
   TasksResults,
+  TaskObject,
+  TasksResultsObject,
 } from './types'
 import { HttpRequests } from './http-requests'
 import { removeUndefinedFromObject, sleep } from './utils'
+
+class Task {
+  indexUid: TaskObject['indexUid']
+  status: TaskObject['status']
+  type: TaskObject['type']
+  uid: TaskObject['uid']
+  batchUid: TaskObject['batchUid']
+  details: TaskObject['details']
+  error: TaskObject['error']
+  duration: TaskObject['duration']
+  startedAt: Date
+  enqueuedAt: Date
+  finishedAt: Date
+
+  constructor(task: TaskObject) {
+    this.indexUid = task.indexUid
+    this.status = task.status
+    this.type = task.type
+    this.uid = task.uid
+    this.batchUid = task.batchUid
+    this.details = task.details
+    this.error = task.error
+    this.duration = task.duration
+
+    this.startedAt = new Date(task.startedAt)
+    this.enqueuedAt = new Date(task.enqueuedAt)
+    this.finishedAt = new Date(task.finishedAt)
+  }
+}
 
 class TaskClient {
   httpRequest: HttpRequests
@@ -26,13 +56,8 @@ class TaskClient {
    */
   async getTask(uid: number): Promise<Task> {
     const url = `tasks/${uid}`
-    const taskItem = await this.httpRequest.get<Task>(url)
-
-    taskItem.startedAt = new Date(taskItem.startedAt)
-    taskItem.enqueuedAt = new Date(taskItem.enqueuedAt)
-    taskItem.finishedAt = new Date(taskItem.finishedAt)
-
-    return taskItem
+    const taskItem = await this.httpRequest.get<TaskObject>(url)
+    return new Task(taskItem)
   }
 
   /**
@@ -53,19 +78,15 @@ class TaskClient {
       limit: parameters.limit,
     }
 
-    const tasks = await this.httpRequest.get<Promise<TasksResults>>(
+    const tasks = await this.httpRequest.get<Promise<TasksResultsObject>>(
       url,
       removeUndefinedFromObject(queryParams)
     )
 
-    tasks.results = tasks.results.map((task) => ({
-      ...task,
-      startedAt: new Date(task.startedAt),
-      enqueuedAt: new Date(task.enqueuedAt),
-      finishedAt: new Date(task.finishedAt),
-    }))
-
-    return tasks
+    return {
+      ...tasks,
+      results: tasks.results.map((task) => new Task(task)),
+    }
   }
 
   /**
@@ -120,4 +141,4 @@ class TaskClient {
   }
 }
 
-export { TaskClient }
+export { TaskClient, Task }

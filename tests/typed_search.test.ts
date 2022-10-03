@@ -1,4 +1,4 @@
-import { EnqueuedTask, ErrorStatusCode, SearchResponse } from '../src/types'
+import { ErrorStatusCode, SearchResponse } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -7,6 +7,7 @@ import {
   getClient,
   datasetWithNests,
 } from './utils/meilisearch-test-utils'
+import { EnqueuedTask } from '../src/EnqueuedTask'
 
 const index = {
   uid: 'movies_test',
