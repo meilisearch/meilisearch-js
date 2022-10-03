@@ -53,7 +53,7 @@ class TaskClient {
       limit: parameters.limit,
     }
 
-    const taskList = await this.httpRequest.get<Promise<TasksResults>>(
+    const tasks = await this.httpRequest.get<Promise<TasksResults>>(
       url,
       removeUndefinedFromObject(queryParams)
     )
