@@ -45,6 +45,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(enqueuedTask.status).toBeDefined()
       expect(enqueuedTask.type).toEqual(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE)
       expect(enqueuedTask.enqueuedAt).toBeDefined()
+      expect(enqueuedTask.enqueuedAt).toBeInstanceOf(Date)
     })
 
     test(`${permission} key: Get one task`, async () => {
@@ -57,15 +58,17 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(task.indexUid).toEqual(index.uid)
       expect(task.status).toEqual(TaskStatus.TASK_SUCCEEDED)
       expect(task.type).toEqual(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE)
-      expect(task.enqueuedAt).toBeDefined()
       expect(task.uid).toEqual(enqueuedTask.taskUid)
       expect(task).toHaveProperty('details')
       expect(task.details.indexedDocuments).toEqual(7)
       expect(task.details.receivedDocuments).toEqual(7)
       expect(task.duration).toBeDefined()
       expect(task.enqueuedAt).toBeDefined()
+      expect(task.enqueuedAt).toBeInstanceOf(Date)
       expect(task.finishedAt).toBeDefined()
+      expect(task.finishedAt).toBeInstanceOf(Date)
       expect(task.startedAt).toBeDefined()
+      expect(task.startedAt).toBeInstanceOf(Date)
     })
 
     test(`${permission} key: Get one task with index instance`, async () => {

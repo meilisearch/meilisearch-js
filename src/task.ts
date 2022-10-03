@@ -26,7 +26,13 @@ class TaskClient {
    */
   async getTask(uid: number): Promise<Task> {
     const url = `tasks/${uid}`
-    return await this.httpRequest.get<Task>(url)
+    const taskItem = await this.httpRequest.get<Task>(url)
+
+    taskItem.startedAt = new Date(taskItem.startedAt)
+    taskItem.enqueuedAt = new Date(taskItem.enqueuedAt)
+    taskItem.finishedAt = new Date(taskItem.finishedAt)
+
+    return taskItem
   }
 
   /**
@@ -47,10 +53,19 @@ class TaskClient {
       limit: parameters.limit,
     }
 
-    return await this.httpRequest.get<Promise<TasksResults>>(
+    const tasks = await this.httpRequest.get<Promise<TasksResults>>(
       url,
       removeUndefinedFromObject(queryParams)
     )
+
+    tasks.results = tasks.results.map((task) => ({
+      ...task,
+      startedAt: new Date(task.startedAt),
+      enqueuedAt: new Date(task.enqueuedAt),
+      finishedAt: new Date(task.finishedAt),
+    }))
+
+    return tasks
   }
 
   /**

@@ -53,7 +53,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(searchKey).toHaveProperty('indexes')
       expect(searchKey).toHaveProperty('expiresAt', null)
       expect(searchKey).toHaveProperty('createdAt')
+      expect(searchKey?.createdAt).toBeInstanceOf(Date)
       expect(searchKey).toHaveProperty('updatedAt')
+      expect(searchKey?.updateAt).toBeInstanceOf(Date)
 
       const adminKey = keys.results.find(
         (key: any) => key.name === 'Default Admin API Key'
@@ -69,7 +71,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       expect(adminKey).toHaveProperty('indexes')
       expect(adminKey).toHaveProperty('expiresAt', null)
       expect(adminKey).toHaveProperty('createdAt')
+      expect(searchKey?.createdAt).toBeInstanceOf(Date)
       expect(adminKey).toHaveProperty('updatedAt')
+      expect(searchKey?.updateAt).toBeInstanceOf(Date)
     })
 
     test(`${permission} key: get keys with pagination`, async () => {
@@ -151,7 +155,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         description: 'Indexing Products API key',
         actions: ['documents.add'],
         indexes: ['products'],
-        expiresAt: '2050-11-13T00:00:00Z', // Test will fail in 2050
+        expiresAt: new Date('2050-11-13T00:00:00Z'), // Test will fail in 2050
       })
 
       expect(key).toBeDefined()
@@ -166,7 +170,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         description: 'Indexing Products API key',
         actions: ['documents.add'],
         indexes: ['products'],
-        expiresAt: '2050-11-13T00:00:00Z', // Test will fail in 2050
+        expiresAt: new Date('2050-11-13T00:00:00Z'), // Test will fail in 2050
       })
 
       const updatedKey = await client.updateKey(key.key, {
@@ -189,7 +193,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         description: 'Indexing Products API key',
         actions: ['documents.add'],
         indexes: ['products'],
-        expiresAt: '2050-11-13T00:00:00Z', // Test will fail in 2050
+        expiresAt: new Date('2050-11-13T00:00:00Z'), // Test will fail in 2050
       })
 
       const deletedKey = await client.deleteKey(key.key)
