@@ -403,7 +403,11 @@ class Client {
    */
   async createDump(): Promise<EnqueuedTask> {
     const url = `dumps`
-    return await this.httpRequest.post<undefined, EnqueuedTask>(url)
+    const task = await this.httpRequest.post<undefined, EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 
   ///
