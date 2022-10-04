@@ -1,6 +1,6 @@
 import 'cross-fetch/polyfill'
 
-import { Config, EnqueuedTask } from './types'
+import { Config, EnqueuedTaskObject } from './types'
 import { PACKAGE_VERSION } from './package-version'
 
 import {
@@ -132,7 +132,7 @@ class HttpRequests {
     })
   }
 
-  async post<T = any, R = EnqueuedTask>(
+  async post<T = any, R = EnqueuedTaskObject>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
@@ -154,7 +154,7 @@ class HttpRequests {
     })
   }
 
-  async put<T = any, R = EnqueuedTask>(
+  async put<T = any, R = EnqueuedTaskObject>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
@@ -196,7 +196,7 @@ class HttpRequests {
     data?: any,
     params?: { [key: string]: any },
     config?: Record<string, any>
-  ): Promise<EnqueuedTask>
+  ): Promise<EnqueuedTaskObject>
   async delete<T>(
     url: string,
     data?: any,

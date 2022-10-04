@@ -1,4 +1,5 @@
-import { EnqueuedTask, ErrorStatusCode, SearchResponse } from '../src/types'
+import { ErrorStatusCode, SearchResponse } from '../src/types'
+import { EnqueuedTask } from '../src/enqueued-task'
 import {
   clearAllIndexes,
   config,

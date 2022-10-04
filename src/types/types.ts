@@ -4,6 +4,8 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^3.8.3
 
+import { Task } from '../task'
+
 export type Config = {
   host: string
   apiKey?: string
@@ -231,15 +233,15 @@ export type TasksQuery = {
   from?: number
 }
 
-export type EnqueuedTask = {
+export type EnqueuedTaskObject = {
   taskUid: number
   indexUid?: string
   status: TaskStatus
   type: TaskTypes
-  enqueuedAt: Date
+  enqueuedAt: string
 }
 
-export type Task = Omit<EnqueuedTask, 'taskUid'> & {
+export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
   uid: number
   batchUid: number
   details: {
@@ -281,16 +283,19 @@ export type Task = Omit<EnqueuedTask, 'taskUid'> & {
   }
   error?: MeiliSearchErrorInfo
   duration: string
-  startedAt: Date
-  finishedAt: Date
+  startedAt: string
+  finishedAt: string
 }
 
-export type TasksResults = {
-  results: Task[]
+type CursorResults<T> = {
+  results: T[]
   limit: number
   from: number
   next: number
 }
+
+export type TasksResults = CursorResults<Task>
+export type TasksResultsObject = CursorResults<TaskObject>
 
 export type WaitOptions = {
   timeOutMs?: number
