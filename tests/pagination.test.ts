@@ -50,7 +50,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const newPagination = {
         maxTotalHits: 100,
       }
-      const Updatetask = await client
+      const updateTask = await client
         .index(index.uid)
         .updatePagination(newPagination)
       await client.waitForTask(Updatetask.taskUid)
