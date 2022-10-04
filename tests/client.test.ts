@@ -147,6 +147,21 @@ describe.each([
       new MeiliSearch({ host: '' })
     }).toThrow('The provided host is not valid.')
   })
+
+  test(`${permission} key: request should be aborted when reaching timeout`, async () => {
+    const key = await getKey(permission)
+    const client = new MeiliSearch({
+      ...config,
+      apiKey: key,
+      timeout: 1,
+    })
+    try {
+      await client.health()
+    } catch (e: any) {
+      expect(e.message).toEqual('The user aborted a request.')
+      expect(e.name).toEqual('MeiliSearchCommunicationError')
+    }
+  })
 })
 
 describe.each([{ permission: 'Master' }, { permission: 'Private' }])(

@@ -11,6 +11,7 @@ export type Config = {
   apiKey?: string
   clientAgents?: string[]
   headers?: Record<string, any>
+  timeout?: number
 }
 
 ///

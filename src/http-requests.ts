@@ -2,6 +2,7 @@ import 'cross-fetch/polyfill'
 
 import { Config, EnqueuedTaskObject } from './types'
 import { PACKAGE_VERSION } from './package-version'
+import AbortController from 'abort-controller'
 
 import {
   MeiliSearchError,
@@ -57,9 +58,11 @@ function createHeaders(config: Config): Record<string, any> {
 class HttpRequests {
   headers: Record<string, any>
   url: URL
+  timeout?: number
 
   constructor(config: Config) {
     this.headers = createHeaders(config)
+    this.timeout = config.timeout
 
     try {
       const host = constructHostURL(config.host)
@@ -92,12 +95,22 @@ class HttpRequests {
     }
 
     try {
+      let controller: AbortController | null = null
+      let timeout: any
+      if (this.timeout) {
+        controller = new AbortController()
+        timeout = setTimeout(() => controller?.abort(), this.timeout || 300_000)
+      }
       const response: any = await fetch(constructURL.toString(), {
         ...config,
         method,
         body: JSON.stringify(body),
         headers: this.headers,
+        signal: controller?.signal,
       }).then((res) => httpResponseErrorHandler(res))
+      if (timeout) {
+        clearTimeout(timeout)
+      }
       const parsedBody = await response.json().catch(() => undefined)
 
       return parsedBody
