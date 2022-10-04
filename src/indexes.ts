@@ -185,7 +185,7 @@ class Index<T = Record<string, any>> {
    * @param {string} uid Unique identifier of the Index
    * @param {IndexOptions} options Index options
    * @param {Config} config Request configuration options
-   * @returns {Promise<Index<T>>} Newly created Index object
+   * @returns {Promise<EnqueuedTask>} Newly created Index object
    */
   static async create(
     uid: string,
@@ -286,7 +286,7 @@ class Index<T = Record<string, any>> {
    * @param {number} taskUid - Task identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<TaskObject>} - Promise containing an array of tasks
+   * @returns {Promise<Task>} - Promise containing an array of tasks
    */
   async waitForTask(
     taskUid: number,
