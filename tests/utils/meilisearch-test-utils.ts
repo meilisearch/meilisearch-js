@@ -29,13 +29,13 @@ async function getKey(permission: string): Promise<string> {
   }
   const { results: keys } = await masterClient.getKeys()
 
-  if (permission === 'Public') {
+  if (permission === 'Search') {
     const key = keys.find((key: any) => key.name === 'Default Search API Key')
       ?.key
     return key || ''
   }
 
-  if (permission === 'Private') {
+  if (permission === 'Admin') {
     const key = keys.find((key: any) => key.name === 'Default Admin API Key')
       ?.key
     return key || ''
@@ -51,7 +51,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
     return anonymousClient
   }
 
-  if (permission === 'Public') {
+  if (permission === 'Search') {
     const searchKey = await getKey(permission)
     const publicClient = new MeiliSearch({
       host: HOST,
@@ -60,7 +60,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
     return publicClient
   }
 
-  if (permission === 'Private') {
+  if (permission === 'Admin') {
     const adminKey = await getKey(permission)
     const privateClient = new MeiliSearch({
       host: HOST,

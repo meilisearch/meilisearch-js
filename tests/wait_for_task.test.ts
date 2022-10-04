@@ -16,7 +16,7 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   'Test on wait for task',
   ({ permission }) => {
     beforeEach(async () => {

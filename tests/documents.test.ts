@@ -24,7 +24,7 @@ afterAll(() => {
 })
 
 describe('Documents tests', () => {
-  describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+  describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
     'Test on documents',
     ({ permission }) => {
       beforeEach(async () => {
@@ -477,7 +477,7 @@ describe('Documents tests', () => {
     }
   )
 
-  describe.each([{ permission: 'Public' }])(
+  describe.each([{ permission: 'Search' }])(
     'Test on documents',
     ({ permission }) => {
       beforeEach(() => {

@@ -19,7 +19,7 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([{ permission: 'Private' }])(
+describe.each([{ permission: 'Admin' }])(
   'Tests on token generation',
   ({ permission }) => {
     beforeEach(async () => {

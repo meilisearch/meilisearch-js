@@ -18,7 +18,7 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   'Test on distinct attribute',
   ({ permission }) => {
     beforeEach(async () => {
@@ -70,7 +70,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   }
 )
 
-describe.each([{ permission: 'Public' }])(
+describe.each([{ permission: 'Search' }])(
   'Test on distinct attribute',
   ({ permission }) => {
     beforeEach(async () => {
