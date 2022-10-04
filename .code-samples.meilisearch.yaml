@@ -132,14 +132,6 @@ update_settings_1: |-
   })
 reset_settings_1: |-
   client.index('movies').resetSettings()
-get_pagination_1: |-
-  client.index('movies').getPagination()
-update_pagination_1: |-
-  client.index('movies').updatePagination({
-    maxTotalHits: 100
-  })
-reset_pagination_1: |-
-  client.index('movies').resetPagination()
 get_synonyms_1: |-
   client.index('movies').getSynonyms()
 update_synonyms_1: |-
@@ -556,19 +548,19 @@ update_sortable_attributes_1: |-
 reset_sortable_attributes_1: |-
   client.index('books').resetSortableAttributes()
 get_pagination_settings_1: |-
+  client.index('movies').getPagination()
 update_pagination_settings_1: |-
   client.index('books').updateSettings({ pagination: { maxTotalHits: 100 }})
 reset_pagination_settings_1: |-
+  client.index('movies').resetPagination()
 settings_guide_pagination_1: |-
-  client.index('books').updateSettings({ pagination: { maxTotalHits: 100 }})
+  client.index('books').updateSettings({ pagination: { maxTotalHits: 50 }})
 get_faceting_settings_1: |-
 update_faceting_settings_1: |-
   client.index('books').updateSettings({ faceting: { maxValuesPerFacet: 2 }})
 reset_faceting_settings_1: |-
 settings_guide_faceting_1: |-
   client.index('books').updateSettings({ faceting: { maxValuesPerFacet: 5 }})
-settings_guide_pagination_1: |-
-  client.index('books').updateSettings({ pagination: { maxTotalHits: 50 }})
 search_parameter_guide_sort_1: |-
   client.index('books').search('science fiction', {
     sort: ['price:asc'],
