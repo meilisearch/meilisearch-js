@@ -577,9 +577,9 @@ class Index<T = Record<string, any>> {
    * Get the pagination settings
    * @memberof Index
    * @method getPagination
-   * @returns {Promise<object>} Promise containing object of pagination settings
+   * @returns {Promise<PaginationSetting>} Promise containing object of pagination settings
    */
-  async getPagination(): Promise<object> {
+  async getPagination(): Promise<PaginationSettings> {
     const url = `indexes/${this.uid}/settings/pagination`
     return await this.httpRequest.get<object>(url)
   }

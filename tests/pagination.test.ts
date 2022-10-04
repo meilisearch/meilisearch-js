@@ -15,7 +15,7 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([{ permission: 'Master' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   'Test on pagination',
   ({ permission }) => {
     beforeEach(async () => {
@@ -25,7 +25,7 @@ describe.each([{ permission: 'Master' }])(
       await client.waitForTask(taskUid)
     })
 
-    test(`${permission} key: Get default pagination setting`, async () => {
+    test(`${permission} key: Get default pagination settings`, async () => {
       const client = await getClient(permission)
       const response: object = await client.index(index.uid).getPagination()
 
