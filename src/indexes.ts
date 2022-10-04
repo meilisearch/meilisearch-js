@@ -599,7 +599,7 @@ class Index<T = Record<string, any>> {
   }
 
   /**
-   * Reset the pagination settings
+   * Reset the pagination settings.
    * @memberof Index
    * @method resetPagination
    * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
