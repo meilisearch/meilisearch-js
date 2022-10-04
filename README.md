@@ -591,21 +591,21 @@ client.index('myIndex').updateSettings(settings: Settings): Promise<EnqueuedTask
 client.index('myIndex').resetSettings(): Promise<EnqueuedTask>
 ```
 
-### Pagination Setting
+### Pagination Settings
 
-#### [Get pagination settings](https://docs.meilisearch.com/reference/api/settings.html#get-pagination-settings)
+#### [Get pagination](https://docs.meilisearch.com/reference/api/settings.html#get-pagination-settings)
 
 ```ts
 client.index('myIndex').getPagination(): Promise<PaginationSettings>
 ```
 
-#### [Update pagination settings](https://docs.meilisearch.com/reference/api/settings.html#update-pagination-settings)
+#### [Update pagination](https://docs.meilisearch.com/reference/api/settings.html#update-pagination-settings)
 
 ```ts
 client.index('myIndex').updatePagination(pagination: PaginationSettings): Promise<EnqueuedTask>
 ```
 
-#### [Reset pagination settings](https://docs.meilisearch.com/reference/api/settings.html#reset-pagination-settings)
+#### [Reset pagination](https://docs.meilisearch.com/reference/api/settings.html#reset-pagination-settings)
 
 ```ts
 client.index('myIndex').resetPagination(): Promise<EnqueuedTask>
