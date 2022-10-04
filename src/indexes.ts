@@ -574,7 +574,7 @@ class Index<T = Record<string, any>> {
   ///
 
   /**
-   * Get the pagination settings
+   * Get the pagination settings.
    * @memberof Index
    * @method getPagination
    * @returns {Promise<PaginationSetting>} Promise containing object of pagination settings
