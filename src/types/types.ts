@@ -287,16 +287,15 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
   finishedAt: string
 }
 
-export type TasksResults = {
-  results: Task[]
+type CursorResults<T> = {
+  results: T[]
   limit: number
   from: number
   next: number
 }
 
-export type TasksResultsObject = Omit<TasksResults, 'results'> & {
-  results: TaskObject[]
-}
+export type TasksResults = CursorResults<Task>
+export type TasksResultsObject = CursorResults<TaskObject>
 
 export type WaitOptions = {
   timeOutMs?: number
