@@ -994,9 +994,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/faceting`
     const task = await this.httpRequest.patch(url, faceting)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -1007,11 +1005,9 @@ class Index<T = Record<string, any>> {
    */
   async resetFaceting(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/faceting`
-    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete(url)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 }
 
