@@ -32,7 +32,7 @@ import {
 } from '../types'
 import { HttpRequests } from '../http-requests'
 import { TaskClient, Task } from '../task'
-import { EnqueuedTask } from '../EnqueuedTask'
+import { EnqueuedTask } from '../enqueued-task'
 
 class Client {
   config: Config

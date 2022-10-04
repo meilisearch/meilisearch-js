@@ -40,7 +40,7 @@ import {
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
 import { Task, TaskClient } from './task'
-import { EnqueuedTask } from './EnqueuedTask'
+import { EnqueuedTask } from './enqueued-task'
 
 class Index<T = Record<string, any>> {
   uid: string
