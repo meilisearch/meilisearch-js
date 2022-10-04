@@ -47,6 +47,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: Reset pagination`, async () => {
       const client = await getClient(permission)
+      const newPagination = {
+        maxTotalHits: 100,
+      }
+      const Updatetask = await client
+        .index(index.uid)
+        .updatePagination(newPagination)
+      await client.waitForTask(Updatetask.taskUid)
+
       const task = await client.index(index.uid).resetPagination()
       await client.waitForTask(task.taskUid)
 
