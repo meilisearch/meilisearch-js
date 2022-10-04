@@ -559,6 +559,8 @@ get_pagination_settings_1: |-
 update_pagination_settings_1: |-
   client.index('books').updateSettings({ pagination: { maxTotalHits: 100 }})
 reset_pagination_settings_1: |-
+settings_guide_pagination_1: |-
+  client.index('books').updateSettings({ pagination: { maxTotalHits: 100 }})
 get_faceting_settings_1: |-
 update_faceting_settings_1: |-
   client.index('books').updateSettings({ faceting: { maxValuesPerFacet: 2 }})
