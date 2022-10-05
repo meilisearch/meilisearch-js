@@ -16,7 +16,7 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   'Test on keys',
   ({ permission }) => {
     beforeEach(async () => {
@@ -87,7 +87,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: get on key`, async () => {
       const client = await getClient(permission)
-      const apiKey = await getKey('Private')
+      const apiKey = await getKey('Admin')
 
       const key = await client.getKey(apiKey)
 
@@ -203,7 +203,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   }
 )
 
-describe.each([{ permission: 'Public' }])(
+describe.each([{ permission: 'Search' }])(
   'Test on keys with search key',
   ({ permission }) => {
     test(`${permission} key: get keys denied`, async () => {

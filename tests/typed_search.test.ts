@@ -82,8 +82,8 @@ afterAll(() => {
 
 describe.each([
   { permission: 'Master' },
-  { permission: 'Private' },
-  { permission: 'Public' },
+  { permission: 'Admin' },
+  { permission: 'Search' },
 ])('Test on search', ({ permission }) => {
   beforeAll(async () => {
     const client = await getClient('Master')

@@ -61,8 +61,8 @@ const dataset = [
 
 describe.each([
   { permission: 'Master' },
-  { permission: 'Private' },
-  { permission: 'Public' },
+  { permission: 'Admin' },
+  { permission: 'Search' },
 ])('Test on POST search', ({ permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config)
@@ -640,8 +640,8 @@ describe.each([{ permission: 'Master' }])(
 
 describe.each([
   { permission: 'Master' },
-  { permission: 'Private' },
-  { permission: 'Public' },
+  { permission: 'Admin' },
+  { permission: 'Search' },
 ])('Test on abortable search', ({ permission }) => {
   beforeAll(async () => {
     const client = await getClient('Master')
