@@ -550,9 +550,11 @@ update_sortable_attributes_1: |-
 reset_sortable_attributes_1: |-
   client.index('books').resetSortableAttributes()
 get_pagination_settings_1: |-
+  client.index('books').getPagination()
 update_pagination_settings_1: |-
   client.index('books').updateSettings({ pagination: { maxTotalHits: 100 }})
 reset_pagination_settings_1: |-
+  client.index('books').resetPagination()
 get_faceting_settings_1: |-
   client.index('books').getFaceting()
 update_faceting_settings_1: |-
@@ -562,7 +564,7 @@ reset_faceting_settings_1: |-
 settings_guide_faceting_1: |-
   client.index('movies').updateSettings({ faceting: { maxValuesPerFacet: 5 }})
 settings_guide_pagination_1: |-
-  client.index('books').updateSettings({ pagination: { maxTotalHits: 50 }})
+  client.index('movies').updateSettings({ pagination: { maxTotalHits: 50 }})
 search_parameter_guide_sort_1: |-
   client.index('books').search('science fiction', {
     sort: ['price:asc'],
