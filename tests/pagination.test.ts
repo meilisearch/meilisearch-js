@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from '../src/types'
+﻿import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -18,7 +18,7 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   'Test on pagination',
   ({ permission }) => {
     beforeEach(async () => {
@@ -80,7 +80,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   }
 )
 
-describe.each([{ permission: 'Public' }])(
+describe.each([{ permission: 'Search' }])(
   'Test on pagination',
   ({ permission }) => {
     beforeEach(async () => {
