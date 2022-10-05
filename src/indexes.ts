@@ -585,7 +585,9 @@ class Index<T = Record<string, any>> {
     pagination: PaginationSettings
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/pagination`
-    return await this.httpRequest.patch(url, pagination)
+    const task = await this.httpRequest.patch(url, pagination)
+
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -596,7 +598,9 @@ class Index<T = Record<string, any>> {
    */
   async resetPagination(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/pagination`
-    return await this.httpRequest.delete<EnqueuedTask>(url)
+    const task = await this.httpRequest.delete(url)
+
+    return new EnqueuedTask(task)
   }
   ///
   /// SYNONYMS

@@ -27,7 +27,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
 
     test(`${permission} key: Get default pagination settings`, async () => {
       const client = await getClient(permission)
-      const response: object = await client.index(index.uid).getPagination()
+      const response = await client.index(index.uid).getPagination()
 
       expect(response).toEqual({ maxTotalHits: 1000 })
     })
@@ -40,7 +40,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const task = await client.index(index.uid).updatePagination(newPagination)
       await client.waitForTask(task.taskUid)
 
-      const response: object = await client.index(index.uid).getPagination()
+      const response = await client.index(index.uid).getPagination()
 
       expect(response).toEqual(newPagination)
     })
@@ -53,12 +53,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
       const updateTask = await client
         .index(index.uid)
         .updatePagination(newPagination)
-      await client.waitForTask(Updatetask.taskUid)
+      await client.waitForTask(updateTask.taskUid)
 
       const task = await client.index(index.uid).resetPagination()
       await client.waitForTask(task.taskUid)
 
-      const response: object = await client.index(index.uid).getPagination()
+      const response = await client.index(index.uid).getPagination()
 
       expect(response).toEqual({ maxTotalHits: 1000 })
     })
