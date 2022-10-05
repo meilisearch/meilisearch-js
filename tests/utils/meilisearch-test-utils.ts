@@ -53,20 +53,20 @@ async function getClient(permission: string): Promise<MeiliSearch> {
 
   if (permission === 'Search') {
     const searchKey = await getKey(permission)
-    const publicClient = new MeiliSearch({
+    const searchClient = new MeiliSearch({
       host: HOST,
       apiKey: searchKey,
     })
-    return publicClient
+    return searchClient
   }
 
   if (permission === 'Admin') {
     const adminKey = await getKey(permission)
-    const privateClient = new MeiliSearch({
+    const adminClient = new MeiliSearch({
       host: HOST,
       apiKey: adminKey,
     })
-    return privateClient
+    return adminClient
   }
 
   return masterClient
