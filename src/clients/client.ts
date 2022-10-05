@@ -13,13 +13,11 @@ import {
   Config,
   IndexOptions,
   IndexObject,
-  EnqueuedTask,
   Key,
   Health,
   Stats,
   Version,
   ErrorStatusCode,
-  Task,
   TokenSearchRules,
   TokenOptions,
   TasksQuery,
@@ -30,9 +28,11 @@ import {
   KeysQuery,
   KeysResults,
   TasksResults,
+  EnqueuedTaskObject,
 } from '../types'
 import { HttpRequests } from '../http-requests'
-import { TaskClient } from '../task'
+import { TaskClient, Task } from '../task'
+import { EnqueuedTask } from '../enqueued-task'
 
 class Client {
   config: Config
@@ -403,11 +403,8 @@ class Client {
    */
   async createDump(): Promise<EnqueuedTask> {
     const url = `dumps`
-    const task = await this.httpRequest.post<undefined, EnqueuedTask>(url)
-
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(url)
+    return new EnqueuedTask(task)
   }
 
   ///

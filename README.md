@@ -771,6 +771,26 @@ client.index('myIndex').updateSortableAttributes(sortableAttributes: string[] | 
 client.index('myIndex').resetSortableAttributes(): Promise<EnqueuedTask>
 ```
 
+### Faceting <!-- omit in toc -->
+
+#### [Get faceting](https://docs.meilisearch.com/reference/api/settings.html#get-faceting-settings)
+
+```ts
+client.index('myIndex').getFaceting(): Promise<Faceting>
+```
+
+#### [Update faceting](https://docs.meilisearch.com/reference/api/settings.html#update-faceting-settings)
+
+```ts
+client.index('myIndex').updateFaceting(faceting: Faceting): Promise<EnqueuedTask>
+```
+
+#### [Reset faceting](https://docs.meilisearch.com/reference/api/settings.html#reset-faceting-settings)
+
+```ts
+client.index('myIndex').resetFaceting(): Promise<EnqueuedTask>
+```
+
 ### Typo tolerance <!-- omit in toc -->
 
 #### [Get typo tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#get-typo-tolerance)

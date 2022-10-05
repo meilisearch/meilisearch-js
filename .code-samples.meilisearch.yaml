@@ -477,6 +477,8 @@ getting_started_sorting: |-
     sort: ['mass:asc'],
     filter: 'mass < 200'
   })
+getting_started_faceting: |-
+  client.index('movies').updateFaceting({ maxValuesPerFacet: 2 })
 getting_started_filtering: |-
   client.index('meteorites').search('', { filter: 'mass < 200' })
 get_filterable_attributes_1: |-
@@ -556,11 +558,15 @@ reset_pagination_settings_1: |-
 settings_guide_pagination_1: |-
   client.index('books').updateSettings({ pagination: { maxTotalHits: 50 }})
 get_faceting_settings_1: |-
+  client.index('books').getFaceting()
 update_faceting_settings_1: |-
-  client.index('books').updateSettings({ faceting: { maxValuesPerFacet: 2 }})
+  client.index('books').updateFaceting({ maxValuesPerFacet: 2 })
 reset_faceting_settings_1: |-
+  client.index('books').resetFaceting()
 settings_guide_faceting_1: |-
-  client.index('books').updateSettings({ faceting: { maxValuesPerFacet: 5 }})
+  client.index('movies').updateSettings({ faceting: { maxValuesPerFacet: 5 }})
+settings_guide_pagination_1: |-
+  client.index('books').updateSettings({ pagination: { maxTotalHits: 50 }})
 search_parameter_guide_sort_1: |-
   client.index('books').search('science fiction', {
     sort: ['price:asc'],

@@ -1,5 +1,6 @@
 import AbortController from 'abort-controller'
-import { ErrorStatusCode, EnqueuedTask, MatchingStrategies } from '../src/types'
+import { ErrorStatusCode, MatchingStrategies } from '../src/types'
+import { EnqueuedTask } from '../src/enqueued-task'
 import {
   clearAllIndexes,
   config,

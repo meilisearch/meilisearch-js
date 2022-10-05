@@ -11,7 +11,6 @@ import { MeiliSearchError } from './errors'
 
 import {
   Config,
-  Task,
   SearchResponse,
   SearchParams,
   Filter,
@@ -23,7 +22,6 @@ import {
   DocumentQuery,
   Document,
   DocumentOptions,
-  EnqueuedTask,
   Settings,
   Synonyms,
   StopWords,
@@ -39,10 +37,12 @@ import {
   TasksQuery,
   TasksResults,
   PaginationSettings,
+  Faceting,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
-import { TaskClient } from './task'
+import { Task, TaskClient } from './task'
+import { EnqueuedTask } from './enqueued-task'
 
 class Index<T = Record<string, any>> {
   uid: string
@@ -187,7 +187,7 @@ class Index<T = Record<string, any>> {
    * @param {string} uid Unique identifier of the Index
    * @param {IndexOptions} options Index options
    * @param {Config} config Request configuration options
-   * @returns {Promise<Index<T>>} Newly created Index object
+   * @returns {Promise<EnqueuedTask>} Newly created Index object
    */
   static async create(
     uid: string,
@@ -198,9 +198,7 @@ class Index<T = Record<string, any>> {
     const req = new HttpRequests(config)
     const task = await req.post(url, { ...options, uid })
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -229,9 +227,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}`
     const task = await this.httpRequest.delete(url)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   ///
@@ -399,9 +395,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/documents`
     const task = await this.httpRequest.post(url, documents, options)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -443,9 +437,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/documents`
     const task = await this.httpRequest.put(url, documents, options)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -502,9 +494,7 @@ class Index<T = Record<string, any>> {
 
     const task = await this.httpRequest.post(url, documentsIds)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -634,9 +624,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/synonyms`
     const task = await this.httpRequest.put(url, synonyms)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -680,9 +668,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/stop-words`
     const task = await this.httpRequest.put(url, stopWords)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -726,9 +712,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/ranking-rules`
     const task = await this.httpRequest.put(url, rankingRules)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -774,9 +758,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`
     const task = await this.httpRequest.put(url, distinctAttribute)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -822,9 +804,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`
     const task = await this.httpRequest.put(url, filterableAttributes)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -870,9 +850,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`
     const task = await this.httpRequest.put(url, sortableAttributes)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -918,9 +896,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`
     const task = await this.httpRequest.put(url, searchableAttributes)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -966,9 +942,7 @@ class Index<T = Record<string, any>> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
     const task = await this.httpRequest.put(url, displayedAttributes)
 
-    task.enqueuedAt = new Date(task.enqueuedAt)
-
-    return task
+    return new EnqueuedTask(task)
   }
 
   /**
@@ -1032,6 +1006,48 @@ class Index<T = Record<string, any>> {
     task.enqueuedAt = new Date(task.enqueuedAt)
 
     return task
+  }
+
+  ///
+  /// FACETING
+  ///
+
+  /**
+   * Get the faceting settings.
+   * @memberof Index
+   * @method getFaceting
+   * @returns {Promise<Faceting>} Promise containing object of faceting index settings
+   */
+  async getFaceting(): Promise<Faceting> {
+    const url = `indexes/${this.uid}/settings/faceting`
+    return await this.httpRequest.get<Faceting>(url)
+  }
+
+  /**
+   * Update the faceting settings.
+   * @memberof Index
+   * @method updateFaceting
+   * @param {Faceting} faceting Faceting index settings object
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
+   */
+  async updateFaceting(faceting: Faceting): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/faceting`
+    const task = await this.httpRequest.patch(url, faceting)
+
+    return new EnqueuedTask(task)
+  }
+
+  /**
+   * Reset the faceting settings.
+   * @memberof Index
+   * @method resetFaceting
+   * @returns {Promise<EnqueuedTask>} Promise containing object of the enqueued task
+   */
+  async resetFaceting(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/faceting`
+    const task = await this.httpRequest.delete(url)
+
+    return new EnqueuedTask(task)
   }
 }
 
