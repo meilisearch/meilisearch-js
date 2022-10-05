@@ -70,7 +70,6 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
         .index(index.uid)
         .updatePagination(newPagination)
       await client.waitForTask(updateTask.taskUid)
-
       const task = await client.index(index.uid).resetPagination()
       await client.waitForTask(task.taskUid)
 
