@@ -7,7 +7,7 @@ services:
     stdin_open: true
     working_dir: /home/package
     environment:
-      - MEILISEARCH_HOST=http://meilisearch:7700
+      - MEILISEARCH_URL=http://meilisearch:7700
     depends_on:
       - meilisearch
     links:
