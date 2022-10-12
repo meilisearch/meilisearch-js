@@ -11,7 +11,7 @@ beforeEach(async () => {
   await clearAllIndexes(config)
 })
 
-describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   'Test on dump',
   ({ permission }) => {
     test(`${permission} key: create a new dump`, async () => {
@@ -23,7 +23,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   }
 )
 
-describe.each([{ permission: 'Public' }])(
+describe.each([{ permission: 'Search' }])(
   'Test on dump with search api key should not have access',
   ({ permission }) => {
     test(`${permission} key: try to create dump with search key and be denied`, async () => {

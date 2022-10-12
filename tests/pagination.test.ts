@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from '../src/types'
+﻿import { ErrorStatusCode } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -19,69 +19,69 @@ afterAll(() => {
 })
 
 describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on searchable attributes',
+  'Test on pagination',
   ({ permission }) => {
     beforeEach(async () => {
+      await clearAllIndexes(config)
       const client = await getClient('Master')
       const { taskUid } = await client.index(index.uid).addDocuments(dataset)
       await client.waitForTask(taskUid)
     })
 
-    test(`${permission} key: Get default searchable attributes`, async () => {
+    test(`${permission} key: Get default pagination settings`, async () => {
       const client = await getClient(permission)
+      const response = await client.index(index.uid).getPagination()
 
-      const response: string[] = await client
-        .index(index.uid)
-        .getSearchableAttributes()
-
-      expect(response).toEqual(['*'])
+      expect(response).toEqual({ maxTotalHits: 1000 })
     })
 
-    test(`${permission} key: Update searchable attributes`, async () => {
+    test(`${permission} key: Update pagination`, async () => {
       const client = await getClient(permission)
-      const newSearchableAttributes = ['title']
-      const task = await client
-        .index(index.uid)
-        .updateSearchableAttributes(newSearchableAttributes)
-      await client.index(index.uid).waitForTask(task.taskUid)
+      const newPagination = {
+        maxTotalHits: 100,
+      }
+      const task = await client.index(index.uid).updatePagination(newPagination)
+      await client.waitForTask(task.taskUid)
 
-      const response: string[] = await client
-        .index(index.uid)
-        .getSearchableAttributes()
+      const response = await client.index(index.uid).getPagination()
 
-      expect(response).toEqual(newSearchableAttributes)
+      expect(response).toEqual(newPagination)
     })
 
-    test(`${permission} key: Update searchable attributes at null`, async () => {
+    test(`${permission} key: Update pagination at null`, async () => {
       const client = await getClient(permission)
-      const task = await client
-        .index(index.uid)
-        .updateSearchableAttributes(null)
+      const newPagination = {
+        maxTotalHits: null,
+      }
+      const task = await client.index(index.uid).updatePagination(newPagination)
       await client.index(index.uid).waitForTask(task.taskUid)
 
-      const response: string[] = await client
-        .index(index.uid)
-        .getSearchableAttributes()
+      const response = await client.index(index.uid).getPagination()
 
-      expect(response).toEqual(['*'])
+      expect(response).toEqual({ maxTotalHits: 1000 })
     })
 
-    test(`${permission} key: Reset searchable attributes`, async () => {
+    test(`${permission} key: Reset pagination`, async () => {
       const client = await getClient(permission)
-      const task = await client.index(index.uid).resetSearchableAttributes()
-      await client.index(index.uid).waitForTask(task.taskUid)
-
-      const response: string[] = await client
+      const newPagination = {
+        maxTotalHits: 100,
+      }
+      const updateTask = await client
         .index(index.uid)
-        .getSearchableAttributes()
+        .updatePagination(newPagination)
+      await client.waitForTask(updateTask.taskUid)
+      const task = await client.index(index.uid).resetPagination()
+      await client.waitForTask(task.taskUid)
 
-      expect(response).toEqual(['*'])
+      const response = await client.index(index.uid).getPagination()
+
+      expect(response).toEqual({ maxTotalHits: 1000 })
     })
   }
 )
 
 describe.each([{ permission: 'Search' }])(
-  'Test on searchable attributes',
+  'Test on pagination',
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient('Master')
@@ -89,31 +89,31 @@ describe.each([{ permission: 'Search' }])(
       await client.waitForTask(taskUid)
     })
 
-    test(`${permission} key: try to get searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to get pagination and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).getSearchableAttributes()
+        client.index(index.uid).getPagination()
       ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
-    test(`${permission} key: try to update searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to update pagination and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).updateSearchableAttributes([])
+        client.index(index.uid).updatePagination({ maxTotalHits: 10 })
       ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
-    test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to reset pagination and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).resetSearchableAttributes()
+        client.index(index.uid).resetPagination()
       ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
   }
 )
 
 describe.each([{ permission: 'No' }])(
-  'Test on searchable attributes',
+  'Test on pagination',
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient('Master')
@@ -121,30 +121,30 @@ describe.each([{ permission: 'No' }])(
       await client.waitForTask(taskUid)
     })
 
-    test(`${permission} key: try to get searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to get pagination and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).getSearchableAttributes()
+        client.index(index.uid).getPagination()
       ).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
-    test(`${permission} key: try to update searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to update pagination and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).updateSearchableAttributes([])
+        client.index(index.uid).updatePagination({ maxTotalHits: 10 })
       ).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
 
-    test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
+    test(`${permission} key: try to reset pagination and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).resetSearchableAttributes()
+        client.index(index.uid).resetPagination()
       ).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -158,12 +158,12 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])('Tests on url construction', ({ host, trailing }) => {
-  test(`Test getSearchableAttributes route`, async () => {
-    const route = `indexes/${index.uid}/settings/searchable-attributes`
+  test(`Test getPagination route`, async () => {
+    const route = `indexes/${index.uid}/settings/pagination`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).getSearchableAttributes()
+      client.index(index.uid).getPagination()
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
@@ -173,12 +173,12 @@ describe.each([
     )
   })
 
-  test(`Test updateSearchableAttributes route`, async () => {
-    const route = `indexes/${index.uid}/settings/searchable-attributes`
+  test(`Test updatePagination route`, async () => {
+    const route = `indexes/${index.uid}/settings/pagination`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).updateSearchableAttributes([])
+      client.index(index.uid).updatePagination({ maxTotalHits: null })
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
@@ -188,12 +188,12 @@ describe.each([
     )
   })
 
-  test(`Test resetSearchableAttributes route`, async () => {
-    const route = `indexes/${index.uid}/settings/searchable-attributes`
+  test(`Test resetPagination route`, async () => {
+    const route = `indexes/${index.uid}/settings/pagination`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).resetSearchableAttributes()
+      client.index(index.uid).resetPagination()
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(

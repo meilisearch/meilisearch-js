@@ -26,7 +26,7 @@ afterAll(() => {
   return clearAllIndexes(config)
 })
 
-describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
+describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   'Tests on tasks',
   ({ permission }) => {
     beforeEach(async () => {
@@ -230,7 +230,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Private' }])(
   }
 )
 
-describe.each([{ permission: 'Public' }])('Test on tasks', ({ permission }) => {
+describe.each([{ permission: 'Search' }])('Test on tasks', ({ permission }) => {
   beforeEach(async () => {
     await clearAllIndexes(config)
   })
