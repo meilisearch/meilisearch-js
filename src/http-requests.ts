@@ -59,12 +59,6 @@ function combineAbortSignal(
   abortController: AbortController,
   signal: AbortSignal
 ): void {
-  // If the supplied signal is already aborted, we can abort the controller
-  if (signal.aborted) {
-    abortController.abort()
-    return
-  }
-
   const onAbort = () => {
     abortController.abort()
     signal.removeEventListener('abort', onAbort)
@@ -114,11 +108,10 @@ class HttpRequests {
     let timeout: any
     try {
       let signal: AbortSignal | null = config?.signal
-      // If the user has already provided a signal, we have to check if it's already aborted
-      if (!signal || signal.aborted) {
+      // Check if the user has set a timeout, and either no signal or the provided signal is not already aborted
+      if (this.timeout && this.timeout > 0 && (!signal || !signal.aborted)) {
         const controller = new AbortController()
         timeout = setTimeout(() => controller?.abort(), this.timeout || 300_000)
-
         if (signal) {
           combineAbortSignal(controller, signal)
         }
