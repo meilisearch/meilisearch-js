@@ -719,6 +719,35 @@ describe.each([
       expect(error).toHaveProperty('message', 'The user aborted a request.')
     })
   })
+
+  test(`${permission} key: search on index, with timeout and abort`, async () => {
+    const controller = new AbortController()
+    const client = await getClient(permission)
+    client.config.timeout = 100000
+    const searchPromise = client.index(index.uid).search(
+      'unreachable',
+      {},
+      {
+        signal: controller.signal,
+      }
+    )
+
+    controller.abort()
+
+    searchPromise.catch((error: any) => {
+      expect(error).toHaveProperty('message', 'The user aborted a request.')
+    })
+  })
+
+  test(`${permission} key: search on index, with timeout of 1 ms`, async () => {
+    const client = await getClient(permission)
+    const searchQuery = 'prince'
+    const searchPromise = client.index(index.uid).search(searchQuery)
+
+    searchPromise.catch((error: any) => {
+      expect(error).toHaveProperty('message', 'The user aborted a request.')
+    })
+  })
 })
 
 describe.each([

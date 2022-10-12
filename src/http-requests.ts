@@ -55,6 +55,23 @@ function createHeaders(config: Config): Record<string, any> {
   return headers
 }
 
+function combineAbortSignal(
+  abortController: AbortController,
+  signal: AbortSignal
+): void {
+  // If the supplied signal is already aborted, we can abort the controller
+  if (signal.aborted) {
+    abortController.abort()
+    return
+  }
+
+  const onAbort = () => {
+    abortController.abort()
+    signal.removeEventListener('abort', onAbort)
+  }
+  signal.addEventListener('abort', onAbort, { once: true })
+}
+
 class HttpRequests {
   headers: Record<string, any>
   url: URL
@@ -94,29 +111,36 @@ class HttpRequests {
       constructURL.search = queryParams.toString()
     }
 
+    let timeout: any
     try {
-      let controller: AbortController | null = null
-      let timeout: any
-      if (this.timeout) {
-        controller = new AbortController()
+      let signal: AbortSignal | null = config?.signal
+      // If the user has already provided a signal, we have to check if it's already aborted
+      if (!signal || signal.aborted) {
+        const controller = new AbortController()
         timeout = setTimeout(() => controller?.abort(), this.timeout || 300_000)
+
+        if (signal) {
+          combineAbortSignal(controller, signal)
+        }
+        signal = controller.signal
       }
       const response: any = await fetch(constructURL.toString(), {
         ...config,
         method,
         body: JSON.stringify(body),
         headers: this.headers,
-        signal: controller?.signal,
+        signal: signal,
       }).then((res) => httpResponseErrorHandler(res))
-      if (timeout) {
-        clearTimeout(timeout)
-      }
       const parsedBody = await response.json().catch(() => undefined)
 
       return parsedBody
     } catch (e: any) {
       const stack = e.stack
       httpErrorHandler(e, stack, constructURL.toString())
+    } finally {
+      if (timeout) {
+        clearTimeout(timeout)
+      }
     }
   }
 
