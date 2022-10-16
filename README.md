@@ -138,7 +138,7 @@ const { MeiliSearch } = require('meilisearch')
 // Or if you are in a ES environment
 import { MeiliSearch } from 'meilisearch'
 
-;(async () => {
+(async () => {
   const client = new MeiliSearch({
     host: 'http://127.0.0.1:7700',
     apiKey: 'masterKey',
