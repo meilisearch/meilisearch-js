@@ -110,7 +110,7 @@ Some notes on GitHub PRs:
 - All PRs must be reviewed and approved by at least one maintainer.
 - The PR title should be accurate and descriptive of the changes. The title of the PR will be indeed automatically added to the next [release changelogs](https://github.com/meilisearch/meilisearch-js/releases/).
 
-## Release Process (for internal team only)
+## Release Process (for the internal team only)
 
 Meilisearch tools follow the [Semantic Versioning Convention](https://semver.org/).
 
@@ -140,7 +140,7 @@ Make a PR modifying the following files with the right version:
 export const PACKAGE_VERSION = 'X.X.X'
 ```
 
-Once the changes are merged on `main`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-js/releases): on this page, click on `Edit` (related to the draft release) > update the description (be sure you apply [these recommandations](https://github.com/meilisearch/integration-guides/blob/main/resources/integration-release.md#writting-the-release-description)) > when you are ready, click on `Publish release`.
+Once the changes are merged on `main`, you can publish the current draft release via the [GitHub interface](https://github.com/meilisearch/meilisearch-js/releases): on this page, click on `Edit` (related to the draft release) > update the description (be sure you apply [these recommendations](https://github.com/meilisearch/integration-guides/blob/main/resources/integration-release.md#writting-the-release-description)) > when you are ready, click on `Publish release`.
 
 GitHub Actions will be triggered and push the package to [npm](https://www.npmjs.com/package/meilisearch).
 
@@ -185,4 +185,4 @@ GitHub Actions will be triggered and push the beta version to [npm](https://www.
 
 <hr>
 
-Thank you again for reading this through, we can not wait to begin to work with you if you made your way through this contributing guide ❤️
+Thank you again for reading this through. We can not wait to begin to work with you if you make your way through this contributing guide ❤️
