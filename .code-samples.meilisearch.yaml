@@ -287,7 +287,7 @@ search_parameter_guide_matching_strategy_1: |-
   })
 search_parameter_guide_matching_strategy_2: |-
   client.index('movies').search('big fat liar', {
-    matchingStrategy: 'all' 
+    matchingStrategy: 'all'
   })
 settings_guide_synonyms_1: |-
   client.index('tops').updateSettings({
