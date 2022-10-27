@@ -88,13 +88,12 @@ describe.each([
   test(`${permission} key: Basic search`, async () => {
     const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {})
+
     expect(response).toHaveProperty('hits', expect.any(Array))
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 1)
+    expect(response).toHaveProperty('limit', 20)
+    expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
-    expect(response).toHaveProperty('totalHits', 2)
     expect(response.hits.length).toEqual(2)
   })
 
@@ -131,12 +130,11 @@ describe.each([
       .search('other', { q: 'prince' })
 
     expect(response).toHaveProperty('hits', expect.any(Array))
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 1)
+    expect(response).toHaveProperty('limit', 20)
+    expect(response).toHaveProperty('offset', 0)
+    expect(response.estimatedTotalHits).toBeDefined()
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
-    expect(response).toHaveProperty('totalHits', 2)
     expect(response.hits.length).toEqual(2)
   })
 
@@ -145,12 +143,11 @@ describe.each([
     const response = await client.index(index.uid).search(null, { q: 'prince' })
 
     expect(response).toHaveProperty('hits', expect.any(Array))
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 1)
+    expect(response).toHaveProperty('limit', 20)
+    expect(response).toHaveProperty('offset', 0)
+    expect(response.estimatedTotalHits).toBeDefined()
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
-    expect(response).toHaveProperty('totalHits', 2)
     expect(response.hits.length).toEqual(2)
   })
 
@@ -196,32 +193,32 @@ describe.each([
 
   test(`${permission} key: search with array options`, async () => {
     const client = await getClient(permission)
+
     const response = await client.index(index.uid).search('prince', {
       attributesToRetrieve: ['*'],
     })
+    const hit = response.hits[0]
+
     expect(response).toHaveProperty('hits', expect.any(Array))
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 1)
-    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
-    expect(response).toHaveProperty('totalHits', 2)
-    expect(response.hits.length).toEqual(2)
+    expect(Object.keys(hit).join(',')).toEqual(
+      Object.keys(dataset[1]).join(',')
+    )
   })
 
   test(`${permission} key: search with array options`, async () => {
     const client = await getClient(permission)
+
     const response = await client.index(index.uid).search('prince', {
       attributesToRetrieve: ['*'],
     })
+    const hit = response.hits[0]
+
     expect(response).toHaveProperty('hits', expect.any(Array))
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 1)
-    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
-    expect(response).toHaveProperty('totalHits', 2)
-    expect(response.hits.length).toEqual(2)
+    expect(Object.keys(hit).join(',')).toEqual(
+      Object.keys(dataset[1]).join(',')
+    )
   })
 
   test(`${permission} key: search with options`, async () => {
@@ -269,13 +266,6 @@ describe.each([
       showMatchesPosition: true,
     })
     expect(response).toHaveProperty('hits', expect.any(Array))
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 1)
-    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
-    expect(response).toHaveProperty('query', 'prince')
-    expect(response).toHaveProperty('totalHits', 1)
-    expect(response.hits.length).toEqual(1)
     expect(response.hits[0]).toHaveProperty('_matchesPosition', {
       comment: [{ start: 22, length: 6 }],
       title: [{ start: 9, length: 6 }],
@@ -579,6 +569,11 @@ describe.each([
     })
 
     expect(response.hits.length).toEqual(0)
+
+    expect(response.limit).toBeUndefined()
+    expect(response.offset).toBeUndefined()
+    expect(response.estimatedTotalHits).toBeUndefined()
+
     expect(response.hitsPerPage).toEqual(0)
     expect(response.page).toEqual(0)
     expect(response.totalPages).toEqual(0)
@@ -596,9 +591,13 @@ describe.each([
     })
 
     expect(response.hits.length).toEqual(1)
-    expect(response.limit).toEqual(1)
-    expect(response.offset).toEqual(1)
-    expect(response.estimatedTotalHits).toEqual(7)
+    expect(response.limit).toBeUndefined()
+    expect(response.offset).toBeUndefined()
+    expect(response.estimatedTotalHits).toBeUndefined()
+    expect(response.hitsPerPage).toEqual(1)
+    expect(response.page).toEqual(1)
+    expect(response.totalPages).toEqual(7)
+    expect(response.totalHits).toEqual(7)
   })
 
   test(`${permission} key: search with pagination parameters hitsPerPage/page and offset`, async () => {
@@ -611,36 +610,32 @@ describe.each([
     })
 
     expect(response.hits.length).toEqual(1)
-    expect(response.limit).toEqual(1)
-    expect(response.offset).toEqual(0)
-    expect(response.estimatedTotalHits).toEqual(7)
+    expect(response.limit).toBeUndefined()
+    expect(response.offset).toBeUndefined()
+    expect(response.estimatedTotalHits).toBeUndefined()
+    expect(response.hitsPerPage).toEqual(1)
+    expect(response.page).toEqual(1)
+    expect(response.totalHits).toEqual(7)
+    expect(response.totalPages).toEqual(7)
   })
 
-  test(`${permission} key: search with pagination parameters hitsPerPage/page and offset`, async () => {
+  test(`${permission} key: search with pagination parameters hitsPerPage/page and limit`, async () => {
     const client = await getClient(permission)
 
     const response = await client.index(index.uid).search('', {
       hitsPerPage: 1,
       page: 1,
-      offset: 1,
+      limit: 1,
     })
 
-    expect(response.hits.length).toEqual(6)
-    expect(response.limit).toEqual(20)
-    expect(response.offset).toEqual(1)
-    expect(response.estimatedTotalHits).toEqual(7)
-  })
-
-  test(`${permission} key: search on index with no documents and no primary key`, async () => {
-    const client = await getClient(permission)
-    const response = await client.index(emptyIndex.uid).search('prince', {})
-    expect(response).toHaveProperty('hits', [])
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 0)
-    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
-    expect(response).toHaveProperty('query', 'prince')
-    expect(response.hits.length).toEqual(0)
+    expect(response.hits.length).toEqual(1)
+    expect(response.limit).toBeUndefined()
+    expect(response.offset).toBeUndefined()
+    expect(response.estimatedTotalHits).toBeUndefined()
+    expect(response.page).toEqual(1)
+    expect(response.hitsPerPage).toEqual(1)
+    expect(response.totalPages).toEqual(7)
+    expect(response.totalHits).toEqual(7)
   })
 
   test(`${permission} key: search on index with no documents and no primary key`, async () => {
@@ -648,10 +643,6 @@ describe.each([
     const response = await client.index(emptyIndex.uid).search('prince', {})
 
     expect(response).toHaveProperty('hits', [])
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 0)
-    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
     expect(response.hits.length).toEqual(0)
   })
