@@ -91,11 +91,12 @@ describe.each([
 
   test(`${permission} key: Basic search`, async () => {
     const client = await getClient(permission)
+
     const response = await client.index(index.uid).searchGet('prince', {})
+
     expect(response).toHaveProperty('hits', expect.any(Array))
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 1)
+    expect(response).toHaveProperty('limit', 20)
+    expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
     expect(response.hits.length).toEqual(2)
@@ -129,27 +130,13 @@ describe.each([
     const response = await client.index(index.uid).searchGet('prince', {
       attributesToRetrieve: ['*'],
     })
-    expect(response).toHaveProperty('hits', expect.any(Array))
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 1)
-    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
-    expect(response).toHaveProperty('query', 'prince')
-    expect(response.hits.length).toEqual(2)
-  })
+    const hit = response.hits[0]
 
-  test(`${permission} key: search with array options`, async () => {
-    const client = await getClient(permission)
-    const response = await client.index(index.uid).searchGet('prince', {
-      attributesToRetrieve: ['*'],
-    })
     expect(response).toHaveProperty('hits', expect.any(Array))
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 1)
-    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
-    expect(response.hits.length).toEqual(2)
+    expect(Object.keys(hit).join(',')).toEqual(
+      Object.keys(dataset[1]).join(',')
+    )
   })
 
   test(`${permission} key: search with options`, async () => {
@@ -195,12 +182,6 @@ describe.each([
       showMatchesPosition: true,
     })
     expect(response).toHaveProperty('hits', expect.any(Array))
-    expect(response).toHaveProperty('hitsPerPage', 20)
-    expect(response).toHaveProperty('page', 1)
-    expect(response).toHaveProperty('totalPages', 1)
-    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
-    expect(response).toHaveProperty('query', 'prince')
-    expect(response.hits.length).toEqual(1)
     expect(response.hits[0]).toHaveProperty('_matchesPosition', {
       comment: [{ start: 22, length: 6 }],
       title: [{ start: 9, length: 6 }],
@@ -415,7 +396,7 @@ describe.each([
       genre: { fantasy: 2 },
     })
     expect(response.hits.length).toEqual(2)
-    expect(response.totalHits).toEqual(2)
+    expect(response.estimatedTotalHits).toEqual(2)
   })
 
   test(`${permission} key: search with multiple filter and empty string query (placeholder)`, async () => {

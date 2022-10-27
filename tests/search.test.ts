@@ -545,6 +545,20 @@ describe.each([
     expect(response.totalHits).toEqual(7)
   })
 
+  test(`${permission} key: search with pagination parameters: hitsPerPage at 0`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).search('', {
+      hitsPerPage: 0,
+    })
+
+    expect(response.hits.length).toEqual(0)
+    expect(response.hitsPerPage).toEqual(0)
+    expect(response.page).toEqual(1)
+    expect(response.totalPages).toEqual(0)
+    expect(response.totalHits).toEqual(7)
+  })
+
   test(`${permission} key: search with pagination parameters: hitsPerPage at 1 and page at 0`, async () => {
     const client = await getClient(permission)
 
@@ -557,6 +571,20 @@ describe.each([
     expect(response.hitsPerPage).toEqual(1)
     expect(response.page).toEqual(0)
     expect(response.totalPages).toEqual(7)
+    expect(response.totalHits).toEqual(7)
+  })
+
+  test(`${permission} key: search with pagination parameters: page at 0`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).search('', {
+      page: 0,
+    })
+
+    expect(response.hits.length).toEqual(0)
+    expect(response.hitsPerPage).toEqual(20)
+    expect(response.page).toEqual(0)
+    expect(response.totalPages).toEqual(1)
     expect(response.totalHits).toEqual(7)
   })
 
