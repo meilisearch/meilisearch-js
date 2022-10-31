@@ -281,6 +281,14 @@ search_parameter_guide_show_matches_position_1: |-
   client.index('movies').search('winter feast', {
     showMatchesPosition: true
   })
+search_parameter_guide_matching_strategy_1: |-
+  client.index('movies').search('big fat liar', {
+    matchingStrategy: 'last'
+  })
+search_parameter_guide_matching_strategy_2: |-
+  client.index('movies').search('big fat liar', {
+    matchingStrategy: 'all'
+  })
 settings_guide_synonyms_1: |-
   client.index('tops').updateSettings({
     synonyms: {

@@ -53,10 +53,12 @@ export type IndexesResults<T> = ResourceResults<T> & {}
  * SEARCH PARAMETERS
  */
 
-export const enum MatchingStrategies {
-  ALL = 'all',
-  LAST = 'last',
+export const MatchingStrategies = {
+  ALL: 'all',
+  LAST: 'last',
 }
+
+export type MatchingStrategies = typeof MatchingStrategies[keyof typeof MatchingStrategies]
 
 export type Filter = string | Array<string | string[]>
 
