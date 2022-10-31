@@ -634,7 +634,7 @@ describe.each([
     const response = await client.index(index.uid).search('', {
       hitsPerPage: 1,
       page: 1,
-      limit: 1,
+      offset: 1,
     })
 
     expect(response.hits.length).toEqual(1)
