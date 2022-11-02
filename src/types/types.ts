@@ -235,8 +235,16 @@ export const enum TaskTypes {
 
 export type TasksQuery = {
   indexUid?: string[]
+  uid?: number[]
   type?: TaskTypes[]
   status?: TaskStatus[]
+  canceledBy?: string[]
+  beforeEnqueuedAt?: Date
+  afterEnqueuedAt?: Date
+  beforeStartedAt?: Date
+  afterStartedAt?: Date
+  beforeFinishedAt?: Date
+  afterFinishedAt?: Date
   limit?: number
   from?: number
 }
