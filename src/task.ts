@@ -79,6 +79,7 @@ class TaskClient {
     } = parameters
 
     const queryParams = {
+      uid: parameters?.uid?.join(','),
       indexUid: parameters?.indexUid?.join(','),
       type: parameters?.type?.join(','),
       status: parameters?.status?.join(','),
