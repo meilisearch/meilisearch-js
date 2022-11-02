@@ -69,11 +69,19 @@ class TaskClient {
    */
   async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     const url = `tasks`
+    const { beforeEnqueuedAt, afterEnqueuedAt } = parameters
 
     const queryParams = {
       indexUid: parameters?.indexUid?.join(','),
       type: parameters?.type?.join(','),
       status: parameters?.status?.join(','),
+      beforeEnqueuedAt: beforeEnqueuedAt && beforeEnqueuedAt.toISOString(),
+      afterEnqueuedAt: afterEnqueuedAt && afterEnqueuedAt.toISOString(),
+      // afterEnqueuedAt?: parameters?.,
+      // beforeStartedAt?: parameters?.,
+      // afterStartedAt?: parameters?.,
+      // beforeFinishedAt?: parameters?.,
+      // afterFinishedAt?: parameters?.,
       from: parameters.from,
       limit: parameters.limit,
     }
