@@ -74,6 +74,8 @@ class TaskClient {
       afterEnqueuedAt,
       beforeStartedAt,
       afterStartedAt,
+      beforeFinishedAt,
+      afterFinishedAt,
     } = parameters
 
     const queryParams = {
@@ -84,11 +86,8 @@ class TaskClient {
       afterEnqueuedAt: afterEnqueuedAt && afterEnqueuedAt.toISOString(),
       beforeStartedAt: beforeStartedAt && beforeStartedAt.toISOString(),
       afterStartedAt: afterStartedAt && afterStartedAt.toISOString(),
-      // afterEnqueuedAt?: parameters?.,
-      // beforeStartedAt?: parameters?.,
-      // afterStartedAt?: parameters?.,
-      // beforeFinishedAt?: parameters?.,
-      // afterFinishedAt?: parameters?.,
+      beforeFinishedAt: beforeFinishedAt && beforeFinishedAt.toISOString(),
+      afterFinishedAt: afterFinishedAt && afterFinishedAt.toISOString(),
       from: parameters.from,
       limit: parameters.limit,
     }
