@@ -1,4 +1,5 @@
 import { ErrorStatusCode, TaskTypes, TaskStatus } from '../src/types'
+import { sleep } from '../src/utils'
 import {
   clearAllIndexes,
   config,
@@ -224,12 +225,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
     })
 
     // beforeEnqueuedAt
-    test(`${permission} key: Get all tasks with beforeEnqueuedAt filter`, async () => {
+    test.only(`${permission} key: Get all tasks with beforeEnqueuedAt filter`, async () => {
       const client = await getClient(permission)
-
       const currentTimeStamp = Date.now()
       const currentTime = new Date(currentTimeStamp)
-      // Create task after the current time
+      await sleep(1) // in ms
+
       const { taskUid } = await client
         .index(index.uid)
         .addDocuments([{ id: 1 }])
@@ -237,36 +238,69 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const tasks = await client.getTasks({
         beforeEnqueuedAt: currentTime,
       })
-      const enqueuedAt = tasks.results[0].enqueuedAt
+      const tasksUids = tasks.results.map((t) => t.uid)
 
-      console.log({
-        firstTask: tasks.results[0].uid,
-        addDocTask: taskUid,
-      })
-
-      expect(enqueuedAt.getTime()).toBeLessThan(currentTimeStamp)
-      expect(tasks.results[0].uid).not.toEqual(taskUid)
+      expect(tasksUids.includes(taskUid)).toBeFalsy()
     })
 
     // afterEnqueuedAt
     test.only(`${permission} key: Get all tasks with afterEnqueuedAt filter`, async () => {
       const client = await getClient(permission)
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+      await sleep(1) // in ms
 
       const currentTimeStamp = Date.now()
       const currentTime = new Date(currentTimeStamp)
 
-      // Create task after the current time
+      const tasks = await client.getTasks({
+        afterEnqueuedAt: currentTime,
+      })
+      const tasksUids = tasks.results.map((t) => t.uid)
+
+      expect(tasksUids.includes(taskUid)).toBeFalsy()
+    })
+
+    // beforeStartedAt
+    test.only(`${permission} key: Get all tasks with beforeStartedAt filter`, async () => {
+      const client = await getClient(permission)
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      await sleep(1) // in ms
+
       const { taskUid } = await client
         .index(index.uid)
         .addDocuments([{ id: 1 }])
 
-      const tasks = await client.getTasks({
-        afterEnqueuedAt: currentTime,
-      })
-      const enqueuedAt = tasks.results[0].enqueuedAt
+      await client.index(index.uid).waitForTask(taskUid) // ensures the tasks has a `startedAt` value
 
-      expect(enqueuedAt.getTime()).toBeGreaterThan(currentTimeStamp)
-      expect(tasks.results[0].uid).toEqual(taskUid)
+      const tasks = await client.getTasks({
+        beforeStartedAt: currentTime,
+      })
+      const tasksUids = tasks.results.map((t) => t.uid)
+
+      expect(tasksUids.includes(taskUid)).toBeFalsy()
+    })
+
+    // afterStartedAt
+    test.only(`${permission} key: Get all tasks with afterStartedAt filter`, async () => {
+      const client = await getClient(permission)
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+      await client.index(index.uid).waitForTask(taskUid) // ensures the tasks has a `startedAt` value
+      await sleep(1) // in ms
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+
+      const tasks = await client.getTasks({
+        afterStartedAt: currentTime,
+      })
+      const tasksUids = tasks.results.map((t) => t.uid)
+
+      expect(tasksUids.includes(taskUid)).toBeFalsy()
     })
 
     test(`${permission} key: Get all indexes tasks with index instance`, async () => {
