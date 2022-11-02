@@ -76,13 +76,17 @@ class TaskClient {
       afterStartedAt,
       beforeFinishedAt,
       afterFinishedAt,
+      uid,
+      indexUid,
+      type,
+      status,
     } = parameters
 
     const queryParams = {
-      uid: parameters?.uid?.join(','),
-      indexUid: parameters?.indexUid?.join(','),
-      type: parameters?.type?.join(','),
-      status: parameters?.status?.join(','),
+      uid: uid?.join(','),
+      indexUid: indexUid?.join(','),
+      type: type?.join(','),
+      status: status?.join(','),
       beforeEnqueuedAt: beforeEnqueuedAt && beforeEnqueuedAt.toISOString(),
       afterEnqueuedAt: afterEnqueuedAt && afterEnqueuedAt.toISOString(),
       beforeStartedAt: beforeStartedAt && beforeStartedAt.toISOString(),
