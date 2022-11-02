@@ -208,20 +208,17 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
     })
 
     // uid
-    test(`${permission} key: Get all tasks with indexUid filter`, async () => {
+    test(`${permission} key: Get all tasks with uid filter`, async () => {
       const client = await getClient(permission)
-      await client.index(index.uid).addDocuments([{ id: 1 }])
-      await client.index(index2.uid).addDocuments([{ id: 1 }])
-      await client.index(index3.uid).addDocuments([{ id: 1 }])
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
 
       const tasks = await client.getTasks({
-        indexUid: [index.uid, index2.uid],
+        uid: [taskUid],
       })
-      const onlyTaskWithSameUid = new Set(
-        tasks.results.map((task) => task.indexUid)
-      )
 
-      expect(onlyTaskWithSameUid.size).toEqual(2)
+      expect(tasks.results[0].uid).toEqual(taskUid)
     })
 
     // beforeEnqueuedAt
