@@ -206,6 +206,69 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(onlyTaskWithSameUid.size).toEqual(2)
     })
 
+    // uid
+    test(`${permission} key: Get all tasks with indexUid filter`, async () => {
+      const client = await getClient(permission)
+      await client.index(index.uid).addDocuments([{ id: 1 }])
+      await client.index(index2.uid).addDocuments([{ id: 1 }])
+      await client.index(index3.uid).addDocuments([{ id: 1 }])
+
+      const tasks = await client.getTasks({
+        indexUid: [index.uid, index2.uid],
+      })
+      const onlyTaskWithSameUid = new Set(
+        tasks.results.map((task) => task.indexUid)
+      )
+
+      expect(onlyTaskWithSameUid.size).toEqual(2)
+    })
+
+    // beforeEnqueuedAt
+    test(`${permission} key: Get all tasks with beforeEnqueuedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      // Create task after the current time
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+
+      const tasks = await client.getTasks({
+        beforeEnqueuedAt: currentTime,
+      })
+      const enqueuedAt = tasks.results[0].enqueuedAt
+
+      console.log({
+        firstTask: tasks.results[0].uid,
+        addDocTask: taskUid,
+      })
+
+      expect(enqueuedAt.getTime()).toBeLessThan(currentTimeStamp)
+      expect(tasks.results[0].uid).not.toEqual(taskUid)
+    })
+
+    // afterEnqueuedAt
+    test.only(`${permission} key: Get all tasks with afterEnqueuedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+
+      // Create task after the current time
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+
+      const tasks = await client.getTasks({
+        afterEnqueuedAt: currentTime,
+      })
+      const enqueuedAt = tasks.results[0].enqueuedAt
+
+      expect(enqueuedAt.getTime()).toBeGreaterThan(currentTimeStamp)
+      expect(tasks.results[0].uid).toEqual(taskUid)
+    })
+
     test(`${permission} key: Get all indexes tasks with index instance`, async () => {
       const client = await getClient(permission)
       await client.index(index.uid).addDocuments([{ id: 1 }])
