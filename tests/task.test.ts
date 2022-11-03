@@ -246,7 +246,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const { taskUid } = await client
         .index(index.uid)
         .addDocuments([{ id: 1 }])
-      await sleep(1) // in ms
+      await sleep(2) // in ms
 
       const currentTimeStamp = Date.now()
       const currentTime = new Date(currentTimeStamp)
