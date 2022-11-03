@@ -6,10 +6,12 @@ import {
   TasksQuery,
   TasksResults,
   TaskObject,
+  cancelTaskssQuery,
   TasksResultsObject,
 } from './types'
 import { HttpRequests, toQueryParams } from './http-requests'
 import { sleep } from './utils'
+import { EnqueuedTask } from './enqueued-task'
 
 class Task {
   indexUid: TaskObject['indexUid']
@@ -31,6 +33,7 @@ class Task {
     this.uid = task.uid
     this.batchUid = task.batchUid
     this.details = task.details
+    this.canceledBy = task.canceledBy
     this.error = task.error
     this.duration = task.duration
 
@@ -130,6 +133,16 @@ class TaskClient {
       tasks.push(task)
     }
     return tasks
+  }
+
+  async cancelTasks(parameters: cancelTaskssQuery = {}): Promise<EnqueuedTask> {
+    const url = `tasks/cancel`
+
+    return await this.httpRequest.post(
+      url,
+      {},
+      toQueryParams<cancelTaskssQuery>(parameters)
+    )
   }
 }
 

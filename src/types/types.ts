@@ -238,6 +238,7 @@ export type TasksQuery = {
   uid?: number[]
   type?: TaskTypes[]
   status?: TaskStatus[]
+  canceledBy?: number[]
   beforeEnqueuedAt?: Date
   afterEnqueuedAt?: Date
   beforeStartedAt?: Date
@@ -247,6 +248,7 @@ export type TasksQuery = {
   limit?: number
   from?: number
 }
+export type cancelTaskssQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
 
 export type EnqueuedTaskObject = {
   taskUid: number
@@ -254,6 +256,7 @@ export type EnqueuedTaskObject = {
   status: TaskStatus
   type: TaskTypes
   enqueuedAt: string
+  canceledBy: number
 }
 
 export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
@@ -295,6 +298,12 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
 
     // Distinct attribute on settings actions
     distinctAttribute: DistinctAttribute
+
+    matchedTasks?: number
+
+    canceledTasks?: number
+
+    originalQuery?: string
   }
   error?: MeiliSearchErrorInfo
   duration: string

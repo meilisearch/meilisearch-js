@@ -252,6 +252,9 @@ class Client {
     })
   }
 
+  async cancelTasks(parameters: TasksQuery): Promise<EnqueuedTask> {
+    return await this.tasks.cancelTasks(parameters)
+  }
   ///
   /// KEYS
   ///

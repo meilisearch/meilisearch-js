@@ -339,6 +339,180 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasksUids.includes(taskUid)).toBeFalsy()
     })
 
+    // get tasks: canceledBy
+    // TODO: wait for fix
+    test.skip(`${permission} key: Get all tasks with canceledBy filter`, async () => {
+      const client = await getClient(permission)
+      const addDocumentsTask = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+      const enqueuedCancelationTask = await client.cancelTasks({
+        uid: [addDocumentsTask.taskUid],
+      })
+      const cancelationTask = await client.waitForTask(
+        enqueuedCancelationTask.taskUid
+      )
+
+      const tasks = await client.getTasks({
+        canceledBy: [cancelationTask.uid],
+      })
+      const tasksUids = tasks.results.map((t) => t.uid)
+
+      expect(tasksUids.includes(addDocumentsTask.taskUid)).toBeTruthy()
+    })
+
+    // cancel: uid
+    test(`${permission} key: Cancel a task using the uid filter`, async () => {
+      const client = await getClient(permission)
+      const addDocuments = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+
+      const enqueuedTask = await client.cancelTasks({
+        uid: [addDocuments.taskUid],
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual('taskCancelation')
+      expect(task.details?.originalQuery).toContain('uid=')
+    })
+
+    // cancel: indexUid
+    test(`${permission} key: Cancel a task using the indexUid filter`, async () => {
+      const client = await getClient(permission)
+
+      const enqueuedTask = await client.cancelTasks({
+        indexUid: [index.uid],
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual('taskCancelation')
+      expect(task.details?.originalQuery).toEqual('indexUid=movies_test')
+    })
+
+    // cancel: type
+    test(`${permission} key: Cancel a task using the type filter`, async () => {
+      const client = await getClient(permission)
+
+      const enqueuedTask = await client.cancelTasks({
+        type: [
+          TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE,
+          TaskTypes.DOCUMENT_DELETION,
+        ],
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual('taskCancelation')
+      expect(task.details?.originalQuery).toEqual(
+        'type=documentAdditionOrUpdate%2CdocumentDeletion'
+      )
+    })
+
+    // cancel: status
+    test(`${permission} key: Cancel a task using the status filter`, async () => {
+      const client = await getClient(permission)
+
+      const enqueuedTask = await client.cancelTasks({
+        status: [TaskStatus.TASK_ENQUEUED, TaskStatus.TASK_PROCESSING],
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual('taskCancelation')
+      expect(task.details?.originalQuery).toEqual(
+        'status=enqueued%2Cprocessing'
+      )
+    })
+
+    // cancel: beforeEnqueuedAt
+    test(`${permission} key: Cancel a task using beforeEnqueuedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.cancelTasks({
+        beforeEnqueuedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual('taskCancelation')
+      expect(task.details?.originalQuery).toContain('beforeEnqueuedAt')
+    })
+
+    // cancel: afterEnqueuedAt
+    test(`${permission} key: Cancel a task using afterEnqueuedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.cancelTasks({
+        afterEnqueuedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual('taskCancelation')
+      expect(task.details?.originalQuery).toContain('afterEnqueuedAt')
+    })
+
+    // cancel: beforeStartedAt
+    test(`${permission} key: Cancel a task using beforeStartedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.cancelTasks({
+        beforeStartedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual('taskCancelation')
+      expect(task.details?.originalQuery).toContain('beforeStartedAt')
+    })
+
+    // cancel: afterStartedAt
+    test(`${permission} key: Cancel a task using afterStartedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.cancelTasks({
+        afterStartedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual('taskCancelation')
+      expect(task.details?.originalQuery).toContain('afterStartedAt')
+    })
+
+    // cancel: beforeFinishedAt
+    test(`${permission} key: Cancel a task using beforeFinishedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.cancelTasks({
+        beforeFinishedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual('taskCancelation')
+      expect(task.details?.originalQuery).toContain('beforeFinishedAt')
+    })
+
+    // cancel: afterFinishedAt
+    test(`${permission} key: Cancel a task using afterFinishedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.cancelTasks({
+        afterFinishedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual('taskCancelation')
+      expect(task.details?.originalQuery).toContain('afterFinishedAt')
+    })
+
     test(`${permission} key: Get all indexes tasks with index instance`, async () => {
       const client = await getClient(permission)
       await client.index(index.uid).addDocuments([{ id: 1 }])
