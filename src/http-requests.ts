@@ -11,6 +11,25 @@ import {
 
 import { addTrailingSlash, addProtocolIfNotPresent } from './utils'
 
+function stringifyQueryParams<T extends object, U extends object>(
+  parameters: T
+): U {
+  const params = Object.keys(parameters) as Array<keyof T>
+
+  const queryParams = params.reduce<U>((acc, key) => {
+    const value = parameters[key]
+    if (value === undefined) {
+      return acc
+    } else if (Array.isArray(value)) {
+      return { ...acc, [key]: value.join(',') }
+    } else if (value instanceof Date) {
+      return { ...acc, [key]: value.toISOString() }
+    }
+    return { ...acc, [key]: value }
+  }, {} as U)
+  return queryParams
+}
+
 function constructHostURL(host: string): string {
   try {
     host = addProtocolIfNotPresent(host)
@@ -219,4 +238,4 @@ class HttpRequests {
   }
 }
 
-export { HttpRequests }
+export { HttpRequests, stringifyQueryParams }

@@ -8,8 +8,25 @@ import {
   TaskObject,
   TasksResultsObject,
 } from './types'
-import { HttpRequests } from './http-requests'
-import { removeUndefinedFromObject, sleep } from './utils'
+import { HttpRequests, stringifyQueryParams } from './http-requests'
+import { sleep } from './utils'
+import { EnqueuedTask } from './enqueued-task'
+
+type TasksRequest = {
+  indexUid?: string
+  uid?: string
+  type?: string
+  status?: string
+  canceledBy?: string
+  beforeEnqueuedAt?: string
+  afterEnqueuedAt?: string
+  beforeStartedAt?: string
+  afterStartedAt?: string
+  beforeFinishedAt?: string
+  afterFinishedAt?: string
+  limit?: number
+  from?: number
+}
 
 class Task {
   indexUid: TaskObject['indexUid']
@@ -69,37 +86,10 @@ class TaskClient {
    */
   async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     const url = `tasks`
-    const {
-      beforeEnqueuedAt,
-      afterEnqueuedAt,
-      beforeStartedAt,
-      afterStartedAt,
-      beforeFinishedAt,
-      afterFinishedAt,
-      uid,
-      indexUid,
-      type,
-      status,
-    } = parameters
-
-    const queryParams = {
-      uid: uid?.join(','),
-      indexUid: indexUid?.join(','),
-      type: type?.join(','),
-      status: status?.join(','),
-      beforeEnqueuedAt: beforeEnqueuedAt && beforeEnqueuedAt.toISOString(),
-      afterEnqueuedAt: afterEnqueuedAt && afterEnqueuedAt.toISOString(),
-      beforeStartedAt: beforeStartedAt && beforeStartedAt.toISOString(),
-      afterStartedAt: afterStartedAt && afterStartedAt.toISOString(),
-      beforeFinishedAt: beforeFinishedAt && beforeFinishedAt.toISOString(),
-      afterFinishedAt: afterFinishedAt && afterFinishedAt.toISOString(),
-      from: parameters.from,
-      limit: parameters.limit,
-    }
 
     const tasks = await this.httpRequest.get<Promise<TasksResultsObject>>(
       url,
-      removeUndefinedFromObject(queryParams)
+      stringifyQueryParams<TasksQuery, TasksRequest>(parameters)
     )
 
     return {
