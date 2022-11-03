@@ -11,12 +11,12 @@ import {
 
 import { addTrailingSlash, addProtocolIfNotPresent } from './utils'
 
-function stringifyQueryParams<T extends object, U extends object>(
-  parameters: T
-): U {
+type queryParams<T> = { [key in keyof T]: string }
+
+function toQueryParams<T extends object>(parameters: T): queryParams<T> {
   const params = Object.keys(parameters) as Array<keyof T>
 
-  const queryParams = params.reduce<U>((acc, key) => {
+  const queryParams = params.reduce<queryParams<T>>((acc, key) => {
     const value = parameters[key]
     if (value === undefined) {
       return acc
@@ -26,7 +26,7 @@ function stringifyQueryParams<T extends object, U extends object>(
       return { ...acc, [key]: value.toISOString() }
     }
     return { ...acc, [key]: value }
-  }, {} as U)
+  }, {} as queryParams<T>)
   return queryParams
 }
 
@@ -238,4 +238,4 @@ class HttpRequests {
   }
 }
 
-export { HttpRequests, stringifyQueryParams }
+export { HttpRequests, toQueryParams }

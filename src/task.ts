@@ -8,25 +8,9 @@ import {
   TaskObject,
   TasksResultsObject,
 } from './types'
-import { HttpRequests, stringifyQueryParams } from './http-requests'
+import { HttpRequests, toQueryParams } from './http-requests'
 import { sleep } from './utils'
 import { EnqueuedTask } from './enqueued-task'
-
-type TasksRequest = {
-  indexUid?: string
-  uid?: string
-  type?: string
-  status?: string
-  canceledBy?: string
-  beforeEnqueuedAt?: string
-  afterEnqueuedAt?: string
-  beforeStartedAt?: string
-  afterStartedAt?: string
-  beforeFinishedAt?: string
-  afterFinishedAt?: string
-  limit?: number
-  from?: number
-}
 
 class Task {
   indexUid: TaskObject['indexUid']
@@ -89,7 +73,7 @@ class TaskClient {
 
     const tasks = await this.httpRequest.get<Promise<TasksResultsObject>>(
       url,
-      stringifyQueryParams<TasksQuery, TasksRequest>(parameters)
+      toQueryParams<TasksQuery>(parameters)
     )
 
     return {
