@@ -18,6 +18,7 @@ class Task {
   status: TaskObject['status']
   type: TaskObject['type']
   uid: TaskObject['uid']
+  canceledBy: TaskObject['canceledBy']
   batchUid: TaskObject['batchUid']
   details: TaskObject['details']
   error: TaskObject['error']
