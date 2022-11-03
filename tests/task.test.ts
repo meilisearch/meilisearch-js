@@ -83,6 +83,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(task.uid).toEqual(enqueuedTask.taskUid)
     })
 
+    // get tasks
     test(`${permission} key: Get all tasks`, async () => {
       const client = await getClient(permission)
       const enqueuedTask = await client
@@ -96,6 +97,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasks.results[0].uid).toEqual(enqueuedTask.taskUid)
     })
 
+    // get tasks: type
     test(`${permission} key: Get all tasks with type filter`, async () => {
       const client = await getClient(permission)
       await client.index(index.uid).addDocuments([{ id: 1 }])
@@ -115,6 +117,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(onlyDocumentAddition.size).toEqual(2)
     })
 
+    // get tasks: type
     test(`${permission} key: Get all tasks with type filter on an index`, async () => {
       const client = await getClient(permission)
       await client.deleteIndex(index2.uid)
@@ -136,6 +139,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(onlyDocumentAddition.size).toEqual(2)
     })
 
+    // get tasks: pagination
     test(`${permission} key: Get all tasks with pagination`, async () => {
       const client = await getClient(permission)
       const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
@@ -151,6 +155,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasks.next).toEqual(0)
     })
 
+    // get tasks: status
     test(`${permission} key: Get all tasks with status filter`, async () => {
       const client = await getClient(permission)
       const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
@@ -168,6 +173,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(onlySuccesfullTasks.size).toEqual(2)
     })
 
+    // get tasks: status
     test(`${permission} key: Get all tasks with status filter on an index`, async () => {
       const client = await getClient(permission)
       const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
@@ -191,6 +197,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(onlyTaskWithSameUid.size).toEqual(1)
     })
 
+    // get tasks: indexUid
     test(`${permission} key: Get all tasks with indexUid filter`, async () => {
       const client = await getClient(permission)
       await client.index(index.uid).addDocuments([{ id: 1 }])
@@ -207,7 +214,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(onlyTaskWithSameUid.size).toEqual(2)
     })
 
-    // uid
+    // get tasks: uid
     test(`${permission} key: Get all tasks with uid filter`, async () => {
       const client = await getClient(permission)
       const { taskUid } = await client
@@ -221,7 +228,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasks.results[0].uid).toEqual(taskUid)
     })
 
-    // beforeEnqueuedAt
+    // get tasks: beforeEnqueuedAt
     test(`${permission} key: Get all tasks with beforeEnqueuedAt filter`, async () => {
       const client = await getClient(permission)
       const currentTimeStamp = Date.now()
@@ -240,7 +247,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasksUids.includes(taskUid)).toBeFalsy()
     })
 
-    // afterEnqueuedAt
+    // get tasks: afterEnqueuedAt
     test(`${permission} key: Get all tasks with afterEnqueuedAt filter`, async () => {
       const client = await getClient(permission)
       const { taskUid } = await client
@@ -259,7 +266,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasksUids.includes(taskUid)).toBeFalsy()
     })
 
-    // beforeStartedAt
+    // get tasks: beforeStartedAt
     test(`${permission} key: Get all tasks with beforeStartedAt filter`, async () => {
       const client = await getClient(permission)
       const currentTimeStamp = Date.now()
@@ -279,7 +286,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasksUids.includes(taskUid)).toBeFalsy()
     })
 
-    // afterStartedAt
+    // get tasks: afterStartedAt
     test(`${permission} key: Get all tasks with afterStartedAt filter`, async () => {
       const client = await getClient(permission)
       const { taskUid } = await client
@@ -299,7 +306,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasksUids.includes(taskUid)).toBeFalsy()
     })
 
-    // beforeFinishedAt
+    // get tasks: beforeFinishedAt
     test(`${permission} key: Get all tasks with beforeFinishedAt filter`, async () => {
       const client = await getClient(permission)
       const currentTimeStamp = Date.now()
@@ -319,7 +326,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasksUids.includes(taskUid)).toBeFalsy()
     })
 
-    // afterFinishedAt
+    // get tasks: afterFinishedAt
     test(`${permission} key: Get all tasks with afterFinishedAt filter`, async () => {
       const client = await getClient(permission)
       const { taskUid } = await client
