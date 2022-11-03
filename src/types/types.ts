@@ -248,7 +248,7 @@ export type TasksQuery = {
   limit?: number
   from?: number
 }
-export type cancelTaskssQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
+export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
 
 export type EnqueuedTaskObject = {
   taskUid: number
@@ -299,10 +299,13 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     // Distinct attribute on settings actions
     distinctAttribute: DistinctAttribute
 
+    // Number of tasks that matched the originalQuery filter
     matchedTasks?: number
 
+    // Number of tasks that were canceled
     canceledTasks?: number
 
+    // Query parameters used to filter the tasks
     originalQuery?: string
   }
   error?: MeiliSearchErrorInfo

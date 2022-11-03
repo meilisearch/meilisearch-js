@@ -252,7 +252,15 @@ class Client {
     })
   }
 
-  async cancelTasks(parameters: TasksQuery): Promise<EnqueuedTask> {
+  /**
+   * Cancel a list of enqueued or processing tasks.
+   * @memberof MeiliSearch
+   * @method cancelTasks
+   * @param {CancelTasksQuery} [parameters={}] - Parameters to filter the tasks.
+   *
+   * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
+   */
+  async cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
     return await this.tasks.cancelTasks(parameters)
   }
   ///
