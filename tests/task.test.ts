@@ -375,6 +375,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(task.type).toEqual('taskCancelation')
       expect(task.details?.originalQuery).toContain('uid=')
+      expect(task.details?.matchedTasks).toBeDefined()
+      expect(task.details?.canceledTasks).toBeDefined()
     })
 
     // cancel: indexUid
