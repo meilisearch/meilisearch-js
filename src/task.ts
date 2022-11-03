@@ -10,7 +10,6 @@ import {
 } from './types'
 import { HttpRequests, toQueryParams } from './http-requests'
 import { sleep } from './utils'
-import { EnqueuedTask } from './enqueued-task'
 
 class Task {
   indexUid: TaskObject['indexUid']
