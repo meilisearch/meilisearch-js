@@ -249,6 +249,7 @@ export type TasksQuery = {
   from?: number
 }
 export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
+export type DeleteTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
 
 export type EnqueuedTaskObject = {
   taskUid: number
@@ -304,6 +305,9 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
 
     // Number of tasks that were canceled
     canceledTasks?: number
+
+    // Number of tasks that were deleted
+    deletedTasks?: number
 
     // Query parameters used to filter the tasks
     originalQuery?: string

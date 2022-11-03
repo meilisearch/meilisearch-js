@@ -264,6 +264,19 @@ class Client {
   async cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
     return await this.tasks.cancelTasks(parameters)
   }
+
+  /**
+   * Delete a list of enqueued or processing tasks.
+   * @memberof MeiliSearch
+   * @method deleteTasks
+   * @param {DeleteTasksQuery} [parameters={}] - Parameters to filter the tasks.
+   *
+   * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
+   */
+  async deleteTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
+    return await this.tasks.cancelTasks(parameters)
+  }
+
   ///
   /// KEYS
   ///

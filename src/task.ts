@@ -8,6 +8,7 @@ import {
   TaskObject,
   CancelTasksQuery,
   TasksResultsObject,
+  DeleteTasksQuery,
 } from './types'
 import { HttpRequests, toQueryParams } from './http-requests'
 import { sleep } from './utils'
@@ -151,6 +152,24 @@ class TaskClient {
       url,
       {},
       toQueryParams<CancelTasksQuery>(parameters)
+    )
+  }
+
+  /**
+   * Delete a list of enqueued or processing tasks.
+   * @memberof Tasks
+   * @method deleteTasks
+   * @param {DeleteTasksQuery} [parameters={}] - Parameters to filter the tasks.
+   *
+   * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
+   */
+  async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
+    const url = `tasks/cancel`
+
+    return await this.httpRequest.post(
+      url,
+      {},
+      toQueryParams<DeleteTasksQuery>(parameters)
     )
   }
 }
