@@ -531,9 +531,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const deleteTask = await client.deleteTasks({
         uid: [addDocuments.taskUid],
       })
-      await client.waitForTask(deleteTask.taskUid)
+      const task = await client.waitForTask(deleteTask.taskUid)
 
       expect(deleteTask.type).toEqual(TaskTypes.TASK_DELETION)
+      expect(task.details?.deletedTasks).toBeDefined()
       await expect(client.getTask(addDocuments.taskUid)).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.TASK_NOT_FOUND
