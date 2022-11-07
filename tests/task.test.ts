@@ -380,7 +380,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
-      expect(task.type).toEqual('taskCancelation')
+      expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalQuery).toContain('uid=')
       expect(task.details?.matchedTasks).toBeDefined()
       expect(task.details?.canceledTasks).toBeDefined()
@@ -395,7 +395,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
-      expect(task.type).toEqual('taskCancelation')
+      expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalQuery).toEqual('indexUid=movies_test')
     })
 
@@ -411,7 +411,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
-      expect(task.type).toEqual('taskCancelation')
+      expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalQuery).toEqual(
         'type=documentAdditionOrUpdate%2CdocumentDeletion'
       )
@@ -426,7 +426,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
-      expect(task.type).toEqual('taskCancelation')
+      expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalQuery).toEqual(
         'status=enqueued%2Cprocessing'
       )
@@ -443,7 +443,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
-      expect(task.type).toEqual('taskCancelation')
+      expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalQuery).toContain('beforeEnqueuedAt')
     })
 
@@ -458,7 +458,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
-      expect(task.type).toEqual('taskCancelation')
+      expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalQuery).toContain('afterEnqueuedAt')
     })
 
@@ -473,7 +473,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
-      expect(task.type).toEqual('taskCancelation')
+      expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalQuery).toContain('beforeStartedAt')
     })
 
@@ -488,7 +488,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
-      expect(task.type).toEqual('taskCancelation')
+      expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalQuery).toContain('afterStartedAt')
     })
 
@@ -503,7 +503,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
-      expect(task.type).toEqual('taskCancelation')
+      expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalQuery).toContain('beforeFinishedAt')
     })
 
@@ -518,7 +518,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
-      expect(task.type).toEqual('taskCancelation')
+      expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalQuery).toContain('afterFinishedAt')
     })
 
