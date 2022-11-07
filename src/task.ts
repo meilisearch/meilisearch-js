@@ -158,7 +158,7 @@ class TaskClient {
   }
 
   /**
-   * Delete a list of enqueued or processing tasks.
+   * Delete a list tasks.
    * @memberof Tasks
    * @method deleteTasks
    * @param {DeleteTasksQuery} [parameters={}] - Parameters to filter the tasks.

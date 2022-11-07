@@ -30,6 +30,7 @@ import {
   TasksResults,
   EnqueuedTaskObject,
   CancelTasksQuery,
+  DeleteTasksQuery,
 } from '../types'
 import { HttpRequests } from '../http-requests'
 import { TaskClient, Task } from '../task'
@@ -266,14 +267,14 @@ class Client {
   }
 
   /**
-   * Delete a list of enqueued or processing tasks.
+   * Delete a list of tasks.
    * @memberof MeiliSearch
    * @method deleteTasks
    * @param {DeleteTasksQuery} [parameters={}] - Parameters to filter the tasks.
    *
    * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
    */
-  async deleteTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
+  async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
     return await this.tasks.deleteTasks(parameters)
   }
 
