@@ -29,7 +29,7 @@ import {
   KeysResults,
   TasksResults,
   EnqueuedTaskObject,
-  TaskSwapParams,
+  IndexesSwapParams,
 } from '../types'
 import { HttpRequests } from '../http-requests'
 import { TaskClient, Task } from '../task'
@@ -190,10 +190,10 @@ class Client {
    *
    * @memberof MeiliSearch
    * @method swapIndexes
-   * @param {number} taskUid - Task identifier
+   * @param {IndexesSwapParams} queryParam - Indexes to swap
    * @returns {Promise<Task>} - Promise returning a task
    */
-  async swapIndexes(indexes: TaskSwapParams): Promise<EnqueuedTask> {
+  async swapIndexes(indexes: IndexesSwapParams): Promise<EnqueuedTask> {
     const url = '/swap-indexes'
     return await this.httpRequest.post(url, indexes)
   }

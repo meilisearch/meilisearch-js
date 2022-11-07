@@ -231,6 +231,7 @@ export const enum TaskTypes {
   DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
   DOCUMENT_DELETION = 'documentDeletion',
   SETTINGS_UPDATE = 'settingsUpdate',
+  INDEXES_SWAP = 'indexSwap',
 }
 
 export type TasksQuery = {
@@ -288,6 +289,9 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
 
     // Distinct attribute on settings actions
     distinctAttribute: DistinctAttribute
+
+    // Object containing the payload originating the `indexSwap` task creation
+    swaps: IndexesSwapParams
   }
   error?: MeiliSearchErrorInfo
   duration: string
@@ -295,8 +299,8 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
   finishedAt: string
 }
 
-export type TaskSwapParams = Array<{
-  indexes: [string, string]
+export type IndexesSwapParams = Array<{
+  indexes: string[]
 }>
 
 type CursorResults<T> = {
@@ -517,6 +521,9 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#dump_not_found */
   DUMP_NOT_FOUND = 'dump_not_found',
+
+  /** @see https://docs.meilisearch.com/errors/#duplicate_index_found */
+  DUPLICATE_INDEX_FOUND = 'duplicate_index_found',
 }
 
 export type TokenIndexRules = {
