@@ -289,7 +289,7 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     // Distinct attribute on settings actions
     distinctAttribute: DistinctAttribute
   }
-  error?: MeiliSearchErrorInfo
+  error: MeiliSearchErrorInfo | null
   duration: string
   startedAt: string
   finishedAt: string
