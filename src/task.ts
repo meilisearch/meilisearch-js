@@ -148,11 +148,13 @@ class TaskClient {
   async cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
     const url = `tasks/cancel`
 
-    return await this.httpRequest.post(
+    const task = await this.httpRequest.post(
       url,
       {},
       toQueryParams<CancelTasksQuery>(parameters)
     )
+
+    return new EnqueuedTask(task)
   }
 
   /**

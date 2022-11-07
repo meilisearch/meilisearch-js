@@ -232,6 +232,7 @@ export const enum TaskTypes {
   DOCUMENT_DELETION = 'documentDeletion',
   SETTINGS_UPDATE = 'settingsUpdate',
   TASK_DELETION = 'taskDeletion',
+  TASK_CANCELATION = 'taskCancelation',
 }
 
 export type TasksQuery = {
