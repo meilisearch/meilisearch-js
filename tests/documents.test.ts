@@ -343,13 +343,9 @@ describe('Documents tests', () => {
 
         const id = 9
         const task = await client.index(indexPk.uid).deleteDocument(id)
-        const resolvedTask = await client
-          .index(indexPk.uid)
-          .waitForTask(task.taskUid)
+        await client.index(indexPk.uid).waitForTask(task.taskUid)
         const response = await client.index(indexPk.uid).getDocuments<Book>()
 
-        expect(resolvedTask.details.deletedDocuments).toEqual(2)
-        expect(resolvedTask.details.matchedDocuments).toEqual(2)
         expect(response.results.length).toEqual(dataset.length)
       })
 
