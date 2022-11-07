@@ -164,13 +164,14 @@ class TaskClient {
    * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
    */
   async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
-    const url = `tasks/cancel`
+    const url = `tasks`
 
-    return await this.httpRequest.post(
+    const task = await this.httpRequest.delete(
       url,
       {},
       toQueryParams<DeleteTasksQuery>(parameters)
     )
+    return new EnqueuedTask(task)
   }
 }
 

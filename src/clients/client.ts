@@ -274,7 +274,7 @@ class Client {
    * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
    */
   async deleteTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
-    return await this.tasks.cancelTasks(parameters)
+    return await this.tasks.deleteTasks(parameters)
   }
 
   ///
