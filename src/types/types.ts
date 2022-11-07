@@ -295,6 +295,10 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
   finishedAt: string
 }
 
+export type TaskSwapParams = Array<{
+  indexes: [string, string]
+}>
+
 type CursorResults<T> = {
   results: T[]
   limit: number
