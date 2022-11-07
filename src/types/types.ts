@@ -513,6 +513,9 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#dump_not_found */
   DUMP_NOT_FOUND = 'dump_not_found',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_master_key */
+  MISSING_MASTER_KEY = 'missing_master_key',
 }
 
 export type TokenIndexRules = {
