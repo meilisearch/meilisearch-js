@@ -231,6 +231,7 @@ export const enum TaskTypes {
   DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
   DOCUMENT_DELETION = 'documentDeletion',
   SETTINGS_UPDATE = 'settingsUpdate',
+  SNAPSHOT_CREATION = 'snapshotCreation',
 }
 
 export type TasksQuery = {
