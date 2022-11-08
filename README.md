@@ -571,6 +571,12 @@ client.index('myIndex').fetchInfo(): Promise<Index>
 client.index('myIndex').fetchPrimaryKey(): Promise<string | undefined>
 ```
 
+##### Swap two indexes
+
+```ts
+client.swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask>
+```
+
 ### Settings <!-- omit in toc -->
 
 #### [Get settings](https://docs.meilisearch.com/reference/api/settings.html#get-settings)
