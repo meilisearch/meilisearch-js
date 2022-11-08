@@ -190,12 +190,12 @@ class Client {
    *
    * @memberof MeiliSearch
    * @method swapIndexes
-   * @param {SwapIndexesParams} queryParam - Indexes to swap
-   * @returns {Promise<Task>} - Promise returning a task
+   * @param {SwapIndexesParams} params - Indexes to swap
+   * @returns {Promise<EnqueuedTask>} - Promise returning object of the enqueued task
    */
-  async swapIndexes(indexes: SwapIndexesParams): Promise<EnqueuedTask> {
+  async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
     const url = '/swap-indexes'
-    return await this.httpRequest.post(url, indexes)
+    return await this.httpRequest.post(url, params)
   }
 
   ///
