@@ -186,11 +186,11 @@ class Client {
   }
 
   /**
-   * Swap two indexes
+   * Swaps a list of index tuples.
    *
    * @memberof MeiliSearch
    * @method swapIndexes
-   * @param {SwapIndexesParams} params - Indexes to swap
+   * @param {SwapIndexesParams} params - List of indexes tuples to swap.
    * @returns {Promise<EnqueuedTask>} - Promise returning object of the enqueued task
    */
   async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
