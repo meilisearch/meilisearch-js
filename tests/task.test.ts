@@ -680,6 +680,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION)
+      expect(task.details?.originalQuery).toContain('afterFinishedAt')
     })
 
     test(`${permission} key: Get all indexes tasks with index instance`, async () => {
