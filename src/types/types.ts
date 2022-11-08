@@ -291,7 +291,7 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     distinctAttribute: DistinctAttribute
 
     // Object containing the payload originating the `indexSwap` task creation
-    swaps: IndexesSwapParams
+    swaps: SwapIndexesParams
   }
   error?: MeiliSearchErrorInfo
   duration: string
@@ -299,7 +299,7 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
   finishedAt: string
 }
 
-export type IndexesSwapParams = Array<{
+export type SwapIndexesParams = Array<{
   indexes: string[]
 }>
 
