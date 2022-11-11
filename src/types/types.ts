@@ -238,10 +238,10 @@ export const enum TaskTypes {
 }
 
 export type TasksQuery = {
-  indexUid?: string[]
-  uid?: number[]
-  type?: TaskTypes[]
-  status?: TaskStatus[]
+  indexUids?: string[]
+  uids?: number[]
+  types?: TaskTypes[]
+  statuses?: TaskStatus[]
   canceledBy?: number[]
   beforeEnqueuedAt?: Date
   afterEnqueuedAt?: Date
@@ -319,7 +319,7 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     deletedTasks?: number
 
     // Query parameters used to filter the tasks
-    originalQuery?: string
+    originalFilters?: string
   }
   error: MeiliSearchErrorInfo | null
   duration: string
