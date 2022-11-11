@@ -231,6 +231,7 @@ export const enum TaskTypes {
   DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
   DOCUMENT_DELETION = 'documentDeletion',
   SETTINGS_UPDATE = 'settingsUpdate',
+  SNAPSHOT_CREATION = 'snapshotCreation',
   TASK_CANCELATION = 'taskCancelation',
 }
 
@@ -262,7 +263,6 @@ export type EnqueuedTaskObject = {
 
 export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
   uid: number
-  batchUid: number
   details: {
     // Number of documents sent
     receivedDocuments?: number
