@@ -365,7 +365,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const tasksUids = tasks.results.map((t) => t.uid)
 
-      expect(tasksUids.includes(addDocumentsTask.taskUid)).toBeTruthy()
+      expect(tasksUids[0]).toEqual(addDocumentsTask.taskUid)
     })
 
     // cancel: uid
