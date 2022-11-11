@@ -537,6 +537,9 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#dump_not_found */
   DUMP_NOT_FOUND = 'dump_not_found',
 
+  /** @see https://docs.meilisearch.com/errors/#missing_master_key */
+  MISSING_MASTER_KEY = 'missing_master_key',
+
   /** @see https://docs.meilisearch.com/errors/#invalid_task_uid */
   INVALID_TASK_UID = 'invalid_task_uid',
 
