@@ -16,7 +16,6 @@ class Task {
   status: TaskObject['status']
   type: TaskObject['type']
   uid: TaskObject['uid']
-  batchUid: TaskObject['batchUid']
   details: TaskObject['details']
   error: TaskObject['error']
   duration: TaskObject['duration']
@@ -29,7 +28,6 @@ class Task {
     this.status = task.status
     this.type = task.type
     this.uid = task.uid
-    this.batchUid = task.batchUid
     this.details = task.details
     this.error = task.error
     this.duration = task.duration
