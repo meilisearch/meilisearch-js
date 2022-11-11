@@ -6,16 +6,19 @@ import {
   TasksQuery,
   TasksResults,
   TaskObject,
+  CancelTasksQuery,
   TasksResultsObject,
 } from './types'
 import { HttpRequests, toQueryParams } from './http-requests'
 import { sleep } from './utils'
+import { EnqueuedTask } from './enqueued-task'
 
 class Task {
   indexUid: TaskObject['indexUid']
   status: TaskObject['status']
   type: TaskObject['type']
   uid: TaskObject['uid']
+  canceledBy: TaskObject['canceledBy']
   batchUid: TaskObject['batchUid']
   details: TaskObject['details']
   error: TaskObject['error']
@@ -31,6 +34,7 @@ class Task {
     this.uid = task.uid
     this.batchUid = task.batchUid
     this.details = task.details
+    this.canceledBy = task.canceledBy
     this.error = task.error
     this.duration = task.duration
 
@@ -130,6 +134,26 @@ class TaskClient {
       tasks.push(task)
     }
     return tasks
+  }
+
+  /**
+   * Cancel a list of enqueued or processing tasks.
+   * @memberof Tasks
+   * @method cancelTasks
+   * @param {CancelTasksQuery} [parameters={}] - Parameters to filter the tasks.
+   *
+   * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
+   */
+  async cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
+    const url = `tasks/cancel`
+
+    const task = await this.httpRequest.post(
+      url,
+      {},
+      toQueryParams<CancelTasksQuery>(parameters)
+    )
+
+    return new EnqueuedTask(task)
   }
 }
 

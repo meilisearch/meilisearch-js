@@ -441,6 +441,12 @@ client.getTasks(parameters: TasksQuery): Promise<TasksResults>
 client.getTask(uid: number): Promise<Task>
 ```
 
+#### [Cancel tasks](https://docs.meilisearch.com/reference/api/tasks.html#cancel-task)
+
+```ts
+client.cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask>
+```
+
 #### [Get all tasks of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index)
 
 ```ts
@@ -452,6 +458,7 @@ client.index('myIndex').getTasks(parameters: TasksQuery): Promise<TasksResults>
 ```ts
 client.index('myIndex').getTask(uid: number): Promise<Task>
 ```
+
 
 #### Wait for one task
 

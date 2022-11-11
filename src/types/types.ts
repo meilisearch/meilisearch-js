@@ -231,6 +231,7 @@ export const enum TaskTypes {
   DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
   DOCUMENT_DELETION = 'documentDeletion',
   SETTINGS_UPDATE = 'settingsUpdate',
+  TASK_CANCELATION = 'taskCancelation',
 }
 
 export type TasksQuery = {
@@ -238,6 +239,7 @@ export type TasksQuery = {
   uid?: number[]
   type?: TaskTypes[]
   status?: TaskStatus[]
+  canceledBy?: number[]
   beforeEnqueuedAt?: Date
   afterEnqueuedAt?: Date
   beforeStartedAt?: Date
@@ -247,6 +249,7 @@ export type TasksQuery = {
   limit?: number
   from?: number
 }
+export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
 
 export type EnqueuedTaskObject = {
   taskUid: number
@@ -254,6 +257,7 @@ export type EnqueuedTaskObject = {
   status: TaskStatus
   type: TaskTypes
   enqueuedAt: string
+  canceledBy: number
 }
 
 export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
@@ -295,6 +299,15 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
 
     // Distinct attribute on settings actions
     distinctAttribute: DistinctAttribute
+
+    // Number of tasks that matched the originalQuery filter
+    matchedTasks?: number
+
+    // Number of tasks that were canceled
+    canceledTasks?: number
+
+    // Query parameters used to filter the tasks
+    originalQuery?: string
   }
   error?: MeiliSearchErrorInfo
   duration: string
