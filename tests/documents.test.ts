@@ -358,11 +358,15 @@ describe('Documents tests', () => {
 
         const ids = [1, 2]
         const task = await client.index(indexNoPk.uid).deleteDocuments(ids)
-        await client.index(indexNoPk.uid).waitForTask(task.taskUid)
+        const resolvedTask = await client
+          .index(indexNoPk.uid)
+          .waitForTask(task.taskUid)
 
         const documents = await client.index(indexNoPk.uid).getDocuments<Book>()
         const returnedIds = documents.results.map((x) => x.id)
 
+        expect(resolvedTask.details.deletedDocuments).toEqual(2)
+        expect(resolvedTask.details.matchedDocuments).toEqual(2)
         expect(documents.results.length).toEqual(dataset.length - 2)
         expect(returnedIds).not.toContain(ids[0])
         expect(returnedIds).not.toContain(ids[1])
