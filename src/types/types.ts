@@ -232,15 +232,25 @@ export const enum TaskTypes {
   DOCUMENT_DELETION = 'documentDeletion',
   SETTINGS_UPDATE = 'settingsUpdate',
   SNAPSHOT_CREATION = 'snapshotCreation',
+  TASK_CANCELATION = 'taskCancelation',
 }
 
 export type TasksQuery = {
   indexUid?: string[]
+  uid?: number[]
   type?: TaskTypes[]
   status?: TaskStatus[]
+  canceledBy?: number[]
+  beforeEnqueuedAt?: Date
+  afterEnqueuedAt?: Date
+  beforeStartedAt?: Date
+  afterStartedAt?: Date
+  beforeFinishedAt?: Date
+  afterFinishedAt?: Date
   limit?: number
   from?: number
 }
+export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
 
 export type EnqueuedTaskObject = {
   taskUid: number
@@ -248,6 +258,7 @@ export type EnqueuedTaskObject = {
   status: TaskStatus
   type: TaskTypes
   enqueuedAt: string
+  canceledBy: number
 }
 
 export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
@@ -288,8 +299,17 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
 
     // Distinct attribute on settings actions
     distinctAttribute: DistinctAttribute
+
+    // Number of tasks that matched the originalQuery filter
+    matchedTasks?: number
+
+    // Number of tasks that were canceled
+    canceledTasks?: number
+
+    // Query parameters used to filter the tasks
+    originalQuery?: string
   }
-  error?: MeiliSearchErrorInfo
+  error: MeiliSearchErrorInfo | null
   duration: string
   startedAt: string
   finishedAt: string
@@ -513,6 +533,15 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#dump_not_found */
   DUMP_NOT_FOUND = 'dump_not_found',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_task_uid */
+  INVALID_TASK_UID = 'invalid_task_uid',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_task_date */
+  INVALID_TASK_DATE = 'invalid_task_date',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_task_filters */
+  MISSING_TASK_FILTERS = 'missing_task_filters',
 }
 
 export type TokenIndexRules = {
