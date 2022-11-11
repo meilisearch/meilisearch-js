@@ -235,10 +235,12 @@ describe.each([
 
   test(`${permission} key: search with limit and offset`, async () => {
     const client = await getClient(permission)
+
     const response = await client.index(index.uid).search('prince', {
       limit: 1,
       offset: 1,
     })
+
     expect(response).toHaveProperty('hits', [
       {
         id: 4,
