@@ -231,15 +231,26 @@ export const enum TaskTypes {
   DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
   DOCUMENT_DELETION = 'documentDeletion',
   SETTINGS_UPDATE = 'settingsUpdate',
+  SNAPSHOT_CREATION = 'snapshotCreation',
+  TASK_CANCELATION = 'taskCancelation',
 }
 
 export type TasksQuery = {
   indexUid?: string[]
+  uid?: number[]
   type?: TaskTypes[]
   status?: TaskStatus[]
+  canceledBy?: number[]
+  beforeEnqueuedAt?: Date
+  afterEnqueuedAt?: Date
+  beforeStartedAt?: Date
+  afterStartedAt?: Date
+  beforeFinishedAt?: Date
+  afterFinishedAt?: Date
   limit?: number
   from?: number
 }
+export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
 
 export type EnqueuedTaskObject = {
   taskUid: number
@@ -247,11 +258,11 @@ export type EnqueuedTaskObject = {
   status: TaskStatus
   type: TaskTypes
   enqueuedAt: string
+  canceledBy: number
 }
 
 export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
   uid: number
-  batchUid: number
   details: {
     // Number of documents sent
     receivedDocuments?: number
@@ -261,6 +272,9 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
 
     // Number of deleted documents
     deletedDocuments?: number
+
+    // Number of documents found on a batch-delete
+    matchedDocuments?: number
 
     // Primary key on index creation
     primaryKey?: string
@@ -288,8 +302,17 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
 
     // Distinct attribute on settings actions
     distinctAttribute: DistinctAttribute
+
+    // Number of tasks that matched the originalQuery filter
+    matchedTasks?: number
+
+    // Number of tasks that were canceled
+    canceledTasks?: number
+
+    // Query parameters used to filter the tasks
+    originalQuery?: string
   }
-  error?: MeiliSearchErrorInfo
+  error: MeiliSearchErrorInfo | null
   duration: string
   startedAt: string
   finishedAt: string
@@ -516,6 +539,15 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#missing_master_key */
   MISSING_MASTER_KEY = 'missing_master_key',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_task_uid */
+  INVALID_TASK_UID = 'invalid_task_uid',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_task_date */
+  INVALID_TASK_DATE = 'invalid_task_date',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_task_filters */
+  MISSING_TASK_FILTERS = 'missing_task_filters',
 }
 
 export type TokenIndexRules = {
