@@ -148,12 +148,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await client.waitForTask(task1.taskUid)
       await client.waitForTask(task2.taskUid)
 
-      const tasks = await client.getTasks({ from: 1, limit: 1 })
+      const tasks = await client.getTasks({ from: task1.taskUid, limit: 1 })
 
       expect(tasks.results.length).toEqual(1)
-      expect(tasks.from).toEqual(1)
+      expect(tasks.from).toEqual(task1.taskUid)
       expect(tasks.limit).toEqual(1)
-      expect(tasks.next).toEqual(0)
+      expect(tasks.next).toEqual(task1.taskUid - 1)
     })
 
     // get tasks: status
@@ -519,6 +519,168 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
+      expect(task.details?.originalQuery).toContain('afterFinishedAt')
+    })
+
+    // delete: uid
+    test(`${permission} key: Delete a task using the uid filter`, async () => {
+      const client = await getClient(permission)
+      const addDocuments = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+
+      const deleteTask = await client.deleteTasks({
+        uid: [addDocuments.taskUid],
+      })
+      const task = await client.waitForTask(deleteTask.taskUid)
+
+      expect(deleteTask.type).toEqual(TaskTypes.TASK_DELETION)
+      expect(task.details?.deletedTasks).toBeDefined()
+      await expect(client.getTask(addDocuments.taskUid)).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.TASK_NOT_FOUND
+      )
+    })
+
+    // delete: indexUid
+    test(`${permission} key: Delete a task using the indexUid filter`, async () => {
+      const client = await getClient(permission)
+      const addDocuments = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+
+      const enqueuedTask = await client.deleteTasks({
+        indexUid: [index.uid],
+      })
+      const deleteTask = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(deleteTask.type).toEqual(TaskTypes.TASK_DELETION)
+      await expect(client.getTask(addDocuments.taskUid)).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.TASK_NOT_FOUND
+      )
+    })
+
+    // delete: type
+    test(`${permission} key: Delete a task using the type filter`, async () => {
+      const client = await getClient(permission)
+
+      const enqueuedTask = await client.deleteTasks({
+        type: [
+          TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE,
+          TaskTypes.DOCUMENT_DELETION,
+        ],
+      })
+      const deleteTask = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(deleteTask.type).toEqual(TaskTypes.TASK_DELETION)
+      expect(deleteTask.details?.originalQuery).toEqual(
+        'type=documentAdditionOrUpdate%2CdocumentDeletion'
+      )
+    })
+
+    // delete: status
+    test(`${permission} key: Delete a task using the status filter`, async () => {
+      const client = await getClient(permission)
+
+      const enqueuedTask = await client.deleteTasks({
+        status: [TaskStatus.TASK_ENQUEUED, TaskStatus.TASK_PROCESSING],
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual(TaskTypes.TASK_DELETION)
+      expect(task.details?.originalQuery).toEqual(
+        'status=enqueued%2Cprocessing'
+      )
+    })
+
+    // delete: beforeEnqueuedAt
+    test(`${permission} key: Delete a task using beforeEnqueuedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.deleteTasks({
+        beforeEnqueuedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual(TaskTypes.TASK_DELETION)
+      expect(task.details?.originalQuery).toContain('beforeEnqueuedAt')
+    })
+
+    // delete: afterEnqueuedAt
+    test(`${permission} key: Delete a task using afterEnqueuedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.deleteTasks({
+        afterEnqueuedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual(TaskTypes.TASK_DELETION)
+      expect(task.details?.originalQuery).toContain('afterEnqueuedAt')
+    })
+
+    // delete: beforeStartedAt
+    test(`${permission} key: Delete a task using beforeStartedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.deleteTasks({
+        beforeStartedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual(TaskTypes.TASK_DELETION)
+      expect(task.details?.originalQuery).toContain('beforeStartedAt')
+    })
+
+    // delete: afterStartedAt
+    test(`${permission} key: Delete a task using afterStartedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.deleteTasks({
+        afterStartedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual(TaskTypes.TASK_DELETION)
+      expect(task.details?.originalQuery).toContain('afterStartedAt')
+    })
+
+    // delete: beforeFinishedAt
+    test(`${permission} key: Delete a task using beforeFinishedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.deleteTasks({
+        beforeFinishedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual(TaskTypes.TASK_DELETION)
+      expect(task.details?.originalQuery).toContain('beforeFinishedAt')
+    })
+
+    // delete: afterFinishedAt
+    test(`${permission} key: Delete a task using afterFinishedAt filter`, async () => {
+      const client = await getClient(permission)
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      const enqueuedTask = await client.deleteTasks({
+        afterFinishedAt: currentTime,
+      })
+      const task = await client.waitForTask(enqueuedTask.taskUid)
+
+      expect(task.type).toEqual(TaskTypes.TASK_DELETION)
       expect(task.details?.originalQuery).toContain('afterFinishedAt')
     })
 

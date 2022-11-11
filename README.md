@@ -441,6 +441,12 @@ client.getTasks(parameters: TasksQuery): Promise<TasksResults>
 client.getTask(uid: number): Promise<Task>
 ```
 
+#### [Delete tasks](https://docs.meilisearch.com/reference/api/tasks.html#delete-task)
+
+```ts
+client.deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask>
+```
+
 #### [Cancel tasks](https://docs.meilisearch.com/reference/api/tasks.html#cancel-task)
 
 ```ts

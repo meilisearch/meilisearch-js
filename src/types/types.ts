@@ -231,6 +231,7 @@ export const enum TaskTypes {
   DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
   DOCUMENT_DELETION = 'documentDeletion',
   SETTINGS_UPDATE = 'settingsUpdate',
+  TASK_DELETION = 'taskDeletion',
   SNAPSHOT_CREATION = 'snapshotCreation',
   TASK_CANCELATION = 'taskCancelation',
 }
@@ -251,6 +252,7 @@ export type TasksQuery = {
   from?: number
 }
 export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
+export type DeleteTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
 
 export type EnqueuedTaskObject = {
   taskUid: number
@@ -308,6 +310,9 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
 
     // Number of tasks that were canceled
     canceledTasks?: number
+
+    // Number of tasks that were deleted
+    deletedTasks?: number
 
     // Query parameters used to filter the tasks
     originalQuery?: string
