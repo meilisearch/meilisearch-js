@@ -347,7 +347,6 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
     })
 
     // get tasks: canceledBy
-    // TODO: wait for fix
     test.skip(`${permission} key: Get all tasks with canceledBy filter`, async () => {
       const client = await getClient(permission)
       const addDocumentsTask = await client
