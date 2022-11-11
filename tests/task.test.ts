@@ -1,4 +1,5 @@
 import { ErrorStatusCode, TaskTypes, TaskStatus } from '../src/types'
+import { sleep } from '../src/utils'
 import {
   clearAllIndexes,
   config,
@@ -82,6 +83,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(task.uid).toEqual(enqueuedTask.taskUid)
     })
 
+    // get tasks
     test(`${permission} key: Get all tasks`, async () => {
       const client = await getClient(permission)
       const enqueuedTask = await client
@@ -95,6 +97,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasks.results[0].uid).toEqual(enqueuedTask.taskUid)
     })
 
+    // get tasks: type
     test(`${permission} key: Get all tasks with type filter`, async () => {
       const client = await getClient(permission)
       await client.index(index.uid).addDocuments([{ id: 1 }])
@@ -114,6 +117,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(onlyDocumentAddition.size).toEqual(2)
     })
 
+    // get tasks: type
     test(`${permission} key: Get all tasks with type filter on an index`, async () => {
       const client = await getClient(permission)
       await client.deleteIndex(index2.uid)
@@ -135,6 +139,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(onlyDocumentAddition.size).toEqual(2)
     })
 
+    // get tasks: pagination
     test(`${permission} key: Get all tasks with pagination`, async () => {
       const client = await getClient(permission)
       const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
@@ -150,6 +155,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasks.next).toEqual(0)
     })
 
+    // get tasks: status
     test(`${permission} key: Get all tasks with status filter`, async () => {
       const client = await getClient(permission)
       const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
@@ -167,6 +173,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(onlySuccesfullTasks.size).toEqual(2)
     })
 
+    // get tasks: status
     test(`${permission} key: Get all tasks with status filter on an index`, async () => {
       const client = await getClient(permission)
       const task1 = await client.index(index.uid).addDocuments([{ id: 1 }])
@@ -190,6 +197,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(onlyTaskWithSameUid.size).toEqual(1)
     })
 
+    // get tasks: indexUid
     test(`${permission} key: Get all tasks with indexUid filter`, async () => {
       const client = await getClient(permission)
       await client.index(index.uid).addDocuments([{ id: 1 }])
@@ -204,6 +212,138 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       )
 
       expect(onlyTaskWithSameUid.size).toEqual(2)
+    })
+
+    // get tasks: uid
+    test(`${permission} key: Get all tasks with uid filter`, async () => {
+      const client = await getClient(permission)
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+
+      const tasks = await client.getTasks({
+        uid: [taskUid],
+      })
+
+      expect(tasks.results[0].uid).toEqual(taskUid)
+    })
+
+    // get tasks: beforeEnqueuedAt
+    test(`${permission} key: Get all tasks with beforeEnqueuedAt filter`, async () => {
+      const client = await getClient(permission)
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      await sleep(1) // in ms
+
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+
+      const tasks = await client.getTasks({
+        beforeEnqueuedAt: currentTime,
+      })
+      const tasksUids = tasks.results.map((t) => t.uid)
+
+      expect(tasksUids.includes(taskUid)).toBeFalsy()
+    })
+
+    // get tasks: afterEnqueuedAt
+    test(`${permission} key: Get all tasks with afterEnqueuedAt filter`, async () => {
+      const client = await getClient(permission)
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+      await sleep(2) // in ms
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+
+      const tasks = await client.getTasks({
+        afterEnqueuedAt: currentTime,
+      })
+      const tasksUids = tasks.results.map((t) => t.uid)
+
+      expect(tasksUids.includes(taskUid)).toBeFalsy()
+    })
+
+    // get tasks: beforeStartedAt
+    test(`${permission} key: Get all tasks with beforeStartedAt filter`, async () => {
+      const client = await getClient(permission)
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      await sleep(1) // in ms
+
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+      await client.index(index.uid).waitForTask(taskUid) // ensures the tasks has a `startedAt` value
+
+      const tasks = await client.getTasks({
+        beforeStartedAt: currentTime,
+      })
+      const tasksUids = tasks.results.map((t) => t.uid)
+
+      expect(tasksUids.includes(taskUid)).toBeFalsy()
+    })
+
+    // get tasks: afterStartedAt
+    test(`${permission} key: Get all tasks with afterStartedAt filter`, async () => {
+      const client = await getClient(permission)
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+      await client.index(index.uid).waitForTask(taskUid) // ensures the tasks has a `startedAt` value
+      await sleep(1) // in ms
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+
+      const tasks = await client.getTasks({
+        afterStartedAt: currentTime,
+      })
+      const tasksUids = tasks.results.map((t) => t.uid)
+
+      expect(tasksUids.includes(taskUid)).toBeFalsy()
+    })
+
+    // get tasks: beforeFinishedAt
+    test(`${permission} key: Get all tasks with beforeFinishedAt filter`, async () => {
+      const client = await getClient(permission)
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+      await sleep(1) // in ms
+
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+      await client.index(index.uid).waitForTask(taskUid) // ensures the tasks has a `finishedAt` value
+
+      const tasks = await client.getTasks({
+        beforeFinishedAt: currentTime,
+      })
+      const tasksUids = tasks.results.map((t) => t.uid)
+
+      expect(tasksUids.includes(taskUid)).toBeFalsy()
+    })
+
+    // get tasks: afterFinishedAt
+    test(`${permission} key: Get all tasks with afterFinishedAt filter`, async () => {
+      const client = await getClient(permission)
+      const { taskUid } = await client
+        .index(index.uid)
+        .addDocuments([{ id: 1 }])
+      await client.index(index.uid).waitForTask(taskUid) // ensures the tasks has a `finishedAt` value
+      await sleep(1) // in ms
+
+      const currentTimeStamp = Date.now()
+      const currentTime = new Date(currentTimeStamp)
+
+      const tasks = await client.getTasks({
+        afterFinishedAt: currentTime,
+      })
+      const tasksUids = tasks.results.map((t) => t.uid)
+
+      expect(tasksUids.includes(taskUid)).toBeFalsy()
     })
 
     test(`${permission} key: Get all indexes tasks with index instance`, async () => {

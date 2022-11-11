@@ -8,8 +8,8 @@ import {
   TaskObject,
   TasksResultsObject,
 } from './types'
-import { HttpRequests } from './http-requests'
-import { removeUndefinedFromObject, sleep } from './utils'
+import { HttpRequests, toQueryParams } from './http-requests'
+import { sleep } from './utils'
 
 class Task {
   indexUid: TaskObject['indexUid']
@@ -70,17 +70,9 @@ class TaskClient {
   async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     const url = `tasks`
 
-    const queryParams = {
-      indexUid: parameters?.indexUid?.join(','),
-      type: parameters?.type?.join(','),
-      status: parameters?.status?.join(','),
-      from: parameters.from,
-      limit: parameters.limit,
-    }
-
     const tasks = await this.httpRequest.get<Promise<TasksResultsObject>>(
       url,
-      removeUndefinedFromObject(queryParams)
+      toQueryParams<TasksQuery>(parameters)
     )
 
     return {

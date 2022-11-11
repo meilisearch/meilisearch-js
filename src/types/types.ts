@@ -235,8 +235,15 @@ export const enum TaskTypes {
 
 export type TasksQuery = {
   indexUid?: string[]
+  uid?: number[]
   type?: TaskTypes[]
   status?: TaskStatus[]
+  beforeEnqueuedAt?: Date
+  afterEnqueuedAt?: Date
+  beforeStartedAt?: Date
+  afterStartedAt?: Date
+  beforeFinishedAt?: Date
+  afterFinishedAt?: Date
   limit?: number
   from?: number
 }
@@ -513,6 +520,15 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#dump_not_found */
   DUMP_NOT_FOUND = 'dump_not_found',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_task_uid */
+  INVALID_TASK_UID = 'invalid_task_uid',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_task_date */
+  INVALID_TASK_DATE = 'invalid_task_date',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_task_filters */
+  MISSING_TASK_FILTERS = 'missing_task_filters',
 }
 
 export type TokenIndexRules = {
