@@ -338,7 +338,7 @@ controller.abort()
 
 ## 🤖 Compatibility with Meilisearch
 
-This package only guarantees the compatibility with the [version v0.29.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.29.0).
+This package only guarantees the compatibility with the [version v0.30.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.30.0).
 
 ## 💡 Learn more
 
@@ -447,6 +447,12 @@ client.getTask(uid: number): Promise<Task>
 client.deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask>
 ```
 
+#### [Cancel tasks](https://docs.meilisearch.com/reference/api/tasks.html#cancel-task)
+
+```ts
+client.cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask>
+```
+
 #### [Get all tasks of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index)
 
 ```ts
@@ -458,6 +464,7 @@ client.index('myIndex').getTasks(parameters: TasksQuery): Promise<TasksResults>
 ```ts
 client.index('myIndex').getTask(uid: number): Promise<Task>
 ```
+
 
 #### Wait for one task
 
