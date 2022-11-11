@@ -232,6 +232,7 @@ export const enum TaskTypes {
   DOCUMENT_DELETION = 'documentDeletion',
   SETTINGS_UPDATE = 'settingsUpdate',
   TASK_DELETION = 'taskDeletion',
+  SNAPSHOT_CREATION = 'snapshotCreation',
   TASK_CANCELATION = 'taskCancelation',
 }
 
@@ -264,7 +265,6 @@ export type EnqueuedTaskObject = {
 
 export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
   uid: number
-  batchUid: number
   details: {
     // Number of documents sent
     receivedDocuments?: number
@@ -274,6 +274,9 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
 
     // Number of deleted documents
     deletedDocuments?: number
+
+    // Number of documents found on a batch-delete
+    matchedDocuments?: number
 
     // Primary key on index creation
     primaryKey?: string
@@ -314,7 +317,7 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     // Query parameters used to filter the tasks
     originalQuery?: string
   }
-  error?: MeiliSearchErrorInfo
+  error: MeiliSearchErrorInfo | null
   duration: string
   startedAt: string
   finishedAt: string
@@ -538,6 +541,9 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#dump_not_found */
   DUMP_NOT_FOUND = 'dump_not_found',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_master_key */
+  MISSING_MASTER_KEY = 'missing_master_key',
 
   /** @see https://docs.meilisearch.com/errors/#invalid_task_uid */
   INVALID_TASK_UID = 'invalid_task_uid',

@@ -20,7 +20,6 @@ class Task {
   type: TaskObject['type']
   uid: TaskObject['uid']
   canceledBy: TaskObject['canceledBy']
-  batchUid: TaskObject['batchUid']
   details: TaskObject['details']
   error: TaskObject['error']
   duration: TaskObject['duration']
@@ -33,7 +32,6 @@ class Task {
     this.status = task.status
     this.type = task.type
     this.uid = task.uid
-    this.batchUid = task.batchUid
     this.details = task.details
     this.canceledBy = task.canceledBy
     this.error = task.error

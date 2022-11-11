@@ -70,6 +70,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(task.finishedAt).toBeInstanceOf(Date)
       expect(task.startedAt).toBeDefined()
       expect(task.startedAt).toBeInstanceOf(Date)
+      expect(task.error).toBeNull()
     })
 
     test(`${permission} key: Get one task with index instance`, async () => {
