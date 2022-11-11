@@ -29,6 +29,7 @@ import {
   KeysResults,
   TasksResults,
   EnqueuedTaskObject,
+  SwapIndexesParams,
   CancelTasksQuery,
   DeleteTasksQuery,
 } from '../types'
@@ -184,6 +185,19 @@ class Client {
       }
       throw e
     }
+  }
+
+  /**
+   * Swaps a list of index tuples.
+   *
+   * @memberof MeiliSearch
+   * @method swapIndexes
+   * @param {SwapIndexesParams} params - List of indexes tuples to swap.
+   * @returns {Promise<EnqueuedTask>} - Promise returning object of the enqueued task
+   */
+  async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
+    const url = '/swap-indexes'
+    return await this.httpRequest.post(url, params)
   }
 
   ///
