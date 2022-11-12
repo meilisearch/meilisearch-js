@@ -37,7 +37,7 @@ import { EnqueuedTask } from '../enqueued-task'
 class Client {
   config: Config
   httpRequest: HttpRequests
-  tasks: TaskClient
+  tasks: TaskClient<any>
 
   /**
    * Creates new MeiliSearch instance
@@ -194,9 +194,9 @@ class Client {
    * @method getTasks
    * @param {TasksQuery} [parameters={}] - Parameters to browse the tasks
    *
-   * @returns {Promise<TasksResults>} - Promise returning all tasks
+   * @returns {Promise<TasksResults<any>>} - Promise returning all tasks
    */
-  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
+  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults<any>> {
     return await this.tasks.getTasks(parameters)
   }
 
@@ -205,9 +205,9 @@ class Client {
    * @memberof MeiliSearch
    * @method getTask
    * @param {number} taskUid - Task identifier
-   * @returns {Promise<Task>} - Promise returning a task
+   * @returns {Promise<Task<any>>} - Promise returning a task
    */
-  async getTask(taskUid: number): Promise<Task> {
+  async getTask(taskUid: number): Promise<Task<any>> {
     return await this.tasks.getTask(taskUid)
   }
 
@@ -219,12 +219,12 @@ class Client {
    * @param {number[]} taskUids - Tasks identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Task[]>} - Promise returning an array of tasks
+   * @returns {Promise<Task<any>[]>} - Promise returning an array of tasks
    */
   async waitForTasks(
     taskUids: number[],
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
-  ): Promise<Task[]> {
+  ): Promise<Task<any>[]> {
     return await this.tasks.waitForTasks(taskUids, {
       timeOutMs,
       intervalMs,
@@ -240,12 +240,12 @@ class Client {
    * @param {number} taskUid - Task identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Task>} - Promise returning an array of tasks
+   * @returns {Promise<Task<any>>} - Promise returning an array of tasks
    */
   async waitForTask(
     taskUid: number,
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
-  ): Promise<Task> {
+  ): Promise<Task<any>> {
     return await this.tasks.waitForTask(taskUid, {
       timeOutMs,
       intervalMs,

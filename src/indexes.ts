@@ -50,7 +50,7 @@ class Index<T = Record<string, any>> {
   createdAt: Date | undefined
   updatedAt: Date | undefined
   httpRequest: HttpRequests
-  tasks: TaskClient
+  tasks: TaskClient<T>
 
   /**
    * @param {Config} config Request configuration options
@@ -241,9 +241,9 @@ class Index<T = Record<string, any>> {
    * @method getTasks
    * @param {TasksQuery} [parameters={}] - Parameters to browse the tasks
    *
-   * @returns {Promise<TasksResults>} - Promise containing all tasks
+   * @returns {Promise<TasksResults<T>>} - Promise containing all tasks
    */
-  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
+  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults<T>> {
     return await this.tasks.getTasks({ ...parameters, indexUid: [this.uid] })
   }
 
@@ -254,9 +254,9 @@ class Index<T = Record<string, any>> {
    * @method getTask
    * @param {number} taskUid - Task identifier
    *
-   * @returns {Promise<Task>} - Promise containing a task
+   * @returns {Promise<Task<T>>} - Promise containing a task
    */
-  async getTask(taskUid: number): Promise<Task> {
+  async getTask(taskUid: number): Promise<Task<T>> {
     return await this.tasks.getTask(taskUid)
   }
 
@@ -268,12 +268,12 @@ class Index<T = Record<string, any>> {
    * @param {number[]} taskUids - Tasks identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Task[]>} - Promise containing an array of tasks
+   * @returns {Promise<Task<T>[]>} - Promise containing an array of tasks
    */
   async waitForTasks(
     taskUids: number[],
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
-  ): Promise<Task[]> {
+  ): Promise<Task<T>[]> {
     return await this.tasks.waitForTasks(taskUids, {
       timeOutMs,
       intervalMs,
@@ -288,12 +288,12 @@ class Index<T = Record<string, any>> {
    * @param {number} taskUid - Task identifier
    * @param {WaitOptions} waitOptions - Options on timeout and interval
    *
-   * @returns {Promise<Task>} - Promise containing an array of tasks
+   * @returns {Promise<Task<T>>} - Promise containing an array of tasks
    */
   async waitForTask(
     taskUid: number,
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
-  ): Promise<Task> {
+  ): Promise<Task<T>> {
     return await this.tasks.waitForTask(taskUid, {
       timeOutMs,
       intervalMs,
@@ -520,11 +520,11 @@ class Index<T = Record<string, any>> {
    * Retrieve all settings
    * @memberof Index
    * @method getSettings
-   * @returns {Promise<Settings>} Promise containing Settings object
+   * @returns {Promise<Settings<T>>} Promise containing Settings object
    */
-  async getSettings(): Promise<Settings> {
+  async getSettings(): Promise<Settings<T>> {
     const url = `indexes/${this.uid}/settings`
-    return await this.httpRequest.get<Settings>(url)
+    return await this.httpRequest.get<Settings<T>>(url)
   }
 
   /**
@@ -532,10 +532,10 @@ class Index<T = Record<string, any>> {
    * Any parameters not provided will be left unchanged.
    * @memberof Index
    * @method updateSettings
-   * @param {Settings} settings Object containing parameters with their updated values
+   * @param {Settings<T>} settings Object containing parameters with their updated values
    * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
    */
-  async updateSettings(settings: Settings): Promise<EnqueuedTask> {
+  async updateSettings(settings: Settings<T>): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings`
     const task = await this.httpRequest.patch(url, settings)
 
@@ -753,11 +753,11 @@ class Index<T = Record<string, any>> {
    * Update the distinct-attribute.
    * @memberof Index
    * @method updateDistinctAttribute
-   * @param {DistinctAttribute} distinctAttribute Field name of the distinct-attribute
+   * @param {DistinctAttribute<T>} distinctAttribute Field name of the distinct-attribute
    * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
    */
   async updateDistinctAttribute(
-    distinctAttribute: DistinctAttribute
+    distinctAttribute: DistinctAttribute<T>
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`
     const task = await this.httpRequest.put(url, distinctAttribute)
@@ -799,11 +799,11 @@ class Index<T = Record<string, any>> {
    * Update the filterable-attributes.
    * @memberof Index
    * @method updateFilterableAttributes
-   * @param {FilterableAttributes} filterableAttributes Array of strings containing the attributes that can be used as filters at query time
+   * @param {FilterableAttributes<T>} filterableAttributes Array of strings containing the attributes that can be used as filters at query time
    * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
    */
   async updateFilterableAttributes(
-    filterableAttributes: FilterableAttributes
+    filterableAttributes: FilterableAttributes<T>
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`
     const task = await this.httpRequest.put(url, filterableAttributes)
@@ -845,11 +845,11 @@ class Index<T = Record<string, any>> {
    * Update the sortable-attributes.
    * @memberof Index
    * @method updateSortableAttributes
-   * @param {SortableAttributes} sortableAttributes Array of strings containing the attributes that can be used to sort search results at query time
+   * @param {SortableAttributes<T>} sortableAttributes Array of strings containing the attributes that can be used to sort search results at query time
    * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
    */
   async updateSortableAttributes(
-    sortableAttributes: SortableAttributes
+    sortableAttributes: SortableAttributes<T>
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`
     const task = await this.httpRequest.put(url, sortableAttributes)
@@ -891,11 +891,11 @@ class Index<T = Record<string, any>> {
    * Update the searchable-attributes.
    * @memberof Index
    * @method updateSearchableAttributes
-   * @param {SearchableAttributes} searchableAttributes Array of strings that contains searchable attributes sorted by order of importance(most to least important)
+   * @param {SearchableAttributes<T>} searchableAttributes Array of strings that contains searchable attributes sorted by order of importance(most to least important)
    * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
    */
   async updateSearchableAttributes(
-    searchableAttributes: SearchableAttributes
+    searchableAttributes: SearchableAttributes<T>
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`
     const task = await this.httpRequest.put(url, searchableAttributes)
@@ -937,11 +937,11 @@ class Index<T = Record<string, any>> {
    * Update the displayed-attributes.
    * @memberof Index
    * @method updateDisplayedAttributes
-   * @param {DisplayedAttributes} displayedAttributes Array of strings that contains attributes of an index to display
+   * @param {DisplayedAttributes<T>} displayedAttributes Array of strings that contains attributes of an index to display
    * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
    */
   async updateDisplayedAttributes(
-    displayedAttributes: DisplayedAttributes
+    displayedAttributes: DisplayedAttributes<T>
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`
     const task = await this.httpRequest.put(url, displayedAttributes)

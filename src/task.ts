@@ -11,20 +11,20 @@ import {
 import { HttpRequests } from './http-requests'
 import { removeUndefinedFromObject, sleep } from './utils'
 
-class Task {
-  indexUid: TaskObject['indexUid']
-  status: TaskObject['status']
-  type: TaskObject['type']
-  uid: TaskObject['uid']
-  batchUid: TaskObject['batchUid']
-  details: TaskObject['details']
-  error: TaskObject['error']
-  duration: TaskObject['duration']
+class Task<T = Record<string, any>> {
+  indexUid: TaskObject<T>['indexUid']
+  status: TaskObject<T>['status']
+  type: TaskObject<T>['type']
+  uid: TaskObject<T>['uid']
+  batchUid: TaskObject<T>['batchUid']
+  details: TaskObject<T>['details']
+  error: TaskObject<T>['error']
+  duration: TaskObject<T>['duration']
   startedAt: Date
   enqueuedAt: Date
   finishedAt: Date
 
-  constructor(task: TaskObject) {
+  constructor(task: TaskObject<T>) {
     this.indexUid = task.indexUid
     this.status = task.status
     this.type = task.type
@@ -40,7 +40,7 @@ class Task {
   }
 }
 
-class TaskClient {
+class TaskClient<T = Record<string, any>> {
   httpRequest: HttpRequests
 
   constructor(config: Config) {
@@ -52,11 +52,11 @@ class TaskClient {
    *
    * @param  {number} uid - unique identifier of the task
    *
-   * @returns { Promise<Task> }
+   * @returns { Promise<Task<T>> }
    */
-  async getTask(uid: number): Promise<Task> {
+  async getTask(uid: number): Promise<Task<T>> {
     const url = `tasks/${uid}`
-    const taskItem = await this.httpRequest.get<TaskObject>(url)
+    const taskItem = await this.httpRequest.get<TaskObject<T>>(url)
     return new Task(taskItem)
   }
 
@@ -65,9 +65,9 @@ class TaskClient {
    *
    * @param  {TasksQuery} [parameters={}] - Parameters to browse the tasks
    *
-   * @returns {Promise<TasksResults>} - Promise containing all tasks
+   * @returns {Promise<TasksResults<T>>} - Promise containing all tasks
    */
-  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
+  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults<T>> {
     const url = `tasks`
 
     const queryParams = {
@@ -78,7 +78,7 @@ class TaskClient {
       limit: parameters.limit,
     }
 
-    const tasks = await this.httpRequest.get<Promise<TasksResultsObject>>(
+    const tasks = await this.httpRequest.get<Promise<TasksResultsObject<T>>>(
       url,
       removeUndefinedFromObject(queryParams)
     )
@@ -95,12 +95,12 @@ class TaskClient {
    * @param {number} taskUid Task identifier
    * @param {WaitOptions} options Additional configuration options
    *
-   * @returns {Promise<Task>} Promise returning a task after it has been processed
+   * @returns {Promise<Task<T>>} Promise returning a task after it has been processed
    */
   async waitForTask(
     taskUid: number,
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
-  ): Promise<Task> {
+  ): Promise<Task<T>> {
     const startingTime = Date.now()
     while (Date.now() - startingTime < timeOutMs) {
       const response = await this.getTask(taskUid)
@@ -123,13 +123,13 @@ class TaskClient {
    * @param {number[]} taskUids Tasks identifier list
    * @param {WaitOptions} options Wait options
    *
-   * @returns {Promise<Task[]>} Promise returning a list of tasks after they have been processed
+   * @returns {Promise<Task<T>[]>} Promise returning a list of tasks after they have been processed
    */
   async waitForTasks(
     taskUids: number[],
     { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
-  ): Promise<Task[]> {
-    const tasks: Task[] = []
+  ): Promise<Task<T>[]> {
+    const tasks: Task<T>[] = []
     for (const taskUid of taskUids) {
       const task = await this.waitForTask(taskUid, {
         timeOutMs,

@@ -166,11 +166,11 @@ export type DocumentsResults<T = Record<string, any>> = ResourceResults<
  ** Settings
  */
 
-export type FilterableAttributes = string[] | null
-export type DistinctAttribute = string | null
-export type SearchableAttributes = string[] | null
-export type SortableAttributes = string[] | null
-export type DisplayedAttributes = string[] | null
+export type FilterableAttributes<T = Record<string, any>> = (keyof T)[] | null
+export type DistinctAttribute<T = Record<string, any>> = keyof T | null
+export type SearchableAttributes<T = Record<string, any>> = (keyof T)[] | null
+export type SortableAttributes<T = Record<string, any>> = (keyof T)[] | null
+export type DisplayedAttributes<T = Record<string, any>> = (keyof T)[] | null
 export type RankingRules = string[] | null
 export type StopWords = string[] | null
 export type Synonyms = {
@@ -193,12 +193,12 @@ export type PaginationSettings = {
   maxTotalHits?: number | null
 }
 
-export type Settings = {
-  filterableAttributes?: FilterableAttributes
-  distinctAttribute?: DistinctAttribute
-  sortableAttributes?: SortableAttributes
-  searchableAttributes?: SearchableAttributes
-  displayedAttributes?: DisplayedAttributes
+export type Settings<T> = {
+  filterableAttributes?: FilterableAttributes<T>
+  distinctAttribute?: DistinctAttribute<T>
+  sortableAttributes?: SortableAttributes<T>
+  searchableAttributes?: SearchableAttributes<T>
+  displayedAttributes?: DisplayedAttributes<T>
   rankingRules?: RankingRules
   stopWords?: StopWords
   synonyms?: Synonyms
@@ -243,7 +243,7 @@ export type EnqueuedTaskObject = {
   enqueuedAt: string
 }
 
-export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
+export type TaskObject<T = Record<string, any>> = Omit<EnqueuedTaskObject, 'taskUid'> & {
   uid: number
   batchUid: number
   details: {
@@ -263,16 +263,16 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     rankingRules: RankingRules
 
     // Searchable attributes on settings actions
-    searchableAttributes: SearchableAttributes
+    searchableAttributes: SearchableAttributes<T>
 
     // Displayed attributes on settings actions
-    displayedAttributes: DisplayedAttributes
+    displayedAttributes: DisplayedAttributes<T>
 
     // Filterable attributes on settings actions
-    filterableAttributes: FilterableAttributes
+    filterableAttributes: FilterableAttributes<T>
 
     // Sortable attributes on settings actions
-    sortableAttributes: SortableAttributes
+    sortableAttributes: SortableAttributes<T>
 
     // Stop words on settings actions
     stopWords: StopWords
@@ -281,7 +281,7 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     synonyms: Synonyms
 
     // Distinct attribute on settings actions
-    distinctAttribute: DistinctAttribute
+    distinctAttribute: DistinctAttribute<T>
   }
   error?: MeiliSearchErrorInfo
   duration: string
@@ -296,8 +296,8 @@ type CursorResults<T> = {
   next: number
 }
 
-export type TasksResults = CursorResults<Task>
-export type TasksResultsObject = CursorResults<TaskObject>
+export type TasksResults<T = Record<string, any>> = CursorResults<Task<T>>
+export type TasksResultsObject<T = Record<string, any>> = CursorResults<TaskObject<T>>
 
 export type WaitOptions = {
   timeOutMs?: number
