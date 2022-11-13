@@ -571,7 +571,7 @@ export const enum ErrorStatusCode {
   /** @see http://docs.meilisearch.com/errors/#invalid_task_date_filter */
   INVALID_TASK_DATE_FILTER = 'invalid_task_date_filter',
 
-  /** @see http://docs.meilisearch.com/errors/#missing_task_filter */
+  /** @see http://docs.meilisearch.com/errors/#missing_task_filters */
   MISSING_TASK_FILTERS = 'missing_task_filters',
 }
 
