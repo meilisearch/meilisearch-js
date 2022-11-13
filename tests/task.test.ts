@@ -368,6 +368,65 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasksUids[0]).toEqual(addDocumentsTask.taskUid)
     })
 
+    // Filters error code: INVALID_TASK_TYPES_FILTER
+    test(`${permission} key: Try to filter on types with invalid type`, async () => {
+      const client = await getClient(permission)
+
+      await expect(
+        // @ts-expect-error testing wrong argument type
+        client.getTasks({ types: ['wrong'] })
+      ).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.INVALID_TASK_TYPES_FILTER
+      )
+    })
+
+    // Filters error code: INVALID_TASK_STATUSES_FILTER
+    test(`${permission} key: Try to filter on types with invalid type`, async () => {
+      const client = await getClient(permission)
+
+      await expect(
+        // @ts-expect-error testing wrong argument type
+        client.getTasks({ statuses: ['wrong'] })
+      ).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.INVALID_TASK_STATUSES_FILTER
+      )
+    })
+
+    // Filters error code: INVALID_TASK_UIDS_FILTER
+    test(`${permission} key: Try to filter on types with invalid type`, async () => {
+      const client = await getClient(permission)
+
+      await expect(
+        // @ts-expect-error testing wrong argument type
+        client.getTasks({ uids: ['wrong'] })
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_UIDS_FILTER)
+    })
+
+    // Filters error code: INVALID_TASK_CANCELED_BY_FILTER
+    test(`${permission} key: Try to filter on types with invalid type`, async () => {
+      const client = await getClient(permission)
+
+      await expect(
+        // @ts-expect-error testing wrong canceledBy type
+        client.getTasks({ canceledBy: ['wrong'] })
+      ).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.INVALID_TASK_CANCELED_BY_FILTER
+      )
+    })
+
+    // Filters error code: MISSING_TASK_FILTER
+    test(`${permission} key: Try to filter on types with invalid type`, async () => {
+      const client = await getClient(permission)
+
+      await expect(
+        // @ts-expect-error testing wrong argument type
+        client.cancelTasks()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.MISSING_TASK_FILTERS)
+    })
+
     // cancel: uid
     test(`${permission} key: Cancel a task using the uid filter`, async () => {
       const client = await getClient(permission)

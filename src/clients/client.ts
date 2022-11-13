@@ -276,7 +276,7 @@ class Client {
    *
    * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
    */
-  async cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
+  async cancelTasks(parameters: CancelTasksQuery): Promise<EnqueuedTask> {
     return await this.tasks.cancelTasks(parameters)
   }
 
