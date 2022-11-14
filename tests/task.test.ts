@@ -7,6 +7,7 @@ import {
   MeiliSearch,
   getClient,
   dataset,
+  movies,
 } from './utils/meilisearch-test-utils'
 
 const index = {
@@ -352,7 +353,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission)
       const addDocumentsTask = await client
         .index(index.uid)
-        .addDocuments([{ id: 1 }])
+        .addDocuments(movies)
 
       // Cancel the task
       const enqueuedCancelationTask = await client.cancelTasks({
