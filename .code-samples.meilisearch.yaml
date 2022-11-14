@@ -50,9 +50,9 @@ get_all_tasks_1: |-
 get_task_1: |-
   client.getTask(1)
 get_all_tasks_filtering_1: |-
-  client.getTasks({ indexUid: ['movies'] })
+  client.getTasks({ indexUids: ['movies'] })
 get_all_tasks_filtering_2: |-
-  client.getTasks({ status: ['succeeded', 'failed'], type: ['documentAdditionOrUpdate'] })
+  client.getTasks({ statuses: ['succeeded', 'failed'], types: ['documentAdditionOrUpdate'] })
 get_all_tasks_paginating_1: |-
   client.getTasks({ limit: 2, from: 10 })
 get_all_tasks_paginating_2: |-

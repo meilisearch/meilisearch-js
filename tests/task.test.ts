@@ -106,7 +106,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await client.createIndex(index2.uid)
 
       const tasks = await client.getTasks({
-        type: [
+        types: [
           TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE,
           TaskTypes.DOCUMENT_DELETION,
         ],
@@ -128,7 +128,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await client.index(index2.uid).deleteDocument(1)
 
       const tasks = await client.index(index.uid).getTasks({
-        type: [
+        types: [
           TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE,
           TaskTypes.DOCUMENT_DELETION,
         ],
@@ -165,7 +165,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await client.waitForTask(task2.taskUid)
 
       const tasks = await client.getTasks({
-        status: [TaskStatus.TASK_SUCCEEDED, TaskStatus.TASK_FAILED],
+        statuses: [TaskStatus.TASK_SUCCEEDED, TaskStatus.TASK_FAILED],
       })
       const onlySuccesfullTasks = new Set(
         tasks.results.map((task) => task.status)
@@ -185,7 +185,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await client.waitForTask(task3.taskUid)
 
       const tasks = await client.index(index.uid).getTasks({
-        status: [TaskStatus.TASK_SUCCEEDED, TaskStatus.TASK_FAILED],
+        statuses: [TaskStatus.TASK_SUCCEEDED, TaskStatus.TASK_FAILED],
       })
       const onlySuccesfullTasks = new Set(
         tasks.results.map((task) => task.status)
@@ -206,7 +206,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await client.index(index3.uid).addDocuments([{ id: 1 }])
 
       const tasks = await client.getTasks({
-        indexUid: [index.uid, index2.uid],
+        indexUids: [index.uid, index2.uid],
       })
       const onlyTaskWithSameUid = new Set(
         tasks.results.map((task) => task.indexUid)
@@ -223,7 +223,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         .addDocuments([{ id: 1 }])
 
       const tasks = await client.getTasks({
-        uid: [taskUid],
+        uids: [taskUid],
       })
 
       expect(tasks.results[0].uid).toEqual(taskUid)
@@ -348,14 +348,17 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
     })
 
     // get tasks: canceledBy
-    test.skip(`${permission} key: Get all tasks with canceledBy filter`, async () => {
+    test(`${permission} key: Get all tasks with canceledBy filter`, async () => {
       const client = await getClient(permission)
       const addDocumentsTask = await client
         .index(index.uid)
         .addDocuments([{ id: 1 }])
+
+      // Cancel the task
       const enqueuedCancelationTask = await client.cancelTasks({
-        uid: [addDocumentsTask.taskUid],
+        uids: [addDocumentsTask.taskUid],
       })
+      // wait for the task to be fully canceled
       const cancelationTask = await client.waitForTask(
         enqueuedCancelationTask.taskUid
       )
@@ -365,7 +368,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
       const tasksUids = tasks.results.map((t) => t.uid)
 
-      expect(tasksUids.includes(addDocumentsTask.taskUid)).toBeTruthy()
+      expect(tasksUids[0]).toEqual(addDocumentsTask.taskUid)
     })
 
     // cancel: uid
@@ -376,12 +379,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         .addDocuments([{ id: 1 }])
 
       const enqueuedTask = await client.cancelTasks({
-        uid: [addDocuments.taskUid],
+        uids: [addDocuments.taskUid],
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
-      expect(task.details?.originalQuery).toContain('uid=')
+      expect(task.details?.originalFilters).toContain('uids=')
       expect(task.details?.matchedTasks).toBeDefined()
       expect(task.details?.canceledTasks).toBeDefined()
     })
@@ -391,12 +394,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission)
 
       const enqueuedTask = await client.cancelTasks({
-        indexUid: [index.uid],
+        indexUids: [index.uid],
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
-      expect(task.details?.originalQuery).toEqual('indexUid=movies_test')
+      expect(task.details?.originalFilters).toEqual('indexUids=movies_test')
     })
 
     // cancel: type
@@ -404,7 +407,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission)
 
       const enqueuedTask = await client.cancelTasks({
-        type: [
+        types: [
           TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE,
           TaskTypes.DOCUMENT_DELETION,
         ],
@@ -412,8 +415,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
-      expect(task.details?.originalQuery).toEqual(
-        'type=documentAdditionOrUpdate%2CdocumentDeletion'
+      expect(task.details?.originalFilters).toEqual(
+        'types=documentAdditionOrUpdate%2CdocumentDeletion'
       )
     })
 
@@ -422,13 +425,13 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission)
 
       const enqueuedTask = await client.cancelTasks({
-        status: [TaskStatus.TASK_ENQUEUED, TaskStatus.TASK_PROCESSING],
+        statuses: [TaskStatus.TASK_ENQUEUED, TaskStatus.TASK_PROCESSING],
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
-      expect(task.details?.originalQuery).toEqual(
-        'status=enqueued%2Cprocessing'
+      expect(task.details?.originalFilters).toEqual(
+        'statuses=enqueued%2Cprocessing'
       )
     })
 
@@ -444,7 +447,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
-      expect(task.details?.originalQuery).toContain('beforeEnqueuedAt')
+      expect(task.details?.originalFilters).toContain('beforeEnqueuedAt')
     })
 
     // cancel: afterEnqueuedAt
@@ -459,7 +462,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
-      expect(task.details?.originalQuery).toContain('afterEnqueuedAt')
+      expect(task.details?.originalFilters).toContain('afterEnqueuedAt')
     })
 
     // cancel: beforeStartedAt
@@ -474,7 +477,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
-      expect(task.details?.originalQuery).toContain('beforeStartedAt')
+      expect(task.details?.originalFilters).toContain('beforeStartedAt')
     })
 
     // cancel: afterStartedAt
@@ -489,7 +492,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
-      expect(task.details?.originalQuery).toContain('afterStartedAt')
+      expect(task.details?.originalFilters).toContain('afterStartedAt')
     })
 
     // cancel: beforeFinishedAt
@@ -504,7 +507,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
-      expect(task.details?.originalQuery).toContain('beforeFinishedAt')
+      expect(task.details?.originalFilters).toContain('beforeFinishedAt')
     })
 
     // cancel: afterFinishedAt
@@ -519,7 +522,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
-      expect(task.details?.originalQuery).toContain('afterFinishedAt')
+      expect(task.details?.originalFilters).toContain('afterFinishedAt')
     })
 
     // delete: uid
@@ -530,7 +533,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         .addDocuments([{ id: 1 }])
 
       const deleteTask = await client.deleteTasks({
-        uid: [addDocuments.taskUid],
+        uids: [addDocuments.taskUid],
       })
       const task = await client.waitForTask(deleteTask.taskUid)
 
@@ -550,7 +553,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         .addDocuments([{ id: 1 }])
 
       const enqueuedTask = await client.deleteTasks({
-        indexUid: [index.uid],
+        indexUids: [index.uid],
       })
       const deleteTask = await client.waitForTask(enqueuedTask.taskUid)
 
@@ -566,7 +569,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission)
 
       const enqueuedTask = await client.deleteTasks({
-        type: [
+        types: [
           TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE,
           TaskTypes.DOCUMENT_DELETION,
         ],
@@ -574,8 +577,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const deleteTask = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(deleteTask.type).toEqual(TaskTypes.TASK_DELETION)
-      expect(deleteTask.details?.originalQuery).toEqual(
-        'type=documentAdditionOrUpdate%2CdocumentDeletion'
+      expect(deleteTask.details?.originalFilters).toEqual(
+        'types=documentAdditionOrUpdate%2CdocumentDeletion'
       )
     })
 
@@ -584,13 +587,13 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission)
 
       const enqueuedTask = await client.deleteTasks({
-        status: [TaskStatus.TASK_ENQUEUED, TaskStatus.TASK_PROCESSING],
+        statuses: [TaskStatus.TASK_ENQUEUED, TaskStatus.TASK_PROCESSING],
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION)
-      expect(task.details?.originalQuery).toEqual(
-        'status=enqueued%2Cprocessing'
+      expect(task.details?.originalFilters).toEqual(
+        'statuses=enqueued%2Cprocessing'
       )
     })
 
@@ -606,7 +609,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION)
-      expect(task.details?.originalQuery).toContain('beforeEnqueuedAt')
+      expect(task.details?.originalFilters).toContain('beforeEnqueuedAt')
     })
 
     // delete: afterEnqueuedAt
@@ -621,7 +624,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION)
-      expect(task.details?.originalQuery).toContain('afterEnqueuedAt')
+      expect(task.details?.originalFilters).toContain('afterEnqueuedAt')
     })
 
     // delete: beforeStartedAt
@@ -636,7 +639,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION)
-      expect(task.details?.originalQuery).toContain('beforeStartedAt')
+      expect(task.details?.originalFilters).toContain('beforeStartedAt')
     })
 
     // delete: afterStartedAt
@@ -651,7 +654,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION)
-      expect(task.details?.originalQuery).toContain('afterStartedAt')
+      expect(task.details?.originalFilters).toContain('afterStartedAt')
     })
 
     // delete: beforeFinishedAt
@@ -666,7 +669,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION)
-      expect(task.details?.originalQuery).toContain('beforeFinishedAt')
+      expect(task.details?.originalFilters).toContain('beforeFinishedAt')
     })
 
     // delete: afterFinishedAt
@@ -681,7 +684,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION)
-      expect(task.details?.originalQuery).toContain('afterFinishedAt')
+      expect(task.details?.originalFilters).toContain('afterFinishedAt')
     })
 
     test(`${permission} key: Get all indexes tasks with index instance`, async () => {
@@ -756,7 +759,7 @@ describe.each([
   })
 
   test(`Test on getTasks route`, async () => {
-    const route = `tasks?indexUid=movies_test`
+    const route = `tasks?indexUids=movies_test`
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
 
