@@ -353,9 +353,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const addDocumentsTask = await client
         .index(index.uid)
         .addDocuments([{ id: 1 }])
+
+      // Cancel the task
       const enqueuedCancelationTask = await client.cancelTasks({
         uids: [addDocumentsTask.taskUid],
       })
+      // wait for the task to be fully canceled
       const cancelationTask = await client.waitForTask(
         enqueuedCancelationTask.taskUid
       )
