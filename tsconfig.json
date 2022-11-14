@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+      "resolveJsonModule": true,
       "module": "esnext",
       "noEmit": true,
       "allowJs": false,

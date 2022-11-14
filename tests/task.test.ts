@@ -7,6 +7,7 @@ import {
   MeiliSearch,
   getClient,
   dataset,
+  movies,
 } from './utils/meilisearch-test-utils'
 
 const index = {
@@ -348,15 +349,17 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
     })
 
     // get tasks: canceledBy
-    test(`${permission} key: Get all tasks with canceledBy filter`, async () => {
+    test.only(`${permission} key: Get all tasks with canceledBy filter`, async () => {
       const client = await getClient(permission)
+      // Add a task that adds documents
       const addDocumentsTask = await client
         .index(index.uid)
-        .addDocuments([{ id: 1 }])
+        .addDocuments(movies)
 
       // Cancel the task
       const enqueuedCancelationTask = await client.cancelTasks({
         uids: [addDocumentsTask.taskUid],
+        // types: [TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE],
       })
       // wait for the task to be fully canceled
       const cancelationTask = await client.waitForTask(

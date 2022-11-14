@@ -1,5 +1,6 @@
 import { MeiliSearch, Index } from '../../src'
 import { Config } from '../../src/types'
+import movies from '../../assets/small_movies.json'
 
 // testing
 const MASTER_KEY = 'masterKey'
@@ -178,4 +179,5 @@ export {
   decode64,
   dataset,
   datasetWithNests,
+  movies,
 }
