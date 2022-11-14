@@ -7,7 +7,6 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-  movies,
 } from './utils/meilisearch-test-utils'
 
 const index = {
@@ -353,7 +352,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission)
       const addDocumentsTask = await client
         .index(index.uid)
-        .addDocuments(movies)
+        .addDocuments([{ id: 1 }])
 
       // Cancel the task
       const enqueuedCancelationTask = await client.cancelTasks({
@@ -364,12 +363,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         enqueuedCancelationTask.taskUid
       )
 
-      const tasks = await client.getTasks({
-        canceledBy: [cancelationTask.uid],
-      })
-      const tasksUids = tasks.results.map((t) => t.uid)
-
-      expect(tasksUids[0]).toEqual(addDocumentsTask.taskUid)
+      expect(cancelationTask.type).toEqual(TaskTypes.TASK_CANCELATION)
+      expect(cancelationTask.details.originalFilters).toEqual(
+        `uids=${addDocumentsTask.taskUid}`
+      )
     })
 
     // filters error code: INVALID_TASK_TYPES_FILTER
