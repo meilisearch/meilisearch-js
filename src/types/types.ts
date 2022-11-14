@@ -556,13 +556,22 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#missing_master_key */
   MISSING_MASTER_KEY = 'missing_master_key',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_task_uid */
-  INVALID_TASK_UID = 'invalid_task_uid',
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_types_filter */
+  INVALID_TASK_TYPES_FILTER = 'invalid_task_types_filter',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_task_date */
-  INVALID_TASK_DATE = 'invalid_task_date',
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_statuses_filter */
+  INVALID_TASK_STATUSES_FILTER = 'invalid_task_statuses_filter',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_task_filters */
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_canceled_by_filter */
+  INVALID_TASK_CANCELED_BY_FILTER = 'invalid_task_canceled_by_filter',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_uids_filter */
+  INVALID_TASK_UIDS_FILTER = 'invalid_task_uids_filter',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_date_filter */
+  INVALID_TASK_DATE_FILTER = 'invalid_task_date_filter',
+
+  /** @see http://docs.meilisearch.com/errors/#missing_task_filters */
   MISSING_TASK_FILTERS = 'missing_task_filters',
 }
 

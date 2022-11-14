@@ -371,6 +371,65 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(tasksUids[0]).toEqual(addDocumentsTask.taskUid)
     })
 
+    // filters error code: INVALID_TASK_TYPES_FILTER
+    test(`${permission} key: Try to filter on task types with wrong type`, async () => {
+      const client = await getClient(permission)
+
+      await expect(
+        // @ts-expect-error testing wrong argument type
+        client.getTasks({ types: ['wrong'] })
+      ).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.INVALID_TASK_TYPES_FILTER
+      )
+    })
+
+    // filters error code: INVALID_TASK_STATUSES_FILTER
+    test(`${permission} key: Try to filter on statuses with wrong type`, async () => {
+      const client = await getClient(permission)
+
+      await expect(
+        // @ts-expect-error testing wrong argument type
+        client.getTasks({ statuses: ['wrong'] })
+      ).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.INVALID_TASK_STATUSES_FILTER
+      )
+    })
+
+    // filters error code: INVALID_TASK_UIDS_FILTER
+    test(`${permission} key: Try to filter on uids with wrong type`, async () => {
+      const client = await getClient(permission)
+
+      await expect(
+        // @ts-expect-error testing wrong argument type
+        client.getTasks({ uids: ['wrong'] })
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_UIDS_FILTER)
+    })
+
+    // filters error code: INVALID_TASK_CANCELED_BY_FILTER
+    test(`${permission} key: Try to filter on canceledBy filter with wrong type`, async () => {
+      const client = await getClient(permission)
+
+      await expect(
+        // @ts-expect-error testing wrong canceledBy type
+        client.getTasks({ canceledBy: ['wrong'] })
+      ).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.INVALID_TASK_CANCELED_BY_FILTER
+      )
+    })
+
+    // filters error code: INVALID_TASK_DATE_FILTER
+    test(`${permission} key: Try to filter on dates with invalid date format`, async () => {
+      const client = await getClient(permission)
+
+      await expect(
+        // @ts-expect-error testing wrong date format
+        client.getTasks({ beforeEnqueuedAt: 'wrong' })
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_DATE_FILTER)
+    })
+
     // cancel: uid
     test(`${permission} key: Cancel a task using the uid filter`, async () => {
       const client = await getClient(permission)
@@ -523,6 +582,16 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalFilters).toContain('afterFinishedAt')
+    })
+
+    // cancel error code: MISSING_TASK_FILTER
+    test(`${permission} key: Try to cancel without filters and fail`, async () => {
+      const client = await getClient(permission)
+
+      await expect(
+        // @ts-expect-error testing wrong argument type
+        client.cancelTasks()
+      ).rejects.toHaveProperty('code', ErrorStatusCode.MISSING_TASK_FILTERS)
     })
 
     // delete: uid
