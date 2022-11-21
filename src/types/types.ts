@@ -319,7 +319,7 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     deletedTasks?: number
 
     // Query parameters used to filter the tasks
-    originalFilters?: string
+    originalFilter?: string
   }
   error: MeiliSearchErrorInfo | null
   duration: string
