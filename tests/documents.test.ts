@@ -366,7 +366,7 @@ describe('Documents tests', () => {
         const returnedIds = documents.results.map((x) => x.id)
 
         expect(resolvedTask.details.deletedDocuments).toEqual(2)
-        expect(resolvedTask.details.matchedDocuments).toEqual(2)
+        expect(resolvedTask.details.providedIds).toEqual(2)
         expect(documents.results.length).toEqual(dataset.length - 2)
         expect(returnedIds).not.toContain(ids[0])
         expect(returnedIds).not.toContain(ids[1])

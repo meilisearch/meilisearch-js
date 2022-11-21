@@ -277,7 +277,7 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     deletedDocuments?: number
 
     // Number of documents found on a batch-delete
-    matchedDocuments?: number
+    providedIds?: number
 
     // Primary key on index creation
     primaryKey?: string
