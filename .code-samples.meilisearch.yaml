@@ -3,6 +3,42 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
+async_guide_filter_by_date_1: |-
+  with filter: { afterEnqueuedAt: 2020-10-11T11:49:53.000Z }
+
+async_guide_multiple_filters_1: |-
+  with filter: { indexUids: movies, types: ["documentAdditionOrUpdate","documentDeletion"], statuses: ["processing"] }
+
+async_guide_filter_by_id_1: |-
+  with filter: { uids: [5, 10, 13] }
+
+async_guide_filter_by_status_1: |-
+  with filter: { status: ["failed", "canceled"] }
+
+async_guide_filter_by_type_1: |-
+  with filter: { types: ["dumpCreation", "indexSwap"] }
+
+async_guide_filter_by_index_uid_1: |-
+  with filter: { indexUids: ["movies"] }
+
+delete_task_1: |-
+  with filter: { uids: [1, 2] }
+
+cancel_task_1: |-
+  with filter: { uids: [1,2] }
+
+async_guide_canceled_by: |-
+  with filter: { canceledBy: [9] }
+
+swap_indexes_1: |-
+  with data: { "indexes":[ "indexA", "indexB" ], "indexes":[ "indexX", "indexY" ] }
+
+search_parameter_guide_hitsperpage_1: |-
+  with queryparams: { "q": "", "hitsPerPage": 15 }
+
+search_parameter_guide_page_1: |-
+  with queryparams: { "q": "", "page": 2 }
+
 getting_started_typo_tolerance: |-
 
 get_one_index_1: |-
@@ -49,9 +85,9 @@ get_all_tasks_1: |-
   client.getTasks()
 get_task_1: |-
   client.getTask(1)
-get_all_tasks_filtering_1: |-
+>>>>>>>>>>> REMOVE_ME get_all_tasks_filtering_1: |-
   client.getTasks({ indexUid: ['movies'] })
-get_all_tasks_filtering_2: |-
+>>>>>>>>>>> REMOVE_ME get_all_tasks_filtering_2: |-
   client.getTasks({ status: ['succeeded', 'failed'], type: ['documentAdditionOrUpdate'] })
 get_all_tasks_paginating_1: |-
   client.getTasks({ limit: 2, from: 10 })
