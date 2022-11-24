@@ -3,44 +3,6 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
-async_guide_filter_by_date_1: |-
-  with filter: { afterEnqueuedAt: 2020-10-11T11:49:53.000Z }
-
-async_guide_multiple_filters_1: |-
-  with filter: { indexUids: movies, types: ["documentAdditionOrUpdate","documentDeletion"], statuses: ["processing"] }
-
-async_guide_filter_by_id_1: |-
-  with filter: { uids: [5, 10, 13] }
-
-async_guide_filter_by_status_1: |-
-  with filter: { status: ["failed", "canceled"] }
-
-async_guide_filter_by_type_1: |-
-  with filter: { types: ["dumpCreation", "indexSwap"] }
-
-async_guide_filter_by_index_uid_1: |-
-  with filter: { indexUids: ["movies"] }
-
-delete_task_1: |-
-  with filter: { uids: [1, 2] }
-
-cancel_task_1: |-
-  with filter: { uids: [1,2] }
-
-async_guide_canceled_by: |-
-  with filter: { canceledBy: [9] }
-
-swap_indexes_1: |-
-  with data: { "indexes":[ "indexA", "indexB" ], "indexes":[ "indexX", "indexY" ] }
-
-search_parameter_guide_hitsperpage_1: |-
-  with queryparams: { "q": "", "hitsPerPage": 15 }
-
-search_parameter_guide_page_1: |-
-  with queryparams: { "q": "", "page": 2 }
-
-getting_started_typo_tolerance: |-
-
 get_one_index_1: |-
   client.index('movies').getRawInfo()
 list_all_indexes_1: |-
@@ -51,6 +13,11 @@ update_an_index_1: |-
   client.updateIndex('movies', { primaryKey: 'id' })
 delete_an_index_1: |-
   client.deleteIndex('movies')
+swap_indexes_1: |-
+  client.swapIndexes([
+    { "indexes": ["indexA", "indexB"] },
+    { "indexes": ["indexX", "indexY"] }
+  ])
 get_one_document_1: |-
   client
       .index('movies')
@@ -85,14 +52,32 @@ get_all_tasks_1: |-
   client.getTasks()
 get_task_1: |-
   client.getTask(1)
->>>>>>>>>>> REMOVE_ME get_all_tasks_filtering_1: |-
-  client.getTasks({ indexUid: ['movies'] })
->>>>>>>>>>> REMOVE_ME get_all_tasks_filtering_2: |-
-  client.getTasks({ status: ['succeeded', 'failed'], type: ['documentAdditionOrUpdate'] })
+async_guide_filter_by_date_1: |-
+  client.getTasks({ afterEnqueuedAt: '2020-10-11T11:49:53.000Z' })
+async_guide_multiple_filters_1: |-
+  client.getTasks({
+    indexUids: ["movies"],
+    types: ["documentAdditionOrUpdate","documentDeletion"],
+    statuses: ["processing"]
+  })
+async_guide_filter_by_ids_1: |-
+  client.getTasks({ uids: [5, 10, 13] })
+async_guide_filter_by_statuses_1: |-
+  client.getTasks({ statuses: ["failed", "canceled"] })
+async_guide_filter_by_types_1: |-
+  client.getTasks({ types: ["dumpCreation", "indexSwap"] })
+async_guide_filter_by_index_uids_1: |-
+  client.getTasks({ indexUids: ["movies"] })
 get_all_tasks_paginating_1: |-
   client.getTasks({ limit: 2, from: 10 })
 get_all_tasks_paginating_2: |-
   client.getTasks({ limit: 2, from: 8 })
+async_guide_canceled_by: |-
+  client.getTasks({ canceledBy: [9] })
+delete_tasks_1: |-
+  client.deleteTasks({ uids: [1, 2] })
+cancel_tasks_1: |-
+  client.cancelTasks({ uids: [1, 2] })
 get_one_key_1: |-
   client.getKey('6062abda-a5aa-4414-ac91-ecd7944c0f8d')
 get_all_keys_1: |-
@@ -324,6 +309,14 @@ search_parameter_guide_matching_strategy_1: |-
 search_parameter_guide_matching_strategy_2: |-
   client.index('movies').search('big fat liar', {
     matchingStrategy: 'all'
+  })
+search_parameter_guide_hitsperpage_1: |-
+  client.index('movies').search('', {
+    "hitsPerPage": 15
+  })
+search_parameter_guide_page_1: |-
+  client.index('movies').search('', {
+    "page": 2
   })
 settings_guide_synonyms_1: |-
   client.index('tops').updateSettings({
