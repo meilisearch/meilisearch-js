@@ -283,31 +283,31 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     primaryKey?: string
 
     // Ranking rules on settings actions
-    rankingRules: RankingRules
+    rankingRules?: RankingRules
 
     // Searchable attributes on settings actions
-    searchableAttributes: SearchableAttributes
+    searchableAttributes?: SearchableAttributes
 
     // Displayed attributes on settings actions
-    displayedAttributes: DisplayedAttributes
+    displayedAttributes?: DisplayedAttributes
 
     // Filterable attributes on settings actions
-    filterableAttributes: FilterableAttributes
+    filterableAttributes?: FilterableAttributes
 
     // Sortable attributes on settings actions
-    sortableAttributes: SortableAttributes
+    sortableAttributes?: SortableAttributes
 
     // Stop words on settings actions
-    stopWords: StopWords
+    stopWords?: StopWords
 
     // Stop words on settings actions
-    synonyms: Synonyms
+    synonyms?: Synonyms
 
     // Distinct attribute on settings actions
-    distinctAttribute: DistinctAttribute
+    distinctAttribute?: DistinctAttribute
 
     // Object containing the payload originating the `indexSwap` task creation
-    swaps: SwapIndexesParams
+    swaps?: SwapIndexesParams
 
     // Number of tasks that matched the originalQuery filter
     matchedTasks?: number
