@@ -365,7 +365,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(cancelationTask.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(cancelationTask.details.originalFilter).toEqual(
-        `uids=${addDocumentsTask.taskUid}`
+        `?uids=${addDocumentsTask.taskUid}`
       )
     })
 
@@ -456,7 +456,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
-      expect(task.details?.originalFilter).toEqual('indexUids=movies_test')
+      expect(task.details?.originalFilter).toEqual('?indexUids=movies_test')
     })
 
     // cancel: type
@@ -473,7 +473,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalFilter).toEqual(
-        'types=documentAdditionOrUpdate%2CdocumentDeletion'
+        '?types=documentAdditionOrUpdate%2CdocumentDeletion'
       )
     })
 
@@ -488,7 +488,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalFilter).toEqual(
-        'statuses=enqueued%2Cprocessing'
+        '?statuses=enqueued%2Cprocessing'
       )
     })
 
@@ -645,7 +645,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(deleteTask.type).toEqual(TaskTypes.TASK_DELETION)
       expect(deleteTask.details?.originalFilter).toEqual(
-        'types=documentAdditionOrUpdate%2CdocumentDeletion'
+        '?types=documentAdditionOrUpdate%2CdocumentDeletion'
       )
     })
 
@@ -660,7 +660,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION)
       expect(task.details?.originalFilter).toEqual(
-        'statuses=enqueued%2Cprocessing'
+        '?statuses=enqueued%2Cprocessing'
       )
     })
 
