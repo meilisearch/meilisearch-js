@@ -87,6 +87,8 @@ export type SearchParams = Query &
     attributesToRetrieve?: string[]
     showMatchesPosition?: boolean
     matchingStrategy?: MatchingStrategies
+    hitsPerPage?: number
+    page?: number
   }
 
 // Search parameters for searches made with the GET method
@@ -123,12 +125,16 @@ export type Hits<T = Record<string, any>> = Array<Hit<T>>
 
 export type SearchResponse<T = Record<string, any>> = {
   hits: Hits<T>
-  offset: number
-  limit: number
   processingTimeMs: number
   facetDistribution?: FacetDistribution
   query: string
-  estimatedTotalHits: number
+  totalHits?: number
+  hitsPerPage?: number
+  page?: number
+  totalPages?: number
+  offset?: number
+  limit?: number
+  estimatedTotalHits?: number
 }
 
 export type FieldDistribution = {
@@ -225,15 +231,29 @@ export const enum TaskTypes {
   DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
   DOCUMENT_DELETION = 'documentDeletion',
   SETTINGS_UPDATE = 'settingsUpdate',
+  INDEXES_SWAP = 'indexSwap',
+  TASK_DELETION = 'taskDeletion',
+  SNAPSHOT_CREATION = 'snapshotCreation',
+  TASK_CANCELATION = 'taskCancelation',
 }
 
 export type TasksQuery = {
-  indexUid?: string[]
-  type?: TaskTypes[]
-  status?: TaskStatus[]
+  indexUids?: string[]
+  uids?: number[]
+  types?: TaskTypes[]
+  statuses?: TaskStatus[]
+  canceledBy?: number[]
+  beforeEnqueuedAt?: Date
+  afterEnqueuedAt?: Date
+  beforeStartedAt?: Date
+  afterStartedAt?: Date
+  beforeFinishedAt?: Date
+  afterFinishedAt?: Date
   limit?: number
   from?: number
 }
+export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
+export type DeleteTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
 
 export type EnqueuedTaskObject = {
   taskUid: number
@@ -241,11 +261,11 @@ export type EnqueuedTaskObject = {
   status: TaskStatus
   type: TaskTypes
   enqueuedAt: string
+  canceledBy: number
 }
 
 export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
   uid: number
-  batchUid: number
   details: {
     // Number of documents sent
     receivedDocuments?: number
@@ -255,6 +275,9 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
 
     // Number of deleted documents
     deletedDocuments?: number
+
+    // Number of documents found on a batch-delete
+    providedIds?: number
 
     // Primary key on index creation
     primaryKey?: string
@@ -282,12 +305,31 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
 
     // Distinct attribute on settings actions
     distinctAttribute?: DistinctAttribute
+
+    // Object containing the payload originating the `indexSwap` task creation
+    swaps?: SwapIndexesParams
+
+    // Number of tasks that matched the originalQuery filter
+    matchedTasks?: number
+
+    // Number of tasks that were canceled
+    canceledTasks?: number
+
+    // Number of tasks that were deleted
+    deletedTasks?: number
+
+    // Query parameters used to filter the tasks
+    originalFilter?: string
   }
-  error?: MeiliSearchErrorInfo
+  error: MeiliSearchErrorInfo | null
   duration: string
   startedAt: string
   finishedAt: string
 }
+
+export type SwapIndexesParams = Array<{
+  indexes: string[]
+}>
 
 type CursorResults<T> = {
   results: T[]
@@ -507,6 +549,30 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#dump_not_found */
   DUMP_NOT_FOUND = 'dump_not_found',
+
+  /** @see https://docs.meilisearch.com/errors/#duplicate_index_found */
+  DUPLICATE_INDEX_FOUND = 'duplicate_index_found',
+
+  /** @see https://docs.meilisearch.com/errors/#missing_master_key */
+  MISSING_MASTER_KEY = 'missing_master_key',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_types_filter */
+  INVALID_TASK_TYPES_FILTER = 'invalid_task_types_filter',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_statuses_filter */
+  INVALID_TASK_STATUSES_FILTER = 'invalid_task_statuses_filter',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_canceled_by_filter */
+  INVALID_TASK_CANCELED_BY_FILTER = 'invalid_task_canceled_by_filter',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_uids_filter */
+  INVALID_TASK_UIDS_FILTER = 'invalid_task_uids_filter',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_date_filter */
+  INVALID_TASK_DATE_FILTER = 'invalid_task_date_filter',
+
+  /** @see http://docs.meilisearch.com/errors/#missing_task_filters */
+  MISSING_TASK_FILTERS = 'missing_task_filters',
 }
 
 export type TokenIndexRules = {
