@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.29.1",
+  "version": "0.30.0",
   "description": "The Meilisearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -74,7 +74,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.19.4",
     "@rollup/plugin-babel": "^6.0.2",
-    "@rollup/plugin-commonjs": "23.0.2",
+    "@rollup/plugin-commonjs": "23.0.3",
     "@rollup/plugin-json": "^5.0.1",
     "@rollup/plugin-node-resolve": "15.0.1",
     "@types/jest": "^27.5.0",
