@@ -329,7 +329,7 @@ controller.abort()
 
 ## 🤖 Compatibility with Meilisearch
 
-This package only guarantees the compatibility with the [version v0.29.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.29.0).
+This package only guarantees the compatibility with the [version v0.30.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.30.0).
 
 ## 💡 Learn more
 
@@ -432,6 +432,18 @@ client.getTasks(parameters: TasksQuery): Promise<TasksResults>
 client.getTask(uid: number): Promise<Task>
 ```
 
+#### [Delete tasks](https://docs.meilisearch.com/reference/api/tasks.html#delete-task)
+
+```ts
+client.deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask>
+```
+
+#### [Cancel tasks](https://docs.meilisearch.com/reference/api/tasks.html#cancel-task)
+
+```ts
+client.cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask>
+```
+
 #### [Get all tasks of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index)
 
 ```ts
@@ -443,6 +455,7 @@ client.index('myIndex').getTasks(parameters: TasksQuery): Promise<TasksResults>
 ```ts
 client.index('myIndex').getTask(uid: number): Promise<Task>
 ```
+
 
 #### Wait for one task
 
@@ -560,6 +573,12 @@ client.index('myIndex').fetchInfo(): Promise<Index>
 
 ```ts
 client.index('myIndex').fetchPrimaryKey(): Promise<string | undefined>
+```
+
+##### Swap two indexes
+
+```ts
+client.swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask>
 ```
 
 ### Settings <!-- omit in toc -->

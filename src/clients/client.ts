@@ -29,6 +29,9 @@ import {
   KeysResults,
   TasksResults,
   EnqueuedTaskObject,
+  SwapIndexesParams,
+  CancelTasksQuery,
+  DeleteTasksQuery,
 } from '../types'
 import { HttpRequests } from '../http-requests'
 import { TaskClient, Task } from '../task'
@@ -184,6 +187,19 @@ class Client {
     }
   }
 
+  /**
+   * Swaps a list of index tuples.
+   *
+   * @memberof MeiliSearch
+   * @method swapIndexes
+   * @param {SwapIndexesParams} params - List of indexes tuples to swap.
+   * @returns {Promise<EnqueuedTask>} - Promise returning object of the enqueued task
+   */
+  async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
+    const url = '/swap-indexes'
+    return await this.httpRequest.post(url, params)
+  }
+
   ///
   /// TASKS
   ///
@@ -250,6 +266,30 @@ class Client {
       timeOutMs,
       intervalMs,
     })
+  }
+
+  /**
+   * Cancel a list of enqueued or processing tasks.
+   * @memberof MeiliSearch
+   * @method cancelTasks
+   * @param {CancelTasksQuery} [parameters={}] - Parameters to filter the tasks.
+   *
+   * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
+   */
+  async cancelTasks(parameters: CancelTasksQuery): Promise<EnqueuedTask> {
+    return await this.tasks.cancelTasks(parameters)
+  }
+
+  /**
+   * Delete a list of tasks.
+   * @memberof MeiliSearch
+   * @method deleteTasks
+   * @param {DeleteTasksQuery} [parameters={}] - Parameters to filter the tasks.
+   *
+   * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
+   */
+  async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
+    return await this.tasks.deleteTasks(parameters)
   }
 
   ///
