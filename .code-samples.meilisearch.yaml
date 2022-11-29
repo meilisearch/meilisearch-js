@@ -72,8 +72,8 @@ get_all_tasks_paginating_1: |-
   client.getTasks({ limit: 2, from: 10 })
 get_all_tasks_paginating_2: |-
   client.getTasks({ limit: 2, from: 8 })
-async_guide_canceled_by: |-
-  client.getTasks({ canceledBy: [9] })
+async_guide_canceled_by_1: |-
+  client.getTasks({ canceledBy: [9, 15] })
 delete_tasks_1: |-
   client.deleteTasks({ uids: [1, 2] })
 cancel_tasks_1: |-
