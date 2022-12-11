@@ -44,7 +44,7 @@ import { HttpRequests } from './http-requests'
 import { Task, TaskClient } from './task'
 import { EnqueuedTask } from './enqueued-task'
 
-class Index<T = Record<string, any>> {
+class Index<T extends Record<string, any> = Record<string, any>> {
   uid: string
   primaryKey: string | undefined
   createdAt: Date | undefined
@@ -130,7 +130,7 @@ class Index<T = Record<string, any>> {
       attributesToHighlight: options?.attributesToHighlight?.join(','),
     }
 
-    return await this.httpRequest.get<SearchResponse<T>>(
+    return await this.httpRequest.get<SearchResponse<D>>(
       url,
       removeUndefinedFromObject(getParams),
       config
