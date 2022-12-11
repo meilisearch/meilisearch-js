@@ -44,7 +44,7 @@ import { HttpRequests } from './http-requests'
 import { Task, TaskClient } from './task'
 import { EnqueuedTask } from './enqueued-task'
 
-class Index<T = Record<string, any>> {
+class Index<D = Record<string, any>> {
   uid: string
   primaryKey: string | undefined
   createdAt: Date | undefined
@@ -78,7 +78,7 @@ class Index<T = Record<string, any>> {
    * @param {Partial<Request>} config? Additional request configuration options
    * @returns {Promise<SearchResponse<T>>} Promise containing the search response
    */
-  async search<T = Record<string, any>>(
+  async search<T = D>(
     query?: string | null,
     options?: SearchParams,
     config?: Partial<Request>
@@ -103,7 +103,7 @@ class Index<T = Record<string, any>> {
    * @param {Partial<Request>} config? Additional request configuration options
    * @returns {Promise<SearchResponse<T>>} Promise containing the search response
    */
-  async searchGet<T = Record<string, any>>(
+  async searchGet<T = D>(
     query?: string | null,
     options?: SearchParams,
     config?: Partial<Request>
