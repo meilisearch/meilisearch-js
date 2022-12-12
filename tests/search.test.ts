@@ -9,7 +9,7 @@ import {
   getClient,
   datasetWithNests,
 } from './utils/meilisearch-test-utils'
-import { Movie } from './env/typescript-node/src'
+
 
 const index = {
   uid: 'movies_test',
@@ -18,7 +18,7 @@ const emptyIndex = {
   uid: 'empty_test',
 }
 
-const dataset: Movie[] = [
+const dataset = [
   {
     id: 123,
     title: 'Pride and Prejudice',

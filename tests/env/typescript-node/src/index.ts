@@ -15,7 +15,7 @@ const config = {
   apiKey: 'masterKey',
 }
 
-export interface Movie {
+interface Movie {
   id: number
   title: string
   genre?: string
