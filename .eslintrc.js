@@ -19,7 +19,7 @@ module.exports = {
     sourceType: 'module',
     projectFolderIgnoreList: ['dist'],
   },
-  plugins: ['jsdoc', '@typescript-eslint', 'prettier', 'jest'],
+  plugins: ['jsdoc', 'tsdoc', '@typescript-eslint', 'prettier', 'jest'],
   rules: {
     'no-dupe-class-members': 'off', // Off due to conflict with typescript overload functions
     'prettier/prettier': ['error', {}, { usePrettierrc: true }],
@@ -27,6 +27,8 @@ module.exports = {
     '@typescript-eslint/return-await': 'off',
     'jsdoc/check-alignment': 'error',
     'jsdoc/check-indentation': 'error',
+    'jsdoc/no-types': 'error',
+    'tsdoc/syntax': 'error',
     '@typescript-eslint/space-before-function-paren': 0,
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
