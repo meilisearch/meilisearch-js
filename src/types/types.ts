@@ -57,8 +57,7 @@ export const MatchingStrategies = {
   LAST: 'last',
 }
 
-export type MatchingStrategies =
-  typeof MatchingStrategies[keyof typeof MatchingStrategies]
+export type MatchingStrategies = typeof MatchingStrategies[keyof typeof MatchingStrategies]
 
 export type Filter = string | Array<string | string[]>
 
