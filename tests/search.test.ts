@@ -10,7 +10,6 @@ import {
   datasetWithNests,
 } from './utils/meilisearch-test-utils'
 
-
 const index = {
   uid: 'movies_test',
 }
