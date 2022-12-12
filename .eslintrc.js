@@ -26,7 +26,7 @@ module.exports = {
     '@typescript-eslint/array-type': ['warn', { default: 'array-simple' }],
     '@typescript-eslint/return-await': 'off',
     'jsdoc/check-alignment': 'error',
-    'jsdoc/check-indentation': 'error',
+    'jsdoc/check-indentation': 'off', // conflict with prettier-plugin-jsdoc
     'jsdoc/no-types': 'error',
     'tsdoc/syntax': 'error',
     '@typescript-eslint/space-before-function-paren': 0,
