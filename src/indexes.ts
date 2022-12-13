@@ -327,7 +327,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @param parameters - Parameters applied on a document
    * @returns Promise containing Document response
    */
-  async getDocument<D = T>(
+  async getDocument<D extends Record<string, any> = T>(
     documentId: string | number,
     parameters?: DocumentQuery<T>
   ): Promise<D> {
