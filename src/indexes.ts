@@ -44,7 +44,7 @@ import { HttpRequests } from './http-requests'
 import { Task, TaskClient } from './task'
 import { EnqueuedTask } from './enqueued-task'
 
-class Index<T = Record<string, any>> {
+class Index<T extends Record<string, any> = Record<string, any>> {
   uid: string
   primaryKey: string | undefined
   createdAt: Date | undefined
@@ -76,11 +76,11 @@ class Index<T = Record<string, any>> {
    * @param config - Additional request configuration options
    * @returns Promise containing the search response
    */
-  async search<T = Record<string, any>>(
+  async search<D = T>(
     query?: string | null,
     options?: SearchParams,
     config?: Partial<Request>
-  ): Promise<SearchResponse<T>> {
+  ): Promise<SearchResponse<D>> {
     const url = `indexes/${this.uid}/search`
 
     return await this.httpRequest.post(
@@ -99,11 +99,11 @@ class Index<T = Record<string, any>> {
    * @param config - Additional request configuration options
    * @returns Promise containing the search response
    */
-  async searchGet<T = Record<string, any>>(
+  async searchGet<D = T>(
     query?: string | null,
     options?: SearchParams,
     config?: Partial<Request>
-  ): Promise<SearchResponse<T>> {
+  ): Promise<SearchResponse<D>> {
     const url = `indexes/${this.uid}/search`
 
     const parseFilter = (filter?: Filter): string | undefined => {
@@ -126,7 +126,7 @@ class Index<T = Record<string, any>> {
       attributesToHighlight: options?.attributesToHighlight?.join(','),
     }
 
-    return await this.httpRequest.get<SearchResponse<T>>(
+    return await this.httpRequest.get<SearchResponse<D>>(
       url,
       removeUndefinedFromObject(getParams),
       config

@@ -21,6 +21,8 @@ interface Movie {
   title: string
   comment?: string
   genre?: string
+  isNull?: null
+  isTrue?: boolean
 }
 
 interface NestedDocument {
