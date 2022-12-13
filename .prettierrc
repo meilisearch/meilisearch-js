@@ -1,8 +1,12 @@
 {
+  "plugins": [
+    "prettier-plugin-jsdoc"
+  ],
   "singleQuote": true,
   "arrowParens": "always",
   "semi": false,
   "bracketSpacing": true,
   "trailingComma": "es5",
+  "tsdoc": true,
   "printWidth": 80
 }

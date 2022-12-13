@@ -44,7 +44,8 @@ class Client {
 
   /**
    * Creates new MeiliSearch instance
-   * @param {Config} config Configuration object
+   *
+   * @param config - Configuration object
    */
   constructor(config: Config) {
     this.config = config
@@ -54,36 +55,31 @@ class Client {
 
   /**
    * Return an Index instance
-   * @memberof MeiliSearch
-   * @method index
-   * @template T
-   * @param {string} indexUid The index UID
-   * @returns {Index<T>} Instance of Index
+   *
+   * @param indexUid - The index UID
+   * @returns Instance of Index
    */
   index<T = any>(indexUid: string): Index<T> {
     return new Index<T>(this.config, indexUid)
   }
 
   /**
-   * Gather information about an index by calling MeiliSearch and
-   * return an Index instance with the gathered information
-   * @memberof MeiliSearch
-   * @method getIndex
-   * @template T
-   * @param {string} indexUid The index UID
-   * @returns {Promise<Index<T>>} Promise returning Index instance
+   * Gather information about an index by calling MeiliSearch and return an
+   * Index instance with the gathered information
+   *
+   * @param indexUid - The index UID
+   * @returns Promise returning Index instance
    */
   async getIndex<T = any>(indexUid: string): Promise<Index<T>> {
     return new Index<T>(this.config, indexUid).fetchInfo()
   }
 
   /**
-   * Gather information about an index by calling MeiliSearch and
-   * return the raw JSON response
-   * @memberof MeiliSearch
-   * @method getRawIndex
-   * @param {string} indexUid The index UID
-   * @returns {Promise<IndexObject>} Promise returning index information
+   * Gather information about an index by calling MeiliSearch and return the raw
+   * JSON response
+   *
+   * @param indexUid - The index UID
+   * @returns Promise returning index information
    */
   async getRawIndex(indexUid: string): Promise<IndexObject> {
     return new Index(this.config, indexUid).getRawInfo()
@@ -91,11 +87,9 @@ class Client {
 
   /**
    * Get all the indexes as Index instances.
-   * @memberof MeiliSearch
-   * @method getIndexes
-   * @param {IndexesQuery} [parameters={}] - Parameters to browse the indexes
    *
-   * @returns {Promise<IndexesResults<Index[]>>} Promise returning array of raw index information
+   * @param parameters - Parameters to browse the indexes
+   * @returns Promise returning array of raw index information
    */
   async getIndexes(
     parameters: IndexesQuery = {}
@@ -109,11 +103,9 @@ class Client {
 
   /**
    * Get all the indexes in their raw value (no Index instances).
-   * @memberof MeiliSearch
-   * @method getRawIndexes
-   * @param {IndexesQuery} [parameters={}] - Parameters to browse the indexes
    *
-   * @returns {Promise<IndexesResults<IndexObject[]>>} Promise returning array of raw index information
+   * @param parameters - Parameters to browse the indexes
+   * @returns Promise returning array of raw index information
    */
   async getRawIndexes(
     parameters: IndexesQuery = {}
@@ -127,12 +119,10 @@ class Client {
 
   /**
    * Create a new index
-   * @memberof MeiliSearch
-   * @method createIndex
-   * @template T
-   * @param {string} uid The index UID
-   * @param {IndexOptions} options Index options
-   * @returns {Promise<Index<T>>} Promise returning Index instance
+   *
+   * @param uid - The index UID
+   * @param options - Index options
+   * @returns Promise returning Index instance
    */
   async createIndex(
     uid: string,
@@ -143,12 +133,10 @@ class Client {
 
   /**
    * Update an index
-   * @memberof MeiliSearch
-   * @method updateIndex
-   * @template T
-   * @param {string} uid The index UID
-   * @param {IndexOptions} options Index options to update
-   * @returns {Promise<Index<T>>} Promise returning Index instance after updating
+   *
+   * @param uid - The index UID
+   * @param options - Index options to update
+   * @returns Promise returning Index instance after updating
    */
   async updateIndex(
     uid: string,
@@ -159,10 +147,9 @@ class Client {
 
   /**
    * Delete an index
-   * @memberof MeiliSearch
-   * @method deleteIndex
-   * @param {string} uid The index UID
-   * @returns {Promise<void>} Promise which resolves when index is deleted successfully
+   *
+   * @param uid - The index UID
+   * @returns Promise which resolves when index is deleted successfully
    */
   async deleteIndex(uid: string): Promise<EnqueuedTask> {
     return await new Index(this.config, uid).delete()
@@ -170,10 +157,10 @@ class Client {
 
   /**
    * Deletes an index if it already exists.
-   * @memberof MeiliSearch
-   * @method deleteIndexIfExists
-   * @param {string} uid The index UID
-   * @returns {Promise<boolean>} Promise which resolves to true when index exists and is deleted successfully, otherwise false if it does not exist
+   *
+   * @param uid - The index UID
+   * @returns Promise which resolves to true when index exists and is deleted
+   *   successfully, otherwise false if it does not exist
    */
   async deleteIndexIfExists(uid: string): Promise<boolean> {
     try {
@@ -190,10 +177,8 @@ class Client {
   /**
    * Swaps a list of index tuples.
    *
-   * @memberof MeiliSearch
-   * @method swapIndexes
-   * @param {SwapIndexesParams} params - List of indexes tuples to swap.
-   * @returns {Promise<EnqueuedTask>} - Promise returning object of the enqueued task
+   * @param params - List of indexes tuples to swap.
+   * @returns Promise returning object of the enqueued task
    */
   async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
     const url = '/swap-indexes'
@@ -206,11 +191,9 @@ class Client {
 
   /**
    * Get the list of all client tasks
-   * @memberof MeiliSearch
-   * @method getTasks
-   * @param {TasksQuery} [parameters={}] - Parameters to browse the tasks
    *
-   * @returns {Promise<TasksResults>} - Promise returning all tasks
+   * @param parameters - Parameters to browse the tasks
+   * @returns Promise returning all tasks
    */
   async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     return await this.tasks.getTasks(parameters)
@@ -218,10 +201,9 @@ class Client {
 
   /**
    * Get one task on the client scope
-   * @memberof MeiliSearch
-   * @method getTask
-   * @param {number} taskUid - Task identifier
-   * @returns {Promise<Task>} - Promise returning a task
+   *
+   * @param taskUid - Task identifier
+   * @returns Promise returning a task
    */
   async getTask(taskUid: number): Promise<Task> {
     return await this.tasks.getTask(taskUid)
@@ -230,12 +212,9 @@ class Client {
   /**
    * Wait for multiple tasks to be finished.
    *
-   * @memberof MeiliSearch
-   * @method waitForTasks
-   * @param {number[]} taskUids - Tasks identifier
-   * @param {WaitOptions} waitOptions - Options on timeout and interval
-   *
-   * @returns {Promise<Task[]>} - Promise returning an array of tasks
+   * @param taskUids - Tasks identifier
+   * @param waitOptions - Options on timeout and interval
+   * @returns Promise returning an array of tasks
    */
   async waitForTasks(
     taskUids: number[],
@@ -250,13 +229,9 @@ class Client {
   /**
    * Wait for a task to be finished.
    *
-   * @memberof MeiliSearch
-   * @method waitForTask
-   *
-   * @param {number} taskUid - Task identifier
-   * @param {WaitOptions} waitOptions - Options on timeout and interval
-   *
-   * @returns {Promise<Task>} - Promise returning an array of tasks
+   * @param taskUid - Task identifier
+   * @param waitOptions - Options on timeout and interval
+   * @returns Promise returning an array of tasks
    */
   async waitForTask(
     taskUid: number,
@@ -270,11 +245,9 @@ class Client {
 
   /**
    * Cancel a list of enqueued or processing tasks.
-   * @memberof MeiliSearch
-   * @method cancelTasks
-   * @param {CancelTasksQuery} [parameters={}] - Parameters to filter the tasks.
    *
-   * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
+   * @param parameters - Parameters to filter the tasks.
+   * @returns Promise containing an EnqueuedTask
    */
   async cancelTasks(parameters: CancelTasksQuery): Promise<EnqueuedTask> {
     return await this.tasks.cancelTasks(parameters)
@@ -282,11 +255,9 @@ class Client {
 
   /**
    * Delete a list of tasks.
-   * @memberof MeiliSearch
-   * @method deleteTasks
-   * @param {DeleteTasksQuery} [parameters={}] - Parameters to filter the tasks.
    *
-   * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
+   * @param parameters - Parameters to filter the tasks.
+   * @returns Promise containing an EnqueuedTask
    */
   async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
     return await this.tasks.deleteTasks(parameters)
@@ -298,11 +269,9 @@ class Client {
 
   /**
    * Get all API keys
-   * @memberof MeiliSearch
-   * @method getKeys
-   * @param {KeysQuery} [parameters={}] - Parameters to browse the indexes
    *
-   * @returns {Promise<KeysResults>} Promise returning an object with keys
+   * @param parameters - Parameters to browse the indexes
+   * @returns Promise returning an object with keys
    */
   async getKeys(parameters: KeysQuery = {}): Promise<KeysResults> {
     const url = `keys`
@@ -319,11 +288,9 @@ class Client {
 
   /**
    * Get one API key
-   * @memberof MeiliSearch
-   * @method getKey
    *
-   * @param {string} keyOrUid - Key or uid of the API key
-   * @returns {Promise<Key>} Promise returning a key
+   * @param keyOrUid - Key or uid of the API key
+   * @returns Promise returning a key
    */
   async getKey(keyOrUid: string): Promise<Key> {
     const url = `keys/${keyOrUid}`
@@ -332,11 +299,9 @@ class Client {
 
   /**
    * Create one API key
-   * @memberof MeiliSearch
-   * @method createKey
    *
-   * @param {KeyCreation} options - Key options
-   * @returns {Promise<Key>} Promise returning a key
+   * @param options - Key options
+   * @returns Promise returning a key
    */
   async createKey(options: KeyCreation): Promise<Key> {
     const url = `keys`
@@ -345,12 +310,10 @@ class Client {
 
   /**
    * Update one API key
-   * @memberof MeiliSearch
-   * @method updateKey
    *
-   * @param {string} keyOrUid - Key
-   * @param {KeyUpdate} options - Key options
-   * @returns {Promise<Key>} Promise returning a key
+   * @param keyOrUid - Key
+   * @param options - Key options
+   * @returns Promise returning a key
    */
   async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
     const url = `keys/${keyOrUid}`
@@ -359,11 +322,9 @@ class Client {
 
   /**
    * Delete one API key
-   * @memberof MeiliSearch
-   * @method deleteKey
    *
-   * @param {string} keyOrUid - Key
-   * @returns {Promise<Void>}
+   * @param keyOrUid - Key
+   * @returns
    */
   async deleteKey(keyOrUid: string): Promise<void> {
     const url = `keys/${keyOrUid}`
@@ -376,9 +337,8 @@ class Client {
 
   /**
    * Checks if the server is healthy, otherwise an error will be thrown.
-   * @memberof MeiliSearch
-   * @method health
-   * @returns {Promise<Health>} Promise returning an object with health details
+   *
+   * @returns Promise returning an object with health details
    */
   async health(): Promise<Health> {
     const url = `health`
@@ -387,9 +347,8 @@ class Client {
 
   /**
    * Checks if the server is healthy, return true or false.
-   * @memberof MeiliSearch
-   * @method isHealthy
-   * @returns {Promise<boolean>} Promise returning a boolean
+   *
+   * @returns Promise returning a boolean
    */
   async isHealthy(): Promise<boolean> {
     try {
@@ -407,9 +366,8 @@ class Client {
 
   /**
    * Get the stats of all the database
-   * @memberof MeiliSearch
-   * @method getStats
-   * @returns {Promise<Stats>} Promise returning object of all the stats
+   *
+   * @returns Promise returning object of all the stats
    */
   async getStats(): Promise<Stats> {
     const url = `stats`
@@ -422,9 +380,8 @@ class Client {
 
   /**
    * Get the version of MeiliSearch
-   * @memberof MeiliSearch
-   * @method getVersion
-   * @returns {Promise<Version>} Promise returning object with version details
+   *
+   * @returns Promise returning object with version details
    */
   async getVersion(): Promise<Version> {
     const url = `version`
@@ -437,9 +394,8 @@ class Client {
 
   /**
    * Creates a dump
-   * @memberof MeiliSearch
-   * @method createDump
-   * @returns {Promise<EnqueuedTask>} Promise returning object of the enqueued task
+   *
+   * @returns Promise returning object of the enqueued task
    */
   async createDump(): Promise<EnqueuedTask> {
     const url = `dumps`
@@ -454,13 +410,10 @@ class Client {
   /**
    * Generate a tenant token
    *
-   * @memberof MeiliSearch
-   * @method generateTenantToken
-   * @param {apiKeyUid} apiKeyUid The uid of the api key used as issuer of the token.
-   * @param {SearchRules} searchRules Search rules that are applied to every search.
-   * @param {TokenOptions} options Token options to customize some aspect of the token.
-   *
-   * @returns {String} The token in JWT format.
+   * @param apiKeyUid - The uid of the api key used as issuer of the token.
+   * @param searchRules - Search rules that are applied to every search.
+   * @param options - Token options to customize some aspect of the token.
+   * @returns The token in JWT format.
    */
   generateTenantToken(
     _apiKeyUid: string,

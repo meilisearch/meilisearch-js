@@ -53,9 +53,8 @@ class TaskClient {
   /**
    * Get one task
    *
-   * @param  {number} uid - unique identifier of the task
-   *
-   * @returns { Promise<Task> }
+   * @param uid - Unique identifier of the task
+   * @returns
    */
   async getTask(uid: number): Promise<Task> {
     const url = `tasks/${uid}`
@@ -66,9 +65,8 @@ class TaskClient {
   /**
    * Get tasks
    *
-   * @param  {TasksQuery} [parameters={}] - Parameters to browse the tasks
-   *
-   * @returns {Promise<TasksResults>} - Promise containing all tasks
+   * @param parameters - Parameters to browse the tasks
+   * @returns Promise containing all tasks
    */
   async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     const url = `tasks`
@@ -87,10 +85,9 @@ class TaskClient {
   /**
    * Wait for a task to be processed.
    *
-   * @param {number} taskUid Task identifier
-   * @param {WaitOptions} options Additional configuration options
-   *
-   * @returns {Promise<Task>} Promise returning a task after it has been processed
+   * @param taskUid - Task identifier
+   * @param options - Additional configuration options
+   * @returns Promise returning a task after it has been processed
    */
   async waitForTask(
     taskUid: number,
@@ -115,10 +112,9 @@ class TaskClient {
   /**
    * Waits for multiple tasks to be processed
    *
-   * @param {number[]} taskUids Tasks identifier list
-   * @param {WaitOptions} options Wait options
-   *
-   * @returns {Promise<Task[]>} Promise returning a list of tasks after they have been processed
+   * @param taskUids - Tasks identifier list
+   * @param options - Wait options
+   * @returns Promise returning a list of tasks after they have been processed
    */
   async waitForTasks(
     taskUids: number[],
@@ -137,11 +133,9 @@ class TaskClient {
 
   /**
    * Cancel a list of enqueued or processing tasks.
-   * @memberof Tasks
-   * @method cancelTasks
-   * @param {CancelTasksQuery} [parameters={}] - Parameters to filter the tasks.
    *
-   * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
+   * @param parameters - Parameters to filter the tasks.
+   * @returns Promise containing an EnqueuedTask
    */
   async cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
     const url = `tasks/cancel`
@@ -157,11 +151,9 @@ class TaskClient {
 
   /**
    * Delete a list tasks.
-   * @memberof Tasks
-   * @method deleteTasks
-   * @param {DeleteTasksQuery} [parameters={}] - Parameters to filter the tasks.
    *
-   * @returns {Promise<EnqueuedTask>} Promise containing an EnqueuedTask
+   * @param parameters - Parameters to filter the tasks.
+   * @returns Promise containing an EnqueuedTask
    */
   async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
     const url = `tasks`
