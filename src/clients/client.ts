@@ -178,7 +178,7 @@ class Client {
    * Swaps a list of index tuples.
    *
    * @param params - List of indexes tuples to swap.
-   * @returns - Promise returning object of the enqueued task
+   * @returns Promise returning object of the enqueued task
    */
   async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
     const url = '/swap-indexes'
@@ -193,7 +193,7 @@ class Client {
    * Get the list of all client tasks
    *
    * @param parameters - Parameters to browse the tasks
-   * @returns - Promise returning all tasks
+   * @returns Promise returning all tasks
    */
   async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     return await this.tasks.getTasks(parameters)
@@ -203,7 +203,7 @@ class Client {
    * Get one task on the client scope
    *
    * @param taskUid - Task identifier
-   * @returns - Promise returning a task
+   * @returns Promise returning a task
    */
   async getTask(taskUid: number): Promise<Task> {
     return await this.tasks.getTask(taskUid)
@@ -214,7 +214,7 @@ class Client {
    *
    * @param taskUids - Tasks identifier
    * @param waitOptions - Options on timeout and interval
-   * @returns - Promise returning an array of tasks
+   * @returns Promise returning an array of tasks
    */
   async waitForTasks(
     taskUids: number[],
@@ -231,7 +231,7 @@ class Client {
    *
    * @param taskUid - Task identifier
    * @param waitOptions - Options on timeout and interval
-   * @returns - Promise returning an array of tasks
+   * @returns Promise returning an array of tasks
    */
   async waitForTask(
     taskUid: number,

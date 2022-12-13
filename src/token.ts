@@ -28,7 +28,7 @@ function sign(apiKey: string, encodedHeader: string, encodedPayload: string) {
 /**
  * Create the header of the token.
  *
- * @returns - The header encoded in base64.
+ * @returns The header encoded in base64.
  */
 function createHeader() {
   const header = {

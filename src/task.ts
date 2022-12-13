@@ -66,7 +66,7 @@ class TaskClient {
    * Get tasks
    *
    * @param parameters - Parameters to browse the tasks
-   * @returns - Promise containing all tasks
+   * @returns Promise containing all tasks
    */
   async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     const url = `tasks`

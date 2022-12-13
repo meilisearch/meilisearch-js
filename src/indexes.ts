@@ -226,7 +226,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * Get the list of all the tasks of the index.
    *
    * @param parameters - Parameters to browse the tasks
-   * @returns - Promise containing all tasks
+   * @returns Promise containing all tasks
    */
   async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     return await this.tasks.getTasks({ ...parameters, indexUids: [this.uid] })
@@ -236,7 +236,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * Get one task of the index.
    *
    * @param taskUid - Task identifier
-   * @returns - Promise containing a task
+   * @returns Promise containing a task
    */
   async getTask(taskUid: number): Promise<Task> {
     return await this.tasks.getTask(taskUid)
@@ -247,7 +247,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @param taskUids - Tasks identifier
    * @param waitOptions - Options on timeout and interval
-   * @returns - Promise containing an array of tasks
+   * @returns Promise containing an array of tasks
    */
   async waitForTasks(
     taskUids: number[],
@@ -264,7 +264,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @param taskUid - Task identifier
    * @param waitOptions - Options on timeout and interval
-   * @returns - Promise containing an array of tasks
+   * @returns Promise containing an array of tasks
    */
   async waitForTask(
     taskUid: number,
