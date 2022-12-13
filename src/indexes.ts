@@ -20,7 +20,6 @@ import {
   IndexStats,
   DocumentsQuery,
   DocumentQuery,
-  Document,
   DocumentOptions,
   Settings,
   Synonyms,
@@ -33,11 +32,11 @@ import {
   DisplayedAttributes,
   TypoTolerance,
   WaitOptions,
-  DocumentsResults,
   TasksQuery,
   TasksResults,
   PaginationSettings,
   Faceting,
+  ResourceResults,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -289,6 +288,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     const url = `indexes/${this.uid}/stats`
     return await this.httpRequest.get<IndexStats>(url)
   }
+
   ///
   /// DOCUMENTS
   ///
@@ -299,9 +299,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @param parameters - Parameters to browse the documents
    * @returns Promise containing Document responses
    */
-  async getDocuments<T = Record<string, any>>(
-    parameters: DocumentsQuery<T> = {}
-  ): Promise<DocumentsResults<T>> {
+  async getDocuments<D extends Record<string, any> = T>(
+    parameters: DocumentsQuery<D> = {}
+  ): Promise<ResourceResults<D[]>> {
     const url = `indexes/${this.uid}/documents`
 
     const fields = (() => {
@@ -311,7 +311,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       return undefined
     })()
 
-    return await this.httpRequest.get<Promise<DocumentsResults<T>>>(
+    return await this.httpRequest.get<Promise<ResourceResults<D[]>>>(
       url,
       removeUndefinedFromObject({
         ...parameters,
@@ -327,10 +327,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @param parameters - Parameters applied on a document
    * @returns Promise containing Document response
    */
-  async getDocument<T = Record<string, any>>(
+  async getDocument<D = T>(
     documentId: string | number,
     parameters?: DocumentQuery<T>
-  ): Promise<Document<T>> {
+  ): Promise<D> {
     const url = `indexes/${this.uid}/documents/${documentId}`
 
     const fields = (() => {
@@ -340,7 +340,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       return undefined
     })()
 
-    return await this.httpRequest.get<Document<T>>(
+    return await this.httpRequest.get<D>(
       url,
       removeUndefinedFromObject({
         ...parameters,
@@ -357,7 +357,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @returns Promise containing an EnqueuedTask
    */
   async addDocuments(
-    documents: Array<Document<T>>,
+    documents: T[],
     options?: DocumentOptions
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
@@ -375,7 +375,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @returns Promise containing array of enqueued task objects for each batch
    */
   async addDocumentsInBatches(
-    documents: Array<Document<T>>,
+    documents: T[],
     batchSize = 1000,
     options?: DocumentOptions
   ): Promise<EnqueuedTask[]> {
@@ -396,7 +396,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @returns Promise containing an EnqueuedTask
    */
   async updateDocuments(
-    documents: Array<Document<Partial<T>>>,
+    documents: Array<Partial<T>>,
     options?: DocumentOptions
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`
@@ -414,7 +414,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @returns Promise containing array of enqueued task objects for each batch
    */
   async updateDocumentsInBatches(
-    documents: Array<Document<Partial<T>>>,
+    documents: Array<Partial<T>>,
     batchSize = 1000,
     options?: DocumentOptions
   ): Promise<EnqueuedTask[]> {
@@ -555,6 +555,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
 
     return new EnqueuedTask(task)
   }
+
   ///
   /// SYNONYMS
   ///
