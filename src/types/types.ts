@@ -161,13 +161,6 @@ export type DocumentQuery<T = Record<string, any>> = {
   fields?: Fields<T>
 }
 
-export type Document<T = Record<string, any>> = T
-export type Documents<T = Record<string, any>> = Array<Document<T>>
-
-export type DocumentsResults<T = Record<string, any>> = ResourceResults<
-  Documents<T>
-> & {}
-
 /*
  ** Settings
  */
