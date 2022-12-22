@@ -3,6 +3,28 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
+synonyms_guide_1: |-
+  client.index('movies').updateSynonyms({
+    "great": ["fantastic"],
+    "fantastic": ["great"]
+  })
+date_guide_index_1: |-
+  const games = require('./games.json')
+  client.index('games').addDocuments(games).then((res) => console.log(res))
+date_guide_filterable_attributes_1: |-
+  client.index('games').updateFilterableAttributes({
+    filterableAttributes: ['release_timestamp']
+  })
+date_guide_filter_1: |-
+  client.index('games').search('', {
+    filter: 'release_timestamp >= 1514761200 AND release_timestamp < 1672527600'
+  })
+date_guide_sortable_attributes_1: |-
+  client.index('games').updateSortableAttributes(['release_timestamp'])
+date_guide_sort_1: |-
+  client.index('games').search('', {
+    sort: ['release_timestamp:desc'],
+  })
 get_one_index_1: |-
   client.index('movies').getRawInfo()
 list_all_indexes_1: |-
@@ -518,6 +540,8 @@ getting_started_faceting: |-
   client.index('movies').updateFaceting({ maxValuesPerFacet: 2 })
 getting_started_filtering: |-
   client.index('meteorites').search('', { filter: 'mass < 200' })
+getting_started_pagination: |-
+  client.index("movies").updatePagination({ maxTotalHits: 500 })
 get_filterable_attributes_1: |-
   client.index('movies').getFilterableAttributes()
 update_filterable_attributes_1: |-
