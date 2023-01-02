@@ -119,7 +119,7 @@ update_settings_1: |-
       displayedAttributes: [
           'title',
           'overview',
-          'genres'
+          'genres',
           'release_date'
       ],
       stopWords: [
