@@ -75,11 +75,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @param config - Additional request configuration options
    * @returns Promise containing the search response
    */
-  async search<D extends Record<string, any> = T>(
+  async search<D extends Record<string, any> = T, S extends SearchParams = SearchParams>(
     query?: string | null,
-    options?: SearchParams,
+    options?: S,
     config?: Partial<Request>
-  ): Promise<SearchResponse<D>> {
+  ): Promise<SearchResponse<D, S>> {
     const url = `indexes/${this.uid}/search`
 
     return await this.httpRequest.post(
@@ -98,11 +98,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @param config - Additional request configuration options
    * @returns Promise containing the search response
    */
-  async searchGet<D extends Record<string, any> = T>(
+  async searchGet<D extends Record<string, any> = T, S extends SearchParams = SearchParams>(
     query?: string | null,
-    options?: SearchParams,
+    options?: S,
     config?: Partial<Request>
-  ): Promise<SearchResponse<D>> {
+  ): Promise<SearchResponse<D, S>> {
     const url = `indexes/${this.uid}/search`
 
     const parseFilter = (filter?: Filter): string | undefined => {
@@ -125,7 +125,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       attributesToHighlight: options?.attributesToHighlight?.join(','),
     }
 
-    return await this.httpRequest.get<SearchResponse<D>>(
+    return await this.httpRequest.get<SearchResponse<D, S>>(
       url,
       removeUndefinedFromObject(getParams),
       config
