@@ -74,7 +74,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",
     "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "23.0.4",
+    "@rollup/plugin-commonjs": "24.0.0",
     "@rollup/plugin-json": "^5.0.2",
     "@rollup/plugin-node-resolve": "15.0.1",
     "@types/jest": "^27.5.0",
