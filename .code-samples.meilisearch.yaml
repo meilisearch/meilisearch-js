@@ -12,9 +12,7 @@ date_guide_index_1: |-
   const games = require('./games.json')
   client.index('games').addDocuments(games).then((res) => console.log(res))
 date_guide_filterable_attributes_1: |-
-  client.index('games').updateFilterableAttributes({
-    filterableAttributes: ['release_timestamp']
-  })
+  client.index('games').updateFilterableAttributes(['release_timestamp'])
 date_guide_filter_1: |-
   client.index('games').search('', {
     filter: 'release_timestamp >= 1514761200 AND release_timestamp < 1672527600'
