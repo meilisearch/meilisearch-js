@@ -429,6 +429,9 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#index_creation_failed */
   INDEX_CREATION_FAILED = 'index_creation_failed',
 
+  /** @see https://docs.meilisearch.com/errors/#missing_index_uid */
+  MISSING_INDEX_UID = 'missing_index_uid',
+
   /** @see https://docs.meilisearch.com/errors/#index_already_exists */
   INDEX_ALREADY_EXISTS = 'index_already_exists',
 
@@ -441,6 +444,12 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#index_not_accessible */
   INDEX_NOT_ACCESSIBLE = 'index_not_accessible',
 
+  /** @see https://docs.meilisearch.com/errors/#invalid_index_offset */
+  INVALID_INDEX_OFFSET = 'invalid_index_offset',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_index_limit */
+  INVALID_INDEX_LIMIT = 'invalid_index_limit',
+
   /** @see https://docs.meilisearch.com/errors/#invalid_state */
   INVALID_STATE = 'invalid_state',
 
@@ -449,6 +458,9 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#index_primary_key_already_exists */
   INDEX_PRIMARY_KEY_ALREADY_EXISTS = 'index_primary_key_already_exists',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_index_primary_key */
+  INVALID_INDEX_PRIMARY_KEY = 'invalid_index_primary_key',
 
   /** @see https://docs.meilisearch.com/errors/#max_fields_limit_exceeded */
   DOCUMENTS_FIELDS_LIMIT_REACHED = 'document_fields_limit_reached',
@@ -464,6 +476,15 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#missing_content_type */
   MISSING_CONTENT_TYPE = 'missing_content_type',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_document_fields */
+  INVALID_DOCUMENT_FIELDS = 'invalid_document_fields',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_document_limit */
+  INVALID_DOCUMENT_LIMIT = 'invalid_document_limit',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_document_offset */
+  INVALID_DOCUMENT_OFFSET = 'invalid_document_offset',
 
   /** @see https://docs.meilisearch.com/errors/#payload_too_large */
   PAYLOAD_TOO_LARGE = 'payload_too_large',
@@ -494,6 +515,54 @@ export const enum ErrorStatusCode {
 
   /** @see https://docs.meilisearch.com/errors/#invalid_geo_field */
   INVALID_GEO_FIELD = 'invalid_geo_field',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_offset */
+  INVALID_SEARCH_OFFSET = 'invalid_search_offset',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_limit */
+  INVALID_SEARCH_LIMIT = 'invalid_search_limit',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_page */
+  INVALID_SEARCH_PAGE = 'invalid_search_page',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_hits_per_page */
+  INVALID_SEARCH_HITS_PER_PAGE = 'invalid_search_hits_per_page',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_attributes_to_retrieve */
+  INVALID_SEARCH_ATTRIBUTES_TO_RETRIEVE = 'invalid_search_attributes_to_retrieve',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_attributes_to_crop */
+  INVALID_SEARCH_ATTRIBUTES_TO_CROP = 'invalid_search_attributes_to_crop',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_crop_length */
+  INVALID_SEARCH_CROP_LENGTH = 'invalid_search_crop_length',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_attributes_to_highlight */
+  INVALID_SEARCH_ATTRIBUTES_TO_HIGHLIGHT = 'invalid_search_attributes_to_highlight',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_show_matches_position */
+  INVALID_SEARCH_SHOW_MATCHES_POSITION = 'invalid_search_show_matches_position',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_filter */
+  INVALID_SEARCH_FILTER = 'invalid_search_filter',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_sort */
+  INVALID_SEARCH_SORT = 'invalid_search_sort',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_facets */
+  INVALID_SEARCH_FACETS = 'invalid_search_facets',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_highlight_pre_tag */
+  INVALID_SEARCH_HIGHLIGHT_PRE_TAG = 'invalid_search_highlight_pre_tag',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_highlight_post_tag */
+  INVALID_SEARCH_HIGHLIGHT_POST_TAG = 'invalid_search_highlight_post_tag',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_crop_marker */
+  INVALID_SEARCH_CROP_MARKER = 'invalid_search_crop_marker',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_matching_strategy */
+  INVALID_SEARCH_MATCHING_STRATEGY = 'invalid_search_matching_strategy',
 
   /** @see https://docs.meilisearch.com/errors/#bad_request */
   BAD_REQUEST = 'bad_request',
@@ -543,8 +612,11 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#dump_not_found */
   DUMP_NOT_FOUND = 'dump_not_found',
 
-  /** @see https://docs.meilisearch.com/errors/#duplicate_index_found */
-  DUPLICATE_INDEX_FOUND = 'duplicate_index_found',
+  /** @see https://docs.meilisearch.com/errors/#invalid_swap_duplicate_index_found */
+  INVALID_SWAP_DUPLICATE_INDEX_FOUND = 'invalid_swap_duplicate_index_found',
+
+  /** @see https://docs.meilisearch.com/errors/#invalid_swap_indexes */
+  INVALID_SWAP_INDEXES = 'invalid_swap_indexes',
 
   /** @see https://docs.meilisearch.com/errors/#missing_master_key */
   MISSING_MASTER_KEY = 'missing_master_key',
