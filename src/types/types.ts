@@ -507,14 +507,11 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#invalid_request */
   INVALID_REQUEST = 'invalid_request',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_filter */
-  INVALID_FILTER = 'invalid_filter',
+  /** @see https://docs.meilisearch.com/errors/#invalid_document_geo_field */
+  INVALID_DOCUMENT_GEO_FIELD = 'invalid_document_geo_field',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_sort */
-  INVALID_SORT = 'invalid_sort',
-
-  /** @see https://docs.meilisearch.com/errors/#invalid_geo_field */
-  INVALID_GEO_FIELD = 'invalid_geo_field',
+  /** @see https://docs.meilisearch.com/errors/#invalid_search_q */
+  INVALID_SEARCH_Q = 'invalid_search_q',
 
   /** @see https://docs.meilisearch.com/errors/#invalid_search_offset */
   INVALID_SEARCH_OFFSET = 'invalid_search_offset',
@@ -591,8 +588,23 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#api_key_not_found */
   API_KEY_NOT_FOUND = 'api_key_not_found',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_parameter */
-  MISSING_PARAMETER = 'missing_parameter',
+  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_uid */
+  IMMUTABLE_API_KEY_UID = 'immutable_api_key_uid',
+
+  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_actions */
+  IMMUTABLE_API_KEY_ACTIONS = 'immutable_api_key_actions',
+
+  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_indexes */
+  IMMUTABLE_API_KEY_INDEXES = 'immutable_api_key_indexes',
+
+  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_expires_at */
+  IMMUTABLE_API_KEY_EXPIRES_AT = 'immutable_api_key_expires_at',
+
+  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_created_at */
+  IMMUTABLE_API_KEY_CREATED_AT = 'immutable_api_key_created_at',
+
+  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_update_at */
+  IMMUTABLE_API_KEY_UPDATE_AT = 'immutable_api_key_update_at',
 
   /** @see https://docs.meilisearch.com/errors/#missing_authorization_header */
   MISSING_AUTHORIZATION_HEADER = 'missing_authorization_header',
@@ -618,26 +630,116 @@ export const enum ErrorStatusCode {
   /** @see https://docs.meilisearch.com/errors/#invalid_swap_indexes */
   INVALID_SWAP_INDEXES = 'invalid_swap_indexes',
 
+  /** @see https://docs.meilisearch.com/errors/#missing_swap_indexes */
+  MISSING_SWAP_INDEXES = 'missing_swap_indexes',
+
   /** @see https://docs.meilisearch.com/errors/#missing_master_key */
   MISSING_MASTER_KEY = 'missing_master_key',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_types_filter */
-  INVALID_TASK_TYPES_FILTER = 'invalid_task_types_filter',
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_types */
+  INVALID_TASK_TYPES = 'invalid_task_types',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_statuses_filter */
-  INVALID_TASK_STATUSES_FILTER = 'invalid_task_statuses_filter',
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_uids */
+  INVALID_TASK_UIDS = 'invalid_task_uids',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_canceled_by_filter */
-  INVALID_TASK_CANCELED_BY_FILTER = 'invalid_task_canceled_by_filter',
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_statuses */
+  INVALID_TASK_STATUSES = 'invalid_task_statuses',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_uids_filter */
-  INVALID_TASK_UIDS_FILTER = 'invalid_task_uids_filter',
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_limit */
+  INVALID_TASK_LIMIT = 'invalid_task_limit',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_date_filter */
-  INVALID_TASK_DATE_FILTER = 'invalid_task_date_filter',
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_from */
+  INVALID_TASK_FROM = 'invalid_task_from',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_canceled_by */
+  INVALID_TASK_CANCELED_BY = 'invalid_task_canceled_by',
 
   /** @see http://docs.meilisearch.com/errors/#missing_task_filters */
   MISSING_TASK_FILTERS = 'missing_task_filters',
+
+  /** @see http://docs.meilisearch.com/errors/#too_many_open_files */
+  TOO_MANY_OPEN_FILES = 'too_many_open_files',
+
+  /** @see http://docs.meilisearch.com/errors/#io_error */
+  IO_ERROR = 'io_error',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_index_uids */
+  INVALID_TASK_INDEX_UIDS = 'invalid_task_index_uids',
+
+  /** @see http://docs.meilisearch.com/errors/#immutable_index_uid */
+  IMMUTABLE_INDEX_UID = 'immutable_index_uid',
+
+  /** @see http://docs.meilisearch.com/errors/#immutable_index_created_at */
+  IMMUTABLE_INDEX_CREATED_AT = 'immutable_index_created_at',
+
+  /** @see http://docs.meilisearch.com/errors/#immutable_index_updated_at */
+  IMMUTABLE_INDEX_UPDATED_AT = 'immutable_index_updated_at',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_settings_displayed_attributes */
+  INVALID_SETTINGS_DISPLAYED_ATTRIBUTES = 'invalid_settings_displayed_attributes',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_settings_searchable_attributes */
+  INVALID_SETTINGS_SEARCHABLE_ATTRIBUTES = 'invalid_settings_searchable_attributes',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_settings_filterable_attributes */
+  INVALID_SETTINGS_FILTERABLE_ATTRIBUTES = 'invalid_settings_filterable_attributes',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_settings_sortable_attributes */
+  INVALID_SETTINGS_SORTABLE_ATTRIBUTES = 'invalid_settings_sortable_attributes',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_settings_ranking_rules */
+  INVALID_SETTINGS_RANKING_RULES = 'invalid_settings_ranking_rules',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_settings_stop_words */
+  INVALID_SETTINGS_STOP_WORDS = 'invalid_settings_stop_words',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_settings_synonyms */
+  INVALID_SETTINGS_SYNONYMS = 'invalid_settings_synonyms',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_settings_distinct_attribute */
+  INVALID_SETTINGS_DISTINCT_ATTRIBUTE = 'invalid_settings_distinct_attribute',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_settings_typo_tolerance */
+  INVALID_SETTINGS_TYPO_TOLERANCE = 'invalid_settings_typo_tolerance',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_settings_faceting */
+  INVALID_SETTINGS_FACETING = 'invalid_settings_faceting',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_settings_pagination */
+  INVALID_SETTINGS_PAGINATION = 'invalid_settings_pagination',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_before_enqueued_at */
+  INVALID_TASK_BEFORE_ENQUEUED_AT = 'invalid_task_before_enqueued_at',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_after_enqueued_at */
+  INVALID_TASK_AFTER_ENQUEUED_AT = 'invalid_task_after_enqueued_at',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_before_started_at */
+  INVALID_TASK_BEFORE_STARTED_AT = 'invalid_task_before_started_at',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_after_started_at */
+  INVALID_TASK_AFTER_STARTED_AT = 'invalid_task_after_started_at',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_before_finished_at */
+  INVALID_TASK_BEFORE_FINISHED_AT = 'invalid_task_before_finished_at',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_task_after_finished_at */
+  INVALID_TASK_AFTER_FINISHED_AT = 'invalid_task_after_finished_at',
+
+  /** @see http://docs.meilisearch.com/errors/#missing_api_key_actions */
+  MISSING_API_KEY_ACTIONS = 'missing_api_key_actions',
+
+  /** @see http://docs.meilisearch.com/errors/#missing_api_key_indexes */
+  MISSING_API_KEY_INDEXES = 'missing_api_key_indexes',
+
+  /** @see http://docs.meilisearch.com/errors/#missing_api_key_expires_at */
+  MISSING_API_KEY_EXPIRES_AT = 'missing_api_key_expires_at',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_api_key_limit */
+  INVALID_API_KEY_LIMIT = 'invalid_api_key_limit',
+
+  /** @see http://docs.meilisearch.com/errors/#invalid_api_key_offset */
+  INVALID_API_KEY_OFFSET = 'invalid_api_key_offset',
 }
 
 export type TokenIndexRules = {

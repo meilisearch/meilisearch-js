@@ -436,7 +436,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
         await expect(client.swapIndexes(swaps)).rejects.toHaveProperty(
           'code',
-          ErrorStatusCode.DUPLICATE_INDEX_FOUND
+          ErrorStatusCode.INVALID_SWAP_DUPLICATE_INDEX_FOUND
         )
       })
     })
