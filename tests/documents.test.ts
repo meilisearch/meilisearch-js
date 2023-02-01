@@ -319,6 +319,74 @@ describe('Documents tests', () => {
         expect(documents.results.length).toEqual(dataset.length + 1)
       })
 
+      test(`${permission} key: Add document and infer correct "_id" primary key`, async () => {
+        const client = await getClient(permission)
+
+        const doc = {
+          title: 'hello',
+          _id: 1,
+        }
+        const { taskUid: addDocTask } = await client
+          .index(indexNoPk.uid)
+          .addDocuments([doc])
+        await client.index(indexNoPk.uid).waitForTask(addDocTask)
+
+        const index = await client.index(indexNoPk.uid).fetchInfo()
+
+        expect(index).toHaveProperty('primaryKey', '_id')
+      })
+
+      test(`${permission} key: Add document and infer correct "findmeid" primary key`, async () => {
+        const client = await getClient(permission)
+        const doc = {
+          title: 'hello',
+          findmeid: 1,
+        }
+        const { taskUid: addDocTask } = await client
+          .index(indexNoPk.uid)
+          .addDocuments([doc])
+        await client.index(indexNoPk.uid).waitForTask(addDocTask)
+
+        const index = await client.index(indexNoPk.uid).fetchInfo()
+
+        expect(index).toHaveProperty('primaryKey', 'findmeid')
+      })
+
+      test(`${permission} key: Add document with two inferable primary key`, async () => {
+        const client = await getClient(permission)
+        const doc = {
+          title: 'hello',
+          id: 1,
+          _id: 1,
+        }
+        const { taskUid: addDocTask } = await client
+          .index(indexNoPk.uid)
+          .addDocuments([doc])
+        const task = await client.index(indexNoPk.uid).waitForTask(addDocTask)
+        const index = await client.index(indexNoPk.uid).fetchInfo()
+
+        expect(task.error?.code).toEqual(
+          'index_primary_key_multiple_candidates_found'
+        )
+        expect(index).toHaveProperty('primaryKey', null)
+      })
+
+      test(`${permission} key: Add document with none inferable primary key`, async () => {
+        const client = await getClient(permission)
+        const doc = {
+          title: 'hello',
+          idfindme: 1,
+        }
+        const { taskUid: addDocTask } = await client
+          .index(indexNoPk.uid)
+          .addDocuments([doc])
+        const task = await client.index(indexNoPk.uid).waitForTask(addDocTask)
+        const index = await client.index(indexNoPk.uid).fetchInfo()
+
+        expect(task.error?.code).toEqual('index_primary_key_no_candidate_found')
+        expect(index).toHaveProperty('primaryKey', null)
+      })
+
       test(`${permission} key: Delete a document from index that has NO primary key`, async () => {
         const client = await getClient(permission)
         const { taskUid: addDocTask } = await client
