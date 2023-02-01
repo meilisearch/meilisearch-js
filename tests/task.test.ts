@@ -376,10 +376,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong argument type
         client.getTasks({ types: ['wrong'] })
-      ).rejects.toHaveProperty(
-        'code',
-        ErrorStatusCode.INVALID_TASK_TYPES_FILTER
-      )
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_TYPES)
     })
 
     // filters error code: INVALID_TASK_STATUSES_FILTER
@@ -389,10 +386,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong argument type
         client.getTasks({ statuses: ['wrong'] })
-      ).rejects.toHaveProperty(
-        'code',
-        ErrorStatusCode.INVALID_TASK_STATUSES_FILTER
-      )
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_STATUSES)
     })
 
     // filters error code: INVALID_TASK_UIDS_FILTER
@@ -402,7 +396,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong argument type
         client.getTasks({ uids: ['wrong'] })
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_UIDS_FILTER)
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_UIDS)
     })
 
     // filters error code: INVALID_TASK_CANCELED_BY_FILTER
@@ -412,10 +406,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong canceledBy type
         client.getTasks({ canceledBy: ['wrong'] })
-      ).rejects.toHaveProperty(
-        'code',
-        ErrorStatusCode.INVALID_TASK_CANCELED_BY_FILTER
-      )
+      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_CANCELED_BY)
     })
 
     // filters error code: INVALID_TASK_DATE_FILTER
@@ -425,7 +416,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong date format
         client.getTasks({ beforeEnqueuedAt: 'wrong' })
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_DATE_FILTER)
+      ).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.INVALID_TASK_BEFORE_ENQUEUED_AT
+      )
     })
 
     // cancel: uid
