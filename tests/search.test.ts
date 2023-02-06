@@ -802,6 +802,7 @@ describe.each([
       'unreachable',
       {},
       {
+        // @ts-ignore qwe
         signal: controller.signal,
       }
     )
@@ -824,6 +825,7 @@ describe.each([
       searchQuery,
       {},
       {
+        // @ts-ignore
         signal: controllerA.signal,
       }
     )
@@ -832,6 +834,7 @@ describe.each([
       searchQuery,
       {},
       {
+        // @ts-ignore
         signal: controllerB.signal,
       }
     )
@@ -840,6 +843,7 @@ describe.each([
       searchQuery,
       {},
       {
+        // @ts-ignore
         signal: controllerC.signal,
       }
     )
