@@ -59,7 +59,9 @@ class Client {
    * @param indexUid - The index UID
    * @returns Instance of Index
    */
-  index<T = any>(indexUid: string): Index<T> {
+  index<T extends Record<string, any> = Record<string, any>>(
+    indexUid: string
+  ): Index<T> {
     return new Index<T>(this.config, indexUid)
   }
 
@@ -70,7 +72,9 @@ class Client {
    * @param indexUid - The index UID
    * @returns Promise returning Index instance
    */
-  async getIndex<T = any>(indexUid: string): Promise<Index<T>> {
+  async getIndex<T extends Record<string, any> = Record<string, any>>(
+    indexUid: string
+  ): Promise<Index<T>> {
     return new Index<T>(this.config, indexUid).fetchInfo()
   }
 

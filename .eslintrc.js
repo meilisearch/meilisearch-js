@@ -53,5 +53,6 @@ module.exports = {
       },
     ],
     'comma-dangle': 'off',
+    '@typescript-eslint/ban-ts-ignore': 'off',
   },
 }
