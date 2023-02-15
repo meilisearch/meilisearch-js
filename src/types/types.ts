@@ -106,6 +106,10 @@ export type SearchRequestGET = Pagination &
     showMatchesPosition?: boolean
   }
 
+export type MultiSearchParams = {
+  queries: Array<SearchParams & { indexUid: string }>
+}
+
 export type CategoriesDistribution = {
   [category: string]: number
 }
@@ -135,6 +139,10 @@ export type SearchResponse<T = Record<string, any>> = {
   offset?: number
   limit?: number
   estimatedTotalHits?: number
+}
+
+export type MultiSearchResponse<T = Record<string, any>> = {
+  results: Array<SearchResponse<T> & { indexUid: string }>
 }
 
 export type FieldDistribution = {
