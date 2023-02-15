@@ -12,8 +12,16 @@ on:
 jobs:
   integration_tests:
     # Will not run if the event is a PR to bump-meilisearch-v* (so a pre-release PR)
-    # Will still run for each push to bump-meilisearch-v*
-    if: github.event_name != 'pull_request' || !startsWith(github.base_ref, 'bump-meilisearch-v')
+    # Will not run if the event is a PR to pre-release-beta/*
+    # Will not run if the event is a PR to prototype-beta/*
+    # Will not run if the event is a push on pre-release-beta/*
+    # Will still run for each push to bump-meilisearch-v* and prototype-beta/*
+    if: |
+      github.event_name != 'pull_request' ||
+      !startsWith(github.base_ref, 'bump-meilisearch-v') &&
+      !startsWith(github.base_ref, 'pre-release-beta/') &&
+      !startsWith(github.base_ref, 'prototype-beta/') &&
+      !startsWith(github.head_ref, 'pre-release-beta/')
     runs-on: ubuntu-latest
     services:
       meilisearch:

@@ -1,28 +1,33 @@
 # Testing the code base against the Meilisearch pre-releases
 name: Pre-Release Tests
 
-# # Will only run for PRs and pushes to bump-meilisearch-v*
+# Will only run for PRs and pushes to bump-meilisearch-v*
 on:
-  push:
-    branches: [bump-meilisearch-v*]
   pull_request:
-    branches: [bump-meilisearch-v*]
+    branches:
+      - 'bump-meilisearch-v**'
+      - 'pre-release-beta/**'
+  push:
+    branches:
+      - 'bump-meilisearch-v**'
+      - 'pre-release-beta/**'
 
 jobs:
   meilisearch-version:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || !startsWith(github.base_ref, 'bump-meilisearch-v')
     outputs:
-      version: ${{ steps.grep-step.outputs.version }}
+      version: ${{ steps.grep-step.outputs.meilisearch_version }}
     steps:
       - uses: actions/checkout@v3
       - name: Grep docker beta version of Meilisearch
         id: grep-step
         run: |
           MEILISEARCH_VERSION=$(curl https://raw.githubusercontent.com/meilisearch/integration-guides/main/scripts/get-latest-meilisearch-rc.sh | sh)
-          echo $MEILISEARCH_VERSION
-          echo ::set-output name=version::$MEILISEARCH_VERSION
+          echo "meilisearch_version=$MEILISEARCH_VERSION" >> $GITHUB_OUTPUT
   integration_tests:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || !startsWith(github.base_ref, 'bump-meilisearch-v')
     needs: ['meilisearch-version']
     services:
       meilisearch:
