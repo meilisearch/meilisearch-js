@@ -75,7 +75,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @param config - Additional request configuration options
    * @returns Promise containing the search response
    */
-  async search<D = T>(
+  async search<D extends Record<string, any> = T>(
     query?: string | null,
     options?: SearchParams,
     config?: Partial<Request>
@@ -98,7 +98,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @param config - Additional request configuration options
    * @returns Promise containing the search response
    */
-  async searchGet<D = T>(
+  async searchGet<D extends Record<string, any> = T>(
     query?: string | null,
     options?: SearchParams,
     config?: Partial<Request>
