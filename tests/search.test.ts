@@ -95,6 +95,14 @@ describe.each([
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
     expect(response.hits.length).toEqual(2)
+    // @ts-expect-error Not present in the SearchResponse type because neither `page` or `hitsPerPage` is provided in the search params.
+    expect(response.hitsPerPage).toBeUndefined()
+    // @ts-expect-error Not present in the SearchResponse type because neither `page` or `hitsPerPage` is provided in the search params.
+    expect(response.page).toBeUndefined()
+    // @ts-expect-error Not present in the SearchResponse type because neither `page` or `hitsPerPage` is provided in the search params.
+    expect(response.totalPages).toBeUndefined()
+    // @ts-expect-error Not present in the SearchResponse type because neither `page` or `hitsPerPage` is provided in the search params.
+    expect(response.totalHits).toBeUndefined()
   })
 
   test(`${permission} key: Basic phrase search with matchingStrategy at ALL`, async () => {
@@ -255,6 +263,14 @@ describe.each([
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
     expect(response.hits.length).toEqual(1)
+    // @ts-expect-error Not present in the SearchResponse type because neither `page` or `hitsPerPage` is provided in the search params.
+    expect(response.hitsPerPage).toBeUndefined()
+    // @ts-expect-error Not present in the SearchResponse type because neither `page` or `hitsPerPage` is provided in the search params.
+    expect(response.page).toBeUndefined()
+    // @ts-expect-error Not present in the SearchResponse type because neither `page` or `hitsPerPage` is provided in the search params.
+    expect(response.totalPages).toBeUndefined()
+    // @ts-expect-error Not present in the SearchResponse type because neither `page` or `hitsPerPage` is provided in the search params.
+    expect(response.totalHits).toBeUndefined()
   })
 
   test(`${permission} key: search with matches parameter and small croplength`, async () => {
@@ -557,6 +573,12 @@ describe.each([
     expect(response.page).toEqual(1)
     expect(response.totalPages).toEqual(0)
     expect(response.totalHits).toEqual(7)
+    // @ts-expect-error Not present in the SearchResponse type because `page` and/or `hitsPerPage` is provided in the search params.
+    expect(response.limit).toBeUndefined()
+    // @ts-expect-error Not present in the SearchResponse type because `page` and/or `hitsPerPage` is provided in the search params.
+    expect(response.offset).toBeUndefined()
+    // @ts-expect-error Not present in the SearchResponse type because `page` and/or `hitsPerPage` is provided in the search params.
+    expect(response.estimatedTotalHits).toBeUndefined()
   })
 
   test(`${permission} key: search with pagination parameters: hitsPerPage at 1 and page at 0`, async () => {
