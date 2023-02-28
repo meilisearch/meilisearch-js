@@ -123,19 +123,50 @@ export type Hit<T = Record<string, any>> = T & {
 
 export type Hits<T = Record<string, any>> = Array<Hit<T>>
 
-export type SearchResponse<T = Record<string, any>> = {
+export type SearchResponse<
+  T = Record<string, any>,
+  S extends SearchParams | undefined = undefined
+> = {
   hits: Hits<T>
   processingTimeMs: number
   facetDistribution?: FacetDistribution
   query: string
-  totalHits?: number
-  hitsPerPage?: number
-  page?: number
-  totalPages?: number
-  offset?: number
-  limit?: number
-  estimatedTotalHits?: number
+} & (undefined extends S
+  ? Partial<FinitePagination & InfinitePagination>
+  : true extends IsFinitePagination<NonNullable<S>>
+  ? FinitePagination
+  : InfinitePagination)
+
+type FinitePagination = {
+  totalHits: number
+  hitsPerPage: number
+  page: number
+  totalPages: number
 }
+type InfinitePagination = {
+  offset: number
+  limit: number
+  estimatedTotalHits: number
+}
+
+type IsFinitePagination<S extends SearchParams> = Or<
+  HasHitsPerPage<S>,
+  HasPage<S>
+>
+
+type Or<A extends boolean, B extends boolean> = true extends A
+  ? true
+  : true extends B
+  ? true
+  : false
+
+type HasHitsPerPage<S extends SearchParams> = undefined extends S['hitsPerPage']
+  ? false
+  : true
+
+type HasPage<S extends SearchParams> = undefined extends S['page']
+  ? false
+  : true
 
 export type FieldDistribution = {
   [field: string]: number

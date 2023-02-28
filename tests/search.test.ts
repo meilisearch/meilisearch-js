@@ -598,8 +598,11 @@ describe.each([
 
     expect(response.hits.length).toEqual(0)
 
+    // @ts-expect-error Property not existing on type
     expect(response.limit).toBeUndefined()
+    // @ts-expect-error Property not existing on type
     expect(response.offset).toBeUndefined()
+    // @ts-expect-error Property not existing on type
     expect(response.estimatedTotalHits).toBeUndefined()
 
     expect(response.hitsPerPage).toEqual(0)
@@ -619,8 +622,11 @@ describe.each([
     })
 
     expect(response.hits.length).toEqual(1)
+    // @ts-expect-error Property not existing on type
     expect(response.limit).toBeUndefined()
+    // @ts-expect-error Property not existing on type
     expect(response.offset).toBeUndefined()
+    // @ts-expect-error Property not existing on type
     expect(response.estimatedTotalHits).toBeUndefined()
     expect(response.hitsPerPage).toEqual(1)
     expect(response.page).toEqual(1)
@@ -638,8 +644,11 @@ describe.each([
     })
 
     expect(response.hits.length).toEqual(1)
+    // @ts-expect-error Property not existing on type
     expect(response.limit).toBeUndefined()
+    // @ts-expect-error Property not existing on type
     expect(response.offset).toBeUndefined()
+    // @ts-expect-error Property not existing on type
     expect(response.estimatedTotalHits).toBeUndefined()
     expect(response.hitsPerPage).toEqual(1)
     expect(response.page).toEqual(1)
@@ -657,8 +666,11 @@ describe.each([
     })
 
     expect(response.hits.length).toEqual(1)
+    // @ts-expect-error Property not existing on type
     expect(response.limit).toBeUndefined()
+    // @ts-expect-error Property not existing on type
     expect(response.offset).toBeUndefined()
+    // @ts-expect-error Property not existing on type
     expect(response.estimatedTotalHits).toBeUndefined()
     expect(response.page).toEqual(1)
     expect(response.hitsPerPage).toEqual(1)
