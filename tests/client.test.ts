@@ -1,4 +1,4 @@
-import { ErrorStatusCode, Health, Version, Stats } from '../src'
+import { ErrorStatusCode, Health, Version, Stats, TaskTypes } from '../src'
 import { PACKAGE_VERSION } from '../src/package-version'
 import {
   clearAllIndexes,
@@ -16,6 +16,14 @@ const indexNoPk = {
 const indexPk = {
   uid: 'movies_test2',
   primaryKey: 'id',
+}
+
+const index = {
+  uid: 'movies_test',
+}
+
+const index2 = {
+  uid: 'movies_test2',
 }
 
 afterAll(() => {
@@ -378,6 +386,72 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         await expect(index.getRawInfo()).rejects.toHaveProperty(
           'code',
           ErrorStatusCode.INDEX_NOT_FOUND
+        )
+      })
+
+      test(`${permission} key: Swap two indexes`, async () => {
+        const client = await getClient(permission)
+        await client
+          .index(index.uid)
+          .addDocuments([{ id: 1, title: `index_1` }])
+        const { taskUid } = await client
+          .index(index2.uid)
+          .addDocuments([{ id: 1, title: 'index_2' }])
+        await client.waitForTask(taskUid)
+        const swaps = [
+          {
+            indexes: [index.uid, index2.uid],
+          },
+        ]
+
+        const swapTask = await client.swapIndexes(swaps)
+        const resolvedTask = await client.waitForTask(swapTask.taskUid)
+        const docIndex1 = await client.index(index.uid).getDocument(1)
+        const docIndex2 = await client.index(index2.uid).getDocument(1)
+
+        expect(docIndex1.title).toEqual('index_2')
+        expect(docIndex2.title).toEqual('index_1')
+        expect(resolvedTask.type).toEqual(TaskTypes.INDEXES_SWAP)
+        expect(resolvedTask.details.swaps).toEqual(swaps)
+      })
+
+      test(`${permission} key: Swap two indexes with one that does not exist`, async () => {
+        const client = await getClient(permission)
+
+        const { taskUid } = await client
+          .index(index2.uid)
+          .addDocuments([{ id: 1, title: 'index_2' }])
+
+        await client.waitForTask(taskUid)
+        const swaps = [
+          {
+            indexes: ['does_not_exist', index2.uid],
+          },
+        ]
+
+        const swapTask = await client.swapIndexes(swaps)
+        const resolvedTask = await client.waitForTask(swapTask.taskUid)
+
+        expect(resolvedTask.type).toEqual(TaskTypes.INDEXES_SWAP)
+        expect(resolvedTask.error?.code).toEqual(
+          ErrorStatusCode.INDEX_NOT_FOUND
+        )
+        expect(resolvedTask.details.swaps).toEqual(swaps)
+      })
+
+      // Should be fixed by rc1
+      test(`${permission} key: Swap two one index with itself`, async () => {
+        const client = await getClient(permission)
+
+        const swaps = [
+          {
+            indexes: [index.uid, index.uid],
+          },
+        ]
+
+        await expect(client.swapIndexes(swaps)).rejects.toHaveProperty(
+          'code',
+          ErrorStatusCode.INVALID_SWAP_DUPLICATE_INDEX_FOUND
         )
       })
     })

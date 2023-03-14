@@ -10,10 +10,10 @@ function encode64(data: any) {
 /**
  * Create the header of the token.
  *
- * @param {String} apiKey API key used to sign the token.
- * @param {String} encodedHeader Header of the token in base64.
- * @param {String} encodedPayload Payload of the token in base64.
- * @returns {String} The signature of the token in base64.
+ * @param apiKey - API key used to sign the token.
+ * @param encodedHeader - Header of the token in base64.
+ * @param encodedPayload - Payload of the token in base64.
+ * @returns The signature of the token in base64.
  */
 function sign(apiKey: string, encodedHeader: string, encodedPayload: string) {
   return crypto
@@ -28,7 +28,7 @@ function sign(apiKey: string, encodedHeader: string, encodedPayload: string) {
 /**
  * Create the header of the token.
  *
- * @returns {String} The header encoded in base64.
+ * @returns The header encoded in base64.
  */
 function createHeader() {
   const header = {
@@ -42,10 +42,10 @@ function createHeader() {
 /**
  * Validate the parameter used for the payload of the token.
  *
- * @param {SearchRules} searchRules Search rules that are applied to every search.
- * @param {String} apiKey Api key used as issuer of the token.
- * @param {String} uid The uid of the api key used as issuer of the token.
- * @param {Date | undefined} expiresAt Date at which the token expires.
+ * @param searchRules - Search rules that are applied to every search.
+ * @param apiKey - Api key used as issuer of the token.
+ * @param uid - The uid of the api key used as issuer of the token.
+ * @param expiresAt - Date at which the token expires.
  */
 function validateTokenParameters(tokenParams: {
   searchRules: TokenSearchRules
@@ -97,10 +97,10 @@ function validateTokenParameters(tokenParams: {
 /**
  * Create the payload of the token.
  *
- * @param {SearchRules} searchRules Search rules that are applied to every search.
- * @param {String} uid The uid of the api key used as issuer of the token.
- * @param {Date | undefined} expiresAt Date at which the token expires.
- * @returns {String} The payload encoded in base64.
+ * @param searchRules - Search rules that are applied to every search.
+ * @param uid - The uid of the api key used as issuer of the token.
+ * @param expiresAt - Date at which the token expires.
+ * @returns The payload encoded in base64.
  */
 function createPayload(payloadParams: {
   searchRules: TokenSearchRules
@@ -128,13 +128,10 @@ class Token {
   /**
    * Generate a tenant token
    *
-   * @memberof MeiliSearch
-   * @method generateTenantToken
-   * @param {apiKeyUid} apiKeyUid The uid of the api key used as issuer of the token.
-   * @param {SearchRules} searchRules Search rules that are applied to every search.
-   * @param {TokenOptions} options Token options to customize some aspect of the token.
-   *
-   * @returns {String} The token in JWT format.
+   * @param apiKeyUid - The uid of the api key used as issuer of the token.
+   * @param searchRules - Search rules that are applied to every search.
+   * @param options - Token options to customize some aspect of the token.
+   * @returns The token in JWT format.
    */
   generateTenantToken(
     apiKeyUid: string,

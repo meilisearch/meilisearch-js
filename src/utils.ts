@@ -1,6 +1,4 @@
-/**
- * Removes undefined entries from object
- */
+/** Removes undefined entries from object */
 function removeUndefinedFromObject(obj: Record<string, any>): object {
   return Object.entries(obj).reduce((acc, curEntry) => {
     const [key, val] = curEntry

@@ -21,6 +21,8 @@ interface Movie {
   title: string
   comment?: string
   genre?: string
+  isNull?: null
+  isTrue?: boolean
 }
 
 interface NestedDocument {
@@ -110,8 +112,8 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index<Movie>(index.uid).search('prince', {})
     expect(response.hits.length === 2).toBeTruthy()
-    expect(response.offset === 0).toBeTruthy()
     expect(response.limit === 20).toBeTruthy()
+    expect(response.offset === 0).toBeTruthy()
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response.query === 'prince').toBeTruthy()
   })
@@ -167,10 +169,6 @@ describe.each([
       showMatchesPosition: true,
     })
     expect(response.hits.length === 1).toBeTruthy()
-    expect(response.offset === 0).toBeTruthy()
-    expect(response.limit === 20).toBeTruthy()
-    expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
-    expect(response.query === 'prince').toBeTruthy()
     expect(response.hits[0]?._matchesPosition?.comment).toEqual([
       { start: 22, length: 6 },
     ])
@@ -352,9 +350,26 @@ describe.each([
   test(`${permission} key: Search on index with no documents and no primary key`, async () => {
     const client = await getClient(permission)
     const response = await client.index(emptyIndex.uid).search('prince', {})
-    expect(response.limit === 20).toBeTruthy()
+
+    expect(response.hits.length === 0).toBeTruthy()
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response.query === 'prince').toBeTruthy()
+  })
+
+  test(`${permission} key: search with pagination parameters hitsPerPage/page and offset`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index<Movie>(index.uid).search('', {
+      hitsPerPage: 1,
+      page: 1,
+      limit: 1,
+    })
+
+    expect(response.hits.length).toEqual(1)
+    expect(response.hitsPerPage === 1).toBeTruthy()
+    expect(response.page === 1).toBeTruthy()
+    expect(response.totalPages === 7).toBeTruthy()
+    expect(response.totalHits === 7).toBeTruthy()
   })
 
   test(`${permission} key: Try to Search on deleted index and fail`, async () => {

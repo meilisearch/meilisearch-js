@@ -22,12 +22,12 @@ jobs:
       - name: Build meilisearch-js
         run: yarn build
       - name: Publish with latest tag
-        if: "!github.event.release.prerelease && !contains(github.ref, 'beta')"
+        if: '!github.event.release.prerelease'
         run: npm publish .
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - name: Publish with beta tag
-        if: "github.event.release.prerelease && contains(github.ref, 'beta')"
+        if: 'github.event.release.prerelease'
         run: npm publish . --tag beta
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

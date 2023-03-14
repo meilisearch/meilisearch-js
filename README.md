@@ -7,7 +7,7 @@
 <h4 align="center">
   <a href="https://github.com/meilisearch/meilisearch">Meilisearch</a> |
   <a href="https://docs.meilisearch.com">Documentation</a> |
-  <a href="https://slack.meilisearch.com">Slack</a> |
+  <a href="https://discord.meilisearch.com">Discord</a> |
   <a href="https://roadmap.meilisearch.com/tabs/1-under-consideration">Roadmap</a> |
   <a href="https://www.meilisearch.com">Website</a> |
   <a href="https://docs.meilisearch.com/faq">FAQ</a>
@@ -29,7 +29,6 @@
 
 ## Table of Contents <!-- omit in toc -->
 
-- [🎃 Hacktoberfest](#-hacktoberfest)
 - [📖 Documentation](#-documentation)
 - [🔧 Installation](#-installation)
 - [🎬 Getting started](#-getting-started)
@@ -37,14 +36,6 @@
 - [💡 Learn more](#-learn-more)
 - [⚙️ Contributing](#️-contributing)
 - [📜 API resources](#-api-resources)
-
-## 🎃 Hacktoberfest
-
-It’s Hacktoberfest 2022 @Meilisearch
-
-[Hacktoberfest](https://hacktoberfest.com/) is a celebration of the open-source community. This year, and for the third time in a row, Meilisearch is participating in this fantastic event.
-
-You’d like to contribute? Don’t hesitate to check out our [contributing guidelines](./CONTRIBUTING.md).
 
 ## 📖 Documentation
 
@@ -338,7 +329,7 @@ controller.abort()
 
 ## 🤖 Compatibility with Meilisearch
 
-This package only guarantees the compatibility with the [version v0.29.0 of Meilisearch](https://github.com/meilisearch/meilisearch/releases/tag/v0.29.0).
+This package guarantees compatibility with [version v1.x of Meilisearch](https://github.com/meilisearch/meilisearch/releases/latest), but some features may not be present. Please check the [issues](https://github.com/meilisearch/meilisearch-js/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+label%3Aenhancement) for more info.
 
 ## 💡 Learn more
 
@@ -441,6 +432,18 @@ client.getTasks(parameters: TasksQuery): Promise<TasksResults>
 client.getTask(uid: number): Promise<Task>
 ```
 
+#### [Delete tasks](https://docs.meilisearch.com/reference/api/tasks.html#delete-task)
+
+```ts
+client.deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask>
+```
+
+#### [Cancel tasks](https://docs.meilisearch.com/reference/api/tasks.html#cancel-task)
+
+```ts
+client.cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask>
+```
+
 #### [Get all tasks of an index](https://docs.meilisearch.com/reference/api/tasks.html#get-all-tasks-by-index)
 
 ```ts
@@ -452,6 +455,7 @@ client.index('myIndex').getTasks(parameters: TasksQuery): Promise<TasksResults>
 ```ts
 client.index('myIndex').getTask(uid: number): Promise<Task>
 ```
+
 
 #### Wait for one task
 
@@ -569,6 +573,12 @@ client.index('myIndex').fetchInfo(): Promise<Index>
 
 ```ts
 client.index('myIndex').fetchPrimaryKey(): Promise<string | undefined>
+```
+
+##### Swap two indexes
+
+```ts
+client.swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask>
 ```
 
 ### Settings <!-- omit in toc -->

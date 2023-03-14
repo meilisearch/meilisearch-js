@@ -19,6 +19,9 @@ interface Movie {
   id: number
   title: string
   genre?: string
+  comment?: string
+  isNull?: null
+  isTrue?: true
 }
 
 const client = new MeiliSearch(config)

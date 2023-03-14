@@ -6,17 +6,20 @@ import {
   TasksQuery,
   TasksResults,
   TaskObject,
+  CancelTasksQuery,
   TasksResultsObject,
+  DeleteTasksQuery,
 } from './types'
-import { HttpRequests } from './http-requests'
-import { removeUndefinedFromObject, sleep } from './utils'
+import { HttpRequests, toQueryParams } from './http-requests'
+import { sleep } from './utils'
+import { EnqueuedTask } from './enqueued-task'
 
 class Task {
   indexUid: TaskObject['indexUid']
   status: TaskObject['status']
   type: TaskObject['type']
   uid: TaskObject['uid']
-  batchUid: TaskObject['batchUid']
+  canceledBy: TaskObject['canceledBy']
   details: TaskObject['details']
   error: TaskObject['error']
   duration: TaskObject['duration']
@@ -29,8 +32,8 @@ class Task {
     this.status = task.status
     this.type = task.type
     this.uid = task.uid
-    this.batchUid = task.batchUid
     this.details = task.details
+    this.canceledBy = task.canceledBy
     this.error = task.error
     this.duration = task.duration
 
@@ -50,9 +53,8 @@ class TaskClient {
   /**
    * Get one task
    *
-   * @param  {number} uid - unique identifier of the task
-   *
-   * @returns { Promise<Task> }
+   * @param uid - Unique identifier of the task
+   * @returns
    */
   async getTask(uid: number): Promise<Task> {
     const url = `tasks/${uid}`
@@ -63,24 +65,15 @@ class TaskClient {
   /**
    * Get tasks
    *
-   * @param  {TasksQuery} [parameters={}] - Parameters to browse the tasks
-   *
-   * @returns {Promise<TasksResults>} - Promise containing all tasks
+   * @param parameters - Parameters to browse the tasks
+   * @returns Promise containing all tasks
    */
   async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     const url = `tasks`
 
-    const queryParams = {
-      indexUid: parameters?.indexUid?.join(','),
-      type: parameters?.type?.join(','),
-      status: parameters?.status?.join(','),
-      from: parameters.from,
-      limit: parameters.limit,
-    }
-
     const tasks = await this.httpRequest.get<Promise<TasksResultsObject>>(
       url,
-      removeUndefinedFromObject(queryParams)
+      toQueryParams<TasksQuery>(parameters)
     )
 
     return {
@@ -92,10 +85,9 @@ class TaskClient {
   /**
    * Wait for a task to be processed.
    *
-   * @param {number} taskUid Task identifier
-   * @param {WaitOptions} options Additional configuration options
-   *
-   * @returns {Promise<Task>} Promise returning a task after it has been processed
+   * @param taskUid - Task identifier
+   * @param options - Additional configuration options
+   * @returns Promise returning a task after it has been processed
    */
   async waitForTask(
     taskUid: number,
@@ -120,10 +112,9 @@ class TaskClient {
   /**
    * Waits for multiple tasks to be processed
    *
-   * @param {number[]} taskUids Tasks identifier list
-   * @param {WaitOptions} options Wait options
-   *
-   * @returns {Promise<Task[]>} Promise returning a list of tasks after they have been processed
+   * @param taskUids - Tasks identifier list
+   * @param options - Wait options
+   * @returns Promise returning a list of tasks after they have been processed
    */
   async waitForTasks(
     taskUids: number[],
@@ -138,6 +129,41 @@ class TaskClient {
       tasks.push(task)
     }
     return tasks
+  }
+
+  /**
+   * Cancel a list of enqueued or processing tasks.
+   *
+   * @param parameters - Parameters to filter the tasks.
+   * @returns Promise containing an EnqueuedTask
+   */
+  async cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
+    const url = `tasks/cancel`
+
+    const task = await this.httpRequest.post(
+      url,
+      {},
+      toQueryParams<CancelTasksQuery>(parameters)
+    )
+
+    return new EnqueuedTask(task)
+  }
+
+  /**
+   * Delete a list tasks.
+   *
+   * @param parameters - Parameters to filter the tasks.
+   * @returns Promise containing an EnqueuedTask
+   */
+  async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
+    const url = `tasks`
+
+    const task = await this.httpRequest.delete(
+      url,
+      {},
+      toQueryParams<DeleteTasksQuery>(parameters)
+    )
+    return new EnqueuedTask(task)
   }
 }
 
