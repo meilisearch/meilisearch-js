@@ -2,7 +2,7 @@ import 'cross-fetch/polyfill'
 
 import { Config, EnqueuedTaskObject } from './types'
 import { PACKAGE_VERSION } from './package-version'
-import AbortController from 'abort-controller'
+import AbortController from '@colinfrick/abort-controller'
 
 import {
   MeiliSearchError,

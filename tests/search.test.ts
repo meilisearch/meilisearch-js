@@ -1,4 +1,4 @@
-import AbortController from 'abort-controller'
+import AbortController from '@colinfrick/abort-controller'
 import { ErrorStatusCode, MatchingStrategies } from '../src/types'
 import { EnqueuedTask } from '../src/enqueued-task'
 import {
