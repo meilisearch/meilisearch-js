@@ -147,6 +147,7 @@ describe.each([
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
+    expect(response.facetStats).toBeUndefined()
     expect(response.hits.length).toEqual(2)
     // @ts-expect-error Not present in the SearchResponse type because neither `page` or `hitsPerPage` is provided in the search params.
     expect(response.hitsPerPage).toBeUndefined()
@@ -506,12 +507,17 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index(index.uid).search('a', {
       filter: ['genre = romance'],
-      facets: ['genre'],
+      facets: ['genre', 'id'],
     })
 
     expect(response).toHaveProperty('facetDistribution', {
       genre: { romance: 2 },
+      id: { '123': 1, '2': 1 },
     })
+
+    expect(response).toHaveProperty('facetStats', { id: { min: 2, max: 123 } })
+    expect(response.facetStats?.['id']?.min).toBe(2)
+    expect(response.facetStats?.['id']?.max).toBe(123)
     expect(response).toHaveProperty('hits', expect.any(Array))
     expect(response.hits.length).toEqual(2)
   })
