@@ -362,6 +362,16 @@ client.index<T>('xxx').search(query: string, options: SearchParams = {}, config?
 client.index<T>('xxx').searchGet(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>
 ```
 
+### Multi Search
+
+#### [Make multiple search requests](https://docs.meilisearch.com/reference/api/multi-search.html)
+
+```ts
+client.multiSearch(queries?: MultiSearchParams, config?: Partial<Request>): Promise<Promise<MultiSearchResponse<T>>>
+```
+
+`multiSearch` uses the `POST` method when performing its request to Meilisearch.
+
 ### Documents <!-- omit in toc -->
 
 #### [Add or replace multiple documents](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents)
