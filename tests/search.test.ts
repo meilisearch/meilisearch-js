@@ -17,6 +17,13 @@ const emptyIndex = {
   uid: 'empty_test',
 }
 
+type Books = {
+  id: number
+  title: string
+  comment: string
+  genre: string
+}
+
 const dataset = [
   {
     id: 123,
@@ -83,6 +90,52 @@ describe.each([
       .index(index.uid)
       .addDocuments(dataset)
     await client.waitForTask(task2)
+  })
+
+  test(`${permission} key: Multi index search no queries`, async () => {
+    const client = await getClient(permission)
+    const response = await client.multiSearch({
+      queries: [],
+    })
+
+    expect(response.results.length).toEqual(0)
+  })
+
+  test(`${permission} key: Multi index search with one query`, async () => {
+    const client = await getClient(permission)
+    const response = await client.multiSearch({
+      queries: [{ indexUid: index.uid, q: 'prince' }],
+    })
+
+    expect(response.results[0].hits.length).toEqual(2)
+  })
+
+  test(`${permission} key: Multi index search with multiple queries`, async () => {
+    const client = await getClient(permission)
+    const response = await client.multiSearch({
+      queries: [
+        { indexUid: index.uid, q: 'something' },
+        { indexUid: emptyIndex.uid, q: 'something' },
+      ],
+    })
+
+    expect(response.results.length).toEqual(2)
+  })
+
+  test(`${permission} key: Multi index search with one query`, async () => {
+    const client = await getClient(permission)
+
+    type MyIndex = {
+      id: 1
+    }
+
+    const response = await client.multiSearch<MyIndex & Books>({
+      queries: [{ indexUid: index.uid, q: 'prince' }],
+    })
+
+    expect(response.results[0].hits.length).toEqual(2)
+    expect(response.results[0].hits[0].id).toEqual(456)
+    expect(response.results[0].hits[0].title).toEqual('Le Petit Prince')
   })
 
   test(`${permission} key: Basic search`, async () => {
@@ -735,6 +788,14 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).search('prince')
       ).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
+    })
+
+    test(`${permission} key: Try multi search and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(client.multiSearch({ queries: [] })).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
