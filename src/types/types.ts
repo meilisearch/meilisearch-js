@@ -131,6 +131,7 @@ export type SearchResponse<
   processingTimeMs: number
   facetDistribution?: FacetDistribution
   query: string
+  facetStats?: Record<string, { min?: number; max?: number }>
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
