@@ -32,6 +32,8 @@ import {
   SwapIndexesParams,
   CancelTasksQuery,
   DeleteTasksQuery,
+  MultiSearchParams,
+  MultiSearchResponse,
 } from '../types'
 import { HttpRequests } from '../http-requests'
 import { TaskClient, Task } from '../task'
@@ -187,6 +189,40 @@ class Client {
   async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
     const url = '/swap-indexes'
     return await this.httpRequest.post(url, params)
+  }
+
+  ///
+  /// Multi Search
+  ///
+
+  /**
+   * Perform multiple search queries.
+   *
+   * It is possible to make multiple search queries on the same index or on
+   * different ones
+   *
+   * @example
+   *
+   * ```ts
+   * client.multiSearch({
+   *   queries: [
+   *     { indexUid: 'movies', q: 'wonder' },
+   *     { indexUid: 'books', q: 'flower' },
+   *   ],
+   * })
+   * ```
+   *
+   * @param queries - Search queries
+   * @param config - Additional request configuration options
+   * @returns Promise containing the search responses
+   */
+  async multiSearch<T extends Record<string, any> = Record<string, any>>(
+    queries?: MultiSearchParams,
+    config?: Partial<Request>
+  ): Promise<MultiSearchResponse<T>> {
+    const url = `/multi-search`
+
+    return await this.httpRequest.post(url, queries, undefined, config)
   }
 
   ///
