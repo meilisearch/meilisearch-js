@@ -10,7 +10,8 @@ export type Config = {
   host: string
   apiKey?: string
   clientAgents?: string[]
-  headers?: Record<string, any>
+  requestConfig?: Partial<Omit<RequestInit, 'body' | 'method'>>
+  httpClient?: (input: string, init?: RequestInit) => Promise<any>
 }
 
 ///

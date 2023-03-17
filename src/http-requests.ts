@@ -40,19 +40,29 @@ function constructHostURL(host: string): string {
   }
 }
 
+function hasHeader(headers: HeadersInit, headerName: string) {
+  if (Array.isArray(headers)) {
+    return headers.some((header) => header[0] === headerName)
+  } else if ('has' in headers) {
+    return (headers as Headers).has(headerName)
+  }
+
+  return !!headers[headerName]
+}
+
 function createHeaders(config: Config): Record<string, any> {
   const agentHeader = 'X-Meilisearch-Client'
   const packageAgent = `Meilisearch JavaScript (v${PACKAGE_VERSION})`
   const contentType = 'Content-Type'
-  config.headers = config.headers || {}
+  const configHeaders = config.requestConfig?.headers ?? {}
 
-  const headers: Record<string, any> = Object.assign({}, config.headers) // Create a hard copy and not a reference to config.headers
+  const headers: Record<string, any> = Object.assign({}, configHeaders) // Create a hard copy and not a reference to config.headers
 
   if (config.apiKey) {
     headers['Authorization'] = `Bearer ${config.apiKey}`
   }
 
-  if (!config.headers[contentType]) {
+  if (!hasHeader(configHeaders, contentType)) {
     headers['Content-Type'] = 'application/json'
   }
 
@@ -76,9 +86,13 @@ function createHeaders(config: Config): Record<string, any> {
 class HttpRequests {
   headers: Record<string, any>
   url: URL
+  fetchConfig?: Config['requestConfig']
+  httpClient?: Config['httpClient']
 
   constructor(config: Config) {
     this.headers = createHeaders(config)
+    this.fetchConfig = config.requestConfig
+    this.httpClient = config.httpClient
 
     try {
       const host = constructHostURL(config.host)
@@ -111,12 +125,20 @@ class HttpRequests {
     }
 
     try {
-      const response: any = await fetch(constructURL.toString(), {
+      const fetchFn = this.httpClient ? this.httpClient : fetch
+      const _request = fetchFn(constructURL.toString(), {
         ...config,
+        ...this.fetchConfig,
         method,
         body: JSON.stringify(body),
         headers: this.headers,
-      }).then((res) => httpResponseErrorHandler(res))
+      })
+      if (this.httpClient) {
+        return await _request
+      }
+      const response = await _request.then((res: any) =>
+        httpResponseErrorHandler(res)
+      )
       const parsedBody = await response.json().catch(() => undefined)
 
       return parsedBody

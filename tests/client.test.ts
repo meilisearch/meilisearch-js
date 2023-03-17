@@ -54,11 +54,15 @@ describe.each([
     const client = new MeiliSearch({
       ...config,
       apiKey: key,
-      headers: {
-        Expect: '200-OK',
+      requestConfig: {
+        headers: {
+          Expect: '200-OK',
+        },
       },
     })
-    expect(client.config.headers).toStrictEqual({ Expect: '200-OK' })
+    expect(client.config.requestConfig?.headers).toStrictEqual({
+      Expect: '200-OK',
+    })
     const health = await client.isHealthy()
     expect(health).toBe(true)
   })
@@ -169,11 +173,15 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = new MeiliSearch({
         ...config,
         apiKey: key,
-        headers: {
-          Expect: '200-OK',
+        requestConfig: {
+          headers: {
+            Expect: '200-OK',
+          },
         },
       })
-      expect(client.config.headers).toStrictEqual({ Expect: '200-OK' })
+      expect(client.config.requestConfig?.headers).toStrictEqual({
+        Expect: '200-OK',
+      })
       const health = await client.isHealthy()
 
       expect(health).toBe(true)
@@ -191,7 +199,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = new MeiliSearch({
         ...config,
         apiKey: key,
-        headers: {},
+        requestConfig: {
+          headers: {},
+        },
       })
 
       expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
