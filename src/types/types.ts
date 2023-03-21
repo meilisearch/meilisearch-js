@@ -106,8 +106,10 @@ export type SearchRequestGET = Pagination &
     showMatchesPosition?: boolean
   }
 
+export type MultiSearchQuery = SearchParams & { indexUid: string }
+
 export type MultiSearchParams = {
-  queries: Array<SearchParams & { indexUid: string }>
+  queries: MultiSearchQuery[]
 }
 
 export type CategoriesDistribution = {
@@ -173,8 +175,10 @@ type HasPage<S extends SearchParams> = undefined extends S['page']
   ? false
   : true
 
+export type MultiSearchResult<T> = SearchResponse<T> & { indexUid: string }
+
 export type MultiSearchResponse<T = Record<string, any>> = {
-  results: Array<SearchResponse<T> & { indexUid: string }>
+  results: Array<MultiSearchResult<T>>
 }
 
 export type FieldDistribution = {
