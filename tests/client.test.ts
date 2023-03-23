@@ -194,6 +194,38 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(results.length).toBe(1)
     })
 
+    test(`${permission} key: Create client with custom http client`, async () => {
+      const key = await getKey(permission)
+      const client = new MeiliSearch({
+        ...config,
+        apiKey: key,
+        async httpClient(url, init) {
+          const result = await fetch(url, init)
+          return result.json()
+        },
+      })
+      const health = await client.isHealthy()
+
+      expect(health).toBe(true)
+
+      const task = await client.createIndex('test')
+      await client.waitForTask(task.taskUid)
+
+      const { results } = await client.getIndexes()
+
+      expect(results.length).toBe(1)
+
+      const index = await client.getIndex('test')
+
+      const { taskUid } = await index.addDocuments([
+        { id: 1, title: 'index_2' },
+      ])
+      await client.waitForTask(taskUid)
+
+      const { results: documents } = await index.getDocuments()
+      expect(documents.length).toBe(1)
+    })
+
     test(`${permission} key: Create client with no custom client agents`, async () => {
       const key = await getKey(permission)
       const client = new MeiliSearch({

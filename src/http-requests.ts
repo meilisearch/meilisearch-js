@@ -40,29 +40,34 @@ function constructHostURL(host: string): string {
   }
 }
 
-function hasHeader(headers: HeadersInit, headerName: string) {
+function cloneAndParseHeaders(headers: HeadersInit): Record<string, string> {
   if (Array.isArray(headers)) {
-    return headers.some((header) => header[0] === headerName)
+    return headers.reduce((acc, headerPair) => {
+      acc[headerPair[0]] = headerPair[1]
+      return acc
+    }, {} as Record<string, string>)
   } else if ('has' in headers) {
-    return (headers as Headers).has(headerName)
+    const _headers: Record<string, string> = {}
+    ;(headers as Headers).forEach((value, key) => (_headers[key] = value))
+    return _headers
+  } else {
+    return Object.assign({}, headers)
   }
-
-  return !!headers[headerName]
 }
 
 function createHeaders(config: Config): Record<string, any> {
   const agentHeader = 'X-Meilisearch-Client'
   const packageAgent = `Meilisearch JavaScript (v${PACKAGE_VERSION})`
   const contentType = 'Content-Type'
-  const configHeaders = config.requestConfig?.headers ?? {}
+  const authorization = 'Authorization'
+  const headers = cloneAndParseHeaders(config.requestConfig?.headers ?? {})
 
-  const headers: Record<string, any> = Object.assign({}, configHeaders) // Create a hard copy and not a reference to config.headers
-
-  if (config.apiKey) {
-    headers['Authorization'] = `Bearer ${config.apiKey}`
+  // do not override if user provided the header
+  if (config.apiKey && !headers[authorization]) {
+    headers[authorization] = `Bearer ${config.apiKey}`
   }
 
-  if (!hasHeader(configHeaders, contentType)) {
+  if (!headers[contentType]) {
     headers['Content-Type'] = 'application/json'
   }
 
@@ -86,12 +91,12 @@ function createHeaders(config: Config): Record<string, any> {
 class HttpRequests {
   headers: Record<string, any>
   url: URL
-  fetchConfig?: Config['requestConfig']
-  httpClient?: Config['httpClient']
+  requestConfig?: Config['requestConfig']
+  httpClient?: Required<Config>['httpClient']
 
   constructor(config: Config) {
     this.headers = createHeaders(config)
-    this.fetchConfig = config.requestConfig
+    this.requestConfig = config.requestConfig
     this.httpClient = config.httpClient
 
     try {
@@ -125,17 +130,20 @@ class HttpRequests {
     }
 
     try {
-      const fetchFn = this.httpClient ? this.httpClient : fetch
-      const _request = fetchFn(constructURL.toString(), {
+      const _fetchFn = this.httpClient ? this.httpClient : fetch
+      const _request = _fetchFn(constructURL.toString(), {
         ...config,
-        ...this.fetchConfig,
+        ...this.requestConfig,
         method,
         body: JSON.stringify(body),
         headers: this.headers,
       })
+
+      // If this is done using custom http client return response as is to allow the user to parse/handle it as they see fit
       if (this.httpClient) {
         return await _request
       }
+
       const response = await _request.then((res: any) =>
         httpResponseErrorHandler(res)
       )
