@@ -327,6 +327,46 @@ index
 controller.abort()
 ```
 
+
+### Using Meilisearch behind a proxy <!-- omit in toc -->
+
+#### Custom request config <!-- omit in toc -->
+
+You can provide a custom request configuration. for example, with custom headers.
+
+```ts
+const client: MeiliSearch = new MeiliSearch({
+  host: 'http://localhost:3000/api/meilisearch/proxy',
+  requestConfig: {
+    headers: {
+      Authorization: AUTH_TOKEN
+    },
+    // OR
+    credentials: 'include'
+  }
+})
+```
+
+#### Custom http client <!-- omit in toc -->
+
+You can use your own HTTP client, for example, with [`axios`](https://github.com/axios/axios).
+
+```ts
+const client: MeiliSearch = new MeiliSearch({
+  host: 'http://localhost:3000/api/meilisearch/proxy',
+  httpClient: async (url, opts) => {
+    const response = await $axios.request({
+      url,
+      data: opts?.body,
+      headers: opts?.headers,
+      method: (opts?.method?.toLocaleUpperCase() as Method) ?? 'GET'
+    })
+
+    return response.data
+  }
+})
+```
+
 ## 🤖 Compatibility with Meilisearch
 
 This package guarantees compatibility with [version v1.x of Meilisearch](https://github.com/meilisearch/meilisearch/releases/latest), but some features may not be present. Please check the [issues](https://github.com/meilisearch/meilisearch-js/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+label%3Aenhancement) for more info.

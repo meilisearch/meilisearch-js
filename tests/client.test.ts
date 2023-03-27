@@ -49,16 +49,48 @@ describe.each([
     expect(health).toBe(true)
   })
 
-  test(`${permission} key: Create client with custom headers`, async () => {
+  test(`${permission} key: Create client with custom headers (object)`, async () => {
     const key = await getKey(permission)
     const client = new MeiliSearch({
       ...config,
       apiKey: key,
-      headers: {
-        Expect: '200-OK',
+      requestConfig: {
+        headers: {
+          Expect: '200-OK',
+        },
       },
     })
-    expect(client.config.headers).toStrictEqual({ Expect: '200-OK' })
+    expect(client.httpRequest.headers['Expect']).toBe('200-OK')
+    const health = await client.isHealthy()
+    expect(health).toBe(true)
+  })
+
+  test(`${permission} key: Create client with custom headers (array)`, async () => {
+    const key = await getKey(permission)
+    const client = new MeiliSearch({
+      ...config,
+      apiKey: key,
+      requestConfig: {
+        headers: [['Expect', '200-OK']],
+      },
+    })
+    expect(client.httpRequest.headers['Expect']).toBe('200-OK')
+    const health = await client.isHealthy()
+    expect(health).toBe(true)
+  })
+
+  test(`${permission} key: Create client with custom headers (Headers)`, async () => {
+    const key = await getKey(permission)
+    const headers = new Headers()
+    headers.append('Expect', '200-OK')
+    const client = new MeiliSearch({
+      ...config,
+      apiKey: key,
+      requestConfig: {
+        headers,
+      },
+    })
+    expect(client.httpRequest.headers.expect).toBe('200-OK')
     const health = await client.isHealthy()
     expect(health).toBe(true)
   })
@@ -169,11 +201,15 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = new MeiliSearch({
         ...config,
         apiKey: key,
-        headers: {
-          Expect: '200-OK',
+        requestConfig: {
+          headers: {
+            Expect: '200-OK',
+          },
         },
       })
-      expect(client.config.headers).toStrictEqual({ Expect: '200-OK' })
+      expect(client.config.requestConfig?.headers).toStrictEqual({
+        Expect: '200-OK',
+      })
       const health = await client.isHealthy()
 
       expect(health).toBe(true)
@@ -186,12 +222,46 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(results.length).toBe(1)
     })
 
+    test(`${permission} key: Create client with custom http client`, async () => {
+      const key = await getKey(permission)
+      const client = new MeiliSearch({
+        ...config,
+        apiKey: key,
+        async httpClient(url, init) {
+          const result = await fetch(url, init)
+          return result.json()
+        },
+      })
+      const health = await client.isHealthy()
+
+      expect(health).toBe(true)
+
+      const task = await client.createIndex('test')
+      await client.waitForTask(task.taskUid)
+
+      const { results } = await client.getIndexes()
+
+      expect(results.length).toBe(1)
+
+      const index = await client.getIndex('test')
+
+      const { taskUid } = await index.addDocuments([
+        { id: 1, title: 'index_2' },
+      ])
+      await client.waitForTask(taskUid)
+
+      const { results: documents } = await index.getDocuments()
+      expect(documents.length).toBe(1)
+    })
+
     test(`${permission} key: Create client with no custom client agents`, async () => {
       const key = await getKey(permission)
       const client = new MeiliSearch({
         ...config,
         apiKey: key,
-        headers: {},
+        requestConfig: {
+          headers: {},
+        },
       })
 
       expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
