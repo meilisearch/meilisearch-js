@@ -515,8 +515,7 @@ describe.each([
       id: { '123': 1, '2': 1 },
     })
 
-    expect(response).toHaveProperty('facetStats', { id: { min: 2, max: 123 } })
-    expect(response.facetStats?.['id']?.min).toBe(2)
+    expect(response.facetStats).toEqual({ id: { min: 2, max: 123 } })
     expect(response.facetStats?.['id']?.max).toBe(123)
     expect(response).toHaveProperty('hits', expect.any(Array))
     expect(response.hits.length).toEqual(2)
