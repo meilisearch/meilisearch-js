@@ -127,6 +127,9 @@ export type Hit<T = Record<string, any>> = T & {
 
 export type Hits<T = Record<string, any>> = Array<Hit<T>>
 
+export type FacetStat = { min: number; max: number }
+export type FacetStats = Record<string, FacetStat>
+
 export type SearchResponse<
   T = Record<string, any>,
   S extends SearchParams | undefined = undefined
@@ -135,7 +138,7 @@ export type SearchResponse<
   processingTimeMs: number
   facetDistribution?: FacetDistribution
   query: string
-  facetStats?: Record<string, { min?: number; max?: number }>
+  facetStats?: FacetStats
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
