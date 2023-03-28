@@ -68,6 +68,23 @@ search_post_1: |-
   client.index('movies').search('American ninja')
 search_get_1: |-
   client.index('movies').search('American ninja')
+multi_search_1: |-
+  client.multiSearch({ queries: [
+    {
+      indexUid: 'movies',
+      q: 'pooh',
+      limit: 5,
+    },
+    {
+      indexUid: 'movies',
+      q: 'nemo',
+      limit: 5,
+    },
+    {
+      indexUid: 'movie_ratings',
+      q: 'us',
+    },
+  ]})
 get_all_tasks_1: |-
   client.getTasks()
 get_task_1: |-
@@ -550,7 +567,7 @@ update_filterable_attributes_1: |-
     ])
 reset_filterable_attributes_1: |-
   client.index('movies').resetFilterableAttributes()
-faceted_search_update_settings_1: |-
+filtering_update_settings_1: |-
   client.index('movies')
     .updateFilterableAttributes([
       'director',
@@ -571,6 +588,29 @@ faceted_search_walkthrough_filter_1: |-
     .search('thriller', {
       filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
     })
+faceted_search_update_settings_1: |-
+  client.index('books').updateFilterableAttributes(['genres', 'rating', 'language'])
+faceted_search_1: |-
+  client.index('books').search('classic', { facets: ['genres', 'rating', 'language'] })
+faceted_search_2: |-
+  client.multiSearch({ queries: [
+      {
+        indexUid: 'books',
+        facets: ['language', 'genres', 'author', 'format'],
+        filter: [['language = English', 'language = French'], ['genres = Fiction']]
+      },
+      {
+        indexUid: 'books',
+        facets: ['language'],
+        filter: [['genres = Fiction']]
+      },
+      {
+        indexUid: 'books',
+        facets: ['genres'],
+        filter: [['language = English', 'language = French']]
+      }
+    ]
+  })
 post_dump_1: |-
   client.createDump()
 phrase_search_1: |-
@@ -628,6 +668,8 @@ search_parameter_guide_sort_1: |-
   client.index('books').search('science fiction', {
     sort: ['price:asc'],
   })
+search_parameter_guide_facet_stats_1: |-
+  client.index('movie_ratings').search('Batman', { facets: ['genres', 'rating'] })
 geosearch_guide_filter_settings_1: |-
   client.index('restaurants')
   .updateFilterableAttributes([
@@ -640,6 +682,10 @@ geosearch_guide_filter_usage_1: |-
 geosearch_guide_filter_usage_2: |-
   client.index('restaurants').search('', {
     filter: ['_geoRadius(45.472735, 9.184019, 2000) AND type = pizza'],
+  })
+geosearch_guide_filter_usage_3: |-
+  client.index('restaurants').search('', {
+    filter: ['_geoBoundingBox([45.494181, 9.179175], [45.449484, 9.214024])'],
   })
 geosearch_guide_sort_settings_1: |-
   client.index('restaurants').updateSortableAttributes([
