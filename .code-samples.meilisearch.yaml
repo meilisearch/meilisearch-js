@@ -254,24 +254,22 @@ get_health_1: |-
 get_version_1: |-
   client.getVersion()
 distinct_attribute_guide_1: |-
-  client.index('jackets').updateSettings({ distinctAttribute: 'product_id' })
+  client.index('jackets').updateDistinctAttribute('product_id')
 field_properties_guide_searchable_1: |-
-  client.index('movies').updateSettings({
-    searchableAttributes: [
-        'title',
-        'overview',
-        'genres'
+  client.index('movies').updateSearchableAttributes([
+      'title',
+      'overview',
+      'genres',
     ]
-  })
+  )
 field_properties_guide_displayed_1: |-
-  client.index('movies').updateSettings({
-      displayedAttributes: [
-          'title',
-          'overview',
-          'genres',
-          'release_date'
-      ]
-  })
+  client.index('movies').updateDisplayedAttributes([
+      'title',
+      'overview',
+      'genres',
+      'release_date',
+    ]
+  )
 filtering_guide_1: |-
   client.index('movies').search('Avengers', {
     filter: 'release_date > 795484800'
@@ -283,6 +281,10 @@ filtering_guide_2: |-
 filtering_guide_3: |-
   client.index('movies').search('Planet of the Apes', {
     filter: 'rating >= 3 AND (NOT director = "Tim Burton")'
+  })
+filtering_guide_nested_1: |-
+  client.index('movie_ratings').search('thriller', {
+    filter: 'rating.users >= 90'
   })
 search_parameter_guide_query_1: |-
   client.index('movies').search('shifu')
@@ -337,70 +339,6 @@ search_parameter_guide_hitsperpage_1: |-
 search_parameter_guide_page_1: |-
   client.index('movies').search('', {
     "page": 2
-  })
-settings_guide_synonyms_1: |-
-  client.index('tops').updateSettings({
-    synonyms: {
-      sweater: ['jumper'],
-      jumper: ['sweater']
-  })
-settings_guide_stop_words_1: |-
-  client.index('movies').updateSettings({
-    stopWords: [
-      'the',
-      'a',
-      'an'
-    ]
-  })
-settings_guide_ranking_rules_1: |-
-  client.index('movies').updateSettings({
-    rankingRules: [
-        'words',
-        'typo',
-        'proximity',
-        'attribute',
-        'sort',
-        'exactness',
-        'release_date:asc',
-        'rank:desc'
-    ]
-  })
-settings_guide_distinct_1: |-
-  client.index('jackets').updateSettings({
-    distinctAttribute: 'product_id'
-  })
-settings_guide_searchable_1: |-
-  client.index('movies').updateSettings({
-    searchableAttributes: [
-      'title',
-      'overview',
-      'genres'
-    ]
-  })
-settings_guide_displayed_1: |-
-  client.index('movies').updateSettings({
-    displayedAttributes: [
-      'title',
-      'overview',
-      'genres',
-      'release_date',
-    ]
-  })
-settings_guide_sortable_1: |-
-  client.index('books').updateSettings({
-    sortableAttributes: [
-      'author',
-      'price'
-    ]
-  })
-settings_guide_typo_tolerance_1: |-
-  client.index('movies').updateTypoTolerance({
-    minWordSizeForTypos: {
-      twoTypos: 12
-    },
-    disableOnAttributes: [
-      'title'
-    ]
   })
 typo_tolerance_guide_1: |-
   client.index('movies').updateTypoTolerance({
@@ -598,6 +536,10 @@ sorting_guide_sort_parameter_2: |-
   client.index('books').search('butler', {
     sort: ['author:desc'],
   })
+sorting_guide_sort_nested_1: |-
+  client.index('books').search('science fiction', {
+    "sort": ["rating.users:asc"],
+  })
 get_sortable_attributes_1: |-
   client.index('books').getSortableAttributes()
 update_sortable_attributes_1: |-
@@ -620,10 +562,6 @@ update_faceting_settings_1: |-
   client.index('books').updateFaceting({ maxValuesPerFacet: 2 })
 reset_faceting_settings_1: |-
   client.index('books').resetFaceting()
-settings_guide_faceting_1: |-
-  client.index('movies').updateSettings({ faceting: { maxValuesPerFacet: 5 }})
-settings_guide_pagination_1: |-
-  client.index('movies').updateSettings({ pagination: { maxTotalHits: 50 }})
 search_parameter_guide_sort_1: |-
   client.index('books').search('science fiction', {
     sort: ['price:asc'],
