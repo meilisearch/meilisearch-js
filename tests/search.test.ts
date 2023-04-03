@@ -17,6 +17,13 @@ const emptyIndex = {
   uid: 'empty_test',
 }
 
+type Books = {
+  id: number
+  title: string
+  comment: string
+  genre: string
+}
+
 const dataset = [
   {
     id: 123,
@@ -85,6 +92,52 @@ describe.each([
     await client.waitForTask(task2)
   })
 
+  test(`${permission} key: Multi index search no queries`, async () => {
+    const client = await getClient(permission)
+    const response = await client.multiSearch({
+      queries: [],
+    })
+
+    expect(response.results.length).toEqual(0)
+  })
+
+  test(`${permission} key: Multi index search with one query`, async () => {
+    const client = await getClient(permission)
+    const response = await client.multiSearch({
+      queries: [{ indexUid: index.uid, q: 'prince' }],
+    })
+
+    expect(response.results[0].hits.length).toEqual(2)
+  })
+
+  test(`${permission} key: Multi index search with multiple queries`, async () => {
+    const client = await getClient(permission)
+    const response = await client.multiSearch({
+      queries: [
+        { indexUid: index.uid, q: 'something' },
+        { indexUid: emptyIndex.uid, q: 'something' },
+      ],
+    })
+
+    expect(response.results.length).toEqual(2)
+  })
+
+  test(`${permission} key: Multi index search with one query`, async () => {
+    const client = await getClient(permission)
+
+    type MyIndex = {
+      id: 1
+    }
+
+    const response = await client.multiSearch<MyIndex & Books>({
+      queries: [{ indexUid: index.uid, q: 'prince' }],
+    })
+
+    expect(response.results[0].hits.length).toEqual(2)
+    expect(response.results[0].hits[0].id).toEqual(456)
+    expect(response.results[0].hits[0].title).toEqual('Le Petit Prince')
+  })
+
   test(`${permission} key: Basic search`, async () => {
     const client = await getClient(permission)
     const response = await client.index(index.uid).search('prince', {})
@@ -94,6 +147,7 @@ describe.each([
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
     expect(response).toHaveProperty('query', 'prince')
+    expect(response.facetStats).toBeUndefined()
     expect(response.hits.length).toEqual(2)
     // @ts-expect-error Not present in the SearchResponse type because neither `page` or `hitsPerPage` is provided in the search params.
     expect(response.hitsPerPage).toBeUndefined()
@@ -453,12 +507,16 @@ describe.each([
     const client = await getClient(permission)
     const response = await client.index(index.uid).search('a', {
       filter: ['genre = romance'],
-      facets: ['genre'],
+      facets: ['genre', 'id'],
     })
 
     expect(response).toHaveProperty('facetDistribution', {
       genre: { romance: 2 },
+      id: { '123': 1, '2': 1 },
     })
+
+    expect(response.facetStats).toEqual({ id: { min: 2, max: 123 } })
+    expect(response.facetStats?.['id']?.max).toBe(123)
     expect(response).toHaveProperty('hits', expect.any(Array))
     expect(response.hits.length).toEqual(2)
   })
@@ -735,6 +793,14 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).search('prince')
       ).rejects.toHaveProperty(
+        'code',
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
+      )
+    })
+
+    test(`${permission} key: Try multi search and be denied`, async () => {
+      const client = await getClient(permission)
+      await expect(client.multiSearch({ queries: [] })).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
