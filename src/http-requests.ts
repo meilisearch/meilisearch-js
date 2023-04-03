@@ -112,7 +112,7 @@ class HttpRequests {
     url,
     params,
     body,
-    config,
+    config = {},
   }: {
     method: string
     url: string
@@ -129,14 +129,22 @@ class HttpRequests {
       constructURL.search = queryParams.toString()
     }
 
+    // in case a custom content-type is provided
+    // do not stringify body
+    if (!config.headers?.['Content-Type']) {
+      body = JSON.stringify(body)
+    }
+
+    const headers = { ...this.headers, ...config.headers }
+
     try {
       const fetchFn = this.httpClient ? this.httpClient : fetch
       const result = fetchFn(constructURL.toString(), {
         ...config,
         ...this.requestConfig,
         method,
-        body: JSON.stringify(body),
-        headers: this.headers,
+        body,
+        headers,
       })
 
       // When using a custom HTTP client, the response is returned to allow the user to parse/handle it as they see fit

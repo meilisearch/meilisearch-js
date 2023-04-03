@@ -37,6 +37,8 @@ import {
   PaginationSettings,
   Faceting,
   ResourceResults,
+  RawDocumentAdditionOptions,
+  ContentType,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -373,6 +375,32 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   }
 
   /**
+   * Add or replace multiples documents in a string format to an index. It only
+   * supports csv, ndjson and json formats.
+   *
+   * @param documents - Documents provided in a string to add/replace
+   * @param contentType - Content type of your document:
+   *   'text/csv'|'application/x-ndjson'|'application/json'
+   * @param options - Options on document addition
+   * @returns Promise containing an EnqueuedTask
+   */
+  async addDocumentsFromString(
+    documents: string,
+    contentType: ContentType,
+    queryParams?: RawDocumentAdditionOptions
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/documents`
+
+    const task = await this.httpRequest.post(url, documents, queryParams, {
+      headers: {
+        'Content-Type': contentType,
+      },
+    })
+
+    return new EnqueuedTask(task)
+  }
+
+  /**
    * Add or replace multiples documents to an index in batches
    *
    * @param documents - Array of Document objects to add/replace
@@ -431,6 +459,32 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       )
     }
     return updates
+  }
+
+  /**
+   * Add or update multiples documents in a string format to an index. It only
+   * supports csv, ndjson and json formats.
+   *
+   * @param documents - Documents provided in a string to add/update
+   * @param contentType - Content type of your document:
+   *   'text/csv'|'application/x-ndjson'|'application/json'
+   * @param queryParams - Options on raw document addition
+   * @returns Promise containing an EnqueuedTask
+   */
+  async updateDocumentsFromString(
+    documents: string,
+    contentType: ContentType,
+    queryParams?: RawDocumentAdditionOptions
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/documents`
+
+    const task = await this.httpRequest.put(url, documents, queryParams, {
+      headers: {
+        'Content-Type': contentType,
+      },
+    })
+
+    return new EnqueuedTask(task)
   }
 
   /**
