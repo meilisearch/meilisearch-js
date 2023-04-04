@@ -201,6 +201,22 @@ export type DocumentOptions = {
   primaryKey?: string
 }
 
+export const ContentTypeEnum: Readonly<Record<string, ContentType>> = {
+  JSON: 'application/json',
+  CSV: 'text/csv',
+  NDJSON: 'application/x-ndjson',
+}
+
+export type ContentType =
+  | 'text/csv'
+  | 'application/x-ndjson'
+  | 'application/json'
+  | 'PUT'
+
+export type RawDocumentAdditionOptions = DocumentOptions & {
+  csvDelimiter?: string
+}
+
 export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   fields?: Fields<T>
 }

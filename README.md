@@ -420,6 +420,12 @@ client.multiSearch(queries?: MultiSearchParams, config?: Partial<Request>): Prom
 client.index('myIndex').addDocuments(documents: Document<T>[]): Promise<EnqueuedTask>
 ```
 
+#### [Add or replace multiple documents in string format](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents)
+
+```ts
+client.index('myIndex').addDocumentsFromString(documents: string, contentType: ContentType, queryParams: RawDocumentAdditionOptions): Promise<EnqueuedTask>
+```
+
 #### [Add or replace multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents)
 
 ```ts
@@ -430,6 +436,12 @@ client.index('myIndex').addDocumentsInBatches(documents: Document<T>[], batchSiz
 
 ```ts
 client.index('myIndex').updateDocuments(documents: Array<Document<Partial<T>>>): Promise<EnqueuedTask>
+```
+
+#### [Add or update multiple documents in string format](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents)
+
+```ts
+client.index('myIndex').updateDocumentsFromString(documents: string, contentType: ContentType, queryParams: RawDocumentAdditionOptions): Promise<EnqueuedTask>
 ```
 
 #### [Add or update multiple documents in batches](https://docs.meilisearch.com/reference/api/documents.html#add-or-update-documents)
