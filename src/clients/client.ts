@@ -220,7 +220,7 @@ class Client {
     queries?: MultiSearchParams,
     config?: Partial<Request>
   ): Promise<MultiSearchResponse<T>> {
-    const url = `/multi-search`
+    const url = `multi-search`
 
     return await this.httpRequest.post(url, queries, undefined, config)
   }
