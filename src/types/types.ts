@@ -211,7 +211,6 @@ export type ContentType =
   | 'text/csv'
   | 'application/x-ndjson'
   | 'application/json'
-  | 'PUT'
 
 export type RawDocumentAdditionOptions = DocumentOptions & {
   csvDelimiter?: string
