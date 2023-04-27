@@ -265,7 +265,7 @@ reset_typo_tolerance_1: |-
 get_index_stats_1: |-
   client.index('movies').getStats()
 get_indexes_stats_1: |-
-  client.stats()
+  client.getStats()
 get_health_1: |-
   client.health()
 get_version_1: |-
