@@ -1,5 +1,3 @@
-import 'cross-fetch/polyfill'
-
 import { Config, EnqueuedTaskObject } from './types'
 import { PACKAGE_VERSION } from './package-version'
 
@@ -138,6 +136,11 @@ class HttpRequests {
     const headers = { ...this.headers, ...config.headers }
 
     try {
+      if (typeof fetch === 'undefined') {
+        // @ts-expect-error polyfill brings in no meaningful types
+        await import('cross-fetch/polyfill')
+      }
+
       const fetchFn = this.httpClient ? this.httpClient : fetch
       const result = fetchFn(constructURL.toString(), {
         ...config,
