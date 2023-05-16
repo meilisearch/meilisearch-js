@@ -43,6 +43,8 @@ import {
   ResourceResults,
   RawDocumentAdditionOptions,
   ContentType,
+  DocumentsIds,
+  DocumentsDeletionQuery,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -526,19 +528,43 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   }
 
   /**
-   * Delete multiples documents of an index
+   * Delete multiples documents of an index.
    *
-   * @param documentsIds - Array of Document Ids to delete
+   * @param params - Params value can be:
+   *
+   *   - DocumentsDeletionQuery: An object containing the parameters to customize
+   *       your document deletion. Only available in Meilisearch v1.2 and newer
+   *   - DocumentsIds: An array of document ids to delete
+   *
    * @returns Promise containing an EnqueuedTask
    */
   async deleteDocuments(
-    documentsIds: string[] | number[]
+    params: DocumentsDeletionQuery | DocumentsIds
   ): Promise<EnqueuedTask> {
-    const url = `indexes/${this.uid}/documents/delete-batch`
+    // If params is of type DocumentsDeletionQuery
+    const isDocumentsDeletionQuery =
+      !Array.isArray(params) && typeof params === 'object'
+    const endpoint = isDocumentsDeletionQuery
+      ? 'documents/delete'
+      : 'documents/delete-batch'
+    const url = `indexes/${this.uid}/${endpoint}`
 
-    const task = await this.httpRequest.post(url, documentsIds)
+    try {
+      const task = await this.httpRequest.post(url, params)
 
-    return new EnqueuedTask(task)
+      return new EnqueuedTask(task)
+    } catch (e) {
+      if (
+        e instanceof MeiliSearchCommunicationError &&
+        isDocumentsDeletionQuery
+      ) {
+        e.message = versionErrorHintMessage(e.message, 'deleteDocuments')
+      } else if (e instanceof MeiliSearchApiError) {
+        e.message = versionErrorHintMessage(e.message, 'deleteDocuments')
+      }
+
+      throw e
+    }
   }
 
   /**

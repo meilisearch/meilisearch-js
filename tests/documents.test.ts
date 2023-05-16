@@ -470,6 +470,48 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         expect(response.results.length).toEqual(dataset.length)
       })
 
+      test(`${permission} key: Delete some documents with string filters`, async () => {
+        const client = await getClient(permission)
+        await client.index(indexPk.uid).updateFilterableAttributes(['id'])
+        const { taskUid: addDocTask } = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset)
+        await client.index(indexPk.uid).waitForTask(addDocTask)
+
+        const task = await client
+          .index(indexPk.uid)
+          .deleteDocuments({ filter: 'id IN [1, 2]' })
+
+        const resolvedTask = await client
+          .index(indexPk.uid)
+          .waitForTask(task.taskUid)
+        const documents = await client.index(indexPk.uid).getDocuments<Book>()
+
+        expect(resolvedTask.details.deletedDocuments).toEqual(2)
+        expect(documents.results.length).toEqual(dataset.length - 2)
+      })
+
+      test(`${permission} key: Delete some documents with array filters`, async () => {
+        const client = await getClient(permission)
+        await client.index(indexPk.uid).updateFilterableAttributes(['id'])
+        const { taskUid: addDocTask } = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset)
+        await client.index(indexPk.uid).waitForTask(addDocTask)
+
+        const task = await client
+          .index(indexPk.uid)
+          .deleteDocuments({ filter: [['id = 1', 'id = 2']] })
+
+        const resolvedTask = await client
+          .index(indexPk.uid)
+          .waitForTask(task.taskUid)
+        const documents = await client.index(indexPk.uid).getDocuments<Book>()
+
+        expect(resolvedTask.details.deletedDocuments).toEqual(2)
+        expect(documents.results.length).toEqual(dataset.length - 2)
+      })
+
       test(`${permission} key: Delete some documents from index that has NO primary key`, async () => {
         const client = await getClient(permission)
         const { taskUid: addDocTask } = await client
@@ -509,6 +551,41 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         expect(documents.results.length).toEqual(dataset.length - 2)
         expect(returnedIds).not.toContain(ids[0])
         expect(returnedIds).not.toContain(ids[1])
+      })
+
+      test(`${permission} key: Delete some documents should trigger error with a hint on a MeilisearchApiError`, async () => {
+        const client = await getClient(permission)
+        const task = await client.createIndex(indexPk.uid)
+        await client.waitForTask(task.taskUid)
+
+        try {
+          await client.index(indexPk.uid).deleteDocuments({ filter: '' })
+
+          fail(
+            'deleteDocuments should have raised an error when the parameters are wrong'
+          )
+        } catch (e: any) {
+          expect(e.message).toEqual(
+            "Sending an empty filter is forbidden.\nHint: It might not be working because maybe you're not up to date with the Meilisearch version that deleteDocuments call requires."
+          )
+        }
+      })
+
+      test(`${permission} key: Delete some documents should trigger error with a hint on a MeilisearchCommunicationError`, async () => {
+        const apiKey = await getKey(permission)
+        const client = new MeiliSearch({ host: `${HOST}/indexes`, apiKey })
+
+        try {
+          await client.index(indexPk.uid).deleteDocuments({ filter: 'id = 1' })
+
+          fail(
+            'deleteDocuments should have raised an error when the route does not exist'
+          )
+        } catch (e: any) {
+          expect(e.message).toEqual(
+            "Not Found\nHint: It might not be working because maybe you're not up to date with the Meilisearch version that deleteDocuments call requires."
+          )
+        }
       })
 
       test(`${permission} key: Delete all document from index that has NO primary key`, async () => {
