@@ -7,8 +7,11 @@
 
 'use strict'
 
-import { MeiliSearchError } from './errors'
-
+import {
+  MeiliSearchError,
+  MeiliSearchCommunicationError,
+  versionErrorHintMessage,
+} from './errors'
 import {
   Config,
   SearchResponse,
@@ -302,30 +305,46 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ///
 
   /**
-   * Get documents of an index
+   * Get documents of an index.
    *
-   * @param parameters - Parameters to browse the documents
-   * @returns Promise containing Document responses
+   * @param parameters - Parameters to browse the documents. Parameters can
+   *   contain the `filter` field only available in Meilisearch v1.2 and newer
+   * @returns Promise containing the returned documents
    */
   async getDocuments<D extends Record<string, any> = T>(
     parameters: DocumentsQuery<D> = {}
   ): Promise<ResourceResults<D[]>> {
-    const url = `indexes/${this.uid}/documents`
+    parameters = removeUndefinedFromObject(parameters)
 
-    const fields = (() => {
-      if (Array.isArray(parameters?.fields)) {
-        return parameters?.fields?.join(',')
+    // In case `filter` is provided, use `POST /documents/fetch`
+    if (parameters.filter) {
+      try {
+        const url = `indexes/${this.uid}/documents/fetch`
+        return await this.httpRequest.post<
+          DocumentsQuery,
+          Promise<ResourceResults<D[]>>
+        >(url, parameters)
+      } catch (e) {
+        if (e instanceof MeiliSearchCommunicationError) {
+          e.message = versionErrorHintMessage(e.message, 'getDocuments')
+        }
+
+        throw e
       }
-      return undefined
-    })()
+      // Else use `GET /documents` method
+    } else {
+      const url = `indexes/${this.uid}/documents`
 
-    return await this.httpRequest.get<Promise<ResourceResults<D[]>>>(
-      url,
-      removeUndefinedFromObject({
+      // Transform fields to query parameter string format
+      const fields = Array.isArray(parameters?.fields)
+        ? { fields: parameters?.fields?.join(',') }
+        : {}
+
+      return await this.httpRequest.get<Promise<ResourceResults<D[]>>>(url, {
         ...parameters,
-        fields,
+        ...fields,
       })
-    )
+    }
   }
 
   /**

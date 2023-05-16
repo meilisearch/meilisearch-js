@@ -140,6 +140,21 @@ describe('Documents tests', () => {
         expect(documents.offset).toEqual(2)
       })
 
+      test(`${permission} key: Get documents with filters`, async () => {
+        const client = await getClient(permission)
+        await client.index(indexPk.uid).updateFilterableAttributes(['id'])
+        const { taskUid } = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset)
+        await client.waitForTask(taskUid)
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          filter: [['id = 1', 'id = 2']],
+        })
+
+        expect(documents.results.length).toEqual(2)
+      })
+
       test(`${permission} key: Get documents from index that has NO primary key`, async () => {
         const client = await getClient(permission)
         const { taskUid } = await client
