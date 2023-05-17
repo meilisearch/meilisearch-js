@@ -118,6 +118,10 @@ class HttpRequests {
     body?: any
     config?: Record<string, any>
   }) {
+    if (typeof fetch === 'undefined') {
+      require('cross-fetch/dist/node-polyfill')
+    }
+
     const constructURL = new URL(url, this.url)
     if (params) {
       const queryParams = new URLSearchParams()
@@ -136,11 +140,6 @@ class HttpRequests {
     const headers = { ...this.headers, ...config.headers }
 
     try {
-      if (typeof fetch === 'undefined') {
-        // @ts-expect-error polyfill brings in no meaningful types
-        await import('cross-fetch/polyfill')
-      }
-
       const fetchFn = this.httpClient ? this.httpClient : fetch
       const result = fetchFn(constructURL.toString(), {
         ...config,
