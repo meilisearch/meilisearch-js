@@ -44,7 +44,7 @@
     "test:ci": "yarn test --ci",
     "test:env": "yarn build && yarn test:env:nodejs && yarn test:env:esm && yarn test:env:node-ts",
     "test:env:node-ts": "yarn --cwd tests/env/typescript-node start",
-    "test:env:nodejs": "node tests/env/node/index.js",
+    "test:env:nodejs": "node tests/env/node/index.js && node tests/env/node/getting_started.js",
     "test:env:esm": "yarn --cwd tests/env/esm && yarn --cwd tests/env/esm start",
     "size": "node scripts/file-size ./dist/bundles/meilisearch.esm.min.js ./dist/bundles/meilisearch.umd.min.js",
     "style": "yarn lint",
