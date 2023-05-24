@@ -5,6 +5,7 @@ module.exports = {
     es2020: true,
     'jest/globals': true,
     node: true,
+    jasmine: true,
   },
   extends: [
     'eslint:recommended',
