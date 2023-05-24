@@ -11,6 +11,7 @@ import {
   MeiliSearchError,
   MeiliSearchCommunicationError,
   versionErrorHintMessage,
+  MeiliSearchApiError,
 } from './errors'
 import {
   Config,
@@ -317,15 +318,18 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     parameters = removeUndefinedFromObject(parameters)
 
     // In case `filter` is provided, use `POST /documents/fetch`
-    if (parameters.filter) {
+    if (parameters.filter !== undefined) {
       try {
         const url = `indexes/${this.uid}/documents/fetch`
+
         return await this.httpRequest.post<
           DocumentsQuery,
           Promise<ResourceResults<D[]>>
         >(url, parameters)
       } catch (e) {
         if (e instanceof MeiliSearchCommunicationError) {
+          e.message = versionErrorHintMessage(e.message, 'getDocuments')
+        } else if (e instanceof MeiliSearchApiError) {
           e.message = versionErrorHintMessage(e.message, 'getDocuments')
         }
 
