@@ -7,6 +7,8 @@ import {
   getClient,
   dataset,
   Book,
+  getKey,
+  HOST,
 } from './utils/meilisearch-test-utils'
 
 const indexNoPk = {
@@ -138,6 +140,57 @@ describe('Documents tests', () => {
         expect(documents.results.length).toEqual(1)
         expect(documents.limit).toEqual(1)
         expect(documents.offset).toEqual(2)
+      })
+
+      test(`${permission} key: Get documents with filters`, async () => {
+        const client = await getClient(permission)
+        await client.index(indexPk.uid).updateFilterableAttributes(['id'])
+        const { taskUid } = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset)
+        await client.waitForTask(taskUid)
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          filter: [['id = 1', 'id = 2']],
+        })
+
+        expect(documents.results.length).toEqual(2)
+      })
+
+      test(`${permission} key: Get documents should trigger error with a MeilisearchCommunicationError`, async () => {
+        const apiKey = await getKey(permission)
+        const client = new MeiliSearch({ host: `${HOST}/indexes`, apiKey })
+
+        try {
+          await client.index(indexPk.uid).getDocuments({ filter: '' })
+
+          fail(
+            'getDocuments should have raised an error when the route does not exist'
+          )
+        } catch (e: any) {
+          expect(e.message).toEqual(
+            "Not Found\nHint: It might not be working because maybe you're not up to date with the Meilisearch version that getDocuments call requires."
+          )
+        }
+      })
+
+      test(`${permission} key: Get documents should trigger error with a hint on a MeilisearchApiError`, async () => {
+        const apiKey = await getKey(permission)
+        const client = new MeiliSearch({ host: `${HOST}`, apiKey })
+
+        try {
+          await client.index(indexPk.uid).getDocuments({ filter: 'id = 1' })
+
+          fail(
+            'getDocuments should have raised an error when the filter is badly formatted'
+          )
+        } catch (e: any) {
+          expect(e.message).toEqual(
+            `Attribute \`id\` is not filterable. This index does not have configured filterable attributes.
+1:3 id = 1
+Hint: It might not be working because maybe you're not up to date with the Meilisearch version that getDocuments call requires.`
+          )
+        }
       })
 
       test(`${permission} key: Get documents from index that has NO primary key`, async () => {
