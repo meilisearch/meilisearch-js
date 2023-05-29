@@ -182,7 +182,7 @@ describe('Documents tests', () => {
           await client.index(indexPk.uid).getDocuments({ filter: 'id = 1' })
 
           fail(
-            'getDocuments should have raised an error when the route does not exist'
+            'getDocuments should have raised an error when the filter is badly formatted'
           )
         } catch (e: any) {
           expect(e.message).toEqual(
