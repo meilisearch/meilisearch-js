@@ -471,7 +471,7 @@ client.index('myIndex').deleteDocument(documentId: string | number): Promise<Enq
 #### [Delete multiple documents](https://docs.meilisearch.com/reference/api/documents.html#delete-documents)
 
 ```ts
-client.index('myIndex').deleteDocuments(documentsIds: string[] | number[]): Promise<EnqueuedTask>
+client.index('myIndex').deleteDocuments(params: DocumentsDeletionQuery | DocumentsIds): Promise<EnqueuedTask>
 ```
 
 #### [Delete all documents](https://docs.meilisearch.com/reference/api/documents.html#delete-all-documents)

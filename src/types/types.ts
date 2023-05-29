@@ -225,6 +225,12 @@ export type DocumentQuery<T = Record<string, any>> = {
   fields?: Fields<T>
 }
 
+export type DocumentsDeletionQuery = {
+  filter: Filter
+}
+
+export type DocumentsIds = string[] | number[]
+
 /*
  ** Settings
  */
