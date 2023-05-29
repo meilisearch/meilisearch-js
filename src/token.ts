@@ -112,7 +112,7 @@ function createPayload(payloadParams: {
   const payload = {
     searchRules,
     apiKeyUid: uid,
-    exp: expiresAt?.getTime(),
+    exp: expiresAt ? Math.floor(expiresAt.getTime() / 1000) : undefined,
   }
 
   return encode64(payload).replace(/=/g, '')
