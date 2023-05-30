@@ -1,11 +1,13 @@
-const { execSync, spawn } = require('child_process')
+const { spawn } = require('child_process')
 
 let server
 
 beforeAll(() => {
-  execSync('yarn', ['build'], { env: process.env })
-
   server = spawn('node', ['.output/server/index.mjs'])
+})
+
+afterAll(() => {
+  server.kill()
 })
 
 describe('Meilisearch JS w/ Nitro App Server Browser test', () => {
@@ -20,9 +22,5 @@ describe('Meilisearch JS w/ Nitro App Server Browser test', () => {
     const data = await response.json()
 
     expect(data.health).toBe(true)
-  })
-
-  afterAll(() => {
-    server.kill()
   })
 })
