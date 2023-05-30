@@ -57,7 +57,7 @@ Instead of using a package manager, you may also import the library directly int
 
 ### Run Meilisearch <!-- omit in toc -->
 
-To use one of our SDKs, you must first have a running Meilisearch instance. Consult our documentation for [instructions on how to download and launch Meilisearch](https://docs.meilisearch.com/reference/features/installation.html#download-and-launch).
+To use one of our SDKs, you must first have a running Meilisearch instance. Consult our documentation for [instructions on how to download and launch Meilisearch](https://www.meilisearch.com/docs/learn/getting_started/installation#installation).
 
 ### Import <!-- omit in toc -->
 
