@@ -1,5 +1,3 @@
-import 'cross-fetch/polyfill'
-
 import { Config, EnqueuedTaskObject } from './types'
 import { PACKAGE_VERSION } from './package-version'
 
@@ -120,6 +118,10 @@ class HttpRequests {
     body?: any
     config?: Record<string, any>
   }) {
+    if (typeof fetch === 'undefined') {
+      require('cross-fetch/polyfill')
+    }
+
     const constructURL = new URL(url, this.url)
     if (params) {
       const queryParams = new URLSearchParams()
