@@ -3,6 +3,22 @@
 # the documentation on build
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
+get_documents_post_1: |-
+  POST http://localhost:7700/indexes/books/documents/fetch
+  with data: { 
+    "filter": "(rating > 3 AND (genres = Adventure OR genres = Fiction)) AND language = English",
+    "fields": ["title", "genres", "rating", "language"],
+    "limit": 3
+  }
+
+delete_documents_by_filter_1: |-
+  POST http://localhost:7700/indexes/movies/documents/delete
+  with data: { "filter": "genres = action OR genres = adventure" }
+
+get_documents_1: |- 
+  GET 'http://localhost:7700/indexes/movies/documents?limit=2&filter=genres=action
+  mind the filter in the query param (use the POST route in the integrations)
+
 synonyms_guide_1: |-
   client.index('movies').updateSynonyms({
     "great": ["fantastic"],
@@ -62,7 +78,7 @@ delete_all_documents_1: |-
   client.index('movies').deleteAllDocuments()
 delete_one_document_1: |-
   client.index('movies').deleteDocument(25684)
-delete_documents_1: |-
+delete_documents_by_batch_1: |-
   client.index('movies').deleteDocuments([23488, 153738, 437035, 363869])
 search_post_1: |-
   client.index('movies').search('American ninja')
