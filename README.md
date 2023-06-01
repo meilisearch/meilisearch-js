@@ -185,7 +185,7 @@ Output:
 
 ### Using search parameters <!-- omit in toc -->
 
-`meilisearch-js` supports all [search parameters](https://docs.meilisearch.com/reference/features/search_parameters.html) described in our main documentation website.
+`meilisearch-js` supports all [search parameters](https://www.meilisearch.com/docs/reference/api/search#search-parameters) described in our main documentation website.
 
 ```javascript
 await index.search(
@@ -220,7 +220,7 @@ await index.search(
 
 ### Custom search with filters <!-- omit in toc -->
 
-To enable filtering, you must first add your attributes to the [`filterableAttributes` index setting](https://docs.meilisearch.com/reference/api/filterable_attributes.html).
+To enable filtering, you must first add your attributes to the [`filterableAttributes` index setting](https://www.meilisearch.com/docs/reference/api/settings#filterable-attributes).
 
 ```js
 await index.updateAttributesForFaceting([
@@ -304,7 +304,7 @@ await index.search(
 }
 ```
 
-Note that to enable faceted search on your dataset you need to add `genres` to the `filterableAttributes` index setting. For more information on filtering and faceting, [consult our documentation settings](https://docs.meilisearch.com/reference/features/faceted_search.html#setting-up-facets).
+Note that to enable faceted search on your dataset you need to add `genres` to the `filterableAttributes` index setting. For more information on filtering and faceting, [consult our documentation settings](https://www.meilisearch.com/docs/learn/advanced/faceted_search).
 
 #### Abortable search <!-- omit in toc -->
 
@@ -376,9 +376,9 @@ This package guarantees compatibility with [version v1.x of Meilisearch](https:/
 The following sections in our main documentation website may interest you:
 
 - **Manipulate documents**: see the [API references](https://docs.meilisearch.com/reference/api/documents.html) or read more about [documents](https://docs.meilisearch.com/learn/core_concepts/documents.html).
-- **Search**: see the [API references](https://docs.meilisearch.com/reference/api/search.html) or follow our guide on [search parameters](https://docs.meilisearch.com/reference/features/search_parameters.html).
+- **Search**: see the [API references](https://docs.meilisearch.com/reference/api/search.html) or follow our guide on [search parameters](https://www.meilisearch.com/docs/reference/api/search#search-parameters).
 - **Manage the indexes**: see the [API references](https://docs.meilisearch.com/reference/api/indexes.html) or read more about [indexes](https://docs.meilisearch.com/learn/core_concepts/indexes.html).
-- **Configure the index settings**: see the [API references](https://docs.meilisearch.com/reference/api/settings.html) or follow our guide on [settings parameters](https://docs.meilisearch.com/reference/features/settings.html).
+- **Configure the index settings**: see the [API references](https://docs.meilisearch.com/reference/api/settings.html) or follow our guide on [settings parameters](https://www.meilisearch.com/docs/reference/api/settings#settings_parameters).
 
 This repository also contains [more examples](./examples).
 
@@ -404,7 +404,7 @@ client.index<T>('xxx').searchGet(query: string, options: SearchParams = {}, conf
 
 ### Multi Search
 
-#### [Make multiple search requests](https://docs.meilisearch.com/reference/api/multi-search.html)
+#### [Make multiple search requests](https://www.meilisearch.com/docs/reference/api/multi_search#multi-search)
 
 ```ts
 client.multiSearch(queries?: MultiSearchParams, config?: Partial<Request>): Promise<Promise<MultiSearchResponse<T>>>
@@ -685,19 +685,19 @@ client.index('myIndex').resetPagination(): Promise<EnqueuedTask>
 
 ### Synonyms <!-- omit in toc -->
 
-#### [Get synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#get-synonyms)
+#### [Get synonyms](https://www.meilisearch.com/docs/reference/api/settings#get-synonyms)
 
 ```ts
 client.index('myIndex').getSynonyms(): Promise<Synonyms>
 ```
 
-#### [Update synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#update-synonyms)
+#### [Update synonyms](https://www.meilisearch.com/docs/reference/api/settings#update-synonyms)
 
 ```ts
 client.index('myIndex').updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask>
 ```
 
-#### [Reset synonyms](https://docs.meilisearch.com/reference/api/synonyms.html#reset-synonyms)
+#### [Reset synonyms](https://www.meilisearch.com/docs/reference/api/settings#reset-synonyms)
 
 ```ts
 client.index('myIndex').resetSynonyms(): Promise<EnqueuedTask>
@@ -705,19 +705,19 @@ client.index('myIndex').resetSynonyms(): Promise<EnqueuedTask>
 
 ### Stop words <!-- omit in toc -->
 
-#### [Get stop words](https://docs.meilisearch.com/reference/api/stop_words.html#get-stop-words)
+#### [Get stop words](https://www.meilisearch.com/docs/reference/api/settings#get-stop-words)
 
 ```ts
 client.index('myIndex').getStopWords(): Promise<string[]>
 ```
 
-#### [Update stop words](https://docs.meilisearch.com/reference/api/stop_words.html#update-stop-words)
+#### [Update stop words](https://www.meilisearch.com/docs/reference/api/settings#update-stop-words)
 
 ```ts
 client.index('myIndex').updateStopWords(stopWords: string[] | null ): Promise<EnqueuedTask>
 ```
 
-#### [Reset stop words](https://docs.meilisearch.com/reference/api/stop_words.html#reset-stop-words)
+#### [Reset stop words](https://www.meilisearch.com/docs/reference/api/settings#reset-stop-words)
 
 ```ts
 client.index('myIndex').resetStopWords(): Promise<EnqueuedTask>
@@ -725,19 +725,19 @@ client.index('myIndex').resetStopWords(): Promise<EnqueuedTask>
 
 ### Ranking rules <!-- omit in toc -->
 
-#### [Get ranking rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#get-ranking-rules)
+#### [Get ranking rules](https://www.meilisearch.com/docs/reference/api/settings#get-ranking-rules)
 
 ```ts
 client.index('myIndex').getRankingRules(): Promise<string[]>
 ```
 
-#### [Update ranking rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#update-ranking-rules)
+#### [Update ranking rules](https://www.meilisearch.com/docs/reference/api/settings#update-ranking-rules)
 
 ```ts
 client.index('myIndex').updateRankingRules(rankingRules: string[] | null): Promise<EnqueuedTask>
 ```
 
-#### [Reset ranking rules](https://docs.meilisearch.com/reference/api/ranking_rules.html#reset-ranking-rules)
+#### [Reset ranking rules](https://www.meilisearch.com/docs/reference/api/settings#reset-ranking-rules)
 
 ```ts
 client.index('myIndex').resetRankingRules(): Promise<EnqueuedTask>
@@ -745,19 +745,19 @@ client.index('myIndex').resetRankingRules(): Promise<EnqueuedTask>
 
 ### Distinct Attribute <!-- omit in toc -->
 
-#### [Get distinct attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#get-distinct-attribute)
+#### [Get distinct attribute](https://www.meilisearch.com/docs/reference/api/settings#get-distinct-attribute)
 
 ```ts
 client.index('myIndex').getDistinctAttribute(): Promise<string | void>
 ```
 
-#### [Update distinct attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#update-distinct-attribute)
+#### [Update distinct attribute](https://www.meilisearch.com/docs/reference/api/settings#update-distinct-attribute)
 
 ```ts
 client.index('myIndex').updateDistinctAttribute(distinctAttribute: string | null): Promise<EnqueuedTask>
 ```
 
-#### [Reset distinct attribute](https://docs.meilisearch.com/reference/api/distinct_attribute.html#reset-distinct-attribute)
+#### [Reset distinct attribute](https://www.meilisearch.com/docs/reference/api/settings#reset-distinct-attribute)
 
 ```ts
 client.index('myIndex').resetDistinctAttribute(): Promise<EnqueuedTask>
@@ -765,19 +765,19 @@ client.index('myIndex').resetDistinctAttribute(): Promise<EnqueuedTask>
 
 ### Searchable attributes <!-- omit in toc -->
 
-#### [Get searchable attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#get-searchable-attributes)
+#### [Get searchable attributes](https://www.meilisearch.com/docs/reference/api/settings#get-searchable-attributes)
 
 ```ts
 client.index('myIndex').getSearchableAttributes(): Promise<string[]>
 ```
 
-#### [Update searchable attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#update-searchable-attributes)
+#### [Update searchable attributes](https://www.meilisearch.com/docs/reference/api/settings#update-searchable-attributes)
 
 ```ts
 client.index('myIndex').updateSearchableAttributes(searchableAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
-#### [Reset searchable attributes](https://docs.meilisearch.com/reference/api/searchable_attributes.html#reset-searchable-attributes)
+#### [Reset searchable attributes](https://www.meilisearch.com/docs/reference/api/settings#reset-searchable-attributes)
 
 ```ts
 client.index('myIndex').resetSearchableAttributes(): Promise<EnqueuedTask>
@@ -785,19 +785,19 @@ client.index('myIndex').resetSearchableAttributes(): Promise<EnqueuedTask>
 
 ### Displayed attributes <!-- omit in toc -->
 
-#### [Get displayed attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#get-displayed-attributes)
+#### [Get displayed attributes](https://www.meilisearch.com/docs/reference/api/settings#get-displayed-attributes)
 
 ```ts
 client.index('myIndex').getDisplayedAttributes(): Promise<string[]>
 ```
 
-#### [Update displayed attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#update-displayed-attributes)
+#### [Update displayed attributes](https://www.meilisearch.com/docs/reference/api/settings#update-displayed-attributes)
 
 ```ts
 client.index('myIndex').updateDisplayedAttributes(displayedAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
-#### [Reset displayed attributes](https://docs.meilisearch.com/reference/api/displayed_attributes.html#reset-displayed-attributes)
+#### [Reset displayed attributes](https://www.meilisearch.com/docs/reference/api/settings#reset-displayed-attributes)
 
 ```ts
 client.index('myIndex').resetDisplayedAttributes(): Promise<EnqueuedTask>
@@ -805,19 +805,19 @@ client.index('myIndex').resetDisplayedAttributes(): Promise<EnqueuedTask>
 
 ### Filterable attributes <!-- omit in toc -->
 
-#### [Get filterable attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#get-filterable-attributes)
+#### [Get filterable attributes](https://www.meilisearch.com/docs/reference/api/settings#get-filterable-attributes)
 
 ```ts
 client.index('myIndex').getFilterableAttributes(): Promise<string[]>
 ```
 
-#### [Update filterable attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#update-filterable-attributes)
+#### [Update filterable attributes](https://www.meilisearch.com/docs/reference/api/settings#update-filterable-attributes)
 
 ```ts
 client.index('myIndex').updateFilterableAttributes(filterableAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
-#### [Reset filterable attributes](https://docs.meilisearch.com/reference/api/filterable_attributes.html#reset-filterable-attributes)
+#### [Reset filterable attributes](https://www.meilisearch.com/docs/reference/api/settings#reset-filterable-attributes)
 
 ```ts
 client.index('myIndex').resetFilterableAttributes(): Promise<EnqueuedTask>
@@ -825,19 +825,19 @@ client.index('myIndex').resetFilterableAttributes(): Promise<EnqueuedTask>
 
 ### Sortable attributes <!-- omit in toc -->
 
-#### [Get sortable attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#get-sortable-attributes)
+#### [Get sortable attributes](https://www.meilisearch.com/docs/reference/api/settings#get-sortable-attributes)
 
 ```ts
 client.index('myIndex').getSortableAttributes(): Promise<string[]>
 ```
 
-#### [Update sortable attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#update-sortable-attributes)
+#### [Update sortable attributes](https://www.meilisearch.com/docs/reference/api/settings#update-sortable-attributes)
 
 ```ts
 client.index('myIndex').updateSortableAttributes(sortableAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
-#### [Reset sortable attributes](https://docs.meilisearch.com/reference/api/sortable_attributes.html#reset-sortable-attributes)
+#### [Reset sortable attributes](https://www.meilisearch.com/docs/reference/api/settings#reset-sortable-attributes)
 
 ```ts
 client.index('myIndex').resetSortableAttributes(): Promise<EnqueuedTask>
@@ -865,19 +865,19 @@ client.index('myIndex').resetFaceting(): Promise<EnqueuedTask>
 
 ### Typo tolerance <!-- omit in toc -->
 
-#### [Get typo tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#get-typo-tolerance)
+#### [Get typo tolerance](https://www.meilisearch.com/docs/reference/api/settings#get-typo-tolerance-settings)
 
 ```ts
 client.index('myIndex').getTypoTolerance(): Promise<TypoTolerance>
 ```
 
-#### [Update typo tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#update-typo-tolerance)
+#### [Update typo tolerance](https://www.meilisearch.com/docs/reference/api/settings#update-typo-tolerance-settings)
 
 ```ts
 client.index('myIndex').updateTypoTolerance(typoTolerance: TypoTolerance | null): Promise<EnqueuedTask>
 ```
 
-#### [Reset typo tolerance](https://docs.meilisearch.com/reference/api/typo_tolerance.html#reset-typo-tolerance)
+#### [Reset typo tolerance](https://www.meilisearch.com/docs/reference/api/settings#reset-typo-tolerance-settings)
 
 ```ts
 client.index('myIndex').resetTypoTolerance(): Promise<EnqueuedTask>
