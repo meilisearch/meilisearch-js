@@ -489,319 +489,319 @@ export type MeiliSearchErrorInfo = {
 }
 
 export const enum ErrorStatusCode {
-  /** @see https://docs.meilisearch.com/errors/#index_creation_failed */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#index_creation_failed */
   INDEX_CREATION_FAILED = 'index_creation_failed',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_index_uid */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_index_uid */
   MISSING_INDEX_UID = 'missing_index_uid',
 
-  /** @see https://docs.meilisearch.com/errors/#index_already_exists */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#index_already_exists */
   INDEX_ALREADY_EXISTS = 'index_already_exists',
 
-  /** @see https://docs.meilisearch.com/errors/#index_not_found */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#index_not_found */
   INDEX_NOT_FOUND = 'index_not_found',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_index_uid */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_index_uid */
   INVALID_INDEX_UID = 'invalid_index_uid',
 
-  /** @see https://docs.meilisearch.com/errors/#index_not_accessible */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#index_not_accessible */
   INDEX_NOT_ACCESSIBLE = 'index_not_accessible',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_index_offset */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_index_offset */
   INVALID_INDEX_OFFSET = 'invalid_index_offset',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_index_limit */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_index_limit */
   INVALID_INDEX_LIMIT = 'invalid_index_limit',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_state */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_state */
   INVALID_STATE = 'invalid_state',
 
-  /** @see https://docs.meilisearch.com/errors/#primary_key_inference_failed */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#primary_key_inference_failed */
   PRIMARY_KEY_INFERENCE_FAILED = 'primary_key_inference_failed',
 
-  /** @see https://docs.meilisearch.com/errors/#index_primary_key_already_exists */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#index_primary_key_already_exists */
   INDEX_PRIMARY_KEY_ALREADY_EXISTS = 'index_primary_key_already_exists',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_index_primary_key */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_index_primary_key */
   INVALID_INDEX_PRIMARY_KEY = 'invalid_index_primary_key',
 
-  /** @see https://docs.meilisearch.com/errors/#max_fields_limit_exceeded */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#max_fields_limit_exceeded */
   DOCUMENTS_FIELDS_LIMIT_REACHED = 'document_fields_limit_reached',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_document_id */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_document_id */
   MISSING_DOCUMENT_ID = 'missing_document_id',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_document_id */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_document_id */
   INVALID_DOCUMENT_ID = 'invalid_document_id',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_content_type */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_content_type */
   INVALID_CONTENT_TYPE = 'invalid_content_type',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_content_type */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_content_type */
   MISSING_CONTENT_TYPE = 'missing_content_type',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_document_fields */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_fields */
   INVALID_DOCUMENT_FIELDS = 'invalid_document_fields',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_document_limit */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_limit */
   INVALID_DOCUMENT_LIMIT = 'invalid_document_limit',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_document_offset */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
   INVALID_DOCUMENT_OFFSET = 'invalid_document_offset',
 
-  /** @see https://docs.meilisearch.com/errors/#payload_too_large */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#payload_too_large */
   PAYLOAD_TOO_LARGE = 'payload_too_large',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_payload */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_payload */
   MISSING_PAYLOAD = 'missing_payload',
 
-  /** @see https://docs.meilisearch.com/errors/#malformed_payload */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#malformed_payload */
   MALFORMED_PAYLOAD = 'malformed_payload',
 
-  /** @see https://docs.meilisearch.com/errors/#no_space_left_on_device */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#no_space_left_on_device */
   NO_SPACE_LEFT_ON_DEVICE = 'no_space_left_on_device',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_store_file */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_store_file */
   INVALID_STORE_FILE = 'invalid_store_file',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_ranking_rules */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_ranking_rules */
   INVALID_RANKING_RULES = 'missing_document_id',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_request */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_request */
   INVALID_REQUEST = 'invalid_request',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_document_geo_field */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_geo_field */
   INVALID_DOCUMENT_GEO_FIELD = 'invalid_document_geo_field',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_q */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_q */
   INVALID_SEARCH_Q = 'invalid_search_q',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_offset */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_offset */
   INVALID_SEARCH_OFFSET = 'invalid_search_offset',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_limit */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_limit */
   INVALID_SEARCH_LIMIT = 'invalid_search_limit',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_page */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_page */
   INVALID_SEARCH_PAGE = 'invalid_search_page',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_hits_per_page */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_hits_per_page */
   INVALID_SEARCH_HITS_PER_PAGE = 'invalid_search_hits_per_page',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_attributes_to_retrieve */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_attributes_to_retrieve */
   INVALID_SEARCH_ATTRIBUTES_TO_RETRIEVE = 'invalid_search_attributes_to_retrieve',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_attributes_to_crop */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_attributes_to_crop */
   INVALID_SEARCH_ATTRIBUTES_TO_CROP = 'invalid_search_attributes_to_crop',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_crop_length */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_crop_length */
   INVALID_SEARCH_CROP_LENGTH = 'invalid_search_crop_length',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_attributes_to_highlight */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_attributes_to_highlight */
   INVALID_SEARCH_ATTRIBUTES_TO_HIGHLIGHT = 'invalid_search_attributes_to_highlight',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_show_matches_position */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_show_matches_position */
   INVALID_SEARCH_SHOW_MATCHES_POSITION = 'invalid_search_show_matches_position',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_filter */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_filter */
   INVALID_SEARCH_FILTER = 'invalid_search_filter',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_sort */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_sort */
   INVALID_SEARCH_SORT = 'invalid_search_sort',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_facets */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_facets */
   INVALID_SEARCH_FACETS = 'invalid_search_facets',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_highlight_pre_tag */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_highlight_pre_tag */
   INVALID_SEARCH_HIGHLIGHT_PRE_TAG = 'invalid_search_highlight_pre_tag',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_highlight_post_tag */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_highlight_post_tag */
   INVALID_SEARCH_HIGHLIGHT_POST_TAG = 'invalid_search_highlight_post_tag',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_crop_marker */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_crop_marker */
   INVALID_SEARCH_CROP_MARKER = 'invalid_search_crop_marker',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_search_matching_strategy */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_matching_strategy */
   INVALID_SEARCH_MATCHING_STRATEGY = 'invalid_search_matching_strategy',
 
-  /** @see https://docs.meilisearch.com/errors/#bad_request */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#bad_request */
   BAD_REQUEST = 'bad_request',
 
-  /** @see https://docs.meilisearch.com/errors/#document_not_found */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#document_not_found */
   DOCUMENT_NOT_FOUND = 'document_not_found',
 
-  /** @see https://docs.meilisearch.com/errors/#internal */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#internal */
   INTERNAL = 'internal',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_api_key */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_api_key */
   INVALID_API_KEY = 'invalid_api_key',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_description */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_api_key_description */
   INVALID_API_KEY_DESCRIPTION = 'invalid_api_key_description',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_actions */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_api_key_actions */
   INVALID_API_KEY_ACTIONS = 'invalid_api_key_actions',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_indexes */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_api_key_indexes */
   INVALID_API_KEY_INDEXES = 'invalid_api_key_indexes',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_api_key_expires_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_api_key_expires_at */
   INVALID_API_KEY_EXPIRES_AT = 'invalid_api_key_expires_at',
 
-  /** @see https://docs.meilisearch.com/errors/#api_key_not_found */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#api_key_not_found */
   API_KEY_NOT_FOUND = 'api_key_not_found',
 
-  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_uid */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#immutable_api_key_uid */
   IMMUTABLE_API_KEY_UID = 'immutable_api_key_uid',
 
-  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_actions */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#immutable_api_key_actions */
   IMMUTABLE_API_KEY_ACTIONS = 'immutable_api_key_actions',
 
-  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_indexes */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#immutable_api_key_indexes */
   IMMUTABLE_API_KEY_INDEXES = 'immutable_api_key_indexes',
 
-  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_expires_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#immutable_api_key_expires_at */
   IMMUTABLE_API_KEY_EXPIRES_AT = 'immutable_api_key_expires_at',
 
-  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_created_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#immutable_api_key_created_at */
   IMMUTABLE_API_KEY_CREATED_AT = 'immutable_api_key_created_at',
 
-  /** @see https://docs.meilisearch.com/errors/#immutable_api_key_updated_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#immutable_api_key_updated_at */
   IMMUTABLE_API_KEY_UPDATED_AT = 'immutable_api_key_updated_at',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_authorization_header */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_authorization_header */
   MISSING_AUTHORIZATION_HEADER = 'missing_authorization_header',
 
-  /** @see https://docs.meilisearch.com/errors/#unretrievable_document */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#unretrievable_document */
   UNRETRIEVABLE_DOCUMENT = 'unretrievable_document',
 
-  /** @see https://docs.meilisearch.com/errors/#database_size_limit_reached */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#database_size_limit_reached */
   MAX_DATABASE_SIZE_LIMIT_REACHED = 'database_size_limit_reached',
 
-  /** @see https://docs.meilisearch.com/errors/#task_not_found */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#task_not_found */
   TASK_NOT_FOUND = 'task_not_found',
 
-  /** @see https://docs.meilisearch.com/errors/#dump_process_failed */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#dump_process_failed */
   DUMP_PROCESS_FAILED = 'dump_process_failed',
 
-  /** @see https://docs.meilisearch.com/errors/#dump_not_found */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#dump_not_found */
   DUMP_NOT_FOUND = 'dump_not_found',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_swap_duplicate_index_found */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_swap_duplicate_index_found */
   INVALID_SWAP_DUPLICATE_INDEX_FOUND = 'invalid_swap_duplicate_index_found',
 
-  /** @see https://docs.meilisearch.com/errors/#invalid_swap_indexes */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_swap_indexes */
   INVALID_SWAP_INDEXES = 'invalid_swap_indexes',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_swap_indexes */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_swap_indexes */
   MISSING_SWAP_INDEXES = 'missing_swap_indexes',
 
-  /** @see https://docs.meilisearch.com/errors/#missing_master_key */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_master_key */
   MISSING_MASTER_KEY = 'missing_master_key',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_types */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_types */
   INVALID_TASK_TYPES = 'invalid_task_types',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_uids */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_uids */
   INVALID_TASK_UIDS = 'invalid_task_uids',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_statuses */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_statuses */
   INVALID_TASK_STATUSES = 'invalid_task_statuses',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_limit */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_limit */
   INVALID_TASK_LIMIT = 'invalid_task_limit',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_from */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_from */
   INVALID_TASK_FROM = 'invalid_task_from',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_canceled_by */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_canceled_by */
   INVALID_TASK_CANCELED_BY = 'invalid_task_canceled_by',
 
-  /** @see http://docs.meilisearch.com/errors/#missing_task_filters */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_task_filters */
   MISSING_TASK_FILTERS = 'missing_task_filters',
 
-  /** @see http://docs.meilisearch.com/errors/#too_many_open_files */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#too_many_open_files */
   TOO_MANY_OPEN_FILES = 'too_many_open_files',
 
-  /** @see http://docs.meilisearch.com/errors/#io_error */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#io_error */
   IO_ERROR = 'io_error',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_index_uids */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_index_uids */
   INVALID_TASK_INDEX_UIDS = 'invalid_task_index_uids',
 
-  /** @see http://docs.meilisearch.com/errors/#immutable_index_uid */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#immutable_index_uid */
   IMMUTABLE_INDEX_UID = 'immutable_index_uid',
 
-  /** @see http://docs.meilisearch.com/errors/#immutable_index_created_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#immutable_index_created_at */
   IMMUTABLE_INDEX_CREATED_AT = 'immutable_index_created_at',
 
-  /** @see http://docs.meilisearch.com/errors/#immutable_index_updated_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#immutable_index_updated_at */
   IMMUTABLE_INDEX_UPDATED_AT = 'immutable_index_updated_at',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_settings_displayed_attributes */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_displayed_attributes */
   INVALID_SETTINGS_DISPLAYED_ATTRIBUTES = 'invalid_settings_displayed_attributes',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_settings_searchable_attributes */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_searchable_attributes */
   INVALID_SETTINGS_SEARCHABLE_ATTRIBUTES = 'invalid_settings_searchable_attributes',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_settings_filterable_attributes */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_filterable_attributes */
   INVALID_SETTINGS_FILTERABLE_ATTRIBUTES = 'invalid_settings_filterable_attributes',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_settings_sortable_attributes */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_sortable_attributes */
   INVALID_SETTINGS_SORTABLE_ATTRIBUTES = 'invalid_settings_sortable_attributes',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_settings_ranking_rules */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_ranking_rules */
   INVALID_SETTINGS_RANKING_RULES = 'invalid_settings_ranking_rules',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_settings_stop_words */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_stop_words */
   INVALID_SETTINGS_STOP_WORDS = 'invalid_settings_stop_words',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_settings_synonyms */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_synonyms */
   INVALID_SETTINGS_SYNONYMS = 'invalid_settings_synonyms',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_settings_distinct_attribute */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_distinct_attribute */
   INVALID_SETTINGS_DISTINCT_ATTRIBUTE = 'invalid_settings_distinct_attribute',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_settings_typo_tolerance */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_typo_tolerance */
   INVALID_SETTINGS_TYPO_TOLERANCE = 'invalid_settings_typo_tolerance',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_settings_faceting */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_faceting */
   INVALID_SETTINGS_FACETING = 'invalid_settings_faceting',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_settings_pagination */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_pagination */
   INVALID_SETTINGS_PAGINATION = 'invalid_settings_pagination',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_before_enqueued_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_before_enqueued_at */
   INVALID_TASK_BEFORE_ENQUEUED_AT = 'invalid_task_before_enqueued_at',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_after_enqueued_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_after_enqueued_at */
   INVALID_TASK_AFTER_ENQUEUED_AT = 'invalid_task_after_enqueued_at',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_before_started_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_before_started_at */
   INVALID_TASK_BEFORE_STARTED_AT = 'invalid_task_before_started_at',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_after_started_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_after_started_at */
   INVALID_TASK_AFTER_STARTED_AT = 'invalid_task_after_started_at',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_before_finished_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_before_finished_at */
   INVALID_TASK_BEFORE_FINISHED_AT = 'invalid_task_before_finished_at',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_task_after_finished_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_after_finished_at */
   INVALID_TASK_AFTER_FINISHED_AT = 'invalid_task_after_finished_at',
 
-  /** @see http://docs.meilisearch.com/errors/#missing_api_key_actions */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_api_key_actions */
   MISSING_API_KEY_ACTIONS = 'missing_api_key_actions',
 
-  /** @see http://docs.meilisearch.com/errors/#missing_api_key_indexes */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_api_key_indexes */
   MISSING_API_KEY_INDEXES = 'missing_api_key_indexes',
 
-  /** @see http://docs.meilisearch.com/errors/#missing_api_key_expires_at */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_api_key_expires_at */
   MISSING_API_KEY_EXPIRES_AT = 'missing_api_key_expires_at',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_api_key_limit */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_api_key_limit */
   INVALID_API_KEY_LIMIT = 'invalid_api_key_limit',
 
-  /** @see http://docs.meilisearch.com/errors/#invalid_api_key_offset */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_api_key_offset */
   INVALID_API_KEY_OFFSET = 'invalid_api_key_offset',
 }
 
