@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.32.3",
+  "version": "0.32.5",
   "description": "The Meilisearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -44,8 +44,9 @@
     "test:ci": "yarn test --ci",
     "test:env": "yarn build && yarn test:env:nodejs && yarn test:env:esm && yarn test:env:node-ts",
     "test:env:node-ts": "yarn --cwd tests/env/typescript-node start",
-    "test:env:nodejs": "node tests/env/node/index.js",
+    "test:env:nodejs": "yarn build && node tests/env/node/index.js && node tests/env/node/getting_started.js",
     "test:env:esm": "yarn --cwd tests/env/esm && yarn --cwd tests/env/esm start",
+    "test:env:nitro-app": "yarn build && yarn --cwd tests/env/nitro-app test",
     "size": "node scripts/file-size ./dist/bundles/meilisearch.esm.min.js ./dist/bundles/meilisearch.umd.min.js",
     "style": "yarn lint",
     "style:fix": "yarn lint:fix",
@@ -69,14 +70,14 @@
     ]
   },
   "dependencies": {
-    "cross-fetch": "^3.1.5"
+    "cross-fetch": "^3.1.6"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-env": "^7.21.5",
     "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "24.0.1",
+    "@rollup/plugin-commonjs": "25.0.0",
     "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-node-resolve": "15.0.1",
+    "@rollup/plugin-node-resolve": "15.0.2",
     "@types/jest": "^27.5.0",
     "@types/prettier": "^2.2.3",
     "@typescript-eslint/eslint-plugin": "2.34.0",
@@ -88,7 +89,6 @@
     "eslint-config-standard-with-typescript": "^17.0.0",
     "eslint-plugin-import": "2",
     "eslint-plugin-jest": "^24.1.8",
-    "eslint-plugin-jsdoc": "^39.6.4",
     "eslint-plugin-node": "11",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "4",

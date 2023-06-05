@@ -20,15 +20,12 @@ module.exports = {
     sourceType: 'module',
     projectFolderIgnoreList: ['dist'],
   },
-  plugins: ['jsdoc', 'tsdoc', '@typescript-eslint', 'prettier', 'jest'],
+  plugins: ['tsdoc', '@typescript-eslint', 'prettier', 'jest'],
   rules: {
     'no-dupe-class-members': 'off', // Off due to conflict with typescript overload functions
     'prettier/prettier': ['error', {}, { usePrettierrc: true }],
     '@typescript-eslint/array-type': ['warn', { default: 'array-simple' }],
     '@typescript-eslint/return-await': 'off',
-    'jsdoc/check-alignment': 'error',
-    'jsdoc/check-indentation': 'off', // conflict with prettier-plugin-jsdoc
-    'jsdoc/no-types': 'error',
     'tsdoc/syntax': 'error',
     '@typescript-eslint/space-before-function-paren': 0,
     '@typescript-eslint/no-explicit-any': 'off',

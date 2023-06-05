@@ -1,4 +1,3 @@
-import 'cross-fetch/polyfill'
 import { FetchError } from '../types'
 
 class MeiliSearchCommunicationError extends Error {

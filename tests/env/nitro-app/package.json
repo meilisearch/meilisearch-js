@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "yarn build && jest",
+    "dev": "npx nitropack dev",
+    "build": "npx nitropack build",
+    "preview": "node .output/server/index.mjs"
+  },
+  "dependencies": {
+    "meilisearch": "file:../../../",
+    "nitropack": "latest"
+  },
+  "devDependencies": {
+    "jest": "29.5.0"
+  }
+}
