@@ -43,7 +43,16 @@ get_one_document_1: |-
       .index('movies')
       .getDocument(25684, { fields: ['id', 'title', 'poster', 'release_date'] })
 get_documents_1: |-
-  client.index('movies').getDocuments({ limit: 2 })
+  client.index('movies').getDocuments({
+    limit: 2,
+    filter: 'genres = action'
+  })
+get_documents_post_1: |-
+  client.index('books').getDocuments({
+    filter: '(rating > 3 AND (genres = Adventure OR genres = Fiction)) AND language = English',
+    fields: ['title', 'genres', 'rating', 'language'],
+    limit: 3
+  })
 add_or_replace_documents_1: |-
   client.index('movies').addDocuments([{
       id: 287947,
@@ -62,8 +71,12 @@ delete_all_documents_1: |-
   client.index('movies').deleteAllDocuments()
 delete_one_document_1: |-
   client.index('movies').deleteDocument(25684)
-delete_documents_1: |-
+delete_documents_by_batch_1: |-
   client.index('movies').deleteDocuments([23488, 153738, 437035, 363869])
+delete_documents_by_filter_1: |-
+  client.index('movies').deleteDocuments({
+    filter: 'genres = action OR genres = adventure'
+  })
 search_post_1: |-
   client.index('movies').search('American ninja')
 search_get_1: |-
