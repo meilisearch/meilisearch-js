@@ -45,6 +45,8 @@ import {
   ContentType,
   DocumentsIds,
   DocumentsDeletionQuery,
+  SearchForFacetValuesParams,
+  SearchForFacetValuesResponse,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -142,6 +144,27 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     return await this.httpRequest.get<SearchResponse<D, S>>(
       url,
       removeUndefinedFromObject(getParams),
+      config
+    )
+  }
+
+  /**
+   * Search for facet values
+   *
+   * @param params - Parameters used to search on the facets
+   * @param config - Additional request configuration options
+   * @returns Promise containing the search response
+   */
+  async searchForFacetValue(
+    params: SearchForFacetValuesParams,
+    config?: Partial<Request>
+  ): Promise<SearchForFacetValuesResponse> {
+    const url = `indexes/${this.uid}/facet-search`
+
+    return await this.httpRequest.post(
+      url,
+      removeUndefinedFromObject(params),
+      undefined,
       config
     )
   }

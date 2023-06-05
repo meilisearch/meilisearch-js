@@ -412,6 +412,14 @@ client.multiSearch(queries?: MultiSearchParams, config?: Partial<Request>): Prom
 
 `multiSearch` uses the `POST` method when performing its request to Meilisearch.
 
+### Search For Facet Value
+
+#### [Search for facet value](#)
+
+```ts
+client.index<T>('xxx').searchForFacetValue(params: SearchForFacetValuesParams, config?: Partial<Request>): Promise<SearchForFacetValuesResponse>
+```
+
 ### Documents <!-- omit in toc -->
 
 #### [Add or replace multiple documents](https://www.meilisearch.com/docs/reference/api/documents#add-or-replace-documents)

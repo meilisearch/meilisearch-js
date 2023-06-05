@@ -190,6 +190,29 @@ export type FieldDistribution = {
 }
 
 /*
+ * Facet search
+ */
+
+export type SearchForFacetValuesParams = SearchParams & {
+  facetName: string
+  facetQuery?: string
+  q?: string
+  filter?: Filter
+  matchingStrategy?: MatchingStrategies
+}
+
+export type FacetHit = {
+  value: string
+  count: number
+}
+
+export type SearchForFacetValuesResponse = {
+  hits: FacetHit[]
+  query: string | null
+  processingTimeMs: number
+}
+
+/*
  ** Documents
  */
 
