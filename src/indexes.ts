@@ -7,8 +7,12 @@
 
 'use strict'
 
-import { MeiliSearchError } from './errors'
-
+import {
+  MeiliSearchError,
+  MeiliSearchCommunicationError,
+  versionErrorHintMessage,
+  MeiliSearchApiError,
+} from './errors'
 import {
   Config,
   SearchResponse,
@@ -39,6 +43,8 @@ import {
   ResourceResults,
   RawDocumentAdditionOptions,
   ContentType,
+  DocumentsIds,
+  DocumentsDeletionQuery,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -302,30 +308,49 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ///
 
   /**
-   * Get documents of an index
+   * Get documents of an index.
    *
-   * @param parameters - Parameters to browse the documents
-   * @returns Promise containing Document responses
+   * @param parameters - Parameters to browse the documents. Parameters can
+   *   contain the `filter` field only available in Meilisearch v1.2 and newer
+   * @returns Promise containing the returned documents
    */
   async getDocuments<D extends Record<string, any> = T>(
     parameters: DocumentsQuery<D> = {}
   ): Promise<ResourceResults<D[]>> {
-    const url = `indexes/${this.uid}/documents`
+    parameters = removeUndefinedFromObject(parameters)
 
-    const fields = (() => {
-      if (Array.isArray(parameters?.fields)) {
-        return parameters?.fields?.join(',')
+    // In case `filter` is provided, use `POST /documents/fetch`
+    if (parameters.filter !== undefined) {
+      try {
+        const url = `indexes/${this.uid}/documents/fetch`
+
+        return await this.httpRequest.post<
+          DocumentsQuery,
+          Promise<ResourceResults<D[]>>
+        >(url, parameters)
+      } catch (e) {
+        if (e instanceof MeiliSearchCommunicationError) {
+          e.message = versionErrorHintMessage(e.message, 'getDocuments')
+        } else if (e instanceof MeiliSearchApiError) {
+          e.message = versionErrorHintMessage(e.message, 'getDocuments')
+        }
+
+        throw e
       }
-      return undefined
-    })()
+      // Else use `GET /documents` method
+    } else {
+      const url = `indexes/${this.uid}/documents`
 
-    return await this.httpRequest.get<Promise<ResourceResults<D[]>>>(
-      url,
-      removeUndefinedFromObject({
+      // Transform fields to query parameter string format
+      const fields = Array.isArray(parameters?.fields)
+        ? { fields: parameters?.fields?.join(',') }
+        : {}
+
+      return await this.httpRequest.get<Promise<ResourceResults<D[]>>>(url, {
         ...parameters,
-        fields,
+        ...fields,
       })
-    )
+    }
   }
 
   /**
@@ -503,19 +528,43 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   }
 
   /**
-   * Delete multiples documents of an index
+   * Delete multiples documents of an index.
    *
-   * @param documentsIds - Array of Document Ids to delete
+   * @param params - Params value can be:
+   *
+   *   - DocumentsDeletionQuery: An object containing the parameters to customize
+   *       your document deletion. Only available in Meilisearch v1.2 and newer
+   *   - DocumentsIds: An array of document ids to delete
+   *
    * @returns Promise containing an EnqueuedTask
    */
   async deleteDocuments(
-    documentsIds: string[] | number[]
+    params: DocumentsDeletionQuery | DocumentsIds
   ): Promise<EnqueuedTask> {
-    const url = `indexes/${this.uid}/documents/delete-batch`
+    // If params is of type DocumentsDeletionQuery
+    const isDocumentsDeletionQuery =
+      !Array.isArray(params) && typeof params === 'object'
+    const endpoint = isDocumentsDeletionQuery
+      ? 'documents/delete'
+      : 'documents/delete-batch'
+    const url = `indexes/${this.uid}/${endpoint}`
 
-    const task = await this.httpRequest.post(url, documentsIds)
+    try {
+      const task = await this.httpRequest.post(url, params)
 
-    return new EnqueuedTask(task)
+      return new EnqueuedTask(task)
+    } catch (e) {
+      if (
+        e instanceof MeiliSearchCommunicationError &&
+        isDocumentsDeletionQuery
+      ) {
+        e.message = versionErrorHintMessage(e.message, 'deleteDocuments')
+      } else if (e instanceof MeiliSearchApiError) {
+        e.message = versionErrorHintMessage(e.message, 'deleteDocuments')
+      }
+
+      throw e
+    }
   }
 
   /**

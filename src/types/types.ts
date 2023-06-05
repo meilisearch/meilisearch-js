@@ -218,11 +218,18 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
 
 export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   fields?: Fields<T>
+  filter?: Filter
 }
 
 export type DocumentQuery<T = Record<string, any>> = {
   fields?: Fields<T>
 }
+
+export type DocumentsDeletionQuery = {
+  filter: Filter
+}
+
+export type DocumentsIds = string[] | number[]
 
 /*
  ** Settings
@@ -548,6 +555,12 @@ export const enum ErrorStatusCode {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
   INVALID_DOCUMENT_OFFSET = 'invalid_document_offset',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
+  INVALID_DOCUMENT_FILTER = 'invalid_document_filter',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
+  MISSING_DOCUMENT_FILTER = 'missing_document_filter',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#payload_too_large */
   PAYLOAD_TOO_LARGE = 'payload_too_large',
