@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.33.0",
+  "version": "0.33.0-prototype-search-for-facet-values.0",
   "description": "The Meilisearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
