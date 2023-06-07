@@ -78,6 +78,28 @@ export type Crop = {
   cropMarker?: string
 }
 
+export const SortFacetValuesBy = {
+  COUNT: 'error',
+  ALPHA: 'alpha',
+}
+
+export type SortFacetValuesBy = typeof SortFacetValuesBy[keyof typeof SortFacetValuesBy]
+
+export type SearchForFacetValuesParams = Omit<SearchParams, 'facetName'> & {
+  facetName: string
+}
+
+export type FacetHit = {
+  value: string
+  count: number
+}
+
+export type SearchForFacetValuesResponse = {
+  hits: FacetHit[]
+  query: string | null
+  processingTimeMs: number
+}
+
 export type SearchParams = Query &
   Pagination &
   Highlight &
@@ -90,6 +112,9 @@ export type SearchParams = Query &
     matchingStrategy?: MatchingStrategies
     hitsPerPage?: number
     page?: number
+    sortFacetValuesBy?: SortFacetValuesBy
+    facetName?: string
+    facetQuery?: string
   }
 
 // Search parameters for searches made with the GET method
@@ -187,29 +212,6 @@ export type MultiSearchResponse<T = Record<string, any>> = {
 
 export type FieldDistribution = {
   [field: string]: number
-}
-
-/*
- * Facet search
- */
-
-export type SearchForFacetValuesParams = SearchParams & {
-  facetName: string
-  facetQuery?: string
-  q?: string
-  filter?: Filter
-  matchingStrategy?: MatchingStrategies
-}
-
-export type FacetHit = {
-  value: string
-  count: number
-}
-
-export type SearchForFacetValuesResponse = {
-  hits: FacetHit[]
-  query: string | null
-  processingTimeMs: number
 }
 
 /*
