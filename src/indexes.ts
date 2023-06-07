@@ -155,7 +155,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @param config - Additional request configuration options
    * @returns Promise containing the search response
    */
-  async searchForFacetValue(
+  async searchForFacetValues(
     params: SearchForFacetValuesParams,
     config?: Partial<Request>
   ): Promise<SearchForFacetValuesResponse> {

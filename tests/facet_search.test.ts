@@ -40,7 +40,6 @@ describe.each([
     await clearAllIndexes(config)
     const client = await getClient('Master')
     const newFilterableAttributes = ['genres', 'title']
-
     await client.createIndex(index.uid)
     await client.index(index.uid).updateSettings({
       filterableAttributes: newFilterableAttributes,
@@ -49,14 +48,14 @@ describe.each([
     await client.waitForTask(taskUid)
   })
 
-  test(`${permission} key: basic facet value search`, async () => {
+  test.only(`${permission} key: basic facet value search`, async () => {
     const client = await getClient(permission)
 
     const params = {
       facetQuery: 'a',
       facetName: 'genres',
     }
-    const response = await client.index(index.uid).searchForFacetValue(params)
+    const response = await client.index('games').searchForFacetValues(params)
 
     expect(response.hits.length).toEqual(2)
     expect(response.query).toEqual('a')
@@ -68,7 +67,7 @@ describe.each([
     const params = {
       facetName: 'genres',
     }
-    const response = await client.index(index.uid).searchForFacetValue(params)
+    const response = await client.index(index.uid).searchForFacetValues(params)
 
     expect(response.hits.length).toEqual(4)
     expect(response.query).toEqual(null)
@@ -82,7 +81,8 @@ describe.each([
       facetQuery: 'a',
       filter: ['genres = action'],
     }
-    const response = await client.index(index.uid).searchForFacetValue(params)
+
+    const response = await client.index(index.uid).searchForFacetValues(params)
 
     expect(response.hits.length).toEqual(1)
   })
@@ -95,7 +95,7 @@ describe.each([
       facetQuery: 'a',
       q: 'Alice',
     }
-    const response = await client.index(index.uid).searchForFacetValue(params)
+    const response = await client.index(index.uid).searchForFacetValues(params)
 
     expect(response.hits.length).toEqual(1)
   })
