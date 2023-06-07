@@ -48,7 +48,7 @@ describe.each([
     await client.waitForTask(taskUid)
   })
 
-  test.only(`${permission} key: basic facet value search`, async () => {
+  test(`${permission} key: basic facet value search`, async () => {
     const client = await getClient(permission)
 
     const params = {
