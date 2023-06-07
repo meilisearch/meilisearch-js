@@ -55,7 +55,7 @@ describe.each([
       facetQuery: 'a',
       facetName: 'genres',
     }
-    const response = await client.index('games').searchForFacetValues(params)
+    const response = await client.index(index.uid).searchForFacetValues(params)
 
     expect(response.hits.length).toEqual(2)
     expect(response.query).toEqual('a')
