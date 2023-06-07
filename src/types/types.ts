@@ -851,9 +851,6 @@ export const enum ErrorStatusCode {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_name */
   INVALID_FACET_SEARCH_NAME = 'invalid_facet_search_name',
 
-  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_facet */
-  INVALID_SEARCH_FACET = 'invalid_search_facet',
-
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_facet_search_facet_name */
   MISSING_FACET_SEARCH_FACET_NAME = 'missing_facet_search_facet_name',
 }
