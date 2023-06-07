@@ -95,8 +95,8 @@ export type FacetHit = {
 }
 
 export type SearchForFacetValuesResponse = {
-  hits: FacetHit[]
-  query: string | null
+  facetHits: FacetHit[]
+  facetQuery: string | null
   processingTimeMs: number
 }
 
