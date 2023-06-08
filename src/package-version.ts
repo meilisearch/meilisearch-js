@@ -1,1 +1,1 @@
-export const PACKAGE_VERSION = '0.33.0-prototype-search-for-facet-values.0'
+export const PACKAGE_VERSION = 'v0.33.0-prototype-search-for-facet-values.1'
