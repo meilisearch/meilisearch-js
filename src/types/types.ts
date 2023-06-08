@@ -78,6 +78,28 @@ export type Crop = {
   cropMarker?: string
 }
 
+export const SortFacetValuesBy = {
+  COUNT: 'error',
+  ALPHA: 'alpha',
+}
+
+export type SortFacetValuesBy = typeof SortFacetValuesBy[keyof typeof SortFacetValuesBy]
+
+export type SearchForFacetValuesParams = Omit<SearchParams, 'facetName'> & {
+  facetName: string
+}
+
+export type FacetHit = {
+  value: string
+  count: number
+}
+
+export type SearchForFacetValuesResponse = {
+  facetHits: FacetHit[]
+  facetQuery: string | null
+  processingTimeMs: number
+}
+
 export type SearchParams = Query &
   Pagination &
   Highlight &
@@ -90,6 +112,9 @@ export type SearchParams = Query &
     matchingStrategy?: MatchingStrategies
     hitsPerPage?: number
     page?: number
+    sortFacetValuesBy?: SortFacetValuesBy
+    facetName?: string
+    facetQuery?: string
   }
 
 // Search parameters for searches made with the GET method
@@ -816,6 +841,18 @@ export const enum ErrorStatusCode {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_api_key_offset */
   INVALID_API_KEY_OFFSET = 'invalid_api_key_offset',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_facet_name */
+  INVALID_FACET_SEARCH_FACET_NAME = 'invalid_facet_search_facet_name',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_query */
+  INVALID_FACET_SEARCH_QUERY = 'invalid_facet_search_query',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_name */
+  INVALID_FACET_SEARCH_NAME = 'invalid_facet_search_name',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_facet_search_facet_name */
+  MISSING_FACET_SEARCH_FACET_NAME = 'missing_facet_search_facet_name',
 }
 
 export type TokenIndexRules = {
