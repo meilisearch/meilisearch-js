@@ -417,7 +417,7 @@ client.multiSearch(queries?: MultiSearchParams, config?: Partial<Request>): Prom
 #### [Search for facet values](#)
 
 ```ts
-client.index<T>('xxx').searchForFacetValues(params: SearchForFacetValuesParams, config?: Partial<Request>): Promise<SearchForFacetValuesResponse>
+client.index<T>('myIndex').searchForFacetValues(params: SearchForFacetValuesParams, config?: Partial<Request>): Promise<SearchForFacetValuesResponse>
 ```
 
 ### Documents <!-- omit in toc -->
