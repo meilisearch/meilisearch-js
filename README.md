@@ -381,9 +381,9 @@ This package guarantees compatibility with [version v1.x of Meilisearch](https:/
 
 The following sections in our main documentation website may interest you:
 
-- **Manipulate documents**: see the [API references](https://www.meilisearch.com/docs/reference/api/documents) or read more about [documents](https://www.meilisearch.com/docs/learn/core_concepts/documents.html).
+- **Manipulate documents**: see the [API references](https://www.meilisearch.com/docs/reference/api/documents) or read more about [documents](https://www.meilisearch.com/docs/learn/core_concepts/documents).
 - **Search**: see the [API references](https://www.meilisearch.com/docs/reference/api/search) or follow our guide on [search parameters](https://www.meilisearch.com/docs/reference/api/search#search-parameters).
-- **Manage the indexes**: see the [API references](https://www.meilisearch.com/docs/reference/api/indexes) or read more about [indexes](https://www.meilisearch.com/docs/learn/core_concepts/indexes.html).
+- **Manage the indexes**: see the [API references](https://www.meilisearch.com/docs/reference/api/indexes) or read more about [indexes](https://www.meilisearch.com/docs/learn/core_concepts/indexes).
 - **Configure the index settings**: see the [API references](https://www.meilisearch.com/docs/reference/api/settings) or follow our guide on [settings parameters](https://www.meilisearch.com/docs/reference/api/settings#settings_parameters).
 
 This repository also contains [more examples](./examples).
@@ -488,7 +488,7 @@ client.index('myIndex').deleteAllDocuments(): Promise<Types.EnqueuedTask>
 
 ### Tasks <!-- omit in toc -->
 
-#### [Get all tasks](https://www.meilisearch.com/docs/reference/api/tasks.html#get-all-tasks)
+#### [Get all tasks](https://www.meilisearch.com/docs/reference/api/tasks#get-all-tasks)
 
 ```ts
 client.getTasks(parameters: TasksQuery): Promise<TasksResults>
@@ -500,19 +500,19 @@ client.getTasks(parameters: TasksQuery): Promise<TasksResults>
 client.getTask(uid: number): Promise<Task>
 ```
 
-#### [Delete tasks](https://www.meilisearch.com/docs/reference/api/tasks.html#delete-task)
+#### [Delete tasks](https://www.meilisearch.com/docs/reference/api/tasks#delete-tasks)
 
 ```ts
 client.deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask>
 ```
 
-#### [Cancel tasks](https://www.meilisearch.com/docs/reference/api/tasks.html#cancel-task)
+#### [Cancel tasks](https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks)
 
 ```ts
 client.cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask>
 ```
 
-#### [Get all tasks of an index](https://www.meilisearch.com/docs/reference/api/tasks.html#get-all-tasks-by-index)
+#### [Get all tasks of an index](https://www.meilisearch.com/docs/reference/api/tasks#get-all-tasks-by-index)
 
 ```ts
 client.index('myIndex').getTasks(parameters: TasksQuery): Promise<TasksResults>
@@ -625,7 +625,7 @@ client.deleteIndex(uid): Promise<void>
 client.index('myIndex').delete(): Promise<void>
 ```
 
-#### [Get specific index stats](https://www.meilisearch.com/docs/reference/api/stats.html#get-stat-of-an-index)
+#### [Get specific index stats](https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-an-index)
 
 ```ts
 client.index('myIndex').getStats(): Promise<IndexStats>
@@ -891,31 +891,31 @@ client.index('myIndex').resetTypoTolerance(): Promise<EnqueuedTask>
 
 ### Keys <!-- omit in toc -->
 
-#### [Get keys](https://www.meilisearch.com/docs/reference/api/keys.html#get-all-keys)
+#### [Get keys](https://www.meilisearch.com/docs/reference/api/keys#get-all-keys)
 
 ```ts
 client.getKeys(parameters: KeysQuery): Promise<KeysResults>
 ```
 
-#### [Get one key](https://www.meilisearch.com/docs/reference/api/keys.html#get-one-key)
+#### [Get one key](https://www.meilisearch.com/docs/reference/api/keys#get-one-key)
 
 ```ts
 client.getKey(keyOrUid: string): Promise<Key>
 ```
 
-#### [Create a key](https://www.meilisearch.com/docs/reference/api/keys.html#create-a-key)
+#### [Create a key](https://www.meilisearch.com/docs/reference/api/keys#create-a-key)
 
 ```ts
 client.createKey(options: KeyCreation): Promise<Key>
 ```
 
-#### [Update a key](https://www.meilisearch.com/docs/reference/api/keys.html#update-a-key)
+#### [Update a key](https://www.meilisearch.com/docs/reference/api/keys#update-a-key)
 
 ```ts
 client.updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key>
 ```
 
-#### [Delete a key](https://www.meilisearch.com/docs/reference/api/keys.html#delete-a-key)
+#### [Delete a key](https://www.meilisearch.com/docs/reference/api/keys#delete-a-key)
 
 ```ts
 client.deleteKey(keyOrUid: string): Promise<void>
@@ -923,7 +923,7 @@ client.deleteKey(keyOrUid: string): Promise<void>
 
 ### `isHealthy` <!-- omit in toc -->
 
-#### [Return `true` or `false` depending on the health of the server](https://www.meilisearch.com/docs/reference/api/health.html#get-health)
+#### [Return `true` or `false` depending on the health of the server](https://www.meilisearch.com/docs/reference/api/health#get-health)
 
 ```ts
 client.isHealthy(): Promise<boolean>
@@ -931,7 +931,7 @@ client.isHealthy(): Promise<boolean>
 
 ### Health <!-- omit in toc -->
 
-#### [Check if the server is healthy](https://www.meilisearch.com/docs/reference/api/health.html#get-health)
+#### [Check if the server is healthy](https://www.meilisearch.com/docs/reference/api/health#get-health)
 
 ```ts
 client.health(): Promise<Health>
@@ -939,7 +939,7 @@ client.health(): Promise<Health>
 
 ### Stats <!-- omit in toc -->
 
-#### [Get database stats](https://www.meilisearch.com/docs/reference/api/stats.html#get-stats-of-all-indexes)
+#### [Get database stats](https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-all-indexes)
 
 ```ts
 client.getStats(): Promise<Stats>
@@ -947,7 +947,7 @@ client.getStats(): Promise<Stats>
 
 ### Version <!-- omit in toc -->
 
-#### [Get binary version](https://www.meilisearch.com/docs/reference/api/version.html#get-version-of-meilisearch)
+#### [Get binary version](https://www.meilisearch.com/docs/reference/api/version#get-version-of-meilisearch)
 
 ```ts
 client.getVersion(): Promise<Version>
@@ -955,7 +955,7 @@ client.getVersion(): Promise<Version>
 
 ### Dumps <!-- omit in toc -->
 
-#### [Trigger a dump creation process](https://www.meilisearch.com/docs/reference/api/dump.html#create-a-dump)
+#### [Trigger a dump creation process](https://www.meilisearch.com/docs/reference/api/dump#create-a-dump)
 
 ```ts
 client.createDump(): Promise<EnqueuedTask>
