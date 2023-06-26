@@ -448,7 +448,7 @@ export type Key = {
   indexes: string[]
   expiresAt: Date
   createdAt: Date
-  updateAt: Date
+  updatedAt: Date
 }
 
 export type KeyCreation = {

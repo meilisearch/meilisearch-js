@@ -320,7 +320,7 @@ class Client {
     keys.results = keys.results.map((key) => ({
       ...key,
       createdAt: new Date(key.createdAt),
-      updateAt: new Date(key.updateAt),
+      updatedAt: new Date(key.updatedAt),
     }))
 
     return keys

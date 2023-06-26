@@ -55,7 +55,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(searchKey).toHaveProperty('createdAt')
       expect(searchKey?.createdAt).toBeInstanceOf(Date)
       expect(searchKey).toHaveProperty('updatedAt')
-      expect(searchKey?.updateAt).toBeInstanceOf(Date)
+      expect(searchKey?.updatedAt).toBeInstanceOf(Date)
 
       const adminKey = keys.results.find(
         (key: any) => key.name === 'Default Admin API Key'
@@ -73,7 +73,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(adminKey).toHaveProperty('createdAt')
       expect(searchKey?.createdAt).toBeInstanceOf(Date)
       expect(adminKey).toHaveProperty('updatedAt')
-      expect(searchKey?.updateAt).toBeInstanceOf(Date)
+      expect(searchKey?.updatedAt).toBeInstanceOf(Date)
     })
 
     test(`${permission} key: get keys with pagination`, async () => {
