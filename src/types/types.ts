@@ -78,13 +78,7 @@ export type Crop = {
   cropMarker?: string
 }
 
-export const SortFacetValuesBy = {
-  COUNT: 'error',
-  ALPHA: 'alpha',
-}
-
-export type SortFacetValuesBy = typeof SortFacetValuesBy[keyof typeof SortFacetValuesBy]
-
+// `facetName` becomes mandatory when using `searchForFacetValues`
 export type SearchForFacetValuesParams = Omit<SearchParams, 'facetName'> & {
   facetName: string
 }
@@ -112,9 +106,9 @@ export type SearchParams = Query &
     matchingStrategy?: MatchingStrategies
     hitsPerPage?: number
     page?: number
-    sortFacetValuesBy?: SortFacetValuesBy
     facetName?: string
     facetQuery?: string
+    vector?: number[] | null
   }
 
 // Search parameters for searches made with the GET method
@@ -130,6 +124,7 @@ export type SearchRequestGET = Pagination &
     attributesToHighlight?: string
     attributesToCrop?: string
     showMatchesPosition?: boolean
+    vector?: string | null
   }
 
 export type MultiSearchQuery = SearchParams & { indexUid: string }
@@ -167,6 +162,7 @@ export type SearchResponse<
   facetDistribution?: FacetDistribution
   query: string
   facetStats?: FacetStats
+  vector: number[]
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
@@ -585,11 +581,14 @@ export const enum ErrorStatusCode {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
   INVALID_DOCUMENT_OFFSET = 'invalid_document_offset',
 
-  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_filter */
   INVALID_DOCUMENT_FILTER = 'invalid_document_filter',
 
-  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_document_filter */
   MISSING_DOCUMENT_FILTER = 'missing_document_filter',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_vectors_field */
+  INVALID_DOCUMENT_VECTORS_FIELD = 'invalid_document_vectors_field',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#payload_too_large */
   PAYLOAD_TOO_LARGE = 'payload_too_large',
@@ -665,6 +664,9 @@ export const enum ErrorStatusCode {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_matching_strategy */
   INVALID_SEARCH_MATCHING_STRATEGY = 'invalid_search_matching_strategy',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_vector */
+  INVALID_SEARCH_VECTOR = 'invalid_search_vector',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#bad_request */
   BAD_REQUEST = 'bad_request',
@@ -849,14 +851,11 @@ export const enum ErrorStatusCode {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_facet_name */
   INVALID_FACET_SEARCH_FACET_NAME = 'invalid_facet_search_facet_name',
 
-  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_query */
-  INVALID_FACET_SEARCH_QUERY = 'invalid_facet_search_query',
-
-  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_name */
-  INVALID_FACET_SEARCH_NAME = 'invalid_facet_search_name',
-
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_facet_search_facet_name */
   MISSING_FACET_SEARCH_FACET_NAME = 'missing_facet_search_facet_name',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_facet_query */
+  INVALID_FACET_SEARCH_FACET_QUERY = 'invalid_facet_search_facet_query',
 }
 
 export type TokenIndexRules = {

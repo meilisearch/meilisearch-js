@@ -57,8 +57,7 @@ describe.each([
     }
     const response = await client.index(index.uid).searchForFacetValues(params)
 
-    expect(response.facetHits.length).toEqual(2)
-    expect(response.facetQuery).toEqual('a')
+    expect(response).toMatchSnapshot()
   })
 
   test(`${permission} key: facet value search with no facet query`, async () => {
@@ -69,8 +68,7 @@ describe.each([
     }
     const response = await client.index(index.uid).searchForFacetValues(params)
 
-    expect(response.facetHits.length).toEqual(4)
-    expect(response.facetQuery).toEqual(null)
+    expect(response).toMatchSnapshot()
   })
 
   test(`${permission} key: facet value search with filter`, async () => {
@@ -84,7 +82,7 @@ describe.each([
 
     const response = await client.index(index.uid).searchForFacetValues(params)
 
-    expect(response.facetHits.length).toEqual(1)
+    expect(response).toMatchSnapshot()
   })
 
   test(`${permission} key: facet value search with search query`, async () => {
@@ -97,7 +95,7 @@ describe.each([
     }
     const response = await client.index(index.uid).searchForFacetValues(params)
 
-    expect(response.facetHits.length).toEqual(1)
+    expect(response).toMatchSnapshot()
   })
 })
 
