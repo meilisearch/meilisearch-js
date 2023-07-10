@@ -9,6 +9,7 @@ import {
   getClient,
   datasetWithNests,
   HOST,
+  getKey,
 } from './utils/meilisearch-test-utils'
 
 if (typeof fetch === 'undefined') {
@@ -774,11 +775,12 @@ describe.each([
 
   test(`${permission} key: search with vectors`, async () => {
     const client = await getClient(permission)
+    const key = await getKey(permission)
 
     await fetch(`${HOST}/experimental-features`, {
       body: JSON.stringify({ vectorStore: true }),
       headers: {
-        Authorization: 'Bearer masterKey',
+        Authorization: `Bearer ${key}`,
         'Content-Type': 'application/json',
       },
       method: 'PATCH',
