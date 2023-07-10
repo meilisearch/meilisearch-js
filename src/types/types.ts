@@ -406,6 +406,7 @@ type CursorResults<T> = {
   limit: number
   from: number
   next: number
+  total: number
 }
 
 export type TasksResults = CursorResults<Task>
