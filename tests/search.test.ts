@@ -8,7 +8,13 @@ import {
   MeiliSearch,
   getClient,
   datasetWithNests,
+  HOST,
+  getKey,
 } from './utils/meilisearch-test-utils'
+
+if (typeof fetch === 'undefined') {
+  require('cross-fetch/polyfill')
+}
 
 const index = {
   uid: 'movies_test',
@@ -765,6 +771,26 @@ describe.each([
     expect(response).toHaveProperty('hits', [])
     expect(response).toHaveProperty('query', 'prince')
     expect(response.hits.length).toEqual(0)
+  })
+
+  test(`${permission} key: search with vectors`, async () => {
+    const client = await getClient(permission)
+    const key = await getKey(permission)
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ vectorStore: true }),
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+
+    const response = await client
+      .index(emptyIndex.uid)
+      .search('', { vector: [1] })
+
+    expect(response.vector).toEqual([1])
   })
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {

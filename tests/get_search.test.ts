@@ -6,6 +6,8 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
+  HOST,
+  getKey,
 } from './utils/meilisearch-test-utils'
 
 const index = {
@@ -422,6 +424,25 @@ describe.each([
       'message',
       'The filter query parameter should be in string format when using searchGet'
     )
+  })
+  test(`${permission} key: search with vectors`, async () => {
+    const client = await getClient(permission)
+    const key = await getKey(permission)
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ vectorStore: true }),
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+
+    const response = await client
+      .index(emptyIndex.uid)
+      .searchGet('', { vector: [1] })
+
+    expect(response.vector).toEqual([1])
   })
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
