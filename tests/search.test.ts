@@ -257,6 +257,51 @@ describe.each([
     expect(hit.id).toEqual(1)
   })
 
+  test(`${permission} key: search with _showRankingScore enabled`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).search('prince', {
+      showRankingScore: true,
+    })
+
+    const hit = response.hits[0]
+
+    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('query', 'prince')
+    expect(hit).toHaveProperty('_rankingScore')
+  })
+
+  test(`${permission} key: search with showRankingScoreDetails enabled`, async () => {
+    const client = await getClient(permission)
+    const key = await getKey(permission)
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ scoreDetails: true }),
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+
+    const response = await client.index(index.uid).search('prince', {
+      showRankingScoreDetails: true,
+    })
+
+    const hit = response.hits[0]
+
+    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('query', 'prince')
+    expect(hit).toHaveProperty('_rankingScoreDetails')
+    expect(Object.keys(hit._rankingScoreDetails || {})).toEqual([
+      'words',
+      'typo',
+      'proximity',
+      'attribute',
+      'exactness',
+    ])
+  })
+
   test(`${permission} key: search with array options`, async () => {
     const client = await getClient(permission)
 
