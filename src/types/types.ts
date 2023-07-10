@@ -559,11 +559,14 @@ export const enum ErrorStatusCode {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
   INVALID_DOCUMENT_OFFSET = 'invalid_document_offset',
 
-  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_filter */
   INVALID_DOCUMENT_FILTER = 'invalid_document_filter',
 
-  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_document_filter */
   MISSING_DOCUMENT_FILTER = 'missing_document_filter',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_vectors_field */
+  INVALID_DOCUMENT_VECTORS_FIELD = 'invalid_document_vectors_field',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#payload_too_large */
   PAYLOAD_TOO_LARGE = 'payload_too_large',
@@ -639,6 +642,9 @@ export const enum ErrorStatusCode {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_matching_strategy */
   INVALID_SEARCH_MATCHING_STRATEGY = 'invalid_search_matching_strategy',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_vector */
+  INVALID_SEARCH_VECTOR = 'invalid_search_vector',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#bad_request */
   BAD_REQUEST = 'bad_request',
