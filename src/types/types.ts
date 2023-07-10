@@ -90,6 +90,7 @@ export type SearchParams = Query &
     matchingStrategy?: MatchingStrategies
     hitsPerPage?: number
     page?: number
+    vector?: number[] | null
   }
 
 // Search parameters for searches made with the GET method
@@ -105,6 +106,7 @@ export type SearchRequestGET = Pagination &
     attributesToHighlight?: string
     attributesToCrop?: string
     showMatchesPosition?: boolean
+    vector?: string | null
   }
 
 export type MultiSearchQuery = SearchParams & { indexUid: string }
@@ -142,6 +144,7 @@ export type SearchResponse<
   facetDistribution?: FacetDistribution
   query: string
   facetStats?: FacetStats
+  vector: number[]
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
