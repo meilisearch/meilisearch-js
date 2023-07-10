@@ -40,9 +40,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
     test(`${permission} key: Get default typo tolerance settings`, async () => {
       const client = await getClient(permission)
-      const response: string[] = await client
-        .index(index.uid)
-        .getTypoTolerance()
+      const response = await client.index(index.uid).getTypoTolerance()
       expect(response).toEqual(defaultTypoTolerance)
     })
 

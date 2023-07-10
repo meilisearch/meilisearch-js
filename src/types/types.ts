@@ -280,9 +280,13 @@ export type TypoTolerance = {
   }
 } | null
 
+export type FacetOrder = 'alpha' | 'count'
+
 export type Faceting = {
   maxValuesPerFacet?: number | null
+  sortFacetValuesBy?: Record<string, FacetOrder> | null
 }
+
 export type PaginationSettings = {
   maxTotalHits?: number | null
 }
@@ -473,7 +477,7 @@ export type Key = {
   indexes: string[]
   expiresAt: Date
   createdAt: Date
-  updateAt: Date
+  updatedAt: Date
 }
 
 export type KeyCreation = {
