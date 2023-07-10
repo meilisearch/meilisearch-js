@@ -1,0 +1,773 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test on settings Admin key: Get default settings of an index 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Admin key: Get default settings of empty index with primary key 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Admin key: Reset settings 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Admin key: Reset settings of empty index 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Admin key: Update searchableAttributes settings on empty index 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "title",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Admin key: Update searchableAttributes settings on empty index with a primary key 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "title",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Admin key: Update settings 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "title",
+  ],
+  "distinctAttribute": "title",
+  "faceting": Object {
+    "maxValuesPerFacet": 50,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [
+    "title",
+  ],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "id:asc",
+    "typo",
+  ],
+  "searchableAttributes": Array [
+    "title",
+  ],
+  "sortableAttributes": Array [
+    "title",
+  ],
+  "stopWords": Array [
+    "the",
+  ],
+  "synonyms": Object {
+    "harry": Array [
+      "potter",
+    ],
+  },
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [
+      "comment",
+    ],
+    "disableOnWords": Array [
+      "prince",
+    ],
+    "enabled": false,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 1,
+      "twoTypos": 100,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Admin key: Update settings on empty index with primary key 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": "title",
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "title:asc",
+    "typo",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [
+    "the",
+  ],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Admin key: Update settings with all null values 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Get default settings of an index 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Get default settings of empty index with primary key 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Reset settings 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Reset settings of empty index 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Update searchableAttributes settings on empty index 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "title",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Update searchableAttributes settings on empty index with a primary key 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "title",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Update settings 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "title",
+  ],
+  "distinctAttribute": "title",
+  "faceting": Object {
+    "maxValuesPerFacet": 50,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [
+    "title",
+  ],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "id:asc",
+    "typo",
+  ],
+  "searchableAttributes": Array [
+    "title",
+  ],
+  "sortableAttributes": Array [
+    "title",
+  ],
+  "stopWords": Array [
+    "the",
+  ],
+  "synonyms": Object {
+    "harry": Array [
+      "potter",
+    ],
+  },
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [
+      "comment",
+    ],
+    "disableOnWords": Array [
+      "prince",
+    ],
+    "enabled": false,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 1,
+      "twoTypos": 100,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Update settings on empty index with primary key 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": "title",
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "title:asc",
+    "typo",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [
+    "the",
+  ],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Update settings with all null values 1`] = `
+Object {
+  "displayedAttributes": Array [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": Object {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": Object {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": Array [],
+  "pagination": Object {
+    "maxTotalHits": 1000,
+  },
+  "rankingRules": Array [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchableAttributes": Array [
+    "*",
+  ],
+  "sortableAttributes": Array [],
+  "stopWords": Array [],
+  "synonyms": Object {},
+  "typoTolerance": Object {
+    "disableOnAttributes": Array [],
+    "disableOnWords": Array [],
+    "enabled": true,
+    "minWordSizeForTypos": Object {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;

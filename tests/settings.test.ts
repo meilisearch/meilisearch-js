@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from '../src/types'
+import { ErrorStatusCode, Settings } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -14,48 +14,6 @@ const index = {
 const indexAndPK = {
   uid: 'movies_test_with_pk',
   primaryKey: 'id',
-}
-
-const defaultRankingRules = [
-  'words',
-  'typo',
-  'proximity',
-  'attribute',
-  'sort',
-  'exactness',
-]
-
-const defaultSettings = {
-  filterableAttributes: [],
-  sortableAttributes: [],
-  distinctAttribute: null,
-  searchableAttributes: ['*'],
-  displayedAttributes: ['*'],
-  rankingRules: [
-    'words',
-    'typo',
-    'proximity',
-    'attribute',
-    'sort',
-    'exactness',
-  ],
-  stopWords: [],
-  synonyms: {},
-  typoTolerance: {
-    enabled: true,
-    minWordSizeForTypos: {
-      oneTypo: 5,
-      twoTypos: 9,
-    },
-    disableOnWords: [],
-    disableOnAttributes: [],
-  },
-  pagination: {
-    maxTotalHits: 1000,
-  },
-  faceting: {
-    maxValuesPerFacet: 100,
-  },
 }
 
 jest.setTimeout(100 * 1000)
@@ -88,15 +46,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(index.uid).getSettings()
 
-      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-      expect(response).toHaveProperty('distinctAttribute', null)
-      expect(response).toHaveProperty('searchableAttributes', ['*'])
-      expect(response).toHaveProperty('displayedAttributes', ['*'])
-      expect(response).toHaveProperty('sortableAttributes', [])
-      expect(response).toHaveProperty('stopWords', [])
-      expect(response).toHaveProperty('synonyms', {})
-      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
-      expect(response).toHaveProperty('pagination', { maxTotalHits: 1000 })
+      expect(response).toMatchSnapshot()
     })
 
     test(`${permission} key: Get default settings of empty index with primary key`, async () => {
@@ -104,20 +54,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(indexAndPK.uid).getSettings()
 
-      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-      expect(response).toHaveProperty('distinctAttribute', null)
-      expect(response).toHaveProperty('searchableAttributes', ['*'])
-      expect(response).toHaveProperty('displayedAttributes', ['*'])
-      expect(response).toHaveProperty('sortableAttributes', [])
-      expect(response).toHaveProperty('stopWords', [])
-      expect(response).toHaveProperty('synonyms', {})
-      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
-      expect(response).toHaveProperty('pagination', { maxTotalHits: 1000 })
+      expect(response).toMatchSnapshot()
     })
 
     test(`${permission} key: Update settings`, async () => {
       const client = await getClient(permission)
-      const newSettings = {
+      const newSettings: Settings = {
         filterableAttributes: ['title'],
         sortableAttributes: ['title'],
         distinctAttribute: 'title',
@@ -140,6 +82,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         },
         faceting: {
           maxValuesPerFacet: 50,
+          sortFacetValuesBy: {
+            '*': 'alpha',
+          },
         },
       }
       // Add the settings
@@ -150,7 +95,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const response = await client.index(index.uid).getSettings()
 
       // tests
-      expect(response).toEqual(newSettings)
+      expect(response).toMatchSnapshot()
     })
 
     test(`${permission} key: Update settings with all null values`, async () => {
@@ -175,6 +120,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         },
         faceting: {
           maxValuesPerFacet: null,
+          sortFacetValuesBy: null,
         },
         pagination: {
           maxTotalHits: null,
@@ -188,7 +134,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const response = await client.index(index.uid).getSettings()
 
       // tests
-      expect(response).toEqual(defaultSettings)
+      expect(response).toMatchSnapshot()
     })
 
     test(`${permission} key: Update settings on empty index with primary key`, async () => {
@@ -205,17 +151,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(indexAndPK.uid).getSettings()
 
-      expect(response).toHaveProperty('rankingRules', newSettings.rankingRules)
-      expect(response).toHaveProperty(
-        'distinctAttribute',
-        newSettings.distinctAttribute
-      )
-      expect(response).toHaveProperty('searchableAttributes', ['*'])
-      expect(response).toHaveProperty('displayedAttributes', ['*'])
-      expect(response).toHaveProperty('stopWords', newSettings.stopWords)
-      expect(response).toHaveProperty('synonyms', {})
-      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
-      expect(response).toHaveProperty('pagination', { maxTotalHits: 1000 })
+      expect(response).toMatchSnapshot()
     })
 
     test(`${permission} key: Reset settings`, async () => {
@@ -225,15 +161,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(index.uid).getSettings()
 
-      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-      expect(response).toHaveProperty('distinctAttribute', null)
-      expect(response).toHaveProperty('searchableAttributes', ['*'])
-      expect(response).toHaveProperty('displayedAttributes', ['*'])
-      expect(response).toHaveProperty('sortableAttributes', [])
-      expect(response).toHaveProperty('stopWords', [])
-      expect(response).toHaveProperty('synonyms', {})
-      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
-      expect(response).toHaveProperty('pagination', { maxTotalHits: 1000 })
+      expect(response).toMatchSnapshot()
     })
 
     test(`${permission} key: Reset settings of empty index`, async () => {
@@ -243,14 +171,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(indexAndPK.uid).getSettings()
 
-      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-      expect(response).toHaveProperty('distinctAttribute', null)
-      expect(response).toHaveProperty('searchableAttributes', ['*'])
-      expect(response).toHaveProperty('displayedAttributes', ['*'])
-      expect(response).toHaveProperty('stopWords', [])
-      expect(response).toHaveProperty('synonyms', {})
-      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
-      expect(response).toHaveProperty('pagination', { maxTotalHits: 1000 })
+      expect(response).toMatchSnapshot()
     })
 
     test(`${permission} key: Update searchableAttributes settings on empty index`, async () => {
@@ -263,20 +184,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(index.uid).getSettings()
 
-      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-      expect(response).toHaveProperty(
-        'distinctAttribute',
-        defaultSettings.distinctAttribute
-      )
-      expect(response).toHaveProperty(
-        'searchableAttributes',
-        newSettings.searchableAttributes
-      )
-      expect(response).toHaveProperty('displayedAttributes', expect.any(Array))
-      expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
-      expect(response).toHaveProperty('synonyms', {})
-      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
-      expect(response).toHaveProperty('pagination', { maxTotalHits: 1000 })
+      expect(response).toMatchSnapshot()
     })
 
     test(`${permission} key: Update searchableAttributes settings on empty index with a primary key`, async () => {
@@ -294,25 +202,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       // Fetch settings
       const response = await client.index(indexAndPK.uid).getSettings()
 
-      // Compare searchableAttributes
-      expect(response).toHaveProperty(
-        'searchableAttributes',
-        newSettings.searchableAttributes
-      )
-      expect(response).toHaveProperty('rankingRules', defaultRankingRules)
-      expect(response).toHaveProperty(
-        'distinctAttribute',
-        defaultSettings.distinctAttribute
-      )
-      expect(response).toHaveProperty(
-        'searchableAttributes',
-        newSettings.searchableAttributes
-      )
-      expect(response).toHaveProperty('displayedAttributes', expect.any(Array))
-      expect(response).toHaveProperty('stopWords', defaultSettings.stopWords)
-      expect(response).toHaveProperty('synonyms', {})
-      expect(response).toHaveProperty('faceting', { maxValuesPerFacet: 100 })
-      expect(response).toHaveProperty('pagination', { maxTotalHits: 1000 })
+      expect(response).toMatchSnapshot()
     })
   }
 )

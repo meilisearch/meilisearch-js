@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test on faceting Admin key: Get default faceting object 1`] = `
+Object {
+  "maxValuesPerFacet": 100,
+  "sortFacetValuesBy": Object {
+    "*": "alpha",
+  },
+}
+`;
+
+exports[`Test on faceting Admin key: Reset faceting 1`] = `
+Object {
+  "maxValuesPerFacet": 100,
+  "sortFacetValuesBy": Object {
+    "*": "alpha",
+  },
+}
+`;
+
+exports[`Test on faceting Admin key: Update faceting at null 1`] = `
+Object {
+  "maxValuesPerFacet": 100,
+  "sortFacetValuesBy": Object {
+    "*": "alpha",
+  },
+}
+`;
+
+exports[`Test on faceting Admin key: Update faceting settings 1`] = `
+Object {
+  "maxValuesPerFacet": 12,
+  "sortFacetValuesBy": Object {
+    "*": "alpha",
+    "test": "count",
+  },
+}
+`;
+
+exports[`Test on faceting Master key: Get default faceting object 1`] = `
+Object {
+  "maxValuesPerFacet": 100,
+  "sortFacetValuesBy": Object {
+    "*": "alpha",
+  },
+}
+`;
+
+exports[`Test on faceting Master key: Reset faceting 1`] = `
+Object {
+  "maxValuesPerFacet": 100,
+  "sortFacetValuesBy": Object {
+    "*": "alpha",
+  },
+}
+`;
+
+exports[`Test on faceting Master key: Update faceting at null 1`] = `
+Object {
+  "maxValuesPerFacet": 100,
+  "sortFacetValuesBy": Object {
+    "*": "alpha",
+  },
+}
+`;
+
+exports[`Test on faceting Master key: Update faceting settings 1`] = `
+Object {
+  "maxValuesPerFacet": 12,
+  "sortFacetValuesBy": Object {
+    "*": "alpha",
+    "test": "count",
+  },
+}
+`;
