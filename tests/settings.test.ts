@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from '../src/types'
+import { ErrorStatusCode, Settings } from '../src/types'
 import {
   clearAllIndexes,
   config,
@@ -59,7 +59,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
     test(`${permission} key: Update settings`, async () => {
       const client = await getClient(permission)
-      const newSettings = {
+      const newSettings: Settings = {
         filterableAttributes: ['title'],
         sortableAttributes: ['title'],
         distinctAttribute: 'title',
@@ -83,7 +83,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         faceting: {
           maxValuesPerFacet: 50,
           sortFacetValuesBy: {
-            '*': 'alpha' as 'alpha',
+            '*': 'alpha',
           },
         },
       }
