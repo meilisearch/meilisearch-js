@@ -91,6 +91,7 @@ export type SearchParams = Query &
     hitsPerPage?: number
     page?: number
     vector?: number[] | null
+    attributesToSearchOn?: string[] | null
   }
 
 // Search parameters for searches made with the GET method
@@ -107,6 +108,7 @@ export type SearchRequestGET = Pagination &
     attributesToCrop?: string
     showMatchesPosition?: boolean
     vector?: string | null
+    attributesToSearchOn?: string | null
   }
 
 export type MultiSearchQuery = SearchParams & { indexUid: string }
@@ -649,6 +651,9 @@ export const enum ErrorStatusCode {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_vector */
   INVALID_SEARCH_VECTOR = 'invalid_search_vector',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_attributes_to_search_on */
+  INVALID_SEARCH_ATTRIBUTES_TO_SEARCH_ON = 'invalid_search_attributes_to_search_on',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#bad_request */
   BAD_REQUEST = 'bad_request',

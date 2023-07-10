@@ -141,6 +141,26 @@ describe.each([
     )
   })
 
+  test(`${permission} key: search on attributesToSearchOn`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).searchGet('prince', {
+      attributesToSearchOn: ['id'],
+    })
+
+    expect(response.hits.length).toEqual(0)
+  })
+
+  test(`${permission} key: search on attributesToSearchOn set to null`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).searchGet('prince', {
+      attributesToSearchOn: null,
+    })
+
+    expect(response).toMatchSnapshot()
+  })
+
   test(`${permission} key: search with options`, async () => {
     const client = await getClient(permission)
     const response = await client
