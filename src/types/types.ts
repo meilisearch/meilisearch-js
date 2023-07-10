@@ -255,9 +255,13 @@ export type TypoTolerance = {
   }
 } | null
 
+export type FacetOrder = 'alpha' | 'count'
+
 export type Faceting = {
   maxValuesPerFacet?: number | null
+  sortFacetValuesBy?: Record<string, FacetOrder> | null
 }
+
 export type PaginationSettings = {
   maxTotalHits?: number | null
 }
