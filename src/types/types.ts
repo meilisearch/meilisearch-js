@@ -131,7 +131,7 @@ export type Hit<T = Record<string, any>> = T & {
   _formatted?: Partial<T>
   _matchesPosition?: MatchesPosition<T>
   _rankingScore?: number
-  _rankingScoreDetails?: Record<string, any>
+  _rankingScoreDetails?: RakingScoreDetails
 }
 
 export type RakingScoreDetails = {
