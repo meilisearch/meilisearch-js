@@ -138,6 +138,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       attributesToCrop: options?.attributesToCrop?.join(','),
       attributesToHighlight: options?.attributesToHighlight?.join(','),
       vector: options?.vector?.join(','),
+      attributesToSearchOn: options?.attributesToSearchOn?.join(','),
     }
 
     return await this.httpRequest.get<SearchResponse<D, S>>(
