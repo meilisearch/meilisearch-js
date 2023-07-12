@@ -109,6 +109,8 @@ export type SearchParams = Query &
     facetName?: string
     facetQuery?: string
     vector?: number[] | null
+    showRankingScore?: boolean
+    showRankingScoreDetails?: boolean
     attributesToSearchOn?: string[] | null
   }
 
@@ -148,6 +150,39 @@ export type MatchesPosition<T> = Partial<
 export type Hit<T = Record<string, any>> = T & {
   _formatted?: Partial<T>
   _matchesPosition?: MatchesPosition<T>
+  _rankingScore?: number
+  _rankingScoreDetails?: RakingScoreDetails
+}
+
+export type RakingScoreDetails = {
+  words?: {
+    order: number
+    matchingWords: number
+    maxMatchingWords: number
+    score: number
+  }
+  typo?: {
+    order: number
+    typoCount: number
+    maxTypoCount: number
+    score: number
+  }
+  proximity?: {
+    order: number
+    score: number
+  }
+  attribute?: {
+    order: number
+    attributes_ranking_order: number
+    attributes_query_word_order: number
+    score: number
+  }
+  exactness?: {
+    order: number
+    matchType: string
+    score: number
+  }
+  [key: string]: Record<string, any> | undefined
 }
 
 export type Hits<T = Record<string, any>> = Array<Hit<T>>
