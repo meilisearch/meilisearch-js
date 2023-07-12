@@ -78,6 +78,22 @@ export type Crop = {
   cropMarker?: string
 }
 
+// `facetName` becomes mandatory when using `searchForFacetValues`
+export type SearchForFacetValuesParams = Omit<SearchParams, 'facetName'> & {
+  facetName: string
+}
+
+export type FacetHit = {
+  value: string
+  count: number
+}
+
+export type SearchForFacetValuesResponse = {
+  facetHits: FacetHit[]
+  facetQuery: string | null
+  processingTimeMs: number
+}
+
 export type SearchParams = Query &
   Pagination &
   Highlight &
@@ -90,6 +106,8 @@ export type SearchParams = Query &
     matchingStrategy?: MatchingStrategies
     hitsPerPage?: number
     page?: number
+    facetName?: string
+    facetQuery?: string
     vector?: number[] | null
     attributesToSearchOn?: string[] | null
   }
@@ -835,6 +853,15 @@ export const enum ErrorStatusCode {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_api_key_offset */
   INVALID_API_KEY_OFFSET = 'invalid_api_key_offset',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_facet_name */
+  INVALID_FACET_SEARCH_FACET_NAME = 'invalid_facet_search_facet_name',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_facet_search_facet_name */
+  MISSING_FACET_SEARCH_FACET_NAME = 'missing_facet_search_facet_name',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_facet_query */
+  INVALID_FACET_SEARCH_FACET_QUERY = 'invalid_facet_search_facet_query',
 }
 
 export type TokenIndexRules = {
