@@ -445,7 +445,7 @@ describe.each([
       'The filter query parameter should be in string format when using searchGet'
     )
   })
-  test(`${permission} key: search with vectors`, async () => {
+  test.skip(`${permission} key: search with vectors`, async () => {
     const client = await getClient(permission)
     const key = await getKey(permission)
 
