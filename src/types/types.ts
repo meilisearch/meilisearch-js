@@ -196,10 +196,10 @@ export type SearchResponse<
 > = {
   hits: Hits<T>
   processingTimeMs: number
-  facetDistribution?: FacetDistribution
   query: string
+  facetDistribution?: FacetDistribution
   facetStats?: FacetStats
-  vector: number[]
+  vector?: number[]
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
