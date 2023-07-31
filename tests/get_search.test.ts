@@ -6,6 +6,8 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
+  HOST,
+  getKey,
 } from './utils/meilisearch-test-utils'
 
 const index = {
@@ -137,6 +139,26 @@ describe.each([
     expect(Object.keys(hit).join(',')).toEqual(
       Object.keys(dataset[1]).join(',')
     )
+  })
+
+  test(`${permission} key: search on attributesToSearchOn`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).searchGet('prince', {
+      attributesToSearchOn: ['id'],
+    })
+
+    expect(response.hits.length).toEqual(0)
+  })
+
+  test(`${permission} key: search on attributesToSearchOn set to null`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).searchGet('prince', {
+      attributesToSearchOn: null,
+    })
+
+    expect(response).toMatchSnapshot()
   })
 
   test(`${permission} key: search with options`, async () => {
@@ -422,6 +444,25 @@ describe.each([
       'message',
       'The filter query parameter should be in string format when using searchGet'
     )
+  })
+  test.skip(`${permission} key: search with vectors`, async () => {
+    const client = await getClient(permission)
+    const key = await getKey(permission)
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ vectorStore: true }),
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+
+    const response = await client
+      .index(emptyIndex.uid)
+      .searchGet('', { vector: [1] })
+
+    expect(response.vector).toEqual([1])
   })
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {

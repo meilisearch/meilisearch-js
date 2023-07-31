@@ -78,6 +78,22 @@ export type Crop = {
   cropMarker?: string
 }
 
+// `facetName` becomes mandatory when using `searchForFacetValues`
+export type SearchForFacetValuesParams = Omit<SearchParams, 'facetName'> & {
+  facetName: string
+}
+
+export type FacetHit = {
+  value: string
+  count: number
+}
+
+export type SearchForFacetValuesResponse = {
+  facetHits: FacetHit[]
+  facetQuery: string | null
+  processingTimeMs: number
+}
+
 export type SearchParams = Query &
   Pagination &
   Highlight &
@@ -90,6 +106,12 @@ export type SearchParams = Query &
     matchingStrategy?: MatchingStrategies
     hitsPerPage?: number
     page?: number
+    facetName?: string
+    facetQuery?: string
+    vector?: number[] | null
+    showRankingScore?: boolean
+    showRankingScoreDetails?: boolean
+    attributesToSearchOn?: string[] | null
   }
 
 // Search parameters for searches made with the GET method
@@ -105,6 +127,8 @@ export type SearchRequestGET = Pagination &
     attributesToHighlight?: string
     attributesToCrop?: string
     showMatchesPosition?: boolean
+    vector?: string | null
+    attributesToSearchOn?: string | null
   }
 
 export type MultiSearchQuery = SearchParams & { indexUid: string }
@@ -126,6 +150,39 @@ export type MatchesPosition<T> = Partial<
 export type Hit<T = Record<string, any>> = T & {
   _formatted?: Partial<T>
   _matchesPosition?: MatchesPosition<T>
+  _rankingScore?: number
+  _rankingScoreDetails?: RakingScoreDetails
+}
+
+export type RakingScoreDetails = {
+  words?: {
+    order: number
+    matchingWords: number
+    maxMatchingWords: number
+    score: number
+  }
+  typo?: {
+    order: number
+    typoCount: number
+    maxTypoCount: number
+    score: number
+  }
+  proximity?: {
+    order: number
+    score: number
+  }
+  attribute?: {
+    order: number
+    attributes_ranking_order: number
+    attributes_query_word_order: number
+    score: number
+  }
+  exactness?: {
+    order: number
+    matchType: string
+    score: number
+  }
+  [key: string]: Record<string, any> | undefined
 }
 
 export type Hits<T = Record<string, any>> = Array<Hit<T>>
@@ -139,9 +196,10 @@ export type SearchResponse<
 > = {
   hits: Hits<T>
   processingTimeMs: number
-  facetDistribution?: FacetDistribution
   query: string
+  facetDistribution?: FacetDistribution
   facetStats?: FacetStats
+  vector?: number[]
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
@@ -255,9 +313,13 @@ export type TypoTolerance = {
   }
 } | null
 
+export type FacetOrder = 'alpha' | 'count'
+
 export type Faceting = {
   maxValuesPerFacet?: number | null
+  sortFacetValuesBy?: Record<string, FacetOrder> | null
 }
+
 export type PaginationSettings = {
   maxTotalHits?: number | null
 }
@@ -399,6 +461,7 @@ type CursorResults<T> = {
   limit: number
   from: number
   next: number
+  total: number
 }
 
 export type TasksResults = CursorResults<Task>
@@ -556,11 +619,14 @@ export const enum ErrorStatusCode {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
   INVALID_DOCUMENT_OFFSET = 'invalid_document_offset',
 
-  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_filter */
   INVALID_DOCUMENT_FILTER = 'invalid_document_filter',
 
-  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_offset */
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_document_filter */
   MISSING_DOCUMENT_FILTER = 'missing_document_filter',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_document_vectors_field */
+  INVALID_DOCUMENT_VECTORS_FIELD = 'invalid_document_vectors_field',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#payload_too_large */
   PAYLOAD_TOO_LARGE = 'payload_too_large',
@@ -636,6 +702,12 @@ export const enum ErrorStatusCode {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_matching_strategy */
   INVALID_SEARCH_MATCHING_STRATEGY = 'invalid_search_matching_strategy',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_vector */
+  INVALID_SEARCH_VECTOR = 'invalid_search_vector',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_attributes_to_search_on */
+  INVALID_SEARCH_ATTRIBUTES_TO_SEARCH_ON = 'invalid_search_attributes_to_search_on',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#bad_request */
   BAD_REQUEST = 'bad_request',
@@ -816,6 +888,15 @@ export const enum ErrorStatusCode {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_api_key_offset */
   INVALID_API_KEY_OFFSET = 'invalid_api_key_offset',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_facet_name */
+  INVALID_FACET_SEARCH_FACET_NAME = 'invalid_facet_search_facet_name',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_facet_search_facet_name */
+  MISSING_FACET_SEARCH_FACET_NAME = 'missing_facet_search_facet_name',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_facet_query */
+  INVALID_FACET_SEARCH_FACET_QUERY = 'invalid_facet_search_facet_query',
 }
 
 export type TokenIndexRules = {

@@ -1,0 +1,205 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test on POST search Admin key: basic facet value search 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "action",
+    },
+    Object {
+      "count": 2,
+      "value": "adventure",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search Admin key: facet value search with filter 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "action",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search Admin key: facet value search with no facet query 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "action",
+    },
+    Object {
+      "count": 2,
+      "value": "adventure",
+    },
+    Object {
+      "count": 1,
+      "value": "comedy",
+    },
+    Object {
+      "count": 2,
+      "value": "romance",
+    },
+  ],
+  "facetQuery": null,
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search Admin key: facet value search with search query 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "adventure",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search Master key: basic facet value search 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "action",
+    },
+    Object {
+      "count": 2,
+      "value": "adventure",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search Master key: facet value search with filter 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "action",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search Master key: facet value search with no facet query 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "action",
+    },
+    Object {
+      "count": 2,
+      "value": "adventure",
+    },
+    Object {
+      "count": 1,
+      "value": "comedy",
+    },
+    Object {
+      "count": 2,
+      "value": "romance",
+    },
+  ],
+  "facetQuery": null,
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search Master key: facet value search with search query 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "adventure",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search Search key: basic facet value search 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "action",
+    },
+    Object {
+      "count": 2,
+      "value": "adventure",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search Search key: facet value search with filter 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "action",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search Search key: facet value search with no facet query 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "action",
+    },
+    Object {
+      "count": 2,
+      "value": "adventure",
+    },
+    Object {
+      "count": 1,
+      "value": "comedy",
+    },
+    Object {
+      "count": 2,
+      "value": "romance",
+    },
+  ],
+  "facetQuery": null,
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search Search key: facet value search with search query 1`] = `
+Object {
+  "facetHits": Array [
+    Object {
+      "count": 1,
+      "value": "adventure",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;

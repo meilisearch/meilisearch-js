@@ -8,7 +8,13 @@ import {
   MeiliSearch,
   getClient,
   datasetWithNests,
+  HOST,
+  getKey,
 } from './utils/meilisearch-test-utils'
+
+if (typeof fetch === 'undefined') {
+  require('cross-fetch/polyfill')
+}
 
 const index = {
   uid: 'movies_test',
@@ -251,6 +257,51 @@ describe.each([
     expect(hit.id).toEqual(1)
   })
 
+  test(`${permission} key: search with _showRankingScore enabled`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).search('prince', {
+      showRankingScore: true,
+    })
+
+    const hit = response.hits[0]
+
+    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('query', 'prince')
+    expect(hit).toHaveProperty('_rankingScore')
+  })
+
+  test(`${permission} key: search with showRankingScoreDetails enabled`, async () => {
+    const client = await getClient(permission)
+    const key = await getKey(permission)
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ scoreDetails: true }),
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+
+    const response = await client.index(index.uid).search('prince', {
+      showRankingScoreDetails: true,
+    })
+
+    const hit = response.hits[0]
+
+    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('query', 'prince')
+    expect(hit).toHaveProperty('_rankingScoreDetails')
+    expect(Object.keys(hit._rankingScoreDetails || {})).toEqual([
+      'words',
+      'typo',
+      'proximity',
+      'attribute',
+      'exactness',
+    ])
+  })
+
   test(`${permission} key: search with array options`, async () => {
     const client = await getClient(permission)
 
@@ -264,6 +315,26 @@ describe.each([
     expect(Object.keys(hit).join(',')).toEqual(
       Object.keys(dataset[1]).join(',')
     )
+  })
+
+  test(`${permission} key: search on attributesToSearchOn`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).search('prince', {
+      attributesToSearchOn: ['id'],
+    })
+
+    expect(response.hits.length).toEqual(0)
+  })
+
+  test(`${permission} key: search on attributesToSearchOn set to null`, async () => {
+    const client = await getClient(permission)
+
+    const response = await client.index(index.uid).search('prince', {
+      attributesToSearchOn: null,
+    })
+
+    expect(response).toMatchSnapshot()
   })
 
   test(`${permission} key: search with array options`, async () => {
@@ -765,6 +836,26 @@ describe.each([
     expect(response).toHaveProperty('hits', [])
     expect(response).toHaveProperty('query', 'prince')
     expect(response.hits.length).toEqual(0)
+  })
+
+  test(`${permission} key: search with vectors`, async () => {
+    const client = await getClient(permission)
+    const key = await getKey(permission)
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ vectorStore: true }),
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+
+    const response = await client
+      .index(emptyIndex.uid)
+      .search('', { vector: [1] })
+
+    expect(response.vector).toEqual([1])
   })
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {

@@ -95,6 +95,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const tasks = await client.getTasks()
 
       expect(tasks.results).toBeInstanceOf(Array)
+      expect(tasks.total).toBeDefined()
       expect(tasks.results[0].uid).toEqual(enqueuedTask.taskUid)
     })
 

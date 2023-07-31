@@ -38,18 +38,21 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(index.uid).getFaceting()
 
-      expect(response).toEqual({ maxValuesPerFacet: 100 })
+      expect(response).toMatchSnapshot()
     })
 
     test(`${permission} key: Update faceting settings`, async () => {
       const client = await getClient(permission)
-      const newFaceting = { maxValuesPerFacet: 12 }
+      const newFaceting = {
+        maxValuesPerFacet: 12,
+        sortFacetValuesBy: { test: 'count' as 'count' },
+      }
       const task = await client.index(index.uid).updateFaceting(newFaceting)
       await client.index(index.uid).waitForTask(task.taskUid)
 
       const response = await client.index(index.uid).getFaceting()
 
-      expect(response).toEqual(newFaceting)
+      expect(response).toMatchSnapshot()
     })
 
     test(`${permission} key: Update faceting at null`, async () => {
@@ -61,7 +64,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(index.uid).getFaceting()
 
-      expect(response).toEqual({ maxValuesPerFacet: 100 })
+      expect(response).toMatchSnapshot()
     })
 
     test(`${permission} key: Reset faceting`, async () => {
@@ -80,7 +83,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(index.uid).getFaceting()
 
-      expect(response).toEqual({ maxValuesPerFacet: 100 })
+      expect(response).toMatchSnapshot()
     })
   }
 )
