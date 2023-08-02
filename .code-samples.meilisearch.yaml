@@ -364,11 +364,19 @@ search_parameter_guide_matching_strategy_2: |-
   })
 search_parameter_guide_hitsperpage_1: |-
   client.index('movies').search('', {
-    "hitsPerPage": 15
+    hitsPerPage: 15
   })
 search_parameter_guide_page_1: |-
   client.index('movies').search('', {
-    "page": 2
+    page: 2
+  })
+search_parameter_guide_show_ranking_score_1: |-
+  client.index('movies').search('dragon', {
+    showRankingScore: true
+  })
+search_parameter_guide_attributes_to_search_on_1: |-
+  client.index('movies').search('adventure', {
+    attributesToSearchOn: ['overview']
   })
 typo_tolerance_guide_1: |-
   client.index('movies').updateTypoTolerance({
@@ -506,7 +514,12 @@ getting_started_sorting: |-
     filter: 'mass < 200'
   })
 getting_started_faceting: |-
-  client.index('movies').updateFaceting({ maxValuesPerFacet: 2 })
+  client.index('movies').updateFaceting({
+    maxValuesPerFacet: 2,
+    sortFacetValuesBy: {
+      '*': "count"
+    }
+  })
 getting_started_filtering: |-
   client.index('meteorites').search('', { filter: 'mass < 200' })
 getting_started_pagination: |-
@@ -615,7 +628,13 @@ reset_pagination_settings_1: |-
 get_faceting_settings_1: |-
   client.index('books').getFaceting()
 update_faceting_settings_1: |-
-  client.index('books').updateFaceting({ maxValuesPerFacet: 2 })
+  client.index('books').updateFaceting({
+    maxValuesPerFacet: 2
+    sortFacetValuesBy: {
+      '*': 'alpha',
+      genres: 'count'
+    }
+  })
 reset_faceting_settings_1: |-
   client.index('books').resetFaceting()
 search_parameter_guide_sort_1: |-
@@ -710,3 +729,20 @@ landing_getting_started_1: |-
   // be aware this client is using the masterKey, it should not be used in front end
   const search = await index.search('philodelphia')
   console.log(search)
+facet_search_1: |-
+  client.index('books').searchForFacetValues({
+    facetQuery: 'fiction',
+    facetName: 'genres'
+    filter: 'rating > 3'
+  })
+facet_search_2: |-
+  client.index('books').updateFaceting({
+    sortFacetValuesBy: {
+      genres: 'count'
+    }
+  })
+facet_search_3: |-
+  client.index('books').searchForFacetValues({
+    facetQuery: 'c',
+    facetName: 'genres'
+  })
