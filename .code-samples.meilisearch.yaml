@@ -693,7 +693,7 @@ security_guide_list_keys_1: |-
   client.getKeys()
 security_guide_delete_key_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
-  client.getKey('ac5cd97d-5a4b-4226-a868-2d0eb6d197ab')
+  client.deleteKey('ac5cd97d-5a4b-4226-a868-2d0eb6d197ab')
 authorization_header_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
   client.getKeys()
