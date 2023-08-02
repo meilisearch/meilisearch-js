@@ -420,7 +420,7 @@ client.multiSearch(queries?: MultiSearchParams, config?: Partial<Request>): Prom
 
 ### Search For Facet Values
 
-#### [Search for facet values](#)
+#### [Search for facet values](https://www.meilisearch.com/docs/reference/api/facet_search#perform-a-facet-search)
 
 ```ts
 client.index<T>('myIndex').searchForFacetValues(params: SearchForFacetValuesParams, config?: Partial<Request>): Promise<SearchForFacetValuesResponse>
