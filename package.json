@@ -70,7 +70,7 @@
     ]
   },
   "dependencies": {
-    "cross-fetch": "^3.1.6"
+    "cross-fetch": "^4.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.22.5",
