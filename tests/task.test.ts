@@ -434,11 +434,13 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         uids: [addDocuments.taskUid],
       })
       const task = await client.waitForTask(enqueuedTask.taskUid)
+      const canceledTask = await client.getTask(addDocuments.taskUid)
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION)
       expect(task.details?.originalFilter).toContain('uids=')
       expect(task.details?.matchedTasks).toBeDefined()
       expect(task.details?.canceledTasks).toBeDefined()
+      expect(canceledTask.status).toBe(TaskStatus.TASK_CANCELED)
     })
 
     // cancel: indexUid

@@ -347,6 +347,7 @@ export const enum TaskStatus {
   TASK_PROCESSING = 'processing',
   TASK_FAILED = 'failed',
   TASK_ENQUEUED = 'enqueued',
+  TASK_CANCELED = 'canceled',
 }
 
 export const enum TaskTypes {
