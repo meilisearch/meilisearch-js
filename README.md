@@ -900,6 +900,67 @@ client.index('myIndex').updateTypoTolerance(typoTolerance: TypoTolerance | null)
 client.index('myIndex').resetTypoTolerance(): Promise<EnqueuedTask>
 ```
 
+
+### Separator tokens <!-- omit in toc -->
+
+#### Get separator tokens
+
+```ts
+client.index('myIndex').getSeparatorTokens(): Promise<SeparatorTokens>
+```
+
+#### Update separator tokens
+
+```ts
+client.index('myIndex').updateSeparatorTokens(separatorTokens: SeparatorTokens | null): Promise<EnqueuedTask>
+```
+
+#### Reset separator tokens
+
+```ts
+client.index('myIndex').resetSeparatorTokens(): Promise<EnqueuedTask>
+```
+
+### Non Separator tokens <!-- omit in toc -->
+
+#### Get non separator tokens
+
+```ts
+client.index('myIndex').getNonSeparatorTokens(): Promise<NonSeparatorTokens>
+```
+
+#### Update non separator tokens
+
+```ts
+client.index('myIndex').updateNonSeparatorTokens(nonSeparatorTokens: NonSeparatorTokens | null): Promise<EnqueuedTask>
+```
+
+#### Reset non separator tokens
+
+```ts
+client.index('myIndex').resetNonSeparatorTokens(): Promise<EnqueuedTask>
+```
+
+### Dictionary <!-- omit in toc -->
+
+#### Get dictionary
+
+```ts
+client.index('myIndex').getDictionary(): Promise<Dictionary>
+```
+
+#### Update dictionary
+
+```ts
+client.index('myIndex').updateDictionary(dictionary: Dictionary | null): Promise<EnqueuedTask>
+```
+
+#### Reset dictionary
+
+```ts
+client.index('myIndex').resetDictionary(): Promise<EnqueuedTask>
+```
+
 ### Keys <!-- omit in toc -->
 
 #### [Get keys](https://www.meilisearch.com/docs/reference/api/keys#get-all-keys)
