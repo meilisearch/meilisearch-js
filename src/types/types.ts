@@ -312,6 +312,9 @@ export type TypoTolerance = {
     twoTypos?: number | null
   }
 } | null
+export type SeparatorTokens = string[] | null
+export type NonSeparatorTokens = string[] | null
+export type Dictionary = string[] | null
 
 export type FacetOrder = 'alpha' | 'count'
 
@@ -336,6 +339,9 @@ export type Settings = {
   typoTolerance?: TypoTolerance
   faceting?: Faceting
   pagination?: PaginationSettings
+  separatorTokens?: SeparatorTokens
+  nonSeparatorTokens?: NonSeparatorTokens
+  dictionary?: Dictionary
 }
 
 /*
