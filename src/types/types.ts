@@ -351,16 +351,17 @@ export const enum TaskStatus {
 }
 
 export const enum TaskTypes {
-  INDEX_CREATION = 'indexCreation',
-  INDEX_UPDATE = 'indexUpdate',
-  INDEX_DELETION = 'indexDeletion',
   DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
   DOCUMENT_DELETION = 'documentDeletion',
-  SETTINGS_UPDATE = 'settingsUpdate',
+  DUMP_CREATION = 'dumpCreation',
+  INDEX_CREATION = 'indexCreation',
+  INDEX_DELETION = 'indexDeletion',
   INDEXES_SWAP = 'indexSwap',
-  TASK_DELETION = 'taskDeletion',
+  INDEX_UPDATE = 'indexUpdate',
+  SETTINGS_UPDATE = 'settingsUpdate',
   SNAPSHOT_CREATION = 'snapshotCreation',
   TASK_CANCELATION = 'taskCancelation',
+  TASK_DELETION = 'taskDeletion',
 }
 
 export type TasksQuery = {
