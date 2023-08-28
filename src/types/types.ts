@@ -151,10 +151,10 @@ export type Hit<T = Record<string, any>> = T & {
   _formatted?: Partial<T>
   _matchesPosition?: MatchesPosition<T>
   _rankingScore?: number
-  _rankingScoreDetails?: RakingScoreDetails
+  _rankingScoreDetails?: RankingScoreDetails
 }
 
-export type RakingScoreDetails = {
+export type RankingScoreDetails = {
   words?: {
     order: number
     matchingWords: number
@@ -347,19 +347,21 @@ export const enum TaskStatus {
   TASK_PROCESSING = 'processing',
   TASK_FAILED = 'failed',
   TASK_ENQUEUED = 'enqueued',
+  TASK_CANCELED = 'canceled',
 }
 
 export const enum TaskTypes {
-  INDEX_CREATION = 'indexCreation',
-  INDEX_UPDATE = 'indexUpdate',
-  INDEX_DELETION = 'indexDeletion',
   DOCUMENTS_ADDITION_OR_UPDATE = 'documentAdditionOrUpdate',
   DOCUMENT_DELETION = 'documentDeletion',
-  SETTINGS_UPDATE = 'settingsUpdate',
+  DUMP_CREATION = 'dumpCreation',
+  INDEX_CREATION = 'indexCreation',
+  INDEX_DELETION = 'indexDeletion',
   INDEXES_SWAP = 'indexSwap',
-  TASK_DELETION = 'taskDeletion',
+  INDEX_UPDATE = 'indexUpdate',
+  SETTINGS_UPDATE = 'settingsUpdate',
   SNAPSHOT_CREATION = 'snapshotCreation',
   TASK_CANCELATION = 'taskCancelation',
+  TASK_DELETION = 'taskDeletion',
 }
 
 export type TasksQuery = {
