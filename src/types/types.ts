@@ -151,10 +151,10 @@ export type Hit<T = Record<string, any>> = T & {
   _formatted?: Partial<T>
   _matchesPosition?: MatchesPosition<T>
   _rankingScore?: number
-  _rankingScoreDetails?: RakingScoreDetails
+  _rankingScoreDetails?: RankingScoreDetails
 }
 
-export type RakingScoreDetails = {
+export type RankingScoreDetails = {
   words?: {
     order: number
     matchingWords: number
