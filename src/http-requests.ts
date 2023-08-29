@@ -91,7 +91,7 @@ class HttpRequests {
   url: URL
   requestConfig?: Config['requestConfig']
   httpClient?: Required<Config>['httpClient']
-  timeout?: number
+  requestTimeout?: number
 
   constructor(config: Config) {
     this.headers = createHeaders(config)
