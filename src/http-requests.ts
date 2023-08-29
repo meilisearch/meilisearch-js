@@ -196,12 +196,8 @@ class HttpRequests {
       }
 
       Promise.race(promises)
-        .then((response) => {
-          resolve(response)
-        })
-        .catch((error) => {
-          reject(error)
-        })
+        .then(resolve)
+        .catch(reject)
         .finally(() => {
           clearTimeout(timeoutId)
         })
