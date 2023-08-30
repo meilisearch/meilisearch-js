@@ -1,29 +1,25 @@
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "monthly"
+      interval: 'monthly'
     labels:
       - 'skip-changelog'
       - 'dependencies'
     rebase-strategy: disabled
 
   - package-ecosystem: npm
-    directory: "/"
+    directory: '/'
+    allow:
+      - dependency-name: cross-fetch
+
     schedule:
-      interval: "monthly"
-      time: "04:00"
+      interval: 'monthly'
+      time: '04:00'
     open-pull-requests-limit: 10
     labels:
       - skip-changelog
       - dependencies
     versioning-strategy: increase
     rebase-strategy: disabled
-    ignore:
-      - dependency-name: "eslint*"
-      - dependency-name: "babel-eslint"
-      - dependency-name: "*prettier*"
-      - dependency-name: "lint-staged"
-      - dependency-name: "nodemon"
-      - dependency-name: "*jest*"
