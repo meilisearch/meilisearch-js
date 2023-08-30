@@ -97,7 +97,7 @@ class HttpRequests {
     this.headers = createHeaders(config)
     this.requestConfig = config.requestConfig
     this.httpClient = config.httpClient
-    this.timeout = config.timeout
+    this.requestTimeout = config.timeout
 
     try {
       const host = constructHostURL(config.host)
@@ -151,7 +151,7 @@ class HttpRequests {
           body,
           headers,
         },
-        this.timeout
+        this.requestTimeout
       )
 
       // When using a custom HTTP client, the response is returned to allow the user to parse/handle it as they see fit
@@ -174,7 +174,7 @@ class HttpRequests {
   async fetchWithTimeout(
     url: string,
     options: RequestInit | undefined,
-    timeout: HttpRequests['timeout']
+    timeout: HttpRequests['requestTimeout']
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
       const fetchFn = this.httpClient ? this.httpClient : fetch
