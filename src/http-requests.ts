@@ -173,7 +173,7 @@ class HttpRequests {
 
   async fetchWithTimeout(
     url: string,
-    options: RequestInit | undefined,
+    options: Record<string, any> | RequestInit | undefined,
     timeout: HttpRequests['requestTimeout']
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
