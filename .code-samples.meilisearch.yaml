@@ -554,7 +554,7 @@ faceted_search_update_settings_1: |-
   client.index('movie_ratings').updateFilterableAttributes(['genres', 'rating', 'language'])
 faceted_search_1: |-
   client.index('books').search('classic', { facets: ['genres', 'rating', 'language'] })
-PLEASE_UPDATE_ME>>>>>>>>>>>>>faceted_search_2: |-
+faceted_search_2: |-
   client.multiSearch({
     queries: [
       {
