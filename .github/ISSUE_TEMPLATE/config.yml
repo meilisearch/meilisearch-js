@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Support questions & other
+    url: https://discord.meilisearch.com/
+    about: Support is not handled here but on our Discord
