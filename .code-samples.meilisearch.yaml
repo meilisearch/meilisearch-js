@@ -80,7 +80,7 @@ delete_documents_by_filter_1: |-
 search_post_1: |-
   client.index('movies').search('American ninja')
 search_get_1: |-
-  client.index('movies').search('American ninja')
+  client.index('movies').searchGet('American ninja')
 multi_search_1: |-
   client.multiSearch({ queries: [
     {
