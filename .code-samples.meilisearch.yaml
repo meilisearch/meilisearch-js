@@ -5,8 +5,8 @@
 ---
 synonyms_guide_1: |-
   client.index('movies').updateSynonyms({
-    "great": ["fantastic"],
-    "fantastic": ["great"]
+    'great': ['fantastic'],
+    'fantastic': ['great']
   })
 date_guide_index_1: |-
   const games = require('./games.json')
@@ -35,8 +35,8 @@ delete_an_index_1: |-
   client.deleteIndex('movies')
 swap_indexes_1: |-
   client.swapIndexes([
-    { "indexes": ["indexA", "indexB"] },
-    { "indexes": ["indexX", "indexY"] }
+    { 'indexes': ['indexA', 'indexB'] },
+    { 'indexes': ['indexX', 'indexY'] }
   ])
 get_one_document_1: |-
   client
@@ -106,18 +106,18 @@ async_guide_filter_by_date_1: |-
   client.getTasks({ afterEnqueuedAt: '2020-10-11T11:49:53.000Z' })
 async_guide_multiple_filters_1: |-
   client.getTasks({
-    indexUids: ["movies"],
-    types: ["documentAdditionOrUpdate","documentDeletion"],
-    statuses: ["processing"]
+    indexUids: ['movies'],
+    types: ['documentAdditionOrUpdate','documentDeletion'],
+    statuses: ['processing']
   })
 async_guide_filter_by_ids_1: |-
   client.getTasks({ uids: [5, 10, 13] })
 async_guide_filter_by_statuses_1: |-
-  client.getTasks({ statuses: ["failed", "canceled"] })
+  client.getTasks({ statuses: ['failed', 'canceled'] })
 async_guide_filter_by_types_1: |-
-  client.getTasks({ types: ["dumpCreation", "indexSwap"] })
+  client.getTasks({ types: ['dumpCreation', 'indexSwap'] })
 async_guide_filter_by_index_uids_1: |-
-  client.getTasks({ indexUids: ["movies"] })
+  client.getTasks({ indexUids: ['movies'] })
 get_all_tasks_paginating_1: |-
   client.getTasks({ limit: 2, from: 10 })
 get_all_tasks_paginating_2: |-
@@ -400,11 +400,6 @@ typo_tolerance_guide_4: |-
 add_movies_json_1: |-
   const movies = require('./movies.json')
   client.index('movies').addDocuments(movies).then((res) => console.log(res))
-documents_guide_add_movie_1: |-
-  client.index('movies').addDocuments([{
-    movie_id: '123sq178',
-    title: 'Amelie Poulain'
-  }])
 primary_field_guide_update_document_primary_key: |-
   client.updateIndex('books', {
     primaryKey: 'title'
@@ -492,9 +487,6 @@ getting_started_update_displayed_attributes: |-
     'overview',
     'poster'
   ])
-getting_started_communicating_with_a_protected_instance: |-
-  const client = new MeiliSearch('http://localhost:7700', 'apiKey')
-  client.index('movies').search()
 getting_started_add_meteorites: |-
   const meteorites = require('./meteorites.json')
 
@@ -517,7 +509,7 @@ getting_started_faceting: |-
   client.index('movies').updateFaceting({
     maxValuesPerFacet: 2,
     sortFacetValuesBy: {
-      '*': "count"
+      '*': 'count'
     }
   })
 getting_started_typo_tolerance: |-
@@ -529,7 +521,7 @@ getting_started_typo_tolerance: |-
 getting_started_filtering: |-
   client.index('meteorites').search('', { filter: 'mass < 200' })
 getting_started_pagination: |-
-  client.index("movies").updatePagination({ maxTotalHits: 500 })
+  client.index('movies').updatePagination({ maxTotalHits: 500 })
 get_filterable_attributes_1: |-
   client.index('movies').getFilterableAttributes()
 update_filterable_attributes_1: |-
@@ -546,11 +538,6 @@ filtering_update_settings_1: |-
       'director',
       'genres'
     ])
-faceted_search_facets_1: |-
-  client.index('movies')
-    .search('Batman', {
-      facets: ['genres']
-    })
 faceted_search_walkthrough_filter_1: |-
   client.index('movies')
     .search('thriller', {
@@ -560,26 +547,6 @@ faceted_search_update_settings_1: |-
   client.index('movie_ratings').updateFilterableAttributes(['genres', 'rating', 'language'])
 faceted_search_1: |-
   client.index('books').search('classic', { facets: ['genres', 'rating', 'language'] })
-faceted_search_2: |-
-  client.multiSearch({
-    queries: [
-      {
-        indexUid: 'books',
-        facets: ['language', 'genres', 'author', 'format'],
-        filter: "(language = English AND language = French) OR genres = Fiction"
-      },
-      {
-        indexUid: 'books',
-        facets: ['language'],
-        filter: 'genres = Fiction'
-      },
-      {
-        indexUid: 'books',
-        facets: ['genres'],
-        filter: 'language = English OR language = French'
-      }
-    ]
-  })
 post_dump_1: |-
   client.createDump()
 phrase_search_1: |-
@@ -609,7 +576,7 @@ sorting_guide_sort_parameter_2: |-
   })
 sorting_guide_sort_nested_1: |-
   client.index('books').search('science fiction', {
-    "sort": ["rating.users:asc"],
+    'sort': ['rating.users:asc'],
   })
 get_sortable_attributes_1: |-
   client.index('books').getSortableAttributes()
