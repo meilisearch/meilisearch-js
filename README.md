@@ -313,7 +313,7 @@ await index.search(
 }
 ```
 
-Note that to enable faceted search on your dataset you need to add `genres` to the `filterableAttributes` index setting. For more information on filtering and faceting, [consult our documentation settings](https://www.meilisearch.com/docs/learn/advanced/faceted_search).
+Note that to enable faceted search on your dataset you need to add `genres` to the `filterableAttributes` index setting. For more information on filtering and faceting, [consult our documentation settings](https://www.meilisearch.com/docs/learn/fine_tuning_results/faceted_search).
 
 #### Abortable search <!-- omit in toc -->
 
