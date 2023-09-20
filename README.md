@@ -232,7 +232,7 @@ await index.search(
 To enable filtering, you must first add your attributes to the [`filterableAttributes` index setting](https://www.meilisearch.com/docs/reference/api/settings#filterable-attributes).
 
 ```js
-await index.updateAttributesForFaceting([
+await index.updateFilterableAttributes([
     'id',
     'genres'
   ])
