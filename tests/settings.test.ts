@@ -86,6 +86,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
             '*': 'alpha',
           },
         },
+        separatorTokens: ['&sep', '/', '|'],
+        nonSeparatorTokens: ['&sep', '/', '|'],
+        dictionary: ['J. K.', 'J. R. R.'],
       }
       // Add the settings
       const task = await client.index(index.uid).updateSettings(newSettings)
@@ -125,6 +128,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         pagination: {
           maxTotalHits: null,
         },
+        separatorTokens: null,
+        nonSeparatorTokens: null,
+        dictionary: null,
       }
       // Add the settings
       const task = await client.index(index.uid).updateSettings(newSettings)

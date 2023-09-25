@@ -606,10 +606,28 @@ update_faceting_settings_1: |-
   })
 reset_faceting_settings_1: |-
   client.index('books').resetFaceting()
+get_dictionary_1: |-
+  client.index('books').getDictionary()
+update_dictionary_1: |-
+  client.index('books').updateDictionary(['J. R. R.', 'W. E. B.'])
+reset_dictionary_1: |-
+  client.index('books').resetDictionary()
 search_parameter_guide_sort_1: |-
   client.index('books').search('science fiction', {
     sort: ['price:asc'],
   })
+get_separator_tokens_1: |-
+  client.index('books').getSeparatorTokens()
+update_separator_tokens_1: |-
+  client.index('books').updateSeparatorTokens(['|', '&hellip;'])
+reset_separator_tokens_1: |-
+  client.index('books').resetSeparatorTokens()
+get_non_separator_tokens_1: |-
+  client.index('books').getNonSeparatorTokens()
+update_non_separator_tokens_1: |-
+  client.index('books').updateNonSeparatorTokens(['@', '#'])
+reset_non_separator_tokens_1: |-
+  client.index('books').resetNonSeparatorTokens()
 search_parameter_guide_facet_stats_1: |-
   client.index('movie_ratings').search('Batman', { facets: ['genres', 'rating'] })
 geosearch_guide_filter_settings_1: |-

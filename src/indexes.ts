@@ -47,6 +47,9 @@ import {
   DocumentsDeletionQuery,
   SearchForFacetValuesParams,
   SearchForFacetValuesResponse,
+  SeparatorTokens,
+  NonSeparatorTokens,
+  Dictionary,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -1116,6 +1119,133 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     const task = await this.httpRequest.delete(url)
 
     return new EnqueuedTask(task)
+  }
+
+  ///
+  /// SEPARATOR TOKENS
+  ///
+
+  /**
+   * Get the list of all separator tokens.
+   *
+   * @returns Promise containing array of separator tokens
+   */
+  async getSeparatorTokens(): Promise<string[]> {
+    const url = `indexes/${this.uid}/settings/separator-tokens`
+    return await this.httpRequest.get<string[]>(url)
+  }
+
+  /**
+   * Update the list of separator tokens. Overwrite the old list.
+   *
+   * @param separatorTokens - Array that contains separator tokens.
+   * @returns Promise containing an EnqueuedTask or null
+   */
+  async updateSeparatorTokens(
+    separatorTokens: SeparatorTokens
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/separator-tokens`
+    const task = await this.httpRequest.put(url, separatorTokens)
+
+    return new EnqueuedTask(task)
+  }
+
+  /**
+   * Reset the separator tokens list to its default value
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetSeparatorTokens(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/separator-tokens`
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
+  }
+
+  ///
+  /// NON-SEPARATOR TOKENS
+  ///
+
+  /**
+   * Get the list of all non-separator tokens.
+   *
+   * @returns Promise containing array of non-separator tokens
+   */
+  async getNonSeparatorTokens(): Promise<string[]> {
+    const url = `indexes/${this.uid}/settings/non-separator-tokens`
+    return await this.httpRequest.get<string[]>(url)
+  }
+
+  /**
+   * Update the list of non-separator tokens. Overwrite the old list.
+   *
+   * @param nonSeparatorTokens - Array that contains non-separator tokens.
+   * @returns Promise containing an EnqueuedTask or null
+   */
+  async updateNonSeparatorTokens(
+    nonSeparatorTokens: NonSeparatorTokens
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/non-separator-tokens`
+    const task = await this.httpRequest.put(url, nonSeparatorTokens)
+
+    return new EnqueuedTask(task)
+  }
+
+  /**
+   * Reset the non-separator tokens list to its default value
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetNonSeparatorTokens(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/non-separator-tokens`
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
+  }
+
+  ///
+  /// DICTIONARY
+  ///
+
+  /**
+   * Get the dictionary settings of a Meilisearch index.
+   *
+   * @returns Promise containing the dictionary settings
+   */
+  async getDictionary(): Promise<string[]> {
+    const url = `indexes/${this.uid}/settings/dictionary`
+    return await this.httpRequest.get<string[]>(url)
+  }
+
+  /**
+   * Update the the dictionary settings. Overwrite the old settings.
+   *
+   * @param dictionary - Array that contains the new dictionary settings.
+   * @returns Promise containing an EnqueuedTask or null
+   */
+  async updateDictionary(dictionary: Dictionary): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/dictionary`
+    const task = await this.httpRequest.put(url, dictionary)
+
+    return new EnqueuedTask(task)
+  }
+
+  /**
+   * Reset the dictionary settings to its default value
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetDictionary(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/dictionary`
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
   }
 }
 
