@@ -91,11 +91,13 @@ class HttpRequests {
   url: URL
   requestConfig?: Config['requestConfig']
   httpClient?: Required<Config>['httpClient']
+  requestTimeout?: number
 
   constructor(config: Config) {
     this.headers = createHeaders(config)
     this.requestConfig = config.requestConfig
     this.httpClient = config.httpClient
+    this.requestTimeout = config.timeout
 
     try {
       const host = constructHostURL(config.host)
@@ -140,14 +142,17 @@ class HttpRequests {
     const headers = { ...this.headers, ...config.headers }
 
     try {
-      const fetchFn = this.httpClient ? this.httpClient : fetch
-      const result = fetchFn(constructURL.toString(), {
-        ...config,
-        ...this.requestConfig,
-        method,
-        body,
-        headers,
-      })
+      const result = this.fetchWithTimeout(
+        constructURL.toString(),
+        {
+          ...config,
+          ...this.requestConfig,
+          method,
+          body,
+          headers,
+        },
+        this.requestTimeout
+      )
 
       // When using a custom HTTP client, the response is returned to allow the user to parse/handle it as they see fit
       if (this.httpClient) {
@@ -164,6 +169,39 @@ class HttpRequests {
       const stack = e.stack
       httpErrorHandler(e, stack, constructURL.toString())
     }
+  }
+
+  async fetchWithTimeout(
+    url: string,
+    options: Record<string, any> | RequestInit | undefined,
+    timeout: HttpRequests['requestTimeout']
+  ): Promise<Response> {
+    return new Promise((resolve, reject) => {
+      const fetchFn = this.httpClient ? this.httpClient : fetch
+
+      const fetchPromise = fetchFn(url, options)
+
+      const promises: Array<Promise<any>> = [fetchPromise]
+
+      // TimeoutPromise will not run if undefined or zero
+      let timeoutId: ReturnType<typeof setTimeout>
+      if (timeout) {
+        const timeoutPromise = new Promise((_, reject) => {
+          timeoutId = setTimeout(() => {
+            reject(new Error('Error: Request Timed Out'))
+          }, timeout)
+        })
+
+        promises.push(timeoutPromise)
+      }
+
+      Promise.race(promises)
+        .then(resolve)
+        .catch(reject)
+        .finally(() => {
+          clearTimeout(timeoutId)
+        })
+    })
   }
 
   async get(

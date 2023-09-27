@@ -12,6 +12,7 @@ export type Config = {
   clientAgents?: string[]
   requestConfig?: Partial<Omit<RequestInit, 'body' | 'method'>>
   httpClient?: (input: string, init?: RequestInit) => Promise<any>
+  timeout?: number
 }
 
 ///
