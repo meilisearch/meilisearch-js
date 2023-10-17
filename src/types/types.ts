@@ -57,7 +57,7 @@ export type IndexesResults<T> = ResourceResults<T> & {}
 export const MatchingStrategies = {
   ALL: 'all',
   LAST: 'last',
-}
+} as const
 
 export type MatchingStrategies = typeof MatchingStrategies[keyof typeof MatchingStrategies]
 
