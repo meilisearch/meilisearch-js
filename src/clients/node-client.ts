@@ -1,12 +1,19 @@
 import { Client } from './client'
 import { Config, TokenSearchRules, TokenOptions } from '../types'
 import { Token } from '../token'
+import { PACKAGE_VERSION } from '../package-version'
 
 class MeiliSearch extends Client {
   tokens: Token
 
   constructor(config: Config) {
-    super(config)
+    super({
+      ...config,
+      clientAgents: [
+        ...(config.clientAgents ?? []),
+        `Meilisearch Node (v${PACKAGE_VERSION})`,
+      ],
+    })
     this.tokens = new Token(config)
   }
 
