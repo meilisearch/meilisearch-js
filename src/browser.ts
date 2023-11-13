@@ -3,5 +3,5 @@ export * from './errors'
 export * from './indexes'
 import { MeiliSearch } from './clients/browser-client'
 
-export { MeiliSearch }
+export { MeiliSearch, MeiliSearch as Meilisearch }
 export default MeiliSearch
