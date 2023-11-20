@@ -1033,6 +1033,13 @@ client.getVersion(): Promise<Version>
 client.createDump(): Promise<EnqueuedTask>
 ```
 
+### Snapshots <!-- omit in toc -->
+
+#### [Trigger a snapshot on-demand process](https://www.meilisearch.com/docs/reference/api/snapshots#create-a-snapshot)
+
+```ts
+client.createSnapshot(): Promise<EnqueuedTask>
+```
 ---
 
 Meilisearch provides and maintains many SDKs and integration tools like this one. We want to provide everyone with an **amazing search experience for any kind of project**. For a full overview of everything we create and maintain, take a look at the [integration-guides](https://github.com/meilisearch/integration-guides) repository.
