@@ -444,6 +444,22 @@ class Client {
   }
 
   ///
+  /// SNAPSHOTS
+  ///
+
+  /**
+   * Creates a snapshot
+   *
+   * @returns Promise returning object of the enqueued task
+   */
+  async createSnapshot(): Promise<EnqueuedTask> {
+    const url = `snapshots`
+    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(url)
+
+    return new EnqueuedTask(task)
+  }
+
+  ///
   /// TOKENS
   ///
 
