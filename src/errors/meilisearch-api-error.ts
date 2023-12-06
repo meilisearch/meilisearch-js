@@ -1,6 +1,7 @@
 import { MeiliSearchErrorInfo } from '../types'
+import { MeiliSearchError } from './meilisearch-error'
 
-const MeiliSearchApiError = class extends Error {
+const MeiliSearchApiError = class extends MeiliSearchError {
   httpStatus: number
   code: string
   link: string
