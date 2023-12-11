@@ -549,6 +549,8 @@ faceted_search_1: |-
   client.index('books').search('classic', { facets: ['genres', 'rating', 'language'] })
 post_dump_1: |-
   client.createDump()
+create_snapshot_1: |-
+  client.createSnapshot()
 phrase_search_1: |-
   client.index('movies')
     .search('"african american" horror')

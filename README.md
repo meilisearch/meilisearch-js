@@ -31,13 +31,7 @@
 
 **Meilisearch** is an open-source search engine. [Learn more about Meilisearch.](https://github.com/meilisearch/meilisearch)
 
----
-
-### 🔥 On November 2nd, we are hosting our first-ever live demo and product updates for [Meilisearch Cloud](https://www.meilisearch.com/cloud?utm_campaign=oss&utm_source=github&utm_medium=meilisearch). Make sure to [register here](https://us06web.zoom.us/meeting/register/tZMlc-mqrjIsH912-HTRe-AaT-pp41bDe81a#/registration) and bring your questions for live Q&A!
-
----
-
-## Table of Contents <!-- omit in toc -->
+## Table of Contents <!-- omit in TOC -->
 
 - [📖 Documentation](#-documentation)
 - [⚡ Supercharge your Meilisearch experience](#-supercharge-your-meilisearch-experience)
@@ -1039,6 +1033,13 @@ client.getVersion(): Promise<Version>
 client.createDump(): Promise<EnqueuedTask>
 ```
 
+### Snapshots <!-- omit in toc -->
+
+#### [Trigger a snapshot on-demand process](https://www.meilisearch.com/docs/reference/api/snapshots#create-a-snapshot)
+
+```ts
+client.createSnapshot(): Promise<EnqueuedTask>
+```
 ---
 
 Meilisearch provides and maintains many SDKs and integration tools like this one. We want to provide everyone with an **amazing search experience for any kind of project**. For a full overview of everything we create and maintain, take a look at the [integration-guides](https://github.com/meilisearch/integration-guides) repository.
