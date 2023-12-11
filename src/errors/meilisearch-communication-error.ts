@@ -1,6 +1,7 @@
 import { FetchError } from '../types'
+import { MeiliSearchError } from './meilisearch-error'
 
-class MeiliSearchCommunicationError extends Error {
+class MeiliSearchCommunicationError extends MeiliSearchError {
   statusCode?: number
   errno?: string
   code?: string
