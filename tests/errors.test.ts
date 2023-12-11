@@ -27,7 +27,7 @@ describe('Test on updates', () => {
     }
   })
 
-  test(`Not throw MeiliSearchCommunicationError when throwned error is not MeiliSearchApiError`, async () => {
+  test(`Not throw MeiliSearchCommunicationError when throwned error is MeiliSearchApiError`, async () => {
     fetchMock.mockReject(
       new MeiliSearchApiError(
         {
