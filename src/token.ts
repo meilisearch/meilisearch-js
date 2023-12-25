@@ -1,5 +1,5 @@
 import { Config, TokenSearchRules, TokenOptions } from './types'
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 import { MeiliSearchError } from './errors'
 import { validateUuid4 } from './utils'
 

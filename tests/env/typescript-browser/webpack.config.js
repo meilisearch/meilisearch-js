@@ -1,5 +1,5 @@
 const webpack = require('webpack')
-const path = require('path')
+const path = require('node:path')
 
 let config = {
   entry: './src/index.ts',

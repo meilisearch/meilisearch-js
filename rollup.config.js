@@ -1,5 +1,5 @@
 import nodeResolve from '@rollup/plugin-node-resolve'
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import typescript from 'rollup-plugin-typescript2'
@@ -18,7 +18,7 @@ const PLUGINS = [
   typescript({
     useTsconfigDeclarationDir: true,
     tsconfigOverride: {
-      allowJs: false,
+      compilerOptions: { allowJs: false },
       include: ['src'],
       exclude: ['tests', 'examples', '*.js', 'scripts'],
     },

@@ -7,7 +7,7 @@ import {
   config,
   HOST,
 } from './utils/meilisearch-test-utils'
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 import MeiliSearch from '../src'
 import { MeiliSearchError } from '../src/errors'
 
