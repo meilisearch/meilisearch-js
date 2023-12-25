@@ -23,6 +23,15 @@
   "types": "./dist/types/index.d.ts",
   "jsdelivr": "./dist/bundles/meilisearch.umd.js",
   "unpkg": "./dist/bundles/meilisearch.umd.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "browser": "./dist/bundles/meilisearch.umd.js",
+      "import": "./dist/bundles/meilisearch.esm.js",
+      "require": "./dist/bundles/meilisearch.cjs.js",
+      "default": "./dist/bundles/meilisearch.umd.js"
+    }
+  },
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -82,6 +91,7 @@
     "@types/eslint__js": "^8.42.3",
     "@vitest/coverage-v8": "2.0.5",
     "@vitest/eslint-plugin": "^1.1.4",
+    "@types/node": "^20.10.5",
     "brotli-size": "^4.0.0",
     "eslint": "^9.11.1",
     "eslint-config-prettier": "^9.1.0",
