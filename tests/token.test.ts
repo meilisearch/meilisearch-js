@@ -7,7 +7,7 @@ import {
   config,
   HOST,
 } from './utils/meilisearch-test-utils'
-import crypto from 'crypto'
+import { createHmac } from 'crypto'
 import MeiliSearch from '../src'
 import { MeiliSearchError } from '../src/errors'
 
@@ -61,8 +61,7 @@ describe.each([{ permission: 'Admin' }])(
       const [header64, payload64, signature64] = token.split('.')
 
       // signature
-      const newSignature = crypto
-        .createHmac('sha256', apiKey)
+      const newSignature = createHmac('sha256', apiKey)
         .update(`${header64}.${payload64}`)
         .digest('base64')
         .replace(/\+/g, '-')
