@@ -1,11 +1,13 @@
+// https://eslint.org/docs/latest/use/configure/
+
 module.exports = {
   root: true,
   plugins: ['tsdoc', '@typescript-eslint'],
   env: {
-    // TODO: Can be removed, ES versions are cumulative:
+    // @TODO: Can be removed, ES versions are cumulative:
     //       https://stackoverflow.com/a/61688878
     // es6: true,
-    es2024: true,
+    es2020: true,
     browser: true,
     node: true,
   },
@@ -26,13 +28,13 @@ module.exports = {
     'prettier',
   ],
   rules: {
-    // TODO: Remove this rule, as it's a style rule covered by prettier and
+    // @TODO: Remove this rule, as it's a style rule covered by prettier and
     //       it's deprecated https://eslint.org/docs/latest/rules/comma-dangle
     // 'comma-dangle': 'off',
-    // TODO: Remove as it doesn't seem to cause issues anymore with fn overloads
+    // @TODO: Remove as it doesn't seem to cause issues anymore with fn overloads
     // 'no-dupe-class-members': 'off', // Off due to conflict with typescript overload functions
     'tsdoc/syntax': 'error',
-    // new TS rules begin TODO: Remove these and adapt code
+    // new TS rules begin @TODO: Remove these and adapt code
     '@typescript-eslint/prefer-as-const': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
@@ -43,17 +45,17 @@ module.exports = {
     '@typescript-eslint/no-floating-promises': 'off',
     // new TS rules end
     '@typescript-eslint/array-type': ['warn', { default: 'array-simple' }],
-    // TODO: Remove, as it's already off
+    // @TODO: Remove, as it's already off
     // '@typescript-eslint/return-await': 'off',
-    // TODO: Remove this rule, deprecated:
+    // @TODO: Remove this rule, deprecated:
     //       https://typescript-eslint.io/rules/space-before-function-paren/
     // '@typescript-eslint/space-before-function-paren': 0,
-    // TODO: Should be careful with this rule, should leave it be and disable
+    // @TODO: Should be careful with this rule, should leave it be and disable
     //       it within files where necessary with explanations
     '@typescript-eslint/no-explicit-any': 'off',
-    // TODO: Remove, as it's already off
+    // @TODO: Remove, as it's already off
     // '@typescript-eslint/explicit-function-return-type': 'off',
-    // TODO: Remove, as it's already off
+    // @TODO: Remove, as it's already off
     // '@typescript-eslint/no-throw-literal': 'off',
     '@typescript-eslint/no-unused-vars': [
       'error',
@@ -61,7 +63,7 @@ module.exports = {
       // varsIgnorePattern: https://eslint.org/docs/latest/rules/no-unused-vars#varsignorepattern
       { args: 'all', argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
     ],
-    // TODO: Remove this rule, as it's a style rule covered by prettier
+    // @TODO: Remove this rule, as it's a style rule covered by prettier
     // '@typescript-eslint/member-delimiter-style': [
     //   'error',
     //   {
@@ -75,7 +77,7 @@ module.exports = {
     //     },
     //   },
     // ],
-    // TODO: Not recommended to disable rule, should instead disable locally
+    // @TODO: Not recommended to disable rule, should instead disable locally
     //       with explanation
     '@typescript-eslint/ban-ts-ignore': 'off',
   },
@@ -85,14 +87,14 @@ module.exports = {
       files: ['tests/**/*.ts'],
       plugins: ['jest'],
       env: {
-        // TODO: Jasmine is not meant to be used in Jest tests,
+        // @TODO: Jasmine is not meant to be used in Jest tests,
         //       there's even a rule for it in plugin:jest/recommended
         jasmine: true,
         jest: true,
         'jest/globals': true,
       },
       extends: ['plugin:jest/recommended'],
-      // TODO: Remove these rules and adapt code!
+      // @TODO: Remove these rules and adapt code!
       rules: {
         'jest/no-disabled-tests': 'off',
         'jest/expect-expect': 'off',

@@ -1,1 +1,2 @@
-../../../dist/bundles/meilisearch.umd.js
+// @TODO What is this?
+// ../../../dist/bundles/meilisearch.umd.js

@@ -1,4 +1,3 @@
-
 // @ts-ignore
 import {
   // @ts-ignore
@@ -25,7 +24,7 @@ interface Movie {
 }
 
 const client = new MeiliSearch(config)
-const indexUid = "movies"
+const indexUid = 'movies'
 
 ;(async () => {
   await client.deleteIndex(indexUid)
@@ -46,10 +45,7 @@ const indexUid = "movies"
     // test: true -> ERROR Test does not exist on type SearchParams
   }
   indexes.results.map((index: IndexObject) => index.uid)
-  const res: SearchResponse<Movie> = await index.search(
-    'avenger',
-    searchParams
-  )
+  const res: SearchResponse<Movie> = await index.search('avenger', searchParams)
 
   // both work
   const { hits }: { hits: Hits<Movie> } = res
@@ -62,7 +58,9 @@ const indexUid = "movies"
     console.log(hit?._formatted?.title)
   })
 
-  console.log(await client.generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', []))
+  console.log(
+    await client.generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', [])
+  )
 
   await index.delete()
 })()
