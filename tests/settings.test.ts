@@ -63,6 +63,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         filterableAttributes: ['title'],
         sortableAttributes: ['title'],
         distinctAttribute: 'title',
+        proximityPrecision: 'byAttribute',
         searchableAttributes: ['title'],
         displayedAttributes: ['title'],
         rankingRules: ['id:asc', 'typo'],

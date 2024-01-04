@@ -316,6 +316,7 @@ export type TypoTolerance = {
 export type SeparatorTokens = string[] | null
 export type NonSeparatorTokens = string[] | null
 export type Dictionary = string[] | null
+export type ProximityPrecision = 'byWord' | 'byAttribute'
 
 export type FacetOrder = 'alpha' | 'count'
 
@@ -343,6 +344,7 @@ export type Settings = {
   separatorTokens?: SeparatorTokens
   nonSeparatorTokens?: NonSeparatorTokens
   dictionary?: Dictionary
+  proximityPrecision?: ProximityPrecision
 }
 
 /*
