@@ -103,6 +103,7 @@ module.exports = {
         'jest/no-jasmine-globals': 'off',
         'jest/valid-expect-in-promise': 'off',
         'jest/valid-expect': 'off',
+        'jest/no-alias-methods': 'off',
       },
     },
   ],

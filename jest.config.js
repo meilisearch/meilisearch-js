@@ -1,4 +1,3 @@
-// @TODO Remove this once merged with eslint updates
 // eslint-disable-next-line tsdoc/syntax
 /** @type {import('jest').Config} */
 const config = {
