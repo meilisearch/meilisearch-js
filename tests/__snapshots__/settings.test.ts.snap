@@ -18,7 +18,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -64,7 +64,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -110,7 +110,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -156,7 +156,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -202,7 +202,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -248,7 +248,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -361,7 +361,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "title:asc",
     "typo",
@@ -405,7 +405,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -451,7 +451,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -497,7 +497,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -543,7 +543,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -589,7 +589,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -635,7 +635,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -681,7 +681,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",
@@ -794,7 +794,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "title:asc",
     "typo",
@@ -838,7 +838,7 @@ Object {
   "pagination": Object {
     "maxTotalHits": 1000,
   },
-  "proximityPrecision": null,
+  "proximityPrecision": "byWord",
   "rankingRules": Array [
     "words",
     "typo",

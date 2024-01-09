@@ -33,7 +33,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         .index(index.uid)
         .getProximityPrecision()
 
-      expect(response).toEqual(null)
+      expect(response).toEqual('byWord')
     })
 
     test(`${permission} key: Update proximity precision with 'byAttribute' value`, async () => {
@@ -77,7 +77,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         .index(index.uid)
         .getProximityPrecision()
 
-      expect(response).toEqual(null)
+      expect(response).toEqual('byWord')
     })
   }
 )
