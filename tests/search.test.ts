@@ -840,20 +840,34 @@ describe.each([
 
   test(`${permission} key: search with vectors`, async () => {
     const client = await getClient(permission)
-    const key = await getKey(permission)
+    const adminClient = await getClient('Admin')
+    const adminKey = await getKey('Admin')
 
     await fetch(`${HOST}/experimental-features`, {
       body: JSON.stringify({ vectorStore: true }),
       headers: {
-        Authorization: `Bearer ${key}`,
+        Authorization: `Bearer ${adminKey}`,
         'Content-Type': 'application/json',
       },
       method: 'PATCH',
     })
 
-    const response = await client
+    const { taskUid } = await adminClient
       .index(emptyIndex.uid)
-      .search('', { vector: [1] })
+      .updateEmbedders({
+        default: {
+          source: 'userProvided',
+          dimensions: 1,
+        },
+      })
+    await adminClient.waitForTask(taskUid)
+
+    const response = await client.index(emptyIndex.uid).search('', {
+      vector: [1],
+      hybrid: {
+        semanticRatio: 1.0,
+      },
+    })
 
     expect(response.vector).toEqual([1])
   })

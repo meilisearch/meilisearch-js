@@ -51,6 +51,7 @@ import {
   NonSeparatorTokens,
   Dictionary,
   ProximityPrecision,
+  Embedders,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -1286,6 +1287,47 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetProximityPrecision(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/proximity-precision`
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
+  }
+
+  ///
+  /// EMBEDDERS
+  ///
+
+  /**
+   * Get the embedders settings of a Meilisearch index.
+   *
+   * @returns Promise containing the embedders settings
+   */
+  async getEmbedders(): Promise<Embedders> {
+    const url = `indexes/${this.uid}/settings/embedders`
+    return await this.httpRequest.get<Embedders>(url)
+  }
+
+  /**
+   * Update the embedders settings. Overwrite the old settings.
+   *
+   * @param embedders - Object that contains the new embedders settings.
+   * @returns Promise containing an EnqueuedTask or null
+   */
+  async updateEmbedders(embedders: Embedders): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/embedders`
+    const task = await this.httpRequest.patch(url, embedders)
+
+    return new EnqueuedTask(task)
+  }
+
+  /**
+   * Reset the embedders settings to its default value
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetEmbedders(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/embedders`
     const task = await this.httpRequest.delete<EnqueuedTask>(url)
 
     task.enqueuedAt = new Date(task.enqueuedAt)
