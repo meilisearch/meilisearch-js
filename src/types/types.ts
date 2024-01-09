@@ -95,6 +95,11 @@ export type SearchForFacetValuesResponse = {
   processingTimeMs: number
 }
 
+export type HybridSearch = {
+  embedder?: string
+  semanticRatio?: number
+}
+
 export type SearchParams = Query &
   Pagination &
   Highlight &
@@ -113,6 +118,7 @@ export type SearchParams = Query &
     showRankingScore?: boolean
     showRankingScoreDetails?: boolean
     attributesToSearchOn?: string[] | null
+    hybrid?: HybridSearch
   }
 
 // Search parameters for searches made with the GET method
@@ -130,6 +136,8 @@ export type SearchRequestGET = Pagination &
     showMatchesPosition?: boolean
     vector?: string | null
     attributesToSearchOn?: string | null
+    hybridEmbedder?: string
+    hybridSemanticRatio?: number
   }
 
 export type MultiSearchQuery = SearchParams & { indexUid: string }
@@ -318,6 +326,31 @@ export type NonSeparatorTokens = string[] | null
 export type Dictionary = string[] | null
 export type ProximityPrecision = 'byWord' | 'byAttribute'
 
+export type OpenAiEmbedder = {
+  source: 'openAi'
+  model?: string
+  apiKey?: string
+  documentTemplate?: string
+}
+
+export type HuggingFaceEmbedder = {
+  source: 'huggingFace'
+  model?: string
+  revision?: string
+  documentTemplate?: string
+}
+
+export type UserProvidedEmbedder = {
+  source: 'userProvided'
+  dimensions: number
+}
+export type Embedder =
+  | OpenAiEmbedder
+  | HuggingFaceEmbedder
+  | UserProvidedEmbedder
+
+export type Embedders = Record<string, Embedder> | null
+
 export type FacetOrder = 'alpha' | 'count'
 
 export type Faceting = {
@@ -345,6 +378,7 @@ export type Settings = {
   nonSeparatorTokens?: NonSeparatorTokens
   dictionary?: Dictionary
   proximityPrecision?: ProximityPrecision
+  embedders?: Embedders
 }
 
 /*

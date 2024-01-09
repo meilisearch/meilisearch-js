@@ -963,7 +963,7 @@ client.index('myIndex').resetDictionary(): Promise<EnqueuedTask>
 
 ### Proximity Precision <!-- omit in toc -->
 
-#### [Get proximity precision](https://www.meilisearch.com/docs/reference/api/settings#get-prximity-precision)
+#### [Get proximity precision](https://www.meilisearch.com/docs/reference/api/settings#get-proximity-precision)
 
 ```ts
 client.index('myIndex').getProximityPrecision(): Promise<ProximityPrecision>
@@ -979,6 +979,26 @@ client.index('myIndex').updateProximityPrecision(proximityPrecision: ProximityPr
 
 ```ts
 client.index('myIndex').resetProximityPrecision(): Promise<EnqueuedTask>
+```
+
+### Embedders <!-- omit in toc -->
+
+#### [Get embedders](https://www.meilisearch.com/docs/reference/api/settings#get-embedders)
+
+```ts
+client.index('myIndex').getEmbedders(): Promise<Embedders>
+```
+
+#### [Update embedders](https://www.meilisearch.com/docs/reference/api/settings#update-embedders)
+
+```ts
+client.index('myIndex').updateEmbedders(embedders: Embedders): Promise<EnqueuedTask>
+```
+
+#### [Reset embedders](https://www.meilisearch.com/docs/reference/api/settings#reset-embedders)
+
+```ts
+client.index('myIndex').resetEmbedders(): Promise<EnqueuedTask>
 ```
 
 ### Keys <!-- omit in toc -->
