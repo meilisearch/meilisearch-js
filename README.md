@@ -983,6 +983,8 @@ client.index('myIndex').resetProximityPrecision(): Promise<EnqueuedTask>
 
 ### Embedders <!-- omit in toc -->
 
+⚠️ This feature is experimental. Activate the `vectorSearch` experimental feature to use it](https://www.meilisearch.com/docs/reference/api/experimental_features#configure-experimental-features) 
+
 #### [Get embedders](https://www.meilisearch.com/docs/reference/api/settings#get-embedders)
 
 ```ts
