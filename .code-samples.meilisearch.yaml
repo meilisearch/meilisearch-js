@@ -630,7 +630,7 @@ update_non_separator_tokens_1: |-
   client.index('books').updateNonSeparatorTokens(['@', '#'])
 reset_non_separator_tokens_1: |-
   client.index('books').resetNonSeparatorTokens()
-get_proximity_precision_attribute_1: |-
+get_proximity_precision_settings_1: |-
   client.index('books').getProximityPrecision()
 update_proximity_precision_attribute_1: |-
   client.index('books').updateProximityPrecision('byAttribute')
