@@ -4,3 +4,4 @@ examples
 scripts
 tests/env
 coverage
+/jest-disable-built-in-fetch.js

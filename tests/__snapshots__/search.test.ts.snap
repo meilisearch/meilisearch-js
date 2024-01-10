@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Test on POST search Admin key: search on attributesToSearchOn set to null 1`] = `
-Object {
+{
   "estimatedTotalHits": 2,
-  "hits": Array [
-    Object {
+  "hits": [
+    {
       "comment": "A french book about a prince that walks on little cute planets",
       "genre": "adventure",
       "id": 456,
@@ -12,7 +12,7 @@ Object {
       "isTrue": true,
       "title": "Le Petit Prince",
     },
-    Object {
+    {
       "comment": "The best book",
       "genre": "fantasy",
       "id": 4,
@@ -27,10 +27,10 @@ Object {
 `;
 
 exports[`Test on POST search Master key: search on attributesToSearchOn set to null 1`] = `
-Object {
+{
   "estimatedTotalHits": 2,
-  "hits": Array [
-    Object {
+  "hits": [
+    {
       "comment": "A french book about a prince that walks on little cute planets",
       "genre": "adventure",
       "id": 456,
@@ -38,7 +38,7 @@ Object {
       "isTrue": true,
       "title": "Le Petit Prince",
     },
-    Object {
+    {
       "comment": "The best book",
       "genre": "fantasy",
       "id": 4,
@@ -53,10 +53,10 @@ Object {
 `;
 
 exports[`Test on POST search Search key: search on attributesToSearchOn set to null 1`] = `
-Object {
+{
   "estimatedTotalHits": 2,
-  "hits": Array [
-    Object {
+  "hits": [
+    {
       "comment": "A french book about a prince that walks on little cute planets",
       "genre": "adventure",
       "id": 456,
@@ -64,7 +64,7 @@ Object {
       "isTrue": true,
       "title": "Le Petit Prince",
     },
-    Object {
+    {
       "comment": "The best book",
       "genre": "fantasy",
       "id": 4,

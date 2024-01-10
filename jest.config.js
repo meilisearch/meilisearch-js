@@ -1,3 +1,6 @@
+// @TODO Remove this once merged with eslint updates
+// eslint-disable-next-line tsdoc/syntax
+/** @type {import('jest').Config} */
 const config = {
   rootDir: '.',
   testMatch: ['<rootDir>/tests/**/*.ts?(x)'],
@@ -15,6 +18,7 @@ const config = {
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
   ],
+  globalSetup: './jest-disable-built-in-fetch.js',
   projects: [
     {
       preset: 'ts-jest',
