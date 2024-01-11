@@ -1,4 +1,3 @@
-// eslint-disable-next-line tsdoc/syntax
 /** @type {import('jest').Config} */
 const config = {
   rootDir: '.',

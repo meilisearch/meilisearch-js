@@ -1,5 +1,5 @@
 node_modules
 dist
+/tests/env
+/coverage
 *.md
-tests/env
-coverage
