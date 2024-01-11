@@ -22,6 +22,7 @@ let config = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+
   },
 }
 

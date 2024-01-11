@@ -65,8 +65,7 @@ export const MatchingStrategies = {
   LAST: 'last',
 } as const
 
-export type MatchingStrategies =
-  (typeof MatchingStrategies)[keyof typeof MatchingStrategies]
+export type MatchingStrategies = typeof MatchingStrategies[keyof typeof MatchingStrategies]
 
 export type Filter = string | Array<string | string[]>
 
@@ -200,7 +199,7 @@ export type FacetStats = Record<string, FacetStat>
 
 export type SearchResponse<
   T = Record<string, any>,
-  S extends SearchParams | undefined = undefined,
+  S extends SearchParams | undefined = undefined
 > = {
   hits: Hits<T>
   processingTimeMs: number
@@ -211,8 +210,8 @@ export type SearchResponse<
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
-    ? FinitePagination
-    : InfinitePagination)
+  ? FinitePagination
+  : InfinitePagination)
 
 type FinitePagination = {
   totalHits: number
@@ -234,8 +233,8 @@ type IsFinitePagination<S extends SearchParams> = Or<
 type Or<A extends boolean, B extends boolean> = true extends A
   ? true
   : true extends B
-    ? true
-    : false
+  ? true
+  : false
 
 type HasHitsPerPage<S extends SearchParams> = undefined extends S['hitsPerPage']
   ? false
@@ -364,7 +363,7 @@ export const TaskStatus = {
   TASK_CANCELED: 'canceled',
 } as const
 
-export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
+export type TaskStatus = typeof TaskStatus[keyof typeof TaskStatus]
 
 export const TaskTypes = {
   DOCUMENTS_ADDITION_OR_UPDATE: 'documentAdditionOrUpdate',
@@ -380,7 +379,7 @@ export const TaskTypes = {
   TASK_DELETION: 'taskDeletion',
 } as const
 
-export type TaskTypes = (typeof TaskTypes)[keyof typeof TaskTypes]
+export type TaskTypes = typeof TaskTypes[keyof typeof TaskTypes]
 
 export type TasksQuery = {
   indexUids?: string[]
@@ -933,8 +932,7 @@ export const ErrorStatusCode = {
   INVALID_FACET_SEARCH_FACET_QUERY: 'invalid_facet_search_facet_query',
 }
 
-export type ErrorStatusCode =
-  (typeof ErrorStatusCode)[keyof typeof ErrorStatusCode]
+export type ErrorStatusCode = typeof ErrorStatusCode[keyof typeof ErrorStatusCode]
 
 export type TokenIndexRules = {
   [field: string]: any

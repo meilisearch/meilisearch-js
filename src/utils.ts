@@ -1,13 +1,10 @@
 /** Removes undefined entries from object */
 function removeUndefinedFromObject(obj: Record<string, any>): object {
-  return Object.entries(obj).reduce(
-    (acc, curEntry) => {
-      const [key, val] = curEntry
-      if (val !== undefined) acc[key] = val
-      return acc
-    },
-    {} as Record<string, any>
-  )
+  return Object.entries(obj).reduce((acc, curEntry) => {
+    const [key, val] = curEntry
+    if (val !== undefined) acc[key] = val
+    return acc
+  }, {} as Record<string, any>)
 }
 
 async function sleep(ms: number): Promise<void> {
@@ -29,8 +26,7 @@ function addTrailingSlash(url: string): string {
 }
 
 function validateUuid4(uuid: string): boolean {
-  const regexExp =
-    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi
+  const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi
   return regexExp.test(uuid)
 }
 

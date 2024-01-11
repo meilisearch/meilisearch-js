@@ -10,20 +10,20 @@ const { MeiliSearch } = require('../../../dist/bundles/meilisearch.umd.js')
   const index = client.index('movies')
 
   const dataset = [
-    { id: 1, title: 'Carol', genres: ['Romance', 'Drama'] },
-    { id: 2, title: 'Wonder Woman', genres: ['Action', 'Adventure'] },
-    { id: 3, title: 'Life of Pi', genres: ['Adventure', 'Drama'] },
-    {
-      id: 4,
-      title: 'Mad Max: Fury Road',
-      genres: ['Adventure', 'Science Fiction'],
-    },
-    { id: 5, title: 'Moana', genres: ['Fantasy', 'Action'] },
-    { id: 6, title: 'Philadelphia', genres: ['Drama'] },
+      { id: 1, title: 'Carol', genres: ['Romance', 'Drama'] },
+      { id: 2, title: 'Wonder Woman', genres: ['Action', 'Adventure'] },
+      { id: 3, title: 'Life of Pi', genres: ['Adventure', 'Drama'] },
+      { id: 4, title: 'Mad Max: Fury Road', genres: ['Adventure', 'Science Fiction'] },
+      { id: 5, title: 'Moana', genres: ['Fantasy', 'Action']},
+      { id: 6, title: 'Philadelphia', genres: ['Drama'] },
   ]
 
   // If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
-  await index.updateFilterableAttributes(['director', 'genres', 'id'])
+  await index.updateFilterableAttributes([
+    'director',
+    'genres',
+    'id'
+  ])
 
   let response = await index.addDocuments(dataset)
 
@@ -35,12 +35,15 @@ const { MeiliSearch } = require('../../../dist/bundles/meilisearch.umd.js')
   console.log({ search, hit: search.hits })
   const filteredSearch = await index.search('Wonder', {
     attributesToHighlight: ['*'],
-    filter: 'id >= 1',
+    filter: 'id >= 1'
   })
   console.log({ filteredSearch, hit: filteredSearch.hits[0] })
-  const facetedSearch = await index.search('', {
-    filter: ['genres = action'],
-    facets: ['genres'],
-  })
+  const facetedSearch = await index.search(
+    '',
+    {
+      filter: ['genres = action'],
+      facets: ['genres']
+    }
+  )
   console.log(JSON.stringify(facetedSearch))
 })()
