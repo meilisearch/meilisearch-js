@@ -630,6 +630,12 @@ update_non_separator_tokens_1: |-
   client.index('books').updateNonSeparatorTokens(['@', '#'])
 reset_non_separator_tokens_1: |-
   client.index('books').resetNonSeparatorTokens()
+get_proximity_precision_settings_1: |-
+  client.index('books').getProximityPrecision()
+update_proximity_precision_settings_1: |-
+  client.index('books').updateProximityPrecision('byAttribute')
+reset_proximity_precision_settings_1: |-
+  client.index('books').resetProximityPrecision()
 search_parameter_guide_facet_stats_1: |-
   client.index('movie_ratings').search('Batman', { facets: ['genres', 'rating'] })
 geosearch_guide_filter_settings_1: |-
