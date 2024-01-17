@@ -19,6 +19,11 @@
     // Since we're using a bundler (rollup), and so TS isn't used to emit JS,
     // this option should be set to "bundler"
     // https://www.typescriptlang.org/docs/handbook/modules/reference.html#bundler
+    // However "module": "node16" or "nodenext" is a better option:
+    // https://www.typescriptlang.org/docs/handbook/modules/theory.html#module-resolution-for-libraries
+    // Problem is, a lot of files would need changes, so to keep things simpler for now let's keep it as "bundler"
+    // Also this should be applied too: https://www.typescriptlang.org/tsconfig#verbatimModuleSyntax
+    // but again, too many changes for now
     "moduleResolution": "bundler",
     // "moduleResolution" = "bundler" requires this to be "esnext"
     "module": "esnext",
@@ -28,10 +33,10 @@
     // "esModuleInterop": true,
     // @TODO: Remove, as "moduleResolution": "bundler" sets this to true
     // "allowSyntheticDefaultImports": true,
-    // Node.js 14 (the EOL one still tested on by us) supports up to ES2020 according to https://www.npmjs.com/package/@tsconfig/node14
+    // Node.js 18 supports up to ES2022 according to https://www.npmjs.com/package/@tsconfig/node18
     // This matters for the generated CJS and ESM file, UMD file is down-leveled further to support IE11
     // with the help of Babel.
-    "target": "es2020",
+    "target": "es2022",
     "lib": [
       // @TODO: Remove as ES versions are cumulative, so ESNext contains everything
       //"ES2019",

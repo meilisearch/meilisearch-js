@@ -6,7 +6,7 @@ module.exports = {
     // @TODO: Can be removed, ES versions are cumulative:
     //       https://stackoverflow.com/a/61688878
     // es6: true,
-    // This seems to be what Node.js 20 fully supports, but online documentation
+    // This seems to be what Node.js 18, 20 fully supports, but online documentation
     // isn't exactly crystal clear about what should be put here
     es2022: true,
     browser: true,
