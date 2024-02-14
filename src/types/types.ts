@@ -286,6 +286,8 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
 export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   fields?: Fields<T>
   filter?: Filter
+  limit?: number
+  offset?: number
 }
 
 export type DocumentQuery<T = Record<string, any>> = {
