@@ -1,5 +1,4 @@
 import { Config, EnqueuedTaskObject } from './types'
-import { PACKAGE_VERSION } from './package-version'
 
 import {
   MeiliSearchError,
@@ -55,7 +54,6 @@ function cloneAndParseHeaders(headers: HeadersInit): Record<string, string> {
 
 function createHeaders(config: Config): Record<string, any> {
   const agentHeader = 'X-Meilisearch-Client'
-  const packageAgent = `Meilisearch JavaScript (v${PACKAGE_VERSION})`
   const contentType = 'Content-Type'
   const authorization = 'Authorization'
   const headers = cloneAndParseHeaders(config.requestConfig?.headers ?? {})
@@ -71,16 +69,12 @@ function createHeaders(config: Config): Record<string, any> {
 
   // Creates the custom user agent with information on the package used.
   if (config.clientAgents && Array.isArray(config.clientAgents)) {
-    const clients = config.clientAgents.concat(packageAgent)
-
-    headers[agentHeader] = clients.join(' ; ')
+    headers[agentHeader] = config.clientAgents.join(' ; ')
   } else if (config.clientAgents && !Array.isArray(config.clientAgents)) {
     // If the header is defined but not an array
     throw new MeiliSearchError(
       `Meilisearch: The header "${agentHeader}" should be an array of string(s).\n`
     )
-  } else {
-    headers[agentHeader] = packageAgent
   }
 
   return headers
