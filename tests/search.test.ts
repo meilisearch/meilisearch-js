@@ -271,18 +271,8 @@ describe.each([
     expect(hit).toHaveProperty('_rankingScore')
   })
 
-  test(`${permission} key: search with showRankingScoreDetails enabled`, async () => {
+  test(`${permission} key: search with showRankingScoreDetails`, async () => {
     const client = await getClient(permission)
-    const key = await getKey(permission)
-
-    await fetch(`${HOST}/experimental-features`, {
-      body: JSON.stringify({ scoreDetails: true }),
-      headers: {
-        Authorization: `Bearer ${key}`,
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-    })
 
     const response = await client.index(index.uid).search('prince', {
       showRankingScoreDetails: true,

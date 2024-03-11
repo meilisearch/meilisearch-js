@@ -73,9 +73,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         default: {
           source: 'openAi',
           apiKey: '<your-OpenAI-API-key>',
-          model: 'text-embedding-ada-002',
+          model: 'text-embedding-3-small',
           documentTemplate:
             "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
+          dimensions: 1536,
         },
       }
       const task: EnqueuedTask = await client

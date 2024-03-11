@@ -741,3 +741,5 @@ facet_search_3: |-
     facetQuery: 'c',
     facetName: 'genres'
   })
+search_parameter_guide_show_ranking_score_details_1: |-
+  client.index('movies').search('dragon', { showRankingScoreDetails: true })

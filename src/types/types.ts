@@ -333,6 +333,7 @@ export type OpenAiEmbedder = {
   model?: string
   apiKey?: string
   documentTemplate?: string
+  dimensions?: number
 }
 
 export type HuggingFaceEmbedder = {
@@ -346,6 +347,7 @@ export type UserProvidedEmbedder = {
   source: 'userProvided'
   dimensions: number
 }
+
 export type Embedder =
   | OpenAiEmbedder
   | HuggingFaceEmbedder
