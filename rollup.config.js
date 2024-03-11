@@ -1,11 +1,11 @@
-import nodeResolve from '@rollup/plugin-node-resolve'
-import { resolve } from 'path'
-import commonjs from '@rollup/plugin-commonjs'
-import json from '@rollup/plugin-json'
-import typescript from 'rollup-plugin-typescript2'
-import pkg from './package.json'
-import { terser } from 'rollup-plugin-terser'
-import { babel } from '@rollup/plugin-babel'
+const nodeResolve = require('@rollup/plugin-node-resolve')
+const { resolve } = require('path')
+const commonjs = require('@rollup/plugin-commonjs')
+const json = require('@rollup/plugin-json')
+const typescript = require('rollup-plugin-typescript2')
+const pkg = require('./package.json')
+const { terser } = require('rollup-plugin-terser')
+const { babel } = require('@rollup/plugin-babel')
 
 function getOutputFileName(fileName, isProd = false) {
   return isProd ? fileName.replace(/\.js$/, '.min.js') : fileName

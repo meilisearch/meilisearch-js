@@ -1,10 +1,11 @@
 {
   // extend your base config so you don't have to redefine your compilerOptions
   "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "allowJs": false,
-    "module": "esnext",
-  },
+  // @TODO: Can be removed, all of these are already in the extended tsconfig.json
+  // "compilerOptions": {
+  //   "allowJs": false,
+  //   "module": "esnext"
+  // },
   "include": [
     "src/**/*.ts",
     "tests/**/*.ts",

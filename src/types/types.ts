@@ -24,6 +24,8 @@ export type Pagination = {
   limit?: number
 }
 
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type ResourceQuery = Pagination & {}
 
 export type ResourceResults<T> = Pagination & {
@@ -46,8 +48,12 @@ export type IndexObject = {
   updatedAt: Date
 }
 
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type IndexesQuery = ResourceQuery & {}
 
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type IndexesResults<T> = ResourceResults<T> & {}
 
 /*
@@ -430,7 +436,11 @@ export type TasksQuery = {
   limit?: number
   from?: number
 }
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type DeleteTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
 
 export type EnqueuedTaskObject = {
@@ -581,8 +591,12 @@ export type KeyUpdate = {
   description?: string
 }
 
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type KeysQuery = ResourceQuery & {}
 
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type KeysResults = ResourceResults<Key[]> & {}
 
 /*

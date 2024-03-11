@@ -1,5 +1,5 @@
 import { Config, TokenSearchRules, TokenOptions } from './types'
-import crypto from 'crypto'
+import { createHmac } from 'crypto'
 import { MeiliSearchError } from './errors'
 import { validateUuid4 } from './utils'
 
@@ -16,8 +16,7 @@ function encode64(data: any) {
  * @returns The signature of the token in base64.
  */
 function sign(apiKey: string, encodedHeader: string, encodedPayload: string) {
-  return crypto
-    .createHmac('sha256', apiKey)
+  return createHmac('sha256', apiKey)
     .update(`${encodedHeader}.${encodedPayload}`)
     .digest('base64')
     .replace(/\+/g, '-')
