@@ -50,8 +50,8 @@
     "size": "node scripts/file-size ./dist/bundles/meilisearch.esm.min.js ./dist/bundles/meilisearch.umd.min.js",
     "style": "yarn fmt && yarn lint",
     "style:fix": "yarn fmt:fix && yarn lint:fix",
-    "fmt": "prettier -c ./**/*.{js,ts,tsx}",
-    "fmt:fix": "prettier -w ./**/*.{js,ts,tsx}",
+    "fmt": "prettier -c ./**/*.{js,ts}",
+    "fmt:fix": "prettier -w ./**/*.{js,ts}",
     "lint": "eslint --ext .js,.ts,.tsx .",
     "lint:fix": "eslint --ext .js,.ts,.tsx --fix .",
     "typingsheader": "node scripts/build.js"

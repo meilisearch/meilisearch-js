@@ -92,7 +92,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async search<
     D extends Record<string, any> = T,
-    S extends SearchParams = SearchParams
+    S extends SearchParams = SearchParams,
   >(
     query?: string | null,
     options?: S,
@@ -118,7 +118,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async searchGet<
     D extends Record<string, any> = T,
-    S extends SearchParams = SearchParams
+    S extends SearchParams = SearchParams,
   >(
     query?: string | null,
     options?: S,
