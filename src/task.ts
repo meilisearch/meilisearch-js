@@ -97,10 +97,12 @@ class TaskClient {
     while (Date.now() - startingTime < timeOutMs) {
       const response = await this.getTask(taskUid)
       if (
-        !([
-          TaskStatus.TASK_ENQUEUED,
-          TaskStatus.TASK_PROCESSING,
-        ] as readonly string[]).includes(response.status)
+        !(
+          [
+            TaskStatus.TASK_ENQUEUED,
+            TaskStatus.TASK_PROCESSING,
+          ] as readonly string[]
+        ).includes(response.status)
       )
         return response
       await sleep(intervalMs)

@@ -40,10 +40,13 @@ function constructHostURL(host: string): string {
 
 function cloneAndParseHeaders(headers: HeadersInit): Record<string, string> {
   if (Array.isArray(headers)) {
-    return headers.reduce((acc, headerPair) => {
-      acc[headerPair[0]] = headerPair[1]
-      return acc
-    }, {} as Record<string, string>)
+    return headers.reduce(
+      (acc, headerPair) => {
+        acc[headerPair[0]] = headerPair[1]
+        return acc
+      },
+      {} as Record<string, string>
+    )
   } else if ('has' in headers) {
     const clonedHeaders: Record<string, string> = {}
     ;(headers as Headers).forEach((value, key) => (clonedHeaders[key] = value))

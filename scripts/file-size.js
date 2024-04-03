@@ -32,7 +32,6 @@ async function main() {
 }
 
 /**
- *
  * @param {string} pkgName
  * @param {string[]} filesOutput
  */
@@ -49,7 +48,6 @@ function getFormatedOutput(pkgName, filesOutput) {
 }
 
 /**
- *
  * @param {number} size
  * @param {string} filename
  * @param {'br' | 'gz'} type
@@ -66,10 +64,9 @@ function formatSize(size, filename, type, raw) {
 }
 
 /**
- *
  * @param {string} code
  * @param {string} filename
- * @param {boolean} [raw=false]
+ * @param {boolean} [raw=false] Default is `false`
  */
 async function getSizeInfo(code, filename, raw = false) {
   const isRaw = raw || code.length < 5000
