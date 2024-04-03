@@ -292,6 +292,8 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
 export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   fields?: Fields<T>
   filter?: Filter
+  limit?: number
+  offset?: number
 }
 
 export type DocumentQuery<T = Record<string, any>> = {
@@ -337,6 +339,7 @@ export type OpenAiEmbedder = {
   model?: string
   apiKey?: string
   documentTemplate?: string
+  dimensions?: number
 }
 
 export type HuggingFaceEmbedder = {
@@ -350,6 +353,7 @@ export type UserProvidedEmbedder = {
   source: 'userProvided'
   dimensions: number
 }
+
 export type Embedder =
   | OpenAiEmbedder
   | HuggingFaceEmbedder

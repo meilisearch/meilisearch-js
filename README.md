@@ -17,7 +17,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/meilisearch"><img src="https://img.shields.io/npm/v/meilisearch.svg" alt="npm version"></a>
   <a href="https://github.com/meilisearch/meilisearch-js/actions"><img src="https://github.com/meilisearch/meilisearch-js/workflows/Tests/badge.svg" alt="Tests"></a>
-  <a href="https://codecov.io/gh/meilisearch/meilisearch-python">
+  <a href="https://codecov.io/gh/meilisearch/meilisearch-js">
     <img src="https://codecov.io/github/meilisearch/meilisearch-js/coverage.svg?branch=main" alt="Codecov">
   </a>
   <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/styled_with-prettier-ff69b4.svg" alt="Prettier"></a>
@@ -983,7 +983,7 @@ client.index('myIndex').resetProximityPrecision(): Promise<EnqueuedTask>
 
 ### Embedders <!-- omit in toc -->
 
-⚠️ This feature is experimental. Activate the `vectorStore` experimental feature to use it](https://www.meilisearch.com/docs/reference/api/experimental_features#configure-experimental-features) 
+⚠️ This feature is experimental. Activate the [`vectorStore` experimental feature to use it](https://www.meilisearch.com/docs/reference/api/experimental_features#configure-experimental-features) 
 
 #### [Get embedders](https://www.meilisearch.com/docs/reference/api/settings#get-embedders)
 
