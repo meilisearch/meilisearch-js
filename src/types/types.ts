@@ -373,6 +373,10 @@ export type PaginationSettings = {
   maxTotalHits?: number | null
 }
 
+export type SearchCutoffMsSettings = {
+  searchCutoffMs?: number | null
+}
+
 export type Settings = {
   filterableAttributes?: FilterableAttributes
   distinctAttribute?: DistinctAttribute
@@ -390,6 +394,7 @@ export type Settings = {
   dictionary?: Dictionary
   proximityPrecision?: ProximityPrecision
   embedders?: Embedders
+  searchCutoffMs?: SearchCutoffMsSettings
 }
 
 /*
@@ -929,6 +934,9 @@ export const ErrorStatusCode = {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_pagination */
   INVALID_SETTINGS_PAGINATION: 'invalid_settings_pagination',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_search_cutoff_ms */
+  INVALID_SETTINGS_SEARCH_CUTOFF_MS: 'invalid_settings_search_cutoff_ms',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_before_enqueued_at */
   INVALID_TASK_BEFORE_ENQUEUED_AT: 'invalid_task_before_enqueued_at',
