@@ -90,6 +90,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         separatorTokens: ['&sep', '/', '|'],
         nonSeparatorTokens: ['&sep', '/', '|'],
         dictionary: ['J. K.', 'J. R. R.'],
+        searchCutoffMs: 1000,
       }
       // Add the settings
       const task = await client.index(index.uid).updateSettings(newSettings)
@@ -104,7 +105,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
     test(`${permission} key: Update settings with all null values`, async () => {
       const client = await getClient(permission)
-      const newSettings = {
+      const newSettings: Settings = {
         filterableAttributes: null,
         sortableAttributes: null,
         distinctAttribute: null,
@@ -132,6 +133,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         separatorTokens: null,
         nonSeparatorTokens: null,
         dictionary: null,
+        searchCutoffMs: null,
       }
       // Add the settings
       const task = await client.index(index.uid).updateSettings(newSettings)

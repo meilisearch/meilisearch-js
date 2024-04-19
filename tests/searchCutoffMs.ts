@@ -12,7 +12,7 @@ const index = {
   uid: 'movies_test',
 }
 
-const DEFAULT_SEARCHCUTOFFMS = 1500
+const DEFAULT_SEARCHCUTOFFMS = null
 
 jest.setTimeout(100 * 1000)
 
@@ -34,14 +34,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission)
       const response = await client.index(index.uid).getSearchCutoffMs()
 
-      expect(response).toEqual({ searchCutoffMs: DEFAULT_SEARCHCUTOFFMS })
+      expect(response).toEqual(DEFAULT_SEARCHCUTOFFMS)
     })
 
     test(`${permission} key: Update searchCutoffMs to valid value`, async () => {
       const client = await getClient(permission)
-      const newSearchCutoffMs = {
-        searchCutoffMs: 100,
-      }
+      const newSearchCutoffMs = 100
       const task = await client
         .index(index.uid)
         .updateSearchCutoffMs(newSearchCutoffMs)
@@ -54,9 +52,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
     test(`${permission} key: Update searchCutoffMs to null`, async () => {
       const client = await getClient(permission)
-      const newSearchCutoffMs = {
-        searchCutoffMs: null,
-      }
+      const newSearchCutoffMs = null
       const task = await client
         .index(index.uid)
         .updateSearchCutoffMs(newSearchCutoffMs)
@@ -64,14 +60,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(index.uid).getSearchCutoffMs()
 
-      expect(response).toEqual({ searchCutoffMs: DEFAULT_SEARCHCUTOFFMS })
+      expect(response).toEqual(DEFAULT_SEARCHCUTOFFMS)
     })
 
     test(`${permission} key: Update searchCutoffMs with invalid value`, async () => {
       const client = await getClient(permission)
-      const newSearchCutoffMs = {
-        searchCutoffMs: 'hello', // bad searchCutoffMs value
-      } as any
+      const newSearchCutoffMs = 'hello' as any // bad searchCutoffMs value
 
       await expect(
         client.index(index.uid).updateSearchCutoffMs(newSearchCutoffMs)
@@ -83,9 +77,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
     test(`${permission} key: Reset searchCutoffMs`, async () => {
       const client = await getClient(permission)
-      const newSearchCutoffMs = {
-        searchCutoffMs: 100,
-      }
+      const newSearchCutoffMs = 100
       const updateTask = await client
         .index(index.uid)
         .updateSearchCutoffMs(newSearchCutoffMs)
@@ -95,7 +87,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(index.uid).getSearchCutoffMs()
 
-      expect(response).toEqual({ searchCutoffMs: DEFAULT_SEARCHCUTOFFMS })
+      expect(response).toEqual(DEFAULT_SEARCHCUTOFFMS)
     })
   }
 )
@@ -119,7 +111,7 @@ describe.each([{ permission: 'Search' }])(
     test(`${permission} key: try to update searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).updateSearchCutoffMs({ searchCutoffMs: 100 })
+        client.index(index.uid).updateSearchCutoffMs(100)
       ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
     })
 
@@ -154,7 +146,7 @@ describe.each([{ permission: 'No' }])(
     test(`${permission} key: try to update searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
-        client.index(index.uid).updateSearchCutoffMs({ searchCutoffMs: 100 })
+        client.index(index.uid).updateSearchCutoffMs(100)
       ).rejects.toHaveProperty(
         'code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
@@ -198,7 +190,7 @@ describe.each([
     const client = new MeiliSearch({ host })
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(
-      client.index(index.uid).updateSearchCutoffMs({ searchCutoffMs: null })
+      client.index(index.uid).updateSearchCutoffMs(null)
     ).rejects.toHaveProperty(
       'message',
       `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
