@@ -374,9 +374,7 @@ export type PaginationSettings = {
   maxTotalHits?: number | null
 }
 
-export type SearchCutoffMsSettings = {
-  searchCutoffMs?: number | null
-}
+export type SearchCutoffMs = number | null
 
 export type Settings = {
   filterableAttributes?: FilterableAttributes
@@ -395,7 +393,7 @@ export type Settings = {
   dictionary?: Dictionary
   proximityPrecision?: ProximityPrecision
   embedders?: Embedders
-  searchCutoffMs?: SearchCutoffMsSettings
+  searchCutoffMs?: SearchCutoffMs
 }
 
 /*

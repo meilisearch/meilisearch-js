@@ -27,6 +27,7 @@ exports[`Test on settings Admin key: Get default settings of an index 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -73,6 +74,7 @@ exports[`Test on settings Admin key: Get default settings of empty index with pr
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -119,6 +121,7 @@ exports[`Test on settings Admin key: Reset settings 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -165,6 +168,7 @@ exports[`Test on settings Admin key: Reset settings of empty index 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -211,6 +215,7 @@ exports[`Test on settings Admin key: Update searchableAttributes settings on emp
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "title",
   ],
@@ -257,6 +262,7 @@ exports[`Test on settings Admin key: Update searchableAttributes settings on emp
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "title",
   ],
@@ -308,6 +314,7 @@ exports[`Test on settings Admin key: Update settings 1`] = `
     "id:asc",
     "typo",
   ],
+  "searchCutoffMs": 1000,
   "searchableAttributes": [
     "title",
   ],
@@ -366,6 +373,7 @@ exports[`Test on settings Admin key: Update settings on empty index with primary
     "title:asc",
     "typo",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -414,6 +422,7 @@ exports[`Test on settings Admin key: Update settings with all null values 1`] = 
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -460,6 +469,7 @@ exports[`Test on settings Master key: Get default settings of an index 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -506,6 +516,7 @@ exports[`Test on settings Master key: Get default settings of empty index with p
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -552,6 +563,7 @@ exports[`Test on settings Master key: Reset settings 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -598,6 +610,7 @@ exports[`Test on settings Master key: Reset settings of empty index 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -644,6 +657,7 @@ exports[`Test on settings Master key: Update searchableAttributes settings on em
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "title",
   ],
@@ -690,6 +704,7 @@ exports[`Test on settings Master key: Update searchableAttributes settings on em
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "title",
   ],
@@ -741,6 +756,7 @@ exports[`Test on settings Master key: Update settings 1`] = `
     "id:asc",
     "typo",
   ],
+  "searchCutoffMs": 1000,
   "searchableAttributes": [
     "title",
   ],
@@ -799,6 +815,7 @@ exports[`Test on settings Master key: Update settings on empty index with primar
     "title:asc",
     "typo",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -847,6 +864,7 @@ exports[`Test on settings Master key: Update settings with all null values 1`] =
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
