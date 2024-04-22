@@ -359,6 +359,7 @@ export type Embedder =
   | OpenAiEmbedder
   | HuggingFaceEmbedder
   | UserProvidedEmbedder
+  | null
 
 export type Embedders = Record<string, Embedder> | null
 
