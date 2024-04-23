@@ -94,6 +94,53 @@ exports[`Test on settings Admin key: Get default settings of empty index with pr
 }
 `;
 
+exports[`Test on settings Admin key: Reset embedders settings  1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
 exports[`Test on settings Admin key: Reset settings 1`] = `
 {
   "dictionary": [],
@@ -148,6 +195,66 @@ exports[`Test on settings Admin key: Reset settings of empty index 1`] = `
     "*",
   ],
   "distinctAttribute": null,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Admin key: Update embedders settings  1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "embedders": {
+    "default": {
+      "apiKey": "<yoXXXXX...",
+      "dimensions": 1536,
+      "distribution": {
+        "mean": 0.7,
+        "sigma": 0.3,
+      },
+      "documentTemplate": "A document template",
+      "model": "text-embedding-3-small",
+      "source": "openAi",
+    },
+  },
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -536,6 +643,53 @@ exports[`Test on settings Master key: Get default settings of empty index with p
 }
 `;
 
+exports[`Test on settings Master key: Reset embedders settings  1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
 exports[`Test on settings Master key: Reset settings 1`] = `
 {
   "dictionary": [],
@@ -590,6 +744,66 @@ exports[`Test on settings Master key: Reset settings of empty index 1`] = `
     "*",
   ],
   "distinctAttribute": null,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Update embedders settings  1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "embedders": {
+    "default": {
+      "apiKey": "<yoXXXXX...",
+      "dimensions": 1536,
+      "distribution": {
+        "mean": 0.7,
+        "sigma": 0.3,
+      },
+      "documentTemplate": "A document template",
+      "model": "text-embedding-3-small",
+      "source": "openAi",
+    },
+  },
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {

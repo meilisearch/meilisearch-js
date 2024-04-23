@@ -6,6 +6,8 @@ import {
   MeiliSearch,
   getClient,
   dataset,
+  getKey,
+  HOST,
 } from './utils/meilisearch-test-utils'
 
 const index = {
@@ -146,6 +148,41 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(response).toMatchSnapshot()
     })
 
+    test(`${permission} key: Update embedders settings `, async () => {
+      const client = await getClient(permission)
+      const key = await getKey(permission)
+
+      await fetch(`${HOST}/experimental-features`, {
+        body: JSON.stringify({ vectorStore: true }),
+        headers: {
+          Authorization: `Bearer ${key}`,
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+      })
+
+      const newSettings: Settings = {
+        embedders: {
+          default: {
+            source: 'openAi',
+            apiKey: '<your-OpenAI-API-key>',
+            model: 'text-embedding-3-small',
+            documentTemplate: 'A document template',
+            dimensions: 1536,
+            distribution: {
+              mean: 0.7,
+              sigma: 0.3,
+            },
+          },
+        },
+      }
+      const task = await client.index(index.uid).updateSettings(newSettings)
+      await client.index(index.uid).waitForTask(task.taskUid)
+      const response = await client.index(index.uid).getSettings()
+
+      expect(response).toMatchSnapshot()
+    })
+
     test(`${permission} key: Update settings on empty index with primary key`, async () => {
       const client = await getClient(permission)
       const newSettings = {
@@ -179,6 +216,29 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await client.index(index.uid).waitForTask(task.taskUid)
 
       const response = await client.index(indexAndPK.uid).getSettings()
+
+      expect(response).toMatchSnapshot()
+    })
+
+    test(`${permission} key: Reset embedders settings `, async () => {
+      const client = await getClient(permission)
+      const key = await getKey(permission)
+
+      await fetch(`${HOST}/experimental-features`, {
+        body: JSON.stringify({ vectorStore: true }),
+        headers: {
+          Authorization: `Bearer ${key}`,
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+      })
+
+      const newSettings: Settings = {
+        embedders: null,
+      }
+      const task = await client.index(index.uid).updateSettings(newSettings)
+      await client.index(index.uid).waitForTask(task.taskUid)
+      const response = await client.index(index.uid).getSettings()
 
       expect(response).toMatchSnapshot()
     })
