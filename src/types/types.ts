@@ -215,7 +215,6 @@ export type SearchResponse<
   query: string
   facetDistribution?: FacetDistribution
   facetStats?: FacetStats
-  vector?: number[]
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
@@ -335,12 +334,18 @@ export type NonSeparatorTokens = string[] | null
 export type Dictionary = string[] | null
 export type ProximityPrecision = 'byWord' | 'byAttribute'
 
+export type Distribution = {
+  mean: number
+  sigma: number
+}
+
 export type OpenAiEmbedder = {
   source: 'openAi'
   model?: string
   apiKey?: string
   documentTemplate?: string
   dimensions?: number
+  distribution?: Distribution
 }
 
 export type HuggingFaceEmbedder = {
@@ -348,17 +353,44 @@ export type HuggingFaceEmbedder = {
   model?: string
   revision?: string
   documentTemplate?: string
+  distribution?: Distribution
 }
 
 export type UserProvidedEmbedder = {
   source: 'userProvided'
   dimensions: number
+  distribution?: Distribution
+}
+
+export type RestEmbedder = {
+  source: 'rest'
+  url: string
+  apiKey?: string
+  dimensions?: number
+  documentTemplate?: string
+  inputField?: string[] | null
+  inputType?: 'text' | 'textArray'
+  query?: Record<string, any> | null
+  pathToEmbeddings?: string[] | null
+  embeddingObject?: string[] | null
+  distribution?: Distribution
+}
+
+export type OllamaEmbedder = {
+  source: 'ollama'
+  url?: string
+  apiKey?: string
+  model?: string
+  documentTemplate?: string
+  distribution?: Distribution
 }
 
 export type Embedder =
   | OpenAiEmbedder
   | HuggingFaceEmbedder
   | UserProvidedEmbedder
+  | RestEmbedder
+  | OllamaEmbedder
   | null
 
 export type Embedders = Record<string, Embedder> | null
