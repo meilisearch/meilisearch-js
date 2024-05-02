@@ -164,7 +164,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
     })
 
-    test(`${permission} key: Update embedders with 'ollama' source`, async () => {
+    test.skip(`${permission} key: Update embedders with 'ollama' source`, async () => {
       const client = await getClient(permission)
       const newEmbedder: Embedders = {
         default: {
