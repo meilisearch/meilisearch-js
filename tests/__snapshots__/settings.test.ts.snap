@@ -244,15 +244,10 @@ exports[`Test on settings Admin key: Update embedders settings  1`] = `
   "distinctAttribute": null,
   "embedders": {
     "default": {
-      "apiKey": "<yoXXXXX...",
-      "dimensions": 1536,
-      "distribution": {
-        "mean": 0.7,
-        "sigma": 0.3,
-      },
-      "documentTemplate": "A document template",
-      "model": "text-embedding-3-small",
-      "source": "openAi",
+      "documentTemplate": "{% for field in fields %} {{ field.name }}: {{ field.value }}
+{% endfor %}",
+      "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "source": "huggingFace",
     },
   },
   "faceting": {
@@ -793,15 +788,10 @@ exports[`Test on settings Master key: Update embedders settings  1`] = `
   "distinctAttribute": null,
   "embedders": {
     "default": {
-      "apiKey": "<yoXXXXX...",
-      "dimensions": 1536,
-      "distribution": {
-        "mean": 0.7,
-        "sigma": 0.3,
-      },
-      "documentTemplate": "A document template",
-      "model": "text-embedding-3-small",
-      "source": "openAi",
+      "documentTemplate": "{% for field in fields %} {{ field.name }}: {{ field.value }}
+{% endfor %}",
+      "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "source": "huggingFace",
     },
   },
   "faceting": {

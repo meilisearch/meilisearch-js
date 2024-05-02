@@ -164,15 +164,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const newSettings: Settings = {
         embedders: {
           default: {
-            source: 'openAi',
-            apiKey: '<your-OpenAI-API-key>',
-            model: 'text-embedding-3-small',
-            documentTemplate: 'A document template',
-            dimensions: 1536,
-            distribution: {
-              mean: 0.7,
-              sigma: 0.3,
-            },
+            source: 'huggingFace',
+            model:
+              'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2',
           },
         },
       }
