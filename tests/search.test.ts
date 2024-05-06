@@ -271,18 +271,8 @@ describe.each([
     expect(hit).toHaveProperty('_rankingScore')
   })
 
-  test(`${permission} key: search with showRankingScoreDetails enabled`, async () => {
+  test(`${permission} key: search with showRankingScoreDetails`, async () => {
     const client = await getClient(permission)
-    const key = await getKey(permission)
-
-    await fetch(`${HOST}/experimental-features`, {
-      body: JSON.stringify({ scoreDetails: true }),
-      headers: {
-        Authorization: `Bearer ${key}`,
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-    })
 
     const response = await client.index(index.uid).search('prince', {
       showRankingScoreDetails: true,
@@ -840,22 +830,48 @@ describe.each([
 
   test(`${permission} key: search with vectors`, async () => {
     const client = await getClient(permission)
-    const key = await getKey(permission)
+    const adminClient = await getClient('Admin')
+    const adminKey = await getKey('Admin')
 
     await fetch(`${HOST}/experimental-features`, {
       body: JSON.stringify({ vectorStore: true }),
       headers: {
-        Authorization: `Bearer ${key}`,
+        Authorization: `Bearer ${adminKey}`,
         'Content-Type': 'application/json',
       },
       method: 'PATCH',
     })
 
-    const response = await client
+    const { taskUid } = await adminClient
       .index(emptyIndex.uid)
-      .search('', { vector: [1] })
+      .updateEmbedders({
+        default: {
+          source: 'userProvided',
+          dimensions: 1,
+        },
+      })
+    await adminClient.waitForTask(taskUid)
 
-    expect(response.vector).toEqual([1])
+    const response = await client.index(emptyIndex.uid).search('', {
+      vector: [1],
+      hybrid: {
+        semanticRatio: 1.0,
+      },
+    })
+
+    expect(response).toHaveProperty('hits')
+    expect(response).toHaveProperty('semanticHitCount')
+    // Those fields are no longer returned by the search response
+    // We want to ensure that they don't appear in it anymore
+    expect(response).not.toHaveProperty('vector')
+    expect(response).not.toHaveProperty('_semanticScore')
+  })
+
+  test(`${permission} key: search without vectors`, async () => {
+    const client = await getClient(permission)
+    const response = await client.index(index.uid).search('prince', {})
+
+    expect(response).not.toHaveProperty('semanticHitCount')
   })
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {

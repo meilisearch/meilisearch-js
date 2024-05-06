@@ -30,14 +30,16 @@ async function getKey(permission: string): Promise<string> {
   const { results: keys } = await masterClient.getKeys()
 
   if (permission === 'Search') {
-    const key = keys.find((key: any) => key.name === 'Default Search API Key')
-      ?.key
+    const key = keys.find(
+      (key: any) => key.name === 'Default Search API Key'
+    )?.key
     return key || ''
   }
 
   if (permission === 'Admin') {
-    const key = keys.find((key: any) => key.name === 'Default Admin API Key')
-      ?.key
+    const key = keys.find(
+      (key: any) => key.name === 'Default Admin API Key'
+    )?.key
     return key || ''
   }
   return MASTER_KEY

@@ -24,6 +24,8 @@ export type Pagination = {
   limit?: number
 }
 
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type ResourceQuery = Pagination & {}
 
 export type ResourceResults<T> = Pagination & {
@@ -46,8 +48,12 @@ export type IndexObject = {
   updatedAt: Date
 }
 
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type IndexesQuery = ResourceQuery & {}
 
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type IndexesResults<T> = ResourceResults<T> & {}
 
 /*
@@ -59,7 +65,8 @@ export const MatchingStrategies = {
   LAST: 'last',
 } as const
 
-export type MatchingStrategies = typeof MatchingStrategies[keyof typeof MatchingStrategies]
+export type MatchingStrategies =
+  (typeof MatchingStrategies)[keyof typeof MatchingStrategies]
 
 export type Filter = string | Array<string | string[]>
 
@@ -95,6 +102,11 @@ export type SearchForFacetValuesResponse = {
   processingTimeMs: number
 }
 
+export type HybridSearch = {
+  embedder?: string
+  semanticRatio?: number
+}
+
 export type SearchParams = Query &
   Pagination &
   Highlight &
@@ -113,6 +125,7 @@ export type SearchParams = Query &
     showRankingScore?: boolean
     showRankingScoreDetails?: boolean
     attributesToSearchOn?: string[] | null
+    hybrid?: HybridSearch
   }
 
 // Search parameters for searches made with the GET method
@@ -130,6 +143,8 @@ export type SearchRequestGET = Pagination &
     showMatchesPosition?: boolean
     vector?: string | null
     attributesToSearchOn?: string | null
+    hybridEmbedder?: string
+    hybridSemanticRatio?: number
   }
 
 export type MultiSearchQuery = SearchParams & { indexUid: string }
@@ -193,19 +208,18 @@ export type FacetStats = Record<string, FacetStat>
 
 export type SearchResponse<
   T = Record<string, any>,
-  S extends SearchParams | undefined = undefined
+  S extends SearchParams | undefined = undefined,
 > = {
   hits: Hits<T>
   processingTimeMs: number
   query: string
   facetDistribution?: FacetDistribution
   facetStats?: FacetStats
-  vector?: number[]
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
-  ? FinitePagination
-  : InfinitePagination)
+    ? FinitePagination
+    : InfinitePagination)
 
 type FinitePagination = {
   totalHits: number
@@ -227,8 +241,8 @@ type IsFinitePagination<S extends SearchParams> = Or<
 type Or<A extends boolean, B extends boolean> = true extends A
   ? true
   : true extends B
-  ? true
-  : false
+    ? true
+    : false
 
 type HasHitsPerPage<S extends SearchParams> = undefined extends S['hitsPerPage']
   ? false
@@ -278,6 +292,8 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
 export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   fields?: Fields<T>
   filter?: Filter
+  limit?: number
+  offset?: number
 }
 
 export type DocumentQuery<T = Record<string, any>> = {
@@ -316,6 +332,68 @@ export type TypoTolerance = {
 export type SeparatorTokens = string[] | null
 export type NonSeparatorTokens = string[] | null
 export type Dictionary = string[] | null
+export type ProximityPrecision = 'byWord' | 'byAttribute'
+
+export type Distribution = {
+  mean: number
+  sigma: number
+}
+
+export type OpenAiEmbedder = {
+  source: 'openAi'
+  model?: string
+  apiKey?: string
+  documentTemplate?: string
+  dimensions?: number
+  distribution?: Distribution
+}
+
+export type HuggingFaceEmbedder = {
+  source: 'huggingFace'
+  model?: string
+  revision?: string
+  documentTemplate?: string
+  distribution?: Distribution
+}
+
+export type UserProvidedEmbedder = {
+  source: 'userProvided'
+  dimensions: number
+  distribution?: Distribution
+}
+
+export type RestEmbedder = {
+  source: 'rest'
+  url: string
+  apiKey?: string
+  dimensions?: number
+  documentTemplate?: string
+  inputField?: string[] | null
+  inputType?: 'text' | 'textArray'
+  query?: Record<string, any> | null
+  pathToEmbeddings?: string[] | null
+  embeddingObject?: string[] | null
+  distribution?: Distribution
+}
+
+export type OllamaEmbedder = {
+  source: 'ollama'
+  url?: string
+  apiKey?: string
+  model?: string
+  documentTemplate?: string
+  distribution?: Distribution
+}
+
+export type Embedder =
+  | OpenAiEmbedder
+  | HuggingFaceEmbedder
+  | UserProvidedEmbedder
+  | RestEmbedder
+  | OllamaEmbedder
+  | null
+
+export type Embedders = Record<string, Embedder> | null
 
 export type FacetOrder = 'alpha' | 'count'
 
@@ -327,6 +405,8 @@ export type Faceting = {
 export type PaginationSettings = {
   maxTotalHits?: number | null
 }
+
+export type SearchCutoffMs = number | null
 
 export type Settings = {
   filterableAttributes?: FilterableAttributes
@@ -343,6 +423,9 @@ export type Settings = {
   separatorTokens?: SeparatorTokens
   nonSeparatorTokens?: NonSeparatorTokens
   dictionary?: Dictionary
+  proximityPrecision?: ProximityPrecision
+  embedders?: Embedders
+  searchCutoffMs?: SearchCutoffMs
 }
 
 /*
@@ -357,7 +440,7 @@ export const TaskStatus = {
   TASK_CANCELED: 'canceled',
 } as const
 
-export type TaskStatus = typeof TaskStatus[keyof typeof TaskStatus]
+export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
 
 export const TaskTypes = {
   DOCUMENTS_ADDITION_OR_UPDATE: 'documentAdditionOrUpdate',
@@ -373,7 +456,7 @@ export const TaskTypes = {
   TASK_DELETION: 'taskDeletion',
 } as const
 
-export type TaskTypes = typeof TaskTypes[keyof typeof TaskTypes]
+export type TaskTypes = (typeof TaskTypes)[keyof typeof TaskTypes]
 
 export type TasksQuery = {
   indexUids?: string[]
@@ -390,7 +473,11 @@ export type TasksQuery = {
   limit?: number
   from?: number
 }
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type DeleteTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
 
 export type EnqueuedTaskObject = {
@@ -541,8 +628,12 @@ export type KeyUpdate = {
   description?: string
 }
 
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type KeysQuery = ResourceQuery & {}
 
+// TODO fix
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type KeysResults = ResourceResults<Key[]> & {}
 
 /*
@@ -875,6 +966,9 @@ export const ErrorStatusCode = {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_pagination */
   INVALID_SETTINGS_PAGINATION: 'invalid_settings_pagination',
 
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_search_cutoff_ms */
+  INVALID_SETTINGS_SEARCH_CUTOFF_MS: 'invalid_settings_search_cutoff_ms',
+
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_before_enqueued_at */
   INVALID_TASK_BEFORE_ENQUEUED_AT: 'invalid_task_before_enqueued_at',
 
@@ -918,7 +1012,8 @@ export const ErrorStatusCode = {
   INVALID_FACET_SEARCH_FACET_QUERY: 'invalid_facet_search_facet_query',
 }
 
-export type ErrorStatusCode = typeof ErrorStatusCode[keyof typeof ErrorStatusCode]
+export type ErrorStatusCode =
+  (typeof ErrorStatusCode)[keyof typeof ErrorStatusCode]
 
 export type TokenIndexRules = {
   [field: string]: any

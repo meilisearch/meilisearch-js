@@ -1,6 +1,4 @@
-/**
- * This file only purpose is to execute any build related tasks
- */
+/** This file only purpose is to execute any build related tasks */
 
 const { resolve, normalize } = require('path')
 const { readFileSync, writeFileSync } = require('fs')
@@ -28,7 +26,6 @@ function writeDtsHeader() {
 }
 
 /**
- *
  * @param {string} pkgName
  * @param {string} version
  * @param {string} author
@@ -49,7 +46,6 @@ function getDtsHeader(pkgName, version, author, repoUrl, tsVersion) {
 }
 
 /**
- *
  * @param {string} path
  * @param {string | Blob} data
  */

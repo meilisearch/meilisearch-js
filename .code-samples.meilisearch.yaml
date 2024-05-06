@@ -199,7 +199,8 @@ update_settings_1: |-
       },
       faceting: {
           maxValuesPerFacet: 200
-      }
+      },
+      searchCutoffMs: 150
   })
 reset_settings_1: |-
   client.index('movies').resetSettings()
@@ -630,6 +631,18 @@ update_non_separator_tokens_1: |-
   client.index('books').updateNonSeparatorTokens(['@', '#'])
 reset_non_separator_tokens_1: |-
   client.index('books').resetNonSeparatorTokens()
+get_proximity_precision_settings_1: |-
+  client.index('books').getProximityPrecision()
+update_proximity_precision_settings_1: |-
+  client.index('books').updateProximityPrecision('byAttribute')
+reset_proximity_precision_settings_1: |-
+  client.index('books').resetProximityPrecision()
+get_search_cutoff_1: |-
+  client.index('movies').getSearchCutoffMs()
+update_search_cutoff_1: |-
+  client.index('movies').updateSearchCutoffMs(150)
+reset_search_cutoff_1: |-
+  client.index('movies').resetSearchCutoffMs()
 search_parameter_guide_facet_stats_1: |-
   client.index('movie_ratings').search('Batman', { facets: ['genres', 'rating'] })
 geosearch_guide_filter_settings_1: |-
@@ -735,3 +748,9 @@ facet_search_3: |-
     facetQuery: 'c',
     facetName: 'genres'
   })
+search_parameter_guide_show_ranking_score_details_1: |-
+  client.index('movies').search('dragon', { showRankingScoreDetails: true })
+negative_search_1: |-
+  client.index('movies').search('-escape')
+negative_search_2: |-
+  client.index('movies').search('-"escape"')

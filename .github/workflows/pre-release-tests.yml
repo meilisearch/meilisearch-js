@@ -39,7 +39,7 @@ jobs:
           - '7700:7700'
     strategy:
       matrix:
-        node: ['14', '16', '18']
+        node: ['18', '20']
     name: integration-tests (Node.js ${{ matrix.node }})
     steps:
       - uses: actions/checkout@v4

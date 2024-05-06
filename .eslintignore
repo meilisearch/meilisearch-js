@@ -1,6 +1,7 @@
 node_modules
 dist
-examples
-scripts
-tests/env
-coverage
+/tests/env
+/coverage
+# @TODO: I'm not sure what's going on here, we're importing
+# in JS file from TS files, better left ignored for now
+/playgrounds

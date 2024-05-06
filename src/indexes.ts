@@ -50,6 +50,9 @@ import {
   SeparatorTokens,
   NonSeparatorTokens,
   Dictionary,
+  ProximityPrecision,
+  Embedders,
+  SearchCutoffMs,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -90,7 +93,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async search<
     D extends Record<string, any> = T,
-    S extends SearchParams = SearchParams
+    S extends SearchParams = SearchParams,
   >(
     query?: string | null,
     options?: S,
@@ -116,7 +119,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async searchGet<
     D extends Record<string, any> = T,
-    S extends SearchParams = SearchParams
+    S extends SearchParams = SearchParams,
   >(
     query?: string | null,
     options?: S,
@@ -1222,7 +1225,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   }
 
   /**
-   * Update the the dictionary settings. Overwrite the old settings.
+   * Update the dictionary settings. Overwrite the old settings.
    *
    * @param dictionary - Array that contains the new dictionary settings.
    * @returns Promise containing an EnqueuedTask or null
@@ -1246,6 +1249,132 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     task.enqueuedAt = new Date(task.enqueuedAt)
 
     return task
+  }
+
+  ///
+  /// PROXIMITY PRECISION
+  ///
+
+  /**
+   * Get the proximity precision settings of a Meilisearch index.
+   *
+   * @returns Promise containing the proximity precision settings
+   */
+  async getProximityPrecision(): Promise<ProximityPrecision> {
+    const url = `indexes/${this.uid}/settings/proximity-precision`
+    return await this.httpRequest.get<ProximityPrecision>(url)
+  }
+
+  /**
+   * Update the proximity precision settings. Overwrite the old settings.
+   *
+   * @param proximityPrecision - String that contains the new proximity
+   *   precision settings.
+   * @returns Promise containing an EnqueuedTask or null
+   */
+  async updateProximityPrecision(
+    proximityPrecision: ProximityPrecision
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/proximity-precision`
+    const task = await this.httpRequest.put(url, proximityPrecision)
+
+    return new EnqueuedTask(task)
+  }
+
+  /**
+   * Reset the proximity precision settings to its default value
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetProximityPrecision(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/proximity-precision`
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
+  }
+
+  ///
+  /// EMBEDDERS
+  ///
+
+  /**
+   * Get the embedders settings of a Meilisearch index.
+   *
+   * @returns Promise containing the embedders settings
+   */
+  async getEmbedders(): Promise<Embedders> {
+    const url = `indexes/${this.uid}/settings/embedders`
+    return await this.httpRequest.get<Embedders>(url)
+  }
+
+  /**
+   * Update the embedders settings. Overwrite the old settings.
+   *
+   * @param embedders - Object that contains the new embedders settings.
+   * @returns Promise containing an EnqueuedTask or null
+   */
+  async updateEmbedders(embedders: Embedders): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/embedders`
+    const task = await this.httpRequest.patch(url, embedders)
+
+    return new EnqueuedTask(task)
+  }
+
+  /**
+   * Reset the embedders settings to its default value
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetEmbedders(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/embedders`
+    const task = await this.httpRequest.delete<EnqueuedTask>(url)
+
+    task.enqueuedAt = new Date(task.enqueuedAt)
+
+    return task
+  }
+
+  ///
+  /// SEARCHCUTOFFMS SETTINGS
+  ///
+
+  /**
+   * Get the SearchCutoffMs settings.
+   *
+   * @returns Promise containing object of SearchCutoffMs settings
+   */
+  async getSearchCutoffMs(): Promise<SearchCutoffMs> {
+    const url = `indexes/${this.uid}/settings/search-cutoff-ms`
+    return await this.httpRequest.get<SearchCutoffMs>(url)
+  }
+
+  /**
+   * Update the SearchCutoffMs settings.
+   *
+   * @param searchCutoffMs - Object containing SearchCutoffMsSettings
+   * @returns Promise containing an EnqueuedTask
+   */
+  async updateSearchCutoffMs(
+    searchCutoffMs: SearchCutoffMs
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/search-cutoff-ms`
+    const task = await this.httpRequest.put(url, searchCutoffMs)
+
+    return new EnqueuedTask(task)
+  }
+
+  /**
+   * Reset the SearchCutoffMs settings.
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetSearchCutoffMs(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/search-cutoff-ms`
+    const task = await this.httpRequest.delete(url)
+
+    return new EnqueuedTask(task)
   }
 }
 

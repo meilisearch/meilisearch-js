@@ -17,7 +17,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/meilisearch"><img src="https://img.shields.io/npm/v/meilisearch.svg" alt="npm version"></a>
   <a href="https://github.com/meilisearch/meilisearch-js/actions"><img src="https://github.com/meilisearch/meilisearch-js/workflows/Tests/badge.svg" alt="Tests"></a>
-  <a href="https://codecov.io/gh/meilisearch/meilisearch-python">
+  <a href="https://codecov.io/gh/meilisearch/meilisearch-js">
     <img src="https://codecov.io/github/meilisearch/meilisearch-js/coverage.svg?branch=main" alt="Codecov">
   </a>
   <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/styled_with-prettier-ff69b4.svg" alt="Prettier"></a>
@@ -903,19 +903,19 @@ client.index('myIndex').resetTypoTolerance(): Promise<EnqueuedTask>
 
 ### Separator tokens <!-- omit in toc -->
 
-#### Get separator tokens
+#### [Get separator tokens](https://www.meilisearch.com/docs/reference/api/settings#get-separator-tokens)
 
 ```ts
 client.index('myIndex').getSeparatorTokens(): Promise<SeparatorTokens>
 ```
 
-#### Update separator tokens
+#### [Update separator tokens](https://www.meilisearch.com/docs/reference/api/settings#update-separator-tokens)
 
 ```ts
 client.index('myIndex').updateSeparatorTokens(separatorTokens: SeparatorTokens | null): Promise<EnqueuedTask>
 ```
 
-#### Reset separator tokens
+#### [Reset separator tokens](https://www.meilisearch.com/docs/reference/api/settings#reset-separator-tokens)
 
 ```ts
 client.index('myIndex').resetSeparatorTokens(): Promise<EnqueuedTask>
@@ -923,19 +923,19 @@ client.index('myIndex').resetSeparatorTokens(): Promise<EnqueuedTask>
 
 ### Non Separator tokens <!-- omit in toc -->
 
-#### Get non separator tokens
+#### [Get non separator tokens](https://www.meilisearch.com/docs/reference/api/settings#get-non-separator-tokens)
 
 ```ts
 client.index('myIndex').getNonSeparatorTokens(): Promise<NonSeparatorTokens>
 ```
 
-#### Update non separator tokens
+#### [Update non separator tokens](https://www.meilisearch.com/docs/reference/api/settings#update-non-separator-tokens)
 
 ```ts
 client.index('myIndex').updateNonSeparatorTokens(nonSeparatorTokens: NonSeparatorTokens | null): Promise<EnqueuedTask>
 ```
 
-#### Reset non separator tokens
+#### [Reset non separator tokens](https://www.meilisearch.com/docs/reference/api/settings#reset-non-separator-tokens)
 
 ```ts
 client.index('myIndex').resetNonSeparatorTokens(): Promise<EnqueuedTask>
@@ -943,22 +943,84 @@ client.index('myIndex').resetNonSeparatorTokens(): Promise<EnqueuedTask>
 
 ### Dictionary <!-- omit in toc -->
 
-#### Get dictionary
+#### [Get dictionary](https://www.meilisearch.com/docs/reference/api/settings#get-dictionary)
 
 ```ts
 client.index('myIndex').getDictionary(): Promise<Dictionary>
 ```
 
-#### Update dictionary
+#### [Update dictionary](https://www.meilisearch.com/docs/reference/api/settings#update-dictionary)
 
 ```ts
 client.index('myIndex').updateDictionary(dictionary: Dictionary | null): Promise<EnqueuedTask>
 ```
 
-#### Reset dictionary
+#### [Reset dictionary](https://www.meilisearch.com/docs/reference/api/settings#reset-dictionary)
 
 ```ts
 client.index('myIndex').resetDictionary(): Promise<EnqueuedTask>
+```
+
+### Proximity Precision <!-- omit in toc -->
+
+#### [Get proximity precision](https://www.meilisearch.com/docs/reference/api/settings#get-proximity-precision)
+
+```ts
+client.index('myIndex').getProximityPrecision(): Promise<ProximityPrecision>
+```
+
+#### [Update proximity precision](https://www.meilisearch.com/docs/reference/api/settings#update-proximity-precision)
+
+```ts
+client.index('myIndex').updateProximityPrecision(proximityPrecision: ProximityPrecision): Promise<EnqueuedTask>
+```
+
+#### [Reset proximity precision](https://www.meilisearch.com/docs/reference/api/settings#reset-proximity-precision)
+
+```ts
+client.index('myIndex').resetProximityPrecision(): Promise<EnqueuedTask>
+```
+
+### Embedders <!-- omit in toc -->
+
+⚠️ This feature is experimental. Activate the [`vectorStore` experimental feature to use it](https://www.meilisearch.com/docs/reference/api/experimental_features#configure-experimental-features)
+
+#### [Get embedders](https://www.meilisearch.com/docs/reference/api/settings#get-embedders)
+
+```ts
+client.index('myIndex').getEmbedders(): Promise<Embedders>
+```
+
+#### [Update embedders](https://www.meilisearch.com/docs/reference/api/settings#update-embedders)
+
+```ts
+client.index('myIndex').updateEmbedders(embedders: Embedders): Promise<EnqueuedTask>
+```
+
+#### [Reset embedders](https://www.meilisearch.com/docs/reference/api/settings#reset-embedders)
+
+```ts
+client.index('myIndex').resetEmbedders(): Promise<EnqueuedTask>
+```
+
+### SearchCutoffMs <!-- omit in toc -->
+
+#### [Get SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#get-search-cutoff-ms)
+
+```ts
+client.index('myIndex').getSearchCutoffMs(): Promise<SearchCutoffMs>
+```
+
+#### [Update SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#update-search-cutoff-ms)
+
+```ts
+client.index('myIndex').updateSearchCutoffMs(searchCutoffMs: SearchCutoffMs): Promise<EnqueuedTask>
+```
+
+#### [Reset SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#reset-search-cutoff-ms)
+
+```ts
+client.index('myIndex').resetSearchCutoffMs(): Promise<EnqueuedTask>
 ```
 
 ### Keys <!-- omit in toc -->
