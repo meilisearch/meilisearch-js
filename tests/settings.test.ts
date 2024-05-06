@@ -6,6 +6,8 @@ import {
   MeiliSearch,
   getClient,
   dataset,
+  getKey,
+  HOST,
 } from './utils/meilisearch-test-utils'
 
 const index = {
@@ -90,6 +92,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         separatorTokens: ['&sep', '/', '|'],
         nonSeparatorTokens: ['&sep', '/', '|'],
         dictionary: ['J. K.', 'J. R. R.'],
+        searchCutoffMs: 1000,
       }
       // Add the settings
       const task = await client.index(index.uid).updateSettings(newSettings)
@@ -104,7 +107,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
     test(`${permission} key: Update settings with all null values`, async () => {
       const client = await getClient(permission)
-      const newSettings = {
+      const newSettings: Settings = {
         filterableAttributes: null,
         sortableAttributes: null,
         distinctAttribute: null,
@@ -132,6 +135,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         separatorTokens: null,
         nonSeparatorTokens: null,
         dictionary: null,
+        searchCutoffMs: null,
       }
       // Add the settings
       const task = await client.index(index.uid).updateSettings(newSettings)
@@ -141,6 +145,35 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const response = await client.index(index.uid).getSettings()
 
       // tests
+      expect(response).toMatchSnapshot()
+    })
+
+    test(`${permission} key: Update embedders settings `, async () => {
+      const client = await getClient(permission)
+      const key = await getKey(permission)
+
+      await fetch(`${HOST}/experimental-features`, {
+        body: JSON.stringify({ vectorStore: true }),
+        headers: {
+          Authorization: `Bearer ${key}`,
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+      })
+
+      const newSettings: Settings = {
+        embedders: {
+          default: {
+            source: 'huggingFace',
+            model:
+              'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2',
+          },
+        },
+      }
+      const task = await client.index(index.uid).updateSettings(newSettings)
+      await client.index(index.uid).waitForTask(task.taskUid)
+      const response = await client.index(index.uid).getSettings()
+
       expect(response).toMatchSnapshot()
     })
 
@@ -177,6 +210,29 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await client.index(index.uid).waitForTask(task.taskUid)
 
       const response = await client.index(indexAndPK.uid).getSettings()
+
+      expect(response).toMatchSnapshot()
+    })
+
+    test(`${permission} key: Reset embedders settings `, async () => {
+      const client = await getClient(permission)
+      const key = await getKey(permission)
+
+      await fetch(`${HOST}/experimental-features`, {
+        body: JSON.stringify({ vectorStore: true }),
+        headers: {
+          Authorization: `Bearer ${key}`,
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+      })
+
+      const newSettings: Settings = {
+        embedders: null,
+      }
+      const task = await client.index(index.uid).updateSettings(newSettings)
+      await client.index(index.uid).waitForTask(task.taskUid)
+      const response = await client.index(index.uid).getSettings()
 
       expect(response).toMatchSnapshot()
     })

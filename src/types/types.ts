@@ -215,7 +215,6 @@ export type SearchResponse<
   query: string
   facetDistribution?: FacetDistribution
   facetStats?: FacetStats
-  vector?: number[]
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
@@ -335,12 +334,18 @@ export type NonSeparatorTokens = string[] | null
 export type Dictionary = string[] | null
 export type ProximityPrecision = 'byWord' | 'byAttribute'
 
+export type Distribution = {
+  mean: number
+  sigma: number
+}
+
 export type OpenAiEmbedder = {
   source: 'openAi'
   model?: string
   apiKey?: string
   documentTemplate?: string
   dimensions?: number
+  distribution?: Distribution
 }
 
 export type HuggingFaceEmbedder = {
@@ -348,17 +353,45 @@ export type HuggingFaceEmbedder = {
   model?: string
   revision?: string
   documentTemplate?: string
+  distribution?: Distribution
 }
 
 export type UserProvidedEmbedder = {
   source: 'userProvided'
   dimensions: number
+  distribution?: Distribution
+}
+
+export type RestEmbedder = {
+  source: 'rest'
+  url: string
+  apiKey?: string
+  dimensions?: number
+  documentTemplate?: string
+  inputField?: string[] | null
+  inputType?: 'text' | 'textArray'
+  query?: Record<string, any> | null
+  pathToEmbeddings?: string[] | null
+  embeddingObject?: string[] | null
+  distribution?: Distribution
+}
+
+export type OllamaEmbedder = {
+  source: 'ollama'
+  url?: string
+  apiKey?: string
+  model?: string
+  documentTemplate?: string
+  distribution?: Distribution
 }
 
 export type Embedder =
   | OpenAiEmbedder
   | HuggingFaceEmbedder
   | UserProvidedEmbedder
+  | RestEmbedder
+  | OllamaEmbedder
+  | null
 
 export type Embedders = Record<string, Embedder> | null
 
@@ -372,6 +405,8 @@ export type Faceting = {
 export type PaginationSettings = {
   maxTotalHits?: number | null
 }
+
+export type SearchCutoffMs = number | null
 
 export type Settings = {
   filterableAttributes?: FilterableAttributes
@@ -390,6 +425,7 @@ export type Settings = {
   dictionary?: Dictionary
   proximityPrecision?: ProximityPrecision
   embedders?: Embedders
+  searchCutoffMs?: SearchCutoffMs
 }
 
 /*
@@ -929,6 +965,9 @@ export const ErrorStatusCode = {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_pagination */
   INVALID_SETTINGS_PAGINATION: 'invalid_settings_pagination',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_search_cutoff_ms */
+  INVALID_SETTINGS_SEARCH_CUTOFF_MS: 'invalid_settings_search_cutoff_ms',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_before_enqueued_at */
   INVALID_TASK_BEFORE_ENQUEUED_AT: 'invalid_task_before_enqueued_at',

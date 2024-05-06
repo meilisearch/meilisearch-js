@@ -27,6 +27,7 @@ exports[`Test on settings Admin key: Get default settings of an index 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -73,6 +74,54 @@ exports[`Test on settings Admin key: Get default settings of empty index with pr
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Admin key: Reset embedders settings  1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -119,6 +168,7 @@ exports[`Test on settings Admin key: Reset settings 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -165,6 +215,62 @@ exports[`Test on settings Admin key: Reset settings of empty index 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Admin key: Update embedders settings  1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "embedders": {
+    "default": {
+      "documentTemplate": "{% for field in fields %} {{ field.name }}: {{ field.value }}
+{% endfor %}",
+      "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "source": "huggingFace",
+    },
+  },
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -211,6 +317,7 @@ exports[`Test on settings Admin key: Update searchableAttributes settings on emp
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "title",
   ],
@@ -257,6 +364,7 @@ exports[`Test on settings Admin key: Update searchableAttributes settings on emp
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "title",
   ],
@@ -308,6 +416,7 @@ exports[`Test on settings Admin key: Update settings 1`] = `
     "id:asc",
     "typo",
   ],
+  "searchCutoffMs": 1000,
   "searchableAttributes": [
     "title",
   ],
@@ -366,6 +475,7 @@ exports[`Test on settings Admin key: Update settings on empty index with primary
     "title:asc",
     "typo",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -414,6 +524,7 @@ exports[`Test on settings Admin key: Update settings with all null values 1`] = 
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -460,6 +571,7 @@ exports[`Test on settings Master key: Get default settings of an index 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -506,6 +618,54 @@ exports[`Test on settings Master key: Get default settings of empty index with p
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Reset embedders settings  1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -552,6 +712,7 @@ exports[`Test on settings Master key: Reset settings 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -598,6 +759,62 @@ exports[`Test on settings Master key: Reset settings of empty index 1`] = `
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings Master key: Update embedders settings  1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "embedders": {
+    "default": {
+      "documentTemplate": "{% for field in fields %} {{ field.name }}: {{ field.value }}
+{% endfor %}",
+      "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "source": "huggingFace",
+    },
+  },
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -644,6 +861,7 @@ exports[`Test on settings Master key: Update searchableAttributes settings on em
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "title",
   ],
@@ -690,6 +908,7 @@ exports[`Test on settings Master key: Update searchableAttributes settings on em
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "title",
   ],
@@ -741,6 +960,7 @@ exports[`Test on settings Master key: Update settings 1`] = `
     "id:asc",
     "typo",
   ],
+  "searchCutoffMs": 1000,
   "searchableAttributes": [
     "title",
   ],
@@ -799,6 +1019,7 @@ exports[`Test on settings Master key: Update settings on empty index with primar
     "title:asc",
     "typo",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],
@@ -847,6 +1068,7 @@ exports[`Test on settings Master key: Update settings with all null values 1`] =
     "sort",
     "exactness",
   ],
+  "searchCutoffMs": null,
   "searchableAttributes": [
     "*",
   ],

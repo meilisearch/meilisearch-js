@@ -52,6 +52,7 @@ import {
   Dictionary,
   ProximityPrecision,
   Embedders,
+  SearchCutoffMs,
 } from './types'
 import { removeUndefinedFromObject } from './utils'
 import { HttpRequests } from './http-requests'
@@ -1333,6 +1334,47 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     task.enqueuedAt = new Date(task.enqueuedAt)
 
     return task
+  }
+
+  ///
+  /// SEARCHCUTOFFMS SETTINGS
+  ///
+
+  /**
+   * Get the SearchCutoffMs settings.
+   *
+   * @returns Promise containing object of SearchCutoffMs settings
+   */
+  async getSearchCutoffMs(): Promise<SearchCutoffMs> {
+    const url = `indexes/${this.uid}/settings/search-cutoff-ms`
+    return await this.httpRequest.get<SearchCutoffMs>(url)
+  }
+
+  /**
+   * Update the SearchCutoffMs settings.
+   *
+   * @param searchCutoffMs - Object containing SearchCutoffMsSettings
+   * @returns Promise containing an EnqueuedTask
+   */
+  async updateSearchCutoffMs(
+    searchCutoffMs: SearchCutoffMs
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/search-cutoff-ms`
+    const task = await this.httpRequest.put(url, searchCutoffMs)
+
+    return new EnqueuedTask(task)
+  }
+
+  /**
+   * Reset the SearchCutoffMs settings.
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetSearchCutoffMs(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/search-cutoff-ms`
+    const task = await this.httpRequest.delete(url)
+
+    return new EnqueuedTask(task)
   }
 }
 

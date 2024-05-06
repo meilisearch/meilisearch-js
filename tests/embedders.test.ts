@@ -54,6 +54,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         default: {
           source: 'userProvided',
           dimensions: 1,
+          distribution: {
+            mean: 0.7,
+            sigma: 0.3,
+          },
         },
       }
       const task: EnqueuedTask = await client
@@ -77,6 +81,39 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
           documentTemplate:
             "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
           dimensions: 1536,
+          distribution: {
+            mean: 0.7,
+            sigma: 0.3,
+          },
+        },
+      }
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateEmbedders(newEmbedder)
+      await client.waitForTask(task.taskUid)
+
+      const response: Embedders = await client.index(index.uid).getEmbedders()
+
+      expect(response).toEqual({
+        default: {
+          ...newEmbedder.default,
+          apiKey: '<yoXXXXX...',
+        },
+      })
+    })
+
+    test(`${permission} key: Update embedders with 'huggingFace' source`, async () => {
+      const client = await getClient(permission)
+      const newEmbedder: Embedders = {
+        default: {
+          source: 'huggingFace',
+          model: 'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2',
+          documentTemplate:
+            "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
+          distribution: {
+            mean: 0.7,
+            sigma: 0.3,
+          },
         },
       }
       const task: EnqueuedTask = await client
@@ -89,14 +126,27 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(response).toEqual(newEmbedder)
     })
 
-    test(`${permission} key: Update embedders with 'huggingFace' source`, async () => {
+    test(`${permission} key: Update embedders with 'rest' source`, async () => {
       const client = await getClient(permission)
       const newEmbedder: Embedders = {
         default: {
-          source: 'huggingFace',
-          model: 'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2',
+          source: 'rest',
+          url: 'https://api.openai.com/v1/embeddings',
+          apiKey: '<your-openai-api-key>',
+          dimensions: 1536,
           documentTemplate:
             "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
+          inputField: ['input'],
+          inputType: 'textArray',
+          query: {
+            model: 'text-embedding-ada-002',
+          },
+          pathToEmbeddings: ['data'],
+          embeddingObject: ['embedding'],
+          distribution: {
+            mean: 0.7,
+            sigma: 0.3,
+          },
         },
       }
       const task: EnqueuedTask = await client
@@ -106,7 +156,42 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response: Embedders = await client.index(index.uid).getEmbedders()
 
-      expect(response).toEqual(newEmbedder)
+      expect(response).toEqual({
+        default: {
+          ...newEmbedder.default,
+          apiKey: '<yoXXXXX...',
+        },
+      })
+    })
+
+    test.skip(`${permission} key: Update embedders with 'ollama' source`, async () => {
+      const client = await getClient(permission)
+      const newEmbedder: Embedders = {
+        default: {
+          source: 'ollama',
+          url: 'http://localhost:11434/api/embeddings',
+          apiKey: '<your-ollama-api-key>',
+          model: 'nomic-embed-text',
+          documentTemplate: 'blabla',
+          distribution: {
+            mean: 0.7,
+            sigma: 0.3,
+          },
+        },
+      }
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateEmbedders(newEmbedder)
+      await client.waitForTask(task.taskUid)
+
+      const response: Embedders = await client.index(index.uid).getEmbedders()
+
+      expect(response).toEqual({
+        default: {
+          ...newEmbedder.default,
+          apiKey: '<yoXXXXX...',
+        },
+      })
     })
 
     test(`${permission} key: Update embedders with a specific name`, async () => {

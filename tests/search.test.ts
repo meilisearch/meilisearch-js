@@ -859,7 +859,19 @@ describe.each([
       },
     })
 
-    expect(response.vector).toEqual([1])
+    expect(response).toHaveProperty('hits')
+    expect(response).toHaveProperty('semanticHitCount')
+    // Those fields are no longer returned by the search response
+    // We want to ensure that they don't appear in it anymore
+    expect(response).not.toHaveProperty('vector')
+    expect(response).not.toHaveProperty('_semanticScore')
+  })
+
+  test(`${permission} key: search without vectors`, async () => {
+    const client = await getClient(permission)
+    const response = await client.index(index.uid).search('prince', {})
+
+    expect(response).not.toHaveProperty('semanticHitCount')
   })
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
