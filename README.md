@@ -963,19 +963,19 @@ client.index('myIndex').resetDictionary(): Promise<EnqueuedTask>
 
 ### Proximity Precision <!-- omit in toc -->
 
-#### [Get proximity precision](https://www.meilisearch.com/docs/reference/api/settings#get-proximity-precision)
+#### [Get proximity precision](https://www.meilisearch.com/docs/reference/api/settings#get-proximity-precision-settings)
 
 ```ts
 client.index('myIndex').getProximityPrecision(): Promise<ProximityPrecision>
 ```
 
-#### [Update proximity precision](https://www.meilisearch.com/docs/reference/api/settings#update-proximity-precision)
+#### [Update proximity precision](https://www.meilisearch.com/docs/reference/api/settings#update-proximity-precision-settings)
 
 ```ts
 client.index('myIndex').updateProximityPrecision(proximityPrecision: ProximityPrecision): Promise<EnqueuedTask>
 ```
 
-#### [Reset proximity precision](https://www.meilisearch.com/docs/reference/api/settings#reset-proximity-precision)
+#### [Reset proximity precision](https://www.meilisearch.com/docs/reference/api/settings#reset-proximity-precision-settings)
 
 ```ts
 client.index('myIndex').resetProximityPrecision(): Promise<EnqueuedTask>
@@ -985,19 +985,19 @@ client.index('myIndex').resetProximityPrecision(): Promise<EnqueuedTask>
 
 ⚠️ This feature is experimental. Activate the [`vectorStore` experimental feature to use it](https://www.meilisearch.com/docs/reference/api/experimental_features#configure-experimental-features)
 
-#### [Get embedders](https://www.meilisearch.com/docs/reference/api/settings#get-embedders)
+#### Get embedders
 
 ```ts
 client.index('myIndex').getEmbedders(): Promise<Embedders>
 ```
 
-#### [Update embedders](https://www.meilisearch.com/docs/reference/api/settings#update-embedders)
+#### Update embedders
 
 ```ts
 client.index('myIndex').updateEmbedders(embedders: Embedders): Promise<EnqueuedTask>
 ```
 
-#### [Reset embedders](https://www.meilisearch.com/docs/reference/api/settings#reset-embedders)
+#### Reset embedders
 
 ```ts
 client.index('myIndex').resetEmbedders(): Promise<EnqueuedTask>
@@ -1005,19 +1005,19 @@ client.index('myIndex').resetEmbedders(): Promise<EnqueuedTask>
 
 ### SearchCutoffMs <!-- omit in toc -->
 
-#### [Get SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#get-search-cutoff-ms)
+#### [Get SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#get-search-cutoff)
 
 ```ts
 client.index('myIndex').getSearchCutoffMs(): Promise<SearchCutoffMs>
 ```
 
-#### [Update SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#update-search-cutoff-ms)
+#### [Update SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#update-search-cutoff)
 
 ```ts
 client.index('myIndex').updateSearchCutoffMs(searchCutoffMs: SearchCutoffMs): Promise<EnqueuedTask>
 ```
 
-#### [Reset SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#reset-search-cutoff-ms)
+#### [Reset SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#reset-search-cutoff)
 
 ```ts
 client.index('myIndex').resetSearchCutoffMs(): Promise<EnqueuedTask>
