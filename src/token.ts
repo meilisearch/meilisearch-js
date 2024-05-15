@@ -1,5 +1,4 @@
 import { Config, TokenSearchRules, TokenOptions } from './types'
-import { createHmac } from 'crypto'
 import { MeiliSearchError } from './errors'
 import { validateUuid4 } from './utils'
 
@@ -15,7 +14,13 @@ function encode64(data: any) {
  * @param encodedPayload - Payload of the token in base64.
  * @returns The signature of the token in base64.
  */
-function sign(apiKey: string, encodedHeader: string, encodedPayload: string) {
+async function sign(
+  apiKey: string,
+  encodedHeader: string,
+  encodedPayload: string
+) {
+  const { createHmac } = await import('crypto')
+
   return createHmac('sha256', apiKey)
     .update(`${encodedHeader}.${encodedPayload}`)
     .digest('base64')
@@ -132,11 +137,11 @@ class Token {
    * @param options - Token options to customize some aspect of the token.
    * @returns The token in JWT format.
    */
-  generateTenantToken(
+  async generateTenantToken(
     apiKeyUid: string,
     searchRules: TokenSearchRules,
     options?: TokenOptions
-  ): string {
+  ): Promise<string> {
     const apiKey = options?.apiKey || this.config.apiKey || ''
     const uid = apiKeyUid || ''
     const expiresAt = options?.expiresAt
@@ -145,7 +150,7 @@ class Token {
 
     const encodedHeader = createHeader()
     const encodedPayload = createPayload({ searchRules, uid, expiresAt })
-    const signature = sign(apiKey, encodedHeader, encodedPayload)
+    const signature = await sign(apiKey, encodedHeader, encodedPayload)
 
     return `${encodedHeader}.${encodedPayload}.${signature}`
   }

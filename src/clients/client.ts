@@ -475,11 +475,11 @@ class Client {
     _apiKeyUid: string,
     _searchRules: TokenSearchRules,
     _options?: TokenOptions
-  ): string {
+  ): Promise<string> {
     const error = new Error()
-    throw new Error(
-      `Meilisearch: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}.`
-    )
+    error.message = `Meilisearch: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}.`
+
+    return Promise.reject(error)
   }
 }
 
