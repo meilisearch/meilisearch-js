@@ -25,15 +25,19 @@ class MeiliSearch extends Client {
    * @param options - Token options to customize some aspect of the token.
    * @returns The token in JWT format.
    */
-  generateTenantToken(
+  async generateTenantToken(
     apiKeyUid: string,
     searchRules: TokenSearchRules,
     options?: TokenOptions
-  ): string {
+  ): Promise<string> {
     if (typeof window === 'undefined') {
-      return this.tokens.generateTenantToken(apiKeyUid, searchRules, options)
+      return await this.tokens.generateTenantToken(
+        apiKeyUid,
+        searchRules,
+        options
+      )
     }
-    return super.generateTenantToken(apiKeyUid, searchRules, options)
+    return await super.generateTenantToken(apiKeyUid, searchRules, options)
   }
 }
 export { MeiliSearch }
