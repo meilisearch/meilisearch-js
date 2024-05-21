@@ -156,7 +156,7 @@ class HttpRequests {
     )
 
     const response = await responsePromise.catch((error: unknown) => {
-      throw new MeiliSearchRequestError(error)
+      throw new MeiliSearchRequestError(constructURL.toString(), error)
     })
 
     // When using a custom HTTP client, the response is returned to allow the user to parse/handle it as they see fit

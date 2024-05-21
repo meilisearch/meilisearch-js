@@ -56,11 +56,11 @@ describe.each([
       apiKey: key,
       requestConfig: {
         headers: {
-          Expect: '200-OK',
+          'Hello-There!': 'General Kenobi',
         },
       },
     })
-    expect(client.httpRequest.headers['Expect']).toBe('200-OK')
+    expect(client.httpRequest.headers['Hello-There!']).toBe('General Kenobi')
     const health = await client.isHealthy()
     expect(health).toBe(true)
   })
@@ -71,10 +71,10 @@ describe.each([
       ...config,
       apiKey: key,
       requestConfig: {
-        headers: [['Expect', '200-OK']],
+        headers: [['Hello-There!', 'General Kenobi']],
       },
     })
-    expect(client.httpRequest.headers['Expect']).toBe('200-OK')
+    expect(client.httpRequest.headers['Hello-There!']).toBe('General Kenobi')
     const health = await client.isHealthy()
     expect(health).toBe(true)
   })
@@ -82,7 +82,7 @@ describe.each([
   test(`${permission} key: Create client with custom headers (Headers)`, async () => {
     const key = await getKey(permission)
     const headers = new Headers()
-    headers.append('Expect', '200-OK')
+    headers.append('Hello-There!', 'General Kenobi')
     const client = new MeiliSearch({
       ...config,
       apiKey: key,
@@ -90,7 +90,7 @@ describe.each([
         headers,
       },
     })
-    expect(client.httpRequest.headers.expect).toBe('200-OK')
+    expect(client.httpRequest.headers['hello-there!']).toBe('General Kenobi')
     const health = await client.isHealthy()
     expect(health).toBe(true)
   })
@@ -107,7 +107,7 @@ describe.each([
       expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}/api/health`)
-      expect(e.name).toBe('MeiliSearchCommunicationError')
+      expect(e.name).toBe('MeiliSearchRequestError')
     }
   })
 
@@ -123,7 +123,7 @@ describe.each([
       expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}/api/health`)
-      expect(e.name).toBe('MeiliSearchCommunicationError')
+      expect(e.name).toBe('MeiliSearchRequestError')
     }
   })
 
@@ -139,7 +139,7 @@ describe.each([
       expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}//health`)
-      expect(e.name).toBe('MeiliSearchCommunicationError')
+      expect(e.name).toBe('MeiliSearchRequestError')
     }
   })
 
@@ -155,7 +155,7 @@ describe.each([
       expect(health).toBe(false) // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}/health`)
-      expect(e.name).toBe('MeiliSearchCommunicationError')
+      expect(e.name).toBe('MeiliSearchRequestError')
     }
   })
 
@@ -164,7 +164,7 @@ describe.each([
     try {
       await client.health()
     } catch (e: any) {
-      expect(e.name).toEqual('MeiliSearchCommunicationError')
+      expect(e.name).toEqual('MeiliSearchRequestError')
     }
   })
 
@@ -203,12 +203,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         apiKey: key,
         requestConfig: {
           headers: {
-            Expect: '200-OK',
+            'Hello-There!': 'General Kenobi',
           },
         },
       })
       expect(client.config.requestConfig?.headers).toStrictEqual({
-        Expect: '200-OK',
+        'Hello-There!': 'General Kenobi',
       })
       const health = await client.isHealthy()
 
@@ -365,7 +365,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         const client = await getClient(permission)
 
         await expect(client.getIndex('does_not_exist')).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.INDEX_NOT_FOUND
         )
       })
@@ -439,7 +439,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         const client = await getClient(permission)
         const index = client.index(indexPk.uid)
         await expect(index.getRawInfo()).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.INDEX_NOT_FOUND
         )
       })
@@ -505,7 +505,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         ]
 
         await expect(client.swapIndexes(swaps)).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.INVALID_SWAP_DUPLICATE_INDEX_FOUND
         )
       })
@@ -563,7 +563,7 @@ describe.each([{ permission: 'Search' }])(
       test(`${permission} key: try to get all indexes and be denied`, async () => {
         const client = await getClient(permission)
         await expect(client.getIndexes()).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.INVALID_API_KEY
         )
       })
@@ -574,13 +574,13 @@ describe.each([{ permission: 'Search' }])(
           client.createIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           })
-        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
         const client = await getClient(permission)
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.INVALID_API_KEY
         )
       })
@@ -588,7 +588,7 @@ describe.each([{ permission: 'Search' }])(
       test(`${permission} key: try to delete index and be denied`, async () => {
         const client = await getClient(permission)
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.INVALID_API_KEY
         )
       })
@@ -599,7 +599,7 @@ describe.each([{ permission: 'Search' }])(
           client.updateIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           })
-        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
       })
     })
 
@@ -616,7 +616,7 @@ describe.each([{ permission: 'Search' }])(
       test(`${permission} key: try to get version and be denied`, async () => {
         const client = await getClient(permission)
         await expect(client.getVersion()).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.INVALID_API_KEY
         )
       })
@@ -624,7 +624,7 @@ describe.each([{ permission: 'Search' }])(
       test(`${permission} key: try to get /stats information and be denied`, async () => {
         const client = await getClient(permission)
         await expect(client.getStats()).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.INVALID_API_KEY
         )
       })
@@ -643,7 +643,7 @@ describe.each([{ permission: 'No' }])(
       test(`${permission} key: try to get all indexes and be denied`, async () => {
         const client = await getClient(permission)
         await expect(client.getIndexes()).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -655,7 +655,7 @@ describe.each([{ permission: 'No' }])(
             primaryKey: indexPk.primaryKey,
           })
         ).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -663,7 +663,7 @@ describe.each([{ permission: 'No' }])(
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
         const client = await getClient(permission)
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -671,7 +671,7 @@ describe.each([{ permission: 'No' }])(
       test(`${permission} key: try to delete index and be denied`, async () => {
         const client = await getClient(permission)
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -683,7 +683,7 @@ describe.each([{ permission: 'No' }])(
             primaryKey: indexPk.primaryKey,
           })
         ).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -702,7 +702,7 @@ describe.each([{ permission: 'No' }])(
       test(`${permission} key: try to get version and be denied`, async () => {
         const client = await getClient(permission)
         await expect(client.getVersion()).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -710,7 +710,7 @@ describe.each([{ permission: 'No' }])(
       test(`${permission} key: try to get /stats information and be denied`, async () => {
         const client = await getClient(permission)
         await expect(client.getStats()).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -729,10 +729,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -742,10 +739,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.createIndex(indexPk.uid)).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -755,10 +749,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.updateIndex(indexPk.uid)).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -768,10 +759,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -781,10 +769,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.getIndexes()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -794,10 +779,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.getKeys()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -807,10 +789,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.health()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -820,10 +799,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.getStats()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -833,10 +809,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.getVersion()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 })
