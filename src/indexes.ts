@@ -9,7 +9,7 @@
 
 import {
   MeiliSearchError,
-  MeiliSearchCommunicationError,
+  MeiliSearchRequestError,
   versionErrorHintMessage,
   MeiliSearchApiError,
 } from './errors'
@@ -360,7 +360,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
           Promise<ResourceResults<D[]>>
         >(url, parameters)
       } catch (e) {
-        if (e instanceof MeiliSearchCommunicationError) {
+        if (e instanceof MeiliSearchRequestError) {
           e.message = versionErrorHintMessage(e.message, 'getDocuments')
         } else if (e instanceof MeiliSearchApiError) {
           e.message = versionErrorHintMessage(e.message, 'getDocuments')
@@ -586,7 +586,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       return new EnqueuedTask(task)
     } catch (e) {
       if (
-        e instanceof MeiliSearchCommunicationError &&
+        e instanceof MeiliSearchRequestError &&
         isDocumentsDeletionQuery
       ) {
         e.message = versionErrorHintMessage(e.message, 'deleteDocuments')

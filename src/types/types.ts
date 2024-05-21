@@ -656,12 +656,15 @@ export interface FetchError extends Error {
 }
 
 export type MeiliSearchErrorInfo = {
-  code: string
-  link: string
   message: string
+  // @TODO: Could be typed, but will it be kept updated? https://www.meilisearch.com/docs/reference/errors/error_codes
+  code: string
+  // @TODO: Could be typed https://www.meilisearch.com/docs/reference/errors/overview#errors
   type: string
+  link: string
 }
 
+// @TODO: This doesn't seem to be updated, and its usefullness comes into question.
 export const ErrorStatusCode = {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#index_creation_failed */
   INDEX_CREATION_FAILED: 'index_creation_failed',

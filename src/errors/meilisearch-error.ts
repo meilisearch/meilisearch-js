@@ -1,16 +1,7 @@
-class MeiliSearchError extends Error {
-  constructor(message: string) {
-    super(message)
+export class MeiliSearchError extends Error {
+  override name = 'MeiliSearchError'
 
-    // Make errors comparison possible. ex: error instanceof MeiliSearchError.
-    Object.setPrototypeOf(this, MeiliSearchError.prototype)
-
-    this.name = 'MeiliSearchError'
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, MeiliSearchError)
-    }
+  constructor(...params: ConstructorParameters<typeof Error>) {
+    super(...params)
   }
 }
-
-export { MeiliSearchError }
