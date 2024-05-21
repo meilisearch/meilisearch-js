@@ -546,7 +546,7 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     // Query parameters used to filter the tasks
     originalFilter?: string
   }
-  error: MeiliSearchErrorInfo | null
+  error: MeiliSearchErrorResponse | null
   duration: string
   startedAt: string
   finishedAt: string
@@ -655,7 +655,7 @@ export interface FetchError extends Error {
   code: string
 }
 
-export type MeiliSearchErrorInfo = {
+export type MeiliSearchErrorResponse = {
   message: string
   // @TODO: Could be typed, but will it be kept updated? https://www.meilisearch.com/docs/reference/errors/error_codes
   code: string

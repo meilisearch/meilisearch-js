@@ -169,7 +169,7 @@ describe('Documents tests', () => {
           )
         } catch (e: any) {
           expect(e.message).toEqual(
-            "Not Found\nHint: It might not be working because maybe you're not up to date with the Meilisearch version that getDocuments call requires."
+            "404: Not Found\nHint: It might not be working because maybe you're not up to date with the Meilisearch version that getDocuments call requires."
           )
         }
       })
@@ -583,7 +583,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           )
         } catch (e: any) {
           expect(e.message).toEqual(
-            "Not Found\nHint: It might not be working because maybe you're not up to date with the Meilisearch version that deleteDocuments call requires."
+            "404: Not Found\nHint: It might not be working because maybe you're not up to date with the Meilisearch version that deleteDocuments call requires."
           )
         }
       })
@@ -610,14 +610,14 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const client = await getClient(permission)
         await expect(
           client.index(indexNoPk.uid).getDocument(1)
-        ).rejects.toHaveProperty('code', ErrorStatusCode.DOCUMENT_NOT_FOUND)
+        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.DOCUMENT_NOT_FOUND)
       })
 
       test(`${permission} key: Try to get deleted document from index that has a primary key`, async () => {
         const client = await getClient(permission)
         await expect(
           client.index(indexPk.uid).getDocument(1)
-        ).rejects.toHaveProperty('code', ErrorStatusCode.DOCUMENT_NOT_FOUND)
+        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.DOCUMENT_NOT_FOUND)
       })
 
       test(`${permission} key: Add documents from index with no primary key by giving a primary key as parameter`, async () => {
@@ -690,42 +690,42 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const client = await getClient(permission)
         await expect(
           client.index(indexPk.uid).addDocuments([])
-        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: Try to update documents and be denied`, async () => {
         const client = await getClient(permission)
         await expect(
           client.index(indexPk.uid).updateDocuments([])
-        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: Try to get documents and be denied`, async () => {
         const client = await getClient(permission)
         await expect(
           client.index(indexPk.uid).getDocuments<Book>()
-        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: Try to delete one document and be denied`, async () => {
         const client = await getClient(permission)
         await expect(
           client.index(indexPk.uid).deleteDocument(1)
-        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: Try to delete some documents and be denied`, async () => {
         const client = await getClient(permission)
         await expect(
           client.index(indexPk.uid).deleteDocuments([1, 2])
-        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
       })
 
       test(`${permission} key: Try to delete all documents and be denied`, async () => {
         const client = await getClient(permission)
         await expect(
           client.index(indexPk.uid).deleteAllDocuments()
-        ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
       })
     }
   )
@@ -742,7 +742,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).addDocuments([])
         ).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -752,7 +752,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).updateDocuments([])
         ).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -762,7 +762,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).getDocuments<Book>()
         ).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -772,7 +772,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).deleteDocument(1)
         ).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -782,7 +782,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).deleteDocuments([1, 2])
         ).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -792,7 +792,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).deleteAllDocuments()
         ).rejects.toHaveProperty(
-          'code',
+          'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
         )
       })
@@ -812,10 +812,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         client.index(indexPk.uid).getDocument(1)
       ).rejects.toHaveProperty(
         'message',
-        `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-          'http://',
-          ''
-        )}`
+        `Request to ${strippedHost}/${route} has failed`
       )
     })
 
@@ -827,10 +824,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         client.index(indexPk.uid).getDocuments<Book>()
       ).rejects.toHaveProperty(
         'message',
-        `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-          'http://',
-          ''
-        )}`
+        `Request to ${strippedHost}/${route} has failed`
       )
     })
 
@@ -842,10 +836,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         client.index(indexPk.uid).addDocuments([])
       ).rejects.toHaveProperty(
         'message',
-        `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-          'http://',
-          ''
-        )}`
+        `Request to ${strippedHost}/${route} has failed`
       )
     })
 
@@ -857,10 +848,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         client.index(indexPk.uid).updateDocuments([])
       ).rejects.toHaveProperty(
         'message',
-        `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-          'http://',
-          ''
-        )}`
+        `Request to ${strippedHost}/${route} has failed`
       )
     })
 
@@ -872,10 +860,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         client.index(indexPk.uid).deleteDocument('1')
       ).rejects.toHaveProperty(
         'message',
-        `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-          'http://',
-          ''
-        )}`
+        `Request to ${strippedHost}/${route} has failed`
       )
     })
 
@@ -887,10 +872,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         client.index(indexPk.uid).deleteDocuments([])
       ).rejects.toHaveProperty(
         'message',
-        `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-          'http://',
-          ''
-        )}`
+        `Request to ${strippedHost}/${route} has failed`
       )
     })
 
@@ -902,10 +884,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         client.index(indexPk.uid).deleteAllDocuments()
       ).rejects.toHaveProperty(
         'message',
-        `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-          'http://',
-          ''
-        )}`
+        `Request to ${strippedHost}/${route} has failed`
       )
     })
   })

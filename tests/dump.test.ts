@@ -29,7 +29,7 @@ describe.each([{ permission: 'Search' }])(
     test(`${permission} key: try to create dump with search key and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.createDump()).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.INVALID_API_KEY
       )
     })
@@ -42,7 +42,7 @@ describe.each([{ permission: 'No' }])(
     test(`${permission} key: try to create dump with no key and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.createDump()).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -61,10 +61,7 @@ describe.each([
 
     await expect(client.createDump()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 })

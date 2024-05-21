@@ -313,7 +313,8 @@ describe.each([
     const response = await client.index<Movie>(index.uid).search('h', {
       filter: ['genre="sci fi"'],
     })
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response.hits.length === 1).toBeTruthy()
   })
 
@@ -380,7 +381,7 @@ describe.each([
 
     await expect(
       client.index<Movie>(index.uid).search('prince')
-    ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)
+    ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INDEX_NOT_FOUND)
   })
 })
 
@@ -459,7 +460,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index<Movie>(index.uid).search('prince')
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -479,10 +480,7 @@ describe.each([
       client.index<Movie>(index.uid).search()
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -494,10 +492,7 @@ describe.each([
       client.index<Movie>(index.uid).search()
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 })

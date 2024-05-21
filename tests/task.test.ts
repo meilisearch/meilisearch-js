@@ -377,7 +377,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong argument type
         client.getTasks({ types: ['wrong'] })
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_TYPES)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_TASK_TYPES)
     })
 
     // filters error code: INVALID_TASK_STATUSES_FILTER
@@ -387,7 +387,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong argument type
         client.getTasks({ statuses: ['wrong'] })
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_STATUSES)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_TASK_STATUSES)
     })
 
     // filters error code: INVALID_TASK_UIDS_FILTER
@@ -397,7 +397,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong argument type
         client.getTasks({ uids: ['wrong'] })
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_UIDS)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_TASK_UIDS)
     })
 
     // filters error code: INVALID_TASK_CANCELED_BY_FILTER
@@ -407,7 +407,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong canceledBy type
         client.getTasks({ canceledBy: ['wrong'] })
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_TASK_CANCELED_BY)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_TASK_CANCELED_BY)
     })
 
     // filters error code: INVALID_TASK_DATE_FILTER
@@ -418,7 +418,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         // @ts-expect-error testing wrong date format
         client.getTasks({ beforeEnqueuedAt: 'wrong' })
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.INVALID_TASK_BEFORE_ENQUEUED_AT
       )
     })
@@ -584,7 +584,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong argument type
         client.cancelTasks()
-      ).rejects.toHaveProperty('code', ErrorStatusCode.MISSING_TASK_FILTERS)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.MISSING_TASK_FILTERS)
     })
 
     // delete: uid
@@ -602,7 +602,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(deleteTask.type).toEqual(TaskTypes.TASK_DELETION)
       expect(task.details?.deletedTasks).toBeDefined()
       await expect(client.getTask(addDocuments.taskUid)).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.TASK_NOT_FOUND
       )
     })
@@ -621,7 +621,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(deleteTask.type).toEqual(TaskTypes.TASK_DELETION)
       await expect(client.getTask(addDocuments.taskUid)).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.TASK_NOT_FOUND
       )
     })
@@ -766,7 +766,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission)
 
       await expect(client.getTask(254500)).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.TASK_NOT_FOUND
       )
     })
@@ -781,7 +781,7 @@ describe.each([{ permission: 'Search' }])('Test on tasks', ({ permission }) => {
   test(`${permission} key: Try to get a task and be denied`, async () => {
     const client = await getClient(permission)
     await expect(client.getTask(0)).rejects.toHaveProperty(
-      'code',
+      'cause.code',
       ErrorStatusCode.INVALID_API_KEY
     )
   })
@@ -795,7 +795,7 @@ describe.each([{ permission: 'No' }])('Test on tasks', ({ permission }) => {
   test(`${permission} key: Try to get an task and be denied`, async () => {
     const client = await getClient(permission)
     await expect(client.getTask(0)).rejects.toHaveProperty(
-      'code',
+      'cause.code',
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
     )
   })
@@ -813,10 +813,7 @@ describe.each([
 
     await expect(client.index(index.uid).getTask(1)).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -827,10 +824,7 @@ describe.each([
 
     await expect(client.index(index.uid).getTasks()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 })

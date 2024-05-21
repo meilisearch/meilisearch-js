@@ -96,7 +96,8 @@ describe.each([
 
     const response = await client.index(index.uid).searchGet('prince', {})
 
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response).toHaveProperty('limit', 20)
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
@@ -109,7 +110,8 @@ describe.each([
     const response = await client
       .index(index.uid)
       .searchGet('prince', { limit: 1 })
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 1)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
@@ -122,7 +124,8 @@ describe.each([
     const response = await client
       .index(index.uid)
       .search('', { sort: ['id:asc'] })
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     const hit = response.hits[0]
     expect(hit.id).toEqual(1)
   })
@@ -134,7 +137,8 @@ describe.each([
     })
     const hit = response.hits[0]
 
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response).toHaveProperty('query', 'prince')
     expect(Object.keys(hit).join(',')).toEqual(
       Object.keys(dataset[1]).join(',')
@@ -166,7 +170,8 @@ describe.each([
     const response = await client
       .index(index.uid)
       .searchGet('prince', { limit: 1 })
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 1)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
@@ -203,7 +208,8 @@ describe.each([
       cropLength: 5,
       showMatchesPosition: true,
     })
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response.hits[0]).toHaveProperty('_matchesPosition', {
       comment: [{ start: 22, length: 6 }],
       title: [{ start: 9, length: 6 }],
@@ -223,7 +229,8 @@ describe.each([
       showMatchesPosition: true,
     })
 
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 5)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
@@ -297,7 +304,8 @@ describe.each([
       filter: 'title = "Le Petit Prince"',
       showMatchesPosition: true,
     })
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 5)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
@@ -326,7 +334,8 @@ describe.each([
       filter: 'title = "Le Petit Prince"',
       showMatchesPosition: true,
     })
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 5)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
@@ -360,7 +369,8 @@ describe.each([
     expect(response).toHaveProperty('facetDistribution', {
       genre: { romance: 2 },
     })
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response.hits.length).toEqual(2)
   })
 
@@ -370,7 +380,8 @@ describe.each([
       filter: 'id < 0',
       facets: ['genre'],
     })
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response.hits.length).toEqual(0)
   })
 
@@ -379,7 +390,8 @@ describe.each([
     const response = await client.index(index.uid).searchGet('h', {
       filter: 'genre = "sci fi"',
     })
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response.hits.length).toEqual(1)
   })
 
@@ -392,7 +404,8 @@ describe.each([
     expect(response).toHaveProperty('facetDistribution', {
       genre: { romance: 2 },
     })
-    expect(response).toHaveProperty('hits', expect.any(Array))
+    expect(response).toHaveProperty('hits')
+    expect(Array.isArray(response.hits))
     expect(response.hits.length).toEqual(2)
   })
 
@@ -495,7 +508,7 @@ describe.each([
     await masterClient.waitForTask(taskUid)
     await expect(
       client.index(index.uid).searchGet('prince')
-    ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND)
+    ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INDEX_NOT_FOUND)
   })
 })
 
@@ -510,10 +523,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.index(index.uid).searchGet()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -523,10 +533,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.index(index.uid).searchGet()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 })

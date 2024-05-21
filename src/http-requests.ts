@@ -1,4 +1,4 @@
-import { Config, EnqueuedTaskObject, MeiliSearchErrorInfo } from './types'
+import { Config, EnqueuedTaskObject } from './types'
 import { PACKAGE_VERSION } from './package-version'
 
 import {
@@ -164,13 +164,15 @@ class HttpRequests {
       return response
     }
 
-    const parsedResponseBody = await response.json()
+    const responseBody = await response.text()
+    const parsedResponse =
+      responseBody === '' ? undefined : JSON.parse(responseBody)
 
     if (!response.ok) {
-      throw new MeiliSearchApiError(parsedResponseBody, response)
+      throw new MeiliSearchApiError(response, parsedResponse)
     }
 
-    return parsedResponseBody
+    return parsedResponse
   }
 
   async fetchWithTimeout(

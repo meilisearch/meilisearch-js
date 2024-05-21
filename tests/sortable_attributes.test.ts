@@ -87,21 +87,21 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission)
       await expect(
         client.index(index.uid).getSortableAttributes()
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to update sortable attributes and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
         client.index(index.uid).updateSortableAttributes([])
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to reset sortable attributes and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
         client.index(index.uid).resetSortableAttributes()
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
     })
   }
 )
@@ -120,7 +120,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).getSortableAttributes()
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -131,7 +131,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).updateSortableAttributes(resetSortable)
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -141,7 +141,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).resetSortableAttributes()
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -161,10 +161,7 @@ describe.each([
       client.index(index.uid).getSortableAttributes()
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -176,10 +173,7 @@ describe.each([
       client.index(index.uid).updateSortableAttributes([])
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -191,10 +185,7 @@ describe.each([
       client.index(index.uid).resetSortableAttributes()
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 })

@@ -2,7 +2,7 @@ import { MeiliSearch } from './utils/meilisearch-test-utils'
 import {
   MeiliSearchError,
   MeiliSearchApiError,
-  MeiliSearchCommunicationError,
+  MeiliSearchRequestError,
   MeiliSearchTimeOutError,
 } from '../src/errors'
 import 'jest-fetch-mock'
@@ -12,6 +12,7 @@ fetchMock.enableMocks()
 
 jest.setTimeout(100 * 1000)
 
+// @TODO: Have to review this in more detail
 describe('Test on updates', () => {
   beforeEach(() => {
     fetchMock.mockReset()
@@ -29,15 +30,12 @@ describe('Test on updates', () => {
 
   test(`Not throw MeiliSearchCommunicationError when throwned error is MeiliSearchApiError`, async () => {
     fetchMock.mockReject(
-      new MeiliSearchApiError(
-        {
-          message: 'Some error',
-          code: 'some_error',
-          type: 'random_error',
-          link: 'a link',
-        },
-        404
-      )
+      new MeiliSearchApiError(new Response(), {
+        message: 'Some error',
+        code: 'some_error',
+        type: 'random_error',
+        link: 'a link',
+      })
     )
 
     const client = new MeiliSearch({ host: 'http://localhost:9345' })
@@ -50,15 +48,12 @@ describe('Test on updates', () => {
 
   test('MeiliSearchApiError can be compared with the instanceof operator', async () => {
     fetchMock.mockReject(
-      new MeiliSearchApiError(
-        {
-          message: 'Some error',
-          code: 'some_error',
-          type: 'random_error',
-          link: 'a link',
-        },
-        404
-      )
+      new MeiliSearchApiError(new Response(), {
+        message: 'Some error',
+        code: 'some_error',
+        type: 'random_error',
+        link: 'a link',
+      })
     )
 
     const client = new MeiliSearch({ host: 'http://localhost:9345' })
@@ -75,7 +70,7 @@ describe('Test on updates', () => {
     try {
       await client.health()
     } catch (e: any) {
-      expect(e instanceof MeiliSearchCommunicationError).toEqual(true)
+      expect(e instanceof MeiliSearchRequestError).toEqual(true)
     }
   })
 

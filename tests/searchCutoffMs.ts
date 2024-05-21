@@ -70,7 +70,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         client.index(index.uid).updateSearchCutoffMs(newSearchCutoffMs)
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.INVALID_SETTINGS_SEARCH_CUTOFF_MS
       )
     })
@@ -105,21 +105,21 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission)
       await expect(
         client.index(index.uid).getSearchCutoffMs()
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to update searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
         client.index(index.uid).updateSearchCutoffMs(100)
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to reset searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission)
       await expect(
         client.index(index.uid).resetSearchCutoffMs()
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
     })
   }
 )
@@ -138,7 +138,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).getSearchCutoffMs()
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -148,7 +148,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).updateSearchCutoffMs(100)
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -158,7 +158,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).resetSearchCutoffMs()
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -178,10 +178,7 @@ describe.each([
       client.index(index.uid).getSearchCutoffMs()
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -193,10 +190,7 @@ describe.each([
       client.index(index.uid).updateSearchCutoffMs(null)
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -208,10 +202,7 @@ describe.each([
       client.index(index.uid).resetSearchCutoffMs()
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 })

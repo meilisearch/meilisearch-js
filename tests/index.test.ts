@@ -88,7 +88,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
     test(`${permission} key: Get index that does not exist`, async () => {
       const client = await getClient(permission)
       await expect(client.getIndex('does_not_exist')).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.INDEX_NOT_FOUND
       )
     })
@@ -96,7 +96,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
     test(`${permission} key: Get raw index that does not exist`, async () => {
       const client = await getClient(permission)
       await expect(client.getRawIndex('does_not_exist')).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.INDEX_NOT_FOUND
       )
     })
@@ -329,7 +329,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission)
       const index = client.index(indexNoPk.uid)
       await expect(index.getRawInfo()).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.INDEX_NOT_FOUND
       )
     })
@@ -337,7 +337,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
     test(`${permission} key: get deleted raw index should fail through client`, async () => {
       const client = await getClient(permission)
       await expect(client.getRawIndex(indexNoPk.uid)).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.INDEX_NOT_FOUND
       )
     })
@@ -404,13 +404,13 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission)
       await expect(
         client.index(indexNoPk.uid).getRawInfo()
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to get raw index and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.getRawIndex(indexNoPk.uid)).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.INVALID_API_KEY
       )
     })
@@ -418,7 +418,7 @@ describe.each([{ permission: 'Search' }])(
     test(`${permission} key: try to delete index and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.index(indexPk.uid).delete()).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.INVALID_API_KEY
       )
     })
@@ -427,13 +427,13 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission)
       await expect(
         client.index(indexPk.uid).update({ primaryKey: indexPk.primaryKey })
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY)
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
     })
 
     test(`${permission} key: try to get stats and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.index(indexPk.uid).getStats()).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.INVALID_API_KEY
       )
     })
@@ -450,7 +450,7 @@ describe.each([{ permission: 'No' }])(
     test(`${permission} key: try to get all indexes and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.getIndexes()).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -460,7 +460,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(indexNoPk.uid).getRawInfo()
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -468,7 +468,7 @@ describe.each([{ permission: 'No' }])(
     test(`${permission} key: try to get raw index and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.getRawIndex(indexNoPk.uid)).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -476,7 +476,7 @@ describe.each([{ permission: 'No' }])(
     test(`${permission} key: try to delete index and be denied`, async () => {
       const client = await getClient(permission)
       await expect(client.index(indexPk.uid).delete()).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -486,7 +486,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(indexPk.uid).update({ primaryKey: indexPk.primaryKey })
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
       )
     })
@@ -504,10 +504,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.index(indexPk.uid).getStats()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -517,14 +514,11 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       'name',
-      'MeiliSearchCommunicationError'
+      'MeiliSearchRequestError'
     )
   })
 
@@ -534,14 +528,11 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.getRawIndex(indexPk.uid)).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
     await expect(client.getRawIndex(indexPk.uid)).rejects.toHaveProperty(
       'name',
-      'MeiliSearchCommunicationError'
+      'MeiliSearchRequestError'
     )
   })
 
@@ -551,10 +542,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 
@@ -564,10 +552,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        ''
-      )}`
+      `Request to ${strippedHost}/${route} has failed`
     )
   })
 })
