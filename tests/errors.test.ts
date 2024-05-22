@@ -28,7 +28,7 @@ describe('Test on updates', () => {
     }
   })
 
-  test('MeiliSearchApiError can be compared with the instanceof operator', async () => {
+  test('MeiliSearchApiError can be compared with the instanceof operator', () => {
     expect(
       new MeiliSearchApiError(new Response(), {
         message: 'Some error',

@@ -585,10 +585,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
 
       return new EnqueuedTask(task)
     } catch (e) {
-      if (
-        e instanceof MeiliSearchRequestError &&
-        isDocumentsDeletionQuery
-      ) {
+      if (e instanceof MeiliSearchRequestError && isDocumentsDeletionQuery) {
         e.message = versionErrorHintMessage(e.message, 'deleteDocuments')
       } else if (e instanceof MeiliSearchApiError) {
         e.message = versionErrorHintMessage(e.message, 'deleteDocuments')

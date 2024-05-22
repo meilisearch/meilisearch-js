@@ -387,7 +387,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong argument type
         client.getTasks({ statuses: ['wrong'] })
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_TASK_STATUSES)
+      ).rejects.toHaveProperty(
+        'cause.code',
+        ErrorStatusCode.INVALID_TASK_STATUSES
+      )
     })
 
     // filters error code: INVALID_TASK_UIDS_FILTER
@@ -407,7 +410,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong canceledBy type
         client.getTasks({ canceledBy: ['wrong'] })
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_TASK_CANCELED_BY)
+      ).rejects.toHaveProperty(
+        'cause.code',
+        ErrorStatusCode.INVALID_TASK_CANCELED_BY
+      )
     })
 
     // filters error code: INVALID_TASK_DATE_FILTER
@@ -584,7 +590,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await expect(
         // @ts-expect-error testing wrong argument type
         client.cancelTasks()
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.MISSING_TASK_FILTERS)
+      ).rejects.toHaveProperty(
+        'cause.code',
+        ErrorStatusCode.MISSING_TASK_FILTERS
+      )
     })
 
     // delete: uid

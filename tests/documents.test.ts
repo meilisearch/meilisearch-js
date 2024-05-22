@@ -610,14 +610,20 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const client = await getClient(permission)
         await expect(
           client.index(indexNoPk.uid).getDocument(1)
-        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.DOCUMENT_NOT_FOUND)
+        ).rejects.toHaveProperty(
+          'cause.code',
+          ErrorStatusCode.DOCUMENT_NOT_FOUND
+        )
       })
 
       test(`${permission} key: Try to get deleted document from index that has a primary key`, async () => {
         const client = await getClient(permission)
         await expect(
           client.index(indexPk.uid).getDocument(1)
-        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.DOCUMENT_NOT_FOUND)
+        ).rejects.toHaveProperty(
+          'cause.code',
+          ErrorStatusCode.DOCUMENT_NOT_FOUND
+        )
       })
 
       test(`${permission} key: Add documents from index with no primary key by giving a primary key as parameter`, async () => {

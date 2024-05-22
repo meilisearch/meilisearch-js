@@ -119,7 +119,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task: EnqueuedTask = await client
         .index(index.uid)
         .updateEmbedders(newEmbedder)
-      await client.waitForTask(task.taskUid, {timeOutMs: 60_000})
+      await client.waitForTask(task.taskUid, { timeOutMs: 60_000 })
 
       const response: Embedders = await client.index(index.uid).getEmbedders()
 

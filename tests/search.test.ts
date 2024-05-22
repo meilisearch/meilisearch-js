@@ -1037,7 +1037,10 @@ describe.each([
     controller.abort()
 
     searchPromise.catch((error: any) => {
-      expect(error).toHaveProperty('cause.message', 'This operation was aborted')
+      expect(error).toHaveProperty(
+        'cause.message',
+        'This operation was aborted'
+      )
     })
   })
 
@@ -1092,7 +1095,10 @@ describe.each([
     })
 
     searchBPromise.catch((error: any) => {
-      expect(error).toHaveProperty('cause.message', 'This operation was aborted')
+      expect(error).toHaveProperty(
+        'cause.message',
+        'This operation was aborted'
+      )
     })
   })
 
