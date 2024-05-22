@@ -314,7 +314,7 @@ describe.each([
       filter: ['genre="sci fi"'],
     })
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response.hits.length === 1).toBeTruthy()
   })
 

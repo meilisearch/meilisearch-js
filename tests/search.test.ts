@@ -148,7 +148,7 @@ describe.each([
     const response = await client.index(index.uid).search('prince', {})
 
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('limit', 20)
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
@@ -174,7 +174,7 @@ describe.each([
       })
 
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 20)
     expect(response.hits.length).toEqual(1)
@@ -187,7 +187,7 @@ describe.each([
       .search('french book', { matchingStrategy: MatchingStrategies.LAST })
 
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 20)
     expect(response.hits.length).toEqual(2)
@@ -200,7 +200,7 @@ describe.each([
       .search('other', { q: 'prince' })
 
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('limit', 20)
     expect(response).toHaveProperty('offset', 0)
     expect(response.estimatedTotalHits).toBeDefined()
@@ -214,7 +214,7 @@ describe.each([
     const response = await client.index(index.uid).search(null, { q: 'prince' })
 
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('limit', 20)
     expect(response).toHaveProperty('offset', 0)
     expect(response.estimatedTotalHits).toBeDefined()
@@ -229,7 +229,7 @@ describe.each([
       .index(index.uid)
       .search('"french book" about', {})
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('limit', 20)
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
@@ -244,7 +244,7 @@ describe.each([
       .index(index.uid)
       .search('prince', { limit: 1 })
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 1)
     expect(response.estimatedTotalHits).toEqual(2)
@@ -259,7 +259,7 @@ describe.each([
       .index(index.uid)
       .search('', { sort: ['id:asc'] })
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     const hit = response.hits[0]
     expect(hit.id).toEqual(1)
   })
@@ -274,7 +274,7 @@ describe.each([
     const hit = response.hits[0]
 
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('query', 'prince')
     expect(hit).toHaveProperty('_rankingScore')
   })
@@ -289,7 +289,7 @@ describe.each([
     const hit = response.hits[0]
 
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('query', 'prince')
     expect(hit).toHaveProperty('_rankingScoreDetails')
     expect(Object.keys(hit._rankingScoreDetails || {})).toEqual([
@@ -310,7 +310,7 @@ describe.each([
     const hit = response.hits[0]
 
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('query', 'prince')
     expect(Object.keys(hit).join(',')).toEqual(
       Object.keys(dataset[1]).join(',')
@@ -346,7 +346,7 @@ describe.each([
     const hit = response.hits[0]
 
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('query', 'prince')
     expect(Object.keys(hit).join(',')).toEqual(
       Object.keys(dataset[1]).join(',')
@@ -359,7 +359,7 @@ describe.each([
       .index(index.uid)
       .search('prince', { limit: 1 })
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 1)
     expect(response.estimatedTotalHits).toEqual(2)
@@ -409,7 +409,7 @@ describe.each([
       showMatchesPosition: true,
     })
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response.hits[0]).toHaveProperty('_matchesPosition', {
       comment: [{ start: 22, length: 6 }],
       title: [{ start: 9, length: 6 }],
@@ -429,7 +429,7 @@ describe.each([
       showMatchesPosition: true,
     })
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 5)
     expect(response.estimatedTotalHits).toEqual(1)
@@ -505,7 +505,7 @@ describe.each([
       showMatchesPosition: true,
     })
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 5)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
@@ -535,7 +535,7 @@ describe.each([
       showMatchesPosition: true,
     })
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response).toHaveProperty('offset', 0)
     expect(response).toHaveProperty('limit', 5)
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number))
@@ -595,7 +595,7 @@ describe.each([
     expect(response.facetStats).toEqual({ id: { min: 2, max: 123 } })
     expect(response.facetStats?.['id']?.max).toBe(123)
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response.hits.length).toEqual(2)
   })
 
@@ -605,7 +605,7 @@ describe.each([
       filter: 'id < 0',
     })
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response.hits.length).toEqual(0)
   })
 
@@ -616,7 +616,7 @@ describe.each([
     })
 
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response.hits.length).toEqual(1)
   })
 
@@ -630,7 +630,7 @@ describe.each([
       genre: { romance: 2 },
     })
     expect(response).toHaveProperty('hits')
-    expect(Array.isArray(response.hits))
+    expect(Array.isArray(response.hits)).toBe(true)
     expect(response.hits.length).toEqual(2)
   })
 
