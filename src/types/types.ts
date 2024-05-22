@@ -664,7 +664,7 @@ export type MeiliSearchErrorResponse = {
   link: string
 }
 
-// @TODO: This doesn't seem to be updated, and its usefullness comes into question.
+// @TODO: This doesn't seem to be up to date, and its usefullness comes into question.
 export const ErrorStatusCode = {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#index_creation_failed */
   INDEX_CREATION_FAILED: 'index_creation_failed',

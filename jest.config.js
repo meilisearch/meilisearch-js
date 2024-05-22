@@ -28,7 +28,7 @@ const config = {
         'token.test.ts',
       ],
       // make sure built-in Node.js fetch doesn't get replaced for consistency
-      globals: { fetch: global.fetch },
+      globals: { fetch: global.fetch, AbortController: global.AbortController },
     },
     {
       preset: 'ts-jest',
