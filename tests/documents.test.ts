@@ -157,7 +157,7 @@ describe('Documents tests', () => {
         expect(documents.results.length).toEqual(2)
       })
 
-      test(`${permission} key: Get documents should trigger error with a MeilisearchCommunicationError`, async () => {
+      test(`${permission} key: Get documents should trigger error with a MeilisearchRequestError`, async () => {
         const apiKey = await getKey(permission)
         const client = new MeiliSearch({ host: `${HOST}/indexes`, apiKey })
 
@@ -571,7 +571,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         }
       })
 
-      test(`${permission} key: Delete some documents should trigger error with a hint on a MeilisearchCommunicationError`, async () => {
+      test(`${permission} key: Delete some documents should trigger error with a hint on a MeilisearchRequestError`, async () => {
         const apiKey = await getKey(permission)
         const client = new MeiliSearch({ host: `${HOST}/indexes`, apiKey })
 

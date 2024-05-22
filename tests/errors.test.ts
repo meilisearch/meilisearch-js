@@ -18,53 +18,28 @@ describe('Test on updates', () => {
     fetchMock.mockReset()
   })
 
-  test(`Throw MeiliSearchCommunicationError when throwned error is not MeiliSearchApiError`, async () => {
+  test(`Throw MeilisearchRequestError when throwned error is not MeiliSearchApiError`, async () => {
     fetchMock.mockReject(new Error('fake error message'))
     const client = new MeiliSearch({ host: 'http://localhost:9345' })
     try {
       await client.health()
     } catch (e: any) {
-      expect(e.name).toEqual('MeiliSearchCommunicationError')
-    }
-  })
-
-  test(`Not throw MeiliSearchCommunicationError when throwned error is MeiliSearchApiError`, async () => {
-    fetchMock.mockReject(
-      new MeiliSearchApiError(new Response(), {
-        message: 'Some error',
-        code: 'some_error',
-        type: 'random_error',
-        link: 'a link',
-      })
-    )
-
-    const client = new MeiliSearch({ host: 'http://localhost:9345' })
-    try {
-      await client.health()
-    } catch (e: any) {
-      expect(e.name).toEqual('MeiliSearchApiError')
+      expect(e.name).toEqual('MeiliSearchRequestError')
     }
   })
 
   test('MeiliSearchApiError can be compared with the instanceof operator', async () => {
-    fetchMock.mockReject(
+    expect(
       new MeiliSearchApiError(new Response(), {
         message: 'Some error',
         code: 'some_error',
         type: 'random_error',
         link: 'a link',
-      })
-    )
-
-    const client = new MeiliSearch({ host: 'http://localhost:9345' })
-    try {
-      await client.health()
-    } catch (e: any) {
-      expect(e instanceof MeiliSearchApiError).toEqual(true)
-    }
+      }) instanceof MeiliSearchApiError
+    ).toEqual(true)
   })
 
-  test('MeiliSearchCommunicationError can be compared with the instanceof operator', async () => {
+  test('MeilisearchRequestError can be compared with the instanceof operator', async () => {
     fetchMock.mockReject(new Error('fake error message'))
     const client = new MeiliSearch({ host: 'http://localhost:9345' })
     try {
