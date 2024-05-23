@@ -3,7 +3,7 @@ import { MeiliSearchError } from "./errors";
 import { validateUuid4 } from "./utils";
 
 function encode64(data: unknown): string {
-  return btoa(JSON.stringify(data))
+  return btoa(JSON.stringify(data));
 }
 
 /**
@@ -17,36 +17,37 @@ function encode64(data: unknown): string {
 async function sign(
   apiKey: string,
   encodedHeader: string,
-  encodedPayload: string
+  encodedPayload: string,
 ): Promise<string> {
   // missing crypto global for Node.js 18
   const localCrypto =
-    typeof crypto === 'undefined'
-      ? (await import('node:crypto')).webcrypto
-      : crypto
+    typeof crypto === "undefined"
+      ? // @ts-expect-error: Need to add @types/node for this and remove dom lib
+        (await import("node:crypto")).webcrypto
+      : crypto;
 
-  const textEncoder = new TextEncoder()
+  const textEncoder = new TextEncoder();
 
   const cryptoKey = await localCrypto.subtle.importKey(
-    'raw',
+    "raw",
     textEncoder.encode(apiKey),
-    { name: 'HMAC', hash: 'SHA-256' },
+    { name: "HMAC", hash: "SHA-256" },
     false,
-    ['sign']
-  )
+    ["sign"],
+  );
 
   const signature = await localCrypto.subtle.sign(
-    'HMAC',
+    "HMAC",
     cryptoKey,
-    textEncoder.encode(`${encodedHeader}.${encodedPayload}`)
-  )
+    textEncoder.encode(`${encodedHeader}.${encodedPayload}`),
+  );
 
   const digest = btoa(String.fromCharCode(...new Uint8Array(signature)))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '')
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 
-  return digest
+  return digest;
 }
 
 /**
