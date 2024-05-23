@@ -1,4 +1,4 @@
-/** @type {import('jest').Config} */
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 const config = {
   rootDir: '.',
   testMatch: ['<rootDir>/tests/**/*.ts?(x)'],

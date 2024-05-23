@@ -22,7 +22,8 @@ async function sign(
   // missing crypto global for Node.js 18
   const localCrypto =
     typeof crypto === 'undefined'
-      ? (await import('node:crypto')).webcrypto
+      ? // @ts-expect-error: Need to add @types/node for this and remove dom lib
+        (await import('node:crypto')).webcrypto
       : crypto
 
   const textEncoder = new TextEncoder()
