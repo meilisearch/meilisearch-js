@@ -1,14 +1,5 @@
 {
   "compilerOptions": {
-    // @TODO: Remove these, as we're not using decorators
-    // "experimentalDecorators": true,
-    // "emitDecoratorMetadata": true,
-    // @TODO: Remove, as it defaults to true: https://www.typescriptlang.org/tsconfig#forceConsistentCasingInFileNames
-    // "forceConsistentCasingInFileNames": true,
-    // @TODO: Remove, as it's false by default: https://www.typescriptlang.org/tsconfig#removeComments
-    // "removeComments": false,
-    // @TODO: This is false by default, can be removed
-    // "allowJs": false,
     // @TODO: perhaps "emitDeclarationOnly" should be used here (build fails with it), need to
     //       investigate further https://www.typescriptlang.org/tsconfig#emitDeclarationOnly
     //       probably need to update rollup and its config
@@ -21,42 +12,16 @@
     // https://www.typescriptlang.org/docs/handbook/modules/reference.html#bundler
     // However "module": "node16" or "nodenext" is a better option:
     // https://www.typescriptlang.org/docs/handbook/modules/theory.html#module-resolution-for-libraries
-    // Problem is, a lot of files would need changes, so to keep things simpler for now let's keep it as "bundler"
     // Also this should be applied too: https://www.typescriptlang.org/tsconfig#verbatimModuleSyntax
-    // but again, too many changes for now
     "moduleResolution": "bundler",
     // "moduleResolution" = "bundler" requires this to be "esnext"
     "module": "esnext",
-    // @TODO: Remove as it's not all that useful these days, and just generates more unnecessary code
-    //       just so we can `import crypto from "crypto"` instead of `import * as crypto from "crypto"`
-    //       or even better `import { createHmac } from "crypto"`
-    // "esModuleInterop": true,
-    // @TODO: Remove, as "moduleResolution": "bundler" sets this to true
-    // "allowSyntheticDefaultImports": true,
     // Node.js 18 supports up to ES2022 according to https://www.npmjs.com/package/@tsconfig/node18
     // This matters for the generated CJS and ESM file, UMD file is down-leveled further to support IE11
-    // with the help of Babel.
+    // (only the syntax, URL, URLSearchParams, fetch is not IE11 compatible) with the help of Babel.
     "target": "es2022",
-    "lib": [
-      // @TODO: Remove as ES versions are cumulative, so ESNext contains everything
-      //"ES2019",
-      "ESNext",
-      "dom"
-    ],
+    "lib": ["ESNext", "dom"],
     "strict": true,
-    // @TODO: Remove these, as they are covered by "strict":
-    //       https://www.typescriptlang.org/tsconfig#strict
-    // "alwaysStrict": true,
-    // "strictNullChecks": true,
-    // "strictFunctionTypes": true,
-    // "strictPropertyInitialization": true,
-    // "strictBindCallApply": true,
-    // "noImplicitAny": true,
-    // "noImplicitThis": true,
     "noImplicitReturns": true
-    // @TODO: These are already covered by ESLint, furthermore these disallow
-    //       underscore vars (_myVar) too, so they nullify the ESLint custom rule
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true
   }
 }
