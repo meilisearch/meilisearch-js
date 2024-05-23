@@ -19,9 +19,12 @@ async function sign(
   encodedHeader: string,
   encodedPayload: string
 ): Promise<string> {
+  // missing crypto global for Node.js 18
+  const localCrypto = crypto ?? (await import('node:crypto')).webcrypto
+
   const textEncoder = new TextEncoder()
 
-  const cryptoKey = await crypto.subtle.importKey(
+  const cryptoKey = await localCrypto.subtle.importKey(
     'raw',
     textEncoder.encode(apiKey),
     { name: 'HMAC', hash: 'SHA-256' },
@@ -29,7 +32,7 @@ async function sign(
     ['sign']
   )
 
-  const signature = await crypto.subtle.sign(
+  const signature = await localCrypto.subtle.sign(
     'HMAC',
     cryptoKey,
     textEncoder.encode(`${encodedHeader}.${encodedPayload}`)
