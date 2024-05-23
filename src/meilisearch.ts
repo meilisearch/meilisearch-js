@@ -7,7 +7,7 @@
 
 'use strict'
 
-import { Index } from '../indexes'
+import { Index } from './indexes'
 import {
   KeyCreation,
   Config,
@@ -34,15 +34,17 @@ import {
   DeleteTasksQuery,
   MultiSearchParams,
   MultiSearchResponse,
-} from '../types'
-import { HttpRequests } from '../http-requests'
-import { TaskClient, Task } from '../task'
-import { EnqueuedTask } from '../enqueued-task'
+} from './types'
+import { HttpRequests } from './http-requests'
+import { TaskClient, Task } from './task'
+import { Token } from './token'
+import { EnqueuedTask } from './enqueued-task'
 
-class Client {
+class MeiliSearch {
   config: Config
   httpRequest: HttpRequests
   tasks: TaskClient
+  tokens: Token
 
   /**
    * Creates new MeiliSearch instance
@@ -53,6 +55,7 @@ class Client {
     this.config = config
     this.httpRequest = new HttpRequests(config)
     this.tasks = new TaskClient(config)
+    this.tokens = new Token(config)
   }
 
   /**
@@ -471,16 +474,17 @@ class Client {
    * @param options - Token options to customize some aspect of the token.
    * @returns The token in JWT format.
    */
-  generateTenantToken(
-    _apiKeyUid: string,
-    _searchRules: TokenSearchRules,
-    _options?: TokenOptions
+  async generateTenantToken(
+    apiKeyUid: string,
+    searchRules: TokenSearchRules,
+    options?: TokenOptions
   ): Promise<string> {
-    const error = new Error()
-    error.message = `Meilisearch: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}.`
-
-    return Promise.reject(error)
+    return await this.tokens.generateTenantToken(
+      apiKeyUid,
+      searchRules,
+      options
+    )
   }
 }
 
-export { Client }
+export { MeiliSearch }
