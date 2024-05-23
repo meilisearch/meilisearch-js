@@ -20,7 +20,10 @@ async function sign(
   encodedPayload: string
 ): Promise<string> {
   // missing crypto global for Node.js 18
-  const localCrypto = crypto ?? (await import('node:crypto')).webcrypto
+  const localCrypto =
+    typeof crypto === 'undefined'
+      ? (await import('node:crypto')).webcrypto
+      : crypto
 
   const textEncoder = new TextEncoder()
 
