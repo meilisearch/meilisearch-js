@@ -2,8 +2,8 @@ import { Config, TokenSearchRules, TokenOptions } from './types'
 import { MeiliSearchError } from './errors'
 import { validateUuid4 } from './utils'
 
-function encode64(data: any) {
-  return Buffer.from(JSON.stringify(data)).toString('base64')
+function encode64(data: unknown): string {
+  return btoa(JSON.stringify(data))
 }
 
 /**
@@ -18,15 +18,29 @@ async function sign(
   apiKey: string,
   encodedHeader: string,
   encodedPayload: string
-) {
-  const { createHmac } = await import('crypto')
+): Promise<string> {
+  const textEncoder = new TextEncoder()
 
-  return createHmac('sha256', apiKey)
-    .update(`${encodedHeader}.${encodedPayload}`)
-    .digest('base64')
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    textEncoder.encode(apiKey),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+
+  const signature = await crypto.subtle.sign(
+    'HMAC',
+    cryptoKey,
+    textEncoder.encode(`${encodedHeader}.${encodedPayload}`)
+  )
+
+  const digest = btoa(String.fromCharCode(...new Uint8Array(signature)))
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=/g, '')
+
+  return digest
 }
 
 /**
