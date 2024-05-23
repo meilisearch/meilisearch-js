@@ -265,7 +265,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
 
       expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
-        `Meilisearch JavaScript (v${PACKAGE_VERSION})`
+        `Meilisearch Node (v${PACKAGE_VERSION})`
       )
     })
 
@@ -278,7 +278,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
 
       expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
-        `Meilisearch JavaScript (v${PACKAGE_VERSION})`
+        `Meilisearch Node (v${PACKAGE_VERSION})`
       )
     })
 
@@ -291,7 +291,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       })
 
       expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
-        `random plugin 1 ; random plugin 2 ; Meilisearch JavaScript (v${PACKAGE_VERSION})`
+        `random plugin 1 ; random plugin 2 ; Meilisearch Node (v${PACKAGE_VERSION})`
       )
     })
 
