@@ -18,9 +18,9 @@ jobs:
       - name: Check tag format
         run: sh .github/scripts/check-tag-format.sh "${{ github.event.release.prerelease }}"
       - name: Install dependencies
-        run: yarn install
+        run: pnpm i
       - name: Build meilisearch-js
-        run: yarn build
+        run: pnpm build
       - name: Publish with latest tag
         if: '!github.event.release.prerelease'
         run: npm publish .

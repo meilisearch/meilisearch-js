@@ -1,16 +1,19 @@
 # Javascript Playground
 
 ## Project setup
-```
-yarn install
+
+```bash
+pnpm i
 ```
 
 ### Compiles and hot-reloads for development
-```
-yarn start
+
+```bash
+pnpm start
 ```
 
 ### Compiles and minifies for production
-```
-yarn build
+
+```bash
+pnpm build
 ```

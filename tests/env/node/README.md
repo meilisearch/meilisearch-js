@@ -4,9 +4,9 @@
 
 Build the base project `/meilisearch-js` as this example uses the locally build bundles from `meilisearch-js`.
 
-```
+```bash
 cd meilisearch-js
-yarn build
+pnpm build
 ```
 
 ## Credentials
@@ -20,6 +20,7 @@ The credentials are written in each script.
 To try it out you just need to execute the script that you want to try out.
 
 For example:
-```
+
+```bash
 node search_example.js
 ```

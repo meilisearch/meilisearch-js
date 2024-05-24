@@ -427,6 +427,11 @@ getting_started_add_documents_md: |-
   yarn add meilisearch
   ```
 
+  Or, if you are using `pnpm`
+  ```bash
+  pnpm add meilisearch
+  ```
+
   **Import**
 
   `require` syntax:

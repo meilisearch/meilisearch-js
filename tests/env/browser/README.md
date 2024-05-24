@@ -4,9 +4,9 @@
 
 Build the base project `/meilisearch-js` as this example uses the locally build bundles from `meilisearch-js`.
 
-```
+```bash
 cd meilisearch-js
-yarn build
+pnpm build
 ```
 
 ## Credentials

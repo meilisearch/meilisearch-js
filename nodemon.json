@@ -2,5 +2,5 @@
   "extension": "ts",
   "verbose": true,
   "ignore": ["tests/*", "*.tests.js", "dist/"],
-  "exec": "yarn tsc"
+  "exec": "pnpm tsc"
 }
