@@ -107,5 +107,6 @@
     "shx": "^0.3.2",
     "ts-jest": "^29.1.1",
     "typescript": "^5.3.3"
-  }
+  },
+  "packageManager": "pnpm@9.1.2"
 }
