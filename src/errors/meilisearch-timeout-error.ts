@@ -1,18 +1,18 @@
-import { MeiliSearchError } from './meilisearch-error'
+import { MeiliSearchError } from './meilisearch-error';
 
 class MeiliSearchTimeOutError extends MeiliSearchError {
   constructor(message: string) {
-    super(message)
+    super(message);
 
     // Make errors comparison possible. ex: error instanceof MeiliSearchTimeOutError.
-    Object.setPrototypeOf(this, MeiliSearchTimeOutError.prototype)
+    Object.setPrototypeOf(this, MeiliSearchTimeOutError.prototype);
 
-    this.name = 'MeiliSearchTimeOutError'
+    this.name = 'MeiliSearchTimeOutError';
 
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, MeiliSearchTimeOutError)
+      Error.captureStackTrace(this, MeiliSearchTimeOutError);
     }
   }
 }
 
-export { MeiliSearchTimeOutError }
+export { MeiliSearchTimeOutError };

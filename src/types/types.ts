@@ -4,57 +4,57 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^3.8.3
 
-import { Task } from '../task'
+import { Task } from '../task';
 
 export type Config = {
-  host: string
-  apiKey?: string
-  clientAgents?: string[]
-  requestConfig?: Partial<Omit<RequestInit, 'body' | 'method'>>
-  httpClient?: (input: string, init?: RequestInit) => Promise<any>
-  timeout?: number
-}
+  host: string;
+  apiKey?: string;
+  clientAgents?: string[];
+  requestConfig?: Partial<Omit<RequestInit, 'body' | 'method'>>;
+  httpClient?: (input: string, init?: RequestInit) => Promise<any>;
+  timeout?: number;
+};
 
 ///
 /// Resources
 ///
 
 export type Pagination = {
-  offset?: number
-  limit?: number
-}
+  offset?: number;
+  limit?: number;
+};
 
 // TODO fix
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type ResourceQuery = Pagination & {}
+export type ResourceQuery = Pagination & {};
 
 export type ResourceResults<T> = Pagination & {
-  results: T
-  total: number
-}
+  results: T;
+  total: number;
+};
 
 ///
 /// Indexes
 ///
 
 export type IndexOptions = {
-  primaryKey?: string
-}
+  primaryKey?: string;
+};
 
 export type IndexObject = {
-  uid: string
-  primaryKey?: string
-  createdAt: Date
-  updatedAt: Date
-}
+  uid: string;
+  primaryKey?: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 // TODO fix
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type IndexesQuery = ResourceQuery & {}
+export type IndexesQuery = ResourceQuery & {};
 
 // TODO fix
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type IndexesResults<T> = ResourceResults<T> & {}
+export type IndexesResults<T> = ResourceResults<T> & {};
 
 /*
  * SEARCH PARAMETERS
@@ -63,70 +63,70 @@ export type IndexesResults<T> = ResourceResults<T> & {}
 export const MatchingStrategies = {
   ALL: 'all',
   LAST: 'last',
-} as const
+} as const;
 
 export type MatchingStrategies =
-  (typeof MatchingStrategies)[keyof typeof MatchingStrategies]
+  (typeof MatchingStrategies)[keyof typeof MatchingStrategies];
 
-export type Filter = string | Array<string | string[]>
+export type Filter = string | Array<string | string[]>;
 
 export type Query = {
-  q?: string | null
-}
+  q?: string | null;
+};
 
 export type Highlight = {
-  attributesToHighlight?: string[]
-  highlightPreTag?: string
-  highlightPostTag?: string
-}
+  attributesToHighlight?: string[];
+  highlightPreTag?: string;
+  highlightPostTag?: string;
+};
 
 export type Crop = {
-  attributesToCrop?: string[]
-  cropLength?: number
-  cropMarker?: string
-}
+  attributesToCrop?: string[];
+  cropLength?: number;
+  cropMarker?: string;
+};
 
 // `facetName` becomes mandatory when using `searchForFacetValues`
 export type SearchForFacetValuesParams = Omit<SearchParams, 'facetName'> & {
-  facetName: string
-}
+  facetName: string;
+};
 
 export type FacetHit = {
-  value: string
-  count: number
-}
+  value: string;
+  count: number;
+};
 
 export type SearchForFacetValuesResponse = {
-  facetHits: FacetHit[]
-  facetQuery: string | null
-  processingTimeMs: number
-}
+  facetHits: FacetHit[];
+  facetQuery: string | null;
+  processingTimeMs: number;
+};
 
 export type HybridSearch = {
-  embedder?: string
-  semanticRatio?: number
-}
+  embedder?: string;
+  semanticRatio?: number;
+};
 
 export type SearchParams = Query &
   Pagination &
   Highlight &
   Crop & {
-    filter?: Filter
-    sort?: string[]
-    facets?: string[]
-    attributesToRetrieve?: string[]
-    showMatchesPosition?: boolean
-    matchingStrategy?: MatchingStrategies
-    hitsPerPage?: number
-    page?: number
-    facetName?: string
-    facetQuery?: string
-    vector?: number[] | null
-    showRankingScore?: boolean
-    showRankingScoreDetails?: boolean
-    attributesToSearchOn?: string[] | null
-    hybrid?: HybridSearch
-  }
+    filter?: Filter;
+    sort?: string[];
+    facets?: string[];
+    attributesToRetrieve?: string[];
+    showMatchesPosition?: boolean;
+    matchingStrategy?: MatchingStrategies;
+    hitsPerPage?: number;
+    page?: number;
+    facetName?: string;
+    facetQuery?: string;
+    vector?: number[] | null;
+    showRankingScore?: boolean;
+    showRankingScoreDetails?: boolean;
+    attributesToSearchOn?: string[] | null;
+    hybrid?: HybridSearch;
+  };
 
 // Search parameters for searches made with the GET method
 // Are different than the parameters for the POST method
@@ -134,133 +134,133 @@ export type SearchRequestGET = Pagination &
   Query &
   Omit<Highlight, 'attributesToHighlight'> &
   Omit<Crop, 'attributesToCrop'> & {
-    filter?: string
-    sort?: string
-    facets?: string
-    attributesToRetrieve?: string
-    attributesToHighlight?: string
-    attributesToCrop?: string
-    showMatchesPosition?: boolean
-    vector?: string | null
-    attributesToSearchOn?: string | null
-    hybridEmbedder?: string
-    hybridSemanticRatio?: number
-  }
+    filter?: string;
+    sort?: string;
+    facets?: string;
+    attributesToRetrieve?: string;
+    attributesToHighlight?: string;
+    attributesToCrop?: string;
+    showMatchesPosition?: boolean;
+    vector?: string | null;
+    attributesToSearchOn?: string | null;
+    hybridEmbedder?: string;
+    hybridSemanticRatio?: number;
+  };
 
-export type MultiSearchQuery = SearchParams & { indexUid: string }
+export type MultiSearchQuery = SearchParams & { indexUid: string };
 
 export type MultiSearchParams = {
-  queries: MultiSearchQuery[]
-}
+  queries: MultiSearchQuery[];
+};
 
 export type CategoriesDistribution = {
-  [category: string]: number
-}
+  [category: string]: number;
+};
 
-export type Facet = string
-export type FacetDistribution = Record<Facet, CategoriesDistribution>
+export type Facet = string;
+export type FacetDistribution = Record<Facet, CategoriesDistribution>;
 export type MatchesPosition<T> = Partial<
   Record<keyof T, Array<{ start: number; length: number }>>
->
+>;
 
 export type Hit<T = Record<string, any>> = T & {
-  _formatted?: Partial<T>
-  _matchesPosition?: MatchesPosition<T>
-  _rankingScore?: number
-  _rankingScoreDetails?: RankingScoreDetails
-}
+  _formatted?: Partial<T>;
+  _matchesPosition?: MatchesPosition<T>;
+  _rankingScore?: number;
+  _rankingScoreDetails?: RankingScoreDetails;
+};
 
 export type RankingScoreDetails = {
   words?: {
-    order: number
-    matchingWords: number
-    maxMatchingWords: number
-    score: number
-  }
+    order: number;
+    matchingWords: number;
+    maxMatchingWords: number;
+    score: number;
+  };
   typo?: {
-    order: number
-    typoCount: number
-    maxTypoCount: number
-    score: number
-  }
+    order: number;
+    typoCount: number;
+    maxTypoCount: number;
+    score: number;
+  };
   proximity?: {
-    order: number
-    score: number
-  }
+    order: number;
+    score: number;
+  };
   attribute?: {
-    order: number
-    attributes_ranking_order: number
-    attributes_query_word_order: number
-    score: number
-  }
+    order: number;
+    attributes_ranking_order: number;
+    attributes_query_word_order: number;
+    score: number;
+  };
   exactness?: {
-    order: number
-    matchType: string
-    score: number
-  }
-  [key: string]: Record<string, any> | undefined
-}
+    order: number;
+    matchType: string;
+    score: number;
+  };
+  [key: string]: Record<string, any> | undefined;
+};
 
-export type Hits<T = Record<string, any>> = Array<Hit<T>>
+export type Hits<T = Record<string, any>> = Array<Hit<T>>;
 
-export type FacetStat = { min: number; max: number }
-export type FacetStats = Record<string, FacetStat>
+export type FacetStat = { min: number; max: number };
+export type FacetStats = Record<string, FacetStat>;
 
 export type SearchResponse<
   T = Record<string, any>,
   S extends SearchParams | undefined = undefined,
 > = {
-  hits: Hits<T>
-  processingTimeMs: number
-  query: string
-  facetDistribution?: FacetDistribution
-  facetStats?: FacetStats
+  hits: Hits<T>;
+  processingTimeMs: number;
+  query: string;
+  facetDistribution?: FacetDistribution;
+  facetStats?: FacetStats;
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
     ? FinitePagination
-    : InfinitePagination)
+    : InfinitePagination);
 
 type FinitePagination = {
-  totalHits: number
-  hitsPerPage: number
-  page: number
-  totalPages: number
-}
+  totalHits: number;
+  hitsPerPage: number;
+  page: number;
+  totalPages: number;
+};
 type InfinitePagination = {
-  offset: number
-  limit: number
-  estimatedTotalHits: number
-}
+  offset: number;
+  limit: number;
+  estimatedTotalHits: number;
+};
 
 type IsFinitePagination<S extends SearchParams> = Or<
   HasHitsPerPage<S>,
   HasPage<S>
->
+>;
 
 type Or<A extends boolean, B extends boolean> = true extends A
   ? true
   : true extends B
     ? true
-    : false
+    : false;
 
 type HasHitsPerPage<S extends SearchParams> = undefined extends S['hitsPerPage']
   ? false
-  : true
+  : true;
 
 type HasPage<S extends SearchParams> = undefined extends S['page']
   ? false
-  : true
+  : true;
 
-export type MultiSearchResult<T> = SearchResponse<T> & { indexUid: string }
+export type MultiSearchResult<T> = SearchResponse<T> & { indexUid: string };
 
 export type MultiSearchResponse<T = Record<string, any>> = {
-  results: Array<MultiSearchResult<T>>
-}
+  results: Array<MultiSearchResult<T>>;
+};
 
 export type FieldDistribution = {
-  [field: string]: number
-}
+  [field: string]: number;
+};
 
 /*
  ** Documents
@@ -268,122 +268,122 @@ export type FieldDistribution = {
 
 type Fields<T = Record<string, any>> =
   | Array<Extract<keyof T, string>>
-  | Extract<keyof T, string>
+  | Extract<keyof T, string>;
 
 export type DocumentOptions = {
-  primaryKey?: string
-}
+  primaryKey?: string;
+};
 
 export const ContentTypeEnum: Readonly<Record<string, ContentType>> = {
   JSON: 'application/json',
   CSV: 'text/csv',
   NDJSON: 'application/x-ndjson',
-}
+};
 
 export type ContentType =
   | 'text/csv'
   | 'application/x-ndjson'
-  | 'application/json'
+  | 'application/json';
 
 export type RawDocumentAdditionOptions = DocumentOptions & {
-  csvDelimiter?: string
-}
+  csvDelimiter?: string;
+};
 
 export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
-  fields?: Fields<T>
-  filter?: Filter
-  limit?: number
-  offset?: number
-}
+  fields?: Fields<T>;
+  filter?: Filter;
+  limit?: number;
+  offset?: number;
+};
 
 export type DocumentQuery<T = Record<string, any>> = {
-  fields?: Fields<T>
-}
+  fields?: Fields<T>;
+};
 
 export type DocumentsDeletionQuery = {
-  filter: Filter
-}
+  filter: Filter;
+};
 
-export type DocumentsIds = string[] | number[]
+export type DocumentsIds = string[] | number[];
 
 /*
  ** Settings
  */
 
-export type FilterableAttributes = string[] | null
-export type DistinctAttribute = string | null
-export type SearchableAttributes = string[] | null
-export type SortableAttributes = string[] | null
-export type DisplayedAttributes = string[] | null
-export type RankingRules = string[] | null
-export type StopWords = string[] | null
+export type FilterableAttributes = string[] | null;
+export type DistinctAttribute = string | null;
+export type SearchableAttributes = string[] | null;
+export type SortableAttributes = string[] | null;
+export type DisplayedAttributes = string[] | null;
+export type RankingRules = string[] | null;
+export type StopWords = string[] | null;
 export type Synonyms = {
-  [field: string]: string[]
-} | null
+  [field: string]: string[];
+} | null;
 export type TypoTolerance = {
-  enabled?: boolean | null
-  disableOnAttributes?: string[] | null
-  disableOnWords?: string[] | null
+  enabled?: boolean | null;
+  disableOnAttributes?: string[] | null;
+  disableOnWords?: string[] | null;
   minWordSizeForTypos?: {
-    oneTypo?: number | null
-    twoTypos?: number | null
-  }
-} | null
-export type SeparatorTokens = string[] | null
-export type NonSeparatorTokens = string[] | null
-export type Dictionary = string[] | null
-export type ProximityPrecision = 'byWord' | 'byAttribute'
+    oneTypo?: number | null;
+    twoTypos?: number | null;
+  };
+} | null;
+export type SeparatorTokens = string[] | null;
+export type NonSeparatorTokens = string[] | null;
+export type Dictionary = string[] | null;
+export type ProximityPrecision = 'byWord' | 'byAttribute';
 
 export type Distribution = {
-  mean: number
-  sigma: number
-}
+  mean: number;
+  sigma: number;
+};
 
 export type OpenAiEmbedder = {
-  source: 'openAi'
-  model?: string
-  apiKey?: string
-  documentTemplate?: string
-  dimensions?: number
-  distribution?: Distribution
-}
+  source: 'openAi';
+  model?: string;
+  apiKey?: string;
+  documentTemplate?: string;
+  dimensions?: number;
+  distribution?: Distribution;
+};
 
 export type HuggingFaceEmbedder = {
-  source: 'huggingFace'
-  model?: string
-  revision?: string
-  documentTemplate?: string
-  distribution?: Distribution
-}
+  source: 'huggingFace';
+  model?: string;
+  revision?: string;
+  documentTemplate?: string;
+  distribution?: Distribution;
+};
 
 export type UserProvidedEmbedder = {
-  source: 'userProvided'
-  dimensions: number
-  distribution?: Distribution
-}
+  source: 'userProvided';
+  dimensions: number;
+  distribution?: Distribution;
+};
 
 export type RestEmbedder = {
-  source: 'rest'
-  url: string
-  apiKey?: string
-  dimensions?: number
-  documentTemplate?: string
-  inputField?: string[] | null
-  inputType?: 'text' | 'textArray'
-  query?: Record<string, any> | null
-  pathToEmbeddings?: string[] | null
-  embeddingObject?: string[] | null
-  distribution?: Distribution
-}
+  source: 'rest';
+  url: string;
+  apiKey?: string;
+  dimensions?: number;
+  documentTemplate?: string;
+  inputField?: string[] | null;
+  inputType?: 'text' | 'textArray';
+  query?: Record<string, any> | null;
+  pathToEmbeddings?: string[] | null;
+  embeddingObject?: string[] | null;
+  distribution?: Distribution;
+};
 
 export type OllamaEmbedder = {
-  source: 'ollama'
-  url?: string
-  apiKey?: string
-  model?: string
-  documentTemplate?: string
-  distribution?: Distribution
-}
+  source: 'ollama';
+  url?: string;
+  apiKey?: string;
+  model?: string;
+  documentTemplate?: string;
+  distribution?: Distribution;
+};
 
 export type Embedder =
   | OpenAiEmbedder
@@ -391,42 +391,42 @@ export type Embedder =
   | UserProvidedEmbedder
   | RestEmbedder
   | OllamaEmbedder
-  | null
+  | null;
 
-export type Embedders = Record<string, Embedder> | null
+export type Embedders = Record<string, Embedder> | null;
 
-export type FacetOrder = 'alpha' | 'count'
+export type FacetOrder = 'alpha' | 'count';
 
 export type Faceting = {
-  maxValuesPerFacet?: number | null
-  sortFacetValuesBy?: Record<string, FacetOrder> | null
-}
+  maxValuesPerFacet?: number | null;
+  sortFacetValuesBy?: Record<string, FacetOrder> | null;
+};
 
 export type PaginationSettings = {
-  maxTotalHits?: number | null
-}
+  maxTotalHits?: number | null;
+};
 
-export type SearchCutoffMs = number | null
+export type SearchCutoffMs = number | null;
 
 export type Settings = {
-  filterableAttributes?: FilterableAttributes
-  distinctAttribute?: DistinctAttribute
-  sortableAttributes?: SortableAttributes
-  searchableAttributes?: SearchableAttributes
-  displayedAttributes?: DisplayedAttributes
-  rankingRules?: RankingRules
-  stopWords?: StopWords
-  synonyms?: Synonyms
-  typoTolerance?: TypoTolerance
-  faceting?: Faceting
-  pagination?: PaginationSettings
-  separatorTokens?: SeparatorTokens
-  nonSeparatorTokens?: NonSeparatorTokens
-  dictionary?: Dictionary
-  proximityPrecision?: ProximityPrecision
-  embedders?: Embedders
-  searchCutoffMs?: SearchCutoffMs
-}
+  filterableAttributes?: FilterableAttributes;
+  distinctAttribute?: DistinctAttribute;
+  sortableAttributes?: SortableAttributes;
+  searchableAttributes?: SearchableAttributes;
+  displayedAttributes?: DisplayedAttributes;
+  rankingRules?: RankingRules;
+  stopWords?: StopWords;
+  synonyms?: Synonyms;
+  typoTolerance?: TypoTolerance;
+  faceting?: Faceting;
+  pagination?: PaginationSettings;
+  separatorTokens?: SeparatorTokens;
+  nonSeparatorTokens?: NonSeparatorTokens;
+  dictionary?: Dictionary;
+  proximityPrecision?: ProximityPrecision;
+  embedders?: Embedders;
+  searchCutoffMs?: SearchCutoffMs;
+};
 
 /*
  ** TASKS
@@ -438,9 +438,9 @@ export const TaskStatus = {
   TASK_FAILED: 'failed',
   TASK_ENQUEUED: 'enqueued',
   TASK_CANCELED: 'canceled',
-} as const
+} as const;
 
-export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
+export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus];
 
 export const TaskTypes = {
   DOCUMENTS_ADDITION_OR_UPDATE: 'documentAdditionOrUpdate',
@@ -454,213 +454,213 @@ export const TaskTypes = {
   SNAPSHOT_CREATION: 'snapshotCreation',
   TASK_CANCELATION: 'taskCancelation',
   TASK_DELETION: 'taskDeletion',
-} as const
+} as const;
 
-export type TaskTypes = (typeof TaskTypes)[keyof typeof TaskTypes]
+export type TaskTypes = (typeof TaskTypes)[keyof typeof TaskTypes];
 
 export type TasksQuery = {
-  indexUids?: string[]
-  uids?: number[]
-  types?: TaskTypes[]
-  statuses?: TaskStatus[]
-  canceledBy?: number[]
-  beforeEnqueuedAt?: Date
-  afterEnqueuedAt?: Date
-  beforeStartedAt?: Date
-  afterStartedAt?: Date
-  beforeFinishedAt?: Date
-  afterFinishedAt?: Date
-  limit?: number
-  from?: number
-}
+  indexUids?: string[];
+  uids?: number[];
+  types?: TaskTypes[];
+  statuses?: TaskStatus[];
+  canceledBy?: number[];
+  beforeEnqueuedAt?: Date;
+  afterEnqueuedAt?: Date;
+  beforeStartedAt?: Date;
+  afterStartedAt?: Date;
+  beforeFinishedAt?: Date;
+  afterFinishedAt?: Date;
+  limit?: number;
+  from?: number;
+};
 // TODO fix
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
+export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {};
 // TODO fix
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type DeleteTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {}
+export type DeleteTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {};
 
 export type EnqueuedTaskObject = {
-  taskUid: number
-  indexUid?: string
-  status: TaskStatus
-  type: TaskTypes
-  enqueuedAt: string
-  canceledBy: number
-}
+  taskUid: number;
+  indexUid?: string;
+  status: TaskStatus;
+  type: TaskTypes;
+  enqueuedAt: string;
+  canceledBy: number;
+};
 
 export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
-  uid: number
+  uid: number;
   details: {
     // Number of documents sent
-    receivedDocuments?: number
+    receivedDocuments?: number;
 
     // Number of documents successfully indexed/updated in Meilisearch
-    indexedDocuments?: number
+    indexedDocuments?: number;
 
     // Number of deleted documents
-    deletedDocuments?: number
+    deletedDocuments?: number;
 
     // Number of documents found on a batch-delete
-    providedIds?: number
+    providedIds?: number;
 
     // Primary key on index creation
-    primaryKey?: string
+    primaryKey?: string;
 
     // Ranking rules on settings actions
-    rankingRules?: RankingRules
+    rankingRules?: RankingRules;
 
     // Searchable attributes on settings actions
-    searchableAttributes?: SearchableAttributes
+    searchableAttributes?: SearchableAttributes;
 
     // Displayed attributes on settings actions
-    displayedAttributes?: DisplayedAttributes
+    displayedAttributes?: DisplayedAttributes;
 
     // Filterable attributes on settings actions
-    filterableAttributes?: FilterableAttributes
+    filterableAttributes?: FilterableAttributes;
 
     // Sortable attributes on settings actions
-    sortableAttributes?: SortableAttributes
+    sortableAttributes?: SortableAttributes;
 
     // Stop words on settings actions
-    stopWords?: StopWords
+    stopWords?: StopWords;
 
     // Stop words on settings actions
-    synonyms?: Synonyms
+    synonyms?: Synonyms;
 
     // Distinct attribute on settings actions
-    distinctAttribute?: DistinctAttribute
+    distinctAttribute?: DistinctAttribute;
 
     // Object containing the payload originating the `indexSwap` task creation
-    swaps?: SwapIndexesParams
+    swaps?: SwapIndexesParams;
 
     // Number of tasks that matched the originalQuery filter
-    matchedTasks?: number
+    matchedTasks?: number;
 
     // Number of tasks that were canceled
-    canceledTasks?: number
+    canceledTasks?: number;
 
     // Number of tasks that were deleted
-    deletedTasks?: number
+    deletedTasks?: number;
 
     // Query parameters used to filter the tasks
-    originalFilter?: string
-  }
-  error: MeiliSearchErrorInfo | null
-  duration: string
-  startedAt: string
-  finishedAt: string
-}
+    originalFilter?: string;
+  };
+  error: MeiliSearchErrorInfo | null;
+  duration: string;
+  startedAt: string;
+  finishedAt: string;
+};
 
 export type SwapIndexesParams = Array<{
-  indexes: string[]
-}>
+  indexes: string[];
+}>;
 
 type CursorResults<T> = {
-  results: T[]
-  limit: number
-  from: number
-  next: number
-  total: number
-}
+  results: T[];
+  limit: number;
+  from: number;
+  next: number;
+  total: number;
+};
 
-export type TasksResults = CursorResults<Task>
-export type TasksResultsObject = CursorResults<TaskObject>
+export type TasksResults = CursorResults<Task>;
+export type TasksResultsObject = CursorResults<TaskObject>;
 
 export type WaitOptions = {
-  timeOutMs?: number
-  intervalMs?: number
-}
+  timeOutMs?: number;
+  intervalMs?: number;
+};
 
 /*
  *** HEALTH
  */
 
 export type Health = {
-  status: 'available'
-}
+  status: 'available';
+};
 
 /*
  *** STATS
  */
 
 export type IndexStats = {
-  numberOfDocuments: number
-  isIndexing: boolean
-  fieldDistribution: FieldDistribution
-}
+  numberOfDocuments: number;
+  isIndexing: boolean;
+  fieldDistribution: FieldDistribution;
+};
 
 export type Stats = {
-  databaseSize: number
-  lastUpdate: string
+  databaseSize: number;
+  lastUpdate: string;
   indexes: {
-    [index: string]: IndexStats
-  }
-}
+    [index: string]: IndexStats;
+  };
+};
 
 /*
  ** Keys
  */
 
 export type Key = {
-  uid: string
-  description: string
-  name: string | null
-  key: string
-  actions: string[]
-  indexes: string[]
-  expiresAt: Date
-  createdAt: Date
-  updatedAt: Date
-}
+  uid: string;
+  description: string;
+  name: string | null;
+  key: string;
+  actions: string[];
+  indexes: string[];
+  expiresAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export type KeyCreation = {
-  uid?: string
-  name?: string
-  description?: string
-  actions: string[]
-  indexes: string[]
-  expiresAt: Date | null
-}
+  uid?: string;
+  name?: string;
+  description?: string;
+  actions: string[];
+  indexes: string[];
+  expiresAt: Date | null;
+};
 
 export type KeyUpdate = {
-  name?: string
-  description?: string
-}
+  name?: string;
+  description?: string;
+};
 
 // TODO fix
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type KeysQuery = ResourceQuery & {}
+export type KeysQuery = ResourceQuery & {};
 
 // TODO fix
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type KeysResults = ResourceResults<Key[]> & {}
+export type KeysResults = ResourceResults<Key[]> & {};
 
 /*
  ** version
  */
 export type Version = {
-  commitSha: string
-  commitDate: string
-  pkgVersion: string
-}
+  commitSha: string;
+  commitDate: string;
+  pkgVersion: string;
+};
 
 /*
  ** ERROR HANDLER
  */
 
 export interface FetchError extends Error {
-  type: string
-  errno: string
-  code: string
+  type: string;
+  errno: string;
+  code: string;
 }
 
 export type MeiliSearchErrorInfo = {
-  code: string
-  link: string
-  message: string
-  type: string
-}
+  code: string;
+  link: string;
+  message: string;
+  type: string;
+};
 
 export const ErrorStatusCode = {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#index_creation_failed */
@@ -1010,18 +1010,20 @@ export const ErrorStatusCode = {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_facet_query */
   INVALID_FACET_SEARCH_FACET_QUERY: 'invalid_facet_search_facet_query',
-}
+};
 
 export type ErrorStatusCode =
-  (typeof ErrorStatusCode)[keyof typeof ErrorStatusCode]
+  (typeof ErrorStatusCode)[keyof typeof ErrorStatusCode];
 
 export type TokenIndexRules = {
-  [field: string]: any
-  filter?: Filter
-}
-export type TokenSearchRules = Record<string, TokenIndexRules | null> | string[]
+  [field: string]: any;
+  filter?: Filter;
+};
+export type TokenSearchRules =
+  | Record<string, TokenIndexRules | null>
+  | string[];
 
 export type TokenOptions = {
-  apiKey?: string
-  expiresAt?: Date
-}
+  apiKey?: string;
+  expiresAt?: Date;
+};

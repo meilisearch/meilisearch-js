@@ -1,40 +1,40 @@
-import { Config, EnqueuedTaskObject } from './types'
-import { PACKAGE_VERSION } from './package-version'
+import { Config, EnqueuedTaskObject } from './types';
+import { PACKAGE_VERSION } from './package-version';
 
 import {
   MeiliSearchError,
   httpResponseErrorHandler,
   httpErrorHandler,
-} from './errors'
+} from './errors';
 
-import { addTrailingSlash, addProtocolIfNotPresent } from './utils'
+import { addTrailingSlash, addProtocolIfNotPresent } from './utils';
 
-type queryParams<T> = { [key in keyof T]: string }
+type queryParams<T> = { [key in keyof T]: string };
 
 function toQueryParams<T extends object>(parameters: T): queryParams<T> {
-  const params = Object.keys(parameters) as Array<keyof T>
+  const params = Object.keys(parameters) as Array<keyof T>;
 
   const queryParams = params.reduce<queryParams<T>>((acc, key) => {
-    const value = parameters[key]
+    const value = parameters[key];
     if (value === undefined) {
-      return acc
+      return acc;
     } else if (Array.isArray(value)) {
-      return { ...acc, [key]: value.join(',') }
+      return { ...acc, [key]: value.join(',') };
     } else if (value instanceof Date) {
-      return { ...acc, [key]: value.toISOString() }
+      return { ...acc, [key]: value.toISOString() };
     }
-    return { ...acc, [key]: value }
-  }, {} as queryParams<T>)
-  return queryParams
+    return { ...acc, [key]: value };
+  }, {} as queryParams<T>);
+  return queryParams;
 }
 
 function constructHostURL(host: string): string {
   try {
-    host = addProtocolIfNotPresent(host)
-    host = addTrailingSlash(host)
-    return host
+    host = addProtocolIfNotPresent(host);
+    host = addTrailingSlash(host);
+    return host;
   } catch (e) {
-    throw new MeiliSearchError('The provided host is not valid.')
+    throw new MeiliSearchError('The provided host is not valid.');
   }
 }
 
@@ -42,71 +42,71 @@ function cloneAndParseHeaders(headers: HeadersInit): Record<string, string> {
   if (Array.isArray(headers)) {
     return headers.reduce(
       (acc, headerPair) => {
-        acc[headerPair[0]] = headerPair[1]
-        return acc
+        acc[headerPair[0]] = headerPair[1];
+        return acc;
       },
-      {} as Record<string, string>
-    )
+      {} as Record<string, string>,
+    );
   } else if ('has' in headers) {
-    const clonedHeaders: Record<string, string> = {}
-    ;(headers as Headers).forEach((value, key) => (clonedHeaders[key] = value))
-    return clonedHeaders
+    const clonedHeaders: Record<string, string> = {};
+    (headers as Headers).forEach((value, key) => (clonedHeaders[key] = value));
+    return clonedHeaders;
   } else {
-    return Object.assign({}, headers)
+    return Object.assign({}, headers);
   }
 }
 
 function createHeaders(config: Config): Record<string, any> {
-  const agentHeader = 'X-Meilisearch-Client'
-  const packageAgent = `Meilisearch JavaScript (v${PACKAGE_VERSION})`
-  const contentType = 'Content-Type'
-  const authorization = 'Authorization'
-  const headers = cloneAndParseHeaders(config.requestConfig?.headers ?? {})
+  const agentHeader = 'X-Meilisearch-Client';
+  const packageAgent = `Meilisearch JavaScript (v${PACKAGE_VERSION})`;
+  const contentType = 'Content-Type';
+  const authorization = 'Authorization';
+  const headers = cloneAndParseHeaders(config.requestConfig?.headers ?? {});
 
   // do not override if user provided the header
   if (config.apiKey && !headers[authorization]) {
-    headers[authorization] = `Bearer ${config.apiKey}`
+    headers[authorization] = `Bearer ${config.apiKey}`;
   }
 
   if (!headers[contentType]) {
-    headers['Content-Type'] = 'application/json'
+    headers['Content-Type'] = 'application/json';
   }
 
   // Creates the custom user agent with information on the package used.
   if (config.clientAgents && Array.isArray(config.clientAgents)) {
-    const clients = config.clientAgents.concat(packageAgent)
+    const clients = config.clientAgents.concat(packageAgent);
 
-    headers[agentHeader] = clients.join(' ; ')
+    headers[agentHeader] = clients.join(' ; ');
   } else if (config.clientAgents && !Array.isArray(config.clientAgents)) {
     // If the header is defined but not an array
     throw new MeiliSearchError(
-      `Meilisearch: The header "${agentHeader}" should be an array of string(s).\n`
-    )
+      `Meilisearch: The header "${agentHeader}" should be an array of string(s).\n`,
+    );
   } else {
-    headers[agentHeader] = packageAgent
+    headers[agentHeader] = packageAgent;
   }
 
-  return headers
+  return headers;
 }
 
 class HttpRequests {
-  headers: Record<string, any>
-  url: URL
-  requestConfig?: Config['requestConfig']
-  httpClient?: Required<Config>['httpClient']
-  requestTimeout?: number
+  headers: Record<string, any>;
+  url: URL;
+  requestConfig?: Config['requestConfig'];
+  httpClient?: Required<Config>['httpClient'];
+  requestTimeout?: number;
 
   constructor(config: Config) {
-    this.headers = createHeaders(config)
-    this.requestConfig = config.requestConfig
-    this.httpClient = config.httpClient
-    this.requestTimeout = config.timeout
+    this.headers = createHeaders(config);
+    this.requestConfig = config.requestConfig;
+    this.httpClient = config.httpClient;
+    this.requestTimeout = config.timeout;
 
     try {
-      const host = constructHostURL(config.host)
-      this.url = new URL(host)
+      const host = constructHostURL(config.host);
+      this.url = new URL(host);
     } catch (e) {
-      throw new MeiliSearchError('The provided host is not valid.')
+      throw new MeiliSearchError('The provided host is not valid.');
     }
   }
 
@@ -117,32 +117,32 @@ class HttpRequests {
     body,
     config = {},
   }: {
-    method: string
-    url: string
-    params?: { [key: string]: any }
-    body?: any
-    config?: Record<string, any>
+    method: string;
+    url: string;
+    params?: { [key: string]: any };
+    body?: any;
+    config?: Record<string, any>;
   }) {
     if (typeof fetch === 'undefined') {
-      require('cross-fetch/polyfill')
+      require('cross-fetch/polyfill');
     }
 
-    const constructURL = new URL(url, this.url)
+    const constructURL = new URL(url, this.url);
     if (params) {
-      const queryParams = new URLSearchParams()
+      const queryParams = new URLSearchParams();
       Object.keys(params)
         .filter((x: string) => params[x] !== null)
-        .map((x: string) => queryParams.set(x, params[x]))
-      constructURL.search = queryParams.toString()
+        .map((x: string) => queryParams.set(x, params[x]));
+      constructURL.search = queryParams.toString();
     }
 
     // in case a custom content-type is provided
     // do not stringify body
     if (!config.headers?.['Content-Type']) {
-      body = JSON.stringify(body)
+      body = JSON.stringify(body);
     }
 
-    const headers = { ...this.headers, ...config.headers }
+    const headers = { ...this.headers, ...config.headers };
 
     try {
       const result = this.fetchWithTimeout(
@@ -154,96 +154,96 @@ class HttpRequests {
           body,
           headers,
         },
-        this.requestTimeout
-      )
+        this.requestTimeout,
+      );
 
       // When using a custom HTTP client, the response is returned to allow the user to parse/handle it as they see fit
       if (this.httpClient) {
-        return await result
+        return await result;
       }
 
       const response = await result.then((res: any) =>
-        httpResponseErrorHandler(res)
-      )
-      const parsedBody = await response.json().catch(() => undefined)
+        httpResponseErrorHandler(res),
+      );
+      const parsedBody = await response.json().catch(() => undefined);
 
-      return parsedBody
+      return parsedBody;
     } catch (e: any) {
-      const stack = e.stack
-      httpErrorHandler(e, stack, constructURL.toString())
+      const stack = e.stack;
+      httpErrorHandler(e, stack, constructURL.toString());
     }
   }
 
   async fetchWithTimeout(
     url: string,
     options: Record<string, any> | RequestInit | undefined,
-    timeout: HttpRequests['requestTimeout']
+    timeout: HttpRequests['requestTimeout'],
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
-      const fetchFn = this.httpClient ? this.httpClient : fetch
+      const fetchFn = this.httpClient ? this.httpClient : fetch;
 
-      const fetchPromise = fetchFn(url, options)
+      const fetchPromise = fetchFn(url, options);
 
-      const promises: Array<Promise<any>> = [fetchPromise]
+      const promises: Array<Promise<any>> = [fetchPromise];
 
       // TimeoutPromise will not run if undefined or zero
-      let timeoutId: ReturnType<typeof setTimeout>
+      let timeoutId: ReturnType<typeof setTimeout>;
       if (timeout) {
         const timeoutPromise = new Promise((_, reject) => {
           timeoutId = setTimeout(() => {
-            reject(new Error('Error: Request Timed Out'))
-          }, timeout)
-        })
+            reject(new Error('Error: Request Timed Out'));
+          }, timeout);
+        });
 
-        promises.push(timeoutPromise)
+        promises.push(timeoutPromise);
       }
 
       Promise.race(promises)
         .then(resolve)
         .catch(reject)
         .finally(() => {
-          clearTimeout(timeoutId)
-        })
-    })
+          clearTimeout(timeoutId);
+        });
+    });
   }
 
   async get(
     url: string,
     params?: { [key: string]: any },
-    config?: Record<string, any>
-  ): Promise<void>
+    config?: Record<string, any>,
+  ): Promise<void>;
 
   async get<T = any>(
     url: string,
     params?: { [key: string]: any },
-    config?: Record<string, any>
-  ): Promise<T>
+    config?: Record<string, any>,
+  ): Promise<T>;
 
   async get(
     url: string,
     params?: { [key: string]: any },
-    config?: Record<string, any>
+    config?: Record<string, any>,
   ): Promise<any> {
     return await this.request({
       method: 'GET',
       url,
       params,
       config,
-    })
+    });
   }
 
   async post<T = any, R = EnqueuedTaskObject>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
-    config?: Record<string, any>
-  ): Promise<R>
+    config?: Record<string, any>,
+  ): Promise<R>;
 
   async post(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Record<string, any>
+    config?: Record<string, any>,
   ): Promise<any> {
     return await this.request({
       method: 'POST',
@@ -251,21 +251,21 @@ class HttpRequests {
       body: data,
       params,
       config,
-    })
+    });
   }
 
   async put<T = any, R = EnqueuedTaskObject>(
     url: string,
     data?: T,
     params?: { [key: string]: any },
-    config?: Record<string, any>
-  ): Promise<R>
+    config?: Record<string, any>,
+  ): Promise<R>;
 
   async put(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Record<string, any>
+    config?: Record<string, any>,
   ): Promise<any> {
     return await this.request({
       method: 'PUT',
@@ -273,14 +273,14 @@ class HttpRequests {
       body: data,
       params,
       config,
-    })
+    });
   }
 
   async patch(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Record<string, any>
+    config?: Record<string, any>,
   ): Promise<any> {
     return await this.request({
       method: 'PATCH',
@@ -288,26 +288,26 @@ class HttpRequests {
       body: data,
       params,
       config,
-    })
+    });
   }
 
   async delete(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Record<string, any>
-  ): Promise<EnqueuedTaskObject>
+    config?: Record<string, any>,
+  ): Promise<EnqueuedTaskObject>;
   async delete<T>(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Record<string, any>
-  ): Promise<T>
+    config?: Record<string, any>,
+  ): Promise<T>;
   async delete(
     url: string,
     data?: any,
     params?: { [key: string]: any },
-    config?: Record<string, any>
+    config?: Record<string, any>,
   ): Promise<any> {
     return await this.request({
       method: 'DELETE',
@@ -315,8 +315,8 @@ class HttpRequests {
       body: data,
       params,
       config,
-    })
+    });
   }
 }
 
-export { HttpRequests, toQueryParams }
+export { HttpRequests, toQueryParams };

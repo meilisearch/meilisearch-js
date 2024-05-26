@@ -1,13 +1,13 @@
-import { Client } from './client'
-import { Config, TokenSearchRules, TokenOptions } from '../types'
-import { Token } from '../token'
+import { Client } from './client';
+import { Config, TokenSearchRules, TokenOptions } from '../types';
+import { Token } from '../token';
 
 class MeiliSearch extends Client {
-  tokens: Token
+  tokens: Token;
 
   constructor(config: Config) {
-    super(config)
-    this.tokens = new Token(config)
+    super(config);
+    this.tokens = new Token(config);
   }
 
   /**
@@ -21,16 +21,16 @@ class MeiliSearch extends Client {
   async generateTenantToken(
     apiKeyUid: string,
     searchRules: TokenSearchRules,
-    options?: TokenOptions
+    options?: TokenOptions,
   ): Promise<string> {
     if (typeof window === 'undefined') {
       return await this.tokens.generateTenantToken(
         apiKeyUid,
         searchRules,
-        options
-      )
+        options,
+      );
     }
-    return await super.generateTenantToken(apiKeyUid, searchRules, options)
+    return await super.generateTenantToken(apiKeyUid, searchRules, options);
   }
 }
-export { MeiliSearch }
+export { MeiliSearch };
