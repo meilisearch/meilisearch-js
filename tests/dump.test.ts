@@ -1,53 +1,53 @@
-import { ErrorStatusCode } from '../src/types'
+import { ErrorStatusCode } from '../src/types';
 import {
   clearAllIndexes,
   config,
   MeiliSearch,
   BAD_HOST,
   getClient,
-} from './utils/meilisearch-test-utils'
+} from './utils/meilisearch-test-utils';
 
 beforeEach(async () => {
-  await clearAllIndexes(config)
-})
+  await clearAllIndexes(config);
+});
 
 describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   'Test on dump',
   ({ permission }) => {
     test(`${permission} key: create a new dump`, async () => {
-      const client = await getClient(permission)
-      const { taskUid } = await client.createDump()
+      const client = await getClient(permission);
+      const { taskUid } = await client.createDump();
 
-      await client.waitForTask(taskUid)
-    })
-  }
-)
+      await client.waitForTask(taskUid);
+    });
+  },
+);
 
 describe.each([{ permission: 'Search' }])(
   'Test on dump with search api key should not have access',
   ({ permission }) => {
     test(`${permission} key: try to create dump with search key and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(client.createDump()).rejects.toHaveProperty(
         'cause.code',
-        ErrorStatusCode.INVALID_API_KEY
-      )
-    })
-  }
-)
+        ErrorStatusCode.INVALID_API_KEY,
+      );
+    });
+  },
+);
 
 describe.each([{ permission: 'No' }])(
   'Test on dump without api key should not have access',
   ({ permission }) => {
     test(`${permission} key: try to create dump with no key and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(client.createDump()).rejects.toHaveProperty(
         'cause.code',
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
-      )
-    })
-  }
-)
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+      );
+    });
+  },
+);
 
 describe.each([
   { host: BAD_HOST, trailing: false },
@@ -55,13 +55,13 @@ describe.each([
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])('Tests on url construction', ({ host, trailing }) => {
   test(`Test createDump route`, async () => {
-    const route = `dumps`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `dumps`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
 
     await expect(client.createDump()).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
-})
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
+});

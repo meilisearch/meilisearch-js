@@ -1,4 +1,4 @@
-import { EnqueuedTask } from '../src/enqueued-task'
+import { EnqueuedTask } from '../src/enqueued-task';
 import {
   clearAllIndexes,
   config,
@@ -6,81 +6,81 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils'
+} from './utils/meilisearch-test-utils';
 
 const index = {
   uid: 'movies_test',
-}
+};
 
-jest.setTimeout(100 * 1000)
+jest.setTimeout(100 * 1000);
 
 afterAll(() => {
-  return clearAllIndexes(config)
-})
+  return clearAllIndexes(config);
+});
 
 describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   'Test on separator tokens',
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master')
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset)
-      await client.waitForTask(taskUid)
-    })
+      const client = await getClient('Master');
+      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
+      await client.waitForTask(taskUid);
+    });
 
     test(`${permission} key: Get default separator tokens`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       const response: string[] = await client
         .index(index.uid)
-        .getSeparatorTokens()
+        .getSeparatorTokens();
 
-      expect(response).toEqual([])
-    })
+      expect(response).toEqual([]);
+    });
 
     test(`${permission} key: Update separator tokens`, async () => {
-      const client = await getClient(permission)
-      const newSeparatorTokens = ['&sep', '/', '|']
+      const client = await getClient(permission);
+      const newSeparatorTokens = ['&sep', '/', '|'];
       const task: EnqueuedTask = await client
         .index(index.uid)
-        .updateSeparatorTokens(newSeparatorTokens)
-      await client.index(index.uid).waitForTask(task.taskUid)
+        .updateSeparatorTokens(newSeparatorTokens);
+      await client.index(index.uid).waitForTask(task.taskUid);
 
       const response: string[] = await client
         .index(index.uid)
-        .getSeparatorTokens()
+        .getSeparatorTokens();
 
-      expect(response).toEqual(newSeparatorTokens)
-    })
+      expect(response).toEqual(newSeparatorTokens);
+    });
 
     test(`${permission} key: Update separator tokens with null value`, async () => {
-      const client = await getClient(permission)
-      const newSeparatorTokens = null
+      const client = await getClient(permission);
+      const newSeparatorTokens = null;
       const task: EnqueuedTask = await client
         .index(index.uid)
-        .updateSeparatorTokens(newSeparatorTokens)
-      await client.index(index.uid).waitForTask(task.taskUid)
+        .updateSeparatorTokens(newSeparatorTokens);
+      await client.index(index.uid).waitForTask(task.taskUid);
 
       const response: string[] = await client
         .index(index.uid)
-        .getSeparatorTokens()
+        .getSeparatorTokens();
 
-      expect(response).toEqual([])
-    })
+      expect(response).toEqual([]);
+    });
 
     test(`${permission} key: Reset separator tokens`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       const task: EnqueuedTask = await client
         .index(index.uid)
-        .resetSeparatorTokens()
-      await client.index(index.uid).waitForTask(task.taskUid)
+        .resetSeparatorTokens();
+      await client.index(index.uid).waitForTask(task.taskUid);
 
       const response: string[] = await client
         .index(index.uid)
-        .getSeparatorTokens()
+        .getSeparatorTokens();
 
-      expect(response).toEqual([])
-    })
-  }
-)
+      expect(response).toEqual([]);
+    });
+  },
+);
 
 describe.each([
   { host: BAD_HOST, trailing: false },
@@ -88,38 +88,38 @@ describe.each([
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])('Tests on url construction', ({ host, trailing }) => {
   test(`Test getSeparatorTokens route`, async () => {
-    const route = `indexes/${index.uid}/settings/separator-tokens`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/separator-tokens`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getSeparatorTokens()
+      client.index(index.uid).getSeparatorTokens(),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
 
   test(`Test updateSeparatorTokens route`, async () => {
-    const route = `indexes/${index.uid}/settings/separator-tokens`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/separator-tokens`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateSeparatorTokens([])
+      client.index(index.uid).updateSeparatorTokens([]),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
 
   test(`Test resetSeparatorTokens route`, async () => {
-    const route = `indexes/${index.uid}/settings/separator-tokens`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/separator-tokens`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetSeparatorTokens()
+      client.index(index.uid).resetSeparatorTokens(),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
-})
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
+});

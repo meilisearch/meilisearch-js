@@ -5,9 +5,9 @@
  * Copyright: 2019, MeiliSearch
  */
 
-'use strict'
+'use strict';
 
-import { Index } from '../indexes'
+import { Index } from '../indexes';
 import {
   KeyCreation,
   Config,
@@ -34,15 +34,15 @@ import {
   DeleteTasksQuery,
   MultiSearchParams,
   MultiSearchResponse,
-} from '../types'
-import { HttpRequests } from '../http-requests'
-import { TaskClient, Task } from '../task'
-import { EnqueuedTask } from '../enqueued-task'
+} from '../types';
+import { HttpRequests } from '../http-requests';
+import { TaskClient, Task } from '../task';
+import { EnqueuedTask } from '../enqueued-task';
 
 class Client {
-  config: Config
-  httpRequest: HttpRequests
-  tasks: TaskClient
+  config: Config;
+  httpRequest: HttpRequests;
+  tasks: TaskClient;
 
   /**
    * Creates new MeiliSearch instance
@@ -50,9 +50,9 @@ class Client {
    * @param config - Configuration object
    */
   constructor(config: Config) {
-    this.config = config
-    this.httpRequest = new HttpRequests(config)
-    this.tasks = new TaskClient(config)
+    this.config = config;
+    this.httpRequest = new HttpRequests(config);
+    this.tasks = new TaskClient(config);
   }
 
   /**
@@ -62,9 +62,9 @@ class Client {
    * @returns Instance of Index
    */
   index<T extends Record<string, any> = Record<string, any>>(
-    indexUid: string
+    indexUid: string,
   ): Index<T> {
-    return new Index<T>(this.config, indexUid)
+    return new Index<T>(this.config, indexUid);
   }
 
   /**
@@ -75,9 +75,9 @@ class Client {
    * @returns Promise returning Index instance
    */
   async getIndex<T extends Record<string, any> = Record<string, any>>(
-    indexUid: string
+    indexUid: string,
   ): Promise<Index<T>> {
-    return new Index<T>(this.config, indexUid).fetchInfo()
+    return new Index<T>(this.config, indexUid).fetchInfo();
   }
 
   /**
@@ -88,7 +88,7 @@ class Client {
    * @returns Promise returning index information
    */
   async getRawIndex(indexUid: string): Promise<IndexObject> {
-    return new Index(this.config, indexUid).getRawInfo()
+    return new Index(this.config, indexUid).getRawInfo();
   }
 
   /**
@@ -98,13 +98,13 @@ class Client {
    * @returns Promise returning array of raw index information
    */
   async getIndexes(
-    parameters: IndexesQuery = {}
+    parameters: IndexesQuery = {},
   ): Promise<IndexesResults<Index[]>> {
-    const rawIndexes = await this.getRawIndexes(parameters)
+    const rawIndexes = await this.getRawIndexes(parameters);
     const indexes: Index[] = rawIndexes.results.map(
-      (index) => new Index(this.config, index.uid, index.primaryKey)
-    )
-    return { ...rawIndexes, results: indexes }
+      (index) => new Index(this.config, index.uid, index.primaryKey),
+    );
+    return { ...rawIndexes, results: indexes };
   }
 
   /**
@@ -114,13 +114,13 @@ class Client {
    * @returns Promise returning array of raw index information
    */
   async getRawIndexes(
-    parameters: IndexesQuery = {}
+    parameters: IndexesQuery = {},
   ): Promise<IndexesResults<IndexObject[]>> {
-    const url = `indexes`
+    const url = `indexes`;
     return await this.httpRequest.get<IndexesResults<IndexObject[]>>(
       url,
-      parameters
-    )
+      parameters,
+    );
   }
 
   /**
@@ -132,9 +132,9 @@ class Client {
    */
   async createIndex(
     uid: string,
-    options: IndexOptions = {}
+    options: IndexOptions = {},
   ): Promise<EnqueuedTask> {
-    return await Index.create(uid, options, this.config)
+    return await Index.create(uid, options, this.config);
   }
 
   /**
@@ -146,9 +146,9 @@ class Client {
    */
   async updateIndex(
     uid: string,
-    options: IndexOptions = {}
+    options: IndexOptions = {},
   ): Promise<EnqueuedTask> {
-    return await new Index(this.config, uid).update(options)
+    return await new Index(this.config, uid).update(options);
   }
 
   /**
@@ -158,7 +158,7 @@ class Client {
    * @returns Promise which resolves when index is deleted successfully
    */
   async deleteIndex(uid: string): Promise<EnqueuedTask> {
-    return await new Index(this.config, uid).delete()
+    return await new Index(this.config, uid).delete();
   }
 
   /**
@@ -170,13 +170,13 @@ class Client {
    */
   async deleteIndexIfExists(uid: string): Promise<boolean> {
     try {
-      await this.deleteIndex(uid)
-      return true
+      await this.deleteIndex(uid);
+      return true;
     } catch (e: any) {
       if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
-        return false
+        return false;
       }
-      throw e
+      throw e;
     }
   }
 
@@ -187,8 +187,8 @@ class Client {
    * @returns Promise returning object of the enqueued task
    */
   async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
-    const url = '/swap-indexes'
-    return await this.httpRequest.post(url, params)
+    const url = '/swap-indexes';
+    return await this.httpRequest.post(url, params);
   }
 
   ///
@@ -209,7 +209,7 @@ class Client {
    *     { indexUid: 'movies', q: 'wonder' },
    *     { indexUid: 'books', q: 'flower' },
    *   ],
-   * })
+   * });
    * ```
    *
    * @param queries - Search queries
@@ -218,11 +218,11 @@ class Client {
    */
   async multiSearch<T extends Record<string, any> = Record<string, any>>(
     queries?: MultiSearchParams,
-    config?: Partial<Request>
+    config?: Partial<Request>,
   ): Promise<MultiSearchResponse<T>> {
-    const url = `multi-search`
+    const url = `multi-search`;
 
-    return await this.httpRequest.post(url, queries, undefined, config)
+    return await this.httpRequest.post(url, queries, undefined, config);
   }
 
   ///
@@ -236,7 +236,7 @@ class Client {
    * @returns Promise returning all tasks
    */
   async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
-    return await this.tasks.getTasks(parameters)
+    return await this.tasks.getTasks(parameters);
   }
 
   /**
@@ -246,7 +246,7 @@ class Client {
    * @returns Promise returning a task
    */
   async getTask(taskUid: number): Promise<Task> {
-    return await this.tasks.getTask(taskUid)
+    return await this.tasks.getTask(taskUid);
   }
 
   /**
@@ -258,12 +258,12 @@ class Client {
    */
   async waitForTasks(
     taskUids: number[],
-    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
+    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {},
   ): Promise<Task[]> {
     return await this.tasks.waitForTasks(taskUids, {
       timeOutMs,
       intervalMs,
-    })
+    });
   }
 
   /**
@@ -275,12 +275,12 @@ class Client {
    */
   async waitForTask(
     taskUid: number,
-    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {}
+    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {},
   ): Promise<Task> {
     return await this.tasks.waitForTask(taskUid, {
       timeOutMs,
       intervalMs,
-    })
+    });
   }
 
   /**
@@ -290,7 +290,7 @@ class Client {
    * @returns Promise containing an EnqueuedTask
    */
   async cancelTasks(parameters: CancelTasksQuery): Promise<EnqueuedTask> {
-    return await this.tasks.cancelTasks(parameters)
+    return await this.tasks.cancelTasks(parameters);
   }
 
   /**
@@ -300,7 +300,7 @@ class Client {
    * @returns Promise containing an EnqueuedTask
    */
   async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
-    return await this.tasks.deleteTasks(parameters)
+    return await this.tasks.deleteTasks(parameters);
   }
 
   ///
@@ -314,16 +314,16 @@ class Client {
    * @returns Promise returning an object with keys
    */
   async getKeys(parameters: KeysQuery = {}): Promise<KeysResults> {
-    const url = `keys`
-    const keys = await this.httpRequest.get<KeysResults>(url, parameters)
+    const url = `keys`;
+    const keys = await this.httpRequest.get<KeysResults>(url, parameters);
 
     keys.results = keys.results.map((key) => ({
       ...key,
       createdAt: new Date(key.createdAt),
       updatedAt: new Date(key.updatedAt),
-    }))
+    }));
 
-    return keys
+    return keys;
   }
 
   /**
@@ -333,8 +333,8 @@ class Client {
    * @returns Promise returning a key
    */
   async getKey(keyOrUid: string): Promise<Key> {
-    const url = `keys/${keyOrUid}`
-    return await this.httpRequest.get<Key>(url)
+    const url = `keys/${keyOrUid}`;
+    return await this.httpRequest.get<Key>(url);
   }
 
   /**
@@ -344,8 +344,8 @@ class Client {
    * @returns Promise returning a key
    */
   async createKey(options: KeyCreation): Promise<Key> {
-    const url = `keys`
-    return await this.httpRequest.post(url, options)
+    const url = `keys`;
+    return await this.httpRequest.post(url, options);
   }
 
   /**
@@ -356,8 +356,8 @@ class Client {
    * @returns Promise returning a key
    */
   async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
-    const url = `keys/${keyOrUid}`
-    return await this.httpRequest.patch(url, options)
+    const url = `keys/${keyOrUid}`;
+    return await this.httpRequest.patch(url, options);
   }
 
   /**
@@ -367,8 +367,8 @@ class Client {
    * @returns
    */
   async deleteKey(keyOrUid: string): Promise<void> {
-    const url = `keys/${keyOrUid}`
-    return await this.httpRequest.delete<any>(url)
+    const url = `keys/${keyOrUid}`;
+    return await this.httpRequest.delete<any>(url);
   }
 
   ///
@@ -381,8 +381,8 @@ class Client {
    * @returns Promise returning an object with health details
    */
   async health(): Promise<Health> {
-    const url = `health`
-    return await this.httpRequest.get<Health>(url)
+    const url = `health`;
+    return await this.httpRequest.get<Health>(url);
   }
 
   /**
@@ -392,11 +392,11 @@ class Client {
    */
   async isHealthy(): Promise<boolean> {
     try {
-      const url = `health`
-      await this.httpRequest.get(url)
-      return true
+      const url = `health`;
+      await this.httpRequest.get(url);
+      return true;
     } catch (e: any) {
-      return false
+      return false;
     }
   }
 
@@ -410,8 +410,8 @@ class Client {
    * @returns Promise returning object of all the stats
    */
   async getStats(): Promise<Stats> {
-    const url = `stats`
-    return await this.httpRequest.get<Stats>(url)
+    const url = `stats`;
+    return await this.httpRequest.get<Stats>(url);
   }
 
   ///
@@ -424,8 +424,8 @@ class Client {
    * @returns Promise returning object with version details
    */
   async getVersion(): Promise<Version> {
-    const url = `version`
-    return await this.httpRequest.get<Version>(url)
+    const url = `version`;
+    return await this.httpRequest.get<Version>(url);
   }
 
   ///
@@ -438,9 +438,11 @@ class Client {
    * @returns Promise returning object of the enqueued task
    */
   async createDump(): Promise<EnqueuedTask> {
-    const url = `dumps`
-    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(url)
-    return new EnqueuedTask(task)
+    const url = `dumps`;
+    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(
+      url,
+    );
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -453,10 +455,12 @@ class Client {
    * @returns Promise returning object of the enqueued task
    */
   async createSnapshot(): Promise<EnqueuedTask> {
-    const url = `snapshots`
-    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(url)
+    const url = `snapshots`;
+    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(
+      url,
+    );
 
-    return new EnqueuedTask(task)
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -474,13 +478,13 @@ class Client {
   generateTenantToken(
     _apiKeyUid: string,
     _searchRules: TokenSearchRules,
-    _options?: TokenOptions
+    _options?: TokenOptions,
   ): Promise<string> {
-    const error = new Error()
-    error.message = `Meilisearch: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}.`
+    const error = new Error();
+    error.message = `Meilisearch: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}.`;
 
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
 }
 
-export { Client }
+export { Client };

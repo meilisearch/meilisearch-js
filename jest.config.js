@@ -38,6 +38,6 @@ const config = {
       testPathIgnorePatterns: ['meilisearch-test-utils', 'env/'],
     },
   ],
-}
+};
 
-module.exports = config
+module.exports = config;

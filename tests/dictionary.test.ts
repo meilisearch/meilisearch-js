@@ -1,4 +1,4 @@
-import { EnqueuedTask } from '../src/enqueued-task'
+import { EnqueuedTask } from '../src/enqueued-task';
 import {
   clearAllIndexes,
   config,
@@ -6,71 +6,73 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils'
+} from './utils/meilisearch-test-utils';
 
 const index = {
   uid: 'movies_test',
-}
+};
 
-jest.setTimeout(100 * 1000)
+jest.setTimeout(100 * 1000);
 
 afterAll(() => {
-  return clearAllIndexes(config)
-})
+  return clearAllIndexes(config);
+});
 
 describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   'Test on dictionary',
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master')
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset)
-      await client.waitForTask(taskUid)
-    })
+      const client = await getClient('Master');
+      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
+      await client.waitForTask(taskUid);
+    });
 
     test(`${permission} key: Get default dictionary`, async () => {
-      const client = await getClient(permission)
-      const response: string[] = await client.index(index.uid).getDictionary()
+      const client = await getClient(permission);
+      const response: string[] = await client.index(index.uid).getDictionary();
 
-      expect(response).toEqual([])
-    })
+      expect(response).toEqual([]);
+    });
 
     test(`${permission} key: Update dictionary`, async () => {
-      const client = await getClient(permission)
-      const newDictionary = ['J. K.', 'J. R. R.']
+      const client = await getClient(permission);
+      const newDictionary = ['J. K.', 'J. R. R.'];
       const task: EnqueuedTask = await client
         .index(index.uid)
-        .updateDictionary(newDictionary)
-      await client.index(index.uid).waitForTask(task.taskUid)
+        .updateDictionary(newDictionary);
+      await client.index(index.uid).waitForTask(task.taskUid);
 
-      const response: string[] = await client.index(index.uid).getDictionary()
+      const response: string[] = await client.index(index.uid).getDictionary();
 
-      expect(response).toEqual(newDictionary)
-    })
+      expect(response).toEqual(newDictionary);
+    });
 
     test(`${permission} key: Update dictionary with null value`, async () => {
-      const client = await getClient(permission)
-      const newDictionary = null
+      const client = await getClient(permission);
+      const newDictionary = null;
       const task: EnqueuedTask = await client
         .index(index.uid)
-        .updateDictionary(newDictionary)
-      await client.index(index.uid).waitForTask(task.taskUid)
+        .updateDictionary(newDictionary);
+      await client.index(index.uid).waitForTask(task.taskUid);
 
-      const response: string[] = await client.index(index.uid).getDictionary()
+      const response: string[] = await client.index(index.uid).getDictionary();
 
-      expect(response).toEqual([])
-    })
+      expect(response).toEqual([]);
+    });
 
     test(`${permission} key: Reset dictionary`, async () => {
-      const client = await getClient(permission)
-      const task: EnqueuedTask = await client.index(index.uid).resetDictionary()
-      await client.index(index.uid).waitForTask(task.taskUid)
+      const client = await getClient(permission);
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .resetDictionary();
+      await client.index(index.uid).waitForTask(task.taskUid);
 
-      const response: string[] = await client.index(index.uid).getDictionary()
+      const response: string[] = await client.index(index.uid).getDictionary();
 
-      expect(response).toEqual([])
-    })
-  }
-)
+      expect(response).toEqual([]);
+    });
+  },
+);
 
 describe.each([
   { host: BAD_HOST, trailing: false },
@@ -78,38 +80,38 @@ describe.each([
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])('Tests on url construction', ({ host, trailing }) => {
   test(`Test getDictionary route`, async () => {
-    const route = `indexes/${index.uid}/settings/dictionary`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/dictionary`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getDictionary()
+      client.index(index.uid).getDictionary(),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
 
   test(`Test updateDictionary route`, async () => {
-    const route = `indexes/${index.uid}/settings/dictionary`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/dictionary`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateDictionary([])
+      client.index(index.uid).updateDictionary([]),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
 
   test(`Test resetDictionary route`, async () => {
-    const route = `indexes/${index.uid}/settings/dictionary`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/dictionary`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetDictionary()
+      client.index(index.uid).resetDictionary(),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
-})
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
+});

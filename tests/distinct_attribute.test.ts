@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from '../src/types'
+import { ErrorStatusCode } from '../src/types';
 import {
   clearAllIndexes,
   config,
@@ -6,138 +6,138 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils'
+} from './utils/meilisearch-test-utils';
 
 const index = {
   uid: 'movies_test',
-}
+};
 
-jest.setTimeout(100 * 1000)
+jest.setTimeout(100 * 1000);
 
 afterAll(() => {
-  return clearAllIndexes(config)
-})
+  return clearAllIndexes(config);
+});
 
 describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   'Test on distinct attribute',
   ({ permission }) => {
     beforeEach(async () => {
-      await clearAllIndexes(config)
-      const client = await getClient('master')
+      await clearAllIndexes(config);
+      const client = await getClient('master');
 
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset)
-      await client.waitForTask(taskUid)
-    })
+      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
+      await client.waitForTask(taskUid);
+    });
 
     test(`${permission} key: Get default distinct attribute`, async () => {
-      const client = await getClient(permission)
-      const response = await client.index(index.uid).getDistinctAttribute()
-      expect(response).toEqual(null)
-    })
+      const client = await getClient(permission);
+      const response = await client.index(index.uid).getDistinctAttribute();
+      expect(response).toEqual(null);
+    });
 
     test(`${permission} key: Update distinct attribute`, async () => {
-      const client = await getClient(permission)
-      const newDistinctAttribute = 'title'
+      const client = await getClient(permission);
+      const newDistinctAttribute = 'title';
       const task = await client
         .index(index.uid)
-        .updateDistinctAttribute(newDistinctAttribute)
-      await client.index(index.uid).waitForTask(task.taskUid)
+        .updateDistinctAttribute(newDistinctAttribute);
+      await client.index(index.uid).waitForTask(task.taskUid);
 
-      const response = await client.index(index.uid).getDistinctAttribute()
+      const response = await client.index(index.uid).getDistinctAttribute();
 
-      expect(response).toEqual(newDistinctAttribute)
-    })
+      expect(response).toEqual(newDistinctAttribute);
+    });
 
     test(`${permission} key: Update distinct attribute at null`, async () => {
-      const client = await getClient(permission)
-      const task = await client.index(index.uid).updateDistinctAttribute(null)
-      await client.index(index.uid).waitForTask(task.taskUid)
+      const client = await getClient(permission);
+      const task = await client.index(index.uid).updateDistinctAttribute(null);
+      await client.index(index.uid).waitForTask(task.taskUid);
 
-      const response = await client.index(index.uid).getDistinctAttribute()
+      const response = await client.index(index.uid).getDistinctAttribute();
 
-      expect(response).toEqual(null)
-    })
+      expect(response).toEqual(null);
+    });
 
     test(`${permission} key: Reset distinct attribute`, async () => {
-      const client = await getClient(permission)
-      const task = await client.index(index.uid).resetDistinctAttribute()
-      await client.index(index.uid).waitForTask(task.taskUid)
+      const client = await getClient(permission);
+      const task = await client.index(index.uid).resetDistinctAttribute();
+      await client.index(index.uid).waitForTask(task.taskUid);
 
-      const response = await client.index(index.uid).getDistinctAttribute()
+      const response = await client.index(index.uid).getDistinctAttribute();
 
-      expect(response).toEqual(null)
-    })
-  }
-)
+      expect(response).toEqual(null);
+    });
+  },
+);
 
 describe.each([{ permission: 'Search' }])(
   'Test on distinct attribute',
   ({ permission }) => {
     beforeEach(async () => {
-      await clearAllIndexes(config)
-    })
+      await clearAllIndexes(config);
+    });
 
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getDistinctAttribute()
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
-    })
+        client.index(index.uid).getDistinctAttribute(),
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+    });
 
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateDistinctAttribute('title')
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
-    })
+        client.index(index.uid).updateDistinctAttribute('title'),
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+    });
 
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetDistinctAttribute()
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
-    })
-  }
-)
+        client.index(index.uid).resetDistinctAttribute(),
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+    });
+  },
+);
 
 describe.each([{ permission: 'No' }])(
   'Test on distinct attribute',
   ({ permission }) => {
     beforeEach(async () => {
-      await clearAllIndexes(config)
-    })
+      await clearAllIndexes(config);
+    });
 
     test(`${permission} key: try to get distinct attribute and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getDistinctAttribute()
+        client.index(index.uid).getDistinctAttribute(),
       ).rejects.toHaveProperty(
         'cause.code',
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
-      )
-    })
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+      );
+    });
 
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateDistinctAttribute('title')
+        client.index(index.uid).updateDistinctAttribute('title'),
       ).rejects.toHaveProperty(
         'cause.code',
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
-      )
-    })
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+      );
+    });
 
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetDistinctAttribute()
+        client.index(index.uid).resetDistinctAttribute(),
       ).rejects.toHaveProperty(
         'cause.code',
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
-      )
-    })
-  }
-)
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+      );
+    });
+  },
+);
 
 describe.each([
   { host: BAD_HOST, trailing: false },
@@ -145,38 +145,38 @@ describe.each([
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])('Tests on url construction', ({ host, trailing }) => {
   test(`Test getDistinctAttribute route`, async () => {
-    const route = `indexes/${index.uid}/settings/distinct-attribute`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/distinct-attribute`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getDistinctAttribute()
+      client.index(index.uid).getDistinctAttribute(),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
 
   test(`Test updateDistinctAttribute route`, async () => {
-    const route = `indexes/${index.uid}/settings/distinct-attribute`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/distinct-attribute`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateDistinctAttribute('a')
+      client.index(index.uid).updateDistinctAttribute('a'),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
 
   test(`Test resetDistinctAttribute route`, async () => {
-    const route = `indexes/${index.uid}/settings/distinct-attribute`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/distinct-attribute`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetDistinctAttribute()
+      client.index(index.uid).resetDistinctAttribute(),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
-})
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
+});

@@ -1,5 +1,5 @@
-import { ErrorStatusCode } from '../src/types'
-import { EnqueuedTask } from '../src/enqueued-task'
+import { ErrorStatusCode } from '../src/types';
+import { EnqueuedTask } from '../src/enqueued-task';
 import {
   clearAllIndexes,
   config,
@@ -7,11 +7,11 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils'
+} from './utils/meilisearch-test-utils';
 
 const index = {
   uid: 'movies_test',
-}
+};
 
 const defaultRankingRules = [
   'words',
@@ -20,137 +20,145 @@ const defaultRankingRules = [
   'attribute',
   'sort',
   'exactness',
-]
+];
 
-jest.setTimeout(100 * 1000)
+jest.setTimeout(100 * 1000);
 
 afterAll(() => {
-  return clearAllIndexes(config)
-})
+  return clearAllIndexes(config);
+});
 
 describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   'Test on ranking rules',
   ({ permission }) => {
     beforeEach(async () => {
-      await clearAllIndexes(config)
-      const client = await getClient('master')
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset)
-      await client.waitForTask(taskUid)
-    })
+      await clearAllIndexes(config);
+      const client = await getClient('master');
+      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
+      await client.waitForTask(taskUid);
+    });
 
     test(`${permission} key: Get default ranking rules`, async () => {
-      const client = await getClient(permission)
-      const response: string[] = await client.index(index.uid).getRankingRules()
-      expect(response).toEqual(defaultRankingRules)
-    })
+      const client = await getClient(permission);
+      const response: string[] = await client
+        .index(index.uid)
+        .getRankingRules();
+      expect(response).toEqual(defaultRankingRules);
+    });
 
     test(`${permission} key: Update ranking rules`, async () => {
-      const client = await getClient(permission)
-      const newRankingRules = ['title:asc', 'typo', 'description:desc']
+      const client = await getClient(permission);
+      const newRankingRules = ['title:asc', 'typo', 'description:desc'];
       const task: EnqueuedTask = await client
         .index(index.uid)
-        .updateRankingRules(newRankingRules)
-      await client.index(index.uid).waitForTask(task.taskUid)
+        .updateRankingRules(newRankingRules);
+      await client.index(index.uid).waitForTask(task.taskUid);
 
-      const response: string[] = await client.index(index.uid).getRankingRules()
+      const response: string[] = await client
+        .index(index.uid)
+        .getRankingRules();
 
-      expect(response).toEqual(newRankingRules)
-    })
+      expect(response).toEqual(newRankingRules);
+    });
 
     test(`${permission} key: Update ranking rules at null`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       const task: EnqueuedTask = await client
         .index(index.uid)
-        .updateRankingRules(null)
-      await client.index(index.uid).waitForTask(task.taskUid)
+        .updateRankingRules(null);
+      await client.index(index.uid).waitForTask(task.taskUid);
 
-      const response: string[] = await client.index(index.uid).getRankingRules()
+      const response: string[] = await client
+        .index(index.uid)
+        .getRankingRules();
 
-      expect(response).toEqual(defaultRankingRules)
-    })
+      expect(response).toEqual(defaultRankingRules);
+    });
 
     test(`${permission} key: Reset ranking rules`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       const task: EnqueuedTask = await client
         .index(index.uid)
-        .resetRankingRules()
-      await client.index(index.uid).waitForTask(task.taskUid)
+        .resetRankingRules();
+      await client.index(index.uid).waitForTask(task.taskUid);
 
-      const response: string[] = await client.index(index.uid).getRankingRules()
+      const response: string[] = await client
+        .index(index.uid)
+        .getRankingRules();
 
-      expect(response).toEqual(defaultRankingRules)
-    })
-  }
-)
+      expect(response).toEqual(defaultRankingRules);
+    });
+  },
+);
 
 describe.each([{ permission: 'Search' }])(
   'Test on ranking rules',
   ({ permission }) => {
     beforeEach(async () => {
-      await clearAllIndexes(config)
-    })
+      await clearAllIndexes(config);
+    });
 
     test(`${permission} key: try to get ranking rules and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getRankingRules()
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
-    })
+        client.index(index.uid).getRankingRules(),
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+    });
 
     test(`${permission} key: try to update ranking rules and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateRankingRules([])
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
-    })
+        client.index(index.uid).updateRankingRules([]),
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+    });
 
     test(`${permission} key: try to reset ranking rules and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetRankingRules()
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY)
-    })
-  }
-)
+        client.index(index.uid).resetRankingRules(),
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+    });
+  },
+);
 
 describe.each([{ permission: 'No' }])(
   'Test on ranking rules',
   ({ permission }) => {
     beforeEach(async () => {
-      await clearAllIndexes(config)
-    })
+      await clearAllIndexes(config);
+    });
 
     test(`${permission} key: try to get ranking rules and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getRankingRules()
+        client.index(index.uid).getRankingRules(),
       ).rejects.toHaveProperty(
         'cause.code',
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
-      )
-    })
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+      );
+    });
 
     test(`${permission} key: try to update ranking rules and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateRankingRules([])
+        client.index(index.uid).updateRankingRules([]),
       ).rejects.toHaveProperty(
         'cause.code',
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
-      )
-    })
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+      );
+    });
 
     test(`${permission} key: try to reset ranking rules and be denied`, async () => {
-      const client = await getClient(permission)
+      const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetRankingRules()
+        client.index(index.uid).resetRankingRules(),
       ).rejects.toHaveProperty(
         'cause.code',
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER
-      )
-    })
-  }
-)
+        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+      );
+    });
+  },
+);
 
 describe.each([
   { host: BAD_HOST, trailing: false },
@@ -158,38 +166,38 @@ describe.each([
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])('Tests on url construction', ({ host, trailing }) => {
   test(`Test getRankingRules route`, async () => {
-    const route = `indexes/${index.uid}/settings/ranking-rules`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/ranking-rules`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getRankingRules()
+      client.index(index.uid).getRankingRules(),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
 
   test(`Test updateRankingRules route`, async () => {
-    const route = `indexes/${index.uid}/settings/ranking-rules`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/ranking-rules`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateRankingRules([])
+      client.index(index.uid).updateRankingRules([]),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
 
   test(`Test resetRankingRules route`, async () => {
-    const route = `indexes/${index.uid}/settings/ranking-rules`
-    const client = new MeiliSearch({ host })
-    const strippedHost = trailing ? host.slice(0, -1) : host
+    const route = `indexes/${index.uid}/settings/ranking-rules`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetRankingRules()
+      client.index(index.uid).resetRankingRules(),
     ).rejects.toHaveProperty(
       'message',
-      `Request to ${strippedHost}/${route} has failed`
-    )
-  })
-})
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
+});

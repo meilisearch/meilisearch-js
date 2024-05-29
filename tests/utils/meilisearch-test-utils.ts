@@ -1,95 +1,95 @@
-import { MeiliSearch, Index } from '../../src'
-import { Config } from '../../src/types'
+import { MeiliSearch, Index } from '../../src';
+import { Config } from '../../src/types';
 
 // testing
-const MASTER_KEY = 'masterKey'
-const HOST = process.env.MEILISEARCH_URL || 'http://127.0.0.1:7700'
-const BAD_HOST = 'http://127.0.0.1:7701'
+const MASTER_KEY = 'masterKey';
+const HOST = process.env.MEILISEARCH_URL || 'http://127.0.0.1:7700';
+const BAD_HOST = 'http://127.0.0.1:7701';
 
 const config = {
   host: HOST,
   apiKey: MASTER_KEY,
-}
+};
 const badHostClient = new MeiliSearch({
   host: BAD_HOST,
   apiKey: MASTER_KEY,
-})
+});
 const masterClient = new MeiliSearch({
   host: HOST,
   apiKey: MASTER_KEY,
-})
+});
 
 const anonymousClient = new MeiliSearch({
   host: HOST,
-})
+});
 
 async function getKey(permission: string): Promise<string> {
   if (permission === 'No') {
-    return ''
+    return '';
   }
-  const { results: keys } = await masterClient.getKeys()
+  const { results: keys } = await masterClient.getKeys();
 
   if (permission === 'Search') {
     const key = keys.find(
-      (key: any) => key.name === 'Default Search API Key'
-    )?.key
-    return key || ''
+      (key: any) => key.name === 'Default Search API Key',
+    )?.key;
+    return key || '';
   }
 
   if (permission === 'Admin') {
     const key = keys.find(
-      (key: any) => key.name === 'Default Admin API Key'
-    )?.key
-    return key || ''
+      (key: any) => key.name === 'Default Admin API Key',
+    )?.key;
+    return key || '';
   }
-  return MASTER_KEY
+  return MASTER_KEY;
 }
 
 async function getClient(permission: string): Promise<MeiliSearch> {
   if (permission === 'No') {
     const anonymousClient = new MeiliSearch({
       host: HOST,
-    })
-    return anonymousClient
+    });
+    return anonymousClient;
   }
 
   if (permission === 'Search') {
-    const searchKey = await getKey(permission)
+    const searchKey = await getKey(permission);
     const searchClient = new MeiliSearch({
       host: HOST,
       apiKey: searchKey,
-    })
-    return searchClient
+    });
+    return searchClient;
   }
 
   if (permission === 'Admin') {
-    const adminKey = await getKey(permission)
+    const adminKey = await getKey(permission);
     const adminClient = new MeiliSearch({
       host: HOST,
       apiKey: adminKey,
-    })
-    return adminClient
+    });
+    return adminClient;
   }
 
-  return masterClient
+  return masterClient;
 }
 
 const clearAllIndexes = async (config: Config): Promise<void> => {
-  const client = new MeiliSearch(config)
+  const client = new MeiliSearch(config);
 
-  const { results } = await client.getRawIndexes()
-  const indexes = results.map((elem) => elem.uid)
+  const { results } = await client.getRawIndexes();
+  const indexes = results.map((elem) => elem.uid);
 
-  const taskIds = []
+  const taskIds = [];
   for (const indexUid of indexes) {
-    const { taskUid } = await client.index(indexUid).delete()
-    taskIds.push(taskUid)
+    const { taskUid } = await client.index(indexUid).delete();
+    taskIds.push(taskUid);
   }
-  await client.waitForTasks(taskIds)
-}
+  await client.waitForTasks(taskIds);
+};
 
 function decode64(buff: string) {
-  return Buffer.from(buff, 'base64').toString()
+  return Buffer.from(buff, 'base64').toString();
 }
 
 const datasetWithNests = [
@@ -142,7 +142,7 @@ const datasetWithNests = [
     },
   },
   { id: 7, title: "The Hitchhiker's Guide to the Galaxy" },
-]
+];
 
 const dataset = [
   { id: 123, title: 'Pride and Prejudice', comment: 'A great book' },
@@ -156,13 +156,13 @@ const dataset = [
     comment: 'The best book',
   },
   { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
-]
+];
 
 export type Book = {
-  id: number
-  title: string
-  comment: string
-}
+  id: number;
+  title: string;
+  comment: string;
+};
 
 export {
   clearAllIndexes,
@@ -180,4 +180,4 @@ export {
   decode64,
   dataset,
   datasetWithNests,
-}
+};
