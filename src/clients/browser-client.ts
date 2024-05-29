@@ -1,10 +1,10 @@
-import { Config } from '../types'
-import { Client } from './client'
+import { Config } from '../types';
+import { Client } from './client';
 
 class MeiliSearch extends Client {
   constructor(config: Config) {
-    super(config)
+    super(config);
   }
 }
 
-export { MeiliSearch }
+export { MeiliSearch };

@@ -1,18 +1,18 @@
-const nodeResolve = require('@rollup/plugin-node-resolve')
-const { resolve } = require('path')
-const commonjs = require('@rollup/plugin-commonjs')
-const json = require('@rollup/plugin-json')
-const typescript = require('rollup-plugin-typescript2')
-const pkg = require('./package.json')
-const { terser } = require('rollup-plugin-terser')
-const { babel } = require('@rollup/plugin-babel')
+const nodeResolve = require('@rollup/plugin-node-resolve');
+const { resolve } = require('path');
+const commonjs = require('@rollup/plugin-commonjs');
+const json = require('@rollup/plugin-json');
+const typescript = require('rollup-plugin-typescript2');
+const pkg = require('./package.json');
+const { terser } = require('rollup-plugin-terser');
+const { babel } = require('@rollup/plugin-babel');
 
 function getOutputFileName(fileName, isProd = false) {
-  return isProd ? fileName.replace(/\.js$/, '.min.js') : fileName
+  return isProd ? fileName.replace(/\.js$/, '.min.js') : fileName;
 }
 
-const env = process.env.NODE_ENV || 'development'
-const ROOT = resolve(__dirname, '.')
+const env = process.env.NODE_ENV || 'development';
+const ROOT = resolve(__dirname, '.');
 
 const PLUGINS = [
   typescript({
@@ -23,7 +23,7 @@ const PLUGINS = [
       exclude: ['tests', 'examples', '*.js', 'scripts'],
     },
   }),
-]
+];
 
 module.exports = [
   // browser-friendly UMD build
@@ -36,7 +36,7 @@ module.exports = [
       file: getOutputFileName(
         // will add .min. in filename if in production env
         resolve(ROOT, pkg.jsdelivr),
-        env === 'production'
+        env === 'production',
       ),
       format: 'umd',
       sourcemap: env === 'production', // create sourcemap for error reporting in production mode
@@ -80,7 +80,7 @@ module.exports = [
       {
         file: getOutputFileName(
           resolve(ROOT, pkg.module),
-          env === 'production'
+          env === 'production',
         ),
         exports: 'named',
         format: 'es',
@@ -101,11 +101,11 @@ module.exports = [
       file: getOutputFileName(
         // will add .min. in filename if in production env
         resolve(ROOT, pkg.main),
-        env === 'production'
+        env === 'production',
       ),
       exports: 'named',
       format: 'cjs',
     },
     plugins: [...PLUGINS],
   },
-]
+];
