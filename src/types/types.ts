@@ -1012,7 +1012,8 @@ export const ErrorStatusCode = {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_facet_query */
   INVALID_FACET_SEARCH_FACET_QUERY: 'invalid_facet_search_facet_query',
 
-  INVALID_SEARCH_RANKING_SCORE_THRESHOLD:'invalid_search_ranking_score_threshold',
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_ranking_score_threshold */
+  INVALID_SEARCH_RANKING_SCORE_THRESHOLD: 'invalid_search_ranking_score_threshold',
 
   INVALID_SIMILAR_RANKING_SCORE_THRESHOLD:'invalid_similar_ranking_score_threshold'
 };
