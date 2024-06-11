@@ -126,7 +126,6 @@ export type SearchParams = Query &
     showRankingScoreDetails?: boolean;
     attributesToSearchOn?: string[] | null;
     hybrid?: HybridSearch;
-    rankingScoreThreshold?: number;
   };
 
 // Search parameters for searches made with the GET method
