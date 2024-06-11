@@ -1014,11 +1014,11 @@ export const ErrorStatusCode = {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_ranking_score_threshold */
   INVALID_SEARCH_RANKING_SCORE_THRESHOLD:
-  'invalid_search_ranking_score_threshold',
+    'invalid_search_ranking_score_threshold',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_similar_ranking_score_threshold */
   INVALID_SIMILAR_RANKING_SCORE_THRESHOLD:
-  'invalid_similar_ranking_score_threshold',
+    'invalid_similar_ranking_score_threshold',
 };
 
 export type ErrorStatusCode =
