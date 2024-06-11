@@ -191,6 +191,18 @@ describe.each([
     expect(response.hits.length).toEqual(2);
   });
 
+  test(`${permission} key: Basic phrase search with matchingStrategy at FREQUENCY`, async () => {
+    const client = await getClient(permission);
+    const response = await client.index(index.uid).search('french book', {
+      matchingStrategy: MatchingStrategies.FREQUENCY,
+    });
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('offset', 0);
+    expect(response).toHaveProperty('limit', 20);
+    expect(response.hits.length).toEqual(2);
+  });
+
   test(`${permission} key: Search with query in searchParams overwriting query`, async () => {
     const client = await getClient(permission);
     const response = await client

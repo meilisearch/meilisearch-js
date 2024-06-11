@@ -63,6 +63,7 @@ export type IndexesResults<T> = ResourceResults<T> & {};
 export const MatchingStrategies = {
   ALL: 'all',
   LAST: 'last',
+  FREQUENCY: 'frequency',
 } as const;
 
 export type MatchingStrategies =
