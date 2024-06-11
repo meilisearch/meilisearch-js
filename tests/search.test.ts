@@ -193,11 +193,9 @@ describe.each([
 
   test(`${permission} key: Basic phrase search with matchingStrategy at FREQUENCY`, async () => {
     const client = await getClient(permission);
-    const response = await client
-      .index(index.uid)
-      .search('french book', {
-        matchingStrategy: MatchingStrategies.FREQUENCY,
-      });
+    const response = await client.index(index.uid).search('french book', {
+      matchingStrategy: MatchingStrategies.FREQUENCY,
+    });
 
     expect(response).toHaveProperty('hits', expect.any(Array));
     expect(response).toHaveProperty('offset', 0);
