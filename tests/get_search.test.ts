@@ -483,9 +483,32 @@ describe.each([
 
   test(`${permission} key: search without vectors`, async () => {
     const client = await getClient(permission);
-    const response = await client.index(index.uid).search('prince', {});
+    const response = await client.index(index.uid).searchGet('prince', {});
 
     expect(response).not.toHaveProperty('semanticHitCount');
+  });
+
+  test(`${permission} key: search with rankingScoreThreshold filter`, async () => {
+    const client = await getClient(permission);
+
+    const response = await client.index(index.uid).searchGet('prince', {
+      showRankingScore: true,
+      rankingScoreThreshold: 0.8,
+    });
+
+    const hit = response.hits[0];
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('query', 'prince');
+    expect(hit).toHaveProperty('_rankingScore');
+    expect(hit['_rankingScore']).toBeGreaterThanOrEqual(0.8);
+
+    const response2 = await client.index(index.uid).search('prince', {
+      showRankingScore: true,
+      rankingScoreThreshold: 0.9,
+    });
+
+    expect(response2.hits.length).toBeLessThanOrEqual(0);
   });
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
