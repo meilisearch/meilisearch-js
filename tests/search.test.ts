@@ -911,6 +911,15 @@ describe.each([
     expect(response).not.toHaveProperty('semanticHitCount');
   });
 
+  test(`${permission} key: search with distinct`, async () => {
+    const client = await getClient(permission);
+    const response = await client
+      .index(index.uid)
+      .search('', { distinct: 'genre' });
+
+    expect(response.hits.length).toEqual(4);
+  });
+
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient('Master');

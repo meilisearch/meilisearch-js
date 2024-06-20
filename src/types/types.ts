@@ -128,6 +128,7 @@ export type SearchParams = Query &
     rankingScoreThreshold?: number;
     attributesToSearchOn?: string[] | null;
     hybrid?: HybridSearch;
+    distinct?: string;
   };
 
 // Search parameters for searches made with the GET method
@@ -148,6 +149,7 @@ export type SearchRequestGET = Pagination &
     hybridEmbedder?: string;
     hybridSemanticRatio?: number;
     rankingScoreThreshold?: number;
+    distinct?: string;
   };
 
 export type MultiSearchQuery = SearchParams & { indexUid: string };
