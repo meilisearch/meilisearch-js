@@ -267,6 +267,18 @@ export type FieldDistribution = {
   [field: string]: number;
 };
 
+export type SearchSimilarDocumentsParams = {
+  id: string | number;
+  offset?: number;
+  limit?: number;
+  filter?: Filter;
+  embedder?: string;
+  attributesToRetrieve?: string[];
+  showRankingScore?: boolean;
+  showRankingScoreDetails?: boolean;
+  rankingScoreThreshold?: number;
+};
+
 /*
  ** Documents
  */
