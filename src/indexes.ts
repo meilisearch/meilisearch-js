@@ -53,6 +53,7 @@ import {
   ProximityPrecision,
   Embedders,
   SearchCutoffMs,
+  SearchSimilarDocumentsParams,
 } from './types';
 import { removeUndefinedFromObject } from './utils';
 import { HttpRequests } from './http-requests';
@@ -174,6 +175,25 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       removeUndefinedFromObject(params),
       undefined,
       config,
+    );
+  }
+
+  /**
+   * Search for similar documents
+   *
+   * @param params - Parameters used to search for similar documents
+   * @returns Promise containing the search response
+   */
+  async searchSimilarDocuments<
+    D extends Record<string, any> = T,
+    S extends SearchParams = SearchParams,
+  >(params: SearchSimilarDocumentsParams): Promise<SearchResponse<D, S>> {
+    const url = `indexes/${this.uid}/similar`;
+
+    return await this.httpRequest.post(
+      url,
+      removeUndefinedFromObject(params),
+      undefined,
     );
   }
 
