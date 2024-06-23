@@ -1,0 +1,31 @@
+{
+  "name": "Meilisearch JS",
+  "entryPoints": ["./src"],
+  "out": "./docs",
+  "customCss": "./typedoc/style.css",
+  "groupOrder": [
+    "References",
+    "Modules",
+    "Namespaces",
+    "Enumerations",
+    "Enumeration Members",
+    "Classes",
+    "Interfaces",
+    "Type Aliases",
+    "Constructors",
+    "Properties",
+    "Variables",
+    "Functions",
+    "Accessors",
+    "Methods"
+  ],
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "navigationLinks": {
+    "Docs": "https://www.meilisearch.com/docs",
+    "GitHub": "https://github.com/meilisearch/meilisearch-js"
+  },
+  "githubPages": true
+}
