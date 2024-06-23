@@ -33,6 +33,7 @@
     "clear_jest": "jest --clearCache",
     "cleanup": "shx rm -rf dist/",
     "build": "yarn cleanup && rollup -c && rollup -c --environment NODE_ENV:production",
+    "build:docs": "typedoc",
     "watch": "yarn cleanup && rollup -c --watch",
     "postbuild": "yarn size && yarn typingsheader",
     "test": "yarn clear_jest && jest --runInBand --verbose",
@@ -106,6 +107,7 @@
     "rollup-plugin-typescript2": "^0.35.0",
     "shx": "^0.3.2",
     "ts-jest": "^29.1.1",
+    "typedoc": "^0.25.13",
     "typescript": "^5.3.3"
   }
 }

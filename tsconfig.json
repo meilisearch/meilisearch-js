@@ -22,6 +22,7 @@
     "target": "es2022",
     "lib": ["ESNext", "dom"],
     "strict": true,
-    "noImplicitReturns": true
-  }
+    "noImplicitReturns": true,
+  },
+  "include": ["src"],
 }

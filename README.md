@@ -44,7 +44,7 @@
 
 ## 📖 Documentation
 
-This readme contains all the documentation you need to start using this Meilisearch SDK.
+This readme and [Meilisearch JS documentation website](https://meilisearch.github.io/meilisearch-js/) contains all the information you need to start using this Meilisearch SDK.
 
 For general information on how to use Meilisearch—such as our API reference, tutorials, guides, and in-depth articles—refer to our [main documentation website](https://www.meilisearch.com/docs/).
 
