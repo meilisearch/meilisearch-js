@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - main
+      - feature/js-hosted-docs
     paths:
-      - 'src/**'
+      - "src/**"
 
 jobs:
   build:
