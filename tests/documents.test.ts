@@ -218,6 +218,92 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         expect(documents.results.length).toEqual(dataset.length);
       });
 
+      test(`${permission} key: Get documents with retrieveVectors to true`, async () => {
+        const client = await getClient(permission);
+        const adminKey = await getKey('Admin');
+
+        await fetch(`${HOST}/experimental-features`, {
+          body: JSON.stringify({ vectorStore: true }),
+          headers: {
+            Authorization: `Bearer ${adminKey}`,
+            'Content-Type': 'application/json',
+          },
+          method: 'PATCH',
+        });
+
+        const { taskUid } = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset);
+        await client.index(indexPk.uid).waitForTask(taskUid);
+
+        // Get documents with POST
+        const documentsPost = await client
+          .index(indexPk.uid)
+          .getDocuments<Book>({ retrieveVectors: true });
+
+        expect(documentsPost.results.length).toEqual(dataset.length);
+        expect(documentsPost.results[0]).toHaveProperty('_vectors');
+
+        // Get documents with GET
+        const res = await fetch(
+          `${HOST}/indexes/${indexPk.uid}/documents?retrieveVectors=true`,
+          {
+            headers: {
+              Authorization: `Bearer ${adminKey}`,
+              'Content-Type': 'application/json',
+            },
+            method: 'GET',
+          },
+        );
+        const documentsGet = await res.json();
+
+        expect(documentsGet.results.length).toEqual(dataset.length);
+        expect(documentsGet.results[0]).toHaveProperty('_vectors');
+      });
+
+      test(`${permission} key: Get documents without retrieveVectors`, async () => {
+        const client = await getClient(permission);
+        const adminKey = await getKey('Admin');
+
+        await fetch(`${HOST}/experimental-features`, {
+          body: JSON.stringify({ vectorStore: true }),
+          headers: {
+            Authorization: `Bearer ${adminKey}`,
+            'Content-Type': 'application/json',
+          },
+          method: 'PATCH',
+        });
+
+        const { taskUid } = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset);
+        await client.index(indexPk.uid).waitForTask(taskUid);
+
+        // Get documents with POST
+        const documentsPost = await client
+          .index(indexPk.uid)
+          .getDocuments<Book>();
+
+        expect(documentsPost.results.length).toEqual(dataset.length);
+        expect(documentsPost.results[0]).not.toHaveProperty('_vectors');
+
+        // Get documents with GET
+        const res = await fetch(
+          `${HOST}/indexes/${indexPk.uid}/documents?retrieveVectors=false`,
+          {
+            headers: {
+              Authorization: `Bearer ${adminKey}`,
+              'Content-Type': 'application/json',
+            },
+            method: 'GET',
+          },
+        );
+        const documentsGet = await res.json();
+
+        expect(documentsGet.results.length).toEqual(dataset.length);
+        expect(documentsGet.results[0]).not.toHaveProperty('_vectors');
+      });
+
       test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
         const client = await getClient(permission);
         const { taskUid: addDocTask } = await client

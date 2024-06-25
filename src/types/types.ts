@@ -129,6 +129,7 @@ export type SearchParams = Query &
     attributesToSearchOn?: string[] | null;
     hybrid?: HybridSearch;
     distinct?: string;
+    retrieveVectors?: boolean;
   };
 
 // Search parameters for searches made with the GET method
@@ -150,6 +151,7 @@ export type SearchRequestGET = Pagination &
     hybridSemanticRatio?: number;
     rankingScoreThreshold?: number;
     distinct?: string;
+    retrieveVectors?: boolean;
   };
 
 export type MultiSearchQuery = SearchParams & { indexUid: string };
@@ -311,6 +313,7 @@ export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   filter?: Filter;
   limit?: number;
   offset?: number;
+  retrieveVectors?: boolean;
 };
 
 export type DocumentQuery<T = Record<string, any>> = {
