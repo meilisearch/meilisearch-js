@@ -95,10 +95,7 @@ describe.each([
       client.index(index.uid).getProximityPrecision(),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -110,10 +107,7 @@ describe.each([
       client.index(index.uid).updateProximityPrecision('byAttribute'),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -125,10 +119,7 @@ describe.each([
       client.index(index.uid).resetProximityPrecision(),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 });

@@ -93,21 +93,21 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getSearchableAttributes(),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update searchable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateSearchableAttributes([]),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetSearchableAttributes(),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
@@ -126,7 +126,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).getSearchableAttributes(),
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -136,7 +136,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).updateSearchableAttributes([]),
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -146,7 +146,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).resetSearchableAttributes(),
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -166,10 +166,7 @@ describe.each([
       client.index(index.uid).getSearchableAttributes(),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -181,10 +178,7 @@ describe.each([
       client.index(index.uid).updateSearchableAttributes([]),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -196,10 +190,7 @@ describe.each([
       client.index(index.uid).resetSearchableAttributes(),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 });

@@ -102,21 +102,21 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getRankingRules(),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update ranking rules and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateRankingRules([]),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset ranking rules and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetRankingRules(),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
@@ -133,7 +133,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).getRankingRules(),
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -143,7 +143,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).updateRankingRules([]),
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -153,7 +153,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).resetRankingRules(),
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -173,10 +173,7 @@ describe.each([
       client.index(index.uid).getRankingRules(),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -188,10 +185,7 @@ describe.each([
       client.index(index.uid).updateRankingRules([]),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -203,10 +197,7 @@ describe.each([
       client.index(index.uid).resetRankingRules(),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 });

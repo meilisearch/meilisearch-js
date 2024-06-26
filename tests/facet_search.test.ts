@@ -95,6 +95,7 @@ describe.each([
     };
     const response = await client.index(index.uid).searchForFacetValues(params);
 
+    // @TODO: This is flaky, processingTimeMs is not guaranteed
     expect(response).toMatchSnapshot();
   });
 });

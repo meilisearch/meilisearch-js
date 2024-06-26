@@ -222,7 +222,7 @@ describe.each([{ permission: 'Admin' }])(
       // search
       await expect(
         searchClient.index(UID).search('pride'),
-      ).rejects.toHaveProperty('code', 'invalid_api_key');
+      ).rejects.toHaveProperty('cause.code', 'invalid_api_key');
     });
 
     test(`${permission} key: Search in tenant token on index with no permissions `, async () => {
@@ -236,7 +236,7 @@ describe.each([{ permission: 'Admin' }])(
       // search
       await expect(
         searchClient.index(UID).search('pride'),
-      ).rejects.toHaveProperty('code', 'invalid_api_key');
+      ).rejects.toHaveProperty('cause.code', 'invalid_api_key');
     });
 
     test(`${permission} key: Creates tenant token with an expiration date in the past throws an error`, async () => {
