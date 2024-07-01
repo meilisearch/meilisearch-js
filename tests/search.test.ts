@@ -191,6 +191,18 @@ describe.each([
     expect(response.hits.length).toEqual(2);
   });
 
+  test(`${permission} key: Basic phrase search with matchingStrategy at FREQUENCY`, async () => {
+    const client = await getClient(permission);
+    const response = await client.index(index.uid).search('french book', {
+      matchingStrategy: MatchingStrategies.FREQUENCY,
+    });
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('offset', 0);
+    expect(response).toHaveProperty('limit', 20);
+    expect(response.hits.length).toEqual(2);
+  });
+
   test(`${permission} key: Search with query in searchParams overwriting query`, async () => {
     const client = await getClient(permission);
     const response = await client
@@ -292,6 +304,29 @@ describe.each([
       'attribute',
       'exactness',
     ]);
+  });
+
+  test(`${permission} key: search with rankingScoreThreshold filter`, async () => {
+    const client = await getClient(permission);
+
+    const response = await client.index(index.uid).search('prince', {
+      showRankingScore: true,
+      rankingScoreThreshold: 0.8,
+    });
+
+    const hit = response.hits[0];
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('query', 'prince');
+    expect(hit).toHaveProperty('_rankingScore');
+    expect(hit['_rankingScore']).toBeGreaterThanOrEqual(0.8);
+
+    const response2 = await client.index(index.uid).search('prince', {
+      showRankingScore: true,
+      rankingScoreThreshold: 0.9,
+    });
+
+    expect(response2.hits.length).toBeLessThanOrEqual(0);
   });
 
   test(`${permission} key: search with array options`, async () => {
@@ -874,6 +909,57 @@ describe.each([
     const response = await client.index(index.uid).search('prince', {});
 
     expect(response).not.toHaveProperty('semanticHitCount');
+  });
+
+  test(`${permission} key: search with distinct`, async () => {
+    const client = await getClient(permission);
+    const response = await client
+      .index(index.uid)
+      .search('', { distinct: 'genre' });
+
+    expect(response.hits.length).toEqual(4);
+  });
+
+  test(`${permission} key: search with retrieveVectors to true`, async () => {
+    const client = await getClient(permission);
+    const adminKey = await getKey('Admin');
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ vectorStore: true }),
+      headers: {
+        Authorization: `Bearer ${adminKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    });
+
+    const response = await client.index(index.uid).search('prince', {
+      retrieveVectors: true,
+    });
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('query', 'prince');
+    expect(response.hits[0]).toHaveProperty('_vectors');
+  });
+
+  test(`${permission} key: search without retrieveVectors`, async () => {
+    const client = await getClient(permission);
+    const adminKey = await getKey('Admin');
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ vectorStore: true }),
+      headers: {
+        Authorization: `Bearer ${adminKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    });
+
+    const response = await client.index(index.uid).search('prince');
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('query', 'prince');
+    expect(response.hits[0]).not.toHaveProperty('_vectors');
   });
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
