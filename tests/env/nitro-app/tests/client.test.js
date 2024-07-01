@@ -1,4 +1,4 @@
-const { spawn } = require('child_process')
+const { spawn } = require('node:child_process')
 
 let server
 
