@@ -9,7 +9,7 @@
 
 import {
   MeiliSearchError,
-  MeiliSearchCommunicationError,
+  MeiliSearchRequestError,
   versionErrorHintMessage,
   MeiliSearchApiError,
 } from './errors';
@@ -53,6 +53,7 @@ import {
   ProximityPrecision,
   Embedders,
   SearchCutoffMs,
+  SearchSimilarDocumentsParams,
 } from './types';
 import { removeUndefinedFromObject } from './utils';
 import { HttpRequests } from './http-requests';
@@ -174,6 +175,25 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       removeUndefinedFromObject(params),
       undefined,
       config,
+    );
+  }
+
+  /**
+   * Search for similar documents
+   *
+   * @param params - Parameters used to search for similar documents
+   * @returns Promise containing the search response
+   */
+  async searchSimilarDocuments<
+    D extends Record<string, any> = T,
+    S extends SearchParams = SearchParams,
+  >(params: SearchSimilarDocumentsParams): Promise<SearchResponse<D, S>> {
+    const url = `indexes/${this.uid}/similar`;
+
+    return await this.httpRequest.post(
+      url,
+      removeUndefinedFromObject(params),
+      undefined,
     );
   }
 
@@ -360,7 +380,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
           Promise<ResourceResults<D[]>>
         >(url, parameters);
       } catch (e) {
-        if (e instanceof MeiliSearchCommunicationError) {
+        if (e instanceof MeiliSearchRequestError) {
           e.message = versionErrorHintMessage(e.message, 'getDocuments');
         } else if (e instanceof MeiliSearchApiError) {
           e.message = versionErrorHintMessage(e.message, 'getDocuments');
@@ -585,10 +605,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
 
       return new EnqueuedTask(task);
     } catch (e) {
-      if (
-        e instanceof MeiliSearchCommunicationError &&
-        isDocumentsDeletionQuery
-      ) {
+      if (e instanceof MeiliSearchRequestError && isDocumentsDeletionQuery) {
         e.message = versionErrorHintMessage(e.message, 'deleteDocuments');
       } else if (e instanceof MeiliSearchApiError) {
         e.message = versionErrorHintMessage(e.message, 'deleteDocuments');

@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.40.0",
+  "version": "0.41.0",
   "description": "The Meilisearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -85,7 +85,6 @@
     "@types/jest": "^29.5.11",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
-    "abort-controller": "^3.0.0",
     "brotli-size": "^4.0.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",

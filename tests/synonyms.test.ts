@@ -81,21 +81,21 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getSynonyms(),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update synonyms and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateSynonyms({}),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset synonyms and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetSynonyms(),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
@@ -108,7 +108,7 @@ describe.each([{ permission: 'No' }])('Test on synonyms', ({ permission }) => {
   test(`${permission} key: try to get synonyms and be denied`, async () => {
     const client = await getClient(permission);
     await expect(client.index(index.uid).getSynonyms()).rejects.toHaveProperty(
-      'code',
+      'cause.code',
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
     );
   });
@@ -118,7 +118,7 @@ describe.each([{ permission: 'No' }])('Test on synonyms', ({ permission }) => {
     await expect(
       client.index(index.uid).updateSynonyms({}),
     ).rejects.toHaveProperty(
-      'code',
+      'cause.code',
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
     );
   });
@@ -128,7 +128,7 @@ describe.each([{ permission: 'No' }])('Test on synonyms', ({ permission }) => {
     await expect(
       client.index(index.uid).resetSynonyms(),
     ).rejects.toHaveProperty(
-      'code',
+      'cause.code',
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
     );
   });
@@ -145,10 +145,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).getSynonyms()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -160,10 +157,7 @@ describe.each([
       client.index(index.uid).updateSynonyms({}),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -175,10 +169,7 @@ describe.each([
       client.index(index.uid).resetSynonyms(),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 });

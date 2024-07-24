@@ -81,21 +81,21 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getDistinctAttribute(),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update distinct attribute and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateDistinctAttribute('title'),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset distinct attribute and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetDistinctAttribute(),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
@@ -112,7 +112,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).getDistinctAttribute(),
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -122,7 +122,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).updateDistinctAttribute('title'),
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -132,7 +132,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).resetDistinctAttribute(),
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -152,10 +152,7 @@ describe.each([
       client.index(index.uid).getDistinctAttribute(),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -167,10 +164,7 @@ describe.each([
       client.index(index.uid).updateDistinctAttribute('a'),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -182,10 +176,7 @@ describe.each([
       client.index(index.uid).resetDistinctAttribute(),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 });

@@ -1,4 +1,3 @@
-import AbortController from 'abort-controller';
 import { ErrorStatusCode, MatchingStrategies } from '../src/types';
 import { EnqueuedTask } from '../src/enqueued-task';
 import {
@@ -148,7 +147,8 @@ describe.each([
     const client = await getClient(permission);
     const response = await client.index(index.uid).search('prince', {});
 
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('limit', 20);
     expect(response).toHaveProperty('offset', 0);
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number));
@@ -173,7 +173,8 @@ describe.each([
         matchingStrategy: MatchingStrategies.ALL,
       });
 
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('offset', 0);
     expect(response).toHaveProperty('limit', 20);
     expect(response.hits.length).toEqual(1);
@@ -184,6 +185,19 @@ describe.each([
     const response = await client
       .index(index.uid)
       .search('french book', { matchingStrategy: MatchingStrategies.LAST });
+
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
+    expect(response).toHaveProperty('offset', 0);
+    expect(response).toHaveProperty('limit', 20);
+    expect(response.hits.length).toEqual(2);
+  });
+
+  test(`${permission} key: Basic phrase search with matchingStrategy at FREQUENCY`, async () => {
+    const client = await getClient(permission);
+    const response = await client.index(index.uid).search('french book', {
+      matchingStrategy: MatchingStrategies.FREQUENCY,
+    });
 
     expect(response).toHaveProperty('hits', expect.any(Array));
     expect(response).toHaveProperty('offset', 0);
@@ -197,7 +211,8 @@ describe.each([
       .index(index.uid)
       .search('other', { q: 'prince' });
 
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('limit', 20);
     expect(response).toHaveProperty('offset', 0);
     expect(response.estimatedTotalHits).toBeDefined();
@@ -212,7 +227,8 @@ describe.each([
       .index(index.uid)
       .search(null, { q: 'prince' });
 
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('limit', 20);
     expect(response).toHaveProperty('offset', 0);
     expect(response.estimatedTotalHits).toBeDefined();
@@ -226,7 +242,8 @@ describe.each([
     const response = await client
       .index(index.uid)
       .search('"french book" about', {});
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('limit', 20);
     expect(response).toHaveProperty('offset', 0);
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number));
@@ -240,7 +257,8 @@ describe.each([
     const response = await client
       .index(index.uid)
       .search('prince', { limit: 1 });
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('offset', 0);
     expect(response).toHaveProperty('limit', 1);
     expect(response.estimatedTotalHits).toEqual(2);
@@ -254,7 +272,8 @@ describe.each([
     const response = await client
       .index(index.uid)
       .search('', { sort: ['id:asc'] });
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     const hit = response.hits[0];
     expect(hit.id).toEqual(1);
   });
@@ -268,7 +287,8 @@ describe.each([
 
     const hit = response.hits[0];
 
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('query', 'prince');
     expect(hit).toHaveProperty('_rankingScore');
   });
@@ -282,7 +302,8 @@ describe.each([
 
     const hit = response.hits[0];
 
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('query', 'prince');
     expect(hit).toHaveProperty('_rankingScoreDetails');
     expect(Object.keys(hit._rankingScoreDetails || {})).toEqual([
@@ -294,6 +315,29 @@ describe.each([
     ]);
   });
 
+  test(`${permission} key: search with rankingScoreThreshold filter`, async () => {
+    const client = await getClient(permission);
+
+    const response = await client.index(index.uid).search('prince', {
+      showRankingScore: true,
+      rankingScoreThreshold: 0.8,
+    });
+
+    const hit = response.hits[0];
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('query', 'prince');
+    expect(hit).toHaveProperty('_rankingScore');
+    expect(hit['_rankingScore']).toBeGreaterThanOrEqual(0.8);
+
+    const response2 = await client.index(index.uid).search('prince', {
+      showRankingScore: true,
+      rankingScoreThreshold: 0.9,
+    });
+
+    expect(response2.hits.length).toBeLessThanOrEqual(0);
+  });
+
   test(`${permission} key: search with array options`, async () => {
     const client = await getClient(permission);
 
@@ -302,7 +346,8 @@ describe.each([
     });
     const hit = response.hits[0];
 
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('query', 'prince');
     expect(Object.keys(hit).join(',')).toEqual(
       Object.keys(dataset[1]).join(','),
@@ -337,7 +382,8 @@ describe.each([
     });
     const hit = response.hits[0];
 
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('query', 'prince');
     expect(Object.keys(hit).join(',')).toEqual(
       Object.keys(dataset[1]).join(','),
@@ -349,7 +395,8 @@ describe.each([
     const response = await client
       .index(index.uid)
       .search('prince', { limit: 1 });
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('offset', 0);
     expect(response).toHaveProperty('limit', 1);
     expect(response.estimatedTotalHits).toEqual(2);
@@ -398,7 +445,8 @@ describe.each([
       cropLength: 5,
       showMatchesPosition: true,
     });
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response.hits[0]).toHaveProperty('_matchesPosition', {
       comment: [{ start: 22, length: 6 }],
       title: [{ start: 9, length: 6 }],
@@ -417,7 +465,8 @@ describe.each([
       filter: 'title = "Le Petit Prince"',
       showMatchesPosition: true,
     });
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('offset', 0);
     expect(response).toHaveProperty('limit', 5);
     expect(response.estimatedTotalHits).toEqual(1);
@@ -492,7 +541,8 @@ describe.each([
       filter: 'title = "Le Petit Prince"',
       showMatchesPosition: true,
     });
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('offset', 0);
     expect(response).toHaveProperty('limit', 5);
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number));
@@ -521,7 +571,8 @@ describe.each([
       filter: 'title = "Le Petit Prince"',
       showMatchesPosition: true,
     });
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty('offset', 0);
     expect(response).toHaveProperty('limit', 5);
     expect(response).toHaveProperty('processingTimeMs', expect.any(Number));
@@ -580,7 +631,8 @@ describe.each([
 
     expect(response.facetStats).toEqual({ id: { min: 2, max: 123 } });
     expect(response.facetStats?.['id']?.max).toBe(123);
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response.hits.length).toEqual(2);
   });
 
@@ -589,7 +641,8 @@ describe.each([
     const response = await client.index(index.uid).search('a', {
       filter: 'id < 0',
     });
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response.hits.length).toEqual(0);
   });
 
@@ -599,7 +652,8 @@ describe.each([
       filter: ['genre = "sci fi"'],
     });
 
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response.hits.length).toEqual(1);
   });
 
@@ -612,7 +666,8 @@ describe.each([
     expect(response).toHaveProperty('facetDistribution', {
       genre: { romance: 2 },
     });
-    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('hits');
+    expect(Array.isArray(response.hits)).toBe(true);
     expect(response.hits.length).toEqual(2);
   });
 
@@ -876,6 +931,57 @@ describe.each([
     expect(response).not.toHaveProperty('semanticHitCount');
   });
 
+  test(`${permission} key: search with distinct`, async () => {
+    const client = await getClient(permission);
+    const response = await client
+      .index(index.uid)
+      .search('', { distinct: 'genre' });
+
+    expect(response.hits.length).toEqual(4);
+  });
+
+  test(`${permission} key: search with retrieveVectors to true`, async () => {
+    const client = await getClient(permission);
+    const adminKey = await getKey('Admin');
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ vectorStore: true }),
+      headers: {
+        Authorization: `Bearer ${adminKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    });
+
+    const response = await client.index(index.uid).search('prince', {
+      retrieveVectors: true,
+    });
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('query', 'prince');
+    expect(response.hits[0]).toHaveProperty('_vectors');
+  });
+
+  test(`${permission} key: search without retrieveVectors`, async () => {
+    const client = await getClient(permission);
+    const adminKey = await getKey('Admin');
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ vectorStore: true }),
+      headers: {
+        Authorization: `Bearer ${adminKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    });
+
+    const response = await client.index(index.uid).search('prince');
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('query', 'prince');
+    expect(response.hits[0]).not.toHaveProperty('_vectors');
+  });
+
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient('Master');
@@ -884,7 +990,7 @@ describe.each([
 
     await expect(
       client.index(index.uid).search('prince', {}),
-    ).rejects.toHaveProperty('code', ErrorStatusCode.INDEX_NOT_FOUND);
+    ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INDEX_NOT_FOUND);
   });
 });
 
@@ -902,7 +1008,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).search('prince'),
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -910,7 +1016,7 @@ describe.each([{ permission: 'No' }])(
     test(`${permission} key: Try multi search and be denied`, async () => {
       const client = await getClient(permission);
       await expect(client.multiSearch({ queries: [] })).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -1019,7 +1125,10 @@ describe.each([
     controller.abort();
 
     searchPromise.catch((error: any) => {
-      expect(error).toHaveProperty('message', 'The user aborted a request.');
+      expect(error).toHaveProperty(
+        'cause.message',
+        'This operation was aborted',
+      );
     });
   });
 
@@ -1074,7 +1183,10 @@ describe.each([
     });
 
     searchBPromise.catch((error: any) => {
-      expect(error).toHaveProperty('message', 'The user aborted a request.');
+      expect(error).toHaveProperty(
+        'cause.message',
+        'This operation was aborted',
+      );
     });
   });
 
@@ -1088,8 +1200,8 @@ describe.each([
     try {
       await client.health();
     } catch (e: any) {
-      expect(e.message).toEqual('Error: Request Timed Out');
-      expect(e.name).toEqual('MeiliSearchCommunicationError');
+      expect(e.cause.message).toEqual('Error: Request Timed Out');
+      expect(e.name).toEqual('MeiliSearchRequestError');
     }
   });
 });
@@ -1105,10 +1217,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).search()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -1118,10 +1227,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).search()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 });
