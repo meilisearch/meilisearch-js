@@ -209,7 +209,7 @@ describe.each([{ permission: 'Search' }])(
     test(`${permission} key: get keys denied`, async () => {
       const client = await getClient(permission);
       await expect(client.getKeys()).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.INVALID_API_KEY,
       );
     });
@@ -223,7 +223,7 @@ describe.each([{ permission: 'Search' }])(
           indexes: ['products'],
           expiresAt: null,
         }),
-      ).rejects.toHaveProperty('code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
@@ -234,7 +234,7 @@ describe.each([{ permission: 'No' }])(
     test(`${permission} key: get keys denied`, async () => {
       const client = await getClient(permission);
       await expect(client.getKeys()).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -249,7 +249,7 @@ describe.each([{ permission: 'No' }])(
           expiresAt: null,
         }),
       ).rejects.toHaveProperty(
-        'code',
+        'cause.code',
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });

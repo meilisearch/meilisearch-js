@@ -152,7 +152,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task: EnqueuedTask = await client
         .index(index.uid)
         .updateEmbedders(newEmbedder);
-      await client.waitForTask(task.taskUid);
+      await client.waitForTask(task.taskUid, { timeOutMs: 60_000 });
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
@@ -302,10 +302,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).getEmbedders()).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -317,10 +314,7 @@ describe.each([
       client.index(index.uid).updateEmbedders({}),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 
@@ -332,10 +326,7 @@ describe.each([
       client.index(index.uid).resetEmbedders(),
     ).rejects.toHaveProperty(
       'message',
-      `request to ${strippedHost}/${route} failed, reason: connect ECONNREFUSED ${BAD_HOST.replace(
-        'http://',
-        '',
-      )}`,
+      `Request to ${strippedHost}/${route} has failed`,
     );
   });
 });

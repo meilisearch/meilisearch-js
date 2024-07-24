@@ -16,7 +16,6 @@ const config = {
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
   ],
-  globalSetup: './jest-disable-built-in-fetch.js',
   projects: [
     {
       preset: 'ts-jest',
@@ -28,6 +27,8 @@ const config = {
         'env/',
         'token.test.ts',
       ],
+      // make sure built-in Node.js fetch doesn't get replaced for consistency
+      globals: { fetch: global.fetch, AbortController: global.AbortController },
     },
     {
       preset: 'ts-jest',

@@ -566,7 +566,7 @@ export type TaskObject = Omit<EnqueuedTaskObject, 'taskUid'> & {
     // Query parameters used to filter the tasks
     originalFilter?: string;
   };
-  error: MeiliSearchErrorInfo | null;
+  error: MeiliSearchErrorResponse | null;
   duration: string;
   startedAt: string;
   finishedAt: string;
@@ -675,13 +675,16 @@ export interface FetchError extends Error {
   code: string;
 }
 
-export type MeiliSearchErrorInfo = {
-  code: string;
-  link: string;
+export type MeiliSearchErrorResponse = {
   message: string;
+  // @TODO: Could be typed, but will it be kept updated? https://www.meilisearch.com/docs/reference/errors/error_codes
+  code: string;
+  // @TODO: Could be typed https://www.meilisearch.com/docs/reference/errors/overview#errors
   type: string;
+  link: string;
 };
 
+// @TODO: This doesn't seem to be up to date, and its usefullness comes into question.
 export const ErrorStatusCode = {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#index_creation_failed */
   INDEX_CREATION_FAILED: 'index_creation_failed',

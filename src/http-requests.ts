@@ -3,8 +3,8 @@ import { PACKAGE_VERSION } from './package-version';
 
 import {
   MeiliSearchError,
-  httpResponseErrorHandler,
-  httpErrorHandler,
+  MeiliSearchApiError,
+  MeiliSearchRequestError,
 } from './errors';
 
 import { addTrailingSlash, addProtocolIfNotPresent } from './utils';
@@ -143,35 +143,36 @@ class HttpRequests {
     }
 
     const headers = { ...this.headers, ...config.headers };
+    const responsePromise = this.fetchWithTimeout(
+      constructURL.toString(),
+      {
+        ...config,
+        ...this.requestConfig,
+        method,
+        body,
+        headers,
+      },
+      this.requestTimeout,
+    );
 
-    try {
-      const result = this.fetchWithTimeout(
-        constructURL.toString(),
-        {
-          ...config,
-          ...this.requestConfig,
-          method,
-          body,
-          headers,
-        },
-        this.requestTimeout,
-      );
+    const response = await responsePromise.catch((error: unknown) => {
+      throw new MeiliSearchRequestError(constructURL.toString(), error);
+    });
 
-      // When using a custom HTTP client, the response is returned to allow the user to parse/handle it as they see fit
-      if (this.httpClient) {
-        return await result;
-      }
-
-      const response = await result.then((res: any) =>
-        httpResponseErrorHandler(res),
-      );
-      const parsedBody = await response.json().catch(() => undefined);
-
-      return parsedBody;
-    } catch (e: any) {
-      const stack = e.stack;
-      httpErrorHandler(e, stack, constructURL.toString());
+    // When using a custom HTTP client, the response is returned to allow the user to parse/handle it as they see fit
+    if (this.httpClient !== undefined) {
+      return response;
     }
+
+    const responseBody = await response.text();
+    const parsedResponse =
+      responseBody === '' ? undefined : JSON.parse(responseBody);
+
+    if (!response.ok) {
+      throw new MeiliSearchApiError(response, parsedResponse);
+    }
+
+    return parsedResponse;
   }
 
   async fetchWithTimeout(

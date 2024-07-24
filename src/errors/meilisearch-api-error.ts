@@ -1,30 +1,20 @@
-import { MeiliSearchErrorInfo } from '../types';
+import { MeiliSearchErrorResponse } from '../types';
 import { MeiliSearchError } from './meilisearch-error';
 
-const MeiliSearchApiError = class extends MeiliSearchError {
-  httpStatus: number;
-  code: string;
-  link: string;
-  type: string;
-  stack?: string;
+export class MeiliSearchApiError extends MeiliSearchError {
+  override name = 'MeiliSearchApiError';
+  override cause?: MeiliSearchErrorResponse;
+  readonly response: Response;
 
-  constructor(error: MeiliSearchErrorInfo, status: number) {
-    super(error.message);
+  constructor(response: Response, responseBody?: MeiliSearchErrorResponse) {
+    super(
+      responseBody?.message ?? `${response.status}: ${response.statusText}`,
+    );
 
-    // Make errors comparison possible. ex: error instanceof MeiliSearchApiError.
-    Object.setPrototypeOf(this, MeiliSearchApiError.prototype);
+    this.response = response;
 
-    this.name = 'MeiliSearchApiError';
-
-    this.code = error.code;
-    this.type = error.type;
-    this.link = error.link;
-    this.message = error.message;
-    this.httpStatus = status;
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, MeiliSearchApiError);
+    if (responseBody !== undefined) {
+      this.cause = responseBody;
     }
   }
-};
-export { MeiliSearchApiError };
+}
