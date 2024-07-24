@@ -496,9 +496,83 @@ describe.each([
 
   test(`${permission} key: search without vectors`, async () => {
     const client = await getClient(permission);
-    const response = await client.index(index.uid).search('prince', {});
+    const response = await client.index(index.uid).searchGet('prince', {});
 
     expect(response).not.toHaveProperty('semanticHitCount');
+  });
+
+  test(`${permission} key: search with rankingScoreThreshold filter`, async () => {
+    const client = await getClient(permission);
+
+    const response = await client.index(index.uid).searchGet('prince', {
+      showRankingScore: true,
+      rankingScoreThreshold: 0.8,
+    });
+
+    const hit = response.hits[0];
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('query', 'prince');
+    expect(hit).toHaveProperty('_rankingScore');
+    expect(hit['_rankingScore']).toBeGreaterThanOrEqual(0.8);
+
+    const response2 = await client.index(index.uid).search('prince', {
+      showRankingScore: true,
+      rankingScoreThreshold: 0.9,
+    });
+
+    expect(response2.hits.length).toBeLessThanOrEqual(0);
+  });
+
+  test(`${permission} key: search with distinct`, async () => {
+    const client = await getClient(permission);
+    const response = await client
+      .index(index.uid)
+      .search('', { distinct: 'genre' });
+
+    expect(response.hits.length).toEqual(4);
+  });
+
+  test(`${permission} key: search with retrieveVectors to true`, async () => {
+    const client = await getClient(permission);
+    const adminKey = await getKey('Admin');
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ vectorStore: true }),
+      headers: {
+        Authorization: `Bearer ${adminKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    });
+
+    const response = await client.index(index.uid).searchGet('prince', {
+      retrieveVectors: true,
+    });
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('query', 'prince');
+    expect(response.hits[0]).toHaveProperty('_vectors');
+  });
+
+  test(`${permission} key: search without retrieveVectors`, async () => {
+    const client = await getClient(permission);
+    const adminKey = await getKey('Admin');
+
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ vectorStore: true }),
+      headers: {
+        Authorization: `Bearer ${adminKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    });
+
+    const response = await client.index(index.uid).searchGet('prince');
+
+    expect(response).toHaveProperty('hits', expect.any(Array));
+    expect(response).toHaveProperty('query', 'prince');
+    expect(response.hits[0]).not.toHaveProperty('_vectors');
   });
 
   test(`${permission} key: Try to search on deleted index and fail`, async () => {

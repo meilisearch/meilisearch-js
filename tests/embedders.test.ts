@@ -14,6 +14,39 @@ const index = {
   uid: 'movies_test',
 };
 
+const datasetSimilarSearch = [
+  {
+    title: 'Shazam!',
+    release_year: 2019,
+    id: '287947',
+    _vectors: { manual: [0.8, 0.4, -0.5] },
+  },
+  {
+    title: 'Captain Marvel',
+    release_year: 2019,
+    id: '299537',
+    _vectors: { manual: [0.6, 0.8, -0.2] },
+  },
+  {
+    title: 'Escape Room',
+    release_year: 2019,
+    id: '522681',
+    _vectors: { manual: [0.1, 0.6, 0.8] },
+  },
+  {
+    title: 'How to Train Your Dragon: The Hidden World',
+    release_year: 2019,
+    id: '166428',
+    _vectors: { manual: [0.7, 0.7, -0.4] },
+  },
+  {
+    title: 'All Quiet on the Western Front',
+    release_year: 1930,
+    id: '143',
+    _vectors: { manual: [-0.5, 0.3, 0.85] },
+  },
+];
+
 jest.setTimeout(100 * 1000);
 
 afterAll(() => {
@@ -222,6 +255,38 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(null);
+    });
+
+    test(`${permission} key: search for similar documents`, async () => {
+      const client = await getClient(permission);
+
+      const newEmbedder: Embedders = {
+        manual: {
+          source: 'userProvided',
+          dimensions: 3,
+        },
+      };
+      const { taskUid: updateEmbeddersTask }: EnqueuedTask = await client
+        .index(index.uid)
+        .updateEmbedders(newEmbedder);
+
+      await client.waitForTask(updateEmbeddersTask);
+
+      const { taskUid: documentAdditionTask } = await client
+        .index(index.uid)
+        .addDocuments(datasetSimilarSearch);
+
+      await client.waitForTask(documentAdditionTask);
+
+      const response = await client.index(index.uid).searchSimilarDocuments({
+        id: '143',
+      });
+
+      expect(response).toHaveProperty('hits');
+      expect(response.hits.length).toEqual(4);
+      expect(response).toHaveProperty('offset', 0);
+      expect(response).toHaveProperty('limit', 20);
+      expect(response).toHaveProperty('estimatedTotalHits', 4);
     });
   },
 );

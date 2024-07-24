@@ -63,6 +63,7 @@ export type IndexesResults<T> = ResourceResults<T> & {};
 export const MatchingStrategies = {
   ALL: 'all',
   LAST: 'last',
+  FREQUENCY: 'frequency',
 } as const;
 
 export type MatchingStrategies =
@@ -124,8 +125,11 @@ export type SearchParams = Query &
     vector?: number[] | null;
     showRankingScore?: boolean;
     showRankingScoreDetails?: boolean;
+    rankingScoreThreshold?: number;
     attributesToSearchOn?: string[] | null;
     hybrid?: HybridSearch;
+    distinct?: string;
+    retrieveVectors?: boolean;
   };
 
 // Search parameters for searches made with the GET method
@@ -145,6 +149,9 @@ export type SearchRequestGET = Pagination &
     attributesToSearchOn?: string | null;
     hybridEmbedder?: string;
     hybridSemanticRatio?: number;
+    rankingScoreThreshold?: number;
+    distinct?: string;
+    retrieveVectors?: boolean;
   };
 
 export type MultiSearchQuery = SearchParams & { indexUid: string };
@@ -262,6 +269,18 @@ export type FieldDistribution = {
   [field: string]: number;
 };
 
+export type SearchSimilarDocumentsParams = {
+  id: string | number;
+  offset?: number;
+  limit?: number;
+  filter?: Filter;
+  embedder?: string;
+  attributesToRetrieve?: string[];
+  showRankingScore?: boolean;
+  showRankingScoreDetails?: boolean;
+  rankingScoreThreshold?: number;
+};
+
 /*
  ** Documents
  */
@@ -294,6 +313,7 @@ export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   filter?: Filter;
   limit?: number;
   offset?: number;
+  retrieveVectors?: boolean;
 };
 
 export type DocumentQuery<T = Record<string, any>> = {
@@ -1013,6 +1033,14 @@ export const ErrorStatusCode = {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_facet_search_facet_query */
   INVALID_FACET_SEARCH_FACET_QUERY: 'invalid_facet_search_facet_query',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_search_ranking_score_threshold */
+  INVALID_SEARCH_RANKING_SCORE_THRESHOLD:
+    'invalid_search_ranking_score_threshold',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_similar_ranking_score_threshold */
+  INVALID_SIMILAR_RANKING_SCORE_THRESHOLD:
+    'invalid_similar_ranking_score_threshold',
 };
 
 export type ErrorStatusCode =
