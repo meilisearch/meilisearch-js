@@ -11,8 +11,6 @@ updates:
 
   - package-ecosystem: npm
     directory: '/'
-    allow:
-      - dependency-name: cross-fetch
 
     schedule:
       interval: 'monthly'
