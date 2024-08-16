@@ -220,16 +220,14 @@ class Client {
     queries: MultiSearchParams,
     config?: Partial<Request>,
   ): Promise<MultiSearchResponse<T>>;
-  multiSearch<TRecord extends Record<string, unknown> = Record<string, any>>(
+  multiSearch<T extends Record<string, unknown> = Record<string, any>>(
     queries: FederatedMultiSearchParams,
     config?: Partial<Request>,
-  ): Promise<SearchResponse<TRecord>>;
-  async multiSearch<
-    TRecord extends Record<string, unknown> = Record<string, any>,
-  >(
+  ): Promise<SearchResponse<T>>;
+  async multiSearch<T extends Record<string, unknown> = Record<string, any>>(
     queries: MultiSearchParams | FederatedMultiSearchParams,
     config?: Partial<Request>,
-  ): Promise<MultiSearchResponse<TRecord> | SearchResponse<TRecord>> {
+  ): Promise<MultiSearchResponse<T> | SearchResponse<T>> {
     const url = `multi-search`;
 
     return await this.httpRequest.post(url, queries, undefined, config);
