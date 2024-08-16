@@ -143,6 +143,48 @@ describe.each([
     expect(response.results[0].hits[0].title).toEqual('Le Petit Prince');
   });
 
+  test.only(`${permission} key: Multi index search with federation`, async () => {
+    const client = await getClient(permission);
+
+    const response1 = await client.multiSearch<
+      Books | { id: number; asd: string }
+    >({
+      federation: {},
+      queries: [
+        { indexUid: index.uid, q: '456', attributesToSearchOn: ['id'] },
+        {
+          indexUid: index.uid,
+          q: '1344',
+          federationOptions: { weight: 0.9 },
+          attributesToSearchOn: ['id'],
+        },
+      ],
+    });
+
+    expect(response1).toHaveProperty('hits');
+    expect(Array.isArray(response1.hits)).toBe(true);
+    expect(response1.hits.length).toEqual(2);
+    expect(response1.hits[0].id).toEqual(456);
+
+    const response2 = await client.multiSearch({
+      federation: {},
+      queries: [
+        {
+          indexUid: index.uid,
+          q: '456',
+          federationOptions: { weight: 0.9 },
+          attributesToSearchOn: ['id'],
+        },
+        { indexUid: index.uid, q: '1344', attributesToSearchOn: ['id'] },
+      ],
+    });
+
+    expect(response2).toHaveProperty('hits');
+    expect(Array.isArray(response2.hits)).toBe(true);
+    expect(response2.hits.length).toEqual(2);
+    expect(response2.hits[0].id).toEqual(1344);
+  });
+
   test(`${permission} key: Basic search`, async () => {
     const client = await getClient(permission);
     const response = await client.index(index.uid).search('prince', {});

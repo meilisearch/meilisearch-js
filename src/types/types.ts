@@ -167,14 +167,13 @@ export type MultiSearchQueryWithFederation = MultiSearchQuery & {
   federationOptions?: FederationOptions;
 };
 
-export type MultiSearchParams =
-  | {
-      queries: MultiSearchQuery[];
-    }
-  | {
-      federation: MultiSearchFederation;
-      queries: MultiSearchQueryWithFederation[];
-    };
+export type MultiSearchParams = {
+  queries: MultiSearchQuery[];
+};
+export type FederatedMultiSearchParams = {
+  federation: MultiSearchFederation;
+  queries: MultiSearchQueryWithFederation[];
+};
 
 export type CategoriesDistribution = {
   [category: string]: number;

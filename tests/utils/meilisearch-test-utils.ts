@@ -46,32 +46,19 @@ async function getKey(permission: string): Promise<string> {
 }
 
 async function getClient(permission: string): Promise<MeiliSearch> {
-  if (permission === 'No') {
-    const anonymousClient = new MeiliSearch({
-      host: HOST,
-    });
-    return anonymousClient;
-  }
+  const apiKey =
+    permission === 'Search' || permission === 'Admin'
+      ? await getKey(permission)
+      : permission === 'No'
+        ? undefined
+        : null;
 
-  if (permission === 'Search') {
-    const searchKey = await getKey(permission);
-    const searchClient = new MeiliSearch({
-      host: HOST,
-      apiKey: searchKey,
-    });
-    return searchClient;
-  }
-
-  if (permission === 'Admin') {
-    const adminKey = await getKey(permission);
-    const adminClient = new MeiliSearch({
-      host: HOST,
-      apiKey: adminKey,
-    });
-    return adminClient;
-  }
-
-  return masterClient;
+  return apiKey === null
+    ? masterClient
+    : new MeiliSearch({
+        host: HOST,
+        apiKey,
+      });
 }
 
 const clearAllIndexes = async (config: Config): Promise<void> => {
