@@ -143,7 +143,7 @@ describe.each([
     expect(response.results[0].hits[0].title).toEqual('Le Petit Prince');
   });
 
-  test.only(`${permission} key: Multi index search with federation`, async () => {
+  test(`${permission} key: Multi index search with federation`, async () => {
     const client = await getClient(permission);
 
     const response1 = await client.multiSearch<
