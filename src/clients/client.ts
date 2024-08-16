@@ -216,10 +216,10 @@ class Client {
    * @param config - Additional request configuration options
    * @returns Promise containing the search responses
    */
-  multiSearch<TRecord extends Record<string, unknown> = Record<string, any>>(
+  multiSearch<T extends Record<string, unknown> = Record<string, any>>(
     queries: MultiSearchParams,
     config?: Partial<Request>,
-  ): Promise<MultiSearchResponse<TRecord>>;
+  ): Promise<MultiSearchResponse<T>>;
   multiSearch<TRecord extends Record<string, unknown> = Record<string, any>>(
     queries: FederatedMultiSearchParams,
     config?: Partial<Request>,
