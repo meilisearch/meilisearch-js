@@ -29,6 +29,7 @@ module.exports = [
   // browser-friendly UMD build
   {
     input: 'src/browser.ts', // directory to transpilation of typescript
+    external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: {
       name: 'window',
       extend: true,
@@ -74,6 +75,7 @@ module.exports = [
   // ES module (for bundlers) build.
   {
     input: 'src/index.ts',
+    external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: [
       {
         file: getOutputFileName(
@@ -94,6 +96,7 @@ module.exports = [
   // Compatible only in a nodeJS environment.
   {
     input: 'src/index.ts',
+    external: ['cross-fetch', 'cross-fetch/polyfill'],
     output: {
       file: getOutputFileName(
         // will add .min. in filename if in production env
