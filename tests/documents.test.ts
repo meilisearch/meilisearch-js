@@ -871,7 +871,18 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       });
 
       test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
-        const client = await getClient(permission);
+        const client = await getClient(permission),
+          adminKey = await getKey('Admin');
+
+        await fetch(`${HOST}/experimental-features`, {
+          body: JSON.stringify({ editDocumentsByFunction: true }),
+          headers: {
+            Authorization: `Bearer ${adminKey}`,
+            'Content-Type': 'application/json',
+          },
+          method: 'PATCH',
+        });
+
         await expect(
           client.index(indexPk.uid).updateDocumentsByFunction({ function: '' }),
         ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
@@ -947,7 +958,18 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       });
 
       test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
-        const client = await getClient(permission);
+        const client = await getClient(permission),
+          adminKey = await getKey('Admin');
+
+        await fetch(`${HOST}/experimental-features`, {
+          body: JSON.stringify({ editDocumentsByFunction: true }),
+          headers: {
+            Authorization: `Bearer ${adminKey}`,
+            'Content-Type': 'application/json',
+          },
+          method: 'PATCH',
+        });
+
         await expect(
           client.index(indexPk.uid).updateDocumentsByFunction({ function: '' }),
         ).rejects.toHaveProperty(
@@ -1048,9 +1070,20 @@ Hint: It might not be working because maybe you're not up to date with the Meili
     });
 
     test(`Test updateDocumentsByFunction route`, async () => {
-      const route = `indexes/${indexPk.uid}/documents/edit`;
-      const client = new MeiliSearch({ host });
-      const strippedHost = trailing ? host.slice(0, -1) : host;
+      const route = `indexes/${indexPk.uid}/documents/edit`,
+        client = new MeiliSearch({ host }),
+        strippedHost = trailing ? host.slice(0, -1) : host,
+        adminKey = await getKey('Admin');
+
+      await fetch(`${HOST}/experimental-features`, {
+        body: JSON.stringify({ editDocumentsByFunction: true }),
+        headers: {
+          Authorization: `Bearer ${adminKey}`,
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+      });
+
       await expect(
         client.index(indexPk.uid).updateDocumentsByFunction({ function: '' }),
       ).rejects.toHaveProperty(
