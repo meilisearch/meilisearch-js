@@ -780,6 +780,27 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         expect(index.primaryKey).toEqual(null);
         expect(task.status).toEqual('failed');
       });
+
+      test(`${permission} key: test updateDocumentsByFunction`, async () => {
+        const client = await getClient(permission),
+          index = client.index<(typeof dataset)[number]>(indexPk.uid);
+
+        await index.waitForTask((await index.addDocuments(dataset)).taskUid);
+
+        await client.waitForTask(
+          (
+            await index.updateDocumentsByFunction({
+              context: { ctx: 'Larry' },
+              filter: 'id = 4',
+              function: 'doc.comment = "Yer a wizard, ${context.ctx}!"',
+            })
+          ).taskUid,
+        );
+
+        const doc = await index.getDocument(4);
+
+        expect(doc).toHaveProperty('comment', 'Yer a wizard, Larry!');
+      });
     },
   );
 
@@ -829,6 +850,13 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).deleteAllDocuments(),
+        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      });
+
+      test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
+        const client = await getClient(permission);
+        await expect(
+          client.index(indexPk.uid).updateDocumentsByFunction({ function: '' }),
         ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
       });
     },
@@ -895,6 +923,16 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).deleteAllDocuments(),
+        ).rejects.toHaveProperty(
+          'cause.code',
+          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+        );
+      });
+
+      test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
+        const client = await getClient(permission);
+        await expect(
+          client.index(indexPk.uid).updateDocumentsByFunction({ function: '' }),
         ).rejects.toHaveProperty(
           'cause.code',
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -986,6 +1024,18 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       const strippedHost = trailing ? host.slice(0, -1) : host;
       await expect(
         client.index(indexPk.uid).deleteAllDocuments(),
+      ).rejects.toHaveProperty(
+        'message',
+        `Request to ${strippedHost}/${route} has failed`,
+      );
+    });
+
+    test(`Test updateDocumentsByFunction route`, async () => {
+      const route = `indexes/${indexPk.uid}/documents/edit`;
+      const client = new MeiliSearch({ host });
+      const strippedHost = trailing ? host.slice(0, -1) : host;
+      await expect(
+        client.index(indexPk.uid).updateDocumentsByFunction({ function: '' }),
       ).rejects.toHaveProperty(
         'message',
         `Request to ${strippedHost}/${route} has failed`,
