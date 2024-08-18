@@ -144,7 +144,10 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Get documents with filters`, async () => {
         const client = await getClient(permission);
-        await client.index(indexPk.uid).updateFilterableAttributes(['id']);
+        client.waitForTask(
+          (await client.index(indexPk.uid).updateFilterableAttributes(['id']))
+            .taskUid,
+        );
         const { taskUid } = await client
           .index(indexPk.uid)
           .addDocuments(dataset);
@@ -783,23 +786,37 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: test updateDocumentsByFunction`, async () => {
         const client = await getClient(permission),
-          index = client.index<(typeof dataset)[number]>(indexPk.uid);
+          index = client.index<(typeof dataset)[number]>(indexPk.uid),
+          adminKey = await getKey('Admin');
+
+        client.waitForTask(
+          (await index.updateFilterableAttributes(['id'])).taskUid,
+        );
+
+        await fetch(`${HOST}/experimental-features`, {
+          body: JSON.stringify({ editDocumentsByFunction: true }),
+          headers: {
+            Authorization: `Bearer ${adminKey}`,
+            'Content-Type': 'application/json',
+          },
+          method: 'PATCH',
+        });
 
         await index.waitForTask((await index.addDocuments(dataset)).taskUid);
 
         await client.waitForTask(
           (
             await index.updateDocumentsByFunction({
-              context: { ctx: 'Larry' },
+              context: { ctx: 'Harry' },
               filter: 'id = 4',
-              function: 'doc.comment = "Yer a wizard, ${context.ctx}!"',
+              function: 'doc.comment = `Yer a wizard, ${context.ctx}!`',
             })
           ).taskUid,
         );
 
         const doc = await index.getDocument(4);
 
-        expect(doc).toHaveProperty('comment', 'Yer a wizard, Larry!');
+        expect(doc).toHaveProperty('comment', 'Yer a wizard, Harry!');
       });
     },
   );
