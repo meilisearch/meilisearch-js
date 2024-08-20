@@ -639,6 +639,8 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * experimental features in general:
    * https://www.meilisearch.com/docs/reference/api/experimental-features
    *
+   * @param options - Object containing the function string and related options
+   * 
    * @returns Promise containing an EnqueuedTask
    */
   async updateDocumentsByFunction(
