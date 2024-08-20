@@ -994,27 +994,22 @@ describe.each([
   });
 
   test(`${permission} key: Search with locales`, async () => {
-    const ind = (await getClient(permission)).index(index.uid),
-      masterInd = (await getClient('Master')).index(index.uid);
+    const localIndex = (await getClient(permission)).index(index.uid);
+    const localMasterIndex = (await getClient('Master')).index(index.uid);
 
-    await masterInd.waitForTask(
-      (
-        await masterInd.updateSettings({
-          localizedAttributes: [
-            {
-              attributePatterns: ['title', 'comment'],
-              locales: ['fra', 'eng'],
-            },
-          ],
-        })
-      ).taskUid,
+    const updateLocalizedAttributesEnqueuedTask =
+      await localMasterIndex.updateLocalizedAttributes([
+        { attributePatterns: ['title', 'comment'], locales: ['fra', 'eng'] },
+      ]);
+    await localMasterIndex.waitForTask(
+      updateLocalizedAttributesEnqueuedTask.taskUid,
     );
 
-    const response = await ind.search('french', {
+    const searchResponse = await localIndex.search('french', {
       locales: ['fra', 'eng'],
     });
 
-    expect(response.hits.length).toEqual(2);
+    expect(searchResponse.hits.length).toEqual(2);
   });
 });
 

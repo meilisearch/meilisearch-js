@@ -108,6 +108,77 @@ export type HybridSearch = {
   semanticRatio?: number;
 };
 
+export type Locale =
+  | 'epo'
+  | 'eng'
+  | 'rus'
+  | 'cmn'
+  | 'spa'
+  | 'por'
+  | 'ita'
+  | 'ben'
+  | 'fra'
+  | 'deu'
+  | 'ukr'
+  | 'kat'
+  | 'ara'
+  | 'hin'
+  | 'jpn'
+  | 'heb'
+  | 'yid'
+  | 'pol'
+  | 'amh'
+  | 'jav'
+  | 'kor'
+  | 'nob'
+  | 'dan'
+  | 'swe'
+  | 'fin'
+  | 'tur'
+  | 'nld'
+  | 'hun'
+  | 'ces'
+  | 'ell'
+  | 'bul'
+  | 'bel'
+  | 'mar'
+  | 'kan'
+  | 'ron'
+  | 'slv'
+  | 'hrv'
+  | 'srp'
+  | 'mkd'
+  | 'lit'
+  | 'lav'
+  | 'est'
+  | 'tam'
+  | 'vie'
+  | 'urd'
+  | 'tha'
+  | 'guj'
+  | 'uzb'
+  | 'pan'
+  | 'aze'
+  | 'ind'
+  | 'tel'
+  | 'pes'
+  | 'mal'
+  | 'ori'
+  | 'mya'
+  | 'nep'
+  | 'sin'
+  | 'khm'
+  | 'tuk'
+  | 'aka'
+  | 'zul'
+  | 'sna'
+  | 'afr'
+  | 'lat'
+  | 'slk'
+  | 'cat'
+  | 'tgl'
+  | 'hye';
+
 export type SearchParams = Query &
   Pagination &
   Highlight &
@@ -130,9 +201,7 @@ export type SearchParams = Query &
     hybrid?: HybridSearch;
     distinct?: string;
     retrieveVectors?: boolean;
-    // @TODO: Either explicitly type this (that implies keeping it up to date),
-    //        or link to the docs where the available locales are listed
-    locales?: string[];
+    locales?: Locale[];
   };
 
 // Search parameters for searches made with the GET method
@@ -433,8 +502,7 @@ export type SearchCutoffMs = number | null;
 
 export type LocalizedAttribute = {
   attributePatterns: string[];
-  // @TODO: Type or link to docs
-  locales: string[];
+  locales: Locale[];
 };
 
 export type LocalizedAttributes = LocalizedAttribute[] | null;
@@ -1003,6 +1071,10 @@ export const ErrorStatusCode = {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_search_cutoff_ms */
   INVALID_SETTINGS_SEARCH_CUTOFF_MS: 'invalid_settings_search_cutoff_ms',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_search_cutoff_ms */
+  INVALID_SETTINGS_LOCALIZED_ATTRIBUTES:
+    'invalid_settings_localized_attributes',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_before_enqueued_at */
   INVALID_TASK_BEFORE_ENQUEUED_AT: 'invalid_task_before_enqueued_at',
