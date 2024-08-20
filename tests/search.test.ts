@@ -992,6 +992,30 @@ describe.each([
       client.index(index.uid).search('prince', {}),
     ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INDEX_NOT_FOUND);
   });
+
+  test.only(`${permission} key: Search with locales`, async () => {
+    const ind = (await getClient(permission)).index(index.uid),
+      masterInd = (await getClient('Master')).index(index.uid);
+
+    await masterInd.waitForTask(
+      (
+        await masterInd.updateSettings({
+          localizedAttributes: [
+            {
+              attributePatterns: ['title', 'comment'],
+              locales: ['fra', 'eng'],
+            },
+          ],
+        })
+      ).taskUid,
+    );
+
+    const response = await ind.search('french', {
+      locales: ['fra', 'eng'],
+    });
+
+    expect(response.hits.length).toEqual(2);
+  });
 });
 
 describe.each([{ permission: 'No' }])(

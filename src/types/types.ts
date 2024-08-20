@@ -130,6 +130,9 @@ export type SearchParams = Query &
     hybrid?: HybridSearch;
     distinct?: string;
     retrieveVectors?: boolean;
+    // @TODO: Either explicitly type this (that implies keeping it up to date),
+    //        or link to the docs where the available locales are listed
+    locales?: string[];
   };
 
 // Search parameters for searches made with the GET method
@@ -428,6 +431,14 @@ export type PaginationSettings = {
 
 export type SearchCutoffMs = number | null;
 
+export type LocalizedAttribute = {
+  attributePatterns: string[];
+  // @TODO: Type or link to docs
+  locales: string[];
+};
+
+export type LocalizedAttributes = LocalizedAttribute[] | null;
+
 export type Settings = {
   filterableAttributes?: FilterableAttributes;
   distinctAttribute?: DistinctAttribute;
@@ -446,6 +457,7 @@ export type Settings = {
   proximityPrecision?: ProximityPrecision;
   embedders?: Embedders;
   searchCutoffMs?: SearchCutoffMs;
+  localizedAttributes?: LocalizedAttributes;
 };
 
 /*
