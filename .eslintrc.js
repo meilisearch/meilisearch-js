@@ -54,28 +54,16 @@ module.exports = {
         "@typescript-eslint/ban-ts-ignore": "off",
       },
     },
-    // Jest linting for test files
+    // Vitest linting for test files
     {
-      files: "tests/*.ts",
-      plugins: ["jest"],
-      env: {
-        // @TODO: Jasmine is not meant to be used in Jest tests,
-        //       there's even a rule for it in plugin:jest/recommended
-        jasmine: true,
-        jest: true,
-        "jest/globals": true,
-      },
-      extends: ["plugin:jest/recommended", "prettier"],
+      files: 'tests/*.ts',
+      plugins: ['@vitest'],
+      extends: ['plugin:@vitest/legacy-recommended', 'prettier'],
       // @TODO: Remove all of these rules and adapt code!
       rules: {
-        "jest/no-disabled-tests": "off",
-        "jest/expect-expect": "off",
-        "jest/no-conditional-expect": "off",
-        "jest/valid-title": "off",
-        "jest/no-jasmine-globals": "off",
-        "jest/valid-expect-in-promise": "off",
-        "jest/valid-expect": "off",
-        "jest/no-alias-methods": "off",
+        '@vitest/expect-expect': 'off',
+        '@vitest/valid-title': 'off',
+        '@vitest/valid-expect': 'off',
       },
     },
   ],

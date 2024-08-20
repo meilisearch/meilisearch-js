@@ -1,5 +1,13 @@
-import { ErrorStatusCode, MatchingStrategies } from "../src/types";
-import { EnqueuedTask } from "../src/enqueued-task";
+import {
+  expect,
+  test,
+  describe,
+  beforeEach,
+  afterAll,
+  beforeAll,
+} from 'vitest';
+import { ErrorStatusCode, MatchingStrategies } from '../src/types';
+import { EnqueuedTask } from '../src/enqueued-task';
 import {
   clearAllIndexes,
   config,
@@ -1292,8 +1300,6 @@ describe.each([
     );
   });
 });
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);

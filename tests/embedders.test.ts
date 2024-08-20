@@ -1,5 +1,6 @@
-import { EnqueuedTask } from "../src/enqueued-task";
-import { Embedders } from "../src/types";
+import { afterAll, expect, test, describe, beforeEach } from 'vitest';
+import { EnqueuedTask } from '../src/enqueued-task';
+import { Embedders } from '../src/types';
 import {
   clearAllIndexes,
   config,
@@ -46,8 +47,6 @@ const datasetSimilarSearch = [
     _vectors: { manual: [-0.5, 0.3, 0.85] },
   },
 ];
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);

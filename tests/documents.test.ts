@@ -1,4 +1,5 @@
-import { ErrorStatusCode, TaskStatus, TaskTypes } from "../src/types";
+import { afterAll, expect, test, describe, beforeEach } from 'vitest';
+import { ErrorStatusCode, TaskStatus, TaskTypes } from '../src/types';
 import {
   clearAllIndexes,
   config,
@@ -18,8 +19,6 @@ const indexPk = {
   uid: "movies_test2",
   primaryKey: "id",
 };
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);
@@ -169,8 +168,8 @@ describe("Documents tests", () => {
         try {
           await client.index(indexPk.uid).getDocuments({ filter: "" });
 
-          fail(
-            "getDocuments should have raised an error when the route does not exist",
+          throw new Error(
+            'getDocuments should have raised an error when the route does not exist',
           );
         } catch (e: any) {
           expect(e.message).toEqual(
@@ -186,8 +185,8 @@ describe("Documents tests", () => {
         try {
           await client.index(indexPk.uid).getDocuments({ filter: "id = 1" });
 
-          fail(
-            "getDocuments should have raised an error when the filter is badly formatted",
+          throw new Error(
+            'getDocuments should have raised an error when the filter is badly formatted',
           );
         } catch (e: any) {
           expect(e.message).toEqual(
@@ -660,8 +659,8 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         try {
           await client.index(indexPk.uid).deleteDocuments({ filter: "" });
 
-          fail(
-            "deleteDocuments should have raised an error when the parameters are wrong",
+          throw new Error(
+            'deleteDocuments should have raised an error when the parameters are wrong',
           );
         } catch (e: any) {
           expect(e.message).toEqual(
@@ -677,8 +676,8 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         try {
           await client.index(indexPk.uid).deleteDocuments({ filter: "id = 1" });
 
-          fail(
-            "deleteDocuments should have raised an error when the route does not exist",
+          throw new Error(
+            'deleteDocuments should have raised an error when the route does not exist',
           );
         } catch (e: any) {
           expect(e.message).toEqual(

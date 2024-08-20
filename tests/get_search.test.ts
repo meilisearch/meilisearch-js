@@ -1,5 +1,6 @@
-import { ErrorStatusCode } from "../src/types";
-import { EnqueuedTask } from "../src/enqueued-task";
+import { expect, test, describe, afterAll, beforeAll } from 'vitest';
+import { ErrorStatusCode } from '../src/types';
+import { EnqueuedTask } from '../src/enqueued-task';
 import {
   clearAllIndexes,
   config,
@@ -56,8 +57,6 @@ const dataset = [
   },
   { id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: "fantasy" },
 ];
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);

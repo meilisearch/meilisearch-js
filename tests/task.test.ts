@@ -1,5 +1,6 @@
-import { ErrorStatusCode, TaskTypes, TaskStatus } from "../src/types";
-import { sleep } from "../src/utils";
+import { afterAll, beforeEach, describe, expect, test } from 'vitest';
+import { ErrorStatusCode, TaskTypes, TaskStatus } from '../src/types';
+import { sleep } from '../src/utils';
 import {
   clearAllIndexes,
   config,
@@ -20,8 +21,6 @@ const index2 = {
 const index3 = {
   uid: "movies_test2",
 };
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);

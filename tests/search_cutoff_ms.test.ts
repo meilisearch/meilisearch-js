@@ -1,4 +1,12 @@
-import { ErrorStatusCode } from "../src/types";
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  test,
+} from 'vitest';
+import { ErrorStatusCode } from '../src/types';
 import {
   clearAllIndexes,
   config,
@@ -13,8 +21,6 @@ const index = {
 };
 
 const DEFAULT_SEARCHCUTOFFMS = null;
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);

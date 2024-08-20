@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Test on faceting Admin key: Get default faceting object 1`] = `
+exports[`Test on faceting > Admin key: Get default faceting object 1`] = `
 {
   "maxValuesPerFacet": 100,
   "sortFacetValuesBy": {
@@ -9,7 +9,7 @@ exports[`Test on faceting Admin key: Get default faceting object 1`] = `
 }
 `;
 
-exports[`Test on faceting Admin key: Reset faceting 1`] = `
+exports[`Test on faceting > Admin key: Reset faceting 1`] = `
 {
   "maxValuesPerFacet": 100,
   "sortFacetValuesBy": {
@@ -18,7 +18,7 @@ exports[`Test on faceting Admin key: Reset faceting 1`] = `
 }
 `;
 
-exports[`Test on faceting Admin key: Update faceting at null 1`] = `
+exports[`Test on faceting > Admin key: Update faceting at null 1`] = `
 {
   "maxValuesPerFacet": 100,
   "sortFacetValuesBy": {
@@ -27,7 +27,7 @@ exports[`Test on faceting Admin key: Update faceting at null 1`] = `
 }
 `;
 
-exports[`Test on faceting Admin key: Update faceting settings 1`] = `
+exports[`Test on faceting > Admin key: Update faceting settings 1`] = `
 {
   "maxValuesPerFacet": 12,
   "sortFacetValuesBy": {
@@ -37,7 +37,7 @@ exports[`Test on faceting Admin key: Update faceting settings 1`] = `
 }
 `;
 
-exports[`Test on faceting Master key: Get default faceting object 1`] = `
+exports[`Test on faceting > Master key: Get default faceting object 1`] = `
 {
   "maxValuesPerFacet": 100,
   "sortFacetValuesBy": {
@@ -46,7 +46,7 @@ exports[`Test on faceting Master key: Get default faceting object 1`] = `
 }
 `;
 
-exports[`Test on faceting Master key: Reset faceting 1`] = `
+exports[`Test on faceting > Master key: Reset faceting 1`] = `
 {
   "maxValuesPerFacet": 100,
   "sortFacetValuesBy": {
@@ -55,7 +55,7 @@ exports[`Test on faceting Master key: Reset faceting 1`] = `
 }
 `;
 
-exports[`Test on faceting Master key: Update faceting at null 1`] = `
+exports[`Test on faceting > Master key: Update faceting at null 1`] = `
 {
   "maxValuesPerFacet": 100,
   "sortFacetValuesBy": {
@@ -64,7 +64,7 @@ exports[`Test on faceting Master key: Update faceting at null 1`] = `
 }
 `;
 
-exports[`Test on faceting Master key: Update faceting settings 1`] = `
+exports[`Test on faceting > Master key: Update faceting settings 1`] = `
 {
   "maxValuesPerFacet": 12,
   "sortFacetValuesBy": {

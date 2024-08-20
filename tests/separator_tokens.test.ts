@@ -1,4 +1,5 @@
-import { EnqueuedTask } from "../src/enqueued-task";
+import { afterAll, beforeEach, describe, expect, test } from 'vitest';
+import { EnqueuedTask } from '../src/enqueued-task';
 import {
   clearAllIndexes,
   config,
@@ -11,8 +12,6 @@ import {
 const index = {
   uid: "movies_test",
 };
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);
