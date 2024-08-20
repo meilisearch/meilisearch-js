@@ -366,6 +366,7 @@ export type OpenAiEmbedder = {
   documentTemplate?: string;
   dimensions?: number;
   distribution?: Distribution;
+  url?: string;
 };
 
 export type HuggingFaceEmbedder = {
@@ -388,12 +389,10 @@ export type RestEmbedder = {
   apiKey?: string;
   dimensions?: number;
   documentTemplate?: string;
-  inputField?: string[] | null;
-  inputType?: 'text' | 'textArray';
-  query?: Record<string, any> | null;
-  pathToEmbeddings?: string[] | null;
-  embeddingObject?: string[] | null;
   distribution?: Distribution;
+  request: Record<string, any>;
+  response: Record<string, any>;
+  headers?: Record<string, string>;
 };
 
 export type OllamaEmbedder = {
@@ -403,6 +402,7 @@ export type OllamaEmbedder = {
   model?: string;
   documentTemplate?: string;
   distribution?: Distribution;
+  dimensions?: number;
 };
 
 export type Embedder =
