@@ -982,6 +982,24 @@ describe.each([
     expect(response.hits[0]).not.toHaveProperty('_vectors');
   });
 
+  test(`${permission} key: Search with locales`, async () => {
+    const client = await getClient(permission);
+    const masterClient = await getClient('Master');
+
+    const { taskUid } = await masterClient
+      .index(index.uid)
+      .updateLocalizedAttributes([
+        { attributePatterns: ['title', 'comment'], locales: ['fra', 'eng'] },
+      ]);
+    await masterClient.waitForTask(taskUid);
+
+    const searchResponse = await client.index(index.uid).search('french', {
+      locales: ['fra', 'eng'],
+    });
+
+    expect(searchResponse.hits.length).toEqual(2);
+  });
+
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient('Master');

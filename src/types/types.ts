@@ -108,6 +108,9 @@ export type HybridSearch = {
   semanticRatio?: number;
 };
 
+// https://www.meilisearch.com/docs/reference/api/settings#localized-attributes
+export type Locale = string;
+
 export type SearchParams = Query &
   Pagination &
   Highlight &
@@ -130,6 +133,7 @@ export type SearchParams = Query &
     hybrid?: HybridSearch;
     distinct?: string;
     retrieveVectors?: boolean;
+    locales?: Locale[];
   };
 
 // Search parameters for searches made with the GET method
@@ -152,6 +156,7 @@ export type SearchRequestGET = Pagination &
     rankingScoreThreshold?: number;
     distinct?: string;
     retrieveVectors?: boolean;
+    locales?: Locale[];
   };
 
 export type MultiSearchQuery = SearchParams & { indexUid: string };
@@ -428,6 +433,13 @@ export type PaginationSettings = {
 
 export type SearchCutoffMs = number | null;
 
+export type LocalizedAttribute = {
+  attributePatterns: string[];
+  locales: Locale[];
+};
+
+export type LocalizedAttributes = LocalizedAttribute[] | null;
+
 export type Settings = {
   filterableAttributes?: FilterableAttributes;
   distinctAttribute?: DistinctAttribute;
@@ -446,6 +458,7 @@ export type Settings = {
   proximityPrecision?: ProximityPrecision;
   embedders?: Embedders;
   searchCutoffMs?: SearchCutoffMs;
+  localizedAttributes?: LocalizedAttributes;
 };
 
 /*
@@ -677,9 +690,9 @@ export interface FetchError extends Error {
 
 export type MeiliSearchErrorResponse = {
   message: string;
-  // @TODO: Could be typed, but will it be kept updated? https://www.meilisearch.com/docs/reference/errors/error_codes
+  // https://www.meilisearch.com/docs/reference/errors/error_codes
   code: string;
-  // @TODO: Could be typed https://www.meilisearch.com/docs/reference/errors/overview#errors
+  // https://www.meilisearch.com/docs/reference/errors/overview#errors
   type: string;
   link: string;
 };
@@ -991,6 +1004,10 @@ export const ErrorStatusCode = {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_search_cutoff_ms */
   INVALID_SETTINGS_SEARCH_CUTOFF_MS: 'invalid_settings_search_cutoff_ms',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_search_cutoff_ms */
+  INVALID_SETTINGS_LOCALIZED_ATTRIBUTES:
+    'invalid_settings_localized_attributes',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_before_enqueued_at */
   INVALID_TASK_BEFORE_ENQUEUED_AT: 'invalid_task_before_enqueued_at',
