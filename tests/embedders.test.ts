@@ -1,5 +1,5 @@
-import { EnqueuedTask } from '../src/enqueued-task';
-import { Embedders } from '../src/types';
+import { EnqueuedTask } from "../src/enqueued-task";
+import { Embedders } from "../src/types";
 import {
   clearAllIndexes,
   config,
@@ -8,41 +8,41 @@ import {
   MeiliSearch,
   getClient,
   getKey,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 const datasetSimilarSearch = [
   {
-    title: 'Shazam!',
+    title: "Shazam!",
     release_year: 2019,
-    id: '287947',
+    id: "287947",
     _vectors: { manual: [0.8, 0.4, -0.5] },
   },
   {
-    title: 'Captain Marvel',
+    title: "Captain Marvel",
     release_year: 2019,
-    id: '299537',
+    id: "299537",
     _vectors: { manual: [0.6, 0.8, -0.2] },
   },
   {
-    title: 'Escape Room',
+    title: "Escape Room",
     release_year: 2019,
-    id: '522681',
+    id: "522681",
     _vectors: { manual: [0.1, 0.6, 0.8] },
   },
   {
-    title: 'How to Train Your Dragon: The Hidden World',
+    title: "How to Train Your Dragon: The Hidden World",
     release_year: 2019,
-    id: '166428',
+    id: "166428",
     _vectors: { manual: [0.7, 0.7, -0.4] },
   },
   {
-    title: 'All Quiet on the Western Front',
+    title: "All Quiet on the Western Front",
     release_year: 1930,
-    id: '143',
+    id: "143",
     _vectors: { manual: [-0.5, 0.3, 0.85] },
   },
 ];
@@ -53,8 +53,8 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on embedders',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on embedders",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
@@ -65,9 +65,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         body: JSON.stringify({ vectorStore: true }),
         headers: {
           Authorization: `Bearer ${key}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        method: 'PATCH',
+        method: "PATCH",
       });
 
       const task = await client.createIndex(index.uid);
@@ -85,7 +85,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission);
       const newEmbedder: Embedders = {
         default: {
-          source: 'userProvided',
+          source: "userProvided",
           dimensions: 1,
           distribution: {
             mean: 0.7,
@@ -108,9 +108,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission);
       const newEmbedder: Embedders = {
         default: {
-          source: 'openAi',
-          apiKey: '<your-OpenAI-API-key>',
-          model: 'text-embedding-3-small',
+          source: "openAi",
+          apiKey: "<your-OpenAI-API-key>",
+          model: "text-embedding-3-small",
           documentTemplate:
             "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
           dimensions: 1536,
@@ -118,7 +118,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
             mean: 0.7,
             sigma: 0.3,
           },
-          url: 'https://api.openai.com/v1/embeddings',
+          url: "https://api.openai.com/v1/embeddings",
         },
       };
       const task: EnqueuedTask = await client
@@ -131,7 +131,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(response).toEqual({
         default: {
           ...newEmbedder.default,
-          apiKey: '<yoXXXXX...',
+          apiKey: "<yoXXXXX...",
         },
       });
     });
@@ -140,8 +140,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission);
       const newEmbedder: Embedders = {
         default: {
-          source: 'huggingFace',
-          model: 'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2',
+          source: "huggingFace",
+          model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
           documentTemplate:
             "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
           distribution: {
@@ -164,9 +164,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission);
       const newEmbedder: Embedders = {
         default: {
-          source: 'rest',
-          url: 'https://api.openai.com/v1/embeddings',
-          apiKey: '<your-openai-api-key>',
+          source: "rest",
+          url: "https://api.openai.com/v1/embeddings",
+          apiKey: "<your-openai-api-key>",
           dimensions: 1536,
           documentTemplate:
             "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
@@ -175,19 +175,19 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
             sigma: 0.3,
           },
           request: {
-            model: 'text-embedding-3-small',
-            input: ['{{text}}', '{{..}}'],
+            model: "text-embedding-3-small",
+            input: ["{{text}}", "{{..}}"],
           },
           response: {
             data: [
               {
-                embedding: '{{embedding}}',
+                embedding: "{{embedding}}",
               },
-              '{{..}}',
+              "{{..}}",
             ],
           },
           headers: {
-            'Custom-Header': 'CustomValue',
+            "Custom-Header": "CustomValue",
           },
         },
       };
@@ -201,7 +201,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(response).toEqual({
         default: {
           ...newEmbedder.default,
-          apiKey: '<yoXXXXX...',
+          apiKey: "<yoXXXXX...",
         },
       });
     });
@@ -210,11 +210,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission);
       const newEmbedder: Embedders = {
         default: {
-          source: 'ollama',
-          url: 'http://localhost:11434/api/embeddings',
-          apiKey: '<your-ollama-api-key>',
-          model: 'nomic-embed-text',
-          documentTemplate: 'blabla',
+          source: "ollama",
+          url: "http://localhost:11434/api/embeddings",
+          apiKey: "<your-ollama-api-key>",
+          model: "nomic-embed-text",
+          documentTemplate: "blabla",
           distribution: {
             mean: 0.7,
             sigma: 0.3,
@@ -232,7 +232,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(response).toEqual({
         default: {
           ...newEmbedder.default,
-          apiKey: '<yoXXXXX...',
+          apiKey: "<yoXXXXX...",
         },
       });
     });
@@ -242,7 +242,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const newEmbedder: Embedders = {
         image: {
-          source: 'userProvided',
+          source: "userProvided",
           dimensions: 512,
         },
       };
@@ -272,7 +272,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const newEmbedder: Embedders = {
         manual: {
-          source: 'userProvided',
+          source: "userProvided",
           dimensions: 3,
         },
       };
@@ -289,14 +289,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       await client.waitForTask(documentAdditionTask);
 
       const response = await client.index(index.uid).searchSimilarDocuments({
-        id: '143',
+        id: "143",
       });
 
-      expect(response).toHaveProperty('hits');
+      expect(response).toHaveProperty("hits");
       expect(response.hits.length).toEqual(4);
-      expect(response).toHaveProperty('offset', 0);
-      expect(response).toHaveProperty('limit', 20);
-      expect(response).toHaveProperty('estimatedTotalHits', 4);
+      expect(response).toHaveProperty("offset", 0);
+      expect(response).toHaveProperty("limit", 20);
+      expect(response).toHaveProperty("estimatedTotalHits", 4);
     });
   },
 );
@@ -305,13 +305,13 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test getEmbedders route`, async () => {
     const route = `indexes/${index.uid}/settings/embedders`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).getEmbedders()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -323,7 +323,7 @@ describe.each([
     await expect(
       client.index(index.uid).updateEmbedders({}),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -335,7 +335,7 @@ describe.each([
     await expect(
       client.index(index.uid).resetEmbedders(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

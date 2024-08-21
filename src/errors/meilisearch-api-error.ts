@@ -1,8 +1,8 @@
-import { MeiliSearchErrorResponse } from '../types';
-import { MeiliSearchError } from './meilisearch-error';
+import { MeiliSearchErrorResponse } from "../types";
+import { MeiliSearchError } from "./meilisearch-error";
 
 export class MeiliSearchApiError extends MeiliSearchError {
-  override name = 'MeiliSearchApiError';
+  override name = "MeiliSearchApiError";
   override cause?: MeiliSearchErrorResponse;
   readonly response: Response;
 

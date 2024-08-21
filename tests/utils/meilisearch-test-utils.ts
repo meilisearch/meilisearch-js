@@ -1,10 +1,10 @@
-import { MeiliSearch, Index } from '../../src';
-import { Config } from '../../src/types';
+import { MeiliSearch, Index } from "../../src";
+import { Config } from "../../src/types";
 
 // testing
-const MASTER_KEY = 'masterKey';
-const HOST = process.env.MEILISEARCH_URL || 'http://127.0.0.1:7700';
-const BAD_HOST = 'http://127.0.0.1:7701';
+const MASTER_KEY = "masterKey";
+const HOST = process.env.MEILISEARCH_URL || "http://127.0.0.1:7700";
+const BAD_HOST = "http://127.0.0.1:7701";
 
 const config = {
   host: HOST,
@@ -24,36 +24,36 @@ const anonymousClient = new MeiliSearch({
 });
 
 async function getKey(permission: string): Promise<string> {
-  if (permission === 'No') {
-    return '';
+  if (permission === "No") {
+    return "";
   }
   const { results: keys } = await masterClient.getKeys();
 
-  if (permission === 'Search') {
+  if (permission === "Search") {
     const key = keys.find(
-      (key: any) => key.name === 'Default Search API Key',
+      (key: any) => key.name === "Default Search API Key",
     )?.key;
-    return key || '';
+    return key || "";
   }
 
-  if (permission === 'Admin') {
+  if (permission === "Admin") {
     const key = keys.find(
-      (key: any) => key.name === 'Default Admin API Key',
+      (key: any) => key.name === "Default Admin API Key",
     )?.key;
-    return key || '';
+    return key || "";
   }
   return MASTER_KEY;
 }
 
 async function getClient(permission: string): Promise<MeiliSearch> {
-  if (permission === 'No') {
+  if (permission === "No") {
     const anonymousClient = new MeiliSearch({
       host: HOST,
     });
     return anonymousClient;
   }
 
-  if (permission === 'Search') {
+  if (permission === "Search") {
     const searchKey = await getKey(permission);
     const searchClient = new MeiliSearch({
       host: HOST,
@@ -62,7 +62,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
     return searchClient;
   }
 
-  if (permission === 'Admin') {
+  if (permission === "Admin") {
     const adminKey = await getKey(permission);
     const adminClient = new MeiliSearch({
       host: HOST,
@@ -89,55 +89,55 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
 };
 
 function decode64(buff: string) {
-  return Buffer.from(buff, 'base64').toString();
+  return Buffer.from(buff, "base64").toString();
 }
 
 const datasetWithNests = [
   {
     id: 1,
-    title: 'Pride and Prejudice',
+    title: "Pride and Prejudice",
     info: {
-      comment: 'A great book',
+      comment: "A great book",
       reviewNb: 500,
     },
   },
   {
     id: 2,
-    title: 'Le Petit Prince',
+    title: "Le Petit Prince",
     info: {
-      comment: 'A french book',
+      comment: "A french book",
       reviewNb: 600,
     },
   },
   {
     id: 3,
-    title: 'Le Rouge et le Noir',
+    title: "Le Rouge et le Noir",
     info: {
-      comment: 'Another french book',
+      comment: "Another french book",
       reviewNb: 700,
     },
   },
   {
     id: 4,
-    title: 'Alice In Wonderland',
+    title: "Alice In Wonderland",
     info: {
-      comment: 'A weird book',
+      comment: "A weird book",
       reviewNb: 800,
     },
   },
   {
     id: 5,
-    title: 'The Hobbit',
+    title: "The Hobbit",
     info: {
-      comment: 'An awesome book',
+      comment: "An awesome book",
       reviewNb: 900,
     },
   },
   {
     id: 6,
-    title: 'Harry Potter and the Half-Blood Prince',
+    title: "Harry Potter and the Half-Blood Prince",
     info: {
-      comment: 'The best book',
+      comment: "The best book",
       reviewNb: 1000,
     },
   },
@@ -145,15 +145,15 @@ const datasetWithNests = [
 ];
 
 const dataset: Array<{ id: number; title: string; comment?: string }> = [
-  { id: 123, title: 'Pride and Prejudice', comment: 'A great book' },
-  { id: 456, title: 'Le Petit Prince', comment: 'A french book' },
-  { id: 2, title: 'Le Rouge et le Noir', comment: 'Another french book' },
-  { id: 1, title: 'Alice In Wonderland', comment: 'A weird book' },
-  { id: 1344, title: 'The Hobbit', comment: 'An awesome book' },
+  { id: 123, title: "Pride and Prejudice", comment: "A great book" },
+  { id: 456, title: "Le Petit Prince", comment: "A french book" },
+  { id: 2, title: "Le Rouge et le Noir", comment: "Another french book" },
+  { id: 1, title: "Alice In Wonderland", comment: "A weird book" },
+  { id: 1344, title: "The Hobbit", comment: "An awesome book" },
   {
     id: 4,
-    title: 'Harry Potter and the Half-Blood Prince',
-    comment: 'The best book',
+    title: "Harry Potter and the Half-Blood Prince",
+    comment: "The best book",
   },
   { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
 ];

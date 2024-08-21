@@ -1,13 +1,13 @@
-import { TaskStatus } from '../src';
+import { TaskStatus } from "../src";
 import {
   clearAllIndexes,
   config,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 jest.setTimeout(100 * 1000);
@@ -16,11 +16,11 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on wait for task',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on wait for task",
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
     });
@@ -32,7 +32,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const update = await client.waitForTask(taskUid);
 
-      expect(update).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
+      expect(update).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
     });
 
     test(`${permission} key: Tests wait for task in client with custom interval and timeout until done and resolved`, async () => {
@@ -44,7 +44,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         intervalMs: 100,
       });
 
-      expect(update).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
+      expect(update).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
     });
 
     test(`${permission} key: Tests wait for task in client with custom timeout and interval at 0 done and resolved`, async () => {
@@ -56,7 +56,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         intervalMs: 0,
       });
 
-      expect(update).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
+      expect(update).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
     });
 
     test(`${permission} key: Try to wait for task in client with small timeout and raise an error`, async () => {
@@ -66,7 +66,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       await expect(
         client.waitForTask(taskUid, { timeOutMs: 0 }),
-      ).rejects.toHaveProperty('name', 'MeiliSearchTimeOutError');
+      ).rejects.toHaveProperty("name", "MeiliSearchTimeOutError");
     });
 
     // Index Wait for task
@@ -76,7 +76,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const update = await client.index(index.uid).waitForTask(taskUid);
 
-      expect(update).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
+      expect(update).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
     });
 
     // Client Wait for tasks
@@ -92,8 +92,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const tasks = await client.waitForTasks([task1, task2]);
       const [update1, update2] = tasks;
 
-      expect(update1).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
-      expect(update2).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
+      expect(update1).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
+      expect(update2).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
     });
 
     test(`${permission} key: Tests wait for tasks in client with custom interval and timeout until done and resolved`, async () => {
@@ -111,8 +111,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       });
       const [update1, update2] = tasks;
 
-      expect(update1).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
-      expect(update2).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
+      expect(update1).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
+      expect(update2).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
     });
 
     test(`${permission} key: Tests wait for tasks in client with custom timeout and interval at 0 done and resolved`, async () => {
@@ -130,8 +130,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       });
       const [update1, update2] = tasks;
 
-      expect(update1).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
-      expect(update2).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
+      expect(update1).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
+      expect(update2).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
     });
 
     test(`${permission} key: Tests to wait for tasks in client with small timeout and raise an error`, async () => {
@@ -146,7 +146,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       await expect(
         client.waitForTasks([task1, task2], { timeOutMs: 0 }),
-      ).rejects.toHaveProperty('name', 'MeiliSearchTimeOutError');
+      ).rejects.toHaveProperty("name", "MeiliSearchTimeOutError");
     });
 
     // Index Wait for tasks
@@ -162,8 +162,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const tasks = await client.index(index.uid).waitForTasks([task1, task2]);
       const [update1, update2] = tasks;
 
-      expect(update1).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
-      expect(update2).toHaveProperty('status', TaskStatus.TASK_SUCCEEDED);
+      expect(update1).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
+      expect(update2).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
     });
   },
 );

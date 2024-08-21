@@ -5,7 +5,7 @@
  * Copyright: 2019, MeiliSearch
  */
 
-import { Index } from '../indexes';
+import { Index } from "../indexes";
 import {
   KeyCreation,
   Config,
@@ -34,10 +34,10 @@ import {
   MultiSearchResponse,
   SearchResponse,
   FederatedMultiSearchParams,
-} from '../types';
-import { HttpRequests } from '../http-requests';
-import { TaskClient, Task } from '../task';
-import { EnqueuedTask } from '../enqueued-task';
+} from "../types";
+import { HttpRequests } from "../http-requests";
+import { TaskClient, Task } from "../task";
+import { EnqueuedTask } from "../enqueued-task";
 
 class Client {
   config: Config;
@@ -187,7 +187,7 @@ class Client {
    * @returns Promise returning object of the enqueued task
    */
   async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
-    const url = '/swap-indexes';
+    const url = "/swap-indexes";
     return await this.httpRequest.post(url, params);
   }
 
@@ -206,8 +206,8 @@ class Client {
    * ```ts
    * client.multiSearch({
    *   queries: [
-   *     { indexUid: 'movies', q: 'wonder' },
-   *     { indexUid: 'books', q: 'flower' },
+   *     { indexUid: "movies", q: "wonder" },
+   *     { indexUid: "books", q: "flower" },
    *   ],
    * });
    * ```

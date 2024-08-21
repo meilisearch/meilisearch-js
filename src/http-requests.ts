@@ -1,13 +1,13 @@
-import { Config, EnqueuedTaskObject } from './types';
-import { PACKAGE_VERSION } from './package-version';
+import { Config, EnqueuedTaskObject } from "./types";
+import { PACKAGE_VERSION } from "./package-version";
 
 import {
   MeiliSearchError,
   MeiliSearchApiError,
   MeiliSearchRequestError,
-} from './errors';
+} from "./errors";
 
-import { addTrailingSlash, addProtocolIfNotPresent } from './utils';
+import { addTrailingSlash, addProtocolIfNotPresent } from "./utils";
 
 type queryParams<T> = { [key in keyof T]: string };
 
@@ -19,7 +19,7 @@ function toQueryParams<T extends object>(parameters: T): queryParams<T> {
     if (value === undefined) {
       return acc;
     } else if (Array.isArray(value)) {
-      return { ...acc, [key]: value.join(',') };
+      return { ...acc, [key]: value.join(",") };
     } else if (value instanceof Date) {
       return { ...acc, [key]: value.toISOString() };
     }
@@ -34,7 +34,7 @@ function constructHostURL(host: string): string {
     host = addTrailingSlash(host);
     return host;
   } catch (e) {
-    throw new MeiliSearchError('The provided host is not valid.');
+    throw new MeiliSearchError("The provided host is not valid.");
   }
 }
 
@@ -47,7 +47,7 @@ function cloneAndParseHeaders(headers: HeadersInit): Record<string, string> {
       },
       {} as Record<string, string>,
     );
-  } else if ('has' in headers) {
+  } else if ("has" in headers) {
     const clonedHeaders: Record<string, string> = {};
     (headers as Headers).forEach((value, key) => (clonedHeaders[key] = value));
     return clonedHeaders;
@@ -57,10 +57,10 @@ function cloneAndParseHeaders(headers: HeadersInit): Record<string, string> {
 }
 
 function createHeaders(config: Config): Record<string, any> {
-  const agentHeader = 'X-Meilisearch-Client';
+  const agentHeader = "X-Meilisearch-Client";
   const packageAgent = `Meilisearch JavaScript (v${PACKAGE_VERSION})`;
-  const contentType = 'Content-Type';
-  const authorization = 'Authorization';
+  const contentType = "Content-Type";
+  const authorization = "Authorization";
   const headers = cloneAndParseHeaders(config.requestConfig?.headers ?? {});
 
   // do not override if user provided the header
@@ -69,14 +69,14 @@ function createHeaders(config: Config): Record<string, any> {
   }
 
   if (!headers[contentType]) {
-    headers['Content-Type'] = 'application/json';
+    headers["Content-Type"] = "application/json";
   }
 
   // Creates the custom user agent with information on the package used.
   if (config.clientAgents && Array.isArray(config.clientAgents)) {
     const clients = config.clientAgents.concat(packageAgent);
 
-    headers[agentHeader] = clients.join(' ; ');
+    headers[agentHeader] = clients.join(" ; ");
   } else if (config.clientAgents && !Array.isArray(config.clientAgents)) {
     // If the header is defined but not an array
     throw new MeiliSearchError(
@@ -92,8 +92,8 @@ function createHeaders(config: Config): Record<string, any> {
 class HttpRequests {
   headers: Record<string, any>;
   url: URL;
-  requestConfig?: Config['requestConfig'];
-  httpClient?: Required<Config>['httpClient'];
+  requestConfig?: Config["requestConfig"];
+  httpClient?: Required<Config>["httpClient"];
   requestTimeout?: number;
 
   constructor(config: Config) {
@@ -106,7 +106,7 @@ class HttpRequests {
       const host = constructHostURL(config.host);
       this.url = new URL(host);
     } catch (e) {
-      throw new MeiliSearchError('The provided host is not valid.');
+      throw new MeiliSearchError("The provided host is not valid.");
     }
   }
 
@@ -134,7 +134,7 @@ class HttpRequests {
 
     // in case a custom content-type is provided
     // do not stringify body
-    if (!config.headers?.['Content-Type']) {
+    if (!config.headers?.["Content-Type"]) {
       body = JSON.stringify(body);
     }
 
@@ -162,7 +162,7 @@ class HttpRequests {
 
     const responseBody = await response.text();
     const parsedResponse =
-      responseBody === '' ? undefined : JSON.parse(responseBody);
+      responseBody === "" ? undefined : JSON.parse(responseBody);
 
     if (!response.ok) {
       throw new MeiliSearchApiError(response, parsedResponse);
@@ -174,7 +174,7 @@ class HttpRequests {
   async fetchWithTimeout(
     url: string,
     options: Record<string, any> | RequestInit | undefined,
-    timeout: HttpRequests['requestTimeout'],
+    timeout: HttpRequests["requestTimeout"],
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
       const fetchFn = this.httpClient ? this.httpClient : fetch;
@@ -188,7 +188,7 @@ class HttpRequests {
       if (timeout) {
         const timeoutPromise = new Promise((_, reject) => {
           timeoutId = setTimeout(() => {
-            reject(new Error('Error: Request Timed Out'));
+            reject(new Error("Error: Request Timed Out"));
           }, timeout);
         });
 
@@ -222,7 +222,7 @@ class HttpRequests {
     config?: Record<string, any>,
   ): Promise<any> {
     return await this.request({
-      method: 'GET',
+      method: "GET",
       url,
       params,
       config,
@@ -243,7 +243,7 @@ class HttpRequests {
     config?: Record<string, any>,
   ): Promise<any> {
     return await this.request({
-      method: 'POST',
+      method: "POST",
       url,
       body: data,
       params,
@@ -265,7 +265,7 @@ class HttpRequests {
     config?: Record<string, any>,
   ): Promise<any> {
     return await this.request({
-      method: 'PUT',
+      method: "PUT",
       url,
       body: data,
       params,
@@ -280,7 +280,7 @@ class HttpRequests {
     config?: Record<string, any>,
   ): Promise<any> {
     return await this.request({
-      method: 'PATCH',
+      method: "PATCH",
       url,
       body: data,
       params,
@@ -307,7 +307,7 @@ class HttpRequests {
     config?: Record<string, any>,
   ): Promise<any> {
     return await this.request({
-      method: 'DELETE',
+      method: "DELETE",
       url,
       body: data,
       params,

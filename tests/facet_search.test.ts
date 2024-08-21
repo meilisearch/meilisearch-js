@@ -2,44 +2,44 @@ import {
   clearAllIndexes,
   config,
   getClient,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 const dataset = [
   {
     id: 123,
-    title: 'Pride and Prejudice',
-    genres: ['romance', 'action'],
+    title: "Pride and Prejudice",
+    genres: ["romance", "action"],
   },
   {
     id: 456,
-    title: 'Le Petit Prince',
-    genres: ['adventure', 'comedy'],
+    title: "Le Petit Prince",
+    genres: ["adventure", "comedy"],
   },
   {
     id: 2,
-    title: 'Le Rouge et le Noir',
-    genres: 'romance',
+    title: "Le Rouge et le Noir",
+    genres: "romance",
   },
   {
     id: 1,
-    title: 'Alice In Wonderland',
-    genres: ['adventure'],
+    title: "Alice In Wonderland",
+    genres: ["adventure"],
   },
 ];
 
 describe.each([
-  { permission: 'Master' },
-  { permission: 'Admin' },
-  { permission: 'Search' },
-])('Test on POST search', ({ permission }) => {
+  { permission: "Master" },
+  { permission: "Admin" },
+  { permission: "Search" },
+])("Test on POST search", ({ permission }) => {
   beforeAll(async () => {
     await clearAllIndexes(config);
-    const client = await getClient('Master');
-    const newFilterableAttributes = ['genres', 'title'];
+    const client = await getClient("Master");
+    const newFilterableAttributes = ["genres", "title"];
     await client.createIndex(index.uid);
     await client.index(index.uid).updateSettings({
       filterableAttributes: newFilterableAttributes,
@@ -52,8 +52,8 @@ describe.each([
     const client = await getClient(permission);
 
     const params = {
-      facetQuery: 'a',
-      facetName: 'genres',
+      facetQuery: "a",
+      facetName: "genres",
     };
     const response = await client.index(index.uid).searchForFacetValues(params);
 
@@ -64,7 +64,7 @@ describe.each([
     const client = await getClient(permission);
 
     const params = {
-      facetName: 'genres',
+      facetName: "genres",
     };
     const response = await client.index(index.uid).searchForFacetValues(params);
 
@@ -75,9 +75,9 @@ describe.each([
     const client = await getClient(permission);
 
     const params = {
-      facetName: 'genres',
-      facetQuery: 'a',
-      filter: ['genres = action'],
+      facetName: "genres",
+      facetQuery: "a",
+      filter: ["genres = action"],
     };
 
     const response = await client.index(index.uid).searchForFacetValues(params);
@@ -89,9 +89,9 @@ describe.each([
     const client = await getClient(permission);
 
     const params = {
-      facetName: 'genres',
-      facetQuery: 'a',
-      q: 'Alice',
+      facetName: "genres",
+      facetQuery: "a",
+      q: "Alice",
     };
     const response = await client.index(index.uid).searchForFacetValues(params);
 

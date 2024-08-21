@@ -1,10 +1,10 @@
-import { EnqueuedTaskObject } from './types';
+import { EnqueuedTaskObject } from "./types";
 
 class EnqueuedTask {
-  taskUid: EnqueuedTaskObject['taskUid'];
-  indexUid: EnqueuedTaskObject['indexUid'];
-  status: EnqueuedTaskObject['status'];
-  type: EnqueuedTaskObject['type'];
+  taskUid: EnqueuedTaskObject["taskUid"];
+  indexUid: EnqueuedTaskObject["indexUid"];
+  status: EnqueuedTaskObject["status"];
+  type: EnqueuedTaskObject["type"];
   enqueuedAt: Date;
 
   constructor(task: EnqueuedTaskObject) {

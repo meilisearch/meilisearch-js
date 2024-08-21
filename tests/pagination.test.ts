@@ -1,4 +1,4 @@
-﻿import { ErrorStatusCode } from '../src/types';
+﻿import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,
   config,
@@ -6,10 +6,10 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 jest.setTimeout(100 * 1000);
@@ -18,12 +18,12 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on pagination',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on pagination",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.index(index.uid).addDocuments(dataset);
       await client.waitForTask(taskUid);
     });
@@ -84,11 +84,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   },
 );
 
-describe.each([{ permission: 'Search' }])(
-  'Test on pagination',
+describe.each([{ permission: "Search" }])(
+  "Test on pagination",
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
     });
@@ -97,30 +97,30 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getPagination(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updatePagination({ maxTotalHits: 10 }),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetPagination(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
 
-describe.each([{ permission: 'No' }])(
-  'Test on pagination',
+describe.each([{ permission: "No" }])(
+  "Test on pagination",
   ({ permission }) => {
     beforeAll(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
     });
@@ -130,7 +130,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).getPagination(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -140,7 +140,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).updatePagination({ maxTotalHits: 10 }),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -150,7 +150,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).resetPagination(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -161,7 +161,7 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test getPagination route`, async () => {
     const route = `indexes/${index.uid}/settings/pagination`;
     const client = new MeiliSearch({ host });
@@ -169,7 +169,7 @@ describe.each([
     await expect(
       client.index(index.uid).getPagination(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -181,7 +181,7 @@ describe.each([
     await expect(
       client.index(index.uid).updatePagination({ maxTotalHits: null }),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -193,7 +193,7 @@ describe.each([
     await expect(
       client.index(index.uid).resetPagination(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
