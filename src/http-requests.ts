@@ -33,8 +33,8 @@ function constructHostURL(host: string): string {
     host = addProtocolIfNotPresent(host);
     host = addTrailingSlash(host);
     return host;
-  } catch (e) {
-    throw new MeiliSearchError("The provided host is not valid.");
+  } catch {
+    throw new MeiliSearchError('The provided host is not valid.');
   }
 }
 
@@ -105,8 +105,8 @@ class HttpRequests {
     try {
       const host = constructHostURL(config.host);
       this.url = new URL(host);
-    } catch (e) {
-      throw new MeiliSearchError("The provided host is not valid.");
+    } catch {
+      throw new MeiliSearchError('The provided host is not valid.');
     }
   }
 
