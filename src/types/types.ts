@@ -108,76 +108,8 @@ export type HybridSearch = {
   semanticRatio?: number;
 };
 
-export type Locale =
-  | 'epo'
-  | 'eng'
-  | 'rus'
-  | 'cmn'
-  | 'spa'
-  | 'por'
-  | 'ita'
-  | 'ben'
-  | 'fra'
-  | 'deu'
-  | 'ukr'
-  | 'kat'
-  | 'ara'
-  | 'hin'
-  | 'jpn'
-  | 'heb'
-  | 'yid'
-  | 'pol'
-  | 'amh'
-  | 'jav'
-  | 'kor'
-  | 'nob'
-  | 'dan'
-  | 'swe'
-  | 'fin'
-  | 'tur'
-  | 'nld'
-  | 'hun'
-  | 'ces'
-  | 'ell'
-  | 'bul'
-  | 'bel'
-  | 'mar'
-  | 'kan'
-  | 'ron'
-  | 'slv'
-  | 'hrv'
-  | 'srp'
-  | 'mkd'
-  | 'lit'
-  | 'lav'
-  | 'est'
-  | 'tam'
-  | 'vie'
-  | 'urd'
-  | 'tha'
-  | 'guj'
-  | 'uzb'
-  | 'pan'
-  | 'aze'
-  | 'ind'
-  | 'tel'
-  | 'pes'
-  | 'mal'
-  | 'ori'
-  | 'mya'
-  | 'nep'
-  | 'sin'
-  | 'khm'
-  | 'tuk'
-  | 'aka'
-  | 'zul'
-  | 'sna'
-  | 'afr'
-  | 'lat'
-  | 'slk'
-  | 'cat'
-  | 'tgl'
-  | 'hye';
+// @TODO: Add documentation link to available locales
+export type Locale = string;
 
 export type SearchParams = Query &
   Pagination &
@@ -757,9 +689,9 @@ export interface FetchError extends Error {
 
 export type MeiliSearchErrorResponse = {
   message: string;
-  // @TODO: Could be typed, but will it be kept updated? https://www.meilisearch.com/docs/reference/errors/error_codes
+  // https://www.meilisearch.com/docs/reference/errors/error_codes
   code: string;
-  // @TODO: Could be typed https://www.meilisearch.com/docs/reference/errors/overview#errors
+  // https://www.meilisearch.com/docs/reference/errors/overview#errors
   type: string;
   link: string;
 };
