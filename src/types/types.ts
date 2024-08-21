@@ -331,6 +331,12 @@ export type DocumentsDeletionQuery = {
 
 export type DocumentsIds = string[] | number[];
 
+export type UpdateDocumentsByFunctionOptions = {
+  function: string;
+  filter?: string | string[];
+  context?: Record<string, any>;
+};
+
 /*
  ** Settings
  */

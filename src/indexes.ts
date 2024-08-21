@@ -55,6 +55,7 @@ import {
   SearchCutoffMs,
   SearchSimilarDocumentsParams,
   LocalizedAttributes,
+  UpdateDocumentsByFunctionOptions,
 } from './types';
 import { removeUndefinedFromObject } from './utils';
 import { HttpRequests } from './http-requests';
@@ -628,6 +629,27 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     task.enqueuedAt = new Date(task.enqueuedAt);
 
     return task;
+  }
+
+  /**
+   * This is an EXPERIMENTAL feature, which may break without a major version.
+   * It's available after Meilisearch v1.10.
+   *
+   * More info about the feature:
+   * https://github.com/orgs/meilisearch/discussions/762 More info about
+   * experimental features in general:
+   * https://www.meilisearch.com/docs/reference/api/experimental-features
+   *
+   * @param options - Object containing the function string and related options
+   * @returns Promise containing an EnqueuedTask
+   */
+  async updateDocumentsByFunction(
+    options: UpdateDocumentsByFunctionOptions,
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/documents/edit`;
+    const task = await this.httpRequest.post(url, options);
+
+    return new EnqueuedTask(task);
   }
 
   ///
