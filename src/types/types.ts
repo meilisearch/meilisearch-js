@@ -524,9 +524,9 @@ export type TasksQuery = {
   from?: number;
 };
 
-export type CancelTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {};
+export type CancelTasksQuery = Omit<TasksQuery, "limit" | "from"> & {};
 
-export type DeleteTasksQuery = Omit<TasksQuery, 'limit' | 'from'> & {};
+export type DeleteTasksQuery = Omit<TasksQuery, "limit" | "from"> & {};
 
 export type EnqueuedTaskObject = {
   taskUid: number;
