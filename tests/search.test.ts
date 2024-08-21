@@ -993,7 +993,7 @@ describe.each([
     ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INDEX_NOT_FOUND);
   });
 
-  test.only(`${permission} key: Search with locales`, async () => {
+  test(`${permission} key: Search with locales`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient('Master');
 
