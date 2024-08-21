@@ -144,10 +144,12 @@ describe('Documents tests', () => {
 
       test(`${permission} key: Get documents with filters`, async () => {
         const client = await getClient(permission);
-        client.waitForTask(
-          (await client.index(indexPk.uid).updateFilterableAttributes(['id']))
-            .taskUid,
-        );
+
+        const { taskUid: updateFilterableAttributesTaskUid } = await client
+          .index(indexPk.uid)
+          .updateFilterableAttributes(['id']);
+        await client.waitForTask(updateFilterableAttributesTaskUid);
+
         const { taskUid } = await client
           .index(indexPk.uid)
           .addDocuments(dataset);
@@ -785,13 +787,13 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       });
 
       test(`${permission} key: test updateDocumentsByFunction`, async () => {
-        const client = await getClient(permission),
-          index = client.index<(typeof dataset)[number]>(indexPk.uid),
-          adminKey = await getKey('Admin');
+        const client = await getClient(permission);
+        const index = client.index<(typeof dataset)[number]>(indexPk.uid);
+        const adminKey = await getKey('Admin');
 
-        client.waitForTask(
-          (await index.updateFilterableAttributes(['id'])).taskUid,
-        );
+        const { taskUid: updateFilterableAttributesTaskUid } =
+          await index.updateFilterableAttributes(['id']);
+        await client.waitForTask(updateFilterableAttributesTaskUid);
 
         await fetch(`${HOST}/experimental-features`, {
           body: JSON.stringify({ editDocumentsByFunction: true }),
@@ -802,17 +804,18 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           method: 'PATCH',
         });
 
-        await index.waitForTask((await index.addDocuments(dataset)).taskUid);
+        const { taskUid: addDocumentsTaskUid } =
+          await index.addDocuments(dataset);
+        await index.waitForTask(addDocumentsTaskUid);
 
-        await client.waitForTask(
-          (
-            await index.updateDocumentsByFunction({
-              context: { ctx: 'Harry' },
-              filter: 'id = 4',
-              function: 'doc.comment = `Yer a wizard, ${context.ctx}!`',
-            })
-          ).taskUid,
-        );
+        const { taskUid: updateDocumentsByFunctionTaskUid } =
+          await index.updateDocumentsByFunction({
+            context: { ctx: 'Harry' },
+            filter: 'id = 4',
+            function: 'doc.comment = `Yer a wizard, ${context.ctx}!`',
+          });
+
+        await client.waitForTask(updateDocumentsByFunctionTaskUid);
 
         const doc = await index.getDocument(4);
 
@@ -871,8 +874,8 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       });
 
       test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
-        const client = await getClient(permission),
-          adminKey = await getKey('Admin');
+        const client = await getClient(permission);
+        const adminKey = await getKey('Admin');
 
         await fetch(`${HOST}/experimental-features`, {
           body: JSON.stringify({ editDocumentsByFunction: true }),
@@ -958,8 +961,8 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       });
 
       test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
-        const client = await getClient(permission),
-          adminKey = await getKey('Admin');
+        const client = await getClient(permission);
+        const adminKey = await getKey('Admin');
 
         await fetch(`${HOST}/experimental-features`, {
           body: JSON.stringify({ editDocumentsByFunction: true }),
@@ -1070,10 +1073,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
     });
 
     test(`Test updateDocumentsByFunction route`, async () => {
-      const route = `indexes/${indexPk.uid}/documents/edit`,
-        client = new MeiliSearch({ host }),
-        strippedHost = trailing ? host.slice(0, -1) : host,
-        adminKey = await getKey('Admin');
+      const route = `indexes/${indexPk.uid}/documents/edit`;
+      const client = new MeiliSearch({ host });
+      const strippedHost = trailing ? host.slice(0, -1) : host;
+      const adminKey = await getKey('Admin');
 
       await fetch(`${HOST}/experimental-features`, {
         body: JSON.stringify({ editDocumentsByFunction: true }),
