@@ -108,7 +108,7 @@ export type HybridSearch = {
   semanticRatio?: number;
 };
 
-// @TODO: Add documentation link to available locales
+// https://www.meilisearch.com/docs/reference/api/settings#localized-attributes
 export type Locale = string;
 
 export type SearchParams = Query &
@@ -156,6 +156,7 @@ export type SearchRequestGET = Pagination &
     rankingScoreThreshold?: number;
     distinct?: string;
     retrieveVectors?: boolean;
+    locales?: Locale[];
   };
 
 export type MultiSearchQuery = SearchParams & { indexUid: string };

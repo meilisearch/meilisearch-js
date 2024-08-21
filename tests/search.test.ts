@@ -993,19 +993,18 @@ describe.each([
     ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INDEX_NOT_FOUND);
   });
 
-  test(`${permission} key: Search with locales`, async () => {
-    const localIndex = (await getClient(permission)).index(index.uid);
-    const localMasterIndex = (await getClient('Master')).index(index.uid);
+  test.only(`${permission} key: Search with locales`, async () => {
+    const client = await getClient(permission);
+    const masterClient = await getClient('Master');
 
-    const updateLocalizedAttributesEnqueuedTask =
-      await localMasterIndex.updateLocalizedAttributes([
+    const { taskUid } = await masterClient
+      .index(index.uid)
+      .updateLocalizedAttributes([
         { attributePatterns: ['title', 'comment'], locales: ['fra', 'eng'] },
       ]);
-    await localMasterIndex.waitForTask(
-      updateLocalizedAttributesEnqueuedTask.taskUid,
-    );
+    await masterClient.waitForTask(taskUid);
 
-    const searchResponse = await localIndex.search('french', {
+    const searchResponse = await client.index(index.uid).search('french', {
       locales: ['fra', 'eng'],
     });
 
