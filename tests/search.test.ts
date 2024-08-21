@@ -982,17 +982,6 @@ describe.each([
     expect(response.hits[0]).not.toHaveProperty('_vectors');
   });
 
-  test(`${permission} key: Try to search on deleted index and fail`, async () => {
-    const client = await getClient(permission);
-    const masterClient = await getClient('Master');
-    const { taskUid } = await masterClient.index(index.uid).delete();
-    await masterClient.waitForTask(taskUid);
-
-    await expect(
-      client.index(index.uid).search('prince', {}),
-    ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INDEX_NOT_FOUND);
-  });
-
   test(`${permission} key: Search with locales`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient('Master');
@@ -1009,6 +998,17 @@ describe.each([
     });
 
     expect(searchResponse.hits.length).toEqual(2);
+  });
+
+  test(`${permission} key: Try to search on deleted index and fail`, async () => {
+    const client = await getClient(permission);
+    const masterClient = await getClient('Master');
+    const { taskUid } = await masterClient.index(index.uid).delete();
+    await masterClient.waitForTask(taskUid);
+
+    await expect(
+      client.index(index.uid).search('prince', {}),
+    ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INDEX_NOT_FOUND);
   });
 });
 
