@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    // We don't want to check node_modules
+    "skipLibCheck": true,
     // @TODO: perhaps "emitDeclarationOnly" should be used here (build fails with it), need to
     //       investigate further https://www.typescriptlang.org/tsconfig#emitDeclarationOnly
     //       probably need to update rollup and its config
@@ -22,7 +24,7 @@
     "target": "es2022",
     "lib": ["ESNext", "dom"],
     "strict": true,
-    "noImplicitReturns": true,
+    "noImplicitReturns": true
   },
-  "include": ["src"],
+  "include": ["src"]
 }
