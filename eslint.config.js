@@ -22,9 +22,12 @@ module.exports = [
     ...config,
     files: ["**/*.ts"],
     languageOptions: {
-      globals: globals.node,
-      parser: tseslint.parser,
-      parserOptions: { project: "tsconfig.eslint.json" },
+      ...config.languageOptions,
+      globals: { ...config.languageOptions?.globals, ...globals.node },
+      parserOptions: {
+        ...config.languageOptions?.parserOptions,
+        project: "tsconfig.eslint.json",
+      },
     },
     plugins: { ...config.plugins, tsdoc },
     rules: {
