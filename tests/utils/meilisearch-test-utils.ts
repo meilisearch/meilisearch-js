@@ -80,7 +80,7 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
   const { results } = await client.getRawIndexes();
   const indexes = results.map((elem) => elem.uid);
 
-  const taskIds = [];
+  const taskIds: number[] = [];
   for (const indexUid of indexes) {
     const { taskUid } = await client.index(indexUid).delete();
     taskIds.push(taskUid);
