@@ -5,8 +5,6 @@
  * Copyright: 2019, MeiliSearch
  */
 
-'use strict';
-
 import { Index } from '../indexes';
 import {
   KeyCreation,
@@ -34,6 +32,8 @@ import {
   DeleteTasksQuery,
   MultiSearchParams,
   MultiSearchResponse,
+  SearchResponse,
+  FederatedMultiSearchParams,
 } from '../types';
 import { HttpRequests } from '../http-requests';
 import { TaskClient, Task } from '../task';
@@ -216,10 +216,18 @@ class Client {
    * @param config - Additional request configuration options
    * @returns Promise containing the search responses
    */
-  async multiSearch<T extends Record<string, any> = Record<string, any>>(
-    queries?: MultiSearchParams,
+  multiSearch<T extends Record<string, unknown> = Record<string, any>>(
+    queries: MultiSearchParams,
     config?: Partial<Request>,
-  ): Promise<MultiSearchResponse<T>> {
+  ): Promise<MultiSearchResponse<T>>;
+  multiSearch<T extends Record<string, unknown> = Record<string, any>>(
+    queries: FederatedMultiSearchParams,
+    config?: Partial<Request>,
+  ): Promise<SearchResponse<T>>;
+  async multiSearch<T extends Record<string, unknown> = Record<string, any>>(
+    queries: MultiSearchParams | FederatedMultiSearchParams,
+    config?: Partial<Request>,
+  ): Promise<MultiSearchResponse<T> | SearchResponse<T>> {
     const url = `multi-search`;
 
     return await this.httpRequest.post(url, queries, undefined, config);

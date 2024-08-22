@@ -159,10 +159,20 @@ export type SearchRequestGET = Pagination &
     locales?: Locale[];
   };
 
+export type FederationOptions = { weight: number };
+export type MultiSearchFederation = { limit?: number; offset?: number };
+
 export type MultiSearchQuery = SearchParams & { indexUid: string };
+export type MultiSearchQueryWithFederation = MultiSearchQuery & {
+  federationOptions?: FederationOptions;
+};
 
 export type MultiSearchParams = {
   queries: MultiSearchQuery[];
+};
+export type FederatedMultiSearchParams = {
+  federation: MultiSearchFederation;
+  queries: MultiSearchQueryWithFederation[];
 };
 
 export type CategoriesDistribution = {
@@ -174,13 +184,6 @@ export type FacetDistribution = Record<Facet, CategoriesDistribution>;
 export type MatchesPosition<T> = Partial<
   Record<keyof T, Array<{ start: number; length: number }>>
 >;
-
-export type Hit<T = Record<string, any>> = T & {
-  _formatted?: Partial<T>;
-  _matchesPosition?: MatchesPosition<T>;
-  _rankingScore?: number;
-  _rankingScoreDetails?: RankingScoreDetails;
-};
 
 export type RankingScoreDetails = {
   words?: {
@@ -211,6 +214,20 @@ export type RankingScoreDetails = {
     score: number;
   };
   [key: string]: Record<string, any> | undefined;
+};
+
+export type FederationDetails = {
+  indexUid: string;
+  queriesPosition: number;
+  weightedRankingScore: number;
+};
+
+export type Hit<T = Record<string, any>> = T & {
+  _formatted?: Partial<T>;
+  _matchesPosition?: MatchesPosition<T>;
+  _rankingScore?: number;
+  _rankingScoreDetails?: RankingScoreDetails;
+  _federation?: FederationDetails;
 };
 
 export type Hits<T = Record<string, any>> = Array<Hit<T>>;
