@@ -144,7 +144,7 @@ const datasetWithNests = [
   { id: 7, title: "The Hitchhiker's Guide to the Galaxy" },
 ];
 
-const dataset = [
+const dataset: Array<{ id: number; title: string; comment?: string }> = [
   { id: 123, title: 'Pride and Prejudice', comment: 'A great book' },
   { id: 456, title: 'Le Petit Prince', comment: 'A french book' },
   { id: 2, title: 'Le Rouge et le Noir', comment: 'Another french book' },

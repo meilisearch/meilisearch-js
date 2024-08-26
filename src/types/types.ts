@@ -108,6 +108,9 @@ export type HybridSearch = {
   semanticRatio?: number;
 };
 
+// https://www.meilisearch.com/docs/reference/api/settings#localized-attributes
+export type Locale = string;
+
 export type SearchParams = Query &
   Pagination &
   Highlight &
@@ -130,6 +133,7 @@ export type SearchParams = Query &
     hybrid?: HybridSearch;
     distinct?: string;
     retrieveVectors?: boolean;
+    locales?: Locale[];
   };
 
 // Search parameters for searches made with the GET method
@@ -152,12 +156,23 @@ export type SearchRequestGET = Pagination &
     rankingScoreThreshold?: number;
     distinct?: string;
     retrieveVectors?: boolean;
+    locales?: Locale[];
   };
 
+export type FederationOptions = { weight: number };
+export type MultiSearchFederation = { limit?: number; offset?: number };
+
 export type MultiSearchQuery = SearchParams & { indexUid: string };
+export type MultiSearchQueryWithFederation = MultiSearchQuery & {
+  federationOptions?: FederationOptions;
+};
 
 export type MultiSearchParams = {
   queries: MultiSearchQuery[];
+};
+export type FederatedMultiSearchParams = {
+  federation: MultiSearchFederation;
+  queries: MultiSearchQueryWithFederation[];
 };
 
 export type CategoriesDistribution = {
@@ -169,13 +184,6 @@ export type FacetDistribution = Record<Facet, CategoriesDistribution>;
 export type MatchesPosition<T> = Partial<
   Record<keyof T, Array<{ start: number; length: number }>>
 >;
-
-export type Hit<T = Record<string, any>> = T & {
-  _formatted?: Partial<T>;
-  _matchesPosition?: MatchesPosition<T>;
-  _rankingScore?: number;
-  _rankingScoreDetails?: RankingScoreDetails;
-};
 
 export type RankingScoreDetails = {
   words?: {
@@ -206,6 +214,20 @@ export type RankingScoreDetails = {
     score: number;
   };
   [key: string]: Record<string, any> | undefined;
+};
+
+export type FederationDetails = {
+  indexUid: string;
+  queriesPosition: number;
+  weightedRankingScore: number;
+};
+
+export type Hit<T = Record<string, any>> = T & {
+  _formatted?: Partial<T>;
+  _matchesPosition?: MatchesPosition<T>;
+  _rankingScore?: number;
+  _rankingScoreDetails?: RankingScoreDetails;
+  _federation?: FederationDetails;
 };
 
 export type Hits<T = Record<string, any>> = Array<Hit<T>>;
@@ -326,6 +348,12 @@ export type DocumentsDeletionQuery = {
 
 export type DocumentsIds = string[] | number[];
 
+export type UpdateDocumentsByFunctionOptions = {
+  function: string;
+  filter?: string | string[];
+  context?: Record<string, any>;
+};
+
 /*
  ** Settings
  */
@@ -366,6 +394,7 @@ export type OpenAiEmbedder = {
   documentTemplate?: string;
   dimensions?: number;
   distribution?: Distribution;
+  url?: string;
 };
 
 export type HuggingFaceEmbedder = {
@@ -388,12 +417,10 @@ export type RestEmbedder = {
   apiKey?: string;
   dimensions?: number;
   documentTemplate?: string;
-  inputField?: string[] | null;
-  inputType?: 'text' | 'textArray';
-  query?: Record<string, any> | null;
-  pathToEmbeddings?: string[] | null;
-  embeddingObject?: string[] | null;
   distribution?: Distribution;
+  request: Record<string, any>;
+  response: Record<string, any>;
+  headers?: Record<string, string>;
 };
 
 export type OllamaEmbedder = {
@@ -403,6 +430,7 @@ export type OllamaEmbedder = {
   model?: string;
   documentTemplate?: string;
   distribution?: Distribution;
+  dimensions?: number;
 };
 
 export type Embedder =
@@ -428,6 +456,13 @@ export type PaginationSettings = {
 
 export type SearchCutoffMs = number | null;
 
+export type LocalizedAttribute = {
+  attributePatterns: string[];
+  locales: Locale[];
+};
+
+export type LocalizedAttributes = LocalizedAttribute[] | null;
+
 export type Settings = {
   filterableAttributes?: FilterableAttributes;
   distinctAttribute?: DistinctAttribute;
@@ -446,6 +481,7 @@ export type Settings = {
   proximityPrecision?: ProximityPrecision;
   embedders?: Embedders;
   searchCutoffMs?: SearchCutoffMs;
+  localizedAttributes?: LocalizedAttributes;
 };
 
 /*
@@ -677,9 +713,9 @@ export interface FetchError extends Error {
 
 export type MeiliSearchErrorResponse = {
   message: string;
-  // @TODO: Could be typed, but will it be kept updated? https://www.meilisearch.com/docs/reference/errors/error_codes
+  // https://www.meilisearch.com/docs/reference/errors/error_codes
   code: string;
-  // @TODO: Could be typed https://www.meilisearch.com/docs/reference/errors/overview#errors
+  // https://www.meilisearch.com/docs/reference/errors/overview#errors
   type: string;
   link: string;
 };
@@ -991,6 +1027,10 @@ export const ErrorStatusCode = {
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_search_cutoff_ms */
   INVALID_SETTINGS_SEARCH_CUTOFF_MS: 'invalid_settings_search_cutoff_ms',
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_settings_search_cutoff_ms */
+  INVALID_SETTINGS_LOCALIZED_ATTRIBUTES:
+    'invalid_settings_localized_attributes',
 
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_task_before_enqueued_at */
   INVALID_TASK_BEFORE_ENQUEUED_AT: 'invalid_task_before_enqueued_at',
