@@ -773,3 +773,29 @@ distinct_attribute_guide_filterable_1: |-
   client.index('products').updateFilterableAttributes(['product_id', 'sku', 'url'])
 distinct_attribute_guide_distinct_parameter_1: |-
   client.index('products').search('white shirt', { distinct: 'sku' })
+multi_search_federated_1: |-
+  client.multiSearch({
+    federation: {},
+    queries: [
+      {
+        indexUid: 'movies',
+        q: 'batman',
+        limit: 5,
+      },
+      {
+        indexUid: 'comics',
+        q: 'batman',
+        limit: 5,
+      },
+    ]
+  })
+search_parameter_reference_locales_1: |-
+  client.index('INDEX_NAME').search('進撃の巨人', { locales: ['jpn'] })
+get_localized_attribute_settings_1: |-
+  client.index('INDEX_NAME').getLocalizedAttributes()
+update_localized_attribute_settings_1: |-
+  client.index('INDEX_NAME').updateLocalizedAttributes([
+    { attributePatterns: ['jpn'], locales: ['*_ja'] },
+  ];)
+reset_localized_attribute_settings_1: |-
+  client.index('INDEX_NAME').resetLocalizedAttributes()

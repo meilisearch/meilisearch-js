@@ -54,6 +54,8 @@ import {
   Embedders,
   SearchCutoffMs,
   SearchSimilarDocumentsParams,
+  LocalizedAttributes,
+  UpdateDocumentsByFunctionOptions,
 } from './types';
 import { removeUndefinedFromObject } from './utils';
 import { HttpRequests } from './http-requests';
@@ -627,6 +629,27 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     task.enqueuedAt = new Date(task.enqueuedAt);
 
     return task;
+  }
+
+  /**
+   * This is an EXPERIMENTAL feature, which may break without a major version.
+   * It's available after Meilisearch v1.10.
+   *
+   * More info about the feature:
+   * https://github.com/orgs/meilisearch/discussions/762 More info about
+   * experimental features in general:
+   * https://www.meilisearch.com/docs/reference/api/experimental-features
+   *
+   * @param options - Object containing the function string and related options
+   * @returns Promise containing an EnqueuedTask
+   */
+  async updateDocumentsByFunction(
+    options: UpdateDocumentsByFunctionOptions,
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/documents/edit`;
+    const task = await this.httpRequest.post(url, options);
+
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -1389,6 +1412,47 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetSearchCutoffMs(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/search-cutoff-ms`;
+    const task = await this.httpRequest.delete(url);
+
+    return new EnqueuedTask(task);
+  }
+
+  ///
+  /// LOCALIZED ATTRIBUTES SETTINGS
+  ///
+
+  /**
+   * Get the localized attributes settings.
+   *
+   * @returns Promise containing object of localized attributes settings
+   */
+  async getLocalizedAttributes(): Promise<LocalizedAttributes> {
+    const url = `indexes/${this.uid}/settings/localized-attributes`;
+    return await this.httpRequest.get<LocalizedAttributes>(url);
+  }
+
+  /**
+   * Update the localized attributes settings.
+   *
+   * @param localizedAttributes - Localized attributes object
+   * @returns Promise containing an EnqueuedTask
+   */
+  async updateLocalizedAttributes(
+    localizedAttributes: LocalizedAttributes,
+  ): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/localized-attributes`;
+    const task = await this.httpRequest.put(url, localizedAttributes);
+
+    return new EnqueuedTask(task);
+  }
+
+  /**
+   * Reset the localized attributes settings.
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetLocalizedAttributes(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/localized-attributes`;
     const task = await this.httpRequest.delete(url);
 
     return new EnqueuedTask(task);

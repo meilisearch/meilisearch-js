@@ -80,7 +80,7 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
   const { results } = await client.getRawIndexes();
   const indexes = results.map((elem) => elem.uid);
 
-  const taskIds = [];
+  const taskIds: number[] = [];
   for (const indexUid of indexes) {
     const { taskUid } = await client.index(indexUid).delete();
     taskIds.push(taskUid);
@@ -144,7 +144,7 @@ const datasetWithNests = [
   { id: 7, title: "The Hitchhiker's Guide to the Galaxy" },
 ];
 
-const dataset = [
+const dataset: Array<{ id: number; title: string; comment?: string }> = [
   { id: 123, title: 'Pride and Prejudice', comment: 'A great book' },
   { id: 456, title: 'Le Petit Prince', comment: 'A french book' },
   { id: 2, title: 'Le Rouge et le Noir', comment: 'Another french book' },
