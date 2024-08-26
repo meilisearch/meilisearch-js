@@ -1,4 +1,4 @@
-import { afterAll, expect, test } from 'vitest';
+import { afterAll, expect, test } from "vitest";
 import {
   clearAllIndexes,
   config,

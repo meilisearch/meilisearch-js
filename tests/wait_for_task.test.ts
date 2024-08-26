@@ -1,5 +1,5 @@
-import { afterAll, beforeEach, describe, expect, test } from 'vitest';
-import { TaskStatus } from '../src';
+import { afterAll, beforeEach, describe, expect, test } from "vitest";
+import { TaskStatus } from "../src";
 import {
   clearAllIndexes,
   config,

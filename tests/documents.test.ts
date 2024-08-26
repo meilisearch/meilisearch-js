@@ -1,5 +1,5 @@
-import { afterAll, expect, test, describe, beforeEach } from 'vitest';
-import { ErrorStatusCode, TaskStatus, TaskTypes } from '../src/types';
+import { afterAll, expect, test, describe, beforeEach } from "vitest";
+import { ErrorStatusCode, TaskStatus, TaskTypes } from "../src/types";
 import {
   clearAllIndexes,
   config,
@@ -169,7 +169,7 @@ describe("Documents tests", () => {
           await client.index(indexPk.uid).getDocuments({ filter: "" });
 
           throw new Error(
-            'getDocuments should have raised an error when the route does not exist',
+            "getDocuments should have raised an error when the route does not exist",
           );
         } catch (e: any) {
           expect(e.message).toEqual(
@@ -186,7 +186,7 @@ describe("Documents tests", () => {
           await client.index(indexPk.uid).getDocuments({ filter: "id = 1" });
 
           throw new Error(
-            'getDocuments should have raised an error when the filter is badly formatted',
+            "getDocuments should have raised an error when the filter is badly formatted",
           );
         } catch (e: any) {
           expect(e.message).toEqual(
@@ -660,7 +660,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           await client.index(indexPk.uid).deleteDocuments({ filter: "" });
 
           throw new Error(
-            'deleteDocuments should have raised an error when the parameters are wrong',
+            "deleteDocuments should have raised an error when the parameters are wrong",
           );
         } catch (e: any) {
           expect(e.message).toEqual(
@@ -677,7 +677,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           await client.index(indexPk.uid).deleteDocuments({ filter: "id = 1" });
 
           throw new Error(
-            'deleteDocuments should have raised an error when the route does not exist',
+            "deleteDocuments should have raised an error when the route does not exist",
           );
         } catch (e: any) {
           expect(e.message).toEqual(

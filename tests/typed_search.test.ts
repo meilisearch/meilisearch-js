@@ -5,9 +5,9 @@ import {
   describe,
   expect,
   test,
-} from 'vitest';
-import { ErrorStatusCode, SearchResponse } from '../src/types';
-import { EnqueuedTask } from '../src/enqueued-task';
+} from "vitest";
+import { ErrorStatusCode, SearchResponse } from "../src/types";
+import { EnqueuedTask } from "../src/enqueued-task";
 import {
   clearAllIndexes,
   config,

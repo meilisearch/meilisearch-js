@@ -56,14 +56,14 @@ module.exports = {
     },
     // Vitest linting for test files
     {
-      files: 'tests/*.ts',
-      plugins: ['@vitest'],
-      extends: ['plugin:@vitest/legacy-recommended', 'prettier'],
+      files: "tests/*.ts",
+      plugins: ["@vitest"],
+      extends: ["plugin:@vitest/legacy-recommended", "prettier"],
       // @TODO: Remove all of these rules and adapt code!
       rules: {
-        '@vitest/expect-expect': 'off',
-        '@vitest/valid-title': 'off',
-        '@vitest/valid-expect': 'off',
+        "@vitest/expect-expect": "off",
+        "@vitest/valid-title": "off",
+        "@vitest/valid-expect": "off",
       },
     },
   ],

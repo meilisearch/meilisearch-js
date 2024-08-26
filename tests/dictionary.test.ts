@@ -1,5 +1,5 @@
-import { afterAll, expect, test, describe, beforeEach } from 'vitest';
-import { EnqueuedTask } from '../src/enqueued-task';
+import { afterAll, expect, test, describe, beforeEach } from "vitest";
+import { EnqueuedTask } from "../src/enqueued-task";
 import {
   clearAllIndexes,
   config,

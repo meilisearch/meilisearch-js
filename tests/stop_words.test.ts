@@ -1,6 +1,6 @@
-import { afterAll, beforeEach, describe, expect, test } from 'vitest';
-import { ErrorStatusCode } from '../src/types';
-import { EnqueuedTask } from '../src/enqueued-task';
+import { afterAll, beforeEach, describe, expect, test } from "vitest";
+import { ErrorStatusCode } from "../src/types";
+import { EnqueuedTask } from "../src/enqueued-task";
 import {
   clearAllIndexes,
   config,

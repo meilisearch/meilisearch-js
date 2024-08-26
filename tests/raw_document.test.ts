@@ -1,4 +1,4 @@
-import { expect, test, describe, beforeEach } from 'vitest';
+import { expect, test, describe, beforeEach } from "vitest";
 import {
   clearAllIndexes,
   config,

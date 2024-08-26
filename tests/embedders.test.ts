@@ -1,6 +1,6 @@
-import { afterAll, expect, test, describe, beforeEach } from 'vitest';
-import { EnqueuedTask } from '../src/enqueued-task';
-import { Embedders } from '../src/types';
+import { afterAll, expect, test, describe, beforeEach } from "vitest";
+import { EnqueuedTask } from "../src/enqueued-task";
+import { Embedders } from "../src/types";
 import {
   clearAllIndexes,
   config,

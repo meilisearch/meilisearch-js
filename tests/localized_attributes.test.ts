@@ -1,3 +1,11 @@
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  test,
+} from "vitest";
 import { ErrorStatusCode, type LocalizedAttributes } from "../src/types";
 import {
   clearAllIndexes,
@@ -13,8 +21,6 @@ const index = {
 };
 
 const DEFAULT_LOCALIZED_ATTRIBUTES = null;
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);

@@ -1,4 +1,4 @@
-import { afterAll, beforeEach, describe, expect, test } from 'vitest';
+import { afterAll, beforeEach, describe, expect, test } from "vitest";
 import {
   getClient,
   decode64,

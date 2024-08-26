@@ -1,28 +1,28 @@
-import { expect, test, describe, beforeEach, vi } from 'vitest';
-import { MeiliSearch } from './utils/meilisearch-test-utils';
+import { expect, test, describe, beforeEach, vi } from "vitest";
+import { MeiliSearch } from "./utils/meilisearch-test-utils";
 import {
   MeiliSearchError,
   MeiliSearchApiError,
   MeiliSearchRequestError,
   MeiliSearchTimeOutError,
-} from '../src/errors';
+} from "../src/errors";
 
 const mockedFetch = vi.fn();
 globalThis.fetch = mockedFetch;
 
-describe('Test on updates', () => {
+describe("Test on updates", () => {
   beforeEach(() => {
     mockedFetch.mockReset();
   });
 
   test(`Throw MeilisearchRequestError when throwned error is not MeiliSearchApiError`, async () => {
-    mockedFetch.mockRejectedValue(new Error('fake error message'));
+    mockedFetch.mockRejectedValue(new Error("fake error message"));
 
-    const client = new MeiliSearch({ host: 'http://localhost:9345' });
+    const client = new MeiliSearch({ host: "http://localhost:9345" });
     try {
       await client.health();
     } catch (error) {
-      expect(error.name).toEqual('MeiliSearchRequestError');
+      expect(error.name).toEqual("MeiliSearchRequestError");
     }
   });
 
@@ -37,10 +37,10 @@ describe('Test on updates', () => {
     ).toEqual(true);
   });
 
-  test('MeilisearchRequestError can be compared with the instanceof operator', async () => {
-    mockedFetch.mockRejectedValue(new Error('fake error message'));
+  test("MeilisearchRequestError can be compared with the instanceof operator", async () => {
+    mockedFetch.mockRejectedValue(new Error("fake error message"));
 
-    const client = new MeiliSearch({ host: 'http://localhost:9345' });
+    const client = new MeiliSearch({ host: "http://localhost:9345" });
     try {
       await client.health();
     } catch (error) {
@@ -48,15 +48,15 @@ describe('Test on updates', () => {
     }
   });
 
-  test('MeiliSearchError can be compared with the instanceof operator', () => {
-    expect(new MeiliSearchError('message') instanceof MeiliSearchError).toEqual(
+  test("MeiliSearchError can be compared with the instanceof operator", () => {
+    expect(new MeiliSearchError("message") instanceof MeiliSearchError).toEqual(
       true,
     );
   });
 
-  test('MeiliSearchTimeOutError can be compared with the instanceof operator', () => {
+  test("MeiliSearchTimeOutError can be compared with the instanceof operator", () => {
     expect(
-      new MeiliSearchTimeOutError('message') instanceof MeiliSearchTimeOutError,
+      new MeiliSearchTimeOutError("message") instanceof MeiliSearchTimeOutError,
     ).toEqual(true);
   });
 });

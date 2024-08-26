@@ -5,9 +5,9 @@ import {
   beforeEach,
   afterAll,
   beforeAll,
-} from 'vitest';
-import { ErrorStatusCode, MatchingStrategies } from '../src/types';
-import { EnqueuedTask } from '../src/enqueued-task';
+} from "vitest";
+import { ErrorStatusCode, MatchingStrategies } from "../src/types";
+import { EnqueuedTask } from "../src/enqueued-task";
 import {
   clearAllIndexes,
   config,

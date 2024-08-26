@@ -5,8 +5,8 @@ import {
   describe,
   expect,
   test,
-} from 'vitest';
-import { ErrorStatusCode } from '../src/types';
+} from "vitest";
+import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,
   config,
