@@ -118,6 +118,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
             mean: 0.7,
             sigma: 0.3,
           },
+          url: 'https://api.openai.com/v1/embeddings',
         },
       };
       const task: EnqueuedTask = await client
@@ -169,16 +170,24 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
           dimensions: 1536,
           documentTemplate:
             "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
-          inputField: ['input'],
-          inputType: 'textArray',
-          query: {
-            model: 'text-embedding-ada-002',
-          },
-          pathToEmbeddings: ['data'],
-          embeddingObject: ['embedding'],
           distribution: {
             mean: 0.7,
             sigma: 0.3,
+          },
+          request: {
+            model: 'text-embedding-3-small',
+            input: ['{{text}}', '{{..}}'],
+          },
+          response: {
+            data: [
+              {
+                embedding: '{{embedding}}',
+              },
+              '{{..}}',
+            ],
+          },
+          headers: {
+            'Custom-Header': 'CustomValue',
           },
         },
       };
@@ -197,7 +206,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       });
     });
 
-    test.skip(`${permission} key: Update embedders with 'ollama' source`, async () => {
+    test(`${permission} key: Update embedders with 'ollama' source`, async () => {
       const client = await getClient(permission);
       const newEmbedder: Embedders = {
         default: {
@@ -210,6 +219,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
             mean: 0.7,
             sigma: 0.3,
           },
+          dimensions: 512,
         },
       };
       const task: EnqueuedTask = await client
