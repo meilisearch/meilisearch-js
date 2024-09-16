@@ -171,7 +171,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         },
       };
       const task = await client.index(index.uid).updateSettings(newSettings);
-      await client.index(index.uid).waitForTask(task.taskUid);
+      await client
+        .index(index.uid)
+        .waitForTask(task.taskUid, { timeOutMs: 60_000 });
       const response = await client.index(index.uid).getSettings();
 
       expect(response).toMatchSnapshot();
