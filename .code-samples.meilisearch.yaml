@@ -780,12 +780,10 @@ multi_search_federated_1: |-
       {
         indexUid: 'movies',
         q: 'batman',
-        limit: 5,
       },
       {
         indexUid: 'comics',
         q: 'batman',
-        limit: 5,
       },
     ]
   })
