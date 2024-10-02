@@ -403,7 +403,7 @@ class Client {
       const url = `health`;
       await this.httpRequest.get(url);
       return true;
-    } catch (e: any) {
+    } catch {
       return false;
     }
   }

@@ -12,6 +12,7 @@ import {
 } from "./utils/meilisearch-test-utils";
 
 if (typeof fetch === "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("cross-fetch/polyfill");
 }
 
