@@ -1,7 +1,7 @@
 const eslint = require("@eslint/js");
 const tseslint = require("typescript-eslint");
 const tsdoc = require("eslint-plugin-tsdoc");
-const jest = require("eslint-plugin-jest");
+const vitest = require("@vitest/eslint-plugin");
 const globals = require("globals");
 const prettier = require("eslint-config-prettier");
 
@@ -59,25 +59,16 @@ module.exports = [
       "@typescript-eslint/ban-ts-ignore": "off",
     },
   })),
-  // Jest linting for test files
+  // Vitest linting for test files
   {
     files: ["tests/*.ts"],
-    ...jest.configs["flat/recommended"],
-    // languageOptions: {
-    //   ...jest.configs['flat/recommended'].languageOptions,
-    //   globals: globals.jest,
-    // },
+    plugins: { vitest },
     rules: {
-      ...jest.configs["flat/recommended"].rules,
+      ...vitest.configs.recommended.rules,
       // @TODO: Remove all of these rules and adapt code!
-      "jest/no-disabled-tests": "off",
-      "jest/expect-expect": "off",
-      "jest/no-conditional-expect": "off",
-      "jest/valid-title": "off",
-      "jest/no-jasmine-globals": "off",
-      "jest/valid-expect-in-promise": "off",
-      "jest/valid-expect": "off",
-      "jest/no-alias-methods": "off",
+      "vitest/expect-expect": "off",
+      "vitest/valid-title": "off",
+      "vitest/valid-expect": "off",
     },
   },
   prettier,
