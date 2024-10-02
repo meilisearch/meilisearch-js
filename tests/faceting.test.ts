@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from '../src/types';
+import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,
   config,
@@ -6,10 +6,10 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 jest.setTimeout(100 * 1000);
@@ -18,12 +18,12 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on faceting',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on faceting",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
 
@@ -45,7 +45,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission);
       const newFaceting = {
         maxValuesPerFacet: 12,
-        sortFacetValuesBy: { test: 'count' as 'count' },
+        sortFacetValuesBy: { test: "count" as "count" },
       };
       const task = await client.index(index.uid).updateFaceting(newFaceting);
       await client.index(index.uid).waitForTask(task.taskUid);
@@ -88,11 +88,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   },
 );
 
-describe.each([{ permission: 'Search' }])(
-  'Test on faceting',
+describe.each([{ permission: "Search" }])(
+  "Test on faceting",
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
     });
@@ -101,28 +101,28 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getFaceting(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update faceting and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateFaceting({ maxValuesPerFacet: 13 }),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset faceting and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetFaceting(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
 
-describe.each([{ permission: 'No' }])('Test on faceting', ({ permission }) => {
+describe.each([{ permission: "No" }])("Test on faceting", ({ permission }) => {
   beforeAll(async () => {
-    const client = await getClient('Master');
+    const client = await getClient("Master");
     const { taskUid } = await client.createIndex(index.uid);
     await client.waitForTask(taskUid);
   });
@@ -130,7 +130,7 @@ describe.each([{ permission: 'No' }])('Test on faceting', ({ permission }) => {
   test(`${permission} key: try to get faceting and be denied`, async () => {
     const client = await getClient(permission);
     await expect(client.index(index.uid).getFaceting()).rejects.toHaveProperty(
-      'cause.code',
+      "cause.code",
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
     );
   });
@@ -140,7 +140,7 @@ describe.each([{ permission: 'No' }])('Test on faceting', ({ permission }) => {
     await expect(
       client.index(index.uid).updateFaceting({ maxValuesPerFacet: 13 }),
     ).rejects.toHaveProperty(
-      'cause.code',
+      "cause.code",
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
     );
   });
@@ -150,7 +150,7 @@ describe.each([{ permission: 'No' }])('Test on faceting', ({ permission }) => {
     await expect(
       client.index(index.uid).resetFaceting(),
     ).rejects.toHaveProperty(
-      'cause.code',
+      "cause.code",
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
     );
   });
@@ -160,13 +160,13 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test getFaceting route`, async () => {
     const route = `indexes/${index.uid}/settings/faceting`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).getFaceting()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -178,7 +178,7 @@ describe.each([
     await expect(
       client.index(index.uid).updateFaceting({ maxValuesPerFacet: null }),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -190,7 +190,7 @@ describe.each([
     await expect(
       client.index(index.uid).resetFaceting(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

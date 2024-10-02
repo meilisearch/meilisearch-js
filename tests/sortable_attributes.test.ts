@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from '../src/types';
+import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,
   config,
@@ -6,10 +6,10 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 jest.setTimeout(100 * 1000);
@@ -18,11 +18,11 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on sortable attributes',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on sortable attributes",
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
 
@@ -42,7 +42,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
     test(`${permission} key: Update sortable attributes`, async () => {
       const client = await getClient(permission);
-      const newSortableAttributes = ['title'];
+      const newSortableAttributes = ["title"];
       const task = await client
         .index(index.uid)
         .updateSortableAttributes(newSortableAttributes);
@@ -74,11 +74,11 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   },
 );
 
-describe.each([{ permission: 'Search' }])(
-  'Test on sortable attributes',
+describe.each([{ permission: "Search" }])(
+  "Test on sortable attributes",
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
     });
@@ -87,30 +87,30 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getSortableAttributes(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update sortable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateSortableAttributes([]),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset sortable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetSortableAttributes(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
 
-describe.each([{ permission: 'No' }])(
-  'Test on sortable attributes',
+describe.each([{ permission: "No" }])(
+  "Test on sortable attributes",
   ({ permission }) => {
     beforeAll(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
     });
@@ -120,7 +120,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).getSortableAttributes(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -131,7 +131,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).updateSortableAttributes(resetSortable),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -141,7 +141,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).resetSortableAttributes(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -152,7 +152,7 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test getSortableAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/sortable-attributes`;
     const client = new MeiliSearch({ host });
@@ -160,7 +160,7 @@ describe.each([
     await expect(
       client.index(index.uid).getSortableAttributes(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -172,7 +172,7 @@ describe.each([
     await expect(
       client.index(index.uid).updateSortableAttributes([]),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -184,7 +184,7 @@ describe.each([
     await expect(
       client.index(index.uid).resetSortableAttributes(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

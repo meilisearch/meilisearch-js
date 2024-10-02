@@ -2,7 +2,7 @@ import {
   clearAllIndexes,
   config,
   MeiliSearch,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 afterAll(() => {
   return clearAllIndexes(config);
@@ -22,5 +22,5 @@ test(`Client handles host URL with domain and path and no trailing slash`, () =>
   const client = new MeiliSearch({
     host: customHost,
   });
-  expect(client.httpRequest.url.href).toBe(customHost + '/');
+  expect(client.httpRequest.url.href).toBe(customHost + "/");
 });

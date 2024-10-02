@@ -1,9 +1,9 @@
-import { Config, TokenSearchRules, TokenOptions } from './types';
-import { MeiliSearchError } from './errors';
-import { validateUuid4 } from './utils';
+import { Config, TokenSearchRules, TokenOptions } from "./types";
+import { MeiliSearchError } from "./errors";
+import { validateUuid4 } from "./utils";
 
 function encode64(data: any) {
-  return Buffer.from(JSON.stringify(data)).toString('base64');
+  return Buffer.from(JSON.stringify(data)).toString("base64");
 }
 
 /**
@@ -19,14 +19,14 @@ async function sign(
   encodedHeader: string,
   encodedPayload: string,
 ) {
-  const { createHmac } = await import('crypto');
+  const { createHmac } = await import("crypto");
 
-  return createHmac('sha256', apiKey)
+  return createHmac("sha256", apiKey)
     .update(`${encodedHeader}.${encodedPayload}`)
-    .digest('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+    .digest("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 }
 
 /**
@@ -36,11 +36,11 @@ async function sign(
  */
 function createHeader() {
   const header = {
-    alg: 'HS256',
-    typ: 'JWT',
+    alg: "HS256",
+    typ: "JWT",
   };
 
-  return encode64(header).replace(/=/g, '');
+  return encode64(header).replace(/=/g, "");
 }
 
 /**
@@ -72,20 +72,20 @@ function validateTokenParameters(tokenParams: {
   }
 
   if (searchRules) {
-    if (!(typeof searchRules === 'object' || Array.isArray(searchRules))) {
+    if (!(typeof searchRules === "object" || Array.isArray(searchRules))) {
       throw new MeiliSearchError(
         `Meilisearch: The search rules added in the token generation must be of type array or object.`,
       );
     }
   }
 
-  if (!apiKey || typeof apiKey !== 'string') {
+  if (!apiKey || typeof apiKey !== "string") {
     throw new MeiliSearchError(
       `Meilisearch: The API key used for the token generation must exist and be of type string.`,
     );
   }
 
-  if (!uid || typeof uid !== 'string') {
+  if (!uid || typeof uid !== "string") {
     throw new MeiliSearchError(
       `Meilisearch: The uid of the api key used for the token generation must exist, be of type string and comply to the uuid4 format.`,
     );
@@ -119,7 +119,7 @@ function createPayload(payloadParams: {
     exp: expiresAt ? Math.floor(expiresAt.getTime() / 1000) : undefined,
   };
 
-  return encode64(payload).replace(/=/g, '');
+  return encode64(payload).replace(/=/g, "");
 }
 
 class Token {
@@ -142,8 +142,8 @@ class Token {
     searchRules: TokenSearchRules,
     options?: TokenOptions,
   ): Promise<string> {
-    const apiKey = options?.apiKey || this.config.apiKey || '';
-    const uid = apiKeyUid || '';
+    const apiKey = options?.apiKey || this.config.apiKey || "";
+    const uid = apiKeyUid || "";
     const expiresAt = options?.expiresAt;
 
     validateTokenParameters({ apiKey, uid, expiresAt, searchRules });

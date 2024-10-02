@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from '../src/types';
+import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,
   config,
@@ -6,10 +6,10 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 jest.setTimeout(100 * 1000);
@@ -18,11 +18,11 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on synonyms',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on synonyms",
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.index(index.uid).addDocuments(dataset);
       await client.waitForTask(taskUid);
     });
@@ -37,7 +37,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
     test(`${permission} key: Update synonyms`, async () => {
       const client = await getClient(permission);
       const newSynonyms = {
-        hp: ['harry potter'],
+        hp: ["harry potter"],
       };
       const task = await client.index(index.uid).updateSynonyms(newSynonyms);
       await client.waitForTask(task.taskUid);
@@ -70,8 +70,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   },
 );
 
-describe.each([{ permission: 'Search' }])(
-  'Test on synonyms',
+describe.each([{ permission: "Search" }])(
+  "Test on synonyms",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
@@ -81,26 +81,26 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getSynonyms(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update synonyms and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateSynonyms({}),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset synonyms and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetSynonyms(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
 
-describe.each([{ permission: 'No' }])('Test on synonyms', ({ permission }) => {
+describe.each([{ permission: "No" }])("Test on synonyms", ({ permission }) => {
   beforeEach(async () => {
     await clearAllIndexes(config);
   });
@@ -108,7 +108,7 @@ describe.each([{ permission: 'No' }])('Test on synonyms', ({ permission }) => {
   test(`${permission} key: try to get synonyms and be denied`, async () => {
     const client = await getClient(permission);
     await expect(client.index(index.uid).getSynonyms()).rejects.toHaveProperty(
-      'cause.code',
+      "cause.code",
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
     );
   });
@@ -118,7 +118,7 @@ describe.each([{ permission: 'No' }])('Test on synonyms', ({ permission }) => {
     await expect(
       client.index(index.uid).updateSynonyms({}),
     ).rejects.toHaveProperty(
-      'cause.code',
+      "cause.code",
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
     );
   });
@@ -128,7 +128,7 @@ describe.each([{ permission: 'No' }])('Test on synonyms', ({ permission }) => {
     await expect(
       client.index(index.uid).resetSynonyms(),
     ).rejects.toHaveProperty(
-      'cause.code',
+      "cause.code",
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
     );
   });
@@ -138,13 +138,13 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test getSynonyms route`, async () => {
     const route = `indexes/${index.uid}/settings/synonyms`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).getSynonyms()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -156,7 +156,7 @@ describe.each([
     await expect(
       client.index(index.uid).updateSynonyms({}),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -168,7 +168,7 @@ describe.each([
     await expect(
       client.index(index.uid).resetSynonyms(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

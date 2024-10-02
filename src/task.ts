@@ -1,4 +1,4 @@
-import { MeiliSearchTimeOutError } from './errors';
+import { MeiliSearchTimeOutError } from "./errors";
 import {
   Config,
   WaitOptions,
@@ -9,20 +9,20 @@ import {
   CancelTasksQuery,
   TasksResultsObject,
   DeleteTasksQuery,
-} from './types';
-import { HttpRequests, toQueryParams } from './http-requests';
-import { sleep } from './utils';
-import { EnqueuedTask } from './enqueued-task';
+} from "./types";
+import { HttpRequests, toQueryParams } from "./http-requests";
+import { sleep } from "./utils";
+import { EnqueuedTask } from "./enqueued-task";
 
 class Task {
-  indexUid: TaskObject['indexUid'];
-  status: TaskObject['status'];
-  type: TaskObject['type'];
-  uid: TaskObject['uid'];
-  canceledBy: TaskObject['canceledBy'];
-  details: TaskObject['details'];
-  error: TaskObject['error'];
-  duration: TaskObject['duration'];
+  indexUid: TaskObject["indexUid"];
+  status: TaskObject["status"];
+  type: TaskObject["type"];
+  uid: TaskObject["uid"];
+  canceledBy: TaskObject["canceledBy"];
+  details: TaskObject["details"];
+  error: TaskObject["error"];
+  duration: TaskObject["duration"];
   startedAt: Date;
   enqueuedAt: Date;
   finishedAt: Date;

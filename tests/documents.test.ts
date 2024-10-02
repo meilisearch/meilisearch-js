@@ -1,4 +1,4 @@
-import { ErrorStatusCode, TaskStatus, TaskTypes } from '../src/types';
+import { ErrorStatusCode, TaskStatus, TaskTypes } from "../src/types";
 import {
   clearAllIndexes,
   config,
@@ -9,14 +9,14 @@ import {
   Book,
   getKey,
   HOST,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const indexNoPk = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 const indexPk = {
-  uid: 'movies_test2',
-  primaryKey: 'id',
+  uid: "movies_test2",
+  primaryKey: "id",
 };
 
 jest.setTimeout(100 * 1000);
@@ -25,13 +25,13 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe('Documents tests', () => {
-  describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-    'Test on documents',
+describe("Documents tests", () => {
+  describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+    "Test on documents",
     ({ permission }) => {
       beforeEach(async () => {
         await clearAllIndexes(config);
-        const client = await getClient('Master');
+        const client = await getClient("Master");
         const { taskUid: taskCreateNoPk } = await client.createIndex(
           indexNoPk.uid,
         );
@@ -71,7 +71,7 @@ describe('Documents tests', () => {
           .index(indexNoPk.uid)
           .getDocument<Book>(documentId);
 
-        expect(document.title).toEqual('Alice In Wonderland');
+        expect(document.title).toEqual("Alice In Wonderland");
       });
 
       test(`${permission} key: Get one document with fields parameter`, async () => {
@@ -84,9 +84,9 @@ describe('Documents tests', () => {
         const documentId = 1;
         const document = await client
           .index(indexNoPk.uid)
-          .getDocument<Book>(documentId, { fields: ['title'] });
+          .getDocument<Book>(documentId, { fields: ["title"] });
 
-        expect(document.title).toEqual('Alice In Wonderland');
+        expect(document.title).toEqual("Alice In Wonderland");
         expect(document.id).toBeUndefined();
       });
 
@@ -94,7 +94,7 @@ describe('Documents tests', () => {
         const client = await getClient(permission);
 
         const documents = await client.index(indexNoPk.uid).getDocuments<Book>({
-          fields: 'id',
+          fields: "id",
         });
 
         expect(
@@ -110,7 +110,7 @@ describe('Documents tests', () => {
         await client.waitForTask(taskUid);
 
         const documents = await client.index(indexPk.uid).getDocuments<Book>({
-          fields: ['id'],
+          fields: ["id"],
         });
         const onlyIdFields = Array.from(
           new Set(
@@ -122,7 +122,7 @@ describe('Documents tests', () => {
         );
 
         expect(onlyIdFields.length).toEqual(1);
-        expect(onlyIdFields[0]).toEqual('id');
+        expect(onlyIdFields[0]).toEqual("id");
       });
 
       test(`${permission} key: Get documents with pagination`, async () => {
@@ -147,7 +147,7 @@ describe('Documents tests', () => {
 
         const { taskUid: updateFilterableAttributesTaskUid } = await client
           .index(indexPk.uid)
-          .updateFilterableAttributes(['id']);
+          .updateFilterableAttributes(["id"]);
         await client.waitForTask(updateFilterableAttributesTaskUid);
 
         const { taskUid } = await client
@@ -156,7 +156,7 @@ describe('Documents tests', () => {
         await client.waitForTask(taskUid);
 
         const documents = await client.index(indexPk.uid).getDocuments<Book>({
-          filter: [['id = 1', 'id = 2']],
+          filter: [["id = 1", "id = 2"]],
         });
 
         expect(documents.results.length).toEqual(2);
@@ -167,10 +167,10 @@ describe('Documents tests', () => {
         const client = new MeiliSearch({ host: `${HOST}/indexes`, apiKey });
 
         try {
-          await client.index(indexPk.uid).getDocuments({ filter: '' });
+          await client.index(indexPk.uid).getDocuments({ filter: "" });
 
           fail(
-            'getDocuments should have raised an error when the route does not exist',
+            "getDocuments should have raised an error when the route does not exist",
           );
         } catch (e: any) {
           expect(e.message).toEqual(
@@ -184,10 +184,10 @@ describe('Documents tests', () => {
         const client = new MeiliSearch({ host: `${HOST}`, apiKey });
 
         try {
-          await client.index(indexPk.uid).getDocuments({ filter: 'id = 1' });
+          await client.index(indexPk.uid).getDocuments({ filter: "id = 1" });
 
           fail(
-            'getDocuments should have raised an error when the filter is badly formatted',
+            "getDocuments should have raised an error when the filter is badly formatted",
           );
         } catch (e: any) {
           expect(e.message).toEqual(
@@ -206,7 +206,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await client.index(indexNoPk.uid).waitForTask(taskUid);
 
         const documents = await client.index(indexNoPk.uid).getDocuments<Book>({
-          fields: 'id',
+          fields: "id",
         });
 
         expect(documents.results.length).toEqual(dataset.length);
@@ -225,15 +225,15 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Get documents with retrieveVectors to true`, async () => {
         const client = await getClient(permission);
-        const adminKey = await getKey('Admin');
+        const adminKey = await getKey("Admin");
 
         await fetch(`${HOST}/experimental-features`, {
           body: JSON.stringify({ vectorStore: true }),
           headers: {
             Authorization: `Bearer ${adminKey}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          method: 'PATCH',
+          method: "PATCH",
         });
 
         const { taskUid } = await client
@@ -247,7 +247,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           .getDocuments<Book>({ retrieveVectors: true });
 
         expect(documentsPost.results.length).toEqual(dataset.length);
-        expect(documentsPost.results[0]).toHaveProperty('_vectors');
+        expect(documentsPost.results[0]).toHaveProperty("_vectors");
 
         // Get documents with GET
         const res = await fetch(
@@ -255,28 +255,28 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           {
             headers: {
               Authorization: `Bearer ${adminKey}`,
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
-            method: 'GET',
+            method: "GET",
           },
         );
         const documentsGet = await res.json();
 
         expect(documentsGet.results.length).toEqual(dataset.length);
-        expect(documentsGet.results[0]).toHaveProperty('_vectors');
+        expect(documentsGet.results[0]).toHaveProperty("_vectors");
       });
 
       test(`${permission} key: Get documents without retrieveVectors`, async () => {
         const client = await getClient(permission);
-        const adminKey = await getKey('Admin');
+        const adminKey = await getKey("Admin");
 
         await fetch(`${HOST}/experimental-features`, {
           body: JSON.stringify({ vectorStore: true }),
           headers: {
             Authorization: `Bearer ${adminKey}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          method: 'PATCH',
+          method: "PATCH",
         });
 
         const { taskUid } = await client
@@ -290,7 +290,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           .getDocuments<Book>();
 
         expect(documentsPost.results.length).toEqual(dataset.length);
-        expect(documentsPost.results[0]).not.toHaveProperty('_vectors');
+        expect(documentsPost.results[0]).not.toHaveProperty("_vectors");
 
         // Get documents with GET
         const res = await fetch(
@@ -298,15 +298,15 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           {
             headers: {
               Authorization: `Bearer ${adminKey}`,
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
-            method: 'GET',
+            method: "GET",
           },
         );
         const documentsGet = await res.json();
 
         expect(documentsGet.results.length).toEqual(dataset.length);
-        expect(documentsGet.results[0]).not.toHaveProperty('_vectors');
+        expect(documentsGet.results[0]).not.toHaveProperty("_vectors");
       });
 
       test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
@@ -316,7 +316,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           .addDocuments(dataset);
         await client.index(indexNoPk.uid).waitForTask(addDocTask);
         const id = 2;
-        const title = 'The Red And The Black';
+        const title = "The Red And The Black";
 
         const task = await client
           .index(indexNoPk.uid)
@@ -324,14 +324,14 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await client.index(indexNoPk.uid).waitForTask(task.taskUid);
         const response = await client.index(indexNoPk.uid).getDocument(id);
 
-        expect(response).toHaveProperty('id', id);
-        expect(response).toHaveProperty('title', title);
+        expect(response).toHaveProperty("id", id);
+        expect(response).toHaveProperty("title", title);
       });
 
       test(`${permission} key: Replace documents from index that has a primary key`, async () => {
         const client = await getClient(permission);
         const id = 2;
-        const title = 'The Red And The Black';
+        const title = "The Red And The Black";
 
         const task = await client
           .index(indexPk.uid)
@@ -339,14 +339,14 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await client.index(indexPk.uid).waitForTask(task.taskUid);
         const response = await client.index(indexPk.uid).getDocument(id);
 
-        expect(response).toHaveProperty('id', id);
-        expect(response).toHaveProperty('title', title);
+        expect(response).toHaveProperty("id", id);
+        expect(response).toHaveProperty("title", title);
       });
 
       test(`${permission} key: Update document from index that has NO primary key`, async () => {
         const client = await getClient(permission);
         const id = 456;
-        const title = 'The Little Prince';
+        const title = "The Little Prince";
 
         const task = await client
           .index(indexNoPk.uid)
@@ -354,22 +354,22 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await client.index(indexNoPk.uid).waitForTask(task.taskUid);
         const response = await client.index(indexNoPk.uid).getDocument(id);
 
-        expect(response).toHaveProperty('id', id);
-        expect(response).toHaveProperty('title', title);
+        expect(response).toHaveProperty("id", id);
+        expect(response).toHaveProperty("title", title);
       });
 
       test(`${permission} key: Update document from index that has a primary key`, async () => {
         const client = await getClient(permission);
         const id = 456;
-        const title = 'The Little Prince';
+        const title = "The Little Prince";
         const task = await client
           .index(indexPk.uid)
           .updateDocuments([{ id, title }]);
         await client.index(indexPk.uid).waitForTask(task.taskUid);
         const response = await client.index(indexPk.uid).getDocument(id);
 
-        expect(response).toHaveProperty('id', id);
-        expect(response).toHaveProperty('title', title);
+        expect(response).toHaveProperty("id", id);
+        expect(response).toHaveProperty("title", title);
       });
 
       test(`${permission} key: Partial update of a document`, async () => {
@@ -382,8 +382,8 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
         const response = await client.index(indexPk.uid).getDocument(id);
 
-        expect(response).toHaveProperty('id', id);
-        expect(response).not.toHaveProperty('title');
+        expect(response).toHaveProperty("id", id);
+        expect(response).not.toHaveProperty("title");
       });
 
       test(`${permission} key: Update document from index that has a primary key in batch`, async () => {
@@ -428,7 +428,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           .addDocuments(dataset);
         await client.index(indexNoPk.uid).waitForTask(addDocTask);
         const id = 9;
-        const title = '1984';
+        const title = "1984";
 
         const task = await client
           .index(indexNoPk.uid)
@@ -439,8 +439,8 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           .index(indexNoPk.uid)
           .getDocuments<Book>();
 
-        expect(document).toHaveProperty('id', id);
-        expect(document).toHaveProperty('title', title);
+        expect(document).toHaveProperty("id", id);
+        expect(document).toHaveProperty("title", title);
         expect(documents.results.length).toEqual(dataset.length + 1);
       });
 
@@ -451,7 +451,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           .addDocuments(dataset);
         await client.index(indexPk.uid).waitForTask(addDocTask);
         const id = 9;
-        const title = '1984';
+        const title = "1984";
         const task = await client
           .index(indexPk.uid)
           .updateDocuments([{ id, title }]);
@@ -460,8 +460,8 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const document = await client.index(indexPk.uid).getDocument(id);
         const documents = await client.index(indexPk.uid).getDocuments<Book>();
 
-        expect(document).toHaveProperty('id', id);
-        expect(document).toHaveProperty('title', title);
+        expect(document).toHaveProperty("id", id);
+        expect(document).toHaveProperty("title", title);
         expect(documents.results.length).toEqual(dataset.length + 1);
       });
 
@@ -469,7 +469,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const client = await getClient(permission);
 
         const doc = {
-          title: 'hello',
+          title: "hello",
           _id: 1,
         };
         const { taskUid: addDocTask } = await client
@@ -479,13 +479,13 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
         const index = await client.index(indexNoPk.uid).fetchInfo();
 
-        expect(index).toHaveProperty('primaryKey', '_id');
+        expect(index).toHaveProperty("primaryKey", "_id");
       });
 
       test(`${permission} key: Add document and infer correct "findmeid" primary key`, async () => {
         const client = await getClient(permission);
         const doc = {
-          title: 'hello',
+          title: "hello",
           findmeid: 1,
         };
         const { taskUid: addDocTask } = await client
@@ -495,13 +495,13 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
         const index = await client.index(indexNoPk.uid).fetchInfo();
 
-        expect(index).toHaveProperty('primaryKey', 'findmeid');
+        expect(index).toHaveProperty("primaryKey", "findmeid");
       });
 
       test(`${permission} key: Add document with two inferable primary key`, async () => {
         const client = await getClient(permission);
         const doc = {
-          title: 'hello',
+          title: "hello",
           id: 1,
           _id: 1,
         };
@@ -512,15 +512,15 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const index = await client.index(indexNoPk.uid).fetchInfo();
 
         expect(task.error?.code).toEqual(
-          'index_primary_key_multiple_candidates_found',
+          "index_primary_key_multiple_candidates_found",
         );
-        expect(index).toHaveProperty('primaryKey', null);
+        expect(index).toHaveProperty("primaryKey", null);
       });
 
       test(`${permission} key: Add document with none inferable primary key`, async () => {
         const client = await getClient(permission);
         const doc = {
-          title: 'hello',
+          title: "hello",
           idfindme: 1,
         };
         const { taskUid: addDocTask } = await client
@@ -530,9 +530,9 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const index = await client.index(indexNoPk.uid).fetchInfo();
 
         expect(task.error?.code).toEqual(
-          'index_primary_key_no_candidate_found',
+          "index_primary_key_no_candidate_found",
         );
-        expect(index).toHaveProperty('primaryKey', null);
+        expect(index).toHaveProperty("primaryKey", null);
       });
 
       test(`${permission} key: Delete a document from index that has NO primary key`, async () => {
@@ -569,7 +569,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Delete some documents with string filters`, async () => {
         const client = await getClient(permission);
-        await client.index(indexPk.uid).updateFilterableAttributes(['id']);
+        await client.index(indexPk.uid).updateFilterableAttributes(["id"]);
         const { taskUid: addDocTask } = await client
           .index(indexPk.uid)
           .addDocuments(dataset);
@@ -577,7 +577,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
         const task = await client
           .index(indexPk.uid)
-          .deleteDocuments({ filter: 'id IN [1, 2]' });
+          .deleteDocuments({ filter: "id IN [1, 2]" });
 
         const resolvedTask = await client
           .index(indexPk.uid)
@@ -590,7 +590,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Delete some documents with array filters`, async () => {
         const client = await getClient(permission);
-        await client.index(indexPk.uid).updateFilterableAttributes(['id']);
+        await client.index(indexPk.uid).updateFilterableAttributes(["id"]);
         const { taskUid: addDocTask } = await client
           .index(indexPk.uid)
           .addDocuments(dataset);
@@ -598,7 +598,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
         const task = await client
           .index(indexPk.uid)
-          .deleteDocuments({ filter: [['id = 1', 'id = 2']] });
+          .deleteDocuments({ filter: [["id = 1", "id = 2"]] });
 
         const resolvedTask = await client
           .index(indexPk.uid)
@@ -658,10 +658,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await client.waitForTask(task.taskUid);
 
         try {
-          await client.index(indexPk.uid).deleteDocuments({ filter: '' });
+          await client.index(indexPk.uid).deleteDocuments({ filter: "" });
 
           fail(
-            'deleteDocuments should have raised an error when the parameters are wrong',
+            "deleteDocuments should have raised an error when the parameters are wrong",
           );
         } catch (e: any) {
           expect(e.message).toEqual(
@@ -675,10 +675,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const client = new MeiliSearch({ host: `${HOST}/indexes`, apiKey });
 
         try {
-          await client.index(indexPk.uid).deleteDocuments({ filter: 'id = 1' });
+          await client.index(indexPk.uid).deleteDocuments({ filter: "id = 1" });
 
           fail(
-            'deleteDocuments should have raised an error when the route does not exist',
+            "deleteDocuments should have raised an error when the route does not exist",
           );
         } catch (e: any) {
           expect(e.message).toEqual(
@@ -712,7 +712,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexNoPk.uid).getDocument(1),
         ).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.DOCUMENT_NOT_FOUND,
         );
       });
@@ -722,7 +722,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).getDocument(1),
         ).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.DOCUMENT_NOT_FOUND,
         );
       });
@@ -733,28 +733,28 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           {
             id: 1,
             unique: 2,
-            title: 'Le Rouge et le Noir',
+            title: "Le Rouge et le Noir",
           },
         ];
-        const pkIndex = 'update_pk';
+        const pkIndex = "update_pk";
         const { taskUid } = await client.createIndex(pkIndex);
         await client.waitForTask(taskUid);
 
         const task = await client
           .index(pkIndex)
-          .addDocuments(docs, { primaryKey: 'unique' });
+          .addDocuments(docs, { primaryKey: "unique" });
         await client.waitForTask(task.taskUid);
 
         const response = await client.index(pkIndex).getRawInfo();
-        expect(response).toHaveProperty('uid', pkIndex);
-        expect(response).toHaveProperty('primaryKey', 'unique');
+        expect(response).toHaveProperty("uid", pkIndex);
+        expect(response).toHaveProperty("primaryKey", "unique");
       });
 
       test(`${permission} key: Add a document without a primary key and check response in task status`, async () => {
         const client = await getClient(permission);
         const docs = [
           {
-            title: 'Le Rouge et le Noir',
+            title: "Le Rouge et le Noir",
           },
         ];
 
@@ -763,10 +763,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           .addDocuments(docs);
         const { error } = await client.waitForTask(taskUid);
 
-        expect(error).toHaveProperty('code');
-        expect(error).toHaveProperty('link');
-        expect(error).toHaveProperty('message');
-        expect(error).toHaveProperty('type');
+        expect(error).toHaveProperty("code");
+        expect(error).toHaveProperty("link");
+        expect(error).toHaveProperty("message");
+        expect(error).toHaveProperty("type");
       });
 
       test(`${permission} key: Try to add documents from index with no primary key with NO valid primary key, task should fail`, async () => {
@@ -774,7 +774,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const { taskUid } = await client.index(indexNoPk.uid).addDocuments([
           {
             unique: 2,
-            title: 'Le Rouge et le Noir',
+            title: "Le Rouge et le Noir",
           },
         ]);
 
@@ -783,25 +783,25 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
         expect(index.uid).toEqual(indexNoPk.uid);
         expect(index.primaryKey).toEqual(null);
-        expect(task.status).toEqual('failed');
+        expect(task.status).toEqual("failed");
       });
 
       test(`${permission} key: test updateDocumentsByFunction`, async () => {
         const client = await getClient(permission);
         const index = client.index<(typeof dataset)[number]>(indexPk.uid);
-        const adminKey = await getKey('Admin');
+        const adminKey = await getKey("Admin");
 
         const { taskUid: updateFilterableAttributesTaskUid } =
-          await index.updateFilterableAttributes(['id']);
+          await index.updateFilterableAttributes(["id"]);
         await client.waitForTask(updateFilterableAttributesTaskUid);
 
         await fetch(`${HOST}/experimental-features`, {
           body: JSON.stringify({ editDocumentsByFunction: true }),
           headers: {
             Authorization: `Bearer ${adminKey}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          method: 'PATCH',
+          method: "PATCH",
         });
 
         const { taskUid: addDocumentsTaskUid } =
@@ -810,22 +810,22 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
         const { taskUid: updateDocumentsByFunctionTaskUid } =
           await index.updateDocumentsByFunction({
-            context: { ctx: 'Harry' },
-            filter: 'id = 4',
-            function: 'doc.comment = `Yer a wizard, ${context.ctx}!`',
+            context: { ctx: "Harry" },
+            filter: "id = 4",
+            function: "doc.comment = `Yer a wizard, ${context.ctx}!`",
           });
 
         await client.waitForTask(updateDocumentsByFunctionTaskUid);
 
         const doc = await index.getDocument(4);
 
-        expect(doc).toHaveProperty('comment', 'Yer a wizard, Harry!');
+        expect(doc).toHaveProperty("comment", "Yer a wizard, Harry!");
       });
     },
   );
 
-  describe.each([{ permission: 'Search' }])(
-    'Test on documents',
+  describe.each([{ permission: "Search" }])(
+    "Test on documents",
     ({ permission }) => {
       beforeEach(() => {
         return clearAllIndexes(config);
@@ -835,66 +835,66 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).addDocuments([]),
-        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
       });
 
       test(`${permission} key: Try to update documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).updateDocuments([]),
-        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
       });
 
       test(`${permission} key: Try to get documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).getDocuments<Book>(),
-        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
       });
 
       test(`${permission} key: Try to delete one document and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).deleteDocument(1),
-        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
       });
 
       test(`${permission} key: Try to delete some documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).deleteDocuments([1, 2]),
-        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
       });
 
       test(`${permission} key: Try to delete all documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).deleteAllDocuments(),
-        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
       });
 
       test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
         const client = await getClient(permission);
-        const adminKey = await getKey('Admin');
+        const adminKey = await getKey("Admin");
 
         await fetch(`${HOST}/experimental-features`, {
           body: JSON.stringify({ editDocumentsByFunction: true }),
           headers: {
             Authorization: `Bearer ${adminKey}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          method: 'PATCH',
+          method: "PATCH",
         });
 
         await expect(
-          client.index(indexPk.uid).updateDocumentsByFunction({ function: '' }),
-        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+          client.index(indexPk.uid).updateDocumentsByFunction({ function: "" }),
+        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
       });
     },
   );
 
-  describe.each([{ permission: 'No' }])(
-    'Test on documents',
+  describe.each([{ permission: "No" }])(
+    "Test on documents",
     ({ permission }) => {
       beforeEach(() => {
         return clearAllIndexes(config);
@@ -905,7 +905,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).addDocuments([]),
         ).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -915,7 +915,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).updateDocuments([]),
         ).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -925,7 +925,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).getDocuments<Book>(),
         ).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -935,7 +935,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).deleteDocument(1),
         ).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -945,7 +945,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).deleteDocuments([1, 2]),
         ).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -955,28 +955,28 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         await expect(
           client.index(indexPk.uid).deleteAllDocuments(),
         ).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
 
       test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
         const client = await getClient(permission);
-        const adminKey = await getKey('Admin');
+        const adminKey = await getKey("Admin");
 
         await fetch(`${HOST}/experimental-features`, {
           body: JSON.stringify({ editDocumentsByFunction: true }),
           headers: {
             Authorization: `Bearer ${adminKey}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          method: 'PATCH',
+          method: "PATCH",
         });
 
         await expect(
-          client.index(indexPk.uid).updateDocumentsByFunction({ function: '' }),
+          client.index(indexPk.uid).updateDocumentsByFunction({ function: "" }),
         ).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -987,7 +987,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
     { host: BAD_HOST, trailing: false },
     { host: `${BAD_HOST}/api`, trailing: false },
     { host: `${BAD_HOST}/trailing/`, trailing: true },
-  ])('Tests on url construction', ({ host, trailing }) => {
+  ])("Tests on url construction", ({ host, trailing }) => {
     test(`Test getDocument route`, async () => {
       const route = `indexes/${indexPk.uid}/documents/1`;
       const client = new MeiliSearch({ host });
@@ -995,7 +995,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       await expect(
         client.index(indexPk.uid).getDocument(1),
       ).rejects.toHaveProperty(
-        'message',
+        "message",
         `Request to ${strippedHost}/${route} has failed`,
       );
     });
@@ -1007,7 +1007,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       await expect(
         client.index(indexPk.uid).getDocuments<Book>(),
       ).rejects.toHaveProperty(
-        'message',
+        "message",
         `Request to ${strippedHost}/${route} has failed`,
       );
     });
@@ -1019,7 +1019,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       await expect(
         client.index(indexPk.uid).addDocuments([]),
       ).rejects.toHaveProperty(
-        'message',
+        "message",
         `Request to ${strippedHost}/${route} has failed`,
       );
     });
@@ -1031,7 +1031,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       await expect(
         client.index(indexPk.uid).updateDocuments([]),
       ).rejects.toHaveProperty(
-        'message',
+        "message",
         `Request to ${strippedHost}/${route} has failed`,
       );
     });
@@ -1041,9 +1041,9 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       const client = new MeiliSearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
       await expect(
-        client.index(indexPk.uid).deleteDocument('1'),
+        client.index(indexPk.uid).deleteDocument("1"),
       ).rejects.toHaveProperty(
-        'message',
+        "message",
         `Request to ${strippedHost}/${route} has failed`,
       );
     });
@@ -1055,7 +1055,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       await expect(
         client.index(indexPk.uid).deleteDocuments([]),
       ).rejects.toHaveProperty(
-        'message',
+        "message",
         `Request to ${strippedHost}/${route} has failed`,
       );
     });
@@ -1067,7 +1067,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       await expect(
         client.index(indexPk.uid).deleteAllDocuments(),
       ).rejects.toHaveProperty(
-        'message',
+        "message",
         `Request to ${strippedHost}/${route} has failed`,
       );
     });
@@ -1076,21 +1076,21 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       const route = `indexes/${indexPk.uid}/documents/edit`;
       const client = new MeiliSearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
-      const adminKey = await getKey('Admin');
+      const adminKey = await getKey("Admin");
 
       await fetch(`${HOST}/experimental-features`, {
         body: JSON.stringify({ editDocumentsByFunction: true }),
         headers: {
           Authorization: `Bearer ${adminKey}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        method: 'PATCH',
+        method: "PATCH",
       });
 
       await expect(
-        client.index(indexPk.uid).updateDocumentsByFunction({ function: '' }),
+        client.index(indexPk.uid).updateDocumentsByFunction({ function: "" }),
       ).rejects.toHaveProperty(
-        'message',
+        "message",
         `Request to ${strippedHost}/${route} has failed`,
       );
     });

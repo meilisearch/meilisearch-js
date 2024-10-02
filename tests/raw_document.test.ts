@@ -2,15 +2,15 @@ import {
   clearAllIndexes,
   config,
   getClient,
-} from './utils/meilisearch-test-utils';
-import { TaskStatus, ContentTypeEnum } from '../src/types';
+} from "./utils/meilisearch-test-utils";
+import { TaskStatus, ContentTypeEnum } from "../src/types";
 
 beforeEach(async () => {
   await clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on raw documents addition using `addDocumentsFromString`',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on raw documents addition using `addDocumentsFromString`",
   ({ permission }) => {
     test(`${permission} key: Add documents in CSV format`, async () => {
       const client = await getClient(permission);
@@ -19,7 +19,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 546,Le Petit Prince,a french book`;
 
       const { taskUid } = await client
-        .index('csv_index')
+        .index("csv_index")
         .addDocumentsFromString(data, ContentTypeEnum.CSV);
       const task = await client.waitForTask(taskUid);
 
@@ -34,9 +34,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 546,Le Petit Prince,a french book`;
 
       const { taskUid } = await client
-        .index('csv_index')
+        .index("csv_index")
         .addDocumentsFromString(data, ContentTypeEnum.CSV, {
-          primaryKey: 'name',
+          primaryKey: "name",
         });
       const task = await client.waitForTask(taskUid);
 
@@ -51,10 +51,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 546;Le Petit Prince;a french book`;
 
       const { taskUid } = await client
-        .index('csv_index')
+        .index("csv_index")
         .addDocumentsFromString(data, ContentTypeEnum.CSV, {
-          primaryKey: 'name',
-          csvDelimiter: ';',
+          primaryKey: "name",
+          csvDelimiter: ";",
         });
       const task = await client.waitForTask(taskUid);
 
@@ -68,7 +68,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 { "id": 456, "title": "Le Petit Prince", "comment": "A french book" }`;
 
       const { taskUid } = await client
-        .index('jsonl_index')
+        .index("jsonl_index")
         .addDocumentsFromString(data, ContentTypeEnum.NDJSON, {});
       const task = await client.waitForTask(taskUid);
 
@@ -82,9 +82,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 { "name": 456, "title": "Le Petit Prince", "comment": "A french book" }`;
 
       const { taskUid } = await client
-        .index('jsonl_index')
+        .index("jsonl_index")
         .addDocumentsFromString(data, ContentTypeEnum.NDJSON, {
-          primaryKey: 'name',
+          primaryKey: "name",
         });
       const task = await client.waitForTask(taskUid);
 
@@ -98,7 +98,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 { "id": 456, "title": "Le Petit Prince", "comment": "A french book" }]`;
 
       const { taskUid } = await client
-        .index('json_index')
+        .index("json_index")
         .addDocumentsFromString(data, ContentTypeEnum.JSON);
       const task = await client.waitForTask(taskUid);
 
@@ -112,9 +112,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 { "name": 456, "title": "Le Petit Prince", "comment": "A french book" }]`;
 
       const { taskUid } = await client
-        .index('json_index')
+        .index("json_index")
         .addDocumentsFromString(data, ContentTypeEnum.JSON, {
-          primaryKey: 'name',
+          primaryKey: "name",
         });
       const task = await client.waitForTask(taskUid);
 
@@ -124,8 +124,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   },
 );
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on raw documents update using `updateDocumentsFromString`',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on raw documents update using `updateDocumentsFromString`",
   ({ permission }) => {
     test(`${permission} key: Update documents in CSV format`, async () => {
       const client = await getClient(permission);
@@ -134,7 +134,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 546,Le Petit Prince,a french book`;
 
       const { taskUid } = await client
-        .index('csv_index')
+        .index("csv_index")
         .updateDocumentsFromString(data, ContentTypeEnum.CSV);
       const task = await client.waitForTask(taskUid);
 
@@ -149,9 +149,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 546,Le Petit Prince,a french book`;
 
       const { taskUid } = await client
-        .index('csv_index')
+        .index("csv_index")
         .updateDocumentsFromString(data, ContentTypeEnum.CSV, {
-          primaryKey: 'name',
+          primaryKey: "name",
         });
       const task = await client.waitForTask(taskUid);
 
@@ -166,10 +166,10 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 546;Le Petit Prince;a french book`;
 
       const { taskUid } = await client
-        .index('csv_index')
+        .index("csv_index")
         .updateDocumentsFromString(data, ContentTypeEnum.CSV, {
-          primaryKey: 'name',
-          csvDelimiter: ';',
+          primaryKey: "name",
+          csvDelimiter: ";",
         });
       const task = await client.waitForTask(taskUid);
 
@@ -183,7 +183,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 { "id": 456, "title": "Le Petit Prince", "comment": "A french book" }`;
 
       const { taskUid } = await client
-        .index('jsonl_index')
+        .index("jsonl_index")
         .updateDocumentsFromString(data, ContentTypeEnum.NDJSON);
       const task = await client.waitForTask(taskUid);
 
@@ -197,9 +197,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 { "name": 456, "title": "Le Petit Prince", "comment": "A french book" }`;
 
       const { taskUid } = await client
-        .index('jsonl_index')
+        .index("jsonl_index")
         .updateDocumentsFromString(data, ContentTypeEnum.NDJSON, {
-          primaryKey: 'name',
+          primaryKey: "name",
         });
       const task = await client.waitForTask(taskUid);
 
@@ -213,7 +213,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 { "id": 456, "title": "Le Petit Prince", "comment": "A french book" }]`;
 
       const { taskUid } = await client
-        .index('json_index')
+        .index("json_index")
         .updateDocumentsFromString(data, ContentTypeEnum.JSON, {});
       const task = await client.waitForTask(taskUid);
 
@@ -227,9 +227,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 { "name": 456, "title": "Le Petit Prince", "comment": "A french book" }]`;
 
       const { taskUid } = await client
-        .index('json_index')
+        .index("json_index")
         .updateDocumentsFromString(data, ContentTypeEnum.JSON, {
-          primaryKey: 'name',
+          primaryKey: "name",
         });
       const task = await client.waitForTask(taskUid);
 

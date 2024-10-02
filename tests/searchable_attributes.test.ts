@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from '../src/types';
+import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,
   config,
@@ -6,10 +6,10 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 jest.setTimeout(100 * 1000);
@@ -18,11 +18,11 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on searchable attributes',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on searchable attributes",
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.index(index.uid).addDocuments(dataset);
       await client.waitForTask(taskUid);
     });
@@ -34,12 +34,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         .index(index.uid)
         .getSearchableAttributes();
 
-      expect(response).toEqual(['*']);
+      expect(response).toEqual(["*"]);
     });
 
     test(`${permission} key: Update searchable attributes`, async () => {
       const client = await getClient(permission);
-      const newSearchableAttributes = ['title'];
+      const newSearchableAttributes = ["title"];
       const task = await client
         .index(index.uid)
         .updateSearchableAttributes(newSearchableAttributes);
@@ -63,7 +63,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         .index(index.uid)
         .getSearchableAttributes();
 
-      expect(response).toEqual(['*']);
+      expect(response).toEqual(["*"]);
     });
 
     test(`${permission} key: Reset searchable attributes`, async () => {
@@ -75,16 +75,16 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         .index(index.uid)
         .getSearchableAttributes();
 
-      expect(response).toEqual(['*']);
+      expect(response).toEqual(["*"]);
     });
   },
 );
 
-describe.each([{ permission: 'Search' }])(
-  'Test on searchable attributes',
+describe.each([{ permission: "Search" }])(
+  "Test on searchable attributes",
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
     });
@@ -93,30 +93,30 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getSearchableAttributes(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update searchable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateSearchableAttributes([]),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetSearchableAttributes(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
 
-describe.each([{ permission: 'No' }])(
-  'Test on searchable attributes',
+describe.each([{ permission: "No" }])(
+  "Test on searchable attributes",
   ({ permission }) => {
     beforeAll(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
     });
@@ -126,7 +126,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).getSearchableAttributes(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -136,7 +136,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).updateSearchableAttributes([]),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -146,7 +146,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).resetSearchableAttributes(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -157,7 +157,7 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test getSearchableAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/searchable-attributes`;
     const client = new MeiliSearch({ host });
@@ -165,7 +165,7 @@ describe.each([
     await expect(
       client.index(index.uid).getSearchableAttributes(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -177,7 +177,7 @@ describe.each([
     await expect(
       client.index(index.uid).updateSearchableAttributes([]),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -189,7 +189,7 @@ describe.each([
     await expect(
       client.index(index.uid).resetSearchableAttributes(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

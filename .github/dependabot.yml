@@ -21,3 +21,6 @@ updates:
       - dependencies
     versioning-strategy: increase
     rebase-strategy: disabled
+    groups:
+      production-dependencies:
+        dependency-type: "production"
