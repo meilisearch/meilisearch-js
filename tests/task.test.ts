@@ -1,5 +1,5 @@
-import { ErrorStatusCode, TaskTypes, TaskStatus } from '../src/types';
-import { sleep } from '../src/utils';
+import { ErrorStatusCode, TaskTypes, TaskStatus } from "../src/types";
+import { sleep } from "../src/utils";
 import {
   clearAllIndexes,
   config,
@@ -7,18 +7,18 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 const index2 = {
-  uid: 'movies_test2',
+  uid: "movies_test2",
 };
 
 const index3 = {
-  uid: 'movies_test2',
+  uid: "movies_test2",
 };
 
 jest.setTimeout(100 * 1000);
@@ -27,11 +27,11 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Tests on tasks',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Tests on tasks",
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
     });
@@ -60,7 +60,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(task.status).toEqual(TaskStatus.TASK_SUCCEEDED);
       expect(task.type).toEqual(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE);
       expect(task.uid).toEqual(enqueuedTask.taskUid);
-      expect(task).toHaveProperty('details');
+      expect(task).toHaveProperty("details");
       expect(task.details.indexedDocuments).toEqual(7);
       expect(task.details.receivedDocuments).toEqual(7);
       expect(task.duration).toBeDefined();
@@ -376,9 +376,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       await expect(
         // @ts-expect-error testing wrong argument type
-        client.getTasks({ types: ['wrong'] }),
+        client.getTasks({ types: ["wrong"] }),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.INVALID_TASK_TYPES,
       );
     });
@@ -389,9 +389,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       await expect(
         // @ts-expect-error testing wrong argument type
-        client.getTasks({ statuses: ['wrong'] }),
+        client.getTasks({ statuses: ["wrong"] }),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.INVALID_TASK_STATUSES,
       );
     });
@@ -402,8 +402,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       await expect(
         // @ts-expect-error testing wrong argument type
-        client.getTasks({ uids: ['wrong'] }),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_TASK_UIDS);
+        client.getTasks({ uids: ["wrong"] }),
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_TASK_UIDS);
     });
 
     // filters error code: INVALID_TASK_CANCELED_BY_FILTER
@@ -412,9 +412,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       await expect(
         // @ts-expect-error testing wrong canceledBy type
-        client.getTasks({ canceledBy: ['wrong'] }),
+        client.getTasks({ canceledBy: ["wrong"] }),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.INVALID_TASK_CANCELED_BY,
       );
     });
@@ -425,9 +425,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       await expect(
         // @ts-expect-error testing wrong date format
-        client.getTasks({ beforeEnqueuedAt: 'wrong' }),
+        client.getTasks({ beforeEnqueuedAt: "wrong" }),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.INVALID_TASK_BEFORE_ENQUEUED_AT,
       );
     });
@@ -445,7 +445,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION);
-      expect(task.details?.originalFilter).toContain('uids=');
+      expect(task.details?.originalFilter).toContain("uids=");
       expect(task.details?.matchedTasks).toBeDefined();
       expect(task.details?.canceledTasks).toBeDefined();
     });
@@ -460,7 +460,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION);
-      expect(task.details?.originalFilter).toEqual('?indexUids=movies_test');
+      expect(task.details?.originalFilter).toEqual("?indexUids=movies_test");
     });
 
     // cancel: type
@@ -477,7 +477,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION);
       expect(task.details?.originalFilter).toEqual(
-        '?types=documentAdditionOrUpdate%2CdocumentDeletion',
+        "?types=documentAdditionOrUpdate%2CdocumentDeletion",
       );
     });
 
@@ -492,7 +492,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION);
       expect(task.details?.originalFilter).toEqual(
-        '?statuses=enqueued%2Cprocessing',
+        "?statuses=enqueued%2Cprocessing",
       );
     });
 
@@ -508,7 +508,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION);
-      expect(task.details?.originalFilter).toContain('beforeEnqueuedAt');
+      expect(task.details?.originalFilter).toContain("beforeEnqueuedAt");
     });
 
     // cancel: afterEnqueuedAt
@@ -523,7 +523,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION);
-      expect(task.details?.originalFilter).toContain('afterEnqueuedAt');
+      expect(task.details?.originalFilter).toContain("afterEnqueuedAt");
     });
 
     // cancel: beforeStartedAt
@@ -538,7 +538,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION);
-      expect(task.details?.originalFilter).toContain('beforeStartedAt');
+      expect(task.details?.originalFilter).toContain("beforeStartedAt");
     });
 
     // cancel: afterStartedAt
@@ -553,7 +553,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION);
-      expect(task.details?.originalFilter).toContain('afterStartedAt');
+      expect(task.details?.originalFilter).toContain("afterStartedAt");
     });
 
     // cancel: beforeFinishedAt
@@ -568,7 +568,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION);
-      expect(task.details?.originalFilter).toContain('beforeFinishedAt');
+      expect(task.details?.originalFilter).toContain("beforeFinishedAt");
     });
 
     // cancel: afterFinishedAt
@@ -583,7 +583,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_CANCELATION);
-      expect(task.details?.originalFilter).toContain('afterFinishedAt');
+      expect(task.details?.originalFilter).toContain("afterFinishedAt");
     });
 
     // cancel error code: MISSING_TASK_FILTER
@@ -594,7 +594,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         // @ts-expect-error testing wrong argument type
         client.cancelTasks(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_TASK_FILTERS,
       );
     });
@@ -614,7 +614,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       expect(deleteTask.type).toEqual(TaskTypes.TASK_DELETION);
       expect(task.details?.deletedTasks).toBeDefined();
       await expect(client.getTask(addDocuments.taskUid)).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.TASK_NOT_FOUND,
       );
     });
@@ -633,7 +633,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(deleteTask.type).toEqual(TaskTypes.TASK_DELETION);
       await expect(client.getTask(addDocuments.taskUid)).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.TASK_NOT_FOUND,
       );
     });
@@ -652,7 +652,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(deleteTask.type).toEqual(TaskTypes.TASK_DELETION);
       expect(deleteTask.details?.originalFilter).toEqual(
-        '?types=documentAdditionOrUpdate%2CdocumentDeletion',
+        "?types=documentAdditionOrUpdate%2CdocumentDeletion",
       );
     });
 
@@ -667,7 +667,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION);
       expect(task.details?.originalFilter).toEqual(
-        '?statuses=enqueued%2Cprocessing',
+        "?statuses=enqueued%2Cprocessing",
       );
     });
 
@@ -683,7 +683,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION);
-      expect(task.details?.originalFilter).toContain('beforeEnqueuedAt');
+      expect(task.details?.originalFilter).toContain("beforeEnqueuedAt");
     });
 
     // delete: afterEnqueuedAt
@@ -698,7 +698,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION);
-      expect(task.details?.originalFilter).toContain('afterEnqueuedAt');
+      expect(task.details?.originalFilter).toContain("afterEnqueuedAt");
     });
 
     // delete: beforeStartedAt
@@ -713,7 +713,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION);
-      expect(task.details?.originalFilter).toContain('beforeStartedAt');
+      expect(task.details?.originalFilter).toContain("beforeStartedAt");
     });
 
     // delete: afterStartedAt
@@ -728,7 +728,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION);
-      expect(task.details?.originalFilter).toContain('afterStartedAt');
+      expect(task.details?.originalFilter).toContain("afterStartedAt");
     });
 
     // delete: beforeFinishedAt
@@ -743,7 +743,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION);
-      expect(task.details?.originalFilter).toContain('beforeFinishedAt');
+      expect(task.details?.originalFilter).toContain("beforeFinishedAt");
     });
 
     // delete: afterFinishedAt
@@ -758,7 +758,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const task = await client.waitForTask(enqueuedTask.taskUid);
 
       expect(task.type).toEqual(TaskTypes.TASK_DELETION);
-      expect(task.details?.originalFilter).toContain('afterFinishedAt');
+      expect(task.details?.originalFilter).toContain("afterFinishedAt");
     });
 
     test(`${permission} key: Get all indexes tasks with index instance`, async () => {
@@ -778,14 +778,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission);
 
       await expect(client.getTask(254500)).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.TASK_NOT_FOUND,
       );
     });
   },
 );
 
-describe.each([{ permission: 'Search' }])('Test on tasks', ({ permission }) => {
+describe.each([{ permission: "Search" }])("Test on tasks", ({ permission }) => {
   beforeEach(async () => {
     await clearAllIndexes(config);
   });
@@ -793,13 +793,13 @@ describe.each([{ permission: 'Search' }])('Test on tasks', ({ permission }) => {
   test(`${permission} key: Try to get a task and be denied`, async () => {
     const client = await getClient(permission);
     await expect(client.getTask(0)).rejects.toHaveProperty(
-      'cause.code',
+      "cause.code",
       ErrorStatusCode.INVALID_API_KEY,
     );
   });
 });
 
-describe.each([{ permission: 'No' }])('Test on tasks', ({ permission }) => {
+describe.each([{ permission: "No" }])("Test on tasks", ({ permission }) => {
   beforeEach(async () => {
     await clearAllIndexes(config);
   });
@@ -807,7 +807,7 @@ describe.each([{ permission: 'No' }])('Test on tasks', ({ permission }) => {
   test(`${permission} key: Try to get an task and be denied`, async () => {
     const client = await getClient(permission);
     await expect(client.getTask(0)).rejects.toHaveProperty(
-      'cause.code',
+      "cause.code",
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
     );
   });
@@ -817,14 +817,14 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on task url construction', ({ host, trailing }) => {
+])("Tests on task url construction", ({ host, trailing }) => {
   test(`Test on getTask route`, async () => {
     const route = `tasks/1`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
 
     await expect(client.index(index.uid).getTask(1)).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -835,7 +835,7 @@ describe.each([
     const strippedHost = trailing ? host.slice(0, -1) : host;
 
     await expect(client.index(index.uid).getTasks()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

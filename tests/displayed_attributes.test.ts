@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from '../src/types';
+import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,
   config,
@@ -6,10 +6,10 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 jest.setTimeout(100 * 1000);
@@ -18,12 +18,12 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on displayed attributes',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on displayed attributes",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.index(index.uid).addDocuments(dataset);
       await client.waitForTask(taskUid);
     });
@@ -32,12 +32,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission);
 
       const response = await client.index(index.uid).getDisplayedAttributes();
-      expect(response).toEqual(['*']);
+      expect(response).toEqual(["*"]);
     });
 
     test(`${permission} key: Update displayed attributes`, async () => {
       const client = await getClient(permission);
-      const newDisplayedAttribute = ['title'];
+      const newDisplayedAttribute = ["title"];
       const task = await client
         .index(index.uid)
         .updateDisplayedAttributes(newDisplayedAttribute);
@@ -58,7 +58,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(index.uid).getDisplayedAttributes();
 
-      expect(response).toEqual(['*']);
+      expect(response).toEqual(["*"]);
     });
 
     test(`${permission} key: Reset displayed attributes`, async () => {
@@ -69,17 +69,17 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(index.uid).getDisplayedAttributes();
 
-      expect(response).toEqual(['*']);
+      expect(response).toEqual(["*"]);
     });
   },
 );
 
-describe.each([{ permission: 'Search' }])(
-  'Test on displayed attributes',
+describe.each([{ permission: "Search" }])(
+  "Test on displayed attributes",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
     });
@@ -88,31 +88,31 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getDisplayedAttributes(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update displayed attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateDisplayedAttributes([]),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset displayed attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetDisplayedAttributes(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
 
-describe.each([{ permission: 'No' }])(
-  'Test on displayed attributes',
+describe.each([{ permission: "No" }])(
+  "Test on displayed attributes",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.createIndex(index.uid);
       await client.waitForTask(taskUid);
     });
@@ -122,7 +122,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).getDisplayedAttributes(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -132,7 +132,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).updateDisplayedAttributes([]),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -142,7 +142,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).resetDisplayedAttributes(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -153,7 +153,7 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test getDisplayedAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/displayed-attributes`;
     const client = new MeiliSearch({ host });
@@ -161,7 +161,7 @@ describe.each([
     await expect(
       client.index(index.uid).getDisplayedAttributes(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -173,7 +173,7 @@ describe.each([
     await expect(
       client.index(index.uid).updateDisplayedAttributes([]),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -185,7 +185,7 @@ describe.each([
     await expect(
       client.index(index.uid).resetDisplayedAttributes(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

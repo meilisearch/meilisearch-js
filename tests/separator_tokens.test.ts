@@ -1,4 +1,4 @@
-import { EnqueuedTask } from '../src/enqueued-task';
+import { EnqueuedTask } from "../src/enqueued-task";
 import {
   clearAllIndexes,
   config,
@@ -6,10 +6,10 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 jest.setTimeout(100 * 1000);
@@ -18,11 +18,11 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on separator tokens',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on separator tokens",
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       const { taskUid } = await client.index(index.uid).addDocuments(dataset);
       await client.waitForTask(taskUid);
     });
@@ -38,7 +38,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
     test(`${permission} key: Update separator tokens`, async () => {
       const client = await getClient(permission);
-      const newSeparatorTokens = ['&sep', '/', '|'];
+      const newSeparatorTokens = ["&sep", "/", "|"];
       const task: EnqueuedTask = await client
         .index(index.uid)
         .updateSeparatorTokens(newSeparatorTokens);
@@ -86,7 +86,7 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test getSeparatorTokens route`, async () => {
     const route = `indexes/${index.uid}/settings/separator-tokens`;
     const client = new MeiliSearch({ host });
@@ -94,7 +94,7 @@ describe.each([
     await expect(
       client.index(index.uid).getSeparatorTokens(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -106,7 +106,7 @@ describe.each([
     await expect(
       client.index(index.uid).updateSeparatorTokens([]),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -118,7 +118,7 @@ describe.each([
     await expect(
       client.index(index.uid).resetSeparatorTokens(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

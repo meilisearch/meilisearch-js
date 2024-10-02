@@ -1,6 +1,6 @@
-import { Client } from './client';
-import { Config, TokenSearchRules, TokenOptions } from '../types';
-import { Token } from '../token';
+import { Client } from "./client";
+import { Config, TokenSearchRules, TokenOptions } from "../types";
+import { Token } from "../token";
 
 class MeiliSearch extends Client {
   tokens: Token;
@@ -23,7 +23,7 @@ class MeiliSearch extends Client {
     searchRules: TokenSearchRules,
     options?: TokenOptions,
   ): Promise<string> {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return await this.tokens.generateTenantToken(
         apiKeyUid,
         searchRules,

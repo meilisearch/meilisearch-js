@@ -1,5 +1,5 @@
-import { ErrorStatusCode, Health, Version, Stats, TaskTypes } from '../src';
-import { PACKAGE_VERSION } from '../src/package-version';
+import { ErrorStatusCode, Health, Version, Stats, TaskTypes } from "../src";
+import { PACKAGE_VERSION } from "../src/package-version";
 import {
   clearAllIndexes,
   getKey,
@@ -8,22 +8,22 @@ import {
   MeiliSearch,
   BAD_HOST,
   HOST,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const indexNoPk = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 const indexPk = {
-  uid: 'movies_test2',
-  primaryKey: 'id',
+  uid: "movies_test2",
+  primaryKey: "id",
 };
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 const index2 = {
-  uid: 'movies_test2',
+  uid: "movies_test2",
 };
 
 afterAll(() => {
@@ -31,10 +31,10 @@ afterAll(() => {
 });
 
 describe.each([
-  { permission: 'Master' },
-  { permission: 'Admin' },
-  { permission: 'Search' },
-])('Test on client instance', ({ permission }) => {
+  { permission: "Master" },
+  { permission: "Admin" },
+  { permission: "Search" },
+])("Test on client instance", ({ permission }) => {
   beforeEach(() => {
     return clearAllIndexes(config);
   });
@@ -56,11 +56,11 @@ describe.each([
       apiKey: key,
       requestConfig: {
         headers: {
-          'Hello-There!': 'General Kenobi',
+          "Hello-There!": "General Kenobi",
         },
       },
     });
-    expect(client.httpRequest.headers['Hello-There!']).toBe('General Kenobi');
+    expect(client.httpRequest.headers["Hello-There!"]).toBe("General Kenobi");
     const health = await client.isHealthy();
     expect(health).toBe(true);
   });
@@ -71,10 +71,10 @@ describe.each([
       ...config,
       apiKey: key,
       requestConfig: {
-        headers: [['Hello-There!', 'General Kenobi']],
+        headers: [["Hello-There!", "General Kenobi"]],
       },
     });
-    expect(client.httpRequest.headers['Hello-There!']).toBe('General Kenobi');
+    expect(client.httpRequest.headers["Hello-There!"]).toBe("General Kenobi");
     const health = await client.isHealthy();
     expect(health).toBe(true);
   });
@@ -82,7 +82,7 @@ describe.each([
   test(`${permission} key: Create client with custom headers (Headers)`, async () => {
     const key = await getKey(permission);
     const headers = new Headers();
-    headers.append('Hello-There!', 'General Kenobi');
+    headers.append("Hello-There!", "General Kenobi");
     const client = new MeiliSearch({
       ...config,
       apiKey: key,
@@ -90,7 +90,7 @@ describe.each([
         headers,
       },
     });
-    expect(client.httpRequest.headers['hello-there!']).toBe('General Kenobi');
+    expect(client.httpRequest.headers["hello-there!"]).toBe("General Kenobi");
     const health = await client.isHealthy();
     expect(health).toBe(true);
   });
@@ -107,7 +107,7 @@ describe.each([
       expect(health).toBe(false); // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}/api/health`);
-      expect(e.name).toBe('MeiliSearchRequestError');
+      expect(e.name).toBe("MeiliSearchRequestError");
     }
   });
 
@@ -123,7 +123,7 @@ describe.each([
       expect(health).toBe(false); // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}/api/health`);
-      expect(e.name).toBe('MeiliSearchRequestError');
+      expect(e.name).toBe("MeiliSearchRequestError");
     }
   });
 
@@ -139,7 +139,7 @@ describe.each([
       expect(health).toBe(false); // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}//health`);
-      expect(e.name).toBe('MeiliSearchRequestError');
+      expect(e.name).toBe("MeiliSearchRequestError");
     }
   });
 
@@ -155,42 +155,42 @@ describe.each([
       expect(health).toBe(false); // Left here to trigger failed test if error is not thrown
     } catch (e: any) {
       expect(e.message).toMatch(`${BAD_HOST}/health`);
-      expect(e.name).toBe('MeiliSearchRequestError');
+      expect(e.name).toBe("MeiliSearchRequestError");
     }
   });
 
   test(`${permission} key: bad host raise CommunicationError`, async () => {
-    const client = new MeiliSearch({ host: 'http://localhost:9345' });
+    const client = new MeiliSearch({ host: "http://localhost:9345" });
     try {
       await client.health();
     } catch (e: any) {
-      expect(e.name).toEqual('MeiliSearchRequestError');
+      expect(e.name).toEqual("MeiliSearchRequestError");
     }
   });
 
   test(`${permission} key: host without HTTP should not throw Invalid URL Error`, () => {
-    const strippedHost = HOST.replace('http://', '');
+    const strippedHost = HOST.replace("http://", "");
     expect(() => {
       new MeiliSearch({ host: strippedHost });
-    }).not.toThrow('The provided host is not valid.');
+    }).not.toThrow("The provided host is not valid.");
   });
 
   test(`${permission} key: host without HTTP and port should not throw Invalid URL Error`, () => {
-    const strippedHost = HOST.replace('http://', '').replace(':7700', '');
+    const strippedHost = HOST.replace("http://", "").replace(":7700", "");
     expect(() => {
       new MeiliSearch({ host: strippedHost });
-    }).not.toThrow('The provided host is not valid.');
+    }).not.toThrow("The provided host is not valid.");
   });
 
   test(`${permission} key: Empty string host should throw an error`, () => {
     expect(() => {
-      new MeiliSearch({ host: '' });
-    }).toThrow('The provided host is not valid.');
+      new MeiliSearch({ host: "" });
+    }).toThrow("The provided host is not valid.");
   });
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on client w/ master and admin key',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on client w/ master and admin key",
   ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config);
@@ -203,18 +203,18 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         apiKey: key,
         requestConfig: {
           headers: {
-            'Hello-There!': 'General Kenobi',
+            "Hello-There!": "General Kenobi",
           },
         },
       });
       expect(client.config.requestConfig?.headers).toStrictEqual({
-        'Hello-There!': 'General Kenobi',
+        "Hello-There!": "General Kenobi",
       });
       const health = await client.isHealthy();
 
       expect(health).toBe(true);
 
-      const task = await client.createIndex('test');
+      const task = await client.createIndex("test");
       await client.waitForTask(task.taskUid);
 
       const { results } = await client.getIndexes();
@@ -236,17 +236,17 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       expect(health).toBe(true);
 
-      const task = await client.createIndex('test');
+      const task = await client.createIndex("test");
       await client.waitForTask(task.taskUid);
 
       const { results } = await client.getIndexes();
 
       expect(results.length).toBe(1);
 
-      const index = await client.getIndex('test');
+      const index = await client.getIndex("test");
 
       const { taskUid } = await index.addDocuments([
-        { id: 1, title: 'index_2' },
+        { id: 1, title: "index_2" },
       ]);
       await client.waitForTask(taskUid);
 
@@ -264,7 +264,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         },
       });
 
-      expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
+      expect(client.httpRequest.headers["X-Meilisearch-Client"]).toStrictEqual(
         `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
       );
     });
@@ -277,7 +277,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         clientAgents: [],
       });
 
-      expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
+      expect(client.httpRequest.headers["X-Meilisearch-Client"]).toStrictEqual(
         `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
       );
     });
@@ -287,29 +287,29 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = new MeiliSearch({
         ...config,
         apiKey: key,
-        clientAgents: ['random plugin 1', 'random plugin 2'],
+        clientAgents: ["random plugin 1", "random plugin 2"],
       });
 
-      expect(client.httpRequest.headers['X-Meilisearch-Client']).toStrictEqual(
+      expect(client.httpRequest.headers["X-Meilisearch-Client"]).toStrictEqual(
         `random plugin 1 ; random plugin 2 ; Meilisearch JavaScript (v${PACKAGE_VERSION})`,
       );
     });
 
-    describe('Test on indexes methods', () => {
+    describe("Test on indexes methods", () => {
       test(`${permission} key: create with no primary key`, async () => {
         const client = await getClient(permission);
         const task = await client.createIndex(indexNoPk.uid);
         await client.waitForTask(task.taskUid);
 
         const newIndex = await client.getIndex(indexNoPk.uid);
-        expect(newIndex).toHaveProperty('uid', indexNoPk.uid);
-        expect(newIndex).toHaveProperty('primaryKey', null);
+        expect(newIndex).toHaveProperty("uid", indexNoPk.uid);
+        expect(newIndex).toHaveProperty("primaryKey", null);
 
         const rawIndex = await client.index(indexNoPk.uid).getRawInfo();
-        expect(rawIndex).toHaveProperty('uid', indexNoPk.uid);
-        expect(rawIndex).toHaveProperty('primaryKey', null);
-        expect(rawIndex).toHaveProperty('createdAt', expect.any(String));
-        expect(rawIndex).toHaveProperty('updatedAt', expect.any(String));
+        expect(rawIndex).toHaveProperty("uid", indexNoPk.uid);
+        expect(rawIndex).toHaveProperty("primaryKey", null);
+        expect(rawIndex).toHaveProperty("createdAt", expect.any(String));
+        expect(rawIndex).toHaveProperty("updatedAt", expect.any(String));
 
         const response = await client.getIndex(indexNoPk.uid);
         expect(response.primaryKey).toBe(null);
@@ -325,13 +325,13 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
         const newIndex = await client.getIndex(indexPk.uid);
 
-        expect(newIndex).toHaveProperty('uid', indexPk.uid);
-        expect(newIndex).toHaveProperty('primaryKey', indexPk.primaryKey);
+        expect(newIndex).toHaveProperty("uid", indexPk.uid);
+        expect(newIndex).toHaveProperty("primaryKey", indexPk.primaryKey);
 
         const rawIndex = await client.index(indexPk.uid).getRawInfo();
-        expect(rawIndex).toHaveProperty('primaryKey', indexPk.primaryKey);
-        expect(rawIndex).toHaveProperty('createdAt', expect.any(String));
-        expect(rawIndex).toHaveProperty('updatedAt', expect.any(String));
+        expect(rawIndex).toHaveProperty("primaryKey", indexPk.primaryKey);
+        expect(rawIndex).toHaveProperty("createdAt", expect.any(String));
+        expect(rawIndex).toHaveProperty("updatedAt", expect.any(String));
 
         const response = await client.getIndex(indexPk.uid);
         expect(response.primaryKey).toBe(indexPk.primaryKey);
@@ -358,14 +358,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
         const response = await client.getIndex(indexPk.uid);
 
-        expect(response).toHaveProperty('uid', indexPk.uid);
+        expect(response).toHaveProperty("uid", indexPk.uid);
       });
 
       test(`${permission} key: Get index that does not exist`, async () => {
         const client = await getClient(permission);
 
-        await expect(client.getIndex('does_not_exist')).rejects.toHaveProperty(
-          'cause.code',
+        await expect(client.getIndex("does_not_exist")).rejects.toHaveProperty(
+          "cause.code",
           ErrorStatusCode.INDEX_NOT_FOUND,
         );
       });
@@ -375,14 +375,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         const { taskUid: createTask } = await client.createIndex(indexPk.uid);
         await client.waitForTask(createTask);
         const { taskUid: updateTask } = await client.updateIndex(indexPk.uid, {
-          primaryKey: 'newPrimaryKey',
+          primaryKey: "newPrimaryKey",
         });
         await client.waitForTask(updateTask);
 
         const index = await client.getIndex(indexPk.uid);
 
-        expect(index).toHaveProperty('uid', indexPk.uid);
-        expect(index).toHaveProperty('primaryKey', 'newPrimaryKey');
+        expect(index).toHaveProperty("uid", indexPk.uid);
+        expect(index).toHaveProperty("primaryKey", "newPrimaryKey");
       });
 
       test(`${permission} key: update primary key that already exists`, async () => {
@@ -392,14 +392,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         });
         await client.waitForTask(createTask);
         const { taskUid: updateTask } = await client.updateIndex(indexPk.uid, {
-          primaryKey: 'newPrimaryKey',
+          primaryKey: "newPrimaryKey",
         });
         await client.waitForTask(updateTask);
 
         const index = await client.getIndex(indexPk.uid);
 
-        expect(index).toHaveProperty('uid', indexPk.uid);
-        expect(index).toHaveProperty('primaryKey', 'newPrimaryKey');
+        expect(index).toHaveProperty("uid", indexPk.uid);
+        expect(index).toHaveProperty("primaryKey", "newPrimaryKey");
       });
 
       test(`${permission} key: delete index`, async () => {
@@ -422,7 +422,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         const { taskUid: secondCreate } = await client.createIndex(indexPk.uid);
         const task = await client.waitForTask(secondCreate);
 
-        expect(task.status).toBe('failed');
+        expect(task.status).toBe("failed");
       });
 
       test(`${permission} key: delete index with uid that does not exist should fail`, async () => {
@@ -432,14 +432,14 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
         const task = await client.waitForTask(taskUid);
 
-        expect(task.status).toEqual('failed');
+        expect(task.status).toEqual("failed");
       });
 
       test(`${permission} key: fetch deleted index should fail`, async () => {
         const client = await getClient(permission);
         const index = client.index(indexPk.uid);
         await expect(index.getRawInfo()).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.INDEX_NOT_FOUND,
         );
       });
@@ -451,7 +451,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
           .addDocuments([{ id: 1, title: `index_1` }]);
         const { taskUid } = await client
           .index(index2.uid)
-          .addDocuments([{ id: 1, title: 'index_2' }]);
+          .addDocuments([{ id: 1, title: "index_2" }]);
         await client.waitForTask(taskUid);
         const swaps = [
           {
@@ -464,8 +464,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         const docIndex1 = await client.index(index.uid).getDocument(1);
         const docIndex2 = await client.index(index2.uid).getDocument(1);
 
-        expect(docIndex1.title).toEqual('index_2');
-        expect(docIndex2.title).toEqual('index_1');
+        expect(docIndex1.title).toEqual("index_2");
+        expect(docIndex2.title).toEqual("index_1");
         expect(resolvedTask.type).toEqual(TaskTypes.INDEXES_SWAP);
         expect(resolvedTask.details.swaps).toEqual(swaps);
       });
@@ -475,12 +475,12 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
         const { taskUid } = await client
           .index(index2.uid)
-          .addDocuments([{ id: 1, title: 'index_2' }]);
+          .addDocuments([{ id: 1, title: "index_2" }]);
 
         await client.waitForTask(taskUid);
         const swaps = [
           {
-            indexes: ['does_not_exist', index2.uid],
+            indexes: ["does_not_exist", index2.uid],
           },
         ];
 
@@ -505,19 +505,19 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         ];
 
         await expect(client.swapIndexes(swaps)).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.INVALID_SWAP_DUPLICATE_INDEX_FOUND,
         );
       });
     });
 
-    describe('Test on base routes', () => {
+    describe("Test on base routes", () => {
       test(`${permission} key: get health`, async () => {
         const client = await getClient(permission);
         const response: Health = await client.health();
         expect(response).toHaveProperty(
-          'status',
-          expect.stringMatching('available'),
+          "status",
+          expect.stringMatching("available"),
         );
       });
 
@@ -528,7 +528,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       });
 
       test(`${permission} key: is healthy return false on bad host`, async () => {
-        const client = new MeiliSearch({ host: 'http://localhost:9345' });
+        const client = new MeiliSearch({ host: "http://localhost:9345" });
         const response: boolean = await client.isHealthy();
         expect(response).toBe(false);
       });
@@ -536,34 +536,34 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       test(`${permission} key: get version`, async () => {
         const client = await getClient(permission);
         const response: Version = await client.getVersion();
-        expect(response).toHaveProperty('commitSha', expect.any(String));
-        expect(response).toHaveProperty('commitDate', expect.any(String));
-        expect(response).toHaveProperty('pkgVersion', expect.any(String));
+        expect(response).toHaveProperty("commitSha", expect.any(String));
+        expect(response).toHaveProperty("commitDate", expect.any(String));
+        expect(response).toHaveProperty("pkgVersion", expect.any(String));
       });
 
       test(`${permission} key: get /stats information`, async () => {
         const client = await getClient(permission);
         const response: Stats = await client.getStats();
-        expect(response).toHaveProperty('databaseSize', expect.any(Number));
-        expect(response).toHaveProperty('lastUpdate'); // TODO: Could be null, find out why
-        expect(response).toHaveProperty('indexes', expect.any(Object));
+        expect(response).toHaveProperty("databaseSize", expect.any(Number));
+        expect(response).toHaveProperty("lastUpdate"); // TODO: Could be null, find out why
+        expect(response).toHaveProperty("indexes", expect.any(Object));
       });
     });
   },
 );
 
-describe.each([{ permission: 'Search' }])(
-  'Test on misc client methods w/ search apikey',
+describe.each([{ permission: "Search" }])(
+  "Test on misc client methods w/ search apikey",
   ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config);
     });
 
-    describe('Test on indexes methods', () => {
+    describe("Test on indexes methods", () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.getIndexes()).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.INVALID_API_KEY,
         );
       });
@@ -574,13 +574,13 @@ describe.each([{ permission: 'Search' }])(
           client.createIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           }),
-        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
       });
 
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.INVALID_API_KEY,
         );
       });
@@ -588,7 +588,7 @@ describe.each([{ permission: 'Search' }])(
       test(`${permission} key: try to delete index and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.INVALID_API_KEY,
         );
       });
@@ -599,24 +599,24 @@ describe.each([{ permission: 'Search' }])(
           client.updateIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           }),
-        ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
       });
     });
 
-    describe('Test on misc client methods', () => {
+    describe("Test on misc client methods", () => {
       test(`${permission} key: get health`, async () => {
         const client = await getClient(permission);
         const response: Health = await client.health();
         expect(response).toHaveProperty(
-          'status',
-          expect.stringMatching('available'),
+          "status",
+          expect.stringMatching("available"),
         );
       });
 
       test(`${permission} key: try to get version and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.getVersion()).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.INVALID_API_KEY,
         );
       });
@@ -624,7 +624,7 @@ describe.each([{ permission: 'Search' }])(
       test(`${permission} key: try to get /stats information and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.getStats()).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.INVALID_API_KEY,
         );
       });
@@ -632,18 +632,18 @@ describe.each([{ permission: 'Search' }])(
   },
 );
 
-describe.each([{ permission: 'No' }])(
-  'Test on misc client methods w/ no apiKey client',
+describe.each([{ permission: "No" }])(
+  "Test on misc client methods w/ no apiKey client",
   ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config);
     });
 
-    describe('Test on indexes methods', () => {
+    describe("Test on indexes methods", () => {
       test(`${permission} key: try to get all indexes and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.getIndexes()).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -655,7 +655,7 @@ describe.each([{ permission: 'No' }])(
             primaryKey: indexPk.primaryKey,
           }),
         ).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -663,7 +663,7 @@ describe.each([{ permission: 'No' }])(
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -671,7 +671,7 @@ describe.each([{ permission: 'No' }])(
       test(`${permission} key: try to delete index and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -683,26 +683,26 @@ describe.each([{ permission: 'No' }])(
             primaryKey: indexPk.primaryKey,
           }),
         ).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
     });
 
-    describe('Test on misc client methods', () => {
+    describe("Test on misc client methods", () => {
       test(`${permission} key: get health`, async () => {
         const client = await getClient(permission);
         const response: Health = await client.health();
         expect(response).toHaveProperty(
-          'status',
-          expect.stringMatching('available'),
+          "status",
+          expect.stringMatching("available"),
         );
       });
 
       test(`${permission} key: try to get version and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.getVersion()).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -710,7 +710,7 @@ describe.each([{ permission: 'No' }])(
       test(`${permission} key: try to get /stats information and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.getStats()).rejects.toHaveProperty(
-          'cause.code',
+          "cause.code",
           ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
         );
       });
@@ -722,13 +722,13 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test getIndex route`, async () => {
     const route = `indexes/${indexPk.uid}`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -738,7 +738,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.createIndex(indexPk.uid)).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -748,7 +748,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.updateIndex(indexPk.uid)).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -758,7 +758,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -768,7 +768,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getIndexes()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -778,7 +778,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getKeys()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -788,7 +788,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.health()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -798,7 +798,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getStats()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -808,7 +808,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getVersion()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

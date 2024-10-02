@@ -1,5 +1,5 @@
-import { ErrorStatusCode } from '../src/types';
-import { EnqueuedTask } from '../src/enqueued-task';
+import { ErrorStatusCode } from "../src/types";
+import { EnqueuedTask } from "../src/enqueued-task";
 import {
   clearAllIndexes,
   config,
@@ -7,19 +7,19 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 const defaultRankingRules = [
-  'words',
-  'typo',
-  'proximity',
-  'attribute',
-  'sort',
-  'exactness',
+  "words",
+  "typo",
+  "proximity",
+  "attribute",
+  "sort",
+  "exactness",
 ];
 
 jest.setTimeout(100 * 1000);
@@ -28,12 +28,12 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on ranking rules',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on ranking rules",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
-      const client = await getClient('master');
+      const client = await getClient("master");
       const { taskUid } = await client.index(index.uid).addDocuments(dataset);
       await client.waitForTask(taskUid);
     });
@@ -48,7 +48,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
     test(`${permission} key: Update ranking rules`, async () => {
       const client = await getClient(permission);
-      const newRankingRules = ['title:asc', 'typo', 'description:desc'];
+      const newRankingRules = ["title:asc", "typo", "description:desc"];
       const task: EnqueuedTask = await client
         .index(index.uid)
         .updateRankingRules(newRankingRules);
@@ -91,8 +91,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   },
 );
 
-describe.each([{ permission: 'Search' }])(
-  'Test on ranking rules',
+describe.each([{ permission: "Search" }])(
+  "Test on ranking rules",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
@@ -102,27 +102,27 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getRankingRules(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update ranking rules and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateRankingRules([]),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset ranking rules and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetRankingRules(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
 
-describe.each([{ permission: 'No' }])(
-  'Test on ranking rules',
+describe.each([{ permission: "No" }])(
+  "Test on ranking rules",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
@@ -133,7 +133,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).getRankingRules(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -143,7 +143,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).updateRankingRules([]),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -153,7 +153,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).resetRankingRules(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -164,7 +164,7 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test getRankingRules route`, async () => {
     const route = `indexes/${index.uid}/settings/ranking-rules`;
     const client = new MeiliSearch({ host });
@@ -172,7 +172,7 @@ describe.each([
     await expect(
       client.index(index.uid).getRankingRules(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -184,7 +184,7 @@ describe.each([
     await expect(
       client.index(index.uid).updateRankingRules([]),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -196,7 +196,7 @@ describe.each([
     await expect(
       client.index(index.uid).resetRankingRules(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

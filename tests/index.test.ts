@@ -1,26 +1,26 @@
-import { ErrorStatusCode } from '../src/types';
+import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,
   config,
   BAD_HOST,
   MeiliSearch,
   getClient,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const indexNoPk = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 const indexPk = {
-  uid: 'movies_test2',
-  primaryKey: 'id',
+  uid: "movies_test2",
+  primaryKey: "id",
 };
 
 afterAll(async () => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Test on indexes w/ master and admin key',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Test on indexes w/ master and admin key",
   ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config);
@@ -33,15 +33,15 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const newIndex = await client.getIndex(indexNoPk.uid);
 
-      expect(newIndex).toHaveProperty('uid', indexNoPk.uid);
-      expect(newIndex).toHaveProperty('primaryKey', null);
+      expect(newIndex).toHaveProperty("uid", indexNoPk.uid);
+      expect(newIndex).toHaveProperty("primaryKey", null);
 
       const rawIndex = await client.index(indexNoPk.uid).getRawInfo();
 
-      expect(rawIndex).toHaveProperty('uid', indexNoPk.uid);
-      expect(rawIndex).toHaveProperty('primaryKey', null);
-      expect(rawIndex).toHaveProperty('createdAt', expect.any(String));
-      expect(rawIndex).toHaveProperty('updatedAt', expect.any(String));
+      expect(rawIndex).toHaveProperty("uid", indexNoPk.uid);
+      expect(rawIndex).toHaveProperty("primaryKey", null);
+      expect(rawIndex).toHaveProperty("createdAt", expect.any(String));
+      expect(rawIndex).toHaveProperty("updatedAt", expect.any(String));
     });
 
     test(`${permission} key: create index with primary key`, async () => {
@@ -53,15 +53,15 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const newIndex = await client.getIndex(indexPk.uid);
 
-      expect(newIndex).toHaveProperty('uid', indexPk.uid);
-      expect(newIndex).toHaveProperty('primaryKey', indexPk.primaryKey);
+      expect(newIndex).toHaveProperty("uid", indexPk.uid);
+      expect(newIndex).toHaveProperty("primaryKey", indexPk.primaryKey);
 
       const rawIndex = await client.index(indexPk.uid).getRawInfo();
 
-      expect(rawIndex).toHaveProperty('uid', indexPk.uid);
-      expect(rawIndex).toHaveProperty('primaryKey', indexPk.primaryKey);
-      expect(rawIndex).toHaveProperty('createdAt', expect.any(String));
-      expect(rawIndex).toHaveProperty('updatedAt', expect.any(String));
+      expect(rawIndex).toHaveProperty("uid", indexPk.uid);
+      expect(rawIndex).toHaveProperty("primaryKey", indexPk.primaryKey);
+      expect(rawIndex).toHaveProperty("createdAt", expect.any(String));
+      expect(rawIndex).toHaveProperty("updatedAt", expect.any(String));
     });
 
     test(`${permission} key: Get raw index that exists`, async () => {
@@ -71,7 +71,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.getRawIndex(indexPk.uid);
 
-      expect(response).toHaveProperty('uid', indexPk.uid);
+      expect(response).toHaveProperty("uid", indexPk.uid);
     });
 
     test(`${permission} key: Get all indexes in Index instances`, async () => {
@@ -87,16 +87,16 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
     test(`${permission} key: Get index that does not exist`, async () => {
       const client = await getClient(permission);
-      await expect(client.getIndex('does_not_exist')).rejects.toHaveProperty(
-        'cause.code',
+      await expect(client.getIndex("does_not_exist")).rejects.toHaveProperty(
+        "cause.code",
         ErrorStatusCode.INDEX_NOT_FOUND,
       );
     });
 
     test(`${permission} key: Get raw index that does not exist`, async () => {
       const client = await getClient(permission);
-      await expect(client.getRawIndex('does_not_exist')).rejects.toHaveProperty(
-        'cause.code',
+      await expect(client.getRawIndex("does_not_exist")).rejects.toHaveProperty(
+        "cause.code",
         ErrorStatusCode.INDEX_NOT_FOUND,
       );
     });
@@ -110,8 +110,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.getRawIndex(indexPk.uid);
 
-      expect(response).toHaveProperty('uid', indexPk.uid);
-      expect(response).toHaveProperty('primaryKey', indexPk.primaryKey);
+      expect(response).toHaveProperty("uid", indexPk.uid);
+      expect(response).toHaveProperty("primaryKey", indexPk.primaryKey);
     });
 
     test(`${permission} key: Get raw index info through client with NO primary key`, async () => {
@@ -121,8 +121,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.getRawIndex(indexNoPk.uid);
 
-      expect(response).toHaveProperty('uid', indexNoPk.uid);
-      expect(response).toHaveProperty('primaryKey', null);
+      expect(response).toHaveProperty("uid", indexNoPk.uid);
+      expect(response).toHaveProperty("primaryKey", null);
     });
 
     test(`${permission} key: Get raw index info with primary key`, async () => {
@@ -134,8 +134,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(indexPk.uid).getRawInfo();
 
-      expect(response).toHaveProperty('uid', indexPk.uid);
-      expect(response).toHaveProperty('primaryKey', indexPk.primaryKey);
+      expect(response).toHaveProperty("uid", indexPk.uid);
+      expect(response).toHaveProperty("primaryKey", indexPk.primaryKey);
     });
 
     test(`${permission} key: Get raw index info with NO primary key`, async () => {
@@ -145,8 +145,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(indexNoPk.uid).getRawInfo();
 
-      expect(response).toHaveProperty('uid', indexNoPk.uid);
-      expect(response).toHaveProperty('primaryKey', null);
+      expect(response).toHaveProperty("uid", indexNoPk.uid);
+      expect(response).toHaveProperty("primaryKey", null);
     });
 
     test(`${permission} key: fetch index with primary key`, async () => {
@@ -159,8 +159,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const index = client.index(indexPk.uid);
       const response = await index.fetchInfo();
 
-      expect(response).toHaveProperty('uid', indexPk.uid);
-      expect(response).toHaveProperty('primaryKey', indexPk.primaryKey);
+      expect(response).toHaveProperty("uid", indexPk.uid);
+      expect(response).toHaveProperty("primaryKey", indexPk.primaryKey);
     });
 
     test(`${permission} key: fetch primary key on an index with primary key`, async () => {
@@ -197,8 +197,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const index = client.index(indexPk.uid);
       const response = await index.fetchInfo();
 
-      expect(response).toHaveProperty('uid', indexPk.uid);
-      expect(response).toHaveProperty('primaryKey', indexPk.primaryKey);
+      expect(response).toHaveProperty("uid", indexPk.uid);
+      expect(response).toHaveProperty("primaryKey", indexPk.primaryKey);
     });
 
     test(`${permission} key: fetch index with NO primary key`, async () => {
@@ -209,8 +209,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const index = client.index(indexNoPk.uid);
       const response = await index.fetchInfo();
 
-      expect(response).toHaveProperty('uid', indexNoPk.uid);
-      expect(response).toHaveProperty('primaryKey', null);
+      expect(response).toHaveProperty("uid", indexNoPk.uid);
+      expect(response).toHaveProperty("primaryKey", null);
     });
 
     test(`${permission} key: get all indexes`, async () => {
@@ -242,15 +242,15 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission);
       const { taskUid: createTask } = await client.createIndex(indexNoPk.uid);
       const { taskUid: updateTask } = await client.index(indexNoPk.uid).update({
-        primaryKey: 'newPrimaryKey',
+        primaryKey: "newPrimaryKey",
       });
       await client.waitForTask(createTask);
       await client.waitForTask(updateTask);
 
       const index = await client.getIndex(indexNoPk.uid);
 
-      expect(index).toHaveProperty('uid', indexNoPk.uid);
-      expect(index).toHaveProperty('primaryKey', 'newPrimaryKey');
+      expect(index).toHaveProperty("uid", indexNoPk.uid);
+      expect(index).toHaveProperty("primaryKey", "newPrimaryKey");
     });
 
     test(`${permission} key: update primary key on an index that has NO primary key already through client`, async () => {
@@ -264,8 +264,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const index = await client.getIndex(indexNoPk.uid);
 
-      expect(index).toHaveProperty('uid', indexNoPk.uid);
-      expect(index).toHaveProperty('primaryKey', indexPk.primaryKey);
+      expect(index).toHaveProperty("uid", indexNoPk.uid);
+      expect(index).toHaveProperty("primaryKey", indexPk.primaryKey);
     });
 
     test(`${permission} key: update primary key on an index that has already a primary key and fail through client`, async () => {
@@ -274,15 +274,15 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         primaryKey: indexPk.primaryKey,
       });
       const { taskUid: updateTask } = await client.updateIndex(indexPk.uid, {
-        primaryKey: 'newPrimaryKey',
+        primaryKey: "newPrimaryKey",
       });
       await client.waitForTask(createTask);
       await client.waitForTask(updateTask);
 
       const index = await client.getIndex(indexPk.uid);
 
-      expect(index).toHaveProperty('uid', indexPk.uid);
-      expect(index).toHaveProperty('primaryKey', 'newPrimaryKey');
+      expect(index).toHaveProperty("uid", indexPk.uid);
+      expect(index).toHaveProperty("primaryKey", "newPrimaryKey");
     });
 
     test(`${permission} key: update primary key on an index that has already a primary key and fail`, async () => {
@@ -291,15 +291,15 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
         primaryKey: indexPk.primaryKey,
       });
       const { taskUid: updateTask } = await client.index(indexPk.uid).update({
-        primaryKey: 'newPrimaryKey',
+        primaryKey: "newPrimaryKey",
       });
       await client.waitForTask(createTask);
       await client.waitForTask(updateTask);
 
       const index = await client.getIndex(indexPk.uid);
 
-      expect(index).toHaveProperty('uid', indexPk.uid);
-      expect(index).toHaveProperty('primaryKey', 'newPrimaryKey');
+      expect(index).toHaveProperty("uid", indexPk.uid);
+      expect(index).toHaveProperty("primaryKey", "newPrimaryKey");
     });
 
     test(`${permission} key: delete index`, async () => {
@@ -331,7 +331,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
       const client = await getClient(permission);
       const index = client.index(indexNoPk.uid);
       await expect(index.getRawInfo()).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.INDEX_NOT_FOUND,
       );
     });
@@ -339,7 +339,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
     test(`${permission} key: get deleted raw index should fail through client`, async () => {
       const client = await getClient(permission);
       await expect(client.getRawIndex(indexNoPk.uid)).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.INDEX_NOT_FOUND,
       );
     });
@@ -351,7 +351,7 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const task = await client.waitForTask(taskUid);
 
-      expect(task.status).toBe('failed');
+      expect(task.status).toBe("failed");
     });
 
     test(`${permission} key: get stats of an index`, async () => {
@@ -361,9 +361,9 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
 
       const response = await client.index(indexNoPk.uid).getStats();
 
-      expect(response).toHaveProperty('numberOfDocuments', 0);
-      expect(response).toHaveProperty('isIndexing', false);
-      expect(response).toHaveProperty('fieldDistribution', {});
+      expect(response).toHaveProperty("numberOfDocuments", 0);
+      expect(response).toHaveProperty("isIndexing", false);
+      expect(response).toHaveProperty("fieldDistribution", {});
     });
 
     test(`${permission} key: Get updatedAt and createdAt through fetch info`, async () => {
@@ -395,8 +395,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   },
 );
 
-describe.each([{ permission: 'Search' }])(
-  'Test on routes with search key',
+describe.each([{ permission: "Search" }])(
+  "Test on routes with search key",
   ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config);
@@ -406,13 +406,13 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(indexNoPk.uid).getRawInfo(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to get raw index and be denied`, async () => {
       const client = await getClient(permission);
       await expect(client.getRawIndex(indexNoPk.uid)).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.INVALID_API_KEY,
       );
     });
@@ -420,7 +420,7 @@ describe.each([{ permission: 'Search' }])(
     test(`${permission} key: try to delete index and be denied`, async () => {
       const client = await getClient(permission);
       await expect(client.index(indexPk.uid).delete()).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.INVALID_API_KEY,
       );
     });
@@ -429,21 +429,21 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(indexPk.uid).update({ primaryKey: indexPk.primaryKey }),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to get stats and be denied`, async () => {
       const client = await getClient(permission);
       await expect(client.index(indexPk.uid).getStats()).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.INVALID_API_KEY,
       );
     });
   },
 );
 
-describe.each([{ permission: 'No' }])(
-  'Test on routes without an API key',
+describe.each([{ permission: "No" }])(
+  "Test on routes without an API key",
   ({ permission }) => {
     beforeEach(() => {
       return clearAllIndexes(config);
@@ -452,7 +452,7 @@ describe.each([{ permission: 'No' }])(
     test(`${permission} key: try to get all indexes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(client.getIndexes()).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -462,7 +462,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(indexNoPk.uid).getRawInfo(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -470,7 +470,7 @@ describe.each([{ permission: 'No' }])(
     test(`${permission} key: try to get raw index and be denied`, async () => {
       const client = await getClient(permission);
       await expect(client.getRawIndex(indexNoPk.uid)).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -478,7 +478,7 @@ describe.each([{ permission: 'No' }])(
     test(`${permission} key: try to delete index and be denied`, async () => {
       const client = await getClient(permission);
       await expect(client.index(indexPk.uid).delete()).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -488,7 +488,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(indexPk.uid).update({ primaryKey: indexPk.primaryKey }),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -499,13 +499,13 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test getStats route`, async () => {
     const route = `indexes/${indexPk.uid}/stats`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(indexPk.uid).getStats()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -515,12 +515,12 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
-      'name',
-      'MeiliSearchRequestError',
+      "name",
+      "MeiliSearchRequestError",
     );
   });
 
@@ -529,12 +529,12 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getRawIndex(indexPk.uid)).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
     await expect(client.getRawIndex(indexPk.uid)).rejects.toHaveProperty(
-      'name',
-      'MeiliSearchRequestError',
+      "name",
+      "MeiliSearchRequestError",
     );
   });
 
@@ -543,7 +543,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -553,7 +553,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

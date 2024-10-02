@@ -5,14 +5,14 @@
  * Copyright: 2019, MeiliSearch
  */
 
-'use strict';
+"use strict";
 
 import {
   MeiliSearchError,
   MeiliSearchRequestError,
   versionErrorHintMessage,
   MeiliSearchApiError,
-} from './errors';
+} from "./errors";
 import {
   Config,
   SearchResponse,
@@ -56,11 +56,11 @@ import {
   SearchSimilarDocumentsParams,
   LocalizedAttributes,
   UpdateDocumentsByFunctionOptions,
-} from './types';
-import { removeUndefinedFromObject } from './utils';
-import { HttpRequests } from './http-requests';
-import { Task, TaskClient } from './task';
-import { EnqueuedTask } from './enqueued-task';
+} from "./types";
+import { removeUndefinedFromObject } from "./utils";
+import { HttpRequests } from "./http-requests";
+import { Task, TaskClient } from "./task";
+import { EnqueuedTask } from "./enqueued-task";
 
 class Index<T extends Record<string, any> = Record<string, any>> {
   uid: string;
@@ -131,10 +131,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     const url = `indexes/${this.uid}/search`;
 
     const parseFilter = (filter?: Filter): string | undefined => {
-      if (typeof filter === 'string') return filter;
+      if (typeof filter === "string") return filter;
       else if (Array.isArray(filter))
         throw new MeiliSearchError(
-          'The filter query parameter should be in string format when using searchGet',
+          "The filter query parameter should be in string format when using searchGet",
         );
       else return undefined;
     };
@@ -143,13 +143,13 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       q: query,
       ...options,
       filter: parseFilter(options?.filter),
-      sort: options?.sort?.join(','),
-      facets: options?.facets?.join(','),
-      attributesToRetrieve: options?.attributesToRetrieve?.join(','),
-      attributesToCrop: options?.attributesToCrop?.join(','),
-      attributesToHighlight: options?.attributesToHighlight?.join(','),
-      vector: options?.vector?.join(','),
-      attributesToSearchOn: options?.attributesToSearchOn?.join(','),
+      sort: options?.sort?.join(","),
+      facets: options?.facets?.join(","),
+      attributesToRetrieve: options?.attributesToRetrieve?.join(","),
+      attributesToCrop: options?.attributesToCrop?.join(","),
+      attributesToHighlight: options?.attributesToHighlight?.join(","),
+      vector: options?.vector?.join(","),
+      attributesToSearchOn: options?.attributesToSearchOn?.join(","),
     };
 
     return await this.httpRequest.get<SearchResponse<D, S>>(
@@ -383,9 +383,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
         >(url, parameters);
       } catch (e) {
         if (e instanceof MeiliSearchRequestError) {
-          e.message = versionErrorHintMessage(e.message, 'getDocuments');
+          e.message = versionErrorHintMessage(e.message, "getDocuments");
         } else if (e instanceof MeiliSearchApiError) {
-          e.message = versionErrorHintMessage(e.message, 'getDocuments');
+          e.message = versionErrorHintMessage(e.message, "getDocuments");
         }
 
         throw e;
@@ -396,7 +396,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
 
       // Transform fields to query parameter string format
       const fields = Array.isArray(parameters?.fields)
-        ? { fields: parameters?.fields?.join(',') }
+        ? { fields: parameters?.fields?.join(",") }
         : {};
 
       return await this.httpRequest.get<Promise<ResourceResults<D[]>>>(url, {
@@ -421,7 +421,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
 
     const fields = (() => {
       if (Array.isArray(parameters?.fields)) {
-        return parameters?.fields?.join(',');
+        return parameters?.fields?.join(",");
       }
       return undefined;
     })();
@@ -471,7 +471,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
 
     const task = await this.httpRequest.post(url, documents, queryParams, {
       headers: {
-        'Content-Type': contentType,
+        "Content-Type": contentType,
       },
     });
 
@@ -558,7 +558,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
 
     const task = await this.httpRequest.put(url, documents, queryParams, {
       headers: {
-        'Content-Type': contentType,
+        "Content-Type": contentType,
       },
     });
 
@@ -596,10 +596,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ): Promise<EnqueuedTask> {
     // If params is of type DocumentsDeletionQuery
     const isDocumentsDeletionQuery =
-      !Array.isArray(params) && typeof params === 'object';
+      !Array.isArray(params) && typeof params === "object";
     const endpoint = isDocumentsDeletionQuery
-      ? 'documents/delete'
-      : 'documents/delete-batch';
+      ? "documents/delete"
+      : "documents/delete-batch";
     const url = `indexes/${this.uid}/${endpoint}`;
 
     try {
@@ -608,9 +608,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       return new EnqueuedTask(task);
     } catch (e) {
       if (e instanceof MeiliSearchRequestError && isDocumentsDeletionQuery) {
-        e.message = versionErrorHintMessage(e.message, 'deleteDocuments');
+        e.message = versionErrorHintMessage(e.message, "deleteDocuments");
       } else if (e instanceof MeiliSearchApiError) {
-        e.message = versionErrorHintMessage(e.message, 'deleteDocuments');
+        e.message = versionErrorHintMessage(e.message, "deleteDocuments");
       }
 
       throw e;

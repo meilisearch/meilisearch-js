@@ -6,23 +6,23 @@ import {
   clearAllIndexes,
   config,
   HOST,
-} from './utils/meilisearch-test-utils';
-import { createHmac } from 'crypto';
-import MeiliSearch from '../src';
+} from "./utils/meilisearch-test-utils";
+import { createHmac } from "crypto";
+import MeiliSearch from "../src";
 
-const HASH_ALGORITHM = 'HS256';
-const TOKEN_TYP = 'JWT';
-const UID = 'movies_test';
+const HASH_ALGORITHM = "HS256";
+const TOKEN_TYP = "JWT";
+const UID = "movies_test";
 
 afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Admin' }])(
-  'Tests on token generation',
+describe.each([{ permission: "Admin" }])(
+  "Tests on token generation",
   ({ permission }) => {
     beforeEach(async () => {
-      const client = await getClient('Master');
+      const client = await getClient("Master");
       await client.index(UID).delete();
       const { taskUid } = await client.index(UID).addDocuments(dataset);
       await client.waitForTask(taskUid);
@@ -31,8 +31,8 @@ describe.each([{ permission: 'Admin' }])(
 
       const customKeys = keys.results.filter(
         (key) =>
-          key.name !== 'Default Search API Key' &&
-          key.name !== 'Default Admin API Key',
+          key.name !== "Default Search API Key" &&
+          key.name !== "Default Admin API Key",
       );
 
       // Delete all custom keys
@@ -44,7 +44,7 @@ describe.each([{ permission: 'Admin' }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await client.generateTenantToken(uid, [], {});
-      const [header64] = token.split('.');
+      const [header64] = token.split(".");
 
       // header
       const { typ, alg } = JSON.parse(decode64(header64));
@@ -57,15 +57,15 @@ describe.each([{ permission: 'Admin' }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await client.generateTenantToken(uid, [], {});
-      const [header64, payload64, signature64] = token.split('.');
+      const [header64, payload64, signature64] = token.split(".");
 
       // signature
-      const newSignature = createHmac('sha256', apiKey)
+      const newSignature = createHmac("sha256", apiKey)
         .update(`${header64}.${payload64}`)
-        .digest('base64')
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=/g, '');
+        .digest("base64")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=/g, "");
 
       expect(signature64).toEqual(newSignature);
     });
@@ -75,7 +75,7 @@ describe.each([{ permission: 'Admin' }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await client.generateTenantToken(uid, [], {});
-      const [_, payload64] = token.split('.');
+      const [_, payload64] = token.split(".");
 
       // payload
       const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
@@ -90,7 +90,7 @@ describe.each([{ permission: 'Admin' }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await client.generateTenantToken(uid, [UID]);
-      const [_, payload64] = token.split('.');
+      const [_, payload64] = token.split(".");
 
       // payload
       const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
@@ -105,7 +105,7 @@ describe.each([{ permission: 'Admin' }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await client.generateTenantToken(uid, { [UID]: {} });
-      const [_, payload64] = token.split('.');
+      const [_, payload64] = token.split(".");
 
       // payload
       const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
@@ -119,7 +119,7 @@ describe.each([{ permission: 'Admin' }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
 
-      const token = await client.generateTenantToken(uid, ['*']);
+      const token = await client.generateTenantToken(uid, ["*"]);
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
@@ -128,15 +128,15 @@ describe.each([{ permission: 'Admin' }])(
     });
 
     test(`${permission} key: Search in tenant token with custom api key`, async () => {
-      const masterClient = await getClient('master');
+      const masterClient = await getClient("master");
       const { uid, key } = await masterClient.createKey({
         expiresAt: null,
-        description: 'Custom key',
-        actions: ['search'],
+        description: "Custom key",
+        actions: ["search"],
         indexes: [UID],
       });
       const client = await getClient(permission);
-      const token = await client.generateTenantToken(uid, ['*'], {
+      const token = await client.generateTenantToken(uid, ["*"], {
         apiKey: key,
       });
 
@@ -148,14 +148,14 @@ describe.each([{ permission: 'Admin' }])(
 
     test(`${permission} key: Search in tenant token with expireAt`, async () => {
       const client = await getClient(permission);
-      const date = new Date('December 17, 4000 03:24:00');
+      const date = new Date("December 17, 4000 03:24:00");
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const token = await client.generateTenantToken(uid, ['*'], {
+      const token = await client.generateTenantToken(uid, ["*"], {
         expiresAt: date,
       });
 
-      const [_, payload] = token.split('.');
+      const [_, payload] = token.split(".");
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
       expect(JSON.parse(decode64(payload)).exp).toEqual(
@@ -168,10 +168,10 @@ describe.each([{ permission: 'Admin' }])(
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const date = new Date('December 17, 2000 03:24:00');
+      const date = new Date("December 17, 2000 03:24:00");
 
       expect(
-        client.generateTenantToken(uid, ['*'], { expiresAt: date }),
+        client.generateTenantToken(uid, ["*"], { expiresAt: date }),
       ).rejects.toThrow(
         `Meilisearch: The expiresAt field must be a date in the future.`,
       );
@@ -193,16 +193,16 @@ describe.each([{ permission: 'Admin' }])(
 
     test(`${permission} key: Search in tenant token with specific index and specific rules`, async () => {
       // add filterable
-      const masterClient = await getClient('master');
+      const masterClient = await getClient("master");
       const { taskUid } = await masterClient
         .index(UID)
-        .updateFilterableAttributes(['id']);
+        .updateFilterableAttributes(["id"]);
       await masterClient.waitForTask(taskUid);
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await client.generateTenantToken(uid, {
-        [UID]: { filter: 'id = 2' },
+        [UID]: { filter: "id = 2" },
       });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
@@ -221,8 +221,8 @@ describe.each([{ permission: 'Admin' }])(
 
       // search
       await expect(
-        searchClient.index(UID).search('pride'),
-      ).rejects.toHaveProperty('cause.code', 'invalid_api_key');
+        searchClient.index(UID).search("pride"),
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 
     test(`${permission} key: Search in tenant token on index with no permissions `, async () => {
@@ -235,15 +235,15 @@ describe.each([{ permission: 'Admin' }])(
 
       // search
       await expect(
-        searchClient.index(UID).search('pride'),
-      ).rejects.toHaveProperty('cause.code', 'invalid_api_key');
+        searchClient.index(UID).search("pride"),
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 
     test(`${permission} key: Creates tenant token with an expiration date in the past throws an error`, async () => {
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const date = new Date('December 17, 2000 03:24:00');
+      const date = new Date("December 17, 2000 03:24:00");
 
       expect(
         client.generateTenantToken(
@@ -261,7 +261,7 @@ describe.each([{ permission: 'Admin' }])(
     test(`${permission} key: Creates tenant token with wrong uid type throws an error`, async () => {
       const client = await getClient(permission);
 
-      expect(client.generateTenantToken('1234', ['*'])).rejects.toThrow(
+      expect(client.generateTenantToken("1234", ["*"])).rejects.toThrow(
         `Meilisearch: The uid of your key is not a valid uuid4. To find out the uid of your key use getKey().`,
       );
     });
@@ -269,7 +269,7 @@ describe.each([{ permission: 'Admin' }])(
     test(`${permission} key: Creates a tenant token with no api key in client and in parameters throws an error`, () => {
       const client = new MeiliSearch({ host: HOST });
 
-      expect(client.generateTenantToken('123', [])).rejects.toThrow(
+      expect(client.generateTenantToken("123", [])).rejects.toThrow(
         `Meilisearch: The API key used for the token generation must exist and be of type string.`,
       );
     });

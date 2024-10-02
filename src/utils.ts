@@ -15,15 +15,15 @@ async function sleep(ms: number): Promise<void> {
 }
 
 function addProtocolIfNotPresent(host: string): string {
-  if (!(host.startsWith('https://') || host.startsWith('http://'))) {
+  if (!(host.startsWith("https://") || host.startsWith("http://"))) {
     return `http://${host}`;
   }
   return host;
 }
 
 function addTrailingSlash(url: string): string {
-  if (!url.endsWith('/')) {
-    url += '/';
+  if (!url.endsWith("/")) {
+    url += "/";
   }
   return url;
 }

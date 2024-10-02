@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from '../src/types';
+import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,
   config,
@@ -6,10 +6,10 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from './utils/meilisearch-test-utils';
+} from "./utils/meilisearch-test-utils";
 
 const index = {
-  uid: 'movies_test',
+  uid: "movies_test",
 };
 
 const defaultTypoTolerance = {
@@ -28,12 +28,12 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
-  'Tests on typo tolerance',
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Tests on typo tolerance",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
-      const client = await getClient('master');
+      const client = await getClient("master");
       const { taskUid } = await client.index(index.uid).addDocuments(dataset);
       await client.waitForTask(taskUid);
     });
@@ -52,8 +52,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
           oneTypo: 1,
           twoTypos: 2,
         },
-        disableOnWords: ['title'],
-        disableOnAttributes: ['hello'],
+        disableOnWords: ["title"],
+        disableOnAttributes: ["hello"],
       };
       const task = await client
         .index(index.uid)
@@ -87,8 +87,8 @@ describe.each([{ permission: 'Master' }, { permission: 'Admin' }])(
   },
 );
 
-describe.each([{ permission: 'Search' }])(
-  'Tests on typo tolerance',
+describe.each([{ permission: "Search" }])(
+  "Tests on typo tolerance",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
@@ -98,27 +98,27 @@ describe.each([{ permission: 'Search' }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getTypoTolerance(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update typo tolerance settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateTypoTolerance({}),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset typo tolerance settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetTypoTolerance(),
-      ).rejects.toHaveProperty('cause.code', ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
 );
 
-describe.each([{ permission: 'No' }])(
-  'Tests on typo tolerance',
+describe.each([{ permission: "No" }])(
+  "Tests on typo tolerance",
   ({ permission }) => {
     beforeEach(async () => {
       await clearAllIndexes(config);
@@ -129,7 +129,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).getTypoTolerance(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -139,7 +139,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).updateTypoTolerance({}),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -149,7 +149,7 @@ describe.each([{ permission: 'No' }])(
       await expect(
         client.index(index.uid).resetTypoTolerance(),
       ).rejects.toHaveProperty(
-        'cause.code',
+        "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
       );
     });
@@ -160,7 +160,7 @@ describe.each([
   { host: BAD_HOST, trailing: false },
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
-])('Tests on url construction', ({ host, trailing }) => {
+])("Tests on url construction", ({ host, trailing }) => {
   test(`Test get typo tolerance route`, async () => {
     const route = `indexes/${index.uid}/settings/typo-tolerance`;
     const client = new MeiliSearch({ host });
@@ -168,7 +168,7 @@ describe.each([
     await expect(
       client.index(index.uid).getTypoTolerance(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -180,7 +180,7 @@ describe.each([
     await expect(
       client.index(index.uid).updateTypoTolerance({}),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });
@@ -192,7 +192,7 @@ describe.each([
     await expect(
       client.index(index.uid).resetTypoTolerance(),
     ).rejects.toHaveProperty(
-      'message',
+      "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
   });

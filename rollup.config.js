@@ -1,26 +1,26 @@
-const nodeResolve = require('@rollup/plugin-node-resolve');
-const { resolve } = require('path');
-const commonjs = require('@rollup/plugin-commonjs');
-const json = require('@rollup/plugin-json');
-const typescript = require('rollup-plugin-typescript2');
-const pkg = require('./package.json');
-const { terser } = require('rollup-plugin-terser');
-const { babel } = require('@rollup/plugin-babel');
+const nodeResolve = require("@rollup/plugin-node-resolve");
+const { resolve } = require("path");
+const commonjs = require("@rollup/plugin-commonjs");
+const json = require("@rollup/plugin-json");
+const typescript = require("rollup-plugin-typescript2");
+const pkg = require("./package.json");
+const { terser } = require("rollup-plugin-terser");
+const { babel } = require("@rollup/plugin-babel");
 
 function getOutputFileName(fileName, isProd = false) {
-  return isProd ? fileName.replace(/\.js$/, '.min.js') : fileName;
+  return isProd ? fileName.replace(/\.js$/, ".min.js") : fileName;
 }
 
-const env = process.env.NODE_ENV || 'development';
-const ROOT = resolve(__dirname, '.');
+const env = process.env.NODE_ENV || "development";
+const ROOT = resolve(__dirname, ".");
 
 const PLUGINS = [
   typescript({
     useTsconfigDeclarationDir: true,
     tsconfigOverride: {
       allowJs: false,
-      include: ['src'],
-      exclude: ['tests', 'examples', '*.js', 'scripts'],
+      include: ["src"],
+      exclude: ["tests", "examples", "*.js", "scripts"],
     },
   }),
 ];
@@ -28,80 +28,80 @@ const PLUGINS = [
 module.exports = [
   // browser-friendly UMD build
   {
-    input: 'src/browser.ts', // directory to transpilation of typescript
+    input: "src/browser.ts", // directory to transpilation of typescript
     output: {
-      name: 'window',
+      name: "window",
       extend: true,
       file: getOutputFileName(
         // will add .min. in filename if in production env
         resolve(ROOT, pkg.jsdelivr),
-        env === 'production',
+        env === "production",
       ),
-      format: 'umd',
-      sourcemap: env === 'production', // create sourcemap for error reporting in production mode
+      format: "umd",
+      sourcemap: env === "production", // create sourcemap for error reporting in production mode
     },
     plugins: [
       ...PLUGINS,
       babel({
         babelrc: false,
-        extensions: ['.ts'],
+        extensions: [".ts"],
         presets: [
           [
-            '@babel/preset-env',
+            "@babel/preset-env",
             {
               modules: false,
               targets: {
-                browsers: ['last 2 versions', 'ie >= 11'],
+                browsers: ["last 2 versions", "ie >= 11"],
               },
             },
           ],
         ],
       }),
       nodeResolve({
-        mainFields: ['jsnext', 'main'],
+        mainFields: ["jsnext", "main"],
         preferBuiltins: true,
         browser: true,
       }),
       commonjs({
-        include: ['node_modules/**'],
+        include: ["node_modules/**"],
       }),
       // nodePolyfills
       json(),
-      env === 'production' ? terser() : {}, // will minify the file in production mode
+      env === "production" ? terser() : {}, // will minify the file in production mode
     ],
   },
 
   // ES module (for bundlers) build.
   {
-    input: 'src/index.ts',
+    input: "src/index.ts",
     output: [
       {
         file: getOutputFileName(
           resolve(ROOT, pkg.module),
-          env === 'production',
+          env === "production",
         ),
-        exports: 'named',
-        format: 'es',
-        sourcemap: env === 'production', // create sourcemap for error reporting in production mode
+        exports: "named",
+        format: "es",
+        sourcemap: env === "production", // create sourcemap for error reporting in production mode
       },
     ],
     plugins: [
-      env === 'production' ? terser() : {}, // will minify the file in production mode
+      env === "production" ? terser() : {}, // will minify the file in production mode
       ...PLUGINS,
     ],
   },
   // Common JS build (Node).
   // Compatible only in a nodeJS environment.
   {
-    input: 'src/index.ts',
+    input: "src/index.ts",
     output: {
       file: getOutputFileName(
         // will add .min. in filename if in production env
         resolve(ROOT, pkg.main),
-        env === 'production',
+        env === "production",
       ),
-      exports: 'named',
-      format: 'cjs',
+      exports: "named",
+      format: "cjs",
     },
     plugins: [...PLUGINS],
   },
