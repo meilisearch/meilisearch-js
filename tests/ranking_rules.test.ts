@@ -1,3 +1,4 @@
+import { expect, test, describe, beforeEach, afterAll } from "vitest";
 import { ErrorStatusCode } from "../src/types";
 import { EnqueuedTask } from "../src/enqueued-task";
 import {
@@ -21,8 +22,6 @@ const defaultRankingRules = [
   "sort",
   "exactness",
 ];
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);

@@ -1,3 +1,11 @@
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  test,
+} from "vitest";
 import { ErrorStatusCode, SearchResponse } from "../src/types";
 import { EnqueuedTask } from "../src/enqueued-task";
 import {
@@ -75,8 +83,6 @@ const dataset = [
   },
   { id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: "fantasy" },
 ];
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);

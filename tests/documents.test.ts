@@ -1,3 +1,4 @@
+import { afterAll, expect, test, describe, beforeEach } from "vitest";
 import { ErrorStatusCode, TaskStatus, TaskTypes } from "../src/types";
 import {
   clearAllIndexes,
@@ -18,8 +19,6 @@ const indexPk = {
   uid: "movies_test2",
   primaryKey: "id",
 };
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);
@@ -169,7 +168,7 @@ describe("Documents tests", () => {
         try {
           await client.index(indexPk.uid).getDocuments({ filter: "" });
 
-          fail(
+          throw new Error(
             "getDocuments should have raised an error when the route does not exist",
           );
         } catch (e: any) {
@@ -186,7 +185,7 @@ describe("Documents tests", () => {
         try {
           await client.index(indexPk.uid).getDocuments({ filter: "id = 1" });
 
-          fail(
+          throw new Error(
             "getDocuments should have raised an error when the filter is badly formatted",
           );
         } catch (e: any) {
@@ -660,7 +659,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         try {
           await client.index(indexPk.uid).deleteDocuments({ filter: "" });
 
-          fail(
+          throw new Error(
             "deleteDocuments should have raised an error when the parameters are wrong",
           );
         } catch (e: any) {
@@ -677,7 +676,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         try {
           await client.index(indexPk.uid).deleteDocuments({ filter: "id = 1" });
 
-          fail(
+          throw new Error(
             "deleteDocuments should have raised an error when the route does not exist",
           );
         } catch (e: any) {

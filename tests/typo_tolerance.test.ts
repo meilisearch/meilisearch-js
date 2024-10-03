@@ -1,3 +1,4 @@
+import { afterAll, beforeEach, describe, expect, test } from "vitest";
 import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,
@@ -21,8 +22,6 @@ const defaultTypoTolerance = {
   disableOnWords: [],
   disableOnAttributes: [],
 };
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);

@@ -1,3 +1,4 @@
+import { expect, test, describe, beforeAll, afterAll } from "vitest";
 import {
   clearAllIndexes,
   config,
@@ -99,8 +100,6 @@ describe.each([
     expect(response).toMatchSnapshot();
   });
 });
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);
