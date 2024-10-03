@@ -1,3 +1,11 @@
+import {
+  expect,
+  test,
+  describe,
+  beforeEach,
+  afterAll,
+  beforeAll,
+} from "vitest";
 import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,
@@ -11,8 +19,6 @@ import {
 const index = {
   uid: "movies_test",
 };
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);

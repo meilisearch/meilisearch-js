@@ -10,7 +10,7 @@ if [ "$current_tag" != "$package_json_version" ]; then
   exit 1
 fi
 
-package_version_ts=$(grep "PACKAGE_VERSION =" src/package-version.ts | cut -d "=" -f 2- | tr -d ';' | tr -d " " | tr -d "'")
+package_version_ts=$(grep "PACKAGE_VERSION =" src/package-version.ts | cut -d "=" -f 2- | tr -d ';' | tr -d " " | tr -d '"')
 if [ "$current_tag" != "$package_version_ts" ]; then
   echo "Error: the current tag does not match the version in src/package-version.ts."
   echo "$current_tag vs $package_version_ts"

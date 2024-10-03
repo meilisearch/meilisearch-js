@@ -1,3 +1,4 @@
+import { expect, test, describe, beforeEach, afterAll } from "vitest";
 import MeiliSearch from "../src/browser";
 import { ErrorStatusCode } from "../src/types";
 import {

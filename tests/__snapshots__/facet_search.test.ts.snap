@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Test on POST search Admin key: basic facet value search 1`] = `
+exports[`Test on POST search > Admin key: basic facet value search 1`] = `
 {
   "facetHits": [
     {
@@ -17,7 +17,7 @@ exports[`Test on POST search Admin key: basic facet value search 1`] = `
 }
 `;
 
-exports[`Test on POST search Admin key: facet value search with filter 1`] = `
+exports[`Test on POST search > Admin key: facet value search with filter 1`] = `
 {
   "facetHits": [
     {
@@ -30,75 +30,7 @@ exports[`Test on POST search Admin key: facet value search with filter 1`] = `
 }
 `;
 
-exports[`Test on POST search Admin key: facet value search with no facet query 1`] = `
-{
-  "facetHits": [
-    {
-      "count": 1,
-      "value": "action",
-    },
-    {
-      "count": 2,
-      "value": "adventure",
-    },
-    {
-      "count": 1,
-      "value": "comedy",
-    },
-    {
-      "count": 2,
-      "value": "romance",
-    },
-  ],
-  "facetQuery": null,
-  "processingTimeMs": 0,
-}
-`;
-
-exports[`Test on POST search Admin key: facet value search with search query 1`] = `
-{
-  "facetHits": [
-    {
-      "count": 1,
-      "value": "adventure",
-    },
-  ],
-  "facetQuery": "a",
-  "processingTimeMs": 0,
-}
-`;
-
-exports[`Test on POST search Master key: basic facet value search 1`] = `
-{
-  "facetHits": [
-    {
-      "count": 1,
-      "value": "action",
-    },
-    {
-      "count": 2,
-      "value": "adventure",
-    },
-  ],
-  "facetQuery": "a",
-  "processingTimeMs": 0,
-}
-`;
-
-exports[`Test on POST search Master key: facet value search with filter 1`] = `
-{
-  "facetHits": [
-    {
-      "count": 1,
-      "value": "action",
-    },
-  ],
-  "facetQuery": "a",
-  "processingTimeMs": 0,
-}
-`;
-
-exports[`Test on POST search Master key: facet value search with no facet query 1`] = `
+exports[`Test on POST search > Admin key: facet value search with no facet query 1`] = `
 {
   "facetHits": [
     {
@@ -123,7 +55,7 @@ exports[`Test on POST search Master key: facet value search with no facet query 
 }
 `;
 
-exports[`Test on POST search Master key: facet value search with search query 1`] = `
+exports[`Test on POST search > Admin key: facet value search with search query 1`] = `
 {
   "facetHits": [
     {
@@ -136,7 +68,7 @@ exports[`Test on POST search Master key: facet value search with search query 1`
 }
 `;
 
-exports[`Test on POST search Search key: basic facet value search 1`] = `
+exports[`Test on POST search > Master key: basic facet value search 1`] = `
 {
   "facetHits": [
     {
@@ -153,7 +85,7 @@ exports[`Test on POST search Search key: basic facet value search 1`] = `
 }
 `;
 
-exports[`Test on POST search Search key: facet value search with filter 1`] = `
+exports[`Test on POST search > Master key: facet value search with filter 1`] = `
 {
   "facetHits": [
     {
@@ -166,7 +98,7 @@ exports[`Test on POST search Search key: facet value search with filter 1`] = `
 }
 `;
 
-exports[`Test on POST search Search key: facet value search with no facet query 1`] = `
+exports[`Test on POST search > Master key: facet value search with no facet query 1`] = `
 {
   "facetHits": [
     {
@@ -191,7 +123,75 @@ exports[`Test on POST search Search key: facet value search with no facet query 
 }
 `;
 
-exports[`Test on POST search Search key: facet value search with search query 1`] = `
+exports[`Test on POST search > Master key: facet value search with search query 1`] = `
+{
+  "facetHits": [
+    {
+      "count": 1,
+      "value": "adventure",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search > Search key: basic facet value search 1`] = `
+{
+  "facetHits": [
+    {
+      "count": 1,
+      "value": "action",
+    },
+    {
+      "count": 2,
+      "value": "adventure",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search > Search key: facet value search with filter 1`] = `
+{
+  "facetHits": [
+    {
+      "count": 1,
+      "value": "action",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search > Search key: facet value search with no facet query 1`] = `
+{
+  "facetHits": [
+    {
+      "count": 1,
+      "value": "action",
+    },
+    {
+      "count": 2,
+      "value": "adventure",
+    },
+    {
+      "count": 1,
+      "value": "comedy",
+    },
+    {
+      "count": 2,
+      "value": "romance",
+    },
+  ],
+  "facetQuery": null,
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search > Search key: facet value search with search query 1`] = `
 {
   "facetHits": [
     {

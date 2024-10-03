@@ -1,7 +1,8 @@
 /** This file only purpose is to execute any build related tasks */
 
-const { resolve, normalize } = require("path");
-const { readFileSync, writeFileSync } = require("fs");
+const { resolve, normalize } = require("node:path");
+const { readFileSync, writeFileSync } = require("node:fs");
+
 const pkg = require("../package.json");
 
 const ROOT = resolve(__dirname, "..");

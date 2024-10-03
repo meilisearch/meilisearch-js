@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Test on settings Admin key: Get default settings of an index 1`] = `
+exports[`Test on settings > Admin key: Get default settings of an index 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -48,7 +48,7 @@ exports[`Test on settings Admin key: Get default settings of an index 1`] = `
 }
 `;
 
-exports[`Test on settings Admin key: Get default settings of empty index with primary key 1`] = `
+exports[`Test on settings > Admin key: Get default settings of empty index with primary key 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -96,7 +96,7 @@ exports[`Test on settings Admin key: Get default settings of empty index with pr
 }
 `;
 
-exports[`Test on settings Admin key: Reset embedders settings  1`] = `
+exports[`Test on settings > Admin key: Reset embedders settings  1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -144,7 +144,7 @@ exports[`Test on settings Admin key: Reset embedders settings  1`] = `
 }
 `;
 
-exports[`Test on settings Admin key: Reset settings 1`] = `
+exports[`Test on settings > Admin key: Reset settings 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -192,7 +192,7 @@ exports[`Test on settings Admin key: Reset settings 1`] = `
 }
 `;
 
-exports[`Test on settings Admin key: Reset settings of empty index 1`] = `
+exports[`Test on settings > Admin key: Reset settings of empty index 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -240,7 +240,7 @@ exports[`Test on settings Admin key: Reset settings of empty index 1`] = `
 }
 `;
 
-exports[`Test on settings Admin key: Update embedders settings  1`] = `
+exports[`Test on settings > Admin key: Update embedders settings  1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -296,7 +296,7 @@ exports[`Test on settings Admin key: Update embedders settings  1`] = `
 }
 `;
 
-exports[`Test on settings Admin key: Update searchableAttributes settings on empty index 1`] = `
+exports[`Test on settings > Admin key: Update searchableAttributes settings on empty index 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -344,7 +344,7 @@ exports[`Test on settings Admin key: Update searchableAttributes settings on emp
 }
 `;
 
-exports[`Test on settings Admin key: Update searchableAttributes settings on empty index with a primary key 1`] = `
+exports[`Test on settings > Admin key: Update searchableAttributes settings on empty index with a primary key 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -392,7 +392,7 @@ exports[`Test on settings Admin key: Update searchableAttributes settings on emp
 }
 `;
 
-exports[`Test on settings Admin key: Update settings 1`] = `
+exports[`Test on settings > Admin key: Update settings 1`] = `
 {
   "dictionary": [
     "J. K.",
@@ -461,7 +461,7 @@ exports[`Test on settings Admin key: Update settings 1`] = `
 }
 `;
 
-exports[`Test on settings Admin key: Update settings on empty index with primary key 1`] = `
+exports[`Test on settings > Admin key: Update settings on empty index with primary key 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -507,7 +507,7 @@ exports[`Test on settings Admin key: Update settings on empty index with primary
 }
 `;
 
-exports[`Test on settings Admin key: Update settings with all null values 1`] = `
+exports[`Test on settings > Admin key: Update settings with all null values 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -555,7 +555,7 @@ exports[`Test on settings Admin key: Update settings with all null values 1`] = 
 }
 `;
 
-exports[`Test on settings Master key: Get default settings of an index 1`] = `
+exports[`Test on settings > Master key: Get default settings of an index 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -603,7 +603,7 @@ exports[`Test on settings Master key: Get default settings of an index 1`] = `
 }
 `;
 
-exports[`Test on settings Master key: Get default settings of empty index with primary key 1`] = `
+exports[`Test on settings > Master key: Get default settings of empty index with primary key 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -651,7 +651,7 @@ exports[`Test on settings Master key: Get default settings of empty index with p
 }
 `;
 
-exports[`Test on settings Master key: Reset embedders settings  1`] = `
+exports[`Test on settings > Master key: Reset embedders settings  1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -699,7 +699,7 @@ exports[`Test on settings Master key: Reset embedders settings  1`] = `
 }
 `;
 
-exports[`Test on settings Master key: Reset settings 1`] = `
+exports[`Test on settings > Master key: Reset settings 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -747,7 +747,7 @@ exports[`Test on settings Master key: Reset settings 1`] = `
 }
 `;
 
-exports[`Test on settings Master key: Reset settings of empty index 1`] = `
+exports[`Test on settings > Master key: Reset settings of empty index 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -795,7 +795,7 @@ exports[`Test on settings Master key: Reset settings of empty index 1`] = `
 }
 `;
 
-exports[`Test on settings Master key: Update embedders settings  1`] = `
+exports[`Test on settings > Master key: Update embedders settings  1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -851,7 +851,7 @@ exports[`Test on settings Master key: Update embedders settings  1`] = `
 }
 `;
 
-exports[`Test on settings Master key: Update searchableAttributes settings on empty index 1`] = `
+exports[`Test on settings > Master key: Update searchableAttributes settings on empty index 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -899,7 +899,7 @@ exports[`Test on settings Master key: Update searchableAttributes settings on em
 }
 `;
 
-exports[`Test on settings Master key: Update searchableAttributes settings on empty index with a primary key 1`] = `
+exports[`Test on settings > Master key: Update searchableAttributes settings on empty index with a primary key 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -947,7 +947,7 @@ exports[`Test on settings Master key: Update searchableAttributes settings on em
 }
 `;
 
-exports[`Test on settings Master key: Update settings 1`] = `
+exports[`Test on settings > Master key: Update settings 1`] = `
 {
   "dictionary": [
     "J. K.",
@@ -1016,7 +1016,7 @@ exports[`Test on settings Master key: Update settings 1`] = `
 }
 `;
 
-exports[`Test on settings Master key: Update settings on empty index with primary key 1`] = `
+exports[`Test on settings > Master key: Update settings on empty index with primary key 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [
@@ -1062,7 +1062,7 @@ exports[`Test on settings Master key: Update settings on empty index with primar
 }
 `;
 
-exports[`Test on settings Master key: Update settings with all null values 1`] = `
+exports[`Test on settings > Master key: Update settings with all null values 1`] = `
 {
   "dictionary": [],
   "displayedAttributes": [

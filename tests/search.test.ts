@@ -1,3 +1,11 @@
+import {
+  expect,
+  test,
+  describe,
+  beforeEach,
+  afterAll,
+  beforeAll,
+} from "vitest";
 import { ErrorStatusCode, MatchingStrategies } from "../src/types";
 import { EnqueuedTask } from "../src/enqueued-task";
 import {
@@ -12,6 +20,7 @@ import {
 } from "./utils/meilisearch-test-utils";
 
 if (typeof fetch === "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("cross-fetch/polyfill");
 }
 
@@ -1291,8 +1300,6 @@ describe.each([
     );
   });
 });
-
-jest.setTimeout(100 * 1000);
 
 afterAll(() => {
   return clearAllIndexes(config);

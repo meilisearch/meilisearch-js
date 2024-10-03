@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Test on POST search Admin key: search on attributesToSearchOn set to null 1`] = `
+exports[`Test on POST search > Admin key: search on attributesToSearchOn set to null 1`] = `
 {
   "estimatedTotalHits": 2,
   "hits": [
@@ -26,7 +26,7 @@ exports[`Test on POST search Admin key: search on attributesToSearchOn set to nu
 }
 `;
 
-exports[`Test on POST search Master key: search on attributesToSearchOn set to null 1`] = `
+exports[`Test on POST search > Master key: search on attributesToSearchOn set to null 1`] = `
 {
   "estimatedTotalHits": 2,
   "hits": [
@@ -52,7 +52,7 @@ exports[`Test on POST search Master key: search on attributesToSearchOn set to n
 }
 `;
 
-exports[`Test on POST search Search key: search on attributesToSearchOn set to null 1`] = `
+exports[`Test on POST search > Search key: search on attributesToSearchOn set to null 1`] = `
 {
   "estimatedTotalHits": 2,
   "hits": [
