@@ -4,7 +4,7 @@ const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
 const typescript = require("rollup-plugin-typescript2");
 const pkg = require("./package.json");
-const { terser } = require("rollup-plugin-terser");
+const terser = require("@rollup/plugin-terser");
 const { babel } = require("@rollup/plugin-babel");
 
 function getOutputFileName(fileName, isProd = false) {
