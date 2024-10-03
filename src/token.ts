@@ -19,7 +19,7 @@ async function sign(
   encodedHeader: string,
   encodedPayload: string,
 ) {
-  const { createHmac } = await import("crypto");
+  const { createHmac } = await import("node:crypto");
 
   return createHmac("sha256", apiKey)
     .update(`${encodedHeader}.${encodedPayload}`)

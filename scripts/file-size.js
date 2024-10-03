@@ -1,6 +1,6 @@
-const { basename, normalize } = require("path");
-const { readFile: readFileCb } = require("fs");
-const { promisify } = require("util");
+const { basename, normalize } = require("node:path");
+const { readFile: readFileCb } = require("node:fs");
+const { promisify } = require("node:util");
 const readFile = promisify(readFileCb);
 
 const kolor = require("kleur");

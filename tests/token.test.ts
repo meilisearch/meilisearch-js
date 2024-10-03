@@ -8,7 +8,7 @@ import {
   config,
   HOST,
 } from "./utils/meilisearch-test-utils";
-import { createHmac } from "crypto";
+import { createHmac } from "node:crypto";
 import MeiliSearch from "../src";
 
 const HASH_ALGORITHM = "HS256";
