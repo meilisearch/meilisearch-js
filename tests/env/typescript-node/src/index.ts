@@ -9,6 +9,7 @@ import {
   Hit,
   SearchParams,
 } from '../../../../'
+import { generateTenantToken } from '../../../../src/token'
 
 const config = {
   host: 'http://127.0.0.1:7700',
@@ -62,7 +63,7 @@ const indexUid = "movies"
     console.log(hit?._formatted?.title)
   })
 
-  console.log(await client.generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', []))
+  console.log(await generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', [], { apiKey: config.apiKey }))
 
   await index.delete()
 })()
