@@ -16,8 +16,6 @@ import {
   Stats,
   Version,
   ErrorStatusCode,
-  TokenSearchRules,
-  TokenOptions,
   TasksQuery,
   WaitOptions,
   KeyUpdate,
