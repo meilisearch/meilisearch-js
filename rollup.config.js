@@ -25,10 +25,14 @@ const PLUGINS = [
   }),
 ];
 
+const INDEX_INPUT = "src/index.ts";
+const TOKEN_INPUT = "src/token.ts";
+const TOKEN_EXPORTS = pkg.exports["./token"];
+
 module.exports = [
   // browser-friendly UMD build
   {
-    input: "src/browser.ts", // directory to transpilation of typescript
+    input: INDEX_INPUT,
     output: {
       name: "window",
       extend: true,
@@ -71,15 +75,13 @@ module.exports = [
     ],
   },
 
-  // ES module (for bundlers) build.
+  // Index
+  // ES module build.
   {
-    input: "src/index.ts",
+    input: INDEX_INPUT,
     output: [
       {
-        file: getOutputFileName(
-          resolve(ROOT, pkg.module),
-          env === "production",
-        ),
+        file: pkg.module,
         exports: "named",
         format: "es",
         sourcemap: env === "production", // create sourcemap for error reporting in production mode
@@ -93,16 +95,39 @@ module.exports = [
   // Common JS build (Node).
   // Compatible only in a nodeJS environment.
   {
-    input: "src/index.ts",
+    input: INDEX_INPUT,
     output: {
-      file: getOutputFileName(
-        // will add .min. in filename if in production env
-        resolve(ROOT, pkg.main),
-        env === "production",
-      ),
+      file: pkg.main,
       exports: "named",
       format: "cjs",
     },
     plugins: [...PLUGINS],
+  },
+
+  // Token
+  // ES module build.
+  {
+    input: TOKEN_INPUT,
+    output: [
+      {
+        file: TOKEN_EXPORTS.import,
+        exports: "named",
+        format: "es",
+        sourcemap: env === "production", // create sourcemap for error reporting in production mode
+      },
+    ],
+    plugins: PLUGINS,
+  },
+  // Common JS build (Node).
+  // Compatible only in a nodeJS environment.
+  {
+    input: TOKEN_INPUT,
+    output: {
+      file: TOKEN_EXPORTS.require,
+      exports: "named",
+      format: "cjs",
+      sourcemap: env === "production", // create sourcemap for error reporting in production mode
+    },
+    plugins: PLUGINS,
   },
 ];

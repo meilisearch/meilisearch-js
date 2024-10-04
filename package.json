@@ -30,6 +30,12 @@
       "import": "./dist/bundles/meilisearch.esm.js",
       "require": "./dist/bundles/meilisearch.cjs.js",
       "default": "./dist/bundles/meilisearch.umd.js"
+    },
+    "./token": {
+      "types": "./dist/types/token.d.ts",
+      "import": "./dist/bundles/token.mjs",
+      "require": "./dist/bundles/token.cjs",
+      "default": "./dist/bundles/token.cjs"
     }
   },
   "sideEffects": false,
