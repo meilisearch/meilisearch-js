@@ -27,10 +27,12 @@ const PLUGINS = [
 
 const INDEX_INPUT = "src/index.ts";
 const TOKEN_INPUT = "src/token.ts";
+
+const INDEX_EXPORTS = pkg.exports["."];
 const TOKEN_EXPORTS = pkg.exports["./token"];
 
 module.exports = [
-  // browser-friendly UMD build
+  // Index
   {
     input: INDEX_INPUT,
     output: {
@@ -38,7 +40,7 @@ module.exports = [
       extend: true,
       file: getOutputFileName(
         // will add .min. in filename if in production env
-        resolve(ROOT, pkg.jsdelivr),
+        resolve(ROOT, INDEX_EXPORTS.browser),
         env === "production",
       ),
       format: "umd",
@@ -71,41 +73,33 @@ module.exports = [
       }),
       // nodePolyfills
       json(),
-      env === "production" ? terser() : {}, // will minify the file in production mode
+      env === "production" ? terser() : {},
     ],
   },
-
-  // Index
-  // ES module build.
   {
     input: INDEX_INPUT,
     output: [
       {
-        file: pkg.module,
+        file: INDEX_EXPORTS.import,
         exports: "named",
         format: "es",
-        sourcemap: env === "production", // create sourcemap for error reporting in production mode
+        sourcemap: env === "production",
       },
     ],
-    plugins: [
-      env === "production" ? terser() : {}, // will minify the file in production mode
-      ...PLUGINS,
-    ],
+    plugins: PLUGINS,
   },
-  // Common JS build (Node).
-  // Compatible only in a nodeJS environment.
   {
     input: INDEX_INPUT,
     output: {
-      file: pkg.main,
+      file: INDEX_EXPORTS.require,
       exports: "named",
       format: "cjs",
+      sourcemap: env === "production",
     },
-    plugins: [...PLUGINS],
+    plugins: PLUGINS,
   },
 
   // Token
-  // ES module build.
   {
     input: TOKEN_INPUT,
     output: [
@@ -113,13 +107,11 @@ module.exports = [
         file: TOKEN_EXPORTS.import,
         exports: "named",
         format: "es",
-        sourcemap: env === "production", // create sourcemap for error reporting in production mode
+        sourcemap: env === "production",
       },
     ],
     plugins: PLUGINS,
   },
-  // Common JS build (Node).
-  // Compatible only in a nodeJS environment.
   {
     input: TOKEN_INPUT,
     output: {
