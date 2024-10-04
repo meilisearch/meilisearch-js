@@ -85,10 +85,7 @@ module.exports = [
         sourcemap: env === "production", // create sourcemap for error reporting in production mode
       },
     ],
-    plugins: [
-      env === "production" ? terser() : {}, // will minify the file in production mode
-      ...PLUGINS,
-    ],
+    plugins: PLUGINS,
   },
   // Common JS build (Node).
   // Compatible only in a nodeJS environment.
@@ -102,7 +99,8 @@ module.exports = [
       ),
       exports: "named",
       format: "cjs",
+      sourcemap: env === "production", // create sourcemap for error reporting in production mode
     },
-    plugins: [...PLUGINS],
+    plugins: PLUGINS,
   },
 ];
