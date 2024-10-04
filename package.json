@@ -16,9 +16,8 @@
     "qdequele <quentin@meilisearch.com>"
   ],
   "license": "MIT",
-  "main": "./dist/bundles/meilisearch.cjs.js",
-  "module": "./dist/bundles/meilisearch.esm.js",
-  "browser": "./dist/bundles/meilisearch.umd.js",
+  "main": "./dist/bundles/meilisearch.cjs",
+  "module": "./dist/bundles/meilisearch.mjs",
   "typings": "./dist/types/index.d.ts",
   "types": "./dist/types/index.d.ts",
   "jsdelivr": "./dist/bundles/meilisearch.umd.js",
@@ -27,8 +26,8 @@
     ".": {
       "types": "./dist/types/index.d.ts",
       "browser": "./dist/bundles/meilisearch.umd.js",
-      "import": "./dist/bundles/meilisearch.esm.js",
-      "require": "./dist/bundles/meilisearch.cjs.js",
+      "import": "./dist/bundles/meilisearch.mjs",
+      "require": "./dist/bundles/meilisearch.cjs",
       "default": "./dist/bundles/meilisearch.umd.js"
     }
   },
@@ -56,7 +55,7 @@
     "test:env:nodejs": "yarn build && node tests/env/node/index.js && node tests/env/node/getting_started.js",
     "test:env:esm": "yarn --cwd tests/env/esm && yarn --cwd tests/env/esm start",
     "test:env:nitro-app": "yarn build && yarn --cwd tests/env/nitro-app test",
-    "size": "node scripts/file-size ./dist/bundles/meilisearch.esm.min.js ./dist/bundles/meilisearch.umd.min.js",
+    "size": "node scripts/file-size ./dist/bundles/meilisearch.mjs ./dist/bundles/meilisearch.umd.min.js",
     "style": "yarn fmt && yarn lint",
     "style:fix": "yarn fmt:fix && yarn lint:fix",
     "fmt": "prettier -c ./**/*.{js,ts}",
