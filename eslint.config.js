@@ -1,19 +1,19 @@
-const eslint = require("@eslint/js");
-const tseslint = require("typescript-eslint");
-const tsdoc = require("eslint-plugin-tsdoc");
-const vitest = require("@vitest/eslint-plugin");
-const globals = require("globals");
-const prettier = require("eslint-config-prettier");
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import tsdoc from "eslint-plugin-tsdoc";
+import vitest from "@vitest/eslint-plugin";
+import globals from "globals";
+import prettier from "eslint-config-prettier";
 
 /** @type {import("eslint").Linter.Config[]} */
-module.exports = [
+export default [
   {
     ignores: ["dist/", "tests/env/", "coverage/", "playgrounds/", "docs/"],
   },
   // Standard linting for js files
   {
     files: ["**/*.js"],
-    languageOptions: { sourceType: "script", globals: globals.node },
+    languageOptions: { sourceType: "module", globals: globals.node },
     plugins: { eslint },
     rules: eslint.configs.recommended.rules,
   },
@@ -26,7 +26,7 @@ module.exports = [
       globals: { ...config.languageOptions?.globals, ...globals.node },
       parserOptions: {
         ...config.languageOptions?.parserOptions,
-        project: "tsconfig.eslint.json",
+        project: "tsconfig.json",
       },
     },
     plugins: { ...config.plugins, tsdoc },

@@ -1,6 +1,7 @@
-import { TokenSearchRules, TokenOptions } from "./types";
-import { MeiliSearchError } from "./errors";
-import { validateUuid4 } from "./utils";
+import type { TokenSearchRules, TokenOptions } from "./types/index.js";
+import { createHmac } from "node:crypto";
+import { MeiliSearchError } from "./errors/index.js";
+import { validateUuid4 } from "./utils.js";
 
 function encode64(data: any) {
   return Buffer.from(JSON.stringify(data)).toString("base64");
@@ -14,13 +15,11 @@ function encode64(data: any) {
  * @param encodedPayload - Payload of the token in base64.
  * @returns The signature of the token in base64.
  */
-async function sign(
+function sign(
   apiKey: string,
   encodedHeader: string,
   encodedPayload: string,
 ) {
-  const { createHmac } = await import("node:crypto");
-
   return createHmac("sha256", apiKey)
     .update(`${encodedHeader}.${encodedPayload}`)
     .digest("base64")
@@ -127,11 +126,11 @@ function createPayload({
  * @param options - Token options to customize some aspect of the token.
  * @returns The token in JWT format.
  */
-export async function generateTenantToken(
+export function generateTenantToken(
   apiKeyUid: string,
   searchRules: TokenSearchRules,
   { apiKey, expiresAt }: TokenOptions,
-): Promise<string> {
+): string {
   validateTokenParameters({ apiKeyUid, expiresAt, searchRules });
 
   const encodedHeader = createHeader();
@@ -140,7 +139,7 @@ export async function generateTenantToken(
     apiKeyUid,
     expiresAt,
   });
-  const signature = await sign(apiKey, encodedHeader, encodedPayload);
+  const signature = sign(apiKey, encodedHeader, encodedPayload);
 
   return `${encodedHeader}.${encodedPayload}.${signature}`;
 }

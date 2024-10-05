@@ -1,4 +1,5 @@
 import { afterAll, beforeEach, describe, expect, test } from "vitest";
+import { createHmac } from "node:crypto";
 import {
   getClient,
   decode64,
@@ -7,10 +8,9 @@ import {
   clearAllIndexes,
   config,
   HOST,
-} from "./utils/meilisearch-test-utils";
-import { createHmac } from "node:crypto";
-import { generateTenantToken } from "../src/token";
-import MeiliSearch from "../src";
+} from "./utils/meilisearch-test-utils.js";
+import { generateTenantToken } from "../src/token.js";
+import { MeiliSearch } from "../src/index.js";
 
 const HASH_ALGORITHM = "HS256";
 const TOKEN_TYP = "JWT";
@@ -45,7 +45,7 @@ describe.each([{ permission: "Admin" }])(
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const token = await generateTenantToken(uid, [], { apiKey });
+      const token = generateTenantToken(uid, [], { apiKey });
       const [header64] = token.split(".");
 
       // header
@@ -58,7 +58,7 @@ describe.each([{ permission: "Admin" }])(
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const token = await generateTenantToken(uid, [], { apiKey });
+      const token = generateTenantToken(uid, [], { apiKey });
       const [header64, payload64, signature64] = token.split(".");
 
       // signature
@@ -76,7 +76,7 @@ describe.each([{ permission: "Admin" }])(
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const token = await generateTenantToken(uid, [], { apiKey });
+      const token = generateTenantToken(uid, [], { apiKey });
       const [_, payload64] = token.split(".");
 
       // payload
@@ -91,7 +91,7 @@ describe.each([{ permission: "Admin" }])(
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const token = await generateTenantToken(uid, [UID], { apiKey });
+      const token = generateTenantToken(uid, [UID], { apiKey });
       const [_, payload64] = token.split(".");
 
       // payload
@@ -106,7 +106,7 @@ describe.each([{ permission: "Admin" }])(
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const token = await generateTenantToken(uid, { [UID]: {} }, { apiKey });
+      const token = generateTenantToken(uid, { [UID]: {} }, { apiKey });
       const [_, payload64] = token.split(".");
 
       // payload
@@ -121,7 +121,7 @@ describe.each([{ permission: "Admin" }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
 
-      const token = await generateTenantToken(uid, ["*"], { apiKey });
+      const token = generateTenantToken(uid, ["*"], { apiKey });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
@@ -139,7 +139,7 @@ describe.each([{ permission: "Admin" }])(
         actions: ["search"],
         indexes: [UID],
       });
-      const token = await generateTenantToken(uid, ["*"], {
+      const token = generateTenantToken(uid, ["*"], {
         apiKey: key,
       });
 
@@ -154,7 +154,7 @@ describe.each([{ permission: "Admin" }])(
       const date = new Date("December 17, 4000 03:24:00");
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const token = await generateTenantToken(uid, ["*"], {
+      const token = generateTenantToken(uid, ["*"], {
         apiKey,
         expiresAt: date,
       });
@@ -187,7 +187,7 @@ describe.each([{ permission: "Admin" }])(
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const token = await generateTenantToken(uid, { [UID]: null }, { apiKey });
+      const token = generateTenantToken(uid, { [UID]: null }, { apiKey });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
@@ -207,7 +207,7 @@ describe.each([{ permission: "Admin" }])(
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const token = await generateTenantToken(
+      const token = generateTenantToken(
         uid,
         { [UID]: { filter: "id = 2" } },
         { apiKey },
@@ -225,7 +225,7 @@ describe.each([{ permission: "Admin" }])(
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const token = await generateTenantToken(uid, [], { apiKey });
+      const token = generateTenantToken(uid, [], { apiKey });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
@@ -239,7 +239,7 @@ describe.each([{ permission: "Admin" }])(
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const token = await generateTenantToken(uid, { misc: null }, { apiKey });
+      const token = generateTenantToken(uid, { misc: null }, { apiKey });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 

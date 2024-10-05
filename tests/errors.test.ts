@@ -1,11 +1,11 @@
 import { expect, test, describe, beforeEach, vi } from "vitest";
-import { MeiliSearch } from "./utils/meilisearch-test-utils";
+import { MeiliSearch } from "./utils/meilisearch-test-utils.js";
 import {
   MeiliSearchError,
   MeiliSearchApiError,
   MeiliSearchRequestError,
   MeiliSearchTimeOutError,
-} from "../src/errors";
+} from "../src/errors/index.js";
 
 const mockedFetch = vi.fn();
 globalThis.fetch = mockedFetch;
@@ -21,7 +21,7 @@ describe("Test on updates", () => {
     const client = new MeiliSearch({ host: "http://localhost:9345" });
     try {
       await client.health();
-    } catch (error) {
+    } catch (error: any) {
       expect(error.name).toEqual("MeiliSearchRequestError");
     }
   });

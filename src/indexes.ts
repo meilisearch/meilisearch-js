@@ -12,8 +12,8 @@ import {
   MeiliSearchRequestError,
   versionErrorHintMessage,
   MeiliSearchApiError,
-} from "./errors";
-import {
+} from "./errors/index.js";
+import type {
   Config,
   SearchResponse,
   SearchParams,
@@ -56,11 +56,11 @@ import {
   SearchSimilarDocumentsParams,
   LocalizedAttributes,
   UpdateDocumentsByFunctionOptions,
-} from "./types";
-import { removeUndefinedFromObject } from "./utils";
-import { HttpRequests } from "./http-requests";
-import { Task, TaskClient } from "./task";
-import { EnqueuedTask } from "./enqueued-task";
+} from "./types/index.js";
+import { removeUndefinedFromObject } from "./utils.js";
+import { HttpRequests } from "./http-requests.js";
+import { Task, TaskClient } from "./task.js";
+import { EnqueuedTask } from "./enqueued-task.js";
 
 class Index<T extends Record<string, any> = Record<string, any>> {
   uid: string;

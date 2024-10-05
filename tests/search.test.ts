@@ -6,8 +6,8 @@ import {
   afterAll,
   beforeAll,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types";
-import { EnqueuedTask } from "../src/enqueued-task";
+import { ErrorStatusCode, MatchingStrategies } from "../src/types/index.js";
+import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,
   config,
@@ -17,7 +17,7 @@ import {
   datasetWithNests,
   HOST,
   getKey,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 if (typeof fetch === "undefined") {
   // eslint-disable-next-line @typescript-eslint/no-require-imports

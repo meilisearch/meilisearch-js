@@ -5,8 +5,8 @@
  * Copyright: 2019, MeiliSearch
  */
 
-import { Index } from "./indexes";
-import {
+import { Index } from "./indexes.js";
+import type {
   KeyCreation,
   Config,
   IndexOptions,
@@ -15,7 +15,6 @@ import {
   Health,
   Stats,
   Version,
-  ErrorStatusCode,
   TasksQuery,
   WaitOptions,
   KeyUpdate,
@@ -31,10 +30,11 @@ import {
   MultiSearchParams,
   FederatedMultiSearchParams,
   MultiSearchResponseOrSearchResponse,
-} from "./types";
-import { HttpRequests } from "./http-requests";
-import { TaskClient, Task } from "./task";
-import { EnqueuedTask } from "./enqueued-task";
+} from "./types/index.js";
+import { ErrorStatusCode } from "./types/index.js";
+import { HttpRequests } from "./http-requests.js";
+import { TaskClient, Task } from "./task.js";
+import { EnqueuedTask } from "./enqueued-task.js";
 
 export class MeiliSearch {
   config: Config;
