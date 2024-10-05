@@ -1,5 +1,5 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
-import { ErrorStatusCode, TaskStatus, TaskTypes } from "../src/types";
+import { ErrorStatusCode, TaskStatus, TaskTypes } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -7,10 +7,10 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-  Book,
+  type Book,
   getKey,
   HOST,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const indexNoPk = {
   uid: "movies_test",
