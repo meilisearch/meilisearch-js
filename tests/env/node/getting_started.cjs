@@ -1,4 +1,4 @@
-const { MeiliSearch } = require('../../../dist/bundles/meilisearch.umd.js')
+const { MeiliSearch } = require('../../../dist/bundles/index.cjs')
 
 ;(async () => {
   const client = new MeiliSearch({
