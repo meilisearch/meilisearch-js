@@ -1,14 +1,11 @@
-
-// @ts-ignore
 import {
-  // @ts-ignore
   MeiliSearch,
   IndexObject,
   SearchResponse,
   Hits,
   Hit,
   SearchParams,
-} from '../../../../'
+} from '../../../../src'
 import { generateTenantToken } from '../../../../src/token'
 
 const config = {
