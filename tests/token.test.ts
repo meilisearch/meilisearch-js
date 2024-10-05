@@ -176,9 +176,9 @@ describe.each([{ permission: "Admin" }])(
       const { uid } = await client.getKey(apiKey);
       const date = new Date("December 17, 2000 03:24:00");
 
-      await expect(
+      expect(() =>
         generateTenantToken(uid, ["*"], { apiKey, expiresAt: date }),
-      ).rejects.toThrow(
+      ).toThrowError(
         `Meilisearch: The expiresAt field must be a date in the future.`,
       );
     });
@@ -255,9 +255,9 @@ describe.each([{ permission: "Admin" }])(
       const { uid } = await client.getKey(apiKey);
       const date = new Date("December 17, 2000 03:24:00");
 
-      await expect(
+      expect(() =>
         generateTenantToken(uid, {}, { apiKey, expiresAt: date }),
-      ).rejects.toThrow(
+      ).toThrowError(
         `Meilisearch: The expiresAt field must be a date in the future.`,
       );
     });
