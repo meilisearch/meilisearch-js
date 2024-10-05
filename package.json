@@ -49,7 +49,7 @@
     "test": "vitest run --coverage",
     "types:watch": "nodemon --config nodemon.json",
     "types": "yarn tsc",
-    "test:env:browser": "yarn build && yarn --cwd tests/env/express && yarn --cwd tests/env/express test",
+    "test:env:browser": "node scripts/copy-umd-file.js -to ./tests/env/express/public && yarn build && yarn --cwd tests/env/express && yarn --cwd tests/env/express test",
     "test:watch": "vitest watch",
     "test:coverage": "yarn test",
     "test:ci": "yarn test",

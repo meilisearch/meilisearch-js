@@ -5,7 +5,8 @@
     "noEmitOnError": true,
     "moduleResolution": "node",
     "module": "commonjs",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "verbatimModuleSyntax": false
   },
   "include": ["src/index.ts"]
 }

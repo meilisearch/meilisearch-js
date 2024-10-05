@@ -14,13 +14,13 @@
 </body>
 
 </html>
-<script src="../../../../dist/bundles/meilisearch.umd.js"></script>
+<script src="./index.umd.min.js"></script>
 <script>
-  ; (async () => {
+  (async () => {
     let content = ''
     let searchDiv = undefined
-    // also works with window.MeiliSearch
-    const client = new MeiliSearch({
+    // also works with window.meilisearch
+    const client = new meilisearch.MeiliSearch({
       host: 'http://127.0.0.1:7700',
       apiKey: 'masterKey',
     })
@@ -54,6 +54,4 @@
     const deleteTask = await client.index(UID).delete()
     await client.waitForTask(deleteTask.taskUid)
   })()
-
-
 </script>
