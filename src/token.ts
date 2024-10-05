@@ -15,11 +15,7 @@ function encode64(data: any) {
  * @param encodedPayload - Payload of the token in base64.
  * @returns The signature of the token in base64.
  */
-function sign(
-  apiKey: string,
-  encodedHeader: string,
-  encodedPayload: string,
-) {
+function sign(apiKey: string, encodedHeader: string, encodedPayload: string) {
   return createHmac("sha256", apiKey)
     .update(`${encodedHeader}.${encodedPayload}`)
     .digest("base64")

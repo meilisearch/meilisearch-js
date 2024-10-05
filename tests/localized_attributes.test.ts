@@ -6,7 +6,10 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode, type LocalizedAttributes } from "../src/types/index.js";
+import {
+  ErrorStatusCode,
+  type LocalizedAttributes,
+} from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
