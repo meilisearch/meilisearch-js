@@ -21,5 +21,5 @@ To try it out you just need to execute the script that you want to try out.
 
 For example:
 ```
-node search_example.js
+node search_example.cjs
 ```
