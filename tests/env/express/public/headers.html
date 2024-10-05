@@ -13,10 +13,10 @@
 </body>
 
 </html>
-<script src="../../../../dist/bundles/meilisearch.umd.js"></script>
+<script src="./index.umd.min.js"></script>
 <script>
   ; (async () => {
-    const client = new MeiliSearch({ host: "http://localhost:7700", apiKey: "masterKey" })
+    const client = new meilisearch.MeiliSearch({ host: "http://localhost:7700", apiKey: "masterKey" })
     const UID = "headers"
     const errorDiv = document.createElement("div");
     errorDiv.setAttribute("id", "error");
