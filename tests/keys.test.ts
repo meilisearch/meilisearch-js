@@ -1,5 +1,5 @@
 import { expect, test, describe, beforeEach, afterAll } from "vitest";
-import {MeiliSearch} from "../src/index.js";
+import { MeiliSearch } from "../src/index.js";
 import { ErrorStatusCode } from "../src/types/index.js";
 import {
   clearAllIndexes,
