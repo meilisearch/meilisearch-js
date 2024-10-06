@@ -1,5 +1,5 @@
-const { MeiliSearch } = require('../../../dist/bundles/index.cjs')
-const { generateTenantToken } = require('../../../dist/bundles/token.cjs')
+const { MeiliSearch } = require('../../../dist/cjs/index.cjs')
+const { generateTenantToken } = require('../../../dist/cjs/token.cjs')
 
 const CJStest = new MeiliSearch({ host:'http://localhost:7700', apiKey: 'masterKey' })
 
