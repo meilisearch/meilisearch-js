@@ -1,6 +1,7 @@
-import { Config, TokenSearchRules, TokenOptions } from "./types";
-import { MeiliSearchError } from "./errors";
-import { validateUuid4 } from "./utils";
+import type { TokenSearchRules, TokenOptions } from "./types/types.js";
+import { createHmac } from "node:crypto";
+import { MeiliSearchError } from "./errors/index.js";
+import { validateUuid4 } from "./utils.js";
 
 function encode64(data: any) {
   return Buffer.from(JSON.stringify(data)).toString("base64");
@@ -14,13 +15,7 @@ function encode64(data: any) {
  * @param encodedPayload - Payload of the token in base64.
  * @returns The signature of the token in base64.
  */
-async function sign(
-  apiKey: string,
-  encodedHeader: string,
-  encodedPayload: string,
-) {
-  const { createHmac } = await import("node:crypto");
-
+function sign(apiKey: string, encodedHeader: string, encodedPayload: string) {
   return createHmac("sha256", apiKey)
     .update(`${encodedHeader}.${encodedPayload}`)
     .digest("base64")
@@ -51,14 +46,15 @@ function createHeader() {
  * @param uid - The uid of the api key used as issuer of the token.
  * @param expiresAt - Date at which the token expires.
  */
-function validateTokenParameters(tokenParams: {
+function validateTokenParameters({
+  searchRules,
+  apiKeyUid,
+  expiresAt,
+}: {
   searchRules: TokenSearchRules;
-  uid: string;
-  apiKey: string;
+  apiKeyUid: string;
   expiresAt?: Date;
 }) {
-  const { searchRules, uid, apiKey, expiresAt } = tokenParams;
-
   if (expiresAt) {
     if (!(expiresAt instanceof Date)) {
       throw new MeiliSearchError(
@@ -79,19 +75,13 @@ function validateTokenParameters(tokenParams: {
     }
   }
 
-  if (!apiKey || typeof apiKey !== "string") {
-    throw new MeiliSearchError(
-      `Meilisearch: The API key used for the token generation must exist and be of type string.`,
-    );
-  }
-
-  if (!uid || typeof uid !== "string") {
+  if (!apiKeyUid || typeof apiKeyUid !== "string") {
     throw new MeiliSearchError(
       `Meilisearch: The uid of the api key used for the token generation must exist, be of type string and comply to the uuid4 format.`,
     );
   }
 
-  if (!validateUuid4(uid)) {
+  if (!validateUuid4(apiKeyUid)) {
     throw new MeiliSearchError(
       `Meilisearch: The uid of your key is not a valid uuid4. To find out the uid of your key use getKey().`,
     );
@@ -106,53 +96,46 @@ function validateTokenParameters(tokenParams: {
  * @param expiresAt - Date at which the token expires.
  * @returns The payload encoded in base64.
  */
-function createPayload(payloadParams: {
+function createPayload({
+  searchRules,
+  apiKeyUid,
+  expiresAt,
+}: {
   searchRules: TokenSearchRules;
-  uid: string;
+  apiKeyUid: string;
   expiresAt?: Date;
 }): string {
-  const { searchRules, uid, expiresAt } = payloadParams;
-
   const payload = {
     searchRules,
-    apiKeyUid: uid,
+    apiKeyUid,
     exp: expiresAt ? Math.floor(expiresAt.getTime() / 1000) : undefined,
   };
 
   return encode64(payload).replace(/=/g, "");
 }
 
-class Token {
-  config: Config;
+/**
+ * Generate a tenant token
+ *
+ * @param apiKeyUid - The uid of the api key used as issuer of the token.
+ * @param searchRules - Search rules that are applied to every search.
+ * @param options - Token options to customize some aspect of the token.
+ * @returns The token in JWT format.
+ */
+export function generateTenantToken(
+  apiKeyUid: string,
+  searchRules: TokenSearchRules,
+  { apiKey, expiresAt }: TokenOptions,
+): string {
+  validateTokenParameters({ apiKeyUid, expiresAt, searchRules });
 
-  constructor(config: Config) {
-    this.config = config;
-  }
+  const encodedHeader = createHeader();
+  const encodedPayload = createPayload({
+    searchRules,
+    apiKeyUid,
+    expiresAt,
+  });
+  const signature = sign(apiKey, encodedHeader, encodedPayload);
 
-  /**
-   * Generate a tenant token
-   *
-   * @param apiKeyUid - The uid of the api key used as issuer of the token.
-   * @param searchRules - Search rules that are applied to every search.
-   * @param options - Token options to customize some aspect of the token.
-   * @returns The token in JWT format.
-   */
-  async generateTenantToken(
-    apiKeyUid: string,
-    searchRules: TokenSearchRules,
-    options?: TokenOptions,
-  ): Promise<string> {
-    const apiKey = options?.apiKey || this.config.apiKey || "";
-    const uid = apiKeyUid || "";
-    const expiresAt = options?.expiresAt;
-
-    validateTokenParameters({ apiKey, uid, expiresAt, searchRules });
-
-    const encodedHeader = createHeader();
-    const encodedPayload = createPayload({ searchRules, uid, expiresAt });
-    const signature = await sign(apiKey, encodedHeader, encodedPayload);
-
-    return `${encodedHeader}.${encodedPayload}.${signature}`;
-  }
+  return `${encodedHeader}.${encodedPayload}.${signature}`;
 }
-export { Token };

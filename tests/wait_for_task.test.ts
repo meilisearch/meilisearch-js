@@ -1,11 +1,11 @@
 import { afterAll, beforeEach, describe, expect, test } from "vitest";
-import { TaskStatus } from "../src";
+import { TaskStatus } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
   getClient,
   dataset,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const index = {
   uid: "movies_test",

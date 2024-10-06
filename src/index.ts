@@ -1,9 +1,8 @@
-export * from "./types";
-export * from "./errors";
-export * from "./indexes";
-export * from "./enqueued-task";
-export * from "./task";
-import { MeiliSearch } from "./clients/node-client";
+export * from "./types/types.js";
+export * from "./errors/index.js";
+export * from "./indexes.js";
+export * from "./enqueued-task.js";
+export * from "./task.js";
+import { MeiliSearch } from "./meilisearch.js";
 
 export { MeiliSearch, MeiliSearch as Meilisearch };
-export default MeiliSearch;

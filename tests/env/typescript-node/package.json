@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "start": "tsc --project tsconfig.json && node dist/index.js"
+    "start": "tsc --project tsconfig.json && node dist/tests/env/typescript-node/src/index.js"
   },
   "keywords": [
     "demo",
@@ -14,7 +14,8 @@
   "author": "Charlotte Vermandel",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "4.4.4"
+    "typescript": "^5.6.2",
+    "@types/node": "^20.16.10"
   },
   "dependencies": {}
 }

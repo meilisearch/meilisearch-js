@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, test } from "vitest";
-import { ErrorStatusCode } from "../src/types";
+import { ErrorStatusCode } from "../src/types/types.js";
 import {
   clearAllIndexes,
   config,
   MeiliSearch,
   BAD_HOST,
   getClient,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 beforeEach(async () => {
   await clearAllIndexes(config);

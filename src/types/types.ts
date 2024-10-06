@@ -4,7 +4,7 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^3.8.3
 
-import { Task } from "../task";
+import { Task } from "../task.js";
 
 export type Config = {
   host: string;
@@ -1083,6 +1083,6 @@ export type TokenSearchRules =
   | string[];
 
 export type TokenOptions = {
-  apiKey?: string;
+  apiKey: string;
   expiresAt?: Date;
 };
