@@ -6,7 +6,7 @@ import {
   afterAll,
   beforeAll,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types/index.js";
+import { ErrorStatusCode, MatchingStrategies } from "../src/types/types.js";
 import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,

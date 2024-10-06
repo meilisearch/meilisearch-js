@@ -31,8 +31,8 @@ import type {
   MultiSearchResponse,
   SearchResponse,
   FederatedMultiSearchParams,
-} from "./types/index.js";
-import { ErrorStatusCode } from "./types/index.js";
+} from "./types/types.js";
+import { ErrorStatusCode } from "./types/types.js";
 import { HttpRequests } from "./http-requests.js";
 import { TaskClient, Task } from "./task.js";
 import { EnqueuedTask } from "./enqueued-task.js";

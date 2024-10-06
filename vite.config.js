@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 
-const INDEX_INPUT = "src/index.ts";
-const TOKEN_INPUT = "src/token.ts";
+const indexInput = "src/index.ts";
+const tokenInput = "src/token.ts";
 
 export default defineConfig(({ mode }) => {
   const isUMDBuild = mode === "production";
@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => {
       target: isUMDBuild ? "es6" : "es2022",
       lib: {
         // leave out token from UMD build
-        entry: isUMDBuild ? INDEX_INPUT : [INDEX_INPUT, TOKEN_INPUT],
+        entry: isUMDBuild ? indexInput : [indexInput, tokenInput],
         name: isUMDBuild ? "meilisearch" : undefined,
         formats: isUMDBuild ? ["umd"] : ["cjs"],
         fileName: (format, entryName) => {

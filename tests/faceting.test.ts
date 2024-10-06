@@ -6,7 +6,7 @@ import {
   afterAll,
   beforeAll,
 } from "vitest";
-import { ErrorStatusCode } from "../src/types/index.js";
+import { ErrorStatusCode } from "../src/types/types.js";
 import {
   clearAllIndexes,
   config,

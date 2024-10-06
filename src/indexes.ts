@@ -5,8 +5,6 @@
  * Copyright: 2019, MeiliSearch
  */
 
-"use strict";
-
 import {
   MeiliSearchError,
   MeiliSearchRequestError,
@@ -56,7 +54,7 @@ import type {
   SearchSimilarDocumentsParams,
   LocalizedAttributes,
   UpdateDocumentsByFunctionOptions,
-} from "./types/index.js";
+} from "./types/types.js";
 import { removeUndefinedFromObject } from "./utils.js";
 import { HttpRequests } from "./http-requests.js";
 import { Task, TaskClient } from "./task.js";

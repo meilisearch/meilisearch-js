@@ -9,7 +9,7 @@ import {
 import {
   ErrorStatusCode,
   type LocalizedAttributes,
-} from "../src/types/index.js";
+} from "../src/types/types.js";
 import {
   clearAllIndexes,
   config,

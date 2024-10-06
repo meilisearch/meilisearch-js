@@ -1,3 +1,5 @@
+// @TODO: This should be used to type check whole project with script `types`
+//        but for now because of tests/env this is not possible
 {
   "compilerOptions": {
     // We don't want to check node_modules
@@ -10,7 +12,6 @@
     "target": "es2022",
     "lib": ["ESNext", "dom"],
     "strict": true,
-    "verbatimModuleSyntax": true,
-    "outDir": "./dist/esm"
+    "verbatimModuleSyntax": true
   }
 }
