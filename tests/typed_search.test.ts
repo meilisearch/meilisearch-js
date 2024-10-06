@@ -6,7 +6,7 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode, type SearchResponse } from "../src/types/index.js";
+import { ErrorStatusCode, type SearchResponse } from "../src/types/types.js";
 import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,

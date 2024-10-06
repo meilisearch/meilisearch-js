@@ -1,4 +1,4 @@
-import type { TokenSearchRules, TokenOptions } from "./types/index.js";
+import type { TokenSearchRules, TokenOptions } from "./types/types.js";
 import { createHmac } from "node:crypto";
 import { MeiliSearchError } from "./errors/index.js";
 import { validateUuid4 } from "./utils.js";
