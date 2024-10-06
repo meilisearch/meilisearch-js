@@ -17,22 +17,19 @@
   ],
   "license": "MIT",
   "type": "module",
-  "main": "./dist/bundles/index.cjs",
-  "module": "./dist/esm/index.js",
-  "jsdelivr": "./dist/bundles/index.umd.min.js",
-  "unpkg": "./dist/bundles/index.umd.min.js",
+  "jsdelivr": "./dist/umd/index.min.js",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/esm/index.js",
-      "require": "./dist/bundles/index.cjs",
-      "default": "./dist/bundles/index.umd.min.js"
+      "require": "./dist/cjs/index.cjs",
+      "default": "./dist/umd/index.min.js"
     },
     "./token": {
       "types": "./dist/types/token.d.ts",
       "import": "./dist/esm/token.js",
-      "require": "./dist/bundles/token.cjs",
-      "default": "./dist/bundles/token.cjs"
+      "require": "./dist/cjs/token.cjs",
+      "default": "./dist/cjs/token.cjs"
     }
   },
   "sideEffects": false,
@@ -43,7 +40,7 @@
   "scripts": {
     "playground:javascript": "yarn --cwd ./playgrounds/javascript && yarn --cwd ./playgrounds/javascript start",
     "build:docs": "typedoc",
-    "build": "vite build && tsc -p tsconfig.build.json && vite --mode production-cjs build",
+    "build": "vite build && tsc -p tsconfig.build.json && vite --mode production-umd build",
     "postbuild": "node scripts/build.js",
     "test": "vitest run --coverage",
     "types": "tsc -p tsconfig.build.json --noEmit",
@@ -57,12 +54,12 @@
     "test:env:nodejs": "yarn build && node tests/env/node/index.cjs && node tests/env/node/getting_started.cjs",
     "test:env:esm": "yarn --cwd tests/env/esm && yarn --cwd tests/env/esm start",
     "test:env:nitro-app": "yarn build && yarn --cwd tests/env/nitro-app test",
-    "style": "yarn fmt && yarn lint",
-    "style:fix": "yarn fmt:fix && yarn lint:fix",
     "fmt": "prettier -c ./**/*.{js,ts}",
     "fmt:fix": "prettier -w ./**/*.{js,ts}",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "style": "yarn fmt && yarn lint",
+    "style:fix": "yarn fmt:fix && yarn lint:fix"
   },
   "files": [
     "src",

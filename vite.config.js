@@ -4,40 +4,38 @@ const indexInput = "src/index.ts";
 const tokenInput = "src/token.ts";
 
 export default defineConfig(({ mode }) => {
-  const isUMDBuild = mode === "production";
+  const isCJSBuild = mode === "production";
 
   return {
     build: {
-      // for CJS build we do not want to empty directory, so previous builds stay intact
-      emptyOutDir: isUMDBuild,
-      // it only makes sense to minify the UMD build
-      minify: isUMDBuild,
-      // there's no point in generating source maps for UMD bundle @TODO: Is this true?
-      sourcemap: !isUMDBuild,
+      // for UMD build we do not want to empty directory, so previous builds stay intact
+      emptyOutDir: isCJSBuild,
+      minify: true,
+      sourcemap: true,
       // UMD build targets lower level ES, while CJS the lowest Node.js LTS version
-      target: isUMDBuild ? "es6" : "es2022",
+      target: isCJSBuild ? "es2022" : "es6",
       lib: {
         // leave out token from UMD build
-        entry: isUMDBuild ? indexInput : [indexInput, tokenInput],
-        name: isUMDBuild ? "meilisearch" : undefined,
-        formats: isUMDBuild ? ["umd"] : ["cjs"],
+        entry: isCJSBuild ? [indexInput, tokenInput] : indexInput,
+        name: isCJSBuild ? undefined : "meilisearch",
+        formats: isCJSBuild ? ["cjs"] : ["umd"],
         fileName: (format, entryName) => {
           switch (format) {
             case "umd":
-              return `bundles/${entryName}.umd.min.js`;
+              return `umd/${entryName}.min.js`;
             case "cjs":
-              return `bundles/${entryName}.cjs`;
+              return `cjs/${entryName}.cjs`;
             default:
               throw new Error(`unsupported format ${format}`);
           }
         },
       },
-      rollupOptions: isUMDBuild
-        ? undefined
-        : {
+      rollupOptions: isCJSBuild
+        ? {
             // make sure external imports that should not be bundled are listed here for CJS build
             external: ["node:crypto"],
-          },
+          }
+        : undefined,
     },
     test: {
       include: "tests/**/*.test.ts",
