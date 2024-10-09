@@ -98,7 +98,7 @@ class Client {
    * @returns Promise returning array of raw index information
    */
   async getIndexes(
-    parameters: IndexesQuery = {},
+    parameters?: IndexesQuery,
   ): Promise<IndexesResults<Index[]>> {
     const rawIndexes = await this.getRawIndexes(parameters);
     const indexes: Index[] = rawIndexes.results.map(
@@ -114,11 +114,10 @@ class Client {
    * @returns Promise returning array of raw index information
    */
   async getRawIndexes(
-    parameters: IndexesQuery = {},
+    parameters?: IndexesQuery,
   ): Promise<IndexesResults<IndexObject[]>> {
-    const url = `indexes`;
     return <IndexesResults<IndexObject[]>>(
-      await this.httpRequest.get({ relativeURL: url, params: parameters })
+      await this.httpRequest.get({ relativeURL: "indexes", params: parameters })
     );
   }
 
@@ -131,7 +130,7 @@ class Client {
    */
   async createIndex(
     uid: string,
-    options: IndexOptions = {},
+    options?: IndexOptions,
   ): Promise<EnqueuedTask> {
     return await Index.create(uid, options, this.config);
   }
@@ -145,7 +144,7 @@ class Client {
    */
   async updateIndex(
     uid: string,
-    options: IndexOptions = {},
+    options?: IndexOptions,
   ): Promise<EnqueuedTask> {
     return await new Index(this.config, uid).update(options);
   }
@@ -231,10 +230,11 @@ class Client {
     queries: MultiSearchParams | FederatedMultiSearchParams,
     config?: Partial<Request>,
   ): Promise<MultiSearchResponse<T> | SearchResponse<T>> {
-    const url = `multi-search`;
-
     return <MultiSearchResponse<T> | SearchResponse<T>>(
-      await this.httpRequest.post({ relativeURL: url, body: queries })
+      await this.httpRequest.post({
+        relativeURL: "multi-search",
+        body: queries,
+      })
     );
   }
 
@@ -248,7 +248,7 @@ class Client {
    * @param parameters - Parameters to browse the tasks
    * @returns Promise returning all tasks
    */
-  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
+  async getTasks(parameters?: TasksQuery): Promise<TasksResults> {
     return await this.tasks.getTasks(parameters);
   }
 
@@ -312,7 +312,7 @@ class Client {
    * @param parameters - Parameters to filter the tasks.
    * @returns Promise containing an EnqueuedTask
    */
-  async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
+  async deleteTasks(parameters?: DeleteTasksQuery): Promise<EnqueuedTask> {
     return await this.tasks.deleteTasks(parameters);
   }
 
@@ -326,10 +326,9 @@ class Client {
    * @param parameters - Parameters to browse the indexes
    * @returns Promise returning an object with keys
    */
-  async getKeys(parameters: KeysQuery = {}): Promise<KeysResults> {
-    const url = `keys`;
+  async getKeys(parameters?: KeysQuery): Promise<KeysResults> {
     const keys = <KeysResults>(
-      await this.httpRequest.get({ relativeURL: url, params: parameters })
+      await this.httpRequest.get({ relativeURL: "keys", params: parameters })
     );
 
     keys.results = keys.results.map((key) => ({
@@ -348,8 +347,7 @@ class Client {
    * @returns Promise returning a key
    */
   async getKey(keyOrUid: string): Promise<Key> {
-    const url = `keys/${keyOrUid}`;
-    return <Key>await this.httpRequest.get({ relativeURL: url });
+    return <Key>await this.httpRequest.get({ relativeURL: `keys/${keyOrUid}` });
   }
 
   /**
@@ -359,9 +357,8 @@ class Client {
    * @returns Promise returning a key
    */
   async createKey(options: KeyCreation): Promise<Key> {
-    const url = `keys`;
     return <Key>(
-      await this.httpRequest.post({ relativeURL: url, body: options })
+      await this.httpRequest.post({ relativeURL: "keys", body: options })
     );
   }
 
@@ -373,10 +370,10 @@ class Client {
    * @returns Promise returning a key
    */
   async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
-    const url = `keys/${keyOrUid}`;
-    return <Key>(
-      await this.httpRequest.patch({ relativeURL: url, body: options })
-    );
+    return <Key>await this.httpRequest.patch({
+      relativeURL: `keys/${keyOrUid}`,
+      body: options,
+    });
   }
 
   /**
@@ -386,8 +383,7 @@ class Client {
    * @returns
    */
   async deleteKey(keyOrUid: string): Promise<void> {
-    const url = `keys/${keyOrUid}`;
-    await this.httpRequest.delete({ relativeURL: url });
+    await this.httpRequest.delete({ relativeURL: `keys/${keyOrUid}` });
   }
 
   ///
@@ -400,8 +396,7 @@ class Client {
    * @returns Promise returning an object with health details
    */
   async health(): Promise<Health> {
-    const url = `health`;
-    return <Health>await this.httpRequest.get({ relativeURL: url });
+    return <Health>await this.httpRequest.get({ relativeURL: "health" });
   }
 
   /**
@@ -428,8 +423,7 @@ class Client {
    * @returns Promise returning object of all the stats
    */
   async getStats(): Promise<Stats> {
-    const url = `stats`;
-    return <Stats>await this.httpRequest.get({ relativeURL: url });
+    return <Stats>await this.httpRequest.get({ relativeURL: "stats" });
   }
 
   ///
@@ -442,8 +436,7 @@ class Client {
    * @returns Promise returning object with version details
    */
   async getVersion(): Promise<Version> {
-    const url = `version`;
-    return <Version>await this.httpRequest.get({ relativeURL: url });
+    return <Version>await this.httpRequest.get({ relativeURL: "version" });
   }
 
   ///
@@ -456,9 +449,8 @@ class Client {
    * @returns Promise returning object of the enqueued task
    */
   async createDump(): Promise<EnqueuedTask> {
-    const url = `dumps`;
     const task = <EnqueuedTaskObject>(
-      await this.httpRequest.post({ relativeURL: url })
+      await this.httpRequest.post({ relativeURL: "dumps" })
     );
     return new EnqueuedTask(task);
   }
@@ -473,9 +465,8 @@ class Client {
    * @returns Promise returning object of the enqueued task
    */
   async createSnapshot(): Promise<EnqueuedTask> {
-    const url = `snapshots`;
     const task = <EnqueuedTaskObject>(
-      await this.httpRequest.post({ relativeURL: url })
+      await this.httpRequest.post({ relativeURL: "snapshots" })
     );
 
     return new EnqueuedTask(task);

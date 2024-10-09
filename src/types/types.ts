@@ -359,9 +359,7 @@ export type SortableAttributes = string[] | null;
 export type DisplayedAttributes = string[] | null;
 export type RankingRules = string[] | null;
 export type StopWords = string[] | null;
-export type Synonyms = {
-  [field: string]: string[];
-} | null;
+export type Synonyms = Record<string, string[]> | null;
 export type TypoTolerance = {
   enabled?: boolean | null;
   disableOnAttributes?: string[] | null;
@@ -524,9 +522,9 @@ export type TasksQuery = {
   from?: number;
 };
 
-export type CancelTasksQuery = Omit<TasksQuery, "limit" | "from"> & {};
+export type CancelTasksQuery = Omit<TasksQuery, "limit" | "from">;
 
-export type DeleteTasksQuery = Omit<TasksQuery, "limit" | "from"> & {};
+export type DeleteTasksQuery = Omit<TasksQuery, "limit" | "from">;
 
 export type EnqueuedTaskObject = {
   taskUid: number;

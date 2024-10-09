@@ -7,7 +7,7 @@ import {
   MeiliSearchRequestError,
 } from "./errors";
 
-import { addTrailingSlash, addProtocolIfNotPresent } from "./utils";
+import { addProtocolIfNotPresent, addTrailingSlash } from "./utils";
 
 type URLSearchParamsRecord = Record<
   string,
@@ -74,12 +74,6 @@ function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
   return headers;
 }
 
-function constructHostURL(host: string): string {
-  host = addProtocolIfNotPresent(host);
-  host = addTrailingSlash(host);
-  return host;
-}
-
 type RequestOptions = {
   relativeURL: string;
   method?: string;
@@ -91,50 +85,50 @@ type RequestOptions = {
 export type MethodOptions = Omit<RequestOptions, "method">;
 
 export class HttpRequests {
-  url: URL;
-  requestInit: Omit<NonNullable<Config["requestInit"]>, "headers"> & {
+  #url: URL;
+  #requestInit: Omit<NonNullable<Config["requestInit"]>, "headers"> & {
     headers: Headers;
   };
-  httpClient: Config["httpClient"];
-  requestTimeout?: number;
+  #requestFn: NonNullable<Config["httpClient"]>;
+  #isCustomRequestFnProvided: boolean;
+  #requestTimeout?: number;
 
   constructor(config: Config) {
-    const host = constructHostURL(config.host);
+    const host = addTrailingSlash(addProtocolIfNotPresent(config.host));
 
     try {
-      this.url = new URL(host);
+      this.#url = new URL(host);
     } catch (error) {
       throw new MeiliSearchError("The provided host is not valid", {
         cause: error,
       });
     }
 
-    this.requestInit = {
+    this.#requestInit = {
       ...config.requestInit,
       headers: getHeaders(config, config.requestInit?.headers),
     };
 
-    this.httpClient = config.httpClient;
-    this.requestTimeout = config.timeout;
+    this.#requestFn = config.httpClient ?? fetch;
+    this.#isCustomRequestFnProvided = config.httpClient !== undefined;
+    this.#requestTimeout = config.timeout;
   }
 
   async #fetchWithTimeout(
     ...fetchParams: Parameters<typeof fetch>
   ): Promise<Response> {
     return new Promise((resolve, reject) => {
-      const fetchFn = this.httpClient ? this.httpClient : fetch;
-
-      const fetchPromise = fetchFn(...fetchParams);
+      const fetchPromise = this.#requestFn(...fetchParams);
 
       const promises: Array<Promise<any>> = [fetchPromise];
 
       // TimeoutPromise will not run if undefined or zero
       let timeoutId: ReturnType<typeof setTimeout>;
-      if (this.requestTimeout) {
+      if (this.#requestTimeout) {
         const timeoutPromise = new Promise((_, reject) => {
           timeoutId = setTimeout(() => {
             reject(new Error("Error: Request Timed Out"));
-          }, this.requestTimeout);
+          }, this.#requestTimeout);
         });
 
         promises.push(timeoutPromise);
@@ -156,7 +150,7 @@ export class HttpRequests {
     headers,
     body,
   }: RequestOptions): Promise<unknown> {
-    const url = new URL(relativeURL, this.url);
+    const url = new URL(relativeURL, this.#url);
     if (params !== undefined) {
       appendRecordToURLSearchParams(url.searchParams, params);
     }
@@ -168,7 +162,7 @@ export class HttpRequests {
 
       isCustomContentTypeProvided = headers.has("Content-Type");
 
-      for (const [key, val] of this.requestInit.headers.entries()) {
+      for (const [key, val] of this.#requestInit.headers.entries()) {
         if (!headers.has(key)) {
           headers.set(key, val);
         }
@@ -185,8 +179,8 @@ export class HttpRequests {
           ? // this will throw an error for any value that is not serializable
             JSON.stringify(body)
           : body,
-      ...this.requestInit,
-      headers: headers ?? this.requestInit.headers,
+      ...this.#requestInit,
+      headers: headers ?? this.#requestInit.headers,
     });
 
     const response = await responsePromise.catch((error: unknown) => {
@@ -194,7 +188,7 @@ export class HttpRequests {
     });
 
     // When using a custom HTTP client, the response is returned to allow the user to parse/handle it as they see fit
-    if (this.httpClient !== undefined) {
+    if (this.#isCustomRequestFnProvided) {
       return response;
     }
 
