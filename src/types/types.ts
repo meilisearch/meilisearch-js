@@ -98,7 +98,7 @@ export type SearchForFacetValuesResponse = {
 };
 
 export type HybridSearch = {
-  embedder?: string;
+  embedder: string;
   semanticRatio?: number;
 };
 
@@ -389,6 +389,8 @@ export type OpenAiEmbedder = {
   dimensions?: number;
   distribution?: Distribution;
   url?: string;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
 };
 
 export type HuggingFaceEmbedder = {
@@ -397,12 +399,15 @@ export type HuggingFaceEmbedder = {
   revision?: string;
   documentTemplate?: string;
   distribution?: Distribution;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
 };
 
 export type UserProvidedEmbedder = {
   source: "userProvided";
   dimensions: number;
   distribution?: Distribution;
+  binaryQuantized?: boolean;
 };
 
 export type RestEmbedder = {
@@ -415,6 +420,8 @@ export type RestEmbedder = {
   request: Record<string, any>;
   response: Record<string, any>;
   headers?: Record<string, string>;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
 };
 
 export type OllamaEmbedder = {
@@ -425,6 +432,8 @@ export type OllamaEmbedder = {
   documentTemplate?: string;
   distribution?: Distribution;
   dimensions?: number;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
 };
 
 export type Embedder =
