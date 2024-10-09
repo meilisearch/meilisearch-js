@@ -10,8 +10,8 @@ export type Config = {
   host: string;
   apiKey?: string;
   clientAgents?: string[];
-  requestConfig?: Partial<Omit<RequestInit, "body" | "method">>;
-  httpClient?: (input: string, init?: RequestInit) => Promise<any>;
+  requestInit?: Omit<RequestInit, "body" | "method">;
+  httpClient?: typeof fetch;
   timeout?: number;
 };
 

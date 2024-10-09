@@ -9,8 +9,9 @@ import {
   CancelTasksQuery,
   TasksResultsObject,
   DeleteTasksQuery,
+  EnqueuedTaskObject,
 } from "./types";
-import { HttpRequests, toQueryParams } from "./http-requests";
+import { HttpRequests } from "./http-requests";
 import { sleep } from "./utils";
 import { EnqueuedTask } from "./enqueued-task";
 
@@ -58,22 +59,23 @@ class TaskClient {
    */
   async getTask(uid: number): Promise<Task> {
     const url = `tasks/${uid}`;
-    const taskItem = await this.httpRequest.get<TaskObject>(url);
+    const taskItem = <TaskObject>(
+      await this.httpRequest.get({ relativeURL: url })
+    );
     return new Task(taskItem);
   }
 
   /**
    * Get tasks
    *
-   * @param parameters - Parameters to browse the tasks
+   * @param params - Parameters to browse the tasks
    * @returns Promise containing all tasks
    */
-  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
+  async getTasks(params: TasksQuery = {}): Promise<TasksResults> {
     const url = `tasks`;
 
-    const tasks = await this.httpRequest.get<Promise<TasksResultsObject>>(
-      url,
-      toQueryParams<TasksQuery>(parameters),
+    const tasks = <TasksResultsObject>(
+      await this.httpRequest.get({ relativeURL: url, params })
     );
 
     return {
@@ -137,16 +139,14 @@ class TaskClient {
   /**
    * Cancel a list of enqueued or processing tasks.
    *
-   * @param parameters - Parameters to filter the tasks.
+   * @param params - Parameters to filter the tasks.
    * @returns Promise containing an EnqueuedTask
    */
-  async cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
+  async cancelTasks(params: CancelTasksQuery = {}): Promise<EnqueuedTask> {
     const url = `tasks/cancel`;
 
-    const task = await this.httpRequest.post(
-      url,
-      {},
-      toQueryParams<CancelTasksQuery>(parameters),
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.post({ relativeURL: url, params })
     );
 
     return new EnqueuedTask(task);
@@ -155,16 +155,14 @@ class TaskClient {
   /**
    * Delete a list tasks.
    *
-   * @param parameters - Parameters to filter the tasks.
+   * @param params - Parameters to filter the tasks.
    * @returns Promise containing an EnqueuedTask
    */
-  async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
+  async deleteTasks(params: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
     const url = `tasks`;
 
-    const task = await this.httpRequest.delete(
-      url,
-      {},
-      toQueryParams<DeleteTasksQuery>(parameters),
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url, params })
     );
     return new EnqueuedTask(task);
   }

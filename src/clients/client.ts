@@ -117,9 +117,8 @@ class Client {
     parameters: IndexesQuery = {},
   ): Promise<IndexesResults<IndexObject[]>> {
     const url = `indexes`;
-    return await this.httpRequest.get<IndexesResults<IndexObject[]>>(
-      url,
-      parameters,
+    return <IndexesResults<IndexObject[]>>(
+      await this.httpRequest.get({ relativeURL: url, params: parameters })
     );
   }
 
@@ -188,7 +187,11 @@ class Client {
    */
   async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
     const url = "/swap-indexes";
-    return await this.httpRequest.post(url, params);
+    const taks = <EnqueuedTaskObject>(
+      await this.httpRequest.post({ relativeURL: url, body: params })
+    );
+
+    return new EnqueuedTask(taks);
   }
 
   ///
@@ -230,7 +233,9 @@ class Client {
   ): Promise<MultiSearchResponse<T> | SearchResponse<T>> {
     const url = `multi-search`;
 
-    return await this.httpRequest.post(url, queries, undefined, config);
+    return <MultiSearchResponse<T> | SearchResponse<T>>(
+      await this.httpRequest.post({ relativeURL: url, body: queries })
+    );
   }
 
   ///
@@ -323,7 +328,9 @@ class Client {
    */
   async getKeys(parameters: KeysQuery = {}): Promise<KeysResults> {
     const url = `keys`;
-    const keys = await this.httpRequest.get<KeysResults>(url, parameters);
+    const keys = <KeysResults>(
+      await this.httpRequest.get({ relativeURL: url, params: parameters })
+    );
 
     keys.results = keys.results.map((key) => ({
       ...key,
@@ -342,7 +349,7 @@ class Client {
    */
   async getKey(keyOrUid: string): Promise<Key> {
     const url = `keys/${keyOrUid}`;
-    return await this.httpRequest.get<Key>(url);
+    return <Key>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -353,7 +360,9 @@ class Client {
    */
   async createKey(options: KeyCreation): Promise<Key> {
     const url = `keys`;
-    return await this.httpRequest.post(url, options);
+    return <Key>(
+      await this.httpRequest.post({ relativeURL: url, body: options })
+    );
   }
 
   /**
@@ -365,7 +374,9 @@ class Client {
    */
   async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
     const url = `keys/${keyOrUid}`;
-    return await this.httpRequest.patch(url, options);
+    return <Key>(
+      await this.httpRequest.patch({ relativeURL: url, body: options })
+    );
   }
 
   /**
@@ -376,7 +387,7 @@ class Client {
    */
   async deleteKey(keyOrUid: string): Promise<void> {
     const url = `keys/${keyOrUid}`;
-    return await this.httpRequest.delete<any>(url);
+    await this.httpRequest.delete({ relativeURL: url });
   }
 
   ///
@@ -390,7 +401,7 @@ class Client {
    */
   async health(): Promise<Health> {
     const url = `health`;
-    return await this.httpRequest.get<Health>(url);
+    return <Health>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -400,9 +411,8 @@ class Client {
    */
   async isHealthy(): Promise<boolean> {
     try {
-      const url = `health`;
-      await this.httpRequest.get(url);
-      return true;
+      const { status } = await this.health();
+      return status === "available";
     } catch {
       return false;
     }
@@ -419,7 +429,7 @@ class Client {
    */
   async getStats(): Promise<Stats> {
     const url = `stats`;
-    return await this.httpRequest.get<Stats>(url);
+    return <Stats>await this.httpRequest.get({ relativeURL: url });
   }
 
   ///
@@ -433,7 +443,7 @@ class Client {
    */
   async getVersion(): Promise<Version> {
     const url = `version`;
-    return await this.httpRequest.get<Version>(url);
+    return <Version>await this.httpRequest.get({ relativeURL: url });
   }
 
   ///
@@ -447,8 +457,8 @@ class Client {
    */
   async createDump(): Promise<EnqueuedTask> {
     const url = `dumps`;
-    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(
-      url,
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.post({ relativeURL: url })
     );
     return new EnqueuedTask(task);
   }
@@ -464,8 +474,8 @@ class Client {
    */
   async createSnapshot(): Promise<EnqueuedTask> {
     const url = `snapshots`;
-    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(
-      url,
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.post({ relativeURL: url })
     );
 
     return new EnqueuedTask(task);

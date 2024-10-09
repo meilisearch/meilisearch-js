@@ -56,6 +56,7 @@ import {
   SearchSimilarDocumentsParams,
   LocalizedAttributes,
   UpdateDocumentsByFunctionOptions,
+  EnqueuedTaskObject,
 } from "./types";
 import { removeUndefinedFromObject } from "./utils";
 import { HttpRequests } from "./http-requests";
@@ -104,12 +105,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ): Promise<SearchResponse<D, S>> {
     const url = `indexes/${this.uid}/search`;
 
-    return await this.httpRequest.post(
-      url,
-      removeUndefinedFromObject({ q: query, ...options }),
-      undefined,
-      config,
-    );
+    return <SearchResponse<D, S>>await this.httpRequest.post({
+      relativeURL: url,
+      body: { q: query, ...options },
+    });
   }
 
   /**
@@ -130,6 +129,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ): Promise<SearchResponse<D, S>> {
     const url = `indexes/${this.uid}/search`;
 
+    // @TODO: Make this a type thing instead of a runtime thing
     const parseFilter = (filter?: Filter): string | undefined => {
       if (typeof filter === "string") return filter;
       else if (Array.isArray(filter))
@@ -152,11 +152,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       attributesToSearchOn: options?.attributesToSearchOn?.join(","),
     };
 
-    return await this.httpRequest.get<SearchResponse<D, S>>(
-      url,
-      removeUndefinedFromObject(getParams),
-      config,
-    );
+    return <SearchResponse<D, S>>await this.httpRequest.get({
+      relativeURL: url,
+      params: getParams,
+    });
   }
 
   /**
@@ -172,11 +171,8 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ): Promise<SearchForFacetValuesResponse> {
     const url = `indexes/${this.uid}/facet-search`;
 
-    return await this.httpRequest.post(
-      url,
-      removeUndefinedFromObject(params),
-      undefined,
-      config,
+    return <SearchForFacetValuesResponse>(
+      await this.httpRequest.post({ relativeURL: url, body: params })
     );
   }
 
@@ -192,10 +188,8 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   >(params: SearchSimilarDocumentsParams): Promise<SearchResponse<D, S>> {
     const url = `indexes/${this.uid}/similar`;
 
-    return await this.httpRequest.post(
-      url,
-      removeUndefinedFromObject(params),
-      undefined,
+    return <SearchResponse<D, S>>(
+      await this.httpRequest.post({ relativeURL: url, body: params })
     );
   }
 
@@ -210,7 +204,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getRawInfo(): Promise<IndexObject> {
     const url = `indexes/${this.uid}`;
-    const res = await this.httpRequest.get<IndexObject>(url);
+    const res = <IndexObject>await this.httpRequest.get({ relativeURL: url });
     this.primaryKey = res.primaryKey;
     this.updatedAt = new Date(res.updatedAt);
     this.createdAt = new Date(res.createdAt);
@@ -252,7 +246,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ): Promise<EnqueuedTask> {
     const url = `indexes`;
     const req = new HttpRequests(config);
-    const task = await req.post(url, { ...options, uid });
+    const task = <EnqueuedTaskObject>(
+      await req.post({ relativeURL: url, body: { ...options, uid } })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -265,7 +261,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async update(data: IndexOptions): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}`;
-    const task = await this.httpRequest.patch(url, data);
+    // @TODO: Something is not right
+    const task = <EnqueuedTask>(
+      await this.httpRequest.patch({ relativeURL: url, body: data })
+    );
 
     task.enqueuedAt = new Date(task.enqueuedAt);
 
@@ -279,7 +278,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async delete(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}`;
-    const task = await this.httpRequest.delete(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -353,7 +354,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getStats(): Promise<IndexStats> {
     const url = `indexes/${this.uid}/stats`;
-    return await this.httpRequest.get<IndexStats>(url);
+    return <IndexStats>await this.httpRequest.get({ relativeURL: url });
   }
 
   ///
@@ -377,10 +378,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       try {
         const url = `indexes/${this.uid}/documents/fetch`;
 
-        return await this.httpRequest.post<
-          DocumentsQuery,
-          Promise<ResourceResults<D[]>>
-        >(url, parameters);
+        return <ResourceResults<D[]>>(
+          await this.httpRequest.post({ relativeURL: url, body: parameters })
+        );
       } catch (e) {
         if (e instanceof MeiliSearchRequestError) {
           e.message = versionErrorHintMessage(e.message, "getDocuments");
@@ -390,18 +390,18 @@ class Index<T extends Record<string, any> = Record<string, any>> {
 
         throw e;
       }
-      // Else use `GET /documents` method
     } else {
+      // Else use `GET /documents` method
       const url = `indexes/${this.uid}/documents`;
-
-      // Transform fields to query parameter string format
-      const fields = Array.isArray(parameters?.fields)
-        ? { fields: parameters?.fields?.join(",") }
-        : {};
-
-      return await this.httpRequest.get<Promise<ResourceResults<D[]>>>(url, {
-        ...parameters,
-        ...fields,
+      return <ResourceResults<D[]>>await this.httpRequest.get({
+        relativeURL: url,
+        params: {
+          ...parameters,
+          // Transform fields to query parameter string format
+          fields: Array.isArray(parameters?.fields)
+            ? parameters.fields.join(",")
+            : undefined,
+        },
       });
     }
   }
@@ -426,13 +426,13 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       return undefined;
     })();
 
-    return await this.httpRequest.get<D>(
-      url,
-      removeUndefinedFromObject({
+    return <D>await this.httpRequest.get({
+      relativeURL: url,
+      params: {
         ...parameters,
         fields,
-      }),
-    );
+      },
+    });
   }
 
   /**
@@ -447,7 +447,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     options?: DocumentOptions,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`;
-    const task = await this.httpRequest.post(url, documents, options);
+    const task = <EnqueuedTaskObject>await this.httpRequest.post({
+      relativeURL: url,
+      params: options,
+      body: documents,
+    });
 
     return new EnqueuedTask(task);
   }
@@ -469,10 +473,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`;
 
-    const task = await this.httpRequest.post(url, documents, queryParams, {
-      headers: {
-        "Content-Type": contentType,
-      },
+    const task = <EnqueuedTaskObject>await this.httpRequest.post({
+      relativeURL: url,
+      body: documents,
+      params: queryParams,
+      headers: { "Content-Type": contentType },
     });
 
     return new EnqueuedTask(task);
@@ -512,7 +517,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     options?: DocumentOptions,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`;
-    const task = await this.httpRequest.put(url, documents, options);
+    const task = <EnqueuedTaskObject>await this.httpRequest.put({
+      relativeURL: url,
+      params: options,
+      body: documents,
+    });
 
     return new EnqueuedTask(task);
   }
@@ -556,10 +565,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`;
 
-    const task = await this.httpRequest.put(url, documents, queryParams, {
-      headers: {
-        "Content-Type": contentType,
-      },
+    const task = <EnqueuedTaskObject>await this.httpRequest.put({
+      relativeURL: url,
+      body: documents,
+      params: queryParams,
+      headers: { "Content-Type": contentType },
     });
 
     return new EnqueuedTask(task);
@@ -573,11 +583,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async deleteDocument(documentId: string | number): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents/${documentId}`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   /**
@@ -603,7 +613,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     const url = `indexes/${this.uid}/${endpoint}`;
 
     try {
-      const task = await this.httpRequest.post(url, params);
+      const task = <EnqueuedTaskObject>await this.httpRequest.post({
+        relativeURL: url,
+        body: params,
+      });
 
       return new EnqueuedTask(task);
     } catch (e) {
@@ -624,11 +637,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async deleteAllDocuments(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   /**
@@ -647,7 +660,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     options: UpdateDocumentsByFunctionOptions,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/documents/edit`;
-    const task = await this.httpRequest.post(url, options);
+    const task = <EnqueuedTaskObject>await this.httpRequest.post({
+      relativeURL: url,
+      body: options,
+    });
 
     return new EnqueuedTask(task);
   }
@@ -663,7 +679,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getSettings(): Promise<Settings> {
     const url = `indexes/${this.uid}/settings`;
-    return await this.httpRequest.get<Settings>(url);
+    return <Settings>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -674,11 +690,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async updateSettings(settings: Settings): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings`;
-    const task = await this.httpRequest.patch(url, settings);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.patch({ relativeURL: url, body: settings })
+    );
 
-    task.enqueued = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   /**
@@ -688,11 +704,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetSettings(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -706,7 +722,8 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getPagination(): Promise<PaginationSettings> {
     const url = `indexes/${this.uid}/settings/pagination`;
-    return await this.httpRequest.get<object>(url);
+    // @TODO: I don't like this type
+    return <object>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -719,7 +736,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     pagination: PaginationSettings,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/pagination`;
-    const task = await this.httpRequest.patch(url, pagination);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.patch({ relativeURL: url, body: pagination })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -731,7 +750,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetPagination(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/pagination`;
-    const task = await this.httpRequest.delete(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -747,7 +768,8 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getSynonyms(): Promise<object> {
     const url = `indexes/${this.uid}/settings/synonyms`;
-    return await this.httpRequest.get<object>(url);
+    // @TODO: I don't like this type
+    return <object>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -758,7 +780,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/synonyms`;
-    const task = await this.httpRequest.put(url, synonyms);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.put({ relativeURL: url, body: synonyms })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -770,11 +794,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetSynonyms(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/synonyms`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -788,7 +812,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getStopWords(): Promise<string[]> {
     const url = `indexes/${this.uid}/settings/stop-words`;
-    return await this.httpRequest.get<string[]>(url);
+    return <string[]>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -799,7 +823,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async updateStopWords(stopWords: StopWords): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/stop-words`;
-    const task = await this.httpRequest.put(url, stopWords);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.put({ relativeURL: url, body: stopWords })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -811,11 +837,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetStopWords(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/stop-words`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -829,7 +855,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getRankingRules(): Promise<string[]> {
     const url = `indexes/${this.uid}/settings/ranking-rules`;
-    return await this.httpRequest.get<string[]>(url);
+    return <string[]>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -841,7 +867,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async updateRankingRules(rankingRules: RankingRules): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/ranking-rules`;
-    const task = await this.httpRequest.put(url, rankingRules);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.put({ relativeURL: url, body: rankingRules })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -853,11 +881,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetRankingRules(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/ranking-rules`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -871,7 +899,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getDistinctAttribute(): Promise<string | null> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`;
-    return await this.httpRequest.get<string | null>(url);
+    return <string | null>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -884,7 +912,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     distinctAttribute: DistinctAttribute,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`;
-    const task = await this.httpRequest.put(url, distinctAttribute);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.put({ relativeURL: url, body: distinctAttribute })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -896,11 +926,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetDistinctAttribute(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/distinct-attribute`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -914,7 +944,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getFilterableAttributes(): Promise<string[]> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`;
-    return await this.httpRequest.get<string[]>(url);
+    return <string[]>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -928,7 +958,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     filterableAttributes: FilterableAttributes,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`;
-    const task = await this.httpRequest.put(url, filterableAttributes);
+    const task = <EnqueuedTaskObject>await this.httpRequest.put({
+      relativeURL: url,
+      body: filterableAttributes,
+    });
 
     return new EnqueuedTask(task);
   }
@@ -940,11 +973,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetFilterableAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -958,7 +991,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getSortableAttributes(): Promise<string[]> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`;
-    return await this.httpRequest.get<string[]>(url);
+    return <string[]>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -972,7 +1005,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     sortableAttributes: SortableAttributes,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`;
-    const task = await this.httpRequest.put(url, sortableAttributes);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.put({ relativeURL: url, body: sortableAttributes })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -984,11 +1019,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetSortableAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/sortable-attributes`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -1002,7 +1037,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getSearchableAttributes(): Promise<string[]> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`;
-    return await this.httpRequest.get<string[]>(url);
+    return <string[]>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -1016,7 +1051,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     searchableAttributes: SearchableAttributes,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`;
-    const task = await this.httpRequest.put(url, searchableAttributes);
+    const task = <EnqueuedTaskObject>await this.httpRequest.put({
+      relativeURL: url,
+      body: searchableAttributes,
+    });
 
     return new EnqueuedTask(task);
   }
@@ -1028,11 +1066,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetSearchableAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/searchable-attributes`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -1046,7 +1084,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getDisplayedAttributes(): Promise<string[]> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`;
-    return await this.httpRequest.get<string[]>(url);
+    return <string[]>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -1060,7 +1098,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     displayedAttributes: DisplayedAttributes,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`;
-    const task = await this.httpRequest.put(url, displayedAttributes);
+    const task = <EnqueuedTaskObject>await this.httpRequest.put({
+      relativeURL: url,
+      body: displayedAttributes,
+    });
 
     return new EnqueuedTask(task);
   }
@@ -1072,11 +1113,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetDisplayedAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/displayed-attributes`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -1090,7 +1131,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getTypoTolerance(): Promise<TypoTolerance> {
     const url = `indexes/${this.uid}/settings/typo-tolerance`;
-    return await this.httpRequest.get<TypoTolerance>(url);
+    return <TypoTolerance>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -1104,11 +1145,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     typoTolerance: TypoTolerance,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/typo-tolerance`;
-    const task = await this.httpRequest.patch(url, typoTolerance);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.patch({ relativeURL: url, body: typoTolerance })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   /**
@@ -1118,11 +1159,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetTypoTolerance(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/typo-tolerance`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -1136,7 +1177,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getFaceting(): Promise<Faceting> {
     const url = `indexes/${this.uid}/settings/faceting`;
-    return await this.httpRequest.get<Faceting>(url);
+    return <Faceting>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -1147,7 +1188,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async updateFaceting(faceting: Faceting): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/faceting`;
-    const task = await this.httpRequest.patch(url, faceting);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.patch({ relativeURL: url, body: faceting })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -1159,7 +1202,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetFaceting(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/faceting`;
-    const task = await this.httpRequest.delete(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -1175,7 +1220,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getSeparatorTokens(): Promise<string[]> {
     const url = `indexes/${this.uid}/settings/separator-tokens`;
-    return await this.httpRequest.get<string[]>(url);
+    return <string[]>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -1188,7 +1233,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     separatorTokens: SeparatorTokens,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/separator-tokens`;
-    const task = await this.httpRequest.put(url, separatorTokens);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.put({ relativeURL: url, body: separatorTokens })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -1200,11 +1247,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetSeparatorTokens(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/separator-tokens`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -1218,7 +1265,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getNonSeparatorTokens(): Promise<string[]> {
     const url = `indexes/${this.uid}/settings/non-separator-tokens`;
-    return await this.httpRequest.get<string[]>(url);
+    return <string[]>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -1231,7 +1278,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     nonSeparatorTokens: NonSeparatorTokens,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/non-separator-tokens`;
-    const task = await this.httpRequest.put(url, nonSeparatorTokens);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.put({ relativeURL: url, body: nonSeparatorTokens })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -1243,11 +1292,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetNonSeparatorTokens(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/non-separator-tokens`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -1261,7 +1310,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getDictionary(): Promise<string[]> {
     const url = `indexes/${this.uid}/settings/dictionary`;
-    return await this.httpRequest.get<string[]>(url);
+    return <string[]>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -1272,7 +1321,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async updateDictionary(dictionary: Dictionary): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/dictionary`;
-    const task = await this.httpRequest.put(url, dictionary);
+    const task = <EnqueuedTaskObject>await this.httpRequest.put({
+      relativeURL: url,
+      body: dictionary,
+    });
 
     return new EnqueuedTask(task);
   }
@@ -1284,11 +1336,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetDictionary(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/dictionary`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -1302,7 +1354,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getProximityPrecision(): Promise<ProximityPrecision> {
     const url = `indexes/${this.uid}/settings/proximity-precision`;
-    return await this.httpRequest.get<ProximityPrecision>(url);
+    return <ProximityPrecision>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -1316,7 +1368,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     proximityPrecision: ProximityPrecision,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/proximity-precision`;
-    const task = await this.httpRequest.put(url, proximityPrecision);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.put({ relativeURL: url, body: proximityPrecision })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -1328,11 +1382,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetProximityPrecision(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/proximity-precision`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -1346,7 +1400,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getEmbedders(): Promise<Embedders> {
     const url = `indexes/${this.uid}/settings/embedders`;
-    return await this.httpRequest.get<Embedders>(url);
+    return <Embedders>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -1357,7 +1411,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async updateEmbedders(embedders: Embedders): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/embedders`;
-    const task = await this.httpRequest.patch(url, embedders);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.patch({ relativeURL: url, body: embedders })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -1369,11 +1425,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetEmbedders(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/embedders`;
-    const task = await this.httpRequest.delete<EnqueuedTask>(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
-    task.enqueuedAt = new Date(task.enqueuedAt);
-
-    return task;
+    return new EnqueuedTask(task);
   }
 
   ///
@@ -1387,7 +1443,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getSearchCutoffMs(): Promise<SearchCutoffMs> {
     const url = `indexes/${this.uid}/settings/search-cutoff-ms`;
-    return await this.httpRequest.get<SearchCutoffMs>(url);
+    return <SearchCutoffMs>await this.httpRequest.get({ relativeURL: url });
   }
 
   /**
@@ -1400,7 +1456,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     searchCutoffMs: SearchCutoffMs,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/search-cutoff-ms`;
-    const task = await this.httpRequest.put(url, searchCutoffMs);
+    const task = <EnqueuedTaskObject>await this.httpRequest.put({
+      relativeURL: url,
+      body: searchCutoffMs,
+    });
 
     return new EnqueuedTask(task);
   }
@@ -1412,7 +1471,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetSearchCutoffMs(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/search-cutoff-ms`;
-    const task = await this.httpRequest.delete(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
     return new EnqueuedTask(task);
   }
@@ -1428,7 +1489,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async getLocalizedAttributes(): Promise<LocalizedAttributes> {
     const url = `indexes/${this.uid}/settings/localized-attributes`;
-    return await this.httpRequest.get<LocalizedAttributes>(url);
+    return <LocalizedAttributes>(
+      await this.httpRequest.get({ relativeURL: url })
+    );
   }
 
   /**
@@ -1441,7 +1504,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     localizedAttributes: LocalizedAttributes,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/localized-attributes`;
-    const task = await this.httpRequest.put(url, localizedAttributes);
+    const task = <EnqueuedTaskObject>await this.httpRequest.put({
+      relativeURL: url,
+      body: localizedAttributes,
+    });
 
     return new EnqueuedTask(task);
   }
@@ -1453,7 +1519,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async resetLocalizedAttributes(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/localized-attributes`;
-    const task = await this.httpRequest.delete(url);
+    const task = <EnqueuedTaskObject>(
+      await this.httpRequest.delete({ relativeURL: url })
+    );
 
     return new EnqueuedTask(task);
   }

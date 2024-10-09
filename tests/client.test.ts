@@ -55,13 +55,15 @@ describe.each([
     const client = new MeiliSearch({
       ...config,
       apiKey: key,
-      requestConfig: {
+      requestInit: {
         headers: {
           "Hello-There!": "General Kenobi",
         },
       },
     });
-    expect(client.httpRequest.headers["Hello-There!"]).toBe("General Kenobi");
+    expect(client.httpRequest.requestInit.headers.get("Hello-There!")).toBe(
+      "General Kenobi",
+    );
     const health = await client.isHealthy();
     expect(health).toBe(true);
   });
@@ -71,11 +73,13 @@ describe.each([
     const client = new MeiliSearch({
       ...config,
       apiKey: key,
-      requestConfig: {
+      requestInit: {
         headers: [["Hello-There!", "General Kenobi"]],
       },
     });
-    expect(client.httpRequest.headers["Hello-There!"]).toBe("General Kenobi");
+    expect(client.httpRequest.requestInit.headers.get("Hello-There!")).toBe(
+      "General Kenobi",
+    );
     const health = await client.isHealthy();
     expect(health).toBe(true);
   });
@@ -83,15 +87,15 @@ describe.each([
   test(`${permission} key: Create client with custom headers (Headers)`, async () => {
     const key = await getKey(permission);
     const headers = new Headers();
-    headers.append("Hello-There!", "General Kenobi");
+    headers.set("Hello-There!", "General Kenobi");
     const client = new MeiliSearch({
       ...config,
       apiKey: key,
-      requestConfig: {
-        headers,
-      },
+      requestInit: { headers },
     });
-    expect(client.httpRequest.headers["hello-there!"]).toBe("General Kenobi");
+    expect(client.httpRequest.requestInit.headers.get("Hello-There!")).toBe(
+      "General Kenobi",
+    );
     const health = await client.isHealthy();
     expect(health).toBe(true);
   });
@@ -186,7 +190,7 @@ describe.each([
   test(`${permission} key: Empty string host should throw an error`, () => {
     expect(() => {
       new MeiliSearch({ host: "" });
-    }).toThrow("The provided host is not valid.");
+    }).toThrow("The provided host is not valid");
   });
 });
 
@@ -202,13 +206,13 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = new MeiliSearch({
         ...config,
         apiKey: key,
-        requestConfig: {
+        requestInit: {
           headers: {
             "Hello-There!": "General Kenobi",
           },
         },
       });
-      expect(client.config.requestConfig?.headers).toStrictEqual({
+      expect(client.config.requestInit?.headers).toStrictEqual({
         "Hello-There!": "General Kenobi",
       });
       const health = await client.isHealthy();
@@ -260,14 +264,14 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = new MeiliSearch({
         ...config,
         apiKey: key,
-        requestConfig: {
+        requestInit: {
           headers: {},
         },
       });
 
-      expect(client.httpRequest.headers["X-Meilisearch-Client"]).toStrictEqual(
-        `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
-      );
+      expect(
+        client.httpRequest.requestInit.headers.get("X-Meilisearch-Client"),
+      ).toStrictEqual(`Meilisearch JavaScript (v${PACKAGE_VERSION})`);
     });
 
     test(`${permission} key: Create client with empty custom client agents`, async () => {
@@ -278,9 +282,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         clientAgents: [],
       });
 
-      expect(client.httpRequest.headers["X-Meilisearch-Client"]).toStrictEqual(
-        `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
-      );
+      expect(
+        client.httpRequest.requestInit.headers.get("X-Meilisearch-Client"),
+      ).toStrictEqual(`Meilisearch JavaScript (v${PACKAGE_VERSION})`);
     });
 
     test(`${permission} key: Create client with custom client agents`, async () => {
@@ -291,7 +295,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         clientAgents: ["random plugin 1", "random plugin 2"],
       });
 
-      expect(client.httpRequest.headers["X-Meilisearch-Client"]).toStrictEqual(
+      expect(
+        client.httpRequest.requestInit.headers.get("X-Meilisearch-Client"),
+      ).toStrictEqual(
         `random plugin 1 ; random plugin 2 ; Meilisearch JavaScript (v${PACKAGE_VERSION})`,
       );
     });
