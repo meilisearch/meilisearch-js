@@ -169,7 +169,9 @@ export class HttpRequests {
       headers: getHeaders(config, config.requestInit?.headers),
     };
 
-    this.#requestFn = config.httpClient ?? fetch;
+    this.#requestFn =
+      config.httpClient ??
+      fetch.bind(typeof window !== "undefined" ? window : globalThis);
     this.#isCustomRequestFnProvided = config.httpClient !== undefined;
     this.#requestTimeout = config.timeout;
   }
