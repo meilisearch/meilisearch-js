@@ -1269,7 +1269,7 @@ describe.each([
     try {
       await client.health();
     } catch (e: any) {
-      expect(e.cause.message).toEqual("Error: Request Timed Out");
+      expect(e.cause.message).toEqual("request timed out after 1ms");
       expect(e.name).toEqual("MeiliSearchRequestError");
     }
   });

@@ -58,9 +58,9 @@ class TaskClient {
    * @returns
    */
   async getTask(uid: number): Promise<Task> {
-    const taskItem = <TaskObject>(
-      await this.httpRequest.get({ relativeURL: `tasks/${uid}` })
-    );
+    const taskItem = (await this.httpRequest.get({
+      relativeURL: `tasks/${uid}`,
+    })) as TaskObject;
     return new Task(taskItem);
   }
 
@@ -71,9 +71,10 @@ class TaskClient {
    * @returns Promise containing all tasks
    */
   async getTasks(params?: TasksQuery): Promise<TasksResults> {
-    const tasks = <TasksResultsObject>(
-      await this.httpRequest.get({ relativeURL: `tasks`, params })
-    );
+    const tasks = (await this.httpRequest.get({
+      relativeURL: `tasks`,
+      params,
+    })) as TasksResultsObject;
 
     return {
       ...tasks,
@@ -140,9 +141,10 @@ class TaskClient {
    * @returns Promise containing an EnqueuedTask
    */
   async cancelTasks(params?: CancelTasksQuery): Promise<EnqueuedTask> {
-    const task = <EnqueuedTaskObject>(
-      await this.httpRequest.post({ relativeURL: `tasks/cancel`, params })
-    );
+    const task = (await this.httpRequest.post({
+      relativeURL: `tasks/cancel`,
+      params,
+    })) as EnqueuedTaskObject;
 
     return new EnqueuedTask(task);
   }
@@ -154,9 +156,10 @@ class TaskClient {
    * @returns Promise containing an EnqueuedTask
    */
   async deleteTasks(params?: DeleteTasksQuery): Promise<EnqueuedTask> {
-    const task = <EnqueuedTaskObject>(
-      await this.httpRequest.delete({ relativeURL: `tasks`, params })
-    );
+    const task = (await this.httpRequest.delete({
+      relativeURL: `tasks`,
+      params,
+    })) as EnqueuedTaskObject;
     return new EnqueuedTask(task);
   }
 }

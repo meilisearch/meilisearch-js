@@ -84,6 +84,65 @@ type RequestOptions = {
 
 export type MethodOptions = Omit<RequestOptions, "method">;
 
+const TIMEOUT_SYMBOL = Symbol("Symbol indicating a timeout error");
+
+// Attach a timeout signal to `requestInit`
+// NOTE: This could be a short few straight forward lines using the following:
+//       https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/any_static
+//       https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static
+//       But these aren't yet widely supported enough perhaps, nor polyfillable
+function getTimeoutFn(
+  requestInit: RequestInit,
+  ms: number,
+): () => (() => void) | void {
+  const { signal } = requestInit;
+  const ac = new AbortController();
+
+  if (signal != null) {
+    let acSignalFn: (() => void) | null = null;
+
+    if (signal.aborted) {
+      ac.abort(signal.reason);
+    } else {
+      const fn = () => ac.abort(signal.reason);
+
+      signal.addEventListener("abort", fn, { once: true });
+
+      acSignalFn = () => signal.removeEventListener("abort", fn);
+      ac.signal.addEventListener("abort", acSignalFn, { once: true });
+    }
+
+    return () => {
+      if (signal.aborted) {
+        return;
+      }
+
+      const to = setTimeout(() => ac.abort(TIMEOUT_SYMBOL), ms);
+      const fn = () => {
+        clearTimeout(to);
+
+        if (acSignalFn !== null) {
+          ac.signal.removeEventListener("abort", acSignalFn);
+        }
+      };
+
+      signal.addEventListener("abort", fn, { once: true });
+
+      return () => {
+        signal.removeEventListener("abort", fn);
+        fn();
+      };
+    };
+  }
+
+  requestInit.signal = ac.signal;
+
+  return () => {
+    const to = setTimeout(() => ac.abort(TIMEOUT_SYMBOL), ms);
+    return () => clearTimeout(to);
+  };
+}
+
 export class HttpRequests {
   #url: URL;
   #requestInit: Omit<NonNullable<Config["requestInit"]>, "headers"> & {
@@ -114,35 +173,6 @@ export class HttpRequests {
     this.#requestTimeout = config.timeout;
   }
 
-  async #fetchWithTimeout(
-    ...fetchParams: Parameters<typeof fetch>
-  ): Promise<Response> {
-    return new Promise((resolve, reject) => {
-      const fetchPromise = this.#requestFn(...fetchParams);
-
-      const promises: Array<Promise<any>> = [fetchPromise];
-
-      // TimeoutPromise will not run if undefined or zero
-      let timeoutId: ReturnType<typeof setTimeout>;
-      if (this.#requestTimeout) {
-        const timeoutPromise = new Promise((_, reject) => {
-          timeoutId = setTimeout(() => {
-            reject(new Error("Error: Request Timed Out"));
-          }, this.#requestTimeout);
-        });
-
-        promises.push(timeoutPromise);
-      }
-
-      Promise.race(promises)
-        .then(resolve)
-        .catch(reject)
-        .finally(() => {
-          clearTimeout(timeoutId);
-        });
-    });
-  }
-
   async #request({
     relativeURL,
     method,
@@ -171,7 +201,7 @@ export class HttpRequests {
       isCustomContentTypeProvided = false;
     }
 
-    const responsePromise = this.#fetchWithTimeout(url, {
+    const requestInit: RequestInit = {
       method,
       body:
         // in case a custom content-type is provided do not stringify body
@@ -181,11 +211,28 @@ export class HttpRequests {
           : body,
       ...this.#requestInit,
       headers: headers ?? this.#requestInit.headers,
-    });
+    };
 
-    const response = await responsePromise.catch((error: unknown) => {
-      throw new MeiliSearchRequestError(url.toString(), error);
-    });
+    const startTimeout =
+      this.#requestTimeout !== undefined
+        ? getTimeoutFn(requestInit, this.#requestTimeout)
+        : null;
+
+    const responsePromise = this.#requestFn(url, requestInit);
+    const stopTimeout = startTimeout?.();
+
+    const response = await responsePromise
+      .catch((error: unknown) => {
+        throw new MeiliSearchRequestError(
+          url.toString(),
+          error === TIMEOUT_SYMBOL
+            ? new Error(`request timed out after ${this.#requestTimeout}ms`, {
+                cause: requestInit,
+              })
+            : error,
+        );
+      })
+      .finally(() => stopTimeout?.());
 
     // When using a custom HTTP client, the response is returned to allow the user to parse/handle it as they see fit
     if (this.#isCustomRequestFnProvided) {

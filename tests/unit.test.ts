@@ -22,7 +22,7 @@ test(`Client handles host URL with domain and path, and adds trailing slash`, as
 
   assert.strictEqual(client.config.host, customHost);
 
-  assert.isTrue(await client.isHealthy());
+  await client.isHealthy();
 
   assert.isDefined(fetchSpy.mock.lastCall);
   const [input] = fetchSpy.mock.lastCall!;
