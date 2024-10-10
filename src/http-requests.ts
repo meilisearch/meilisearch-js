@@ -86,7 +86,8 @@ export type MethodOptions = Omit<RequestOptions, "method">;
 
 const TIMEOUT_SYMBOL = Symbol("Symbol indicating a timeout error");
 
-// Attach a timeout signal to `requestInit`
+// Attach a timeout signal to `requestInit`,
+// while preserving original signal functionality
 // NOTE: This could be a short few straight forward lines using the following:
 //       https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/any_static
 //       https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static
