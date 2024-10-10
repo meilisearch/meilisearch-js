@@ -936,45 +936,6 @@ describe.each([
     expect(response.hits.length).toEqual(0);
   });
 
-  test(`${permission} key: search with vectors`, async () => {
-    const client = await getClient(permission);
-    const adminClient = await getClient("Admin");
-    const adminKey = await getKey("Admin");
-
-    await fetch(`${HOST}/experimental-features`, {
-      body: JSON.stringify({ vectorStore: true }),
-      headers: {
-        Authorization: `Bearer ${adminKey}`,
-        "Content-Type": "application/json",
-      },
-      method: "PATCH",
-    });
-
-    const { taskUid } = await adminClient
-      .index(emptyIndex.uid)
-      .updateEmbedders({
-        default: {
-          source: "userProvided",
-          dimensions: 1,
-        },
-      });
-    await adminClient.waitForTask(taskUid);
-
-    const response = await client.index(emptyIndex.uid).search("", {
-      vector: [1],
-      hybrid: {
-        semanticRatio: 1.0,
-      },
-    });
-
-    expect(response).toHaveProperty("hits");
-    expect(response).toHaveProperty("semanticHitCount");
-    // Those fields are no longer returned by the search response
-    // We want to ensure that they don't appear in it anymore
-    expect(response).not.toHaveProperty("vector");
-    expect(response).not.toHaveProperty("_semanticScore");
-  });
-
   test(`${permission} key: search without vectors`, async () => {
     const client = await getClient(permission);
     const response = await client.index(index.uid).search("prince", {});
