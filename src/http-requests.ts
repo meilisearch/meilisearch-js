@@ -84,7 +84,9 @@ type RequestOptions = {
 
 export type MethodOptions = Omit<RequestOptions, "method">;
 
-const TIMEOUT_SYMBOL = Symbol("Symbol indicating a timeout error");
+// This could be a symbol, but Node.js 18 fetch doesn't support that yet
+// https://github.com/nodejs/node/issues/49557
+const TIMEOUT_OBJECT = {};
 
 // Attach a timeout signal to `requestInit`,
 // while preserving original signal functionality
@@ -118,7 +120,7 @@ function getTimeoutFn(
         return;
       }
 
-      const to = setTimeout(() => ac.abort(TIMEOUT_SYMBOL), ms);
+      const to = setTimeout(() => ac.abort(TIMEOUT_OBJECT), ms);
       const fn = () => {
         clearTimeout(to);
 
@@ -139,7 +141,7 @@ function getTimeoutFn(
   requestInit.signal = ac.signal;
 
   return () => {
-    const to = setTimeout(() => ac.abort(TIMEOUT_SYMBOL), ms);
+    const to = setTimeout(() => ac.abort(TIMEOUT_OBJECT), ms);
     return () => clearTimeout(to);
   };
 }
@@ -228,7 +230,7 @@ export class HttpRequests {
       .catch((error: unknown) => {
         throw new MeiliSearchRequestError(
           url.toString(),
-          error === TIMEOUT_SYMBOL
+          Object.is(error, TIMEOUT_OBJECT)
             ? new Error(`request timed out after ${this.#requestTimeout}ms`, {
                 cause: requestInit,
               })
