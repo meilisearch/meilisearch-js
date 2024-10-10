@@ -25,7 +25,7 @@ if (typeof fetch === "undefined") {
 }
 
 const index = {
-  uid: "movies_test",
+  uid: "books",
 };
 const emptyIndex = {
   uid: "empty_test",
@@ -78,6 +78,26 @@ const dataset = [
     genre: "fantasy",
   },
   { id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: "fantasy" },
+];
+
+type Movies = {
+  id: number;
+  title: string;
+};
+
+const movies = [
+  {
+    id: 1,
+    title: "Pride and Prejudice",
+  },
+  {
+    id: 2,
+    title: "The Hobbit: An Unexpected Journey",
+  },
+  {
+    id: 3,
+    title: "Harry Potter and the Half-Blood Prince",
+  },
 ];
 
 describe.each([
@@ -192,6 +212,153 @@ describe.each([
     expect(Array.isArray(response2.hits)).toBe(true);
     expect(response2.hits.length).toEqual(2);
     expect(response2.hits[0].id).toEqual(1344);
+  });
+
+  test(`${permission} key: Multi search with facetsByIndex`, async () => {
+    const client = await getClient(permission);
+    const masterClient = await getClient("Master");
+
+    // Setup to have a new "movies" index
+    await masterClient.createIndex("movies");
+    const newFilterableAttributes = ["title", "id"];
+    const { taskUid: task1 }: EnqueuedTask = await masterClient
+      .index("movies")
+      .updateSettings({
+        filterableAttributes: newFilterableAttributes,
+        sortableAttributes: ["id"],
+      });
+    await masterClient.waitForTask(task1);
+    const { taskUid: task2 } = await masterClient
+      .index("movies")
+      .addDocuments(movies);
+    await masterClient.waitForTask(task2);
+
+    // Make a multi search on both indexes with facetsByIndex
+    const response = await client.multiSearch<Books | Movies>({
+      federation: {
+        limit: 20,
+        offset: 0,
+        facetsByIndex: {
+          movies: ["title", "id"],
+          books: ["title"],
+        },
+      },
+      queries: [
+        {
+          q: "Hobbit",
+          indexUid: "movies",
+        },
+        {
+          q: "Hobbit",
+          indexUid: "books",
+        },
+      ],
+    });
+
+    expect(response).toHaveProperty("hits");
+    expect(Array.isArray(response.hits)).toBe(true);
+    expect(response.hits.length).toEqual(2);
+
+    expect(response).toHaveProperty("facetsByIndex");
+    expect(response.facetsByIndex).toHaveProperty("movies");
+    expect(response.facetsByIndex).toHaveProperty("books");
+
+    // Test search response on "movies" index
+    expect(response.facetsByIndex?.movies).toEqual({
+      distribution: {
+        title: {
+          "The Hobbit: An Unexpected Journey": 1,
+        },
+        id: {
+          "2": 1,
+        },
+      },
+      stats: {
+        id: {
+          min: 2,
+          max: 2,
+        },
+      },
+    });
+
+    // Test search response on "books" index
+    expect(response.facetsByIndex?.books).toEqual({
+      distribution: {
+        title: {
+          "The Hobbit": 1,
+        },
+      },
+      stats: {},
+    });
+  });
+
+  test(`${permission} key: Multi search with mergeFacets`, async () => {
+    const client = await getClient(permission);
+    const masterClient = await getClient("Master");
+
+    // Setup to have a new "movies" index
+    await masterClient.createIndex("movies");
+    const newFilterableAttributes = ["title", "id"];
+    const { taskUid: task1 }: EnqueuedTask = await masterClient
+      .index("movies")
+      .updateSettings({
+        filterableAttributes: newFilterableAttributes,
+        sortableAttributes: ["id"],
+      });
+    await masterClient.waitForTask(task1);
+    const { taskUid: task2 } = await masterClient
+      .index("movies")
+      .addDocuments(movies);
+    await masterClient.waitForTask(task2);
+
+    // Make a multi search on both indexes with mergeFacets
+    const response = await client.multiSearch<Books | Movies>({
+      federation: {
+        limit: 20,
+        offset: 0,
+        facetsByIndex: {
+          movies: ["title", "id"],
+          books: ["title"],
+        },
+        mergeFacets: {
+          maxValuesPerFacet: 10,
+        },
+      },
+      queries: [
+        {
+          q: "Hobbit",
+          indexUid: "movies",
+        },
+        {
+          q: "Hobbit",
+          indexUid: "books",
+        },
+      ],
+    });
+
+    expect(response).toHaveProperty("hits");
+    expect(Array.isArray(response.hits)).toBe(true);
+    expect(response.hits.length).toEqual(2);
+
+    expect(response).toHaveProperty("facetDistribution");
+    expect(response).toHaveProperty("facetStats");
+
+    expect(response.facetDistribution).toEqual({
+      title: {
+        "The Hobbit": 1,
+        "The Hobbit: An Unexpected Journey": 1,
+      },
+      id: {
+        "2": 1,
+      },
+    });
+
+    expect(response.facetStats).toEqual({
+      id: {
+        min: 2,
+        max: 2,
+      },
+    });
   });
 
   test(`${permission} key: Basic search`, async () => {
