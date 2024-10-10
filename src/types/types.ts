@@ -153,8 +153,17 @@ export type SearchRequestGET = Pagination &
     locales?: Locale[];
   };
 
+export type MergeFacets = {
+  maxValuesPerFacet?: number | null;
+};
+
 export type FederationOptions = { weight: number };
-export type MultiSearchFederation = { limit?: number; offset?: number };
+export type MultiSearchFederation = {
+  limit?: number;
+  offset?: number;
+  facetsByIndex?: Record<string, string[]>;
+  mergeFacets?: MergeFacets | null;
+};
 
 export type MultiSearchQuery = SearchParams & { indexUid: string };
 export type MultiSearchQueryWithFederation = MultiSearchQuery & {
@@ -229,6 +238,14 @@ export type Hits<T = Record<string, any>> = Array<Hit<T>>;
 export type FacetStat = { min: number; max: number };
 export type FacetStats = Record<string, FacetStat>;
 
+export type FacetsByIndex = Record<
+  string,
+  {
+    distribution: FacetDistribution;
+    stats: FacetStats;
+  }
+>;
+
 export type SearchResponse<
   T = Record<string, any>,
   S extends SearchParams | undefined = undefined,
@@ -238,6 +255,7 @@ export type SearchResponse<
   query: string;
   facetDistribution?: FacetDistribution;
   facetStats?: FacetStats;
+  facetsByIndex?: FacetsByIndex;
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
