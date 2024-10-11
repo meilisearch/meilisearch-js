@@ -172,8 +172,6 @@ export class HttpRequests {
 
     if (headers !== undefined || extraHeaders !== undefined) {
       headers = new Headers(headers);
-      extraHeaders = new Headers(extraHeaders);
-
       isCustomContentTypeProvided = headers.has("Content-Type");
 
       for (const [key, val] of this.#requestInit.headers.entries()) {
@@ -182,9 +180,11 @@ export class HttpRequests {
         }
       }
 
-      for (const [key, val] of extraHeaders.entries()) {
-        if (!headers.has(key)) {
-          headers.set(key, val);
+      if (extraHeaders !== undefined) {
+        for (const [key, val] of new Headers(extraHeaders).entries()) {
+          if (!headers.has(key)) {
+            headers.set(key, val);
+          }
         }
       }
     } else {
