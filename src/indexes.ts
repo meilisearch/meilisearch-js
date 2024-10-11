@@ -359,21 +359,21 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   /**
    * Get documents of an index.
    *
-   * @param parameters - Parameters to browse the documents. Parameters can
-   *   contain the `filter` field only available in Meilisearch v1.2 and newer
+   * @param params - Parameters to browse the documents. Parameters can contain
+   *   the `filter` field only available in Meilisearch v1.2 and newer
    * @returns Promise containing the returned documents
    */
   async getDocuments<D extends Record<string, any> = T>(
-    parameters?: DocumentsQuery<D>,
+    params?: DocumentsQuery<D>,
   ): Promise<ResourceResults<D[]>> {
     const relativeBaseURL = `indexes/${this.uid}/documents`;
 
     // In case `filter` is provided, use `POST /documents/fetch`
-    if (parameters?.filter !== undefined) {
+    if (params?.filter !== undefined) {
       try {
         return (await this.httpRequest.post({
           relativeURL: `${relativeBaseURL}/fetch`,
-          body: parameters,
+          body: params,
         })) as ResourceResults<D[]>;
       } catch (e) {
         if (e instanceof MeiliSearchRequestError) {
@@ -388,13 +388,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       // Else use `GET /documents` method
       return (await this.httpRequest.get({
         relativeURL: relativeBaseURL,
-        params: {
-          ...parameters,
-          // Transform fields to query parameter string format
-          fields: Array.isArray(parameters?.fields)
-            ? parameters.fields.join()
-            : undefined,
-        },
+        params,
       })) as ResourceResults<D[]>;
     }
   }
