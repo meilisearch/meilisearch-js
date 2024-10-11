@@ -222,8 +222,8 @@ export class HttpRequests {
           ? // this will throw an error for any value that is not serializable
             JSON.stringify(body)
           : body,
-      ...this.#requestInit,
       ...extraRequestInit,
+      ...this.#requestInit,
       headers: finalHeaders,
     };
 
