@@ -6,14 +6,44 @@
 
 import { Task } from "../task";
 
+export type URLSearchParamsRecord = Record<
+  string,
+  | string
+  | string[]
+  | Array<string | string[]>
+  | number
+  | number[]
+  | boolean
+  | Date
+  | null
+  | undefined
+>;
+
+export type ExtraRequestInit = Omit<RequestInit, "body" | "method">;
+export type BaseRequestInit = Omit<ExtraRequestInit, "signal">;
+export type HttpRequestsRequestInit = Omit<BaseRequestInit, "headers"> & {
+  headers: Headers;
+};
+
 export type Config = {
   host: string;
   apiKey?: string;
   clientAgents?: string[];
-  requestInit?: Omit<RequestInit, "body" | "method" | "signal">;
+  requestInit?: BaseRequestInit;
   httpClient?: typeof fetch;
   timeout?: number;
 };
+
+export type RequestOptions = {
+  relativeURL: string;
+  method?: string;
+  params?: URLSearchParamsRecord;
+  headers?: HeadersInit;
+  body?: unknown;
+  extraRequestInit?: ExtraRequestInit;
+};
+
+export type MethodOptions = Omit<RequestOptions, "method">;
 
 ///
 /// Resources

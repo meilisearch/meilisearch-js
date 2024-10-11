@@ -1,4 +1,10 @@
-import { Config } from "./types";
+import type {
+  Config,
+  HttpRequestsRequestInit,
+  MethodOptions,
+  RequestOptions,
+  URLSearchParamsRecord,
+} from "./types";
 import { PACKAGE_VERSION } from "./package-version";
 
 import {
@@ -8,19 +14,6 @@ import {
 } from "./errors";
 
 import { addProtocolIfNotPresent, addTrailingSlash } from "./utils";
-
-type URLSearchParamsRecord = Record<
-  string,
-  | string
-  | string[]
-  | Array<string | string[]>
-  | number
-  | number[]
-  | boolean
-  | Date
-  | null
-  | undefined
->;
 
 function appendRecordToURLSearchParams(
   searchParams: URLSearchParams,
@@ -73,19 +66,6 @@ function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
 
   return headers;
 }
-
-type RequestOptions = {
-  relativeURL: string;
-  method?: string;
-  params?: URLSearchParamsRecord;
-  headers?: HeadersInit;
-  body?: unknown;
-  extraRequestInit?: ExtraRequestInit;
-};
-
-export type MethodOptions = Omit<RequestOptions, "method">;
-
-export type ExtraRequestInit = Omit<RequestInit, "body" | "method">;
 
 // This could be a symbol, but Node.js 18 fetch doesn't support that yet
 // https://github.com/nodejs/node/issues/49557
@@ -151,10 +131,8 @@ function getTimeoutFn(
 
 export class HttpRequests {
   #url: URL;
-  #requestInit: Omit<NonNullable<Config["requestInit"]>, "headers"> & {
-    headers: Headers;
-  };
-  #requestFn: NonNullable<Config["httpClient"]>;
+  #requestInit: HttpRequestsRequestInit;
+  #requestFn: typeof fetch;
   #isCustomRequestFnProvided: boolean;
   #requestTimeout?: number;
 
@@ -176,6 +154,7 @@ export class HttpRequests {
 
     this.#requestFn =
       config.httpClient ??
+      // in browsers `fetch` can only be called with a `this` pointing to `window`
       fetch.bind(typeof window !== "undefined" ? window : globalThis);
     this.#isCustomRequestFnProvided = config.httpClient !== undefined;
     this.#requestTimeout = config.timeout;
