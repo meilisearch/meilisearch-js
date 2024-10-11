@@ -58,7 +58,7 @@ import {
   UpdateDocumentsByFunctionOptions,
   EnqueuedTaskObject,
 } from "./types";
-import { HttpRequests } from "./http-requests";
+import { ExtraRequestInit, HttpRequests } from "./http-requests";
 import { Task, TaskClient } from "./task";
 import { EnqueuedTask } from "./enqueued-task";
 
@@ -100,11 +100,12 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   >(
     query?: string | null,
     options?: S,
-    config?: Partial<Request>,
+    extraRequestInit?: ExtraRequestInit,
   ): Promise<SearchResponse<D, S>> {
     return (await this.httpRequest.post({
       relativeURL: `indexes/${this.uid}/search`,
       body: { q: query, ...options },
+      extraRequestInit,
     })) as SearchResponse<D, S>;
   }
 
@@ -122,7 +123,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   >(
     query?: string | null,
     options?: S,
-    config?: Partial<Request>,
+    extraRequestInit?: ExtraRequestInit,
   ): Promise<SearchResponse<D, S>> {
     // @TODO: Make this a type thing instead of a runtime thing
     const parseFilter = (filter?: Filter): string | undefined => {
@@ -150,6 +151,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/search`,
       params: getParams,
+      extraRequestInit,
     })) as SearchResponse<D, S>;
   }
 
@@ -162,11 +164,12 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async searchForFacetValues(
     params: SearchForFacetValuesParams,
-    config?: Partial<Request>,
+    extraRequestInit?: ExtraRequestInit,
   ): Promise<SearchForFacetValuesResponse> {
     return (await this.httpRequest.post({
       relativeURL: `indexes/${this.uid}/facet-search`,
       body: params,
+      extraRequestInit,
     })) as SearchForFacetValuesResponse;
   }
 
@@ -240,7 +243,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ): Promise<EnqueuedTask> {
     const req = new HttpRequests(config);
     const task = (await req.post({
-      relativeURL: `indexes`,
+      relativeURL: "indexes",
       body: { ...options, uid },
     })) as EnqueuedTaskObject;
 
@@ -388,7 +391,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
           ...parameters,
           // Transform fields to query parameter string format
           fields: Array.isArray(parameters?.fields)
-            ? parameters.fields.join(",")
+            ? parameters.fields.join()
             : undefined,
         },
       })) as ResourceResults<D[]>;
@@ -415,10 +418,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
 
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/documents/${documentId}`,
-      params: {
-        ...parameters,
-        fields,
-      },
+      params: { ...parameters, fields },
     })) as D;
   }
 

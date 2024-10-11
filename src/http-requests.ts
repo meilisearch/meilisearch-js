@@ -80,9 +80,12 @@ type RequestOptions = {
   params?: URLSearchParamsRecord;
   headers?: HeadersInit;
   body?: unknown;
+  extraRequestInit?: ExtraRequestInit;
 };
 
 export type MethodOptions = Omit<RequestOptions, "method">;
+
+export type ExtraRequestInit = Omit<RequestInit, "body" | "method">;
 
 // This could be a symbol, but Node.js 18 fetch doesn't support that yet
 // https://github.com/nodejs/node/issues/49557
@@ -178,22 +181,19 @@ export class HttpRequests {
     this.#requestTimeout = config.timeout;
   }
 
-  async #request({
-    relativeURL,
-    method,
-    params,
-    headers,
-    body,
-  }: RequestOptions): Promise<unknown> {
-    const url = new URL(relativeURL, this.#url);
-    if (params !== undefined) {
-      appendRecordToURLSearchParams(url.searchParams, params);
-    }
-
+  // combine headers, with the following priority:
+  // 1. `headers` - primary headers provided by functions in Index and Client
+  // 2. `this.#requestInit.headers` - main headers of this class
+  // 3. `extraHeaders` - extra headers provided in search functions by users
+  #getHeaders(
+    headers?: HeadersInit,
+    extraHeaders?: HeadersInit,
+  ): { finalHeaders: Headers; isCustomContentTypeProvided: boolean } {
     let isCustomContentTypeProvided: boolean;
 
-    if (headers !== undefined) {
+    if (headers !== undefined || extraHeaders !== undefined) {
       headers = new Headers(headers);
+      extraHeaders = new Headers(extraHeaders);
 
       isCustomContentTypeProvided = headers.has("Content-Type");
 
@@ -202,9 +202,38 @@ export class HttpRequests {
           headers.set(key, val);
         }
       }
+
+      for (const [key, val] of extraHeaders.entries()) {
+        if (!headers.has(key)) {
+          headers.set(key, val);
+        }
+      }
     } else {
       isCustomContentTypeProvided = false;
     }
+
+    const finalHeaders = headers ?? this.#requestInit.headers;
+
+    return { finalHeaders, isCustomContentTypeProvided };
+  }
+
+  async #request({
+    relativeURL,
+    method,
+    params,
+    headers,
+    body,
+    extraRequestInit,
+  }: RequestOptions): Promise<unknown> {
+    const url = new URL(relativeURL, this.#url);
+    if (params !== undefined) {
+      appendRecordToURLSearchParams(url.searchParams, params);
+    }
+
+    const { finalHeaders, isCustomContentTypeProvided } = this.#getHeaders(
+      headers,
+      extraRequestInit?.headers,
+    );
 
     const requestInit: RequestInit = {
       method,
@@ -215,7 +244,8 @@ export class HttpRequests {
             JSON.stringify(body)
           : body,
       ...this.#requestInit,
-      headers: headers ?? this.#requestInit.headers,
+      ...extraRequestInit,
+      headers: finalHeaders,
     };
 
     const startTimeout =

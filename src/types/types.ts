@@ -10,7 +10,7 @@ export type Config = {
   host: string;
   apiKey?: string;
   clientAgents?: string[];
-  requestInit?: Omit<RequestInit, "body" | "method">;
+  requestInit?: Omit<RequestInit, "body" | "method" | "signal">;
   httpClient?: typeof fetch;
   timeout?: number;
 };

@@ -72,7 +72,7 @@ class TaskClient {
    */
   async getTasks(params?: TasksQuery): Promise<TasksResults> {
     const tasks = (await this.httpRequest.get({
-      relativeURL: `tasks`,
+      relativeURL: "tasks",
       params,
     })) as TasksResultsObject;
 
@@ -142,7 +142,7 @@ class TaskClient {
    */
   async cancelTasks(params?: CancelTasksQuery): Promise<EnqueuedTask> {
     const task = (await this.httpRequest.post({
-      relativeURL: `tasks/cancel`,
+      relativeURL: "tasks/cancel",
       params,
     })) as EnqueuedTaskObject;
 
@@ -157,7 +157,7 @@ class TaskClient {
    */
   async deleteTasks(params?: DeleteTasksQuery): Promise<EnqueuedTask> {
     const task = (await this.httpRequest.delete({
-      relativeURL: `tasks`,
+      relativeURL: "tasks",
       params,
     })) as EnqueuedTaskObject;
     return new EnqueuedTask(task);

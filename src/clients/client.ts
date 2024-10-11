@@ -30,7 +30,7 @@ import {
   SearchResponse,
   FederatedMultiSearchParams,
 } from "../types";
-import { HttpRequests } from "../http-requests";
+import { ExtraRequestInit, HttpRequests } from "../http-requests";
 import { TaskClient } from "../task";
 import { EnqueuedTask } from "../enqueued-task";
 
@@ -217,19 +217,20 @@ class Client {
    */
   multiSearch<T extends Record<string, unknown> = Record<string, any>>(
     queries: MultiSearchParams,
-    config?: Partial<Request>,
+    extraRequestInit?: ExtraRequestInit,
   ): Promise<MultiSearchResponse<T>>;
   multiSearch<T extends Record<string, unknown> = Record<string, any>>(
     queries: FederatedMultiSearchParams,
-    config?: Partial<Request>,
+    extraRequestInit?: ExtraRequestInit,
   ): Promise<SearchResponse<T>>;
   async multiSearch<T extends Record<string, unknown> = Record<string, any>>(
     queries: MultiSearchParams | FederatedMultiSearchParams,
-    config?: Partial<Request>,
+    extraRequestInit?: ExtraRequestInit,
   ): Promise<MultiSearchResponse<T> | SearchResponse<T>> {
     return (await this.httpRequest.post({
       relativeURL: "multi-search",
       body: queries,
+      extraRequestInit,
     })) as MultiSearchResponse<T> | SearchResponse<T>;
   }
 
