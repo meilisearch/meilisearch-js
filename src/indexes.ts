@@ -57,8 +57,9 @@ import {
   LocalizedAttributes,
   UpdateDocumentsByFunctionOptions,
   EnqueuedTaskObject,
+  ExtraRequestInit,
 } from "./types";
-import { ExtraRequestInit, HttpRequests } from "./http-requests";
+import { HttpRequests } from "./http-requests";
 import { Task, TaskClient } from "./task";
 import { EnqueuedTask } from "./enqueued-task";
 

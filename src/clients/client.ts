@@ -29,8 +29,9 @@ import {
   MultiSearchResponse,
   SearchResponse,
   FederatedMultiSearchParams,
+  ExtraRequestInit,
 } from "../types";
-import { ExtraRequestInit, HttpRequests } from "../http-requests";
+import { HttpRequests } from "../http-requests";
 import { TaskClient } from "../task";
 import { EnqueuedTask } from "../enqueued-task";
 
