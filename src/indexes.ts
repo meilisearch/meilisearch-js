@@ -786,10 +786,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing array of stop-words
    */
-  async getStopWords(): Promise<StopWords> {
+  async getStopWords(): Promise<NonNullable<StopWords>> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/stop-words`,
-    })) as StopWords;
+    })) as NonNullable<StopWords>;
   }
 
   /**
@@ -1056,10 +1056,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing array of displayed-attributes
    */
-  async getDisplayedAttributes(): Promise<DisplayedAttributes> {
+  async getDisplayedAttributes(): Promise<NonNullable<DisplayedAttributes>> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/displayed-attributes`,
-    })) as DisplayedAttributes;
+    })) as NonNullable<DisplayedAttributes>;
   }
 
   /**
@@ -1102,10 +1102,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing the typo tolerance settings.
    */
-  async getTypoTolerance(): Promise<TypoTolerance> {
+  async getTypoTolerance(): Promise<NonNullable<TypoTolerance>> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/typo-tolerance`,
-    })) as TypoTolerance;
+    })) as NonNullable<TypoTolerance>;
   }
 
   /**
@@ -1281,10 +1281,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing the dictionary settings
    */
-  async getDictionary(): Promise<Dictionary> {
+  async getDictionary(): Promise<NonNullable<Dictionary>> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/dictionary`,
-    })) as Dictionary;
+    })) as NonNullable<Dictionary>;
   }
 
   /**
