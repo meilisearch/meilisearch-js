@@ -737,10 +737,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing record of synonym mappings
    */
-  async getSynonyms(): Promise<Synonyms> {
+  async getSynonyms(): Promise<Record<string, string[]>> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/synonyms`,
-    })) as Synonyms;
+    })) as Record<string, string[]>;
   }
 
   /**
@@ -780,10 +780,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing array of stop-words
    */
-  async getStopWords(): Promise<NonNullable<StopWords>> {
+  async getStopWords(): Promise<string[]> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/stop-words`,
-    })) as NonNullable<StopWords>;
+    })) as string[];
   }
 
   /**
@@ -823,10 +823,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing array of ranking-rules
    */
-  async getRankingRules(): Promise<RankingRules> {
+  async getRankingRules(): Promise<string[]> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/ranking-rules`,
-    })) as RankingRules;
+    })) as string[];
   }
 
   /**
@@ -912,10 +912,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing an array of filterable-attributes
    */
-  async getFilterableAttributes(): Promise<FilterableAttributes> {
+  async getFilterableAttributes(): Promise<string[]> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/filterable-attributes`,
-    })) as FilterableAttributes;
+    })) as string[];
   }
 
   /**
@@ -958,10 +958,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing array of sortable-attributes
    */
-  async getSortableAttributes(): Promise<SortableAttributes> {
+  async getSortableAttributes(): Promise<string[]> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/sortable-attributes`,
-    })) as SortableAttributes;
+    })) as string[];
   }
 
   /**
@@ -1004,10 +1004,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing array of searchable-attributes
    */
-  async getSearchableAttributes(): Promise<SearchableAttributes> {
+  async getSearchableAttributes(): Promise<string[]> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/searchable-attributes`,
-    })) as SearchableAttributes;
+    })) as string[];
   }
 
   /**
@@ -1050,10 +1050,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing array of displayed-attributes
    */
-  async getDisplayedAttributes(): Promise<NonNullable<DisplayedAttributes>> {
+  async getDisplayedAttributes(): Promise<string[]> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/displayed-attributes`,
-    })) as NonNullable<DisplayedAttributes>;
+    })) as string[];
   }
 
   /**
@@ -1096,10 +1096,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing the typo tolerance settings.
    */
-  async getTypoTolerance(): Promise<NonNullable<TypoTolerance>> {
+  async getTypoTolerance(): Promise<TypoTolerance> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/typo-tolerance`,
-    })) as NonNullable<TypoTolerance>;
+    })) as TypoTolerance;
   }
 
   /**
@@ -1185,10 +1185,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing array of separator tokens
    */
-  async getSeparatorTokens(): Promise<SeparatorTokens> {
+  async getSeparatorTokens(): Promise<string[]> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/separator-tokens`,
-    })) as SeparatorTokens;
+    })) as string[];
   }
 
   /**
@@ -1230,10 +1230,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing array of non-separator tokens
    */
-  async getNonSeparatorTokens(): Promise<NonSeparatorTokens> {
+  async getNonSeparatorTokens(): Promise<string[]> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/non-separator-tokens`,
-    })) as NonSeparatorTokens;
+    })) as string[];
   }
 
   /**
@@ -1275,10 +1275,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing the dictionary settings
    */
-  async getDictionary(): Promise<NonNullable<Dictionary>> {
+  async getDictionary(): Promise<string[]> {
     return (await this.httpRequest.get({
       relativeURL: `indexes/${this.uid}/settings/dictionary`,
-    })) as NonNullable<Dictionary>;
+    })) as string[];
   }
 
   /**
