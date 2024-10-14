@@ -153,7 +153,7 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])("Tests on url construction", ({ host, trailing }) => {
-  test(`Test getDisplayedAttributes route`, async () => {
+  test(`getDisplayedAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/displayed-attributes`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -165,7 +165,7 @@ describe.each([
     );
   });
 
-  test(`Test updateDisplayedAttributes route`, async () => {
+  test(`updateDisplayedAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/displayed-attributes`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -177,7 +177,7 @@ describe.each([
     );
   });
 
-  test(`Test resetDisplayedAttributes route`, async () => {
+  test(`resetDisplayedAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/displayed-attributes`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;

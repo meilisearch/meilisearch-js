@@ -63,11 +63,7 @@ module.exports = [
   {
     files: ["tests/*.ts"],
     plugins: { vitest },
-    rules: {
-      ...vitest.configs.recommended.rules,
-      // @TODO: Remove all of these rules and adapt code!
-      "vitest/valid-title": "off",
-    },
+    rules: vitest.configs.recommended.rules,
   },
   prettier,
 ];
