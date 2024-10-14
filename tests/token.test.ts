@@ -125,7 +125,9 @@ describe.each([{ permission: "Admin" }])(
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
       // search
-      expect(searchClient.index(UID).search()).resolves.not.toBeUndefined();
+      await expect(
+        searchClient.index(UID).search(),
+      ).resolves.not.toBeUndefined();
     });
 
     test(`${permission} key: Search in tenant token with custom api key`, async () => {
@@ -144,7 +146,7 @@ describe.each([{ permission: "Admin" }])(
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
       // search
-      expect(searchClient.index(UID).search()).resolves.toBeDefined();
+      await expect(searchClient.index(UID).search()).resolves.toBeDefined();
     });
 
     test(`${permission} key: Search in tenant token with expireAt`, async () => {
@@ -162,7 +164,9 @@ describe.each([{ permission: "Admin" }])(
       expect(JSON.parse(decode64(payload)).exp).toEqual(
         Math.floor(date.getTime() / 1000),
       );
-      expect(searchClient.index(UID).search()).resolves.not.toBeUndefined();
+      await expect(
+        searchClient.index(UID).search(),
+      ).resolves.not.toBeUndefined();
     });
 
     test(`${permission} key: Search in tenant token with expireAt value set in the past`, async () => {
@@ -171,7 +175,7 @@ describe.each([{ permission: "Admin" }])(
       const { uid } = await client.getKey(apiKey);
       const date = new Date("December 17, 2000 03:24:00");
 
-      expect(
+      await expect(
         client.generateTenantToken(uid, ["*"], { expiresAt: date }),
       ).rejects.toThrow(
         `Meilisearch: The expiresAt field must be a date in the future.`,
@@ -189,7 +193,9 @@ describe.each([{ permission: "Admin" }])(
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
       // search
-      expect(searchClient.index(UID).search()).resolves.not.toBeUndefined();
+      await expect(
+        searchClient.index(UID).search(),
+      ).resolves.not.toBeUndefined();
     });
 
     test(`${permission} key: Search in tenant token with specific index and specific rules`, async () => {
@@ -209,7 +215,9 @@ describe.each([{ permission: "Admin" }])(
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
       // search
-      expect(searchClient.index(UID).search()).resolves.not.toBeUndefined();
+      await expect(
+        searchClient.index(UID).search(),
+      ).resolves.not.toBeUndefined();
     });
 
     test(`${permission} key: Search in tenant token with empty array throws an error`, async () => {
@@ -246,7 +254,7 @@ describe.each([{ permission: "Admin" }])(
       const { uid } = await client.getKey(apiKey);
       const date = new Date("December 17, 2000 03:24:00");
 
-      expect(
+      await expect(
         client.generateTenantToken(
           uid,
           {},
@@ -262,15 +270,15 @@ describe.each([{ permission: "Admin" }])(
     test(`${permission} key: Creates tenant token with wrong uid type throws an error`, async () => {
       const client = await getClient(permission);
 
-      expect(client.generateTenantToken("1234", ["*"])).rejects.toThrow(
+      await expect(client.generateTenantToken("1234", ["*"])).rejects.toThrow(
         `Meilisearch: The uid of your key is not a valid uuid4. To find out the uid of your key use getKey().`,
       );
     });
 
-    test(`${permission} key: Creates a tenant token with no api key in client and in parameters throws an error`, () => {
+    test(`${permission} key: Creates a tenant token with no api key in client and in parameters throws an error`, async () => {
       const client = new MeiliSearch({ host: HOST });
 
-      expect(client.generateTenantToken("123", [])).rejects.toThrow(
+      await expect(client.generateTenantToken("123", [])).rejects.toThrow(
         `Meilisearch: The API key used for the token generation must exist and be of type string.`,
       );
     });

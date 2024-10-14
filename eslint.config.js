@@ -67,7 +67,6 @@ module.exports = [
       ...vitest.configs.recommended.rules,
       // @TODO: Remove all of these rules and adapt code!
       "vitest/valid-title": "off",
-      "vitest/valid-expect": "off",
     },
   },
   prettier,
