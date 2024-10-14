@@ -817,7 +817,7 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])("Tests on task url construction", ({ host, trailing }) => {
-  test(`Test on getTask route`, async () => {
+  test(`on getTask route`, async () => {
     const route = `tasks/1`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -828,7 +828,7 @@ describe.each([
     );
   });
 
-  test(`Test on getTasks route`, async () => {
+  test(`on getTasks route`, async () => {
     const route = `tasks?indexUids=movies_test`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;

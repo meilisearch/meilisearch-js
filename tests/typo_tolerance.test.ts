@@ -160,7 +160,7 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])("Tests on url construction", ({ host, trailing }) => {
-  test(`Test get typo tolerance route`, async () => {
+  test(`get typo tolerance route`, async () => {
     const route = `indexes/${index.uid}/settings/typo-tolerance`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -172,7 +172,7 @@ describe.each([
     );
   });
 
-  test(`Test update typo tolerance route`, async () => {
+  test(`update typo tolerance route`, async () => {
     const route = `indexes/${index.uid}/settings/typo-tolerance`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -184,7 +184,7 @@ describe.each([
     );
   });
 
-  test(`Test reset typo tolerance route`, async () => {
+  test(`reset typo tolerance route`, async () => {
     const route = `indexes/${index.uid}/settings/typo-tolerance`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;

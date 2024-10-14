@@ -987,7 +987,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
     { host: `${BAD_HOST}/api`, trailing: false },
     { host: `${BAD_HOST}/trailing/`, trailing: true },
   ])("Tests on url construction", ({ host, trailing }) => {
-    test(`Test getDocument route`, async () => {
+    test(`getDocument route`, async () => {
       const route = `indexes/${indexPk.uid}/documents/1`;
       const client = new MeiliSearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -999,7 +999,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       );
     });
 
-    test(`Test getDocuments route`, async () => {
+    test(`getDocuments route`, async () => {
       const route = `indexes/${indexPk.uid}/documents`;
       const client = new MeiliSearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -1011,7 +1011,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       );
     });
 
-    test(`Test addDocuments route`, async () => {
+    test(`addDocuments route`, async () => {
       const route = `indexes/${indexPk.uid}/documents`;
       const client = new MeiliSearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -1023,7 +1023,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       );
     });
 
-    test(`Test updateDocuments route`, async () => {
+    test(`updateDocuments route`, async () => {
       const route = `indexes/${indexPk.uid}/documents`;
       const client = new MeiliSearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -1035,7 +1035,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       );
     });
 
-    test(`Test deleteDocument route`, async () => {
+    test(`deleteDocument route`, async () => {
       const route = `indexes/${indexPk.uid}/documents/1`;
       const client = new MeiliSearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -1047,7 +1047,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       );
     });
 
-    test(`Test deleteDocuments route`, async () => {
+    test(`deleteDocuments route`, async () => {
       const route = `indexes/${indexPk.uid}/documents/delete-batch`;
       const client = new MeiliSearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -1059,7 +1059,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       );
     });
 
-    test(`Test deleteAllDocuments route`, async () => {
+    test(`deleteAllDocuments route`, async () => {
       const route = `indexes/${indexPk.uid}/documents`;
       const client = new MeiliSearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -1071,7 +1071,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       );
     });
 
-    test(`Test updateDocumentsByFunction route`, async () => {
+    test(`updateDocumentsByFunction route`, async () => {
       const route = `indexes/${indexPk.uid}/documents/edit`;
       const client = new MeiliSearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;

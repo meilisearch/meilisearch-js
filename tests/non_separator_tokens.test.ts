@@ -86,7 +86,7 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])("Tests on url construction", ({ host, trailing }) => {
-  test(`Test getNonSeparatorTokens route`, async () => {
+  test(`getNonSeparatorTokens route`, async () => {
     const route = `indexes/${index.uid}/settings/non-separator-tokens`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -98,7 +98,7 @@ describe.each([
     );
   });
 
-  test(`Test updateNonSeparatorTokens route`, async () => {
+  test(`updateNonSeparatorTokens route`, async () => {
     const route = `indexes/${index.uid}/settings/non-separator-tokens`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -110,7 +110,7 @@ describe.each([
     );
   });
 
-  test(`Test resetNonSeparatorTokens route`, async () => {
+  test(`resetNonSeparatorTokens route`, async () => {
     const route = `indexes/${index.uid}/settings/non-separator-tokens`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
