@@ -1,5 +1,5 @@
 import { expect, test, describe, beforeEach, afterAll } from "vitest";
-import MeiliSearch from "../src/browser";
+import MeiliSearch from "../src";
 import { ErrorStatusCode } from "../src/types";
 import {
   clearAllIndexes,

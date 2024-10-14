@@ -700,6 +700,8 @@ authorization_header_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
   client.getKeys()
 tenant_token_guide_generate_sdk_1: |-
+  import { generateTenantToken } from 'meilisearch/token'
+
   const searchRules = {
     patient_medical_records: {
       filter: 'user_id = 1'
@@ -709,7 +711,7 @@ tenant_token_guide_generate_sdk_1: |-
   const apiKeyUid = '85c3c2f9-bdd6-41f1-abd8-11fcf80e0f76'
   const expiresAt = new Date('2025-12-20') // optional
 
-  const token = await client.generateTenantToken(apiKeyUid, searchRules, {
+  const token = await generateTenantToken(apiKeyUid, searchRules, {
     apiKey: apiKey,
     expiresAt: expiresAt,
   })
