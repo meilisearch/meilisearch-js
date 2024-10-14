@@ -1,5 +1,5 @@
 import { expect, test, describe, beforeEach } from "vitest";
-import { ErrorStatusCode } from "../src/types";
+import { ErrorStatusCode, TaskStatus } from "../src/types";
 import {
   clearAllIndexes,
   config,
@@ -13,13 +13,15 @@ beforeEach(async () => {
 });
 
 describe.each([{ permission: "Master" }, { permission: "Admin" }])(
-  "Test on dump",
+  "Test on dump should succeed with right permission",
   ({ permission }) => {
     test(`${permission} key: create a new dump`, async () => {
       const client = await getClient(permission);
       const { taskUid } = await client.createDump();
 
-      await client.waitForTask(taskUid);
+      const taskResult = await client.waitForTask(taskUid);
+
+      expect(taskResult).toHaveProperty("status", TaskStatus.TASK_SUCCEEDED);
     });
   },
 );
