@@ -146,7 +146,7 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])("Tests on url construction", ({ host, trailing }) => {
-  test(`Test getStopWords route`, async () => {
+  test(`getStopWords route`, async () => {
     const route = `indexes/${index.uid}/settings/stop-words`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -156,7 +156,7 @@ describe.each([
     );
   });
 
-  test(`Test updateStopWords route`, async () => {
+  test(`updateStopWords route`, async () => {
     const route = `indexes/${index.uid}/settings/stop-words`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -168,7 +168,7 @@ describe.each([
     );
   });
 
-  test(`Test resetStopWords route`, async () => {
+  test(`resetStopWords route`, async () => {
     const route = `indexes/${index.uid}/settings/stop-words`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;

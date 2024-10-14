@@ -1338,7 +1338,7 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])("Tests on url construction", ({ host, trailing }) => {
-  test(`Test get search route`, async () => {
+  test(`get search route`, async () => {
     const route = `indexes/${index.uid}/search`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -1348,7 +1348,7 @@ describe.each([
     );
   });
 
-  test(`Test post search route`, async () => {
+  test(`post search route`, async () => {
     const route = `indexes/${index.uid}/search`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;

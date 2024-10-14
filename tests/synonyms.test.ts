@@ -138,7 +138,7 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])("Tests on url construction", ({ host, trailing }) => {
-  test(`Test getSynonyms route`, async () => {
+  test(`getSynonyms route`, async () => {
     const route = `indexes/${index.uid}/settings/synonyms`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -148,7 +148,7 @@ describe.each([
     );
   });
 
-  test(`Test updateSynonyms route`, async () => {
+  test(`updateSynonyms route`, async () => {
     const route = `indexes/${index.uid}/settings/synonyms`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -160,7 +160,7 @@ describe.each([
     );
   });
 
-  test(`Test resetSynonyms route`, async () => {
+  test(`resetSynonyms route`, async () => {
     const route = `indexes/${index.uid}/settings/synonyms`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
