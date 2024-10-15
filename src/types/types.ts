@@ -98,7 +98,7 @@ export type SearchForFacetValuesResponse = {
 };
 
 export type HybridSearch = {
-  embedder?: string;
+  embedder: string;
   semanticRatio?: number;
 };
 
@@ -153,8 +153,17 @@ export type SearchRequestGET = Pagination &
     locales?: Locale[];
   };
 
+export type MergeFacets = {
+  maxValuesPerFacet?: number | null;
+};
+
 export type FederationOptions = { weight: number };
-export type MultiSearchFederation = { limit?: number; offset?: number };
+export type MultiSearchFederation = {
+  limit?: number;
+  offset?: number;
+  facetsByIndex?: Record<string, string[]>;
+  mergeFacets?: MergeFacets | null;
+};
 
 export type MultiSearchQuery = SearchParams & { indexUid: string };
 export type MultiSearchQueryWithFederation = MultiSearchQuery & {
@@ -229,6 +238,14 @@ export type Hits<T = Record<string, any>> = Array<Hit<T>>;
 export type FacetStat = { min: number; max: number };
 export type FacetStats = Record<string, FacetStat>;
 
+export type FacetsByIndex = Record<
+  string,
+  {
+    distribution: FacetDistribution;
+    stats: FacetStats;
+  }
+>;
+
 export type SearchResponse<
   T = Record<string, any>,
   S extends SearchParams | undefined = undefined,
@@ -238,6 +255,7 @@ export type SearchResponse<
   query: string;
   facetDistribution?: FacetDistribution;
   facetStats?: FacetStats;
+  facetsByIndex?: FacetsByIndex;
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
@@ -389,6 +407,8 @@ export type OpenAiEmbedder = {
   dimensions?: number;
   distribution?: Distribution;
   url?: string;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
 };
 
 export type HuggingFaceEmbedder = {
@@ -397,12 +417,15 @@ export type HuggingFaceEmbedder = {
   revision?: string;
   documentTemplate?: string;
   distribution?: Distribution;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
 };
 
 export type UserProvidedEmbedder = {
   source: "userProvided";
   dimensions: number;
   distribution?: Distribution;
+  binaryQuantized?: boolean;
 };
 
 export type RestEmbedder = {
@@ -415,6 +438,8 @@ export type RestEmbedder = {
   request: Record<string, any>;
   response: Record<string, any>;
   headers?: Record<string, string>;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
 };
 
 export type OllamaEmbedder = {
@@ -425,6 +450,8 @@ export type OllamaEmbedder = {
   documentTemplate?: string;
   distribution?: Distribution;
   dimensions?: number;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
 };
 
 export type Embedder =

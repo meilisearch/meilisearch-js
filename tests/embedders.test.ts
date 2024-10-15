@@ -90,6 +90,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
             mean: 0.7,
             sigma: 0.3,
           },
+          binaryQuantized: false,
         },
       };
       const task: EnqueuedTask = await client
@@ -101,6 +102,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(newEmbedder);
+      expect(response).not.toHaveProperty("documentTemplateMaxBytes");
     });
 
     test(`${permission} key: Update embedders with 'openAi' source`, async () => {
@@ -118,6 +120,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
             sigma: 0.3,
           },
           url: "https://api.openai.com/v1/embeddings",
+          documentTemplateMaxBytes: 500,
+          binaryQuantized: false,
         },
       };
       const task: EnqueuedTask = await client
@@ -147,6 +151,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
             mean: 0.7,
             sigma: 0.3,
           },
+          documentTemplateMaxBytes: 500,
+          binaryQuantized: false,
         },
       };
       const task: EnqueuedTask = await client
@@ -188,6 +194,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           headers: {
             "Custom-Header": "CustomValue",
           },
+          documentTemplateMaxBytes: 500,
+          binaryQuantized: false,
         },
       };
       const task: EnqueuedTask = await client
@@ -219,6 +227,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
             sigma: 0.3,
           },
           dimensions: 512,
+          documentTemplateMaxBytes: 500,
+          binaryQuantized: false,
         },
       };
       const task: EnqueuedTask = await client
@@ -266,6 +276,58 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(response).toEqual(null);
     });
 
+    test(`${permission} key: search (POST) with vectors`, async () => {
+      const client = await getClient(permission);
+
+      const { taskUid } = await client.index(index.uid).updateEmbedders({
+        default: {
+          source: "userProvided",
+          dimensions: 1,
+        },
+      });
+      await client.waitForTask(taskUid);
+
+      const response = await client.index(index.uid).search("", {
+        vector: [1],
+        hybrid: {
+          embedder: "default",
+          semanticRatio: 1.0,
+        },
+      });
+
+      expect(response).toHaveProperty("hits");
+      expect(response).toHaveProperty("semanticHitCount");
+      // Those fields are no longer returned by the search response
+      // We want to ensure that they don't appear in it anymore
+      expect(response).not.toHaveProperty("vector");
+      expect(response).not.toHaveProperty("_semanticScore");
+    });
+
+    test(`${permission} key: search (GET) with vectors`, async () => {
+      const client = await getClient(permission);
+
+      const { taskUid } = await client.index(index.uid).updateEmbedders({
+        default: {
+          source: "userProvided",
+          dimensions: 1,
+        },
+      });
+      await client.waitForTask(taskUid);
+
+      const response = await client.index(index.uid).searchGet("", {
+        vector: [1],
+        hybridEmbedder: "default",
+        hybridSemanticRatio: 1.0,
+      });
+
+      expect(response).toHaveProperty("hits");
+      expect(response).toHaveProperty("semanticHitCount");
+      // Those fields are no longer returned by the search response
+      // We want to ensure that they don't appear in it anymore
+      expect(response).not.toHaveProperty("vector");
+      expect(response).not.toHaveProperty("_semanticScore");
+    });
+
     test(`${permission} key: search for similar documents`, async () => {
       const client = await getClient(permission);
 
@@ -288,6 +350,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       await client.waitForTask(documentAdditionTask);
 
       const response = await client.index(index.uid).searchSimilarDocuments({
+        embedder: "manual",
         id: "143",
       });
 
