@@ -31,14 +31,14 @@ async function getKey(permission: string): Promise<string> {
 
   if (permission === "Search") {
     const key = keys.find(
-      (key: any) => key.name === "Default Search API Key",
+      (key: Key) => key.name === "Default Search API Key",
     )?.key;
     return key || "";
   }
 
   if (permission === "Admin") {
     const key = keys.find(
-      (key: any) => key.name === "Default Admin API Key",
+      (key: Key) => key.name === "Default Admin API Key",
     )?.key;
     return key || "";
   }
