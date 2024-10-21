@@ -247,7 +247,8 @@ describe("Documents tests", () => {
             method: "GET",
           },
         );
-        const documentsGet: ResourceResults<Book[]> = await res.json();
+        const documentsGet: ResourceResults<Book[]> =
+          (await res.json()) as ResourceResults<Book[]>;
 
         expect(documentsGet.results.length).toEqual(dataset.length);
         expect(documentsGet.results[0]).toHaveProperty("_vectors");
@@ -281,7 +282,8 @@ describe("Documents tests", () => {
             method: "GET",
           },
         );
-        const documentsGet: ResourceResults<Book[]> = await res.json();
+        const documentsGet: ResourceResults<Book[]> =
+          (await res.json()) as ResourceResults<Book[]>;
 
         expect(documentsGet.results.length).toEqual(dataset.length);
         expect(documentsGet.results[0]).not.toHaveProperty("_vectors");
