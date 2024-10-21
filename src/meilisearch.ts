@@ -170,8 +170,11 @@ export class MeiliSearch {
     try {
       await this.deleteIndex(uid);
       return true;
-    } catch (e: any) {
-      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
+    } catch (e) {
+      if (
+        (e as { code?: ErrorStatusCode }).code ===
+        ErrorStatusCode.INDEX_NOT_FOUND
+      ) {
         return false;
       }
       throw e;
