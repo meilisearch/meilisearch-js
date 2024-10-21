@@ -1433,15 +1433,15 @@ describe.each([
 
     controllerB.abort();
 
-    searchDPromise.then((response) => {
+    void searchDPromise.then((response) => {
       expect(response).toHaveProperty("query", searchQuery);
     });
 
-    searchCPromise.then((response) => {
+    void searchCPromise.then((response) => {
       expect(response).toHaveProperty("query", searchQuery);
     });
 
-    searchAPromise.then((response) => {
+    void searchAPromise.then((response) => {
       expect(response).toHaveProperty("query", searchQuery);
     });
 
@@ -1463,7 +1463,7 @@ describe.each([
     try {
       await client.health();
     } catch (e) {
-      expect(e.cause as { message: string }).toEqual(
+      expect((e.cause as { message: string }).message).toEqual(
         "request timed out after 1ms",
       );
       expect(e.name).toEqual("MeiliSearchRequestError");

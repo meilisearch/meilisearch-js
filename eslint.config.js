@@ -33,7 +33,6 @@ export default tseslint.config([
       // ~~
       "@typescript-eslint/no-unsafe-return": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-floating-promises": "off",
       // ~~
       "@typescript-eslint/array-type": ["warn", { default: "array-simple" }],
       // TODO: Should be careful with this rule, should leave it be and disable
