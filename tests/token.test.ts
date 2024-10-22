@@ -247,7 +247,7 @@ describe.each([{ permission: "Admin" }])(
         expiresAt: date,
       });
 
-      const [_, payload] = token.split(".");
+      const payload = token.split(".")?.[1];
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
       const { exp } = JSON.parse(decode64(payload)) as TokenPayload;
