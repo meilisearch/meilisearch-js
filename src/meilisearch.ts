@@ -60,7 +60,7 @@ export class MeiliSearch {
    * @param indexUid - The index UID
    * @returns Instance of Index
    */
-  index<T extends Record<string, any> = Record<string, any>>(
+  index<T extends Record<string, unknown> = Record<string, unknown>>(
     indexUid: string,
   ): Index<T> {
     return new Index<T>(this.config, indexUid);
@@ -73,7 +73,7 @@ export class MeiliSearch {
    * @param indexUid - The index UID
    * @returns Promise returning Index instance
    */
-  async getIndex<T extends Record<string, any> = Record<string, any>>(
+  async getIndex<T extends Record<string, unknown> = Record<string, unknown>>(
     indexUid: string,
   ): Promise<Index<T>> {
     return new Index<T>(this.config, indexUid).fetchInfo();
