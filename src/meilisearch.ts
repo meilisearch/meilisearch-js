@@ -172,8 +172,8 @@ export class MeiliSearch {
       return true;
     } catch (e) {
       if (
-        (e as { code?: ErrorStatusCode }).code ===
-        ErrorStatusCode.INDEX_NOT_FOUND
+        e instanceof MeiliSearchApiError &&
+        e.cause?.code === ErrorStatusCode.INDEX_NOT_FOUND
       ) {
         return false;
       }
