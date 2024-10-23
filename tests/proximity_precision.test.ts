@@ -86,7 +86,7 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])("Tests on url construction", ({ host, trailing }) => {
-  test(`Test getProximityPrecision route`, async () => {
+  test(`getProximityPrecision route`, async () => {
     const route = `indexes/${index.uid}/settings/proximity-precision`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -98,7 +98,7 @@ describe.each([
     );
   });
 
-  test(`Test updateProximityPrecision route`, async () => {
+  test(`updateProximityPrecision route`, async () => {
     const route = `indexes/${index.uid}/settings/proximity-precision`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -110,7 +110,7 @@ describe.each([
     );
   });
 
-  test(`Test resetProximityPrecision route`, async () => {
+  test(`resetProximityPrecision route`, async () => {
     const route = `indexes/${index.uid}/settings/proximity-precision`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;

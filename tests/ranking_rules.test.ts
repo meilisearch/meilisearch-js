@@ -164,7 +164,7 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])("Tests on url construction", ({ host, trailing }) => {
-  test(`Test getRankingRules route`, async () => {
+  test(`getRankingRules route`, async () => {
     const route = `indexes/${index.uid}/settings/ranking-rules`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -176,7 +176,7 @@ describe.each([
     );
   });
 
-  test(`Test updateRankingRules route`, async () => {
+  test(`updateRankingRules route`, async () => {
     const route = `indexes/${index.uid}/settings/ranking-rules`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -188,7 +188,7 @@ describe.each([
     );
   });
 
-  test(`Test resetRankingRules route`, async () => {
+  test(`resetRankingRules route`, async () => {
     const route = `indexes/${index.uid}/settings/ranking-rules`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
