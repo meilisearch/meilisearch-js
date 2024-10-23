@@ -168,7 +168,7 @@ describe.each([
   { host: `${BAD_HOST}/api`, trailing: false },
   { host: `${BAD_HOST}/trailing/`, trailing: true },
 ])("Tests on url construction", ({ host, trailing }) => {
-  test(`Test getPagination route`, async () => {
+  test(`getPagination route`, async () => {
     const route = `indexes/${index.uid}/settings/pagination`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -180,7 +180,7 @@ describe.each([
     );
   });
 
-  test(`Test updatePagination route`, async () => {
+  test(`updatePagination route`, async () => {
     const route = `indexes/${index.uid}/settings/pagination`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
@@ -192,7 +192,7 @@ describe.each([
     );
   });
 
-  test(`Test resetPagination route`, async () => {
+  test(`resetPagination route`, async () => {
     const route = `indexes/${index.uid}/settings/pagination`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
