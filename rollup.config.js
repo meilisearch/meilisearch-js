@@ -25,16 +25,22 @@ const PLUGINS = [
   }),
 ];
 
+const INDEX_INPUT = "src/index.ts";
+const TOKEN_INPUT = "src/token.ts";
+
+const INDEX_EXPORTS = pkg.exports["."];
+const TOKEN_EXPORTS = pkg.exports["./token"];
+
 module.exports = [
-  // browser-friendly UMD build
+  // Index
   {
-    input: "src/browser.ts", // directory to transpilation of typescript
+    input: INDEX_INPUT,
     output: {
       name: "window",
       extend: true,
       file: getOutputFileName(
         // will add .min. in filename if in production env
-        resolve(ROOT, pkg.jsdelivr),
+        resolve(ROOT, INDEX_EXPORTS.browser),
         env === "production",
       ),
       format: "umd",
@@ -67,36 +73,49 @@ module.exports = [
       }),
       // nodePolyfills
       json(),
-      env === "production" ? terser() : {}, // will minify the file in production mode
+      env === "production" ? terser() : {},
     ],
   },
-
-  // ES module (for bundlers) build.
   {
-    input: "src/index.ts",
+    input: INDEX_INPUT,
     output: [
       {
-        file: getOutputFileName(
-          resolve(ROOT, pkg.module),
-          env === "production",
-        ),
+        file: INDEX_EXPORTS.import,
         exports: "named",
         format: "es",
-        sourcemap: env === "production", // create sourcemap for error reporting in production mode
+        sourcemap: env === "production",
       },
     ],
     plugins: PLUGINS,
   },
-  // Common JS build (Node).
-  // Compatible only in a nodeJS environment.
   {
-    input: "src/index.ts",
+    input: INDEX_INPUT,
     output: {
-      file: getOutputFileName(
-        // will add .min. in filename if in production env
-        resolve(ROOT, pkg.main),
-        env === "production",
-      ),
+      file: INDEX_EXPORTS.require,
+      exports: "named",
+      format: "cjs",
+      sourcemap: env === "production",
+    },
+    plugins: PLUGINS,
+  },
+
+  // Token
+  {
+    input: TOKEN_INPUT,
+    output: [
+      {
+        file: TOKEN_EXPORTS.import,
+        exports: "named",
+        format: "es",
+        sourcemap: env === "production",
+      },
+    ],
+    plugins: PLUGINS,
+  },
+  {
+    input: TOKEN_INPUT,
+    output: {
+      file: TOKEN_EXPORTS.require,
       exports: "named",
       format: "cjs",
       sourcemap: env === "production", // create sourcemap for error reporting in production mode

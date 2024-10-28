@@ -1,17 +1,11 @@
 {
   "extends": "../../../tsconfig.json",
   "compilerOptions": {
-      "noEmit": false,
-      "baseUrl": "",
-      "declarationDir": "./dist/types",
-      "lib": [
-        "ES2020",
-        "dom" // Added to get Request type error
-    ],
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "outDir": "./dist",
-      "types": ["../../../dist/types"]
+    "noEmit": false,
+    "noEmitOnError": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "outDir": "./dist"
   },
   "include": ["src/index.ts"]
 }

@@ -1110,6 +1110,6 @@ export type TokenSearchRules =
   | string[];
 
 export type TokenOptions = {
-  apiKey?: string;
+  apiKey: string;
   expiresAt?: Date;
 };

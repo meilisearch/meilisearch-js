@@ -29,6 +29,12 @@
       "import": "./dist/bundles/meilisearch.mjs",
       "require": "./dist/bundles/meilisearch.cjs",
       "default": "./dist/bundles/meilisearch.umd.js"
+    },
+    "./token": {
+      "types": "./dist/types/token.d.ts",
+      "import": "./dist/bundles/token.mjs",
+      "require": "./dist/bundles/token.cjs",
+      "default": "./dist/bundles/token.cjs"
     }
   },
   "sideEffects": false,
