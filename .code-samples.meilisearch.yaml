@@ -761,10 +761,19 @@ search_parameter_reference_ranking_score_threshold_1: |-
 search_parameter_reference_retrieve_vectors_1: |-
   client.index('INDEX_NAME').search('kitchen utensils', {
     retrieveVectors: true,
-    hybrid: { embedder: 'default'}
+    hybrid: {
+      embedder: 'EMBEDDER_NAME'
+    }
+  })
+search_parameter_guide_hybrid_1: |-
+  client.index('INDEX_NAME').search('kitchen utensils', {
+    hybrid: {
+      semanticRatio: 0.9,
+      embedder: 'EMBEDDER_NAME'
+    }
   })
 get_similar_post_1: |-
-  client.index('INDEX_NAME').searchSimilarDocuments({ id: 'TARGET_DOCUMENT_ID'})
+  client.index('INDEX_NAME').searchSimilarDocuments({ id: 'TARGET_DOCUMENT_ID', embedder: 'default' })
 search_parameter_guide_matching_strategy_3: |-
   client.index('movies').search('white shirt', {
     matchingStrategy: 'frequency'
@@ -790,7 +799,7 @@ multi_search_federated_1: |-
     ]
   })
 search_parameter_reference_locales_1: |-
-  client.index('INDEX_NAME').search('進撃の巨人', { locales: ['jpn'] })
+  client.index('INDEX_NAME').search('QUERY TEXT IN JAPANESE', { locales: ['jpn'] })
 get_localized_attribute_settings_1: |-
   client.index('INDEX_NAME').getLocalizedAttributes()
 update_localized_attribute_settings_1: |-
