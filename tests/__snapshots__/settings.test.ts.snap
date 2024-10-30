@@ -249,8 +249,9 @@ exports[`Test on settings > Admin key: Update embedders settings  1`] = `
   "distinctAttribute": null,
   "embedders": {
     "default": {
-      "documentTemplate": "{% for field in fields %} {{ field.name }}: {{ field.value }}
-{% endfor %}",
+      "documentTemplate": "{% for field in fields %}{% if field.is_searchable and field.value != nil %}{{ field.name }}: {{ field.value }}
+{% endif %}{% endfor %}",
+      "documentTemplateMaxBytes": 400,
       "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
       "source": "huggingFace",
     },
@@ -804,8 +805,9 @@ exports[`Test on settings > Master key: Update embedders settings  1`] = `
   "distinctAttribute": null,
   "embedders": {
     "default": {
-      "documentTemplate": "{% for field in fields %} {{ field.name }}: {{ field.value }}
-{% endfor %}",
+      "documentTemplate": "{% for field in fields %}{% if field.is_searchable and field.value != nil %}{{ field.name }}: {{ field.value }}
+{% endif %}{% endfor %}",
+      "documentTemplateMaxBytes": 400,
       "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
       "source": "huggingFace",
     },

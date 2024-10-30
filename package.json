@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.44.1",
+  "version": "0.45.0",
   "description": "The Meilisearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -29,6 +29,12 @@
       "import": "./dist/bundles/meilisearch.mjs",
       "require": "./dist/bundles/meilisearch.cjs",
       "default": "./dist/bundles/meilisearch.umd.js"
+    },
+    "./token": {
+      "types": "./dist/types/token.d.ts",
+      "import": "./dist/bundles/token.mjs",
+      "require": "./dist/bundles/token.cjs",
+      "default": "./dist/bundles/token.cjs"
     }
   },
   "sideEffects": false,

@@ -700,6 +700,8 @@ authorization_header_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
   client.getKeys()
 tenant_token_guide_generate_sdk_1: |-
+  import { generateTenantToken } from 'meilisearch/token'
+
   const searchRules = {
     patient_medical_records: {
       filter: 'user_id = 1'
@@ -709,7 +711,7 @@ tenant_token_guide_generate_sdk_1: |-
   const apiKeyUid = '85c3c2f9-bdd6-41f1-abd8-11fcf80e0f76'
   const expiresAt = new Date('2025-12-20') // optional
 
-  const token = await client.generateTenantToken(apiKeyUid, searchRules, {
+  const token = await generateTenantToken(apiKeyUid, searchRules, {
     apiKey: apiKey,
     expiresAt: expiresAt,
   })
@@ -759,10 +761,19 @@ search_parameter_reference_ranking_score_threshold_1: |-
 search_parameter_reference_retrieve_vectors_1: |-
   client.index('INDEX_NAME').search('kitchen utensils', {
     retrieveVectors: true,
-    hybrid: { embedder: 'default'}
+    hybrid: {
+      embedder: 'EMBEDDER_NAME'
+    }
+  })
+search_parameter_guide_hybrid_1: |-
+  client.index('INDEX_NAME').search('kitchen utensils', {
+    hybrid: {
+      semanticRatio: 0.9,
+      embedder: 'EMBEDDER_NAME'
+    }
   })
 get_similar_post_1: |-
-  client.index('INDEX_NAME').searchSimilarDocuments({ id: 'TARGET_DOCUMENT_ID'})
+  client.index('INDEX_NAME').searchSimilarDocuments({ id: 'TARGET_DOCUMENT_ID', embedder: 'default' })
 search_parameter_guide_matching_strategy_3: |-
   client.index('movies').search('white shirt', {
     matchingStrategy: 'frequency'
@@ -788,7 +799,7 @@ multi_search_federated_1: |-
     ]
   })
 search_parameter_reference_locales_1: |-
-  client.index('INDEX_NAME').search('進撃の巨人', { locales: ['jpn'] })
+  client.index('INDEX_NAME').search('QUERY TEXT IN JAPANESE', { locales: ['jpn'] })
 get_localized_attribute_settings_1: |-
   client.index('INDEX_NAME').getLocalizedAttributes()
 update_localized_attribute_settings_1: |-

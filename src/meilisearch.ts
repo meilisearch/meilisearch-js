@@ -5,7 +5,7 @@
  * Copyright: 2019, MeiliSearch
  */
 
-import { Index } from "../indexes";
+import { Index } from "./indexes";
 import {
   KeyCreation,
   Config,
@@ -16,8 +16,6 @@ import {
   Stats,
   Version,
   ErrorStatusCode,
-  TokenSearchRules,
-  TokenOptions,
   KeyUpdate,
   IndexesQuery,
   IndexesResults,
@@ -30,12 +28,12 @@ import {
   SearchResponse,
   FederatedMultiSearchParams,
   ExtraRequestInit,
-} from "../types";
-import { HttpRequests } from "../http-requests";
-import { TaskClient } from "../task";
-import { EnqueuedTask } from "../enqueued-task";
+} from "./types";
+import { HttpRequests } from "./http-requests";
+import { TaskClient } from "./task";
+import { EnqueuedTask } from "./enqueued-task";
 
-class Client {
+export class MeiliSearch {
   config: Config;
   httpRequest: HttpRequests;
   tasks: TaskClient;
@@ -473,29 +471,4 @@ class Client {
 
     return new EnqueuedTask(task);
   }
-
-  ///
-  /// TOKENS
-  ///
-
-  /**
-   * Generate a tenant token
-   *
-   * @param apiKeyUid - The uid of the api key used as issuer of the token.
-   * @param searchRules - Search rules that are applied to every search.
-   * @param options - Token options to customize some aspect of the token.
-   * @returns The token in JWT format.
-   */
-  generateTenantToken(
-    _apiKeyUid: string,
-    _searchRules: TokenSearchRules,
-    _options?: TokenOptions,
-  ): Promise<string> {
-    const error = new Error();
-    error.message = `Meilisearch: failed to generate a tenant token. Generation of a token only works in a node environment \n ${error.stack}.`;
-
-    return Promise.reject(error);
-  }
 }
-
-export { Client };
