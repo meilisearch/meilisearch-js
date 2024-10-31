@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       meilisearch:
-        image: getmeili/meilisearch:v1.11.0
+        image: getmeili/meilisearch:latest
         env:
           MEILI_MASTER_KEY: 'masterKey'
           MEILI_NO_ANALYTICS: 'true'
