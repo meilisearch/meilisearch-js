@@ -1207,6 +1207,16 @@ describe.each([
       client.index(index.uid).search("prince", {}),
     ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INDEX_NOT_FOUND);
   });
+
+  test(`${permission} key: search with match position indices`, async () => {
+    const client = await getClient(permission);
+    const response = await client.index(index.uid).search("fantasy", {
+      showMatchesPosition: true,
+    });
+    expect(response.hits[0]._matchesPosition).toEqual({
+      genre: [{ start: 0, length: 7, indices: [0] }],
+    });
+  });
 });
 
 describe.each([{ permission: "No" }])(
