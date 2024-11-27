@@ -560,6 +560,17 @@ describe.each([
     expect(response.hits[0]).not.toHaveProperty("_vectors");
   });
 
+  test(`${permission} key: matches position contain indices`, async () => {
+    const client = await getClient(permission);
+    const response = await client.index(index.uid).searchGet("fantasy", {
+      showMatchesPosition: true,
+    });
+    expect(response.hits[0]._matchesPosition).toEqual({
+      genre: [{ start: 0, length: 7, indices: [0] }],
+    });
+  });
+
+  // This test deletes the index, so following tests may fail if they need an existing index
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient("Master");
@@ -568,16 +579,6 @@ describe.each([
     await expect(
       client.index(index.uid).searchGet("prince"),
     ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INDEX_NOT_FOUND);
-  });
-
-  test(`${permission} key: search with match position indices`, async () => {
-    const client = await getClient(permission);
-    const response = await client.index(index.uid).search("fantasy", {
-      showMatchesPosition: true,
-    });
-    expect(response.hits[0]._matchesPosition).toEqual({
-      genre: [{ start: 0, length: 7, indices: [0] }],
-    });
   });
 });
 
