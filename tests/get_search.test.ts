@@ -23,39 +23,43 @@ const dataset = [
     id: 123,
     title: "Pride and Prejudice",
     comment: "A great book",
-    genre: "romance",
+    genre: ["romance", "classic"],
   },
   {
     id: 456,
     title: "Le Petit Prince",
     comment: "A french book about a prince that walks on little cute planets",
-    genre: "adventure",
+    genre: ["adventure", "fantasy"],
   },
   {
     id: 2,
     title: "Le Rouge et le Noir",
     comment: "Another french book",
-    genre: "romance",
+    genre: ["romance", "classic"],
   },
   {
     id: 1,
     title: "Alice In Wonderland",
     comment: "A weird book",
-    genre: "adventure",
+    genre: ["adventure", "fantasy"],
   },
   {
     id: 1344,
     title: "The Hobbit",
     comment: "An awesome book",
-    genre: "sci fi",
+    genre: ["sci-fi", "fantasy", "adventure"],
   },
   {
     id: 4,
     title: "Harry Potter and the Half-Blood Prince",
     comment: "The best book",
-    genre: "fantasy",
+    genre: ["fantasy", "adventure"],
   },
-  { id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: "fantasy" },
+  {
+    id: 42,
+    title: "The Hitchhiker's Guide to the Galaxy",
+    genre: ["fantasy", "sci-fi", "comedy"]
+  },
 ];
 
 afterAll(() => {
@@ -189,7 +193,7 @@ describe.each([
         id: 4,
         title: "Harry Potter and the Half-Blood Prince",
         comment: "The best book",
-        genre: "fantasy",
+        genre: ["fantasy", "adventure"],
       },
     ]);
     expect(response).toHaveProperty("offset", 1);
