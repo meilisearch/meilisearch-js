@@ -71,7 +71,7 @@ const dataset = [
     id: 42,
     title: "The Hitchhiker's Guide to the Galaxy",
     author: "Douglas Adams",
-    genre: ["sci fi", "comedy"]
+    genre: ["sci fi", "comedy"],
   },
 ];
 
@@ -447,7 +447,7 @@ describe.each([
     expect(response).toHaveProperty("facetDistribution", {
       genre: {
         adventure: 3,
-        fantasy: 3
+        fantasy: 3,
       },
     });
     expect(response.hits.length).toEqual(3);

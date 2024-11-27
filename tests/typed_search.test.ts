@@ -97,7 +97,7 @@ const dataset = [
     id: 42,
     title: "The Hitchhiker's Guide to the Galaxy",
     author: "Douglas Adams",
-    genre: ["sci fi", "comedy"]
+    genre: ["sci fi", "comedy"],
   },
 ];
 
