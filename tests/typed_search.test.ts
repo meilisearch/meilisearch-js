@@ -28,7 +28,7 @@ interface Movie {
   id: number;
   title: string;
   comment?: string;
-  genre?: string;
+  genre?: string[];
   isNull?: null;
   isTrue?: boolean;
 }
@@ -46,42 +46,59 @@ const dataset = [
   {
     id: 123,
     title: "Pride and Prejudice",
+    author: "Jane Austen",
     comment: "A great book",
-    genre: "romance",
+    genre: ["romance"],
   },
   {
     id: 456,
     title: "Le Petit Prince",
+    author: "Antoine de Saint-Exupéry",
     comment: "A french book about a prince that walks on little cute planets",
-    genre: "adventure",
+    genre: ["adventure"],
     isNull: null,
     isTrue: true,
   },
   {
     id: 2,
     title: "Le Rouge et le Noir",
+    author: "Stendhal",
     comment: "Another french book",
-    genre: "romance",
+    genre: ["romance"],
   },
   {
     id: 1,
     title: "Alice In Wonderland",
+    author: "Lewis Carroll",
     comment: "A weird book",
-    genre: "adventure",
+    genre: ["adventure"],
   },
   {
     id: 1344,
     title: "The Hobbit",
+    author: "J.R.R. Tolkien",
     comment: "An awesome book",
-    genre: "sci fi",
+    genre: ["fantasy", "adventure"],
   },
   {
     id: 4,
     title: "Harry Potter and the Half-Blood Prince",
+    author: "J.K. Rowling",
     comment: "The best book",
-    genre: "fantasy",
+    genre: ["fantasy", "adventure"],
   },
-  { id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: "fantasy" },
+  {
+    id: 5,
+    title: "Harry Potter and the Deathly Hallows",
+    author: "J.K. Rowling",
+    genre: ["fantasy", "adventure"],
+  },
+  {
+    id: 42,
+    title: "The Hitchhiker's Guide to the Galaxy",
+    author: "Douglas Adams",
+    genre: ["sci fi", "comedy"]
+  },
 ];
 
 afterAll(() => {
@@ -162,7 +179,7 @@ describe.each([
       "Harry Potter and the Half-Blood Prince",
     );
     expect(response.hits[0].comment).toEqual("The best book");
-    expect(response.hits[0].genre).toEqual("fantasy");
+    expect(response.hits[0].genre).toEqual(["fantasy", "adventure"]);
     expect(response.query === "prince").toBeTruthy();
   });
 
@@ -340,8 +357,8 @@ describe.each([
       filter: ["genre = fantasy"],
       facets: ["genre"],
     });
-    expect(response.facetDistribution?.genre?.fantasy === 2).toBeTruthy();
-    expect(response.hits.length === 2).toBeTruthy();
+    expect(response.facetDistribution?.genre?.fantasy === 3).toBeTruthy();
+    expect(response.hits.length === 3).toBeTruthy();
   });
 
   test(`${permission} key: Search with multiple filter and placeholder search using NULL`, async () => {
@@ -350,8 +367,8 @@ describe.each([
       filter: ["genre = fantasy"],
       facets: ["genre"],
     });
-    expect(response.facetDistribution?.genre?.fantasy === 2).toBeTruthy();
-    expect(response.hits.length === 2).toBeTruthy();
+    expect(response.facetDistribution?.genre?.fantasy === 3).toBeTruthy();
+    expect(response.hits.length === 3).toBeTruthy();
   });
 
   test(`${permission} key: Search on index with no documents and no primary key`, async () => {
@@ -375,8 +392,8 @@ describe.each([
     expect(response.hits.length).toEqual(1);
     expect(response.hitsPerPage === 1).toBeTruthy();
     expect(response.page === 1).toBeTruthy();
-    expect(response.totalPages === 7).toBeTruthy();
-    expect(response.totalHits === 7).toBeTruthy();
+    expect(response.totalPages === 8).toBeTruthy();
+    expect(response.totalHits === 8).toBeTruthy();
   });
 
   test(`${permission} key: Try to Search on deleted index and fail`, async () => {
