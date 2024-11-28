@@ -34,6 +34,20 @@ describe.each([
       expect(batch.startedAt).toBeDefined();
       expect(batch.finishedAt).toBeDefined();
     });
+
+    test(`${permission} key: Get all batches`, async () => {
+      const client = await getClient(permission);
+      const batches = await client.getBatches({ limit: 2});
+      expect(batches.results).toBeInstanceOf(Array);
+      expect(batches.results.length).toEqual(2);
+      expect(batches.total).toBeGreaterThan(0);
+      expect(batches.results[0]).toHaveProperty("uid");
+      expect(batches.results[0]).toHaveProperty("details");
+      expect(batches.results[0]).toHaveProperty("stats");
+      expect(batches.results[0]).toHaveProperty("duration");
+      expect(batches.results[0]).toHaveProperty("startedAt");
+      expect(batches.results[0]).toHaveProperty("finishedAt");
+    });
   },
 );
 
