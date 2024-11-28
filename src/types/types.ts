@@ -566,6 +566,10 @@ export type EnqueuedTaskObject = {
 
 export type TaskObject = Omit<EnqueuedTaskObject, "taskUid"> & {
   uid: number;
+  /**
+   * The UID of the batch that the task belongs to (`null` for enqueued tasks)
+   */
+  batchUid: number | null;
   details: {
     // Number of documents sent
     receivedDocuments?: number;
