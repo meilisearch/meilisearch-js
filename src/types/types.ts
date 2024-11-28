@@ -567,9 +567,7 @@ export type EnqueuedTaskObject = {
 
 export type TaskObject = Omit<EnqueuedTaskObject, "taskUid"> & {
   uid: number;
-  /**
-   * The UID of the batch that the task belongs to (`null` for enqueued tasks)
-   */
+  /** The UID of the batch that the task belongs to (`null` for enqueued tasks) */
   batchUid: number | null;
   details: {
     // Number of documents sent
@@ -657,7 +655,8 @@ export type WaitOptions = {
  */
 
 /**
- * Represents a batch operation object containing information about tasks processing
+ * Represents a batch operation object containing information about tasks
+ * processing
  */
 export type BatchObject = {
   /** Unique identifier for the batch */
@@ -720,7 +719,7 @@ export type BatchesQuery = {
   afterFinishedAt?: Date;
   limit?: number;
   from?: number;
-}
+};
 
 export type BatchesResults = CursorResults<Batch>;
 export type BatchesResultsObject = CursorResults<BatchObject>;
@@ -1191,4 +1190,3 @@ export type TokenOptions = {
   apiKey: string;
   expiresAt?: Date;
 };
-
