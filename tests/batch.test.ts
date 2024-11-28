@@ -1,10 +1,14 @@
 import { afterAll, beforeEach, describe, expect, test } from "vitest";
+<<<<<<< HEAD
 import {
   config,
   getClient,
   clearAllIndexes,
 } from "./utils/meilisearch-test-utils";
 import { sleep } from "../src/utils";
+=======
+import { config, getClient, clearAllIndexes } from "./utils/meilisearch-test-utils";
+>>>>>>> 87ac02b (Add getBatch)
 
 const index = {
   uid: "batch-test",
@@ -14,6 +18,7 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
+<<<<<<< HEAD
 describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   "Tests on batches",
   ({ permission }) => {
@@ -55,6 +60,25 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const batch = await client.getBatch(batches.results[0].uid);
       expect(batch.uid).toEqual(batches.results[0].uid);
       expect(batch.details).toBeInstanceOf(Object);
+=======
+describe.each([
+  { permission: "Master" },
+  { permission: "Admin" }
+])("Tests on batches",
+  ({ permission }) => {
+    beforeEach(async () => {
+      const client = await getClient("Master");
+      const { taskUid } = await client.createIndex(index.uid);
+      await client.waitForTask(taskUid);
+    });
+
+    test(`${permission} key: Get one batch`, async () => {
+      const client = await getClient(permission);
+      const batch = await client.getBatch(1);
+      expect(batch.uid).toEqual(1);
+      expect(batch.details).toHaveProperty("receivedDocuments");
+      expect(batch.details).toHaveProperty("indexedDocuments");
+>>>>>>> 87ac02b (Add getBatch)
       expect(batch.stats).toHaveProperty("totalNbTasks");
       expect(batch.stats).toHaveProperty("status");
       expect(batch.stats).toHaveProperty("types");
@@ -65,3 +89,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     });
   },
 );
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87ac02b (Add getBatch)
