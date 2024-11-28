@@ -549,7 +549,10 @@ export type TasksQuery = {
   afterFinishedAt?: Date;
   limit?: number;
   from?: number;
-  /** If true, the tasks are returned in reverse order */
+  /**
+   * If true, the tasks are returned in reverse order
+   * Requires Meilisearch 1.12.0 or later.
+   */
   reverse?: boolean;
 };
 
