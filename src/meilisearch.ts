@@ -32,15 +32,19 @@ import {
   MultiSearchResponse,
   SearchResponse,
   FederatedMultiSearchParams,
+  BatchesResults,
+  BatchesQuery,
 } from "./types";
 import { HttpRequests } from "./http-requests";
 import { TaskClient, Task } from "./task";
 import { EnqueuedTask } from "./enqueued-task";
+import { Batch, BatchClient } from "./batch";
 
 export class MeiliSearch {
   config: Config;
   httpRequest: HttpRequests;
   tasks: TaskClient;
+  batches: BatchClient;
 
   /**
    * Creates new MeiliSearch instance
@@ -51,6 +55,7 @@ export class MeiliSearch {
     this.config = config;
     this.httpRequest = new HttpRequests(config);
     this.tasks = new TaskClient(config);
+    this.batches = new BatchClient(config);
   }
 
   /**
@@ -307,6 +312,26 @@ export class MeiliSearch {
    */
   async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
     return await this.tasks.deleteTasks(parameters);
+  }
+
+  /**
+   * Get all the batches
+   *
+   * @param parameters - Parameters to browse the batches
+   * @returns Promise returning all batches
+   */
+  async getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults> {
+    return await this.batches.getBatches(parameters);
+  }
+
+  /**
+   * Get one batch
+   *
+   * @param uid - Batch identifier
+   * @returns Promise returning a batch
+   */
+  async getBatch(uid: number): Promise<Batch> {
+    return await this.batches.getBatch(uid);
   }
 
   ///

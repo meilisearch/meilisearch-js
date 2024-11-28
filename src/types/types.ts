@@ -5,6 +5,7 @@
 // TypeScript Version: ^3.8.3
 
 import { Task } from "../task";
+import { Batch } from "../batch";
 
 export type Config = {
   host: string;
@@ -650,6 +651,54 @@ export type WaitOptions = {
   timeOutMs?: number;
   intervalMs?: number;
 };
+
+/*
+ ** BATCHES
+ */
+
+export type BatchObject = {
+  uid: number;
+  // TODO
+  details: null;
+  progress: null;
+  stats: {
+    totalNbTasks: number;
+    status: {
+      succeeded: number;
+      failed: number;
+      canceled: number;
+      processing: number;
+      enqueued: number;
+    };
+    // TODO
+    types: null;
+    indexUids: string[];
+  };
+  startedAt: string;
+  finishedAt: string;
+  // TODO
+  duration: string;
+};
+
+export type BatchesQuery = {
+  uids?: number[];
+  batchUids?: number[];
+  types?: TaskTypes[];
+  statuses?: TaskStatus[];
+  indexUids?: string[];
+  canceledBy?: number[];
+  beforeEnqueuedAt?: Date;
+  afterEnqueuedAt?: Date;
+  beforeStartedAt?: Date;
+  afterStartedAt?: Date;
+  beforeFinishedAt?: Date;
+  afterFinishedAt?: Date;
+  limit?: number;
+  from?: number;
+}
+
+export type BatchesResults = CursorResults<Batch>;
+export type BatchesResultsObject = CursorResults<BatchObject>;
 
 /*
  *** HEALTH
