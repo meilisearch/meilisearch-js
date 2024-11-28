@@ -707,6 +707,7 @@ export type BatchObject = {
 };
 
 export type BatchesQuery = {
+  /** The batch should contain the specified task UIDs */
   uids?: number[];
   batchUids?: number[];
   types?: TaskTypes[];

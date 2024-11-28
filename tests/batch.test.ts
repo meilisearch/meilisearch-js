@@ -4,6 +4,7 @@ import {
   getClient,
   clearAllIndexes,
 } from "./utils/meilisearch-test-utils";
+import { sleep } from "../src/utils";
 
 const index = {
   uid: "batch-test",
@@ -18,13 +19,20 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.createIndex(index.uid);
+      const { taskUid } = await client.createIndex(
+        `${permission}-${index.uid}`,
+      );
       await client.waitForTask(taskUid);
     });
 
     test(`${permission} key: Get all batches`, async () => {
       const client = await getClient(permission);
+      const { taskUid } = await client.createIndex(
+        `${permission}-${index.uid}-second-index`,
+      );
+      await client.waitForTask(taskUid);
       const batches = await client.getBatches({ limit: 2 });
+
       expect(batches.results).toBeInstanceOf(Array);
       expect(batches.results.length).toEqual(2);
       expect(batches.total).toBeGreaterThan(0);
@@ -38,11 +46,16 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get one batch`, async () => {
       const client = await getClient(permission);
-      const batches = await client.getBatches();
-      const existingBatch = batches.results[0];
 
-      const batch = await client.getBatch(existingBatch.uid);
-      expect(batch.uid).toEqual(existingBatch.uid);
+      const batches = await client.getBatches({
+        limit: 1,
+      });
+      console.log("batches", batches.results[0].uid, "exists");
+
+      await sleep(25);
+
+      const batch = await client.getBatch(batches.results[0].uid);
+      expect(batch.uid).toEqual(batches.results[0].uid);
       expect(batch.details).toBeInstanceOf(Object);
       expect(batch.stats).toHaveProperty("totalNbTasks");
       expect(batch.stats).toHaveProperty("status");
