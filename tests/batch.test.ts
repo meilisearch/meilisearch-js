@@ -38,9 +38,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get one batch`, async () => {
       const client = await getClient(permission);
-      const batches = await client.getBatches({ limit: 1 });
-      const batch = await client.getBatch(batches.results[0].uid);
-      expect(batch.uid).toEqual(batches.results[0].uid);
+      const batches = await client.getBatches();
+      const existingBatch = batches.results[0];
+
+      const batch = await client.getBatch(existingBatch.uid);
+      expect(batch.uid).toEqual(existingBatch.uid);
       expect(batch.details).toBeInstanceOf(Object);
       expect(batch.stats).toHaveProperty("totalNbTasks");
       expect(batch.stats).toHaveProperty("status");
