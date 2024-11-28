@@ -1,4 +1,4 @@
-import { Config, BatchObject, BatchesQuery, BatchesResults } from "./types";
+import { Config, BatchObject, BatchesQuery, BatchesResults, BatchesResultsObject } from "./types";
 import { HttpRequests, toQueryParams } from "./http-requests";
 
 class Batch {
@@ -47,9 +47,9 @@ class BatchClient {
   async getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults> {
     const url = `tasks`;
 
-    const tasks = await this.httpRequest.get<Promise<TasksResultsObject>>(
+    const tasks = await this.httpRequest.get<Promise<BatchesResultsObject>>(
       url,
-      toQueryParams<TasksQuery>(parameters),
+      toQueryParams<BatchesQuery>(parameters),
     );
 
     return {
