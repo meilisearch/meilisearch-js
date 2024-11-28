@@ -656,27 +656,52 @@ export type WaitOptions = {
  ** BATCHES
  */
 
+/**
+ * Represents a batch operation object containing information about tasks processing
+ */
 export type BatchObject = {
+  /** Unique identifier for the batch */
   uid: number;
-  // TODO
-  details: null;
+
+  /** Details about document processing */
+  details: {
+    /** Number of documents received in the batch */
+    receivedDocuments: number;
+    /** Number of documents successfully indexed */
+    indexedDocuments: number;
+  };
+
+  /** Progress indicator (currently always null) */
   progress: null;
+
+  /** Statistics about tasks within the batch */
   stats: {
+    /** Total number of tasks in the batch */
     totalNbTasks: number;
+    /** Count of tasks in each status */
     status: {
+      /** Number of successfully completed tasks */
       succeeded: number;
+      /** Number of failed tasks */
       failed: number;
+      /** Number of canceled tasks */
       canceled: number;
+      /** Number of tasks currently processing */
       processing: number;
+      /** Number of tasks waiting to be processed */
       enqueued: number;
     };
-    // TODO
-    types: null;
-    indexUids: string[];
+    /** Count of tasks by type */
+    types: Record<TaskTypes, number>;
+    /** Count of tasks by index UID */
+    indexUids: Record<string, number>;
   };
+
+  /** Timestamp when the batch started processing (rfc3339 format) */
   startedAt: string;
+  /** Timestamp when the batch finished processing (rfc3339 format) */
   finishedAt: string;
-  // TODO
+  /** Duration of batch processing */
   duration: string;
 };
 
@@ -1166,3 +1191,4 @@ export type TokenOptions = {
   apiKey: string;
   expiresAt?: Date;
 };
+

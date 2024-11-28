@@ -565,6 +565,20 @@ client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number })
 client.index('myIndex').waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Task[]>
 ```
 
+### Batches <!-- omit in toc -->
+
+#### [Get one batch](https://www.meilisearch.com/docs/reference/api/batches)
+
+```ts
+client.getBatch(uid: number): Promise<Batch>
+```
+
+#### [Get all batches](https://www.meilisearch.com/docs/reference/api/batches)
+
+```ts
+client.getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults>
+```
+
 ### Indexes <!-- omit in toc -->
 
 #### [Get all indexes in Index instances](https://www.meilisearch.com/docs/reference/api/indexes#list-all-indexes)

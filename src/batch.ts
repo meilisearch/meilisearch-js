@@ -1,9 +1,4 @@
-import {
-  Config,
-  BatchObject,
-  BatchesQuery,
-  BatchesResults,
-} from "./types";
+import { Config, BatchObject, BatchesQuery, BatchesResults } from "./types";
 import { HttpRequests, toQueryParams } from "./http-requests";
 
 class Batch {
@@ -62,8 +57,6 @@ class BatchClient {
       results: tasks.results.map((task) => new Batch(task)),
     };
   }
-
-
 }
 
 export { BatchClient, Batch };

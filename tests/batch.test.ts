@@ -1,5 +1,9 @@
 import { afterAll, beforeEach, describe, expect, test } from "vitest";
-import { config, getClient, clearAllIndexes } from "./utils/meilisearch-test-utils";
+import {
+  config,
+  getClient,
+  clearAllIndexes,
+} from "./utils/meilisearch-test-utils";
 
 const index = {
   uid: "batch-test",
@@ -9,10 +13,8 @@ afterAll(() => {
   return clearAllIndexes(config);
 });
 
-describe.each([
-  { permission: "Master" },
-  { permission: "Admin" }
-])("Tests on batches",
+describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+  "Tests on batches",
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
@@ -37,7 +39,7 @@ describe.each([
 
     test(`${permission} key: Get all batches`, async () => {
       const client = await getClient(permission);
-      const batches = await client.getBatches({ limit: 2});
+      const batches = await client.getBatches({ limit: 2 });
       expect(batches.results).toBeInstanceOf(Array);
       expect(batches.results.length).toEqual(2);
       expect(batches.total).toBeGreaterThan(0);
@@ -50,4 +52,3 @@ describe.each([
     });
   },
 );
-
