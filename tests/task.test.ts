@@ -369,6 +369,23 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       );
     });
 
+    test(`${permission} key: Get all tasks in reverse order`, async () => {
+      const currentTimeStamp = Date.now();
+      const currentTime = new Date(currentTimeStamp);
+
+      const client = await getClient(permission);
+      const taskA = await client.index(index.uid).addDocuments([{ id: 1 }]);
+      const taskB = await client.index(index.uid).addDocuments([{ id: 2 }]);
+
+      await client.waitForTask(taskA.taskUid);
+      await client.waitForTask(taskB.taskUid);
+
+      const tasks = await client.getTasks({ afterEnqueuedAt: currentTime });
+      const reversedTasks = await client.getTasks({ afterEnqueuedAt: currentTime, reverse: true });
+      expect(tasks.results.map((t) => t.uid)).toEqual([taskB.taskUid, taskA.taskUid]);
+      expect(reversedTasks.results.map((t) => t.uid)).toEqual([taskA.taskUid, taskB.taskUid]);
+    });
+
     // filters error code: INVALID_TASK_TYPES_FILTER
     test(`${permission} key: Try to filter on task types with wrong type`, async () => {
       const client = await getClient(permission);

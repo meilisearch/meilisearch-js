@@ -557,6 +557,8 @@ export type TasksQuery = {
   afterFinishedAt?: Date;
   limit?: number;
   from?: number;
+  /** If true, the tasks are returned in reverse order */
+  reverse?: boolean;
 };
 
 export type CancelTasksQuery = Omit<TasksQuery, "limit" | "from"> & {};
