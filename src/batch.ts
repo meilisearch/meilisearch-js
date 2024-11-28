@@ -1,4 +1,10 @@
-import { Config, BatchObject, BatchesQuery, BatchesResults, BatchesResultsObject } from "./types";
+import {
+  Config,
+  BatchObject,
+  BatchesQuery,
+  BatchesResults,
+  BatchesResultsObject,
+} from "./types";
 import { HttpRequests, toQueryParams } from "./http-requests";
 
 class Batch {
