@@ -665,9 +665,11 @@ export type BatchObject = {
   /** Details about document processing */
   details: {
     /** Number of documents received in the batch */
-    receivedDocuments: number;
+    receivedDocuments?: number;
     /** Number of documents successfully indexed */
-    indexedDocuments: number;
+    indexedDocuments?: number;
+    /** Number of documents deleted in the batch */
+    deletedDocuments?: number;
   };
 
   /** Progress indicator (currently always null) */

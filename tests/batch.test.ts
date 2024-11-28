@@ -22,21 +22,6 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       await client.waitForTask(taskUid);
     });
 
-    test(`${permission} key: Get one batch`, async () => {
-      const client = await getClient(permission);
-      const batch = await client.getBatch(1);
-      expect(batch.uid).toEqual(1);
-      expect(batch.details).toHaveProperty("receivedDocuments");
-      expect(batch.details).toHaveProperty("indexedDocuments");
-      expect(batch.stats).toHaveProperty("totalNbTasks");
-      expect(batch.stats).toHaveProperty("status");
-      expect(batch.stats).toHaveProperty("types");
-      expect(batch.stats).toHaveProperty("indexUids");
-      expect(batch.duration).toBeDefined();
-      expect(batch.startedAt).toBeDefined();
-      expect(batch.finishedAt).toBeDefined();
-    });
-
     test(`${permission} key: Get all batches`, async () => {
       const client = await getClient(permission);
       const batches = await client.getBatches({ limit: 2 });
@@ -49,6 +34,21 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(batches.results[0]).toHaveProperty("duration");
       expect(batches.results[0]).toHaveProperty("startedAt");
       expect(batches.results[0]).toHaveProperty("finishedAt");
+    });
+
+    test(`${permission} key: Get one batch`, async () => {
+      const client = await getClient(permission);
+      const batches = await client.getBatches({ limit: 1 });
+      const batch = await client.getBatch(batches.results[0].uid);
+      expect(batch.uid).toEqual(batches.results[0].uid);
+      expect(batch.details).toBeInstanceOf(Object);
+      expect(batch.stats).toHaveProperty("totalNbTasks");
+      expect(batch.stats).toHaveProperty("status");
+      expect(batch.stats).toHaveProperty("types");
+      expect(batch.stats).toHaveProperty("indexUids");
+      expect(batch.duration).toBeDefined();
+      expect(batch.startedAt).toBeDefined();
+      expect(batch.finishedAt).toBeDefined();
     });
   },
 );
