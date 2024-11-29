@@ -29,11 +29,10 @@ import {
   CancelTasksQuery,
   DeleteTasksQuery,
   MultiSearchParams,
-  MultiSearchResponse,
-  SearchResponse,
   FederatedMultiSearchParams,
   BatchesResults,
   BatchesQuery,
+  MultiSearchResponseOrSearchResponse,
 } from "./types";
 import { HttpRequests } from "./http-requests";
 import { TaskClient, Task } from "./task";
@@ -219,18 +218,13 @@ export class MeiliSearch {
    * @param config - Additional request configuration options
    * @returns Promise containing the search responses
    */
-  multiSearch<T extends Record<string, unknown> = Record<string, any>>(
-    queries: MultiSearchParams,
+  async multiSearch<
+    T1 extends MultiSearchParams | FederatedMultiSearchParams,
+    T2 extends Record<string, unknown> = Record<string, any>,
+  >(
+    queries: T1,
     config?: Partial<Request>,
-  ): Promise<MultiSearchResponse<T>>;
-  multiSearch<T extends Record<string, unknown> = Record<string, any>>(
-    queries: FederatedMultiSearchParams,
-    config?: Partial<Request>,
-  ): Promise<SearchResponse<T>>;
-  async multiSearch<T extends Record<string, unknown> = Record<string, any>>(
-    queries: MultiSearchParams | FederatedMultiSearchParams,
-    config?: Partial<Request>,
-  ): Promise<MultiSearchResponse<T> | SearchResponse<T>> {
+  ): Promise<MultiSearchResponseOrSearchResponse<T1, T2>> {
     const url = `multi-search`;
 
     return await this.httpRequest.post(url, queries, undefined, config);
