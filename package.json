@@ -99,7 +99,7 @@
     "@vitest/eslint-plugin": "^1.1.4",
     "@types/node": "^22.8.6",
     "brotli-size": "^4.0.0",
-    "eslint": "^9.13.0",
+    "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-tsdoc": "^0.3.0",
     "globals": "^15.12.0",
