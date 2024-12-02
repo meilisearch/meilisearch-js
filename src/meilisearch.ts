@@ -24,10 +24,9 @@ import {
   EnqueuedTaskObject,
   SwapIndexesParams,
   MultiSearchParams,
-  MultiSearchResponse,
-  SearchResponse,
   FederatedMultiSearchParams,
   ExtraRequestInit,
+  MultiSearchResponseOrSearchResponse,
 } from "./types";
 import { HttpRequests } from "./http-requests";
 import { TaskClient } from "./task";
@@ -211,26 +210,21 @@ export class MeiliSearch {
    * ```
    *
    * @param queries - Search queries
-   * @param config - Additional request configuration options
+   * @param extraRequestInit - Additional request configuration options
    * @returns Promise containing the search responses
    */
-  multiSearch<T extends Record<string, unknown> = Record<string, any>>(
-    queries: MultiSearchParams,
+  async multiSearch<
+    T1 extends MultiSearchParams | FederatedMultiSearchParams,
+    T2 extends Record<string, any> = Record<string, any>,
+  >(
+    queries: T1,
     extraRequestInit?: ExtraRequestInit,
-  ): Promise<MultiSearchResponse<T>>;
-  multiSearch<T extends Record<string, unknown> = Record<string, any>>(
-    queries: FederatedMultiSearchParams,
-    extraRequestInit?: ExtraRequestInit,
-  ): Promise<SearchResponse<T>>;
-  async multiSearch<T extends Record<string, unknown> = Record<string, any>>(
-    queries: MultiSearchParams | FederatedMultiSearchParams,
-    extraRequestInit?: ExtraRequestInit,
-  ): Promise<MultiSearchResponse<T> | SearchResponse<T>> {
+  ): Promise<MultiSearchResponseOrSearchResponse<T1, T2>> {
     return (await this.httpRequest.post({
       relativeURL: "multi-search",
       body: queries,
       extraRequestInit,
-    })) as MultiSearchResponse<T> | SearchResponse<T>;
+    })) as MultiSearchResponseOrSearchResponse<T1, T2>;
   }
 
   ///
