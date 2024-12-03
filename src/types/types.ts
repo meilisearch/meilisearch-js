@@ -491,6 +491,8 @@ export type LocalizedAttribute = {
 
 export type LocalizedAttributes = LocalizedAttribute[] | null;
 
+export type PrefixSearch = 'indexingTime' | 'disabled';
+
 export type Settings = {
   filterableAttributes?: FilterableAttributes;
   distinctAttribute?: DistinctAttribute;

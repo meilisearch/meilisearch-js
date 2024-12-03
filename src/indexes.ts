@@ -1457,6 +1457,39 @@ class Index<T extends Record<string, any> = Record<string, any>> {
 
     return new EnqueuedTask(task);
   }
+
+  /**
+   * Get the facet search settings.
+   *
+   * @returns Promise containing object of facet search settings
+   */
+  async getFacetSearch(): Promise<boolean> {
+    const url = `indexes/${this.uid}/settings/facet-search`;
+    return await this.httpRequest.get<boolean>(url);
+  }
+
+  /**
+   * Update the facet search settings.
+   *
+   * @param facetSearch - Boolean value
+   * @returns Promise containing an EnqueuedTask
+   */
+  async updateFacetSearch(facetSearch: boolean): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/facet-search`;
+    return await this.httpRequest.put(url, facetSearch);
+  }
+
+  /**
+   * Reset the facet search settings.
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetFacetSearch(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/facet-search`;
+    const task = await this.httpRequest.delete(url);
+
+    return new EnqueuedTask(task);
+  }
 }
 
 export { Index };
