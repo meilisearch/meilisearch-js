@@ -185,7 +185,7 @@ export type CategoriesDistribution = {
 export type Facet = string;
 export type FacetDistribution = Record<Facet, CategoriesDistribution>;
 export type MatchesPosition<T> = Partial<
-  Record<keyof T, Array<{ start: number; length: number }>>
+  Record<keyof T, Array<{ start: number; length: number; indices?: number[] }>>
 >;
 
 export type RankingScoreDetails = {
