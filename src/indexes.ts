@@ -56,6 +56,7 @@ import {
   SearchSimilarDocumentsParams,
   LocalizedAttributes,
   UpdateDocumentsByFunctionOptions,
+  PrefixSearch,
 } from "./types";
 import { removeUndefinedFromObject } from "./utils";
 import { HttpRequests } from "./http-requests";
@@ -1458,6 +1459,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     return new EnqueuedTask(task);
   }
 
+  ///
+  /// FACET SEARCH SETTINGS
+  ///
+
   /**
    * Get the facet search settings.
    *
@@ -1476,7 +1481,8 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    */
   async updateFacetSearch(facetSearch: boolean): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/facet-search`;
-    return await this.httpRequest.put(url, facetSearch);
+    const task = await this.httpRequest.put(url, facetSearch);
+    return new EnqueuedTask(task);
   }
 
   /**
@@ -1487,9 +1493,46 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   async resetFacetSearch(): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/facet-search`;
     const task = await this.httpRequest.delete(url);
-
     return new EnqueuedTask(task);
   }
+
+  ///
+  /// PREFIX SEARCH SETTINGS
+  ///
+
+  /**
+   * Get the prefix search settings.
+   *
+   * @returns Promise containing object of prefix search settings
+   */
+  async getPrefixSearch(): Promise<PrefixSearch> {
+    const url = `indexes/${this.uid}/settings/prefix-search`;
+    return await this.httpRequest.get<PrefixSearch>(url);
+  }
+
+  /**
+   * Update the prefix search settings.
+   *
+   * @param prefixSearch - PrefixSearch value
+   * @returns Promise containing an EnqueuedTask
+   */
+  async updatePrefixSearch(prefixSearch: PrefixSearch): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/prefix-search`;
+    const task = await this.httpRequest.put(url, prefixSearch);
+    return new EnqueuedTask(task);
+  }
+
+  /**
+   * Reset the prefix search settings.
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetPrefixSearch(): Promise<EnqueuedTask> {
+    const url = `indexes/${this.uid}/settings/prefix-search`;
+    const task = await this.httpRequest.delete(url);
+    return new EnqueuedTask(task);
+  }
+
 }
 
 export { Index };
