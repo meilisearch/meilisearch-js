@@ -92,6 +92,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         nonSeparatorTokens: ["&sep", "/", "|"],
         dictionary: ["J. K.", "J. R. R."],
         searchCutoffMs: 1000,
+        facetSearch: true,
+        prefixSearch: 'indexingTime',
       };
       // Add the settings
       const task = await client.index(index.uid).updateSettings(newSettings);

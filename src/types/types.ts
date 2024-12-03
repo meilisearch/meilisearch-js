@@ -510,6 +510,15 @@ export type Settings = {
   embedders?: Embedders;
   searchCutoffMs?: SearchCutoffMs;
   localizedAttributes?: LocalizedAttributes;
+
+  /**
+   * Enable facet searching on all the filters of an index.
+   */
+  facetSearch?: boolean;
+  /**
+   * Enable the ability to search a word by prefix on an index.
+   */
+  prefixSearch?: 'indexingTime' | false;
 };
 
 /*
