@@ -94,7 +94,7 @@
     "typescript-eslint": "^8.16.0",
     "vitest": "2.0.5",
     "typescript": "^5.7.2",
-    "vite": "^6.0.1",
+    "vite": "^6.0.2",
     "@typescript-eslint/utils": "^8.16.0"
   },
   "packageManager": "yarn@1.22.22"
