@@ -3,7 +3,7 @@ import {
   clearAllIndexes,
   config,
   getClient,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const index = {
   uid: "movies_test",
