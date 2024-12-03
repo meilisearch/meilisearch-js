@@ -518,7 +518,7 @@ export type Settings = {
   /**
    * Enable the ability to search a word by prefix on an index.
    */
-  prefixSearch?: 'indexingTime' | false;
+  prefixSearch?: 'indexingTime' | 'disabled';
 };
 
 /*

@@ -282,6 +282,21 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const updatedSettings = await client.index(index.uid).getSettings();
       expect(updatedSettings.facetSearch).toBe(false);
     });
+
+
+
+    test(`${permission} key: Update settings with prefixSearch`, async () => {
+      const client = await getClient(permission);
+
+      const initialSettings = await client.index(index.uid).getSettings();
+      expect(initialSettings.prefixSearch).toBe('indexingTime');
+
+      const newSettings = { prefixSearch: 'disabled' } satisfies Settings;
+      const { taskUid } = await client.index(index.uid).updateSettings(newSettings);
+      await client.index(index.uid).waitForTask(taskUid);
+      const updatedSettings = await client.index(index.uid).getSettings();
+      expect(updatedSettings.prefixSearch).toBe('disabled');
+    });
   },
 );
 
