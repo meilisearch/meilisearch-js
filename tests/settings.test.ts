@@ -271,31 +271,24 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(response).toMatchSnapshot();
     });
 
-    test(`${permission} key: Update settings with facetSearch`, async () => {
+    test(`${permission} key: Update facetSearch settings on empty index`, async () => {
       const client = await getClient(permission);
-
-      const initialSettings = await client.index(index.uid).getSettings();
-      expect(initialSettings.facetSearch).toBe(true);
 
       const { taskUid } = await client.index(index.uid).updateSettings({  facetSearch: false  });
       await client.index(index.uid).waitForTask(taskUid);
-      const updatedSettings = await client.index(index.uid).getSettings();
-      expect(updatedSettings.facetSearch).toBe(false);
+
+      const response = await client.index(index.uid).getSettings();
+      expect(response).toMatchSnapshot();
     });
 
-
-
-    test(`${permission} key: Update settings with prefixSearch`, async () => {
+    test(`${permission} key: Update prefixSearch settings on an empty index`, async () => {
       const client = await getClient(permission);
 
-      const initialSettings = await client.index(index.uid).getSettings();
-      expect(initialSettings.prefixSearch).toBe('indexingTime');
-
-      const newSettings = { prefixSearch: 'disabled' } satisfies Settings;
-      const { taskUid } = await client.index(index.uid).updateSettings(newSettings);
+      const { taskUid } = await client.index(index.uid).updateSettings({ prefixSearch: 'disabled' });
       await client.index(index.uid).waitForTask(taskUid);
-      const updatedSettings = await client.index(index.uid).getSettings();
-      expect(updatedSettings.prefixSearch).toBe('disabled');
+
+      const response = await client.index(index.uid).getSettings();
+      expect(response).toMatchSnapshot();
     });
   },
 );
