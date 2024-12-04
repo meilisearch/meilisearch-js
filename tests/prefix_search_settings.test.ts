@@ -37,11 +37,13 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Set prefixSearch settings with dedicated endpoint on empty index`, async () => {
       const client = await getClient(permission);
 
-      const { taskUid } = await client.index(index.uid).updatePrefixSearch('disabled');
+      const { taskUid } = await client
+        .index(index.uid)
+        .updatePrefixSearch("disabled");
       await client.index(index.uid).waitForTask(taskUid);
 
       const updatedSettings = await client.index(index.uid).getPrefixSearch();
-      expect(updatedSettings).toBe('disabled');
+      expect(updatedSettings).toBe("disabled");
     });
 
     test(`${permission} key: Reset prefixSearch settings on an empty index`, async () => {
@@ -76,7 +78,7 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to update prefix search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updatePrefixSearch('disabled'),
+        client.index(index.uid).updatePrefixSearch("disabled"),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
@@ -112,7 +114,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to update prefix search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updatePrefixSearch('disabled'),
+        client.index(index.uid).updatePrefixSearch("disabled"),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -153,7 +155,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updatePrefixSearch('disabled'),
+      client.index(index.uid).updatePrefixSearch("disabled"),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

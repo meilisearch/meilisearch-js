@@ -1532,7 +1532,6 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     const task = await this.httpRequest.delete(url);
     return new EnqueuedTask(task);
   }
-
 }
 
 export { Index };

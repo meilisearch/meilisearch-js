@@ -37,7 +37,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Set facetSearch settings with dedicated endpoint on empty index`, async () => {
       const client = await getClient(permission);
 
-      const { taskUid } = await client.index(index.uid).updateFacetSearch(false);
+      const { taskUid } = await client
+        .index(index.uid)
+        .updateFacetSearch(false);
       await client.index(index.uid).waitForTask(taskUid);
 
       const updatedSettings = await client.index(index.uid).getFacetSearch();

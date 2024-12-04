@@ -93,7 +93,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         dictionary: ["J. K.", "J. R. R."],
         searchCutoffMs: 1000,
         facetSearch: true,
-        prefixSearch: 'indexingTime',
+        prefixSearch: "indexingTime",
       };
       // Add the settings
       const task = await client.index(index.uid).updateSettings(newSettings);
@@ -274,7 +274,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update facetSearch settings on empty index`, async () => {
       const client = await getClient(permission);
 
-      const { taskUid } = await client.index(index.uid).updateSettings({  facetSearch: false  });
+      const { taskUid } = await client
+        .index(index.uid)
+        .updateSettings({ facetSearch: false });
       await client.index(index.uid).waitForTask(taskUid);
 
       const response = await client.index(index.uid).getSettings();
@@ -284,7 +286,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update prefixSearch settings on an empty index`, async () => {
       const client = await getClient(permission);
 
-      const { taskUid } = await client.index(index.uid).updateSettings({ prefixSearch: 'disabled' });
+      const { taskUid } = await client
+        .index(index.uid)
+        .updateSettings({ prefixSearch: "disabled" });
       await client.index(index.uid).waitForTask(taskUid);
 
       const response = await client.index(index.uid).getSettings();
