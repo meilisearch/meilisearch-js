@@ -556,6 +556,11 @@ export type TasksQuery = {
   afterFinishedAt?: Date;
   limit?: number;
   from?: number;
+  /**
+   * If true, the tasks are returned in reverse order (requires Meilisearch
+   * 1.12.0 or later)
+   */
+  reverse?: boolean;
 };
 
 export type CancelTasksQuery = Omit<TasksQuery, "limit" | "from"> & {};
