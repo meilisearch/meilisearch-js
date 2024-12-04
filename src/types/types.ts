@@ -666,7 +666,6 @@ export type WaitOptions = {
  ** BATCHES
  */
 
-<<<<<<< HEAD
 /**
  * Represents a batch operation object containing information about tasks
  * processing
@@ -716,37 +715,11 @@ export type BatchObject = {
   /** Timestamp when the batch finished processing (rfc3339 format) */
   finishedAt: string;
   /** Duration of batch processing */
-=======
-export type BatchObject = {
-  uid: number;
-  // TODO
-  details: null;
-  progress: null;
-  stats: {
-    totalNbTasks: number;
-    status: {
-      succeeded: number;
-      failed: number;
-      canceled: number;
-      processing: number;
-      enqueued: number;
-    };
-    // TODO
-    types: null;
-    indexUids: string[];
-  };
-  startedAt: string;
-  finishedAt: string;
-  // TODO
->>>>>>> 87ac02b (Add getBatch)
   duration: string;
 };
 
 export type BatchesQuery = {
-<<<<<<< HEAD
   /** The batch should contain the specified task UIDs */
-=======
->>>>>>> 87ac02b (Add getBatch)
   uids?: number[];
   batchUids?: number[];
   types?: TaskTypes[];
@@ -761,11 +734,7 @@ export type BatchesQuery = {
   afterFinishedAt?: Date;
   limit?: number;
   from?: number;
-<<<<<<< HEAD
 };
-=======
-}
->>>>>>> 87ac02b (Add getBatch)
 
 export type BatchesResults = CursorResults<Batch>;
 export type BatchesResultsObject = CursorResults<BatchObject>;

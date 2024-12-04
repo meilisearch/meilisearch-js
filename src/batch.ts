@@ -3,10 +3,7 @@ import {
   BatchObject,
   BatchesQuery,
   BatchesResults,
-<<<<<<< HEAD
   BatchesResultsObject,
-=======
->>>>>>> 87ac02b (Add getBatch)
 } from "./types";
 import { HttpRequests, toQueryParams } from "./http-requests";
 
@@ -54,31 +51,18 @@ class BatchClient {
    * @returns Promise containing all tasks
    */
   async getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults> {
-<<<<<<< HEAD
     const url = `batches`;
 
-    const tasks = await this.httpRequest.get<Promise<BatchesResultsObject>>(
+    const batches = await this.httpRequest.get<Promise<BatchesResultsObject>>(
       url,
       toQueryParams<BatchesQuery>(parameters),
-=======
-    const url = `tasks`;
-
-    const tasks = await this.httpRequest.get<Promise<TasksResultsObject>>(
-      url,
-      toQueryParams<TasksQuery>(parameters),
->>>>>>> 87ac02b (Add getBatch)
     );
 
     return {
-      ...tasks,
-      results: tasks.results.map((task) => new Batch(task)),
+      ...batches,
+      results: batches.results.map((batch) => new Batch(batch)),
     };
   }
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 87ac02b (Add getBatch)
 }
 
 export { BatchClient, Batch };
