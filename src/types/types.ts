@@ -491,7 +491,7 @@ export type LocalizedAttribute = {
 
 export type LocalizedAttributes = LocalizedAttribute[] | null;
 
-export type PrefixSearch = 'indexingTime' | 'disabled';
+export type PrefixSearch = "indexingTime" | "disabled";
 
 export type Settings = {
   filterableAttributes?: FilterableAttributes;
@@ -513,14 +513,10 @@ export type Settings = {
   searchCutoffMs?: SearchCutoffMs;
   localizedAttributes?: LocalizedAttributes;
 
-  /**
-   * Enable facet searching on all the filters of an index.
-   */
+  /** Enable facet searching on all the filters of an index. */
   facetSearch?: boolean;
-  /**
-   * Enable the ability to search a word by prefix on an index.
-   */
-  prefixSearch?: 'indexingTime' | 'disabled';
+  /** Enable the ability to search a word by prefix on an index. */
+  prefixSearch?: "indexingTime" | "disabled";
 };
 
 /*
