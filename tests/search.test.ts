@@ -175,7 +175,7 @@ describe.each([
   test(`${permission} key: Multi index search with federation`, async () => {
     const client = await getClient(permission);
 
-    const response1 = await client.multiSearch<
+    const response1 = await client.federatedMultiSearch<
       Books | { id: number; asd: string }
     >({
       federation: {},
@@ -195,7 +195,7 @@ describe.each([
     expect(response1.hits.length).toEqual(2);
     expect(response1.hits[0].id).toEqual(456);
 
-    const response2 = await client.multiSearch({
+    const response2 = await client.federatedMultiSearch({
       federation: {},
       queries: [
         {
@@ -234,7 +234,7 @@ describe.each([
     await masterClient.waitForTask(task2);
 
     // Make a multi search on both indexes with facetsByIndex
-    const response = await client.multiSearch<Books | Movies>({
+    const response = await client.federatedMultiSearch<Books | Movies>({
       federation: {
         limit: 20,
         offset: 0,
@@ -312,7 +312,7 @@ describe.each([
     await masterClient.waitForTask(task2);
 
     // Make a multi search on both indexes with mergeFacets
-    const response = await client.multiSearch<Books | Movies>({
+    const response = await client.federatedMultiSearch<Books | Movies>({
       federation: {
         limit: 20,
         offset: 0,
