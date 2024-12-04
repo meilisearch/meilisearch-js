@@ -52,8 +52,6 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       });
       console.log("batches", batches.results[0].uid, "exists");
 
-      await sleep(1000);
-
       const batch = await client.getBatch(batches.results[0].uid);
       expect(batch.uid).toEqual(batches.results[0].uid);
       expect(batch.details).toBeInstanceOf(Object);
