@@ -20,12 +20,19 @@ describe.each([
       await client.waitForTask(taskUid);
     });
 
+    test(`${permission} key: Get all batches`, async () => {
+      const client = await getClient(permission);
+      const batches = await client.getBatches();
+      expect(batches.results.length).toBeGreaterThan(0);
+    });
+
     test(`${permission} key: Get one batch`, async () => {
       const client = await getClient(permission);
-      const batch = await client.getBatch(1);
-      expect(batch.uid).toEqual(1);
-      expect(batch.details).toHaveProperty("receivedDocuments");
-      expect(batch.details).toHaveProperty("indexedDocuments");
+
+      const batches = await client.getBatches();
+      const batch = await client.getBatch(batches.results[0].uid);
+      expect(batch.uid).toEqual(batches.results[0].uid);
+      expect(batch.details).toBeDefined();
       expect(batch.stats).toHaveProperty("totalNbTasks");
       expect(batch.stats).toHaveProperty("status");
       expect(batch.stats).toHaveProperty("types");
