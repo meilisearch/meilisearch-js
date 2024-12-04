@@ -23,8 +23,11 @@ console.log("old version: ", pkg.version);
 if (exact === undefined) {
   if (major) {
     M += 1;
+    m = 0;
+    b = 0;
   } else if (minor) {
     m += 1;
+    b = 0;
   } else {
     b += 1;
   }
