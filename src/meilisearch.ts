@@ -33,8 +33,6 @@ import {
   BatchesResults,
   BatchesQuery,
   MultiSearchResponseOrSearchResponse,
-  BatchesResults,
-  BatchesQuery,
 } from "./types";
 import { HttpRequests } from "./http-requests";
 import { TaskClient, Task } from "./task";
