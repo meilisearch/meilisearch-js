@@ -117,16 +117,22 @@ _[Read more about this](https://github.com/meilisearch/integration-guides/blob/m
 
 #### Version update
 
-Make a PR modifying the following files with the right version:
+Make a PR after running the following command:
 
-[`package.json`](/package.json):
-```javascript
-"version": "X.X.X",
-```
+```sh
+# for build bumps
+yarn update-version
+# or
+yarn update-version -b
 
-[`src/package-version`](/src/package-version.ts)
-```javascript
-export const PACKAGE_VERSION = 'X.X.X'
+# for minor bumps
+yarn update-version -m
+
+# for major bumps
+yarn update-version -M
+
+# if exact version is desired
+yarn update-version -e X.X.X
 ```
 
 #### Github publish
