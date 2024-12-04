@@ -51,7 +51,7 @@ class BatchClient {
    * @returns Promise containing all tasks
    */
   async getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults> {
-    const url = `tasks`;
+    const url = `batches`;
 
     const tasks = await this.httpRequest.get<Promise<BatchesResultsObject>>(
       url,
