@@ -45,10 +45,10 @@ class BatchClient {
   }
 
   /**
-   * Get tasks
+   * Get batches
    *
-   * @param parameters - Parameters to browse the tasks
-   * @returns Promise containing all tasks
+   * @param parameters - Parameters to browse the batches
+   * @returns Promise containing all batches
    */
   async getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults> {
     const url = `batches`;
