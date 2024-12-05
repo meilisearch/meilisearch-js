@@ -33,9 +33,9 @@ class BatchClient {
   }
 
   /**
-   * Get one task
+   * Get one batch
    *
-   * @param uid - Unique identifier of the task
+   * @param uid - Unique identifier of the batch
    * @returns
    */
   async getBatch(uid: number): Promise<Batch> {
