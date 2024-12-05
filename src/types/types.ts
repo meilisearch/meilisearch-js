@@ -513,9 +513,15 @@ export type Settings = {
   searchCutoffMs?: SearchCutoffMs;
   localizedAttributes?: LocalizedAttributes;
 
-  /** Enable facet searching on all the filters of an index (requires Meilisearch 1.12.0 or later) */
+  /**
+   * Enable facet searching on all the filters of an index (requires Meilisearch
+   * 1.12.0 or later)
+   */
   facetSearch?: boolean;
-  /** Enable the ability to search a word by prefix on an index (requires Meilisearch 1.12.0 or later) */
+  /**
+   * Enable the ability to search a word by prefix on an index (requires
+   * Meilisearch 1.12.0 or later)
+   */
   prefixSearch?: "indexingTime" | "disabled";
 };
 
