@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Test on prefix search settings > Admin key: Get prefixSearch settings on empty index 1`] = `"indexingTime"`;
+
+exports[`Test on prefix search settings > Admin key: Reset prefixSearch settings on an empty index 1`] = `"indexingTime"`;
+
+exports[`Test on prefix search settings > Master key: Get prefixSearch settings on empty index 1`] = `"indexingTime"`;
+
+exports[`Test on prefix search settings > Master key: Reset prefixSearch settings on an empty index 1`] = `"indexingTime"`;
