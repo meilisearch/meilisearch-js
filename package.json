@@ -66,8 +66,8 @@
     "style:fix": "yarn fmt:fix && yarn lint:fix",
     "fmt": "prettier -c ./**/*.{js,ts}",
     "fmt:fix": "prettier -w ./**/*.{js,ts}",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "typingsheader": "node scripts/build.js"
   },
   "files": [
