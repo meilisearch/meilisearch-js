@@ -56,6 +56,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const task = await client.getTask(enqueuedTask.taskUid);
 
       expect(task.indexUid).toEqual(index.uid);
+      expect(task.batchUid).toBeDefined();
       expect(task.status).toEqual(TaskStatus.TASK_SUCCEEDED);
       expect(task.type).toEqual(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE);
       expect(task.uid).toEqual(enqueuedTask.taskUid);
