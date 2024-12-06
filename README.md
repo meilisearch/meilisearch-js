@@ -567,13 +567,13 @@ client.index('myIndex').waitForTasks(uids: number[], { timeOutMs?: number, inter
 
 ### Batches <!-- omit in toc -->
 
-#### [Get one batch](https://www.meilisearch.com/docs/reference/api/batches)
+#### [Get one batch](https://www.meilisearch.com/docs/reference/api/batches#get-one-batch)
 
 ```ts
 client.getBatch(uid: number): Promise<Batch>
 ```
 
-#### [Get all batches](https://www.meilisearch.com/docs/reference/api/batches)
+#### [Get all batches](https://www.meilisearch.com/docs/reference/api/batchess#get-batches)
 
 ```ts
 client.getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults>
