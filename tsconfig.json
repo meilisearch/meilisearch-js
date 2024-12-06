@@ -25,6 +25,5 @@
     "lib": ["ESNext", "dom"],
     "strict": true,
     "noImplicitReturns": true
-  },
-  "include": ["src"]
+  }
 }
