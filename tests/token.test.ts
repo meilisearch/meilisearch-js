@@ -178,9 +178,7 @@ describe.each([{ permission: "Admin" }])(
 
       await expect(
         generateTenantToken(uid, ["*"], { apiKey, expiresAt: date }),
-      ).rejects.toThrow(
-        `Meilisearch: The expiresAt field must be a date in the future.`,
-      );
+      ).rejects.toThrow("the `expiresAt` field must be a date in the future");
     });
 
     test(`${permission} key: Search in tenant token with specific index set to null`, async () => {
@@ -257,9 +255,7 @@ describe.each([{ permission: "Admin" }])(
 
       await expect(
         generateTenantToken(uid, {}, { apiKey, expiresAt: date }),
-      ).rejects.toThrow(
-        `Meilisearch: The expiresAt field must be a date in the future.`,
-      );
+      ).rejects.toThrow("the `expiresAt` field must be a date in the future");
     });
   },
 );
