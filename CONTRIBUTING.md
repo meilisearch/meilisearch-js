@@ -120,10 +120,10 @@ _[Read more about this](https://github.com/meilisearch/integration-guides/blob/m
 Make a PR after running the following command:
 
 ```sh
-# for build bumps
+# for patch bumps
 yarn update-version
 # or
-yarn update-version -b
+yarn update-version -p
 
 # for minor bumps
 yarn update-version -m

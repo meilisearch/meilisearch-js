@@ -6,7 +6,7 @@ const {
   values: { minor, major, exact },
 } = parseArgs({
   options: {
-    build: { type: "boolean", short: "b", default: false },
+    patch: { type: "boolean", short: "p", default: false },
     minor: { type: "boolean", short: "m", default: false },
     major: { type: "boolean", short: "M", default: false },
     exact: { type: "string", short: "e" },
@@ -14,7 +14,7 @@ const {
 });
 
 const pkg = require("../package.json");
-let [M, m, b] = (exact !== undefined ? exact : pkg.version)
+let [M, m, p] = (exact !== undefined ? exact : pkg.version)
   .split(".")
   .map(Number);
 
@@ -24,16 +24,16 @@ if (exact === undefined) {
   if (major) {
     M += 1;
     m = 0;
-    b = 0;
+    p = 0;
   } else if (minor) {
     m += 1;
-    b = 0;
+    p = 0;
   } else {
-    b += 1;
+    p += 1;
   }
 }
 
-const version = `${M}.${m}.${b}`;
+const version = `${M}.${m}.${p}`;
 
 console.log("new version: ", version);
 
