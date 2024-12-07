@@ -15,8 +15,8 @@ function encodeToBase64(data: unknown): string {
 // TODO: Improve error handling?
 const compatCrypto =
   typeof crypto === "undefined"
-    ? (await import("node:crypto")).webcrypto
-    : crypto;
+    ? import("node:crypto").then((v) => v.webcrypto)
+    : Promise.resolve(crypto);
 
 const textEncoder = new TextEncoder();
 
@@ -33,7 +33,9 @@ async function sign(
   encodedHeader: string,
   encodedPayload: string,
 ): Promise<string> {
-  const cryptoKey = await compatCrypto.subtle.importKey(
+  const crypto = await compatCrypto;
+
+  const cryptoKey = await crypto.subtle.importKey(
     "raw",
     textEncoder.encode(apiKey),
     { name: "HMAC", hash: "SHA-256" },
@@ -41,7 +43,7 @@ async function sign(
     ["sign"],
   );
 
-  const signature = await compatCrypto.subtle.sign(
+  const signature = await crypto.subtle.sign(
     "HMAC",
     cryptoKey,
     textEncoder.encode(`${encodedHeader}.${encodedPayload}`),
