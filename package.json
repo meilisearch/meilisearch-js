@@ -43,6 +43,7 @@
     "url": "https://github.com/meilisearch/meilisearch-js"
   },
   "scripts": {
+    "update-version": "node scripts/update-version.js",
     "playground:javascript": "yarn --cwd ./playgrounds/javascript && yarn --cwd ./playgrounds/javascript start",
     "cleanup": "shx rm -rf dist/",
     "build": "yarn cleanup && rollup -c && rollup -c --environment NODE_ENV:production",
