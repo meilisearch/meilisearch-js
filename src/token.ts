@@ -1,4 +1,4 @@
-import type { TokenSearchRules, TokenOptions } from "./types";
+import type { TenantTokenGeneratorOptions } from "./types";
 
 const UUID_V4_REGEXP = /^[0-9a-f]{8}\b(?:-[0-9a-f]{4}\b){3}-[0-9a-f]{12}$/i;
 function isValidUUIDv4(uuid: string): boolean {
@@ -12,32 +12,25 @@ function encodeToBase64(data: unknown): string {
 }
 
 // missing crypto global for Node.js 18 https://nodejs.org/api/globals.html#crypto_1
-// TODO: Improve error handling?
-const compatCrypto =
+const cryptoPonyfill =
   typeof crypto === "undefined"
     ? import("node:crypto").then((v) => v.webcrypto)
     : Promise.resolve(crypto);
 
 const textEncoder = new TextEncoder();
 
-/**
- * Create the header of the token.
- *
- * @param apiKey - API key used to sign the token.
- * @param encodedHeader - Header of the token in base64.
- * @param encodedPayload - Payload of the token in base64.
- * @returns The signature of the token in base64.
- */
+/** Create the signature of the token. */
 async function sign(
   apiKey: string,
-  encodedHeader: string,
   encodedPayload: string,
+  encodedHeader: string,
 ): Promise<string> {
-  const crypto = await compatCrypto;
+  const crypto = await cryptoPonyfill;
 
   const cryptoKey = await crypto.subtle.importKey(
     "raw",
     textEncoder.encode(apiKey),
+    // TODO: Does alg depend on this too?
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"],
@@ -58,76 +51,100 @@ async function sign(
   return digest;
 }
 
-/**
- * Create the header of the token.
- *
- * @returns The header encoded in base64.
- */
-function createHeader(): string {
-  const header = {
-    alg: "HS256",
-    typ: "JWT",
-  };
-
+/** Create the header of the token. */
+function getHeader({
+  algorithm: alg = "HS256",
+}: TenantTokenGeneratorOptions): string {
+  const header = { alg, typ: "JWT" };
   return encodeToBase64(header).replace(/=/g, "");
 }
 
-/**
- * Create the payload of the token.
- *
- * @param searchRules - Search rules that are applied to every search.
- * @param uid - The uid of the api key used as issuer of the token.
- * @param expiresAt - Date at which the token expires.
- * @returns The payload encoded in base64.
- */
-function createPayload({
-  searchRules,
+/** Create the payload of the token. */
+function getPayload({
+  searchRules = [],
   apiKeyUid,
   expiresAt,
-}: {
-  searchRules: TokenSearchRules;
-  apiKeyUid: string;
-  expiresAt?: Date;
-}): string {
+}: TenantTokenGeneratorOptions): string {
+  if (!isValidUUIDv4(apiKeyUid)) {
+    throw new Error("the uid of your key is not a valid UUIDv4");
+  }
+
   const payload = {
     searchRules,
     apiKeyUid,
-    exp: expiresAt ? Math.floor(expiresAt.getTime() / 1000) : undefined,
+    exp: expiresAt
+      ? Math.floor(
+          (typeof expiresAt === "number" ? expiresAt : expiresAt.getTime()) /
+            1000,
+        )
+      : undefined,
   };
 
   return encodeToBase64(payload).replace(/=/g, "");
 }
 
 /**
- * Generate a tenant token
+ * Try to detect if the script is running in a server-side runtime.
  *
- * @param apiKeyUid - The uid of the api key used as issuer of the token.
- * @param searchRules - Search rules that are applied to every search.
- * @param options - Token options to customize some aspect of the token.
- * @returns The token in JWT format.
+ * @remarks
+ * This is not a silver bullet method for determining the environment.
+ * {@link https://developer.mozilla.org/en-US/docs/Web/API/Navigator/userAgent | User agent }
+ * can be spoofed, `process` can be patched. Never the less theoretically it
+ * should prevent misuse for the overwhelming majority of cases.
+ */
+function tryDetectEnvironment(): void {
+  // https://min-common-api.proposal.wintercg.org/#navigator-useragent-requirements
+  if (
+    typeof navigator !== "undefined" &&
+    Object.hasOwn(navigator, "userAgent")
+  ) {
+    const { userAgent } = navigator;
+
+    if (
+      userAgent.startsWith("Node") ||
+      userAgent.startsWith("Deno") ||
+      userAgent.startsWith("Bun") ||
+      userAgent.startsWith("Cloudflare-Workers")
+    ) {
+      return;
+    }
+  }
+
+  // Node.js prior to v21.1.0 doesn't have the above global
+  // https://nodejs.org/api/globals.html#navigatoruseragent
+  if (
+    Object.hasOwn(globalThis, "process") &&
+    Object.hasOwn(globalThis.process, "versions") &&
+    Object.hasOwn(globalThis.process.versions, "node")
+  ) {
+    return;
+  }
+
+  throw new Error("TODO");
+}
+
+/**
+ * Generate a tenant token.
+ *
+ * @remarks
+ * TODO: Describe how this should be used safely.
+ * @param options - Options object for tenant token generation
+ * @returns The token in JWT (JSON Web Token) format
+ * @see {@link https://www.meilisearch.com/docs/learn/security/generate_tenant_token_sdk | Using tenant tokens with an official SDK}
+ * @see {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference | Tenant token payload reference}
  */
 export async function generateTenantToken(
-  apiKeyUid: string,
-  searchRules: TokenSearchRules,
-  { apiKey, expiresAt }: TokenOptions,
+  options: TenantTokenGeneratorOptions,
 ): Promise<string> {
-  if (expiresAt !== undefined && expiresAt.getTime() < Date.now()) {
-    throw new Error("the `expiresAt` field must be a date in the future");
+  const { apiKey, force = false } = options;
+
+  if (!force) {
+    tryDetectEnvironment();
   }
 
-  if (!isValidUUIDv4(apiKeyUid)) {
-    throw new Error(
-      "the uid of your key is not a valid UUIDv4; to find out the uid of your key use `getKey()`",
-    );
-  }
-
-  const encodedHeader = createHeader();
-  const encodedPayload = createPayload({
-    searchRules,
-    apiKeyUid,
-    expiresAt,
-  });
-  const signature = await sign(apiKey, encodedHeader, encodedPayload);
+  const encodedPayload = getPayload(options);
+  const encodedHeader = getHeader(options);
+  const signature = await sign(apiKey, encodedPayload, encodedHeader);
 
   return `${encodedHeader}.${encodedPayload}.${signature}`;
 }
