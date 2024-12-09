@@ -101,7 +101,8 @@ function getPayload({
     payload.exp =
       typeof expiresAt === "number"
         ? expiresAt
-        : Math.floor(expiresAt.getTime() / 1000);
+        : // To get from a Date object the number of seconds since Unix epoch, i.e. Unix timestamp:
+          Math.floor(expiresAt.getTime() / 1000);
   }
 
   return encodeToBase64(payload).replace(/=/g, "");
