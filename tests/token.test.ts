@@ -1,3 +1,4 @@
+import * as assert from "node:assert";
 import { afterAll, beforeEach, describe, expect, test } from "vitest";
 import {
   getClient,
@@ -46,9 +47,8 @@ describe.each([{ permission: "Admin" }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await generateTenantToken({
-        apiKeyUid: uid,
         apiKey,
-        force: true,
+        apiKeyUid: uid,
       });
       const [header64] = token.split(".");
 
@@ -63,9 +63,8 @@ describe.each([{ permission: "Admin" }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await generateTenantToken({
-        apiKeyUid: uid,
         apiKey,
-        force: true,
+        apiKeyUid: uid,
       });
       const [header64, payload64, signature64] = token.split(".");
 
@@ -85,9 +84,8 @@ describe.each([{ permission: "Admin" }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await generateTenantToken({
-        apiKeyUid: uid,
         apiKey,
-        force: true,
+        apiKeyUid: uid,
       });
       const [_, payload64] = token.split(".");
 
@@ -104,10 +102,9 @@ describe.each([{ permission: "Admin" }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await generateTenantToken({
+        apiKey,
         apiKeyUid: uid,
         searchRules: [UID],
-        apiKey,
-        force: true,
       });
       const [_, payload64] = token.split(".");
 
@@ -124,10 +121,9 @@ describe.each([{ permission: "Admin" }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await generateTenantToken({
+        apiKey,
         apiKeyUid: uid,
         searchRules: { [UID]: {} },
-        apiKey,
-        force: true,
       });
       const [_, payload64] = token.split(".");
 
@@ -144,10 +140,9 @@ describe.each([{ permission: "Admin" }])(
       const { uid } = await client.getKey(apiKey);
 
       const token = await generateTenantToken({
+        apiKey,
         apiKeyUid: uid,
         searchRules: ["*"],
-        apiKey,
-        force: true,
       });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
@@ -167,10 +162,9 @@ describe.each([{ permission: "Admin" }])(
         indexes: [UID],
       });
       const token = await generateTenantToken({
+        apiKey: key,
         apiKeyUid: uid,
         searchRules: ["*"],
-        apiKey: key,
-        force: true,
       });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
@@ -185,11 +179,10 @@ describe.each([{ permission: "Admin" }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await generateTenantToken({
+        apiKey,
         apiKeyUid: uid,
         searchRules: ["*"],
-        apiKey,
         expiresAt: date,
-        force: true,
       });
 
       const [_, payload] = token.split(".");
@@ -209,15 +202,19 @@ describe.each([{ permission: "Admin" }])(
       const { uid } = await client.getKey(apiKey);
       const date = new Date("December 17, 2000 03:24:00");
 
-      await expect(
-        generateTenantToken({
-          apiKeyUid: uid,
-          searchRules: ["*"],
-          apiKey,
-          expiresAt: date,
-          force: true,
-        }),
-      ).rejects.toThrow("the `expiresAt` field must be a date in the future");
+      const token = await generateTenantToken({
+        apiKey,
+        apiKeyUid: uid,
+        searchRules: ["*"],
+        expiresAt: date,
+      });
+
+      const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
+
+      await assert.rejects(
+        searchClient.index(UID).search(),
+        /^MeiliSearchApiError: Tenant token expired\. Was valid up to `977016240` and we're now `\d+`\.$/,
+      );
     });
 
     test(`${permission} key: Search in tenant token with specific index set to null`, async () => {
@@ -225,10 +222,9 @@ describe.each([{ permission: "Admin" }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await generateTenantToken({
+        apiKey,
         apiKeyUid: uid,
         searchRules: { [UID]: null },
-        apiKey,
-        force: true,
       });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
@@ -250,10 +246,9 @@ describe.each([{ permission: "Admin" }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await generateTenantToken({
+        apiKey,
         apiKeyUid: uid,
         searchRules: { [UID]: { filter: "id = 2" } },
-        apiKey,
-        force: true,
       });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
@@ -269,10 +264,8 @@ describe.each([{ permission: "Admin" }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await generateTenantToken({
-        apiKeyUid: uid,
-        searchRules: [],
         apiKey,
-        force: true,
+        apiKeyUid: uid,
       });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
@@ -288,10 +281,9 @@ describe.each([{ permission: "Admin" }])(
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
       const token = await generateTenantToken({
+        apiKey,
         apiKeyUid: uid,
         searchRules: { misc: null },
-        apiKey,
-        force: true,
       });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
@@ -308,15 +300,19 @@ describe.each([{ permission: "Admin" }])(
       const { uid } = await client.getKey(apiKey);
       const date = new Date("December 17, 2000 03:24:00");
 
-      await expect(
-        generateTenantToken({
-          apiKeyUid: uid,
-          searchRules: {},
-          apiKey,
-          expiresAt: date,
-          force: true,
-        }),
-      ).rejects.toThrow("the `expiresAt` field must be a date in the future");
+      const token = await generateTenantToken({
+        apiKey,
+        apiKeyUid: uid,
+        searchRules: {},
+        expiresAt: date,
+      });
+
+      const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
+
+      await assert.rejects(
+        searchClient.index(UID).search(),
+        /^MeiliSearchApiError: Tenant token expired\. Was valid up to `977016240` and we're now `\d+`\.$/,
+      );
     });
   },
 );
