@@ -294,11 +294,13 @@ describe.each([{ permission: "Admin" }])(
       ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 
-    test(`${permission} key: Creates tenant token with an expiration date in the past throws an error`, async () => {
+    test(`${permission} key: Creates tenant token with an expiration date as UNIX timestamp in the past throws an error`, async () => {
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
-      const date = new Date("December 17, 2000 03:24:00");
+      const date = Math.floor(
+        new Date("December 17, 2000 03:24:00").getTime() / 1000,
+      );
 
       const token = await generateTenantToken({
         apiKey,

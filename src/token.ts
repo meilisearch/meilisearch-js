@@ -120,10 +120,7 @@ function getPayload({
  * overwhelming majority of cases.
  */
 function tryDetectEnvironment(): void {
-  if (
-    typeof navigator !== "undefined" &&
-    Object.hasOwn(navigator, "userAgent")
-  ) {
+  if (typeof navigator !== "undefined" && "userAgent" in navigator) {
     const { userAgent } = navigator;
 
     if (
