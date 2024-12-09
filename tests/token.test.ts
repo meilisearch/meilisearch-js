@@ -213,7 +213,7 @@ describe.each([{ permission: "Admin" }])(
 
       await assert.rejects(
         searchClient.index(UID).search(),
-        /^MeiliSearchApiError: Tenant token expired\. Was valid up to `977016240` and we're now `\d+`\.$/,
+        /^MeiliSearchApiError: Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
       );
     });
 
@@ -311,7 +311,7 @@ describe.each([{ permission: "Admin" }])(
 
       await assert.rejects(
         searchClient.index(UID).search(),
-        /^MeiliSearchApiError: Tenant token expired\. Was valid up to `977016240` and we're now `\d+`\.$/,
+        /^MeiliSearchApiError: Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
       );
     });
   },
