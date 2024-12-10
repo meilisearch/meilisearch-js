@@ -1135,7 +1135,7 @@ export type TenantTokenGeneratorOptions = {
   /**
    * Search rules that are applied to every search.
    *
-   * @defaultValue `[]`
+   * @defaultValue `["*"]`
    */
   searchRules?: TokenSearchRules;
   /**

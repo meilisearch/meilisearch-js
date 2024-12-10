@@ -144,7 +144,7 @@ describe.each([{ permission: "Admin" }])(
 
       expect(apiKeyUid).toEqual(uid);
       expect(exp).toBeUndefined();
-      expect(searchRules).toEqual([]);
+      expect(searchRules).toEqual(["*"]);
     });
 
     test(`${permission} key: create a tenant token with array searchRules and test payload`, async () => {
@@ -192,7 +192,6 @@ describe.each([{ permission: "Admin" }])(
       const token = await generateTenantToken({
         apiKey,
         apiKeyUid: uid,
-        searchRules: ["*"],
       });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
@@ -214,7 +213,6 @@ describe.each([{ permission: "Admin" }])(
       const token = await generateTenantToken({
         apiKey: key,
         apiKeyUid: uid,
-        searchRules: ["*"],
       });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
@@ -231,7 +229,6 @@ describe.each([{ permission: "Admin" }])(
       const token = await generateTenantToken({
         apiKey,
         apiKeyUid: uid,
-        searchRules: ["*"],
         expiresAt: date,
       });
 
@@ -246,7 +243,7 @@ describe.each([{ permission: "Admin" }])(
       ).resolves.not.toBeUndefined();
     });
 
-    test(`${permission} key: Search in tenant token with expireAt value set in the past`, async () => {
+    test(`${permission} key: Search in tenant token with expireAt value set in the past throws an error on usage`, async () => {
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
@@ -255,7 +252,6 @@ describe.each([{ permission: "Admin" }])(
       const token = await generateTenantToken({
         apiKey,
         apiKeyUid: uid,
-        searchRules: ["*"],
         expiresAt: date,
       });
 
@@ -316,6 +312,7 @@ describe.each([{ permission: "Admin" }])(
       const token = await generateTenantToken({
         apiKey,
         apiKeyUid: uid,
+        searchRules: [],
       });
 
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
@@ -344,7 +341,7 @@ describe.each([{ permission: "Admin" }])(
       ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 
-    test(`${permission} key: Creates tenant token with an expiration date as UNIX timestamp in the past throws an error`, async () => {
+    test(`${permission} key: Creates tenant token with an expiration date as UNIX timestamp in the past throws an error on usage`, async () => {
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);

@@ -3,7 +3,7 @@ import type { TenantTokenGeneratorOptions, TokenSearchRules } from "./types";
 
 function getOptionsWithDefaults(options: TenantTokenGeneratorOptions) {
   const {
-    searchRules = [],
+    searchRules = ["*"],
     algorithm = "HS256",
     force = false,
     ...restOfOptions
@@ -154,7 +154,6 @@ function tryDetectEnvironment(): void {
   );
 }
 
-// TODO: Add option of MeiliSearch instead of apiKeyUid? Or rather raise issue about it for now.
 /**
  * Generate a tenant token.
  *
