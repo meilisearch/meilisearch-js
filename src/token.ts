@@ -1,3 +1,4 @@
+import type { webcrypto } from "node:crypto";
 import type { TenantTokenGeneratorOptions, TokenSearchRules } from "./types";
 
 function getOptionsWithDefaults(options: TenantTokenGeneratorOptions) {
@@ -26,10 +27,17 @@ function encodeToBase64(data: unknown): string {
 }
 
 // missing crypto global for Node.js 18 https://nodejs.org/api/globals.html#crypto_1
-const cryptoPonyfill =
-  typeof crypto === "undefined"
-    ? import("node:crypto").then((v) => v.webcrypto)
-    : Promise.resolve(crypto);
+let cryptoPonyfill: Promise<Crypto | typeof webcrypto> | undefined;
+function getCrypto() {
+  if (cryptoPonyfill === undefined) {
+    cryptoPonyfill =
+      typeof crypto === "undefined"
+        ? import("node:crypto").then((v) => v.webcrypto)
+        : Promise.resolve(crypto);
+  }
+
+  return cryptoPonyfill;
+}
 
 const textEncoder = new TextEncoder();
 
@@ -39,7 +47,7 @@ async function sign(
   encodedPayload: string,
   encodedHeader: string,
 ): Promise<string> {
-  const crypto = await cryptoPonyfill;
+  const crypto = await getCrypto();
 
   const cryptoKey = await crypto.subtle.importKey(
     // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#raw
@@ -149,6 +157,7 @@ function tryDetectEnvironment(): void {
   );
 }
 
+// TODO: Add option of MeiliSearch instead of apiKeyUid? Or rather raise issue about it for now.
 /**
  * Generate a tenant token.
  *
