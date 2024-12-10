@@ -309,6 +309,106 @@ exports[`Test on settings > Admin key: Update embedders settings  1`] = `
 }
 `;
 
+exports[`Test on settings > Admin key: Update facetSearch settings on empty index 1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "facetSearch": false,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "localizedAttributes": null,
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "prefixSearch": "indexingTime",
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings > Admin key: Update prefixSearch settings on an empty index 1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "facetSearch": true,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "localizedAttributes": null,
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "prefixSearch": "disabled",
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
 exports[`Test on settings > Admin key: Update searchableAttributes settings on empty index 1`] = `
 {
   "dictionary": [],
@@ -858,6 +958,106 @@ exports[`Test on settings > Master key: Update embedders settings  1`] = `
     "maxTotalHits": 1000,
   },
   "prefixSearch": "indexingTime",
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings > Master key: Update facetSearch settings on empty index 1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "facetSearch": false,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "localizedAttributes": null,
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "prefixSearch": "indexingTime",
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings > Master key: Update prefixSearch settings on an empty index 1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "facetSearch": true,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "localizedAttributes": null,
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "prefixSearch": "disabled",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",

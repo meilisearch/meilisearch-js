@@ -995,6 +995,46 @@ client.index('myIndex').updateProximityPrecision(proximityPrecision: ProximityPr
 client.index('myIndex').resetProximityPrecision(): Promise<EnqueuedTask>
 ```
 
+### Facet search settings <!-- omit in toc -->
+
+#### [Get facet search settings](https://www.meilisearch.com/docs/reference/api/settings#get-facet-search-settings)
+
+```ts
+client.index('myIndex').getFacetSearch(): Promise<boolean>
+```
+
+#### [Update facet search settings](https://www.meilisearch.com/docs/reference/api/settings#update-facet-search-settings)
+
+```ts
+client.index('myIndex').updateFacetSearch(enabled: boolean): Promise<EnqueuedTask>
+```
+
+#### [Reset facet search settings](https://www.meilisearch.com/docs/reference/api/settings#reset-facet-search-settings)
+
+```ts
+client.index('myIndex').resetFacetSearch(): Promise<EnqueuedTask>
+```
+
+### Prefix search settings <!-- omit in toc -->
+
+#### [Get prefix search settings](https://www.meilisearch.com/docs/reference/api/settings#get-prefix-search-settings)
+
+```ts
+client.index('myIndex').getPrefixSearch(): Promise<PrefixSearch>
+```
+
+#### [Update prefix search settings](https://www.meilisearch.com/docs/reference/api/settings#update-prefix-search-settings)
+
+```ts
+client.index('myIndex').updatePrefixSearch(prefixSearch: PrefixSearch): Promise<EnqueuedTask>
+```
+
+#### [Reset prefix search settings](https://www.meilisearch.com/docs/reference/api/settings#reset-prefix-search-settings)
+
+```ts
+client.index('myIndex').resetPrefixSearch(): Promise<EnqueuedTask>
+```
+
 ### Embedders <!-- omit in toc -->
 
 ⚠️ This feature is experimental. Activate the [`vectorStore` experimental feature to use it](https://www.meilisearch.com/docs/reference/api/experimental_features#configure-experimental-features)
