@@ -1,5 +1,13 @@
 import * as assert from "node:assert";
-import { afterAll, beforeEach, describe, expect, test } from "vitest";
+import {
+  afterAll,
+  beforeEach,
+  describe,
+  expect,
+  test,
+  vi,
+  type MockInstance,
+} from "vitest";
 import {
   getClient,
   decode64,
@@ -19,6 +27,48 @@ const UID = "movies_test";
 
 afterAll(() => {
   return clearAllIndexes(config);
+});
+
+test("Should throw error for invalid UID", async () => {
+  await assert.rejects(
+    generateTenantToken({
+      apiKey: "wrong",
+      apiKeyUid: "stuff",
+    }),
+    /^Error: the uid of your key is not a valid UUIDv4$/,
+  );
+});
+
+test("Should throw error for non-server-side environment", async () => {
+  using _ = (() => {
+    let userAgentSpy: MockInstance<() => string> | undefined;
+    if (typeof navigator !== "undefined" && "userAgent" in navigator) {
+      userAgentSpy = vi
+        .spyOn(navigator, "userAgent", "get")
+        .mockImplementation(() => "ProbablySomeBrowserUA");
+    }
+
+    const nodeEvnSpy = vi.spyOn(process, "versions", "get").mockImplementation(
+      () =>
+        // @ts-expect-error
+        undefined,
+    );
+
+    return {
+      [Symbol.dispose]() {
+        userAgentSpy?.mockRestore();
+        nodeEvnSpy.mockRestore();
+      },
+    };
+  })();
+
+  await assert.rejects(
+    generateTenantToken({
+      apiKey: "wrong",
+      apiKeyUid: "stuff",
+    }),
+    /^Error: failed to detect a server-side environment;/,
+  );
 });
 
 describe.each([{ permission: "Admin" }])(

@@ -28,7 +28,7 @@ function encodeToBase64(data: unknown): string {
 
 // missing crypto global for Node.js 18 https://nodejs.org/api/globals.html#crypto_1
 let cryptoPonyfill: Promise<Crypto | typeof webcrypto> | undefined;
-function getCrypto() {
+function getCrypto(): NonNullable<typeof cryptoPonyfill> {
   if (cryptoPonyfill === undefined) {
     cryptoPonyfill =
       typeof crypto === "undefined"
@@ -143,11 +143,8 @@ function tryDetectEnvironment(): void {
 
   // Node.js prior to v21.1.0 doesn't have the above global
   // https://nodejs.org/api/globals.html#navigatoruseragent
-  if (
-    Object.hasOwn(globalThis, "process") &&
-    Object.hasOwn(globalThis.process, "versions") &&
-    Object.hasOwn(globalThis.process.versions, "node")
-  ) {
+  const versions = globalThis.process?.versions;
+  if (versions !== undefined && Object.hasOwn(versions, "node")) {
     return;
   }
 
