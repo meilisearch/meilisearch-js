@@ -701,8 +701,9 @@ export type BatchObject = {
   progress: null | {
     /** An array of all the steps currently being processed */
     steps: Array<{
-      /** A string representing the name of the current step
-       * NOT stable. Only use for debugging purposes.
+      /**
+       * A string representing the name of the current step NOT stable. Only use
+       * for debugging purposes.
        */
       currentStep: string;
       /** Number of finished tasks */
@@ -710,7 +711,7 @@ export type BatchObject = {
       /** Total number of tasks to finish before moving to the next step */
       total: number;
     }>;
-    /** Percentage of progression of all steps currently being processed*/
+    /** Percentage of progression of all steps currently being processed */
     percentage: number;
   };
 
