@@ -22,40 +22,57 @@ const dataset = [
   {
     id: 123,
     title: "Pride and Prejudice",
+    author: "Jane Austen",
     comment: "A great book",
-    genre: "romance",
+    genre: ["romance"],
   },
   {
     id: 456,
     title: "Le Petit Prince",
+    author: "Antoine de Saint-Exupéry",
     comment: "A french book about a prince that walks on little cute planets",
-    genre: "adventure",
+    genre: ["adventure"],
   },
   {
     id: 2,
     title: "Le Rouge et le Noir",
+    author: "Stendhal",
     comment: "Another french book",
-    genre: "romance",
+    genre: ["romance"],
   },
   {
     id: 1,
     title: "Alice In Wonderland",
+    author: "Lewis Carroll",
     comment: "A weird book",
-    genre: "adventure",
+    genre: ["adventure"],
   },
   {
     id: 1344,
     title: "The Hobbit",
+    author: "J.R.R. Tolkien",
     comment: "An awesome book",
-    genre: "sci fi",
+    genre: ["fantasy", "adventure"],
   },
   {
     id: 4,
     title: "Harry Potter and the Half-Blood Prince",
+    author: "J.K. Rowling",
     comment: "The best book",
-    genre: "fantasy",
+    genre: ["fantasy", "adventure"],
   },
-  { id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: "fantasy" },
+  {
+    id: 5,
+    title: "Harry Potter and the Deathly Hallows",
+    author: "J.K. Rowling",
+    genre: ["fantasy", "adventure"],
+  },
+  {
+    id: 42,
+    title: "The Hitchhiker's Guide to the Galaxy",
+    author: "Douglas Adams",
+    genre: ["sci fi", "comedy"],
+  },
 ];
 
 afterAll(() => {
@@ -75,7 +92,7 @@ describe.each([
     const { taskUid: task2 } = await client.createIndex(emptyIndex.uid);
     await client.waitForTask(task2);
 
-    const newFilterableAttributes = ["genre", "title", "id"];
+    const newFilterableAttributes = ["genre", "title", "id", "author"];
     const { taskUid: task3 }: EnqueuedTask = await client
       .index(index.uid)
       .updateSettings({
@@ -188,8 +205,9 @@ describe.each([
       {
         id: 4,
         title: "Harry Potter and the Half-Blood Prince",
+        author: "J.K. Rowling",
         comment: "The best book",
-        genre: "fantasy",
+        genre: ["fantasy", "adventure"],
       },
     ]);
     expect(response).toHaveProperty("offset", 1);
@@ -415,9 +433,9 @@ describe.each([
       facets: ["genre"],
     });
     expect(response).toHaveProperty("facetDistribution", {
-      genre: { fantasy: 2 },
+      genre: { adventure: 3, fantasy: 3 },
     });
-    expect(response.hits.length).toEqual(2);
+    expect(response.hits.length).toEqual(3);
   });
 
   test(`${permission} key: search with multiple filter and null query (placeholder)`, async () => {
@@ -427,10 +445,13 @@ describe.each([
       facets: ["genre"],
     });
     expect(response).toHaveProperty("facetDistribution", {
-      genre: { fantasy: 2 },
+      genre: {
+        adventure: 3,
+        fantasy: 3,
+      },
     });
-    expect(response.hits.length).toEqual(2);
-    expect(response.estimatedTotalHits).toEqual(2);
+    expect(response.hits.length).toEqual(3);
+    expect(response.estimatedTotalHits).toEqual(3);
   });
 
   test(`${permission} key: search with multiple filter and empty string query (placeholder)`, async () => {
@@ -441,9 +462,9 @@ describe.each([
     });
 
     expect(response).toHaveProperty("facetDistribution", {
-      genre: { fantasy: 2 },
+      genre: { adventure: 3, fantasy: 3 },
     });
-    expect(response.hits.length).toEqual(2);
+    expect(response.hits.length).toEqual(3);
   });
 
   test(`${permission} key: Try to search with wrong format filter`, async () => {
@@ -492,9 +513,9 @@ describe.each([
     const client = await getClient(permission);
     const response = await client
       .index(index.uid)
-      .search("", { distinct: "genre" });
+      .search("", { distinct: "author" });
 
-    expect(response.hits.length).toEqual(4);
+    expect(response.hits.length).toEqual(7);
   });
 
   test(`${permission} key: search with retrieveVectors to true`, async () => {
@@ -539,6 +560,17 @@ describe.each([
     expect(response.hits[0]).not.toHaveProperty("_vectors");
   });
 
+  test(`${permission} key: matches position contain indices`, async () => {
+    const client = await getClient(permission);
+    const response = await client.index(index.uid).searchGet("fantasy", {
+      showMatchesPosition: true,
+    });
+    expect(response.hits[0]._matchesPosition).toEqual({
+      genre: [{ start: 0, length: 7, indices: [0] }],
+    });
+  });
+
+  // This test deletes the index, so following tests may fail if they need an existing index
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient("Master");

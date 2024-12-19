@@ -5,6 +5,7 @@
 // TypeScript Version: ^3.8.3
 
 import { Task } from "../task";
+import { Batch } from "../batch";
 
 export type Config = {
   host: string;
@@ -185,7 +186,7 @@ export type CategoriesDistribution = {
 export type Facet = string;
 export type FacetDistribution = Record<Facet, CategoriesDistribution>;
 export type MatchesPosition<T> = Partial<
-  Record<keyof T, Array<{ start: number; length: number }>>
+  Record<keyof T, Array<{ start: number; length: number; indices?: number[] }>>
 >;
 
 export type RankingScoreDetails = {
@@ -491,6 +492,8 @@ export type LocalizedAttribute = {
 
 export type LocalizedAttributes = LocalizedAttribute[] | null;
 
+export type PrefixSearch = "indexingTime" | "disabled";
+
 export type Settings = {
   filterableAttributes?: FilterableAttributes;
   distinctAttribute?: DistinctAttribute;
@@ -510,6 +513,17 @@ export type Settings = {
   embedders?: Embedders;
   searchCutoffMs?: SearchCutoffMs;
   localizedAttributes?: LocalizedAttributes;
+
+  /**
+   * Enable facet searching on all the filters of an index (requires Meilisearch
+   * 1.12.0 or later)
+   */
+  facetSearch?: boolean;
+  /**
+   * Enable the ability to search a word by prefix on an index (requires
+   * Meilisearch 1.12.0 or later)
+   */
+  prefixSearch?: "indexingTime" | "disabled";
 };
 
 /*
@@ -556,6 +570,11 @@ export type TasksQuery = {
   afterFinishedAt?: Date;
   limit?: number;
   from?: number;
+  /**
+   * If true, the tasks are returned in reverse order (requires Meilisearch
+   * 1.12.0 or later)
+   */
+  reverse?: boolean;
 };
 
 export type CancelTasksQuery = Omit<TasksQuery, "limit" | "from"> & {};
@@ -573,6 +592,8 @@ export type EnqueuedTaskObject = {
 
 export type TaskObject = Omit<EnqueuedTaskObject, "taskUid"> & {
   uid: number;
+  /** The UID of the batch that the task belongs to (`null` for enqueued tasks) */
+  batchUid: number | null;
   details: {
     // Number of documents sent
     receivedDocuments?: number;
@@ -653,6 +674,98 @@ export type WaitOptions = {
   timeOutMs?: number;
   intervalMs?: number;
 };
+
+/*
+ ** BATCHES
+ */
+
+/**
+ * Represents a batch operation object containing information about tasks
+ * processing
+ */
+export type BatchObject = {
+  /** Unique identifier for the batch */
+  uid: number;
+
+  /** Details about document processing */
+  details: {
+    /** Number of documents received in the batch */
+    receivedDocuments?: number;
+    /** Number of documents successfully indexed */
+    indexedDocuments?: number;
+    /** Number of documents deleted in the batch */
+    deletedDocuments?: number;
+  };
+
+  /** Progress and indexing step of the batch, null if the batch is finished */
+  progress: null | {
+    /** An array of all the steps currently being processed */
+    steps: Array<{
+      /**
+       * A string representing the name of the current step NOT stable. Only use
+       * for debugging purposes.
+       */
+      currentStep: string;
+      /** Number of finished tasks */
+      finished: number;
+      /** Total number of tasks to finish before moving to the next step */
+      total: number;
+    }>;
+    /** Percentage of progression of all steps currently being processed */
+    percentage: number;
+  };
+
+  /** Statistics about tasks within the batch */
+  stats: {
+    /** Total number of tasks in the batch */
+    totalNbTasks: number;
+    /** Count of tasks in each status */
+    status: {
+      /** Number of successfully completed tasks */
+      succeeded: number;
+      /** Number of failed tasks */
+      failed: number;
+      /** Number of canceled tasks */
+      canceled: number;
+      /** Number of tasks currently processing */
+      processing: number;
+      /** Number of tasks waiting to be processed */
+      enqueued: number;
+    };
+    /** Count of tasks by type */
+    types: Record<TaskTypes, number>;
+    /** Count of tasks by index UID */
+    indexUids: Record<string, number>;
+  };
+
+  /** Timestamp when the batch started processing (rfc3339 format) */
+  startedAt: string;
+  /** Timestamp when the batch finished processing (rfc3339 format) */
+  finishedAt: string;
+  /** Duration of batch processing */
+  duration: string;
+};
+
+export type BatchesQuery = {
+  /** The batch should contain the specified task UIDs */
+  uids?: number[];
+  batchUids?: number[];
+  types?: TaskTypes[];
+  statuses?: TaskStatus[];
+  indexUids?: string[];
+  canceledBy?: number[];
+  beforeEnqueuedAt?: Date;
+  afterEnqueuedAt?: Date;
+  beforeStartedAt?: Date;
+  afterStartedAt?: Date;
+  beforeFinishedAt?: Date;
+  afterFinishedAt?: Date;
+  limit?: number;
+  from?: number;
+};
+
+export type BatchesResults = CursorResults<Batch>;
+export type BatchesResultsObject = CursorResults<BatchObject>;
 
 /*
  *** HEALTH

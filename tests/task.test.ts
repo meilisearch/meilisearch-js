@@ -56,6 +56,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const task = await client.getTask(enqueuedTask.taskUid);
 
       expect(task.indexUid).toEqual(index.uid);
+      expect(task.batchUid).toBeDefined();
       expect(task.status).toEqual(TaskStatus.TASK_SUCCEEDED);
       expect(task.type).toEqual(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE);
       expect(task.uid).toEqual(enqueuedTask.taskUid);
@@ -367,6 +368,32 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(cancelationTask.details.originalFilter).toEqual(
         `?uids=${addDocumentsTask.taskUid}`,
       );
+    });
+
+    test(`${permission} key: Get all tasks in reverse order`, async () => {
+      const currentTimeStamp = Date.now();
+      const currentTime = new Date(currentTimeStamp);
+
+      const client = await getClient(permission);
+      const taskA = await client.index(index.uid).addDocuments([{ id: 1 }]);
+      const taskB = await client.index(index.uid).addDocuments([{ id: 2 }]);
+
+      await client.waitForTask(taskA.taskUid);
+      await client.waitForTask(taskB.taskUid);
+
+      const tasks = await client.getTasks({ afterEnqueuedAt: currentTime });
+      const reversedTasks = await client.getTasks({
+        afterEnqueuedAt: currentTime,
+        reverse: true,
+      });
+      expect(tasks.results.map((t) => t.uid)).toEqual([
+        taskB.taskUid,
+        taskA.taskUid,
+      ]);
+      expect(reversedTasks.results.map((t) => t.uid)).toEqual([
+        taskA.taskUid,
+        taskB.taskUid,
+      ]);
     });
 
     // filters error code: INVALID_TASK_TYPES_FILTER

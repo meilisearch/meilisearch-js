@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Test on facet search settings > Admin key: Get facetSearch settings on empty index 1`] = `true`;
+
+exports[`Test on facet search settings > Admin key: Reset facetSearch settings on an empty index 1`] = `true`;
+
+exports[`Test on facet search settings > Master key: Get facetSearch settings on empty index 1`] = `true`;
+
+exports[`Test on facet search settings > Master key: Reset facetSearch settings on an empty index 1`] = `true`;
