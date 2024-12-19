@@ -1,4 +1,4 @@
-import { MeiliSearchError } from "./meilisearch-error";
+import { MeiliSearchError } from "./meilisearch-error.js";
 
 export class MeiliSearchRequestError extends MeiliSearchError {
   override name = "MeiliSearchRequestError";

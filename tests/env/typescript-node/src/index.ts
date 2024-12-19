@@ -5,7 +5,7 @@ import {
   Hits,
   Hit,
   SearchParams,
-} from '../../../../src'
+} from '../../../../src/index'
 import { generateTenantToken } from '../../../../src/token'
 
 const config = {
