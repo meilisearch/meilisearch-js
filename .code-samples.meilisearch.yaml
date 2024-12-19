@@ -808,3 +808,20 @@ update_localized_attribute_settings_1: |-
   ];)
 reset_localized_attribute_settings_1: |-
   client.index('INDEX_NAME').resetLocalizedAttributes()
+# Meilisearch v1.12.0
+get_facet_search_settings_1: |-
+  client.index('INDEX_NAME').getFacetSearch();
+update_facet_search_settings_1: |-
+  client.index('INDEX_NAME').updateFacetSearch(false);
+reset_facet_search_settings_1: |-
+  client.index('INDEX_NAME').resetFacetSearch();
+get_prefix_search_settings_1: |-
+  client.index('INDEX_NAME').getPrefixSearch();
+update_prefix_search_settings_1: |-
+  client.index('INDEX_NAME').updatePrefixSearch('disabled');
+reset_prefix_search_settings_1: |-
+  client.index('INDEX_NAME').resetPrefixSearch();
+get_all_batches_1: |-
+  client.getBatches();
+get_batch_1: |-
+  client.getBatch(1);
