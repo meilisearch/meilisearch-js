@@ -14,6 +14,7 @@ class Batch {
   startedAt: BatchObject["startedAt"];
   finishedAt: BatchObject["finishedAt"];
   duration: BatchObject["duration"];
+  progress: BatchObject["progress"];
 
   constructor(batch: BatchObject) {
     this.uid = batch.uid;
@@ -22,6 +23,7 @@ class Batch {
     this.startedAt = batch.startedAt;
     this.finishedAt = batch.finishedAt;
     this.duration = batch.duration;
+    this.progress = batch.progress;
   }
 }
 

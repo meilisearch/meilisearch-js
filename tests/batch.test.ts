@@ -42,6 +42,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(batch.duration).toBeDefined();
       expect(batch.startedAt).toBeDefined();
       expect(batch.finishedAt).toBeDefined();
+      expect(batch.progress).toBeDefined();
     });
   },
 );
