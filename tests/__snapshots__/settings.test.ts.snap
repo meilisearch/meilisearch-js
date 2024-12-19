@@ -7,6 +7,7 @@ exports[`Test on settings > Admin key: Get default settings of an index 1`] = `
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -19,6 +20,7 @@ exports[`Test on settings > Admin key: Get default settings of an index 1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -55,6 +57,7 @@ exports[`Test on settings > Admin key: Get default settings of empty index with 
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -67,6 +70,7 @@ exports[`Test on settings > Admin key: Get default settings of empty index with 
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -103,6 +107,7 @@ exports[`Test on settings > Admin key: Reset embedders settings  1`] = `
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -115,6 +120,7 @@ exports[`Test on settings > Admin key: Reset embedders settings  1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -151,6 +157,7 @@ exports[`Test on settings > Admin key: Reset settings 1`] = `
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -163,6 +170,7 @@ exports[`Test on settings > Admin key: Reset settings 1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -199,6 +207,7 @@ exports[`Test on settings > Admin key: Reset settings of empty index 1`] = `
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -211,6 +220,7 @@ exports[`Test on settings > Admin key: Reset settings of empty index 1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -256,6 +266,7 @@ exports[`Test on settings > Admin key: Update embedders settings  1`] = `
       "source": "huggingFace",
     },
   },
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -268,6 +279,107 @@ exports[`Test on settings > Admin key: Update embedders settings  1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings > Admin key: Update facetSearch settings on empty index 1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "facetSearch": false,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "localizedAttributes": null,
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "prefixSearch": "indexingTime",
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings > Admin key: Update prefixSearch settings on an empty index 1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "facetSearch": true,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "localizedAttributes": null,
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "prefixSearch": "disabled",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -304,6 +416,7 @@ exports[`Test on settings > Admin key: Update searchableAttributes settings on e
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -316,6 +429,7 @@ exports[`Test on settings > Admin key: Update searchableAttributes settings on e
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -352,6 +466,7 @@ exports[`Test on settings > Admin key: Update searchableAttributes settings on e
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -364,6 +479,7 @@ exports[`Test on settings > Admin key: Update searchableAttributes settings on e
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -403,6 +519,7 @@ exports[`Test on settings > Admin key: Update settings 1`] = `
     "title",
   ],
   "distinctAttribute": "title",
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 50,
     "sortFacetValuesBy": {
@@ -421,6 +538,7 @@ exports[`Test on settings > Admin key: Update settings 1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byAttribute",
   "rankingRules": [
     "id:asc",
@@ -469,6 +587,7 @@ exports[`Test on settings > Admin key: Update settings on empty index with prima
     "*",
   ],
   "distinctAttribute": "title",
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -481,6 +600,7 @@ exports[`Test on settings > Admin key: Update settings on empty index with prima
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "title:asc",
@@ -515,6 +635,7 @@ exports[`Test on settings > Admin key: Update settings with all null values 1`] 
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -527,6 +648,7 @@ exports[`Test on settings > Admin key: Update settings with all null values 1`] 
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -563,6 +685,7 @@ exports[`Test on settings > Master key: Get default settings of an index 1`] = `
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -575,6 +698,7 @@ exports[`Test on settings > Master key: Get default settings of an index 1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -611,6 +735,7 @@ exports[`Test on settings > Master key: Get default settings of empty index with
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -623,6 +748,7 @@ exports[`Test on settings > Master key: Get default settings of empty index with
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -659,6 +785,7 @@ exports[`Test on settings > Master key: Reset embedders settings  1`] = `
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -671,6 +798,7 @@ exports[`Test on settings > Master key: Reset embedders settings  1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -707,6 +835,7 @@ exports[`Test on settings > Master key: Reset settings 1`] = `
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -719,6 +848,7 @@ exports[`Test on settings > Master key: Reset settings 1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -755,6 +885,7 @@ exports[`Test on settings > Master key: Reset settings of empty index 1`] = `
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -767,6 +898,7 @@ exports[`Test on settings > Master key: Reset settings of empty index 1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -812,6 +944,7 @@ exports[`Test on settings > Master key: Update embedders settings  1`] = `
       "source": "huggingFace",
     },
   },
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -824,6 +957,107 @@ exports[`Test on settings > Master key: Update embedders settings  1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings > Master key: Update facetSearch settings on empty index 1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "facetSearch": false,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "localizedAttributes": null,
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "prefixSearch": "indexingTime",
+  "proximityPrecision": "byWord",
+  "rankingRules": [
+    "words",
+    "typo",
+    "proximity",
+    "attribute",
+    "sort",
+    "exactness",
+  ],
+  "searchCutoffMs": null,
+  "searchableAttributes": [
+    "*",
+  ],
+  "separatorTokens": [],
+  "sortableAttributes": [],
+  "stopWords": [],
+  "synonyms": {},
+  "typoTolerance": {
+    "disableOnAttributes": [],
+    "disableOnWords": [],
+    "enabled": true,
+    "minWordSizeForTypos": {
+      "oneTypo": 5,
+      "twoTypos": 9,
+    },
+  },
+}
+`;
+
+exports[`Test on settings > Master key: Update prefixSearch settings on an empty index 1`] = `
+{
+  "dictionary": [],
+  "displayedAttributes": [
+    "*",
+  ],
+  "distinctAttribute": null,
+  "facetSearch": true,
+  "faceting": {
+    "maxValuesPerFacet": 100,
+    "sortFacetValuesBy": {
+      "*": "alpha",
+    },
+  },
+  "filterableAttributes": [],
+  "localizedAttributes": null,
+  "nonSeparatorTokens": [],
+  "pagination": {
+    "maxTotalHits": 1000,
+  },
+  "prefixSearch": "disabled",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -860,6 +1094,7 @@ exports[`Test on settings > Master key: Update searchableAttributes settings on 
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -872,6 +1107,7 @@ exports[`Test on settings > Master key: Update searchableAttributes settings on 
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -908,6 +1144,7 @@ exports[`Test on settings > Master key: Update searchableAttributes settings on 
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -920,6 +1157,7 @@ exports[`Test on settings > Master key: Update searchableAttributes settings on 
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
@@ -959,6 +1197,7 @@ exports[`Test on settings > Master key: Update settings 1`] = `
     "title",
   ],
   "distinctAttribute": "title",
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 50,
     "sortFacetValuesBy": {
@@ -977,6 +1216,7 @@ exports[`Test on settings > Master key: Update settings 1`] = `
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byAttribute",
   "rankingRules": [
     "id:asc",
@@ -1025,6 +1265,7 @@ exports[`Test on settings > Master key: Update settings on empty index with prim
     "*",
   ],
   "distinctAttribute": "title",
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -1037,6 +1278,7 @@ exports[`Test on settings > Master key: Update settings on empty index with prim
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "title:asc",
@@ -1071,6 +1313,7 @@ exports[`Test on settings > Master key: Update settings with all null values 1`]
     "*",
   ],
   "distinctAttribute": null,
+  "facetSearch": true,
   "faceting": {
     "maxValuesPerFacet": 100,
     "sortFacetValuesBy": {
@@ -1083,6 +1326,7 @@ exports[`Test on settings > Master key: Update settings with all null values 1`]
   "pagination": {
     "maxTotalHits": 1000,
   },
+  "prefixSearch": "indexingTime",
   "proximityPrecision": "byWord",
   "rankingRules": [
     "words",
