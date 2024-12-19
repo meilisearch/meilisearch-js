@@ -18,7 +18,7 @@ const PLUGINS = [
   typescript({
     useTsconfigDeclarationDir: true,
     tsconfigOverride: {
-      compilerOptions: { allowJs: false },
+      tsconfig: "tsconfig.build.json",
       include: ["src"],
       exclude: ["tests", "examples", "*.js", "scripts"],
     },
