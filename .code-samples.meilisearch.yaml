@@ -824,4 +824,4 @@ reset_prefix_search_settings_1: |-
 get_all_batches_1: |-
   client.getBatches();
 get_batch_1: |-
-  client.getBatch(1);
+  client.getBatch(BATCH_UID);
