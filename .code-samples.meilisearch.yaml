@@ -808,7 +808,6 @@ update_localized_attribute_settings_1: |-
   ];)
 reset_localized_attribute_settings_1: |-
   client.index('INDEX_NAME').resetLocalizedAttributes()
-# Meilisearch v1.12.0
 get_facet_search_settings_1: |-
   client.index('INDEX_NAME').getFacetSearch();
 update_facet_search_settings_1: |-
