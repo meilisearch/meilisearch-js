@@ -20,6 +20,7 @@ class Task {
   status: TaskObject["status"];
   type: TaskObject["type"];
   uid: TaskObject["uid"];
+  batchUid: TaskObject["batchUid"];
   canceledBy: TaskObject["canceledBy"];
   details: TaskObject["details"];
   error: TaskObject["error"];
@@ -33,6 +34,7 @@ class Task {
     this.status = task.status;
     this.type = task.type;
     this.uid = task.uid;
+    this.batchUid = task.batchUid;
     this.details = task.details;
     this.canceledBy = task.canceledBy;
     this.error = task.error;

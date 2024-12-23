@@ -5,8 +5,6 @@
  * Copyright: 2019, MeiliSearch
  */
 
-"use strict";
-
 import {
   MeiliSearchError,
   MeiliSearchRequestError,
@@ -58,6 +56,7 @@ import {
   UpdateDocumentsByFunctionOptions,
   EnqueuedTaskObject,
   ExtraRequestInit,
+  PrefixSearch,
 } from "./types";
 import { HttpRequests } from "./http-requests";
 import { Task, TaskClient } from "./task";
@@ -1485,6 +1484,88 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       relativeURL: `indexes/${this.uid}/settings/localized-attributes`,
     })) as EnqueuedTaskObject;
 
+    return new EnqueuedTask(task);
+  }
+
+  ///
+  /// FACET SEARCH SETTINGS
+  ///
+
+  /**
+   * Get the facet search settings.
+   *
+   * @returns Promise containing object of facet search settings
+   */
+  async getFacetSearch(): Promise<boolean> {
+    return (await this.httpRequest.get({
+      relativeURL: `indexes/${this.uid}/settings/facet-search`,
+    })) as boolean;
+  }
+
+  /**
+   * Update the facet search settings.
+   *
+   * @param facetSearch - Boolean value
+   * @returns Promise containing an EnqueuedTask
+   */
+  async updateFacetSearch(facetSearch: boolean): Promise<EnqueuedTask> {
+    const task = (await this.httpRequest.put({
+      relativeURL: `indexes/${this.uid}/settings/facet-search`,
+      body: facetSearch,
+    })) as EnqueuedTaskObject;
+    return new EnqueuedTask(task);
+  }
+
+  /**
+   * Reset the facet search settings.
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetFacetSearch(): Promise<EnqueuedTask> {
+    const task = (await this.httpRequest.delete({
+      relativeURL: `indexes/${this.uid}/settings/facet-search`,
+    })) as EnqueuedTaskObject;
+    return new EnqueuedTask(task);
+  }
+
+  ///
+  /// PREFIX SEARCH SETTINGS
+  ///
+
+  /**
+   * Get the prefix search settings.
+   *
+   * @returns Promise containing object of prefix search settings
+   */
+  async getPrefixSearch(): Promise<PrefixSearch> {
+    return (await this.httpRequest.get({
+      relativeURL: `indexes/${this.uid}/settings/prefix-search`,
+    })) as PrefixSearch;
+  }
+
+  /**
+   * Update the prefix search settings.
+   *
+   * @param prefixSearch - PrefixSearch value
+   * @returns Promise containing an EnqueuedTask
+   */
+  async updatePrefixSearch(prefixSearch: PrefixSearch): Promise<EnqueuedTask> {
+    const task = (await this.httpRequest.put({
+      relativeURL: `indexes/${this.uid}/settings/prefix-search`,
+      body: prefixSearch,
+    })) as EnqueuedTaskObject;
+    return new EnqueuedTask(task);
+  }
+
+  /**
+   * Reset the prefix search settings.
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  async resetPrefixSearch(): Promise<EnqueuedTask> {
+    const task = (await this.httpRequest.delete({
+      relativeURL: `indexes/${this.uid}/settings/prefix-search`,
+    })) as EnqueuedTaskObject;
     return new EnqueuedTask(task);
   }
 }
