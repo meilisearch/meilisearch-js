@@ -568,6 +568,20 @@ client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number })
 client.index('myIndex').waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Task[]>
 ```
 
+### Batches <!-- omit in toc -->
+
+#### [Get one batch](https://www.meilisearch.com/docs/reference/api/batches#get-one-batch)
+
+```ts
+client.getBatch(uid: number): Promise<Batch>
+```
+
+#### [Get all batches](https://www.meilisearch.com/docs/reference/api/batchess#get-batches)
+
+```ts
+client.getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults>
+```
+
 ### Indexes <!-- omit in toc -->
 
 #### [Get all indexes in Index instances](https://www.meilisearch.com/docs/reference/api/indexes#list-all-indexes)
@@ -982,6 +996,46 @@ client.index('myIndex').updateProximityPrecision(proximityPrecision: ProximityPr
 
 ```ts
 client.index('myIndex').resetProximityPrecision(): Promise<EnqueuedTask>
+```
+
+### Facet search settings <!-- omit in toc -->
+
+#### [Get facet search settings](https://www.meilisearch.com/docs/reference/api/settings#get-facet-search-settings)
+
+```ts
+client.index('myIndex').getFacetSearch(): Promise<boolean>
+```
+
+#### [Update facet search settings](https://www.meilisearch.com/docs/reference/api/settings#update-facet-search-settings)
+
+```ts
+client.index('myIndex').updateFacetSearch(enabled: boolean): Promise<EnqueuedTask>
+```
+
+#### [Reset facet search settings](https://www.meilisearch.com/docs/reference/api/settings#reset-facet-search-settings)
+
+```ts
+client.index('myIndex').resetFacetSearch(): Promise<EnqueuedTask>
+```
+
+### Prefix search settings <!-- omit in toc -->
+
+#### [Get prefix search settings](https://www.meilisearch.com/docs/reference/api/settings#get-prefix-search-settings)
+
+```ts
+client.index('myIndex').getPrefixSearch(): Promise<PrefixSearch>
+```
+
+#### [Update prefix search settings](https://www.meilisearch.com/docs/reference/api/settings#update-prefix-search-settings)
+
+```ts
+client.index('myIndex').updatePrefixSearch(prefixSearch: PrefixSearch): Promise<EnqueuedTask>
+```
+
+#### [Reset prefix search settings](https://www.meilisearch.com/docs/reference/api/settings#reset-prefix-search-settings)
+
+```ts
+client.index('myIndex').resetPrefixSearch(): Promise<EnqueuedTask>
 ```
 
 ### Embedders <!-- omit in toc -->
