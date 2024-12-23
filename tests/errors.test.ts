@@ -21,7 +21,7 @@ describe("Test on updates", () => {
     const client = new MeiliSearch({ host: "http://localhost:9345" });
     try {
       await client.health();
-    } catch (error) {
+    } catch (error: any) {
       expect(error.name).toEqual("MeiliSearchRequestError");
     }
   });
