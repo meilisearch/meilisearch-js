@@ -5,16 +5,23 @@ exports[`Test on POST search > Admin key: search on attributesToSearchOn set to 
   "estimatedTotalHits": 2,
   "hits": [
     {
+      "author": "Antoine de Saint-Exupéry",
       "comment": "A french book about a prince that walks on little cute planets",
-      "genre": "adventure",
+      "genre": [
+        "adventure",
+      ],
       "id": 456,
       "isNull": null,
       "isTrue": true,
       "title": "Le Petit Prince",
     },
     {
+      "author": "J.K. Rowling",
       "comment": "The best book",
-      "genre": "fantasy",
+      "genre": [
+        "fantasy",
+        "adventure",
+      ],
       "id": 4,
       "title": "Harry Potter and the Half-Blood Prince",
     },
@@ -31,16 +38,23 @@ exports[`Test on POST search > Master key: search on attributesToSearchOn set to
   "estimatedTotalHits": 2,
   "hits": [
     {
+      "author": "Antoine de Saint-Exupéry",
       "comment": "A french book about a prince that walks on little cute planets",
-      "genre": "adventure",
+      "genre": [
+        "adventure",
+      ],
       "id": 456,
       "isNull": null,
       "isTrue": true,
       "title": "Le Petit Prince",
     },
     {
+      "author": "J.K. Rowling",
       "comment": "The best book",
-      "genre": "fantasy",
+      "genre": [
+        "fantasy",
+        "adventure",
+      ],
       "id": 4,
       "title": "Harry Potter and the Half-Blood Prince",
     },
@@ -57,16 +71,23 @@ exports[`Test on POST search > Search key: search on attributesToSearchOn set to
   "estimatedTotalHits": 2,
   "hits": [
     {
+      "author": "Antoine de Saint-Exupéry",
       "comment": "A french book about a prince that walks on little cute planets",
-      "genre": "adventure",
+      "genre": [
+        "adventure",
+      ],
       "id": 456,
       "isNull": null,
       "isTrue": true,
       "title": "Le Petit Prince",
     },
     {
+      "author": "J.K. Rowling",
       "comment": "The best book",
-      "genre": "fantasy",
+      "genre": [
+        "fantasy",
+        "adventure",
+      ],
       "id": 4,
       "title": "Harry Potter and the Half-Blood Prince",
     },
