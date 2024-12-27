@@ -35,9 +35,9 @@ import type {
 } from "./types/types.js";
 import { ErrorStatusCode } from "./types/types.js";
 import { HttpRequests } from "./http-requests.js";
-import { TaskClient, Task } from "./task.js";
+import { TaskClient, type Task } from "./task.js";
 import { EnqueuedTask } from "./enqueued-task.js";
-import { Batch, BatchClient } from "./batch.js";
+import { type Batch, BatchClient } from "./batch.js";
 
 export class MeiliSearch {
   config: Config;

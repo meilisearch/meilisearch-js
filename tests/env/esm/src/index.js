@@ -1,4 +1,4 @@
-import { MeiliSearch } from '../../../../dist/esm/index.js'
+import { MeiliSearch, default as DefaultMeiliSearch } from '../../../../dist/esm/index.js'
 import { generateTenantToken } from '../../../../dist/esm/token.js'
 
 const client = new MeiliSearch({ host:'http://localhost:7700', apiKey: 'masterKey' })
