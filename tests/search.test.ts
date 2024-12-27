@@ -6,7 +6,12 @@ import {
   afterAll,
   beforeAll,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types";
+import {
+  ErrorStatusCode,
+  FederatedMultiSearchParams,
+  MatchingStrategies,
+  MultiSearchParams,
+} from "../src/types";
 import { EnqueuedTask } from "../src/enqueued-task";
 import {
   clearAllIndexes,
@@ -18,11 +23,6 @@ import {
   HOST,
   getKey,
 } from "./utils/meilisearch-test-utils";
-
-if (typeof fetch === "undefined") {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require("cross-fetch/polyfill");
-}
 
 const index = {
   uid: "books",
@@ -42,42 +42,59 @@ const dataset = [
   {
     id: 123,
     title: "Pride and Prejudice",
+    author: "Jane Austen",
     comment: "A great book",
-    genre: "romance",
+    genre: ["romance"],
   },
   {
     id: 456,
     title: "Le Petit Prince",
+    author: "Antoine de Saint-Exupéry",
     comment: "A french book about a prince that walks on little cute planets",
-    genre: "adventure",
+    genre: ["adventure"],
     isNull: null,
     isTrue: true,
   },
   {
     id: 2,
     title: "Le Rouge et le Noir",
+    author: "Stendhal",
     comment: "Another french book",
-    genre: "romance",
+    genre: ["romance"],
   },
   {
     id: 1,
     title: "Alice In Wonderland",
+    author: "Lewis Carroll",
     comment: "A weird book",
-    genre: "adventure",
+    genre: ["adventure"],
   },
   {
     id: 1344,
     title: "The Hobbit",
+    author: "J.R.R. Tolkien",
     comment: "An awesome book",
-    genre: "sci fi",
+    genre: ["fantasy", "adventure"],
   },
   {
     id: 4,
     title: "Harry Potter and the Half-Blood Prince",
+    author: "J.K. Rowling",
     comment: "The best book",
-    genre: "fantasy",
+    genre: ["fantasy", "adventure"],
   },
-  { id: 42, title: "The Hitchhiker's Guide to the Galaxy", genre: "fantasy" },
+  {
+    id: 5,
+    title: "Harry Potter and the Deathly Hallows",
+    author: "J.K. Rowling",
+    genre: ["fantasy", "adventure"],
+  },
+  {
+    id: 42,
+    title: "The Hitchhiker's Guide to the Galaxy",
+    author: "Douglas Adams",
+    genre: ["sci fi", "comedy"],
+  },
 ];
 
 type Movies = {
@@ -111,7 +128,7 @@ describe.each([
     await client.createIndex(index.uid);
     await client.createIndex(emptyIndex.uid);
 
-    const newFilterableAttributes = ["genre", "title", "id"];
+    const newFilterableAttributes = ["genre", "title", "id", "author"];
     const { taskUid: task1 }: EnqueuedTask = await client
       .index(index.uid)
       .updateSettings({
@@ -163,7 +180,10 @@ describe.each([
       id: 1;
     };
 
-    const response = await client.multiSearch<MyIndex & Books>({
+    const response = await client.multiSearch<
+      MultiSearchParams,
+      MyIndex & Books
+    >({
       queries: [{ indexUid: index.uid, q: "prince" }],
     });
 
@@ -176,6 +196,7 @@ describe.each([
     const client = await getClient(permission);
 
     const response1 = await client.multiSearch<
+      FederatedMultiSearchParams,
       Books | { id: number; asd: string }
     >({
       federation: {},
@@ -234,7 +255,10 @@ describe.each([
     await masterClient.waitForTask(task2);
 
     // Make a multi search on both indexes with facetsByIndex
-    const response = await client.multiSearch<Books | Movies>({
+    const response = await client.multiSearch<
+      FederatedMultiSearchParams,
+      Books | Movies
+    >({
       federation: {
         limit: 20,
         offset: 0,
@@ -312,7 +336,10 @@ describe.each([
     await masterClient.waitForTask(task2);
 
     // Make a multi search on both indexes with mergeFacets
-    const response = await client.multiSearch<Books | Movies>({
+    const response = await client.multiSearch<
+      FederatedMultiSearchParams,
+      Books | Movies
+    >({
       federation: {
         limit: 20,
         offset: 0,
@@ -634,9 +661,10 @@ describe.each([
     expect(response).toHaveProperty("hits", [
       {
         id: 4,
+        author: "J.K. Rowling",
         title: "Harry Potter and the Half-Blood Prince",
         comment: "The best book",
-        genre: "fantasy",
+        genre: ["fantasy", "adventure"],
       },
     ]);
     expect(response).toHaveProperty("offset", 1);
@@ -896,9 +924,9 @@ describe.each([
       facets: ["genre"],
     });
     expect(response).toHaveProperty("facetDistribution", {
-      genre: { fantasy: 2 },
+      genre: { adventure: 3, fantasy: 3 },
     });
-    expect(response.hits.length).toEqual(2);
+    expect(response.hits.length).toEqual(3);
   });
 
   test(`${permission} key: search with multiple filter and null query (placeholder)`, async () => {
@@ -908,9 +936,9 @@ describe.each([
       facets: ["genre"],
     });
     expect(response).toHaveProperty("facetDistribution", {
-      genre: { fantasy: 2 },
+      genre: { adventure: 3, fantasy: 3 },
     });
-    expect(response.hits.length).toEqual(2);
+    expect(response.hits.length).toEqual(3);
   });
 
   test(`${permission} key: search with multiple filter and empty string query (placeholder)`, async () => {
@@ -920,9 +948,9 @@ describe.each([
       facets: ["genre"],
     });
     expect(response).toHaveProperty("facetDistribution", {
-      genre: { fantasy: 2 },
+      genre: { adventure: 3, fantasy: 3 },
     });
-    expect(response.hits.length).toEqual(2);
+    expect(response.hits.length).toEqual(3);
   });
 
   test(`${permission} key: search with pagination parameters: hitsPerPage and page`, async () => {
@@ -934,10 +962,10 @@ describe.each([
     });
 
     expect(response.hits.length).toEqual(1);
-    expect(response.totalPages).toEqual(7);
+    expect(response.totalPages).toEqual(8);
     expect(response.hitsPerPage).toEqual(1);
     expect(response.page).toEqual(1);
-    expect(response.totalHits).toEqual(7);
+    expect(response.totalHits).toEqual(8);
   });
 
   test(`${permission} key: search with pagination parameters: hitsPerPage at 0 and page at 1`, async () => {
@@ -952,7 +980,7 @@ describe.each([
     expect(response.hitsPerPage).toEqual(0);
     expect(response.page).toEqual(1);
     expect(response.totalPages).toEqual(0);
-    expect(response.totalHits).toEqual(7);
+    expect(response.totalHits).toEqual(8);
   });
 
   test(`${permission} key: search with pagination parameters: hitsPerPage at 0`, async () => {
@@ -966,7 +994,7 @@ describe.each([
     expect(response.hitsPerPage).toEqual(0);
     expect(response.page).toEqual(1);
     expect(response.totalPages).toEqual(0);
-    expect(response.totalHits).toEqual(7);
+    expect(response.totalHits).toEqual(8);
     // @ts-expect-error Not present in the SearchResponse type because `page` and/or `hitsPerPage` is provided in the search params.
     expect(response.limit).toBeUndefined();
     // @ts-expect-error Not present in the SearchResponse type because `page` and/or `hitsPerPage` is provided in the search params.
@@ -986,8 +1014,8 @@ describe.each([
     expect(response.hits.length).toEqual(0);
     expect(response.hitsPerPage).toEqual(1);
     expect(response.page).toEqual(0);
-    expect(response.totalPages).toEqual(7);
-    expect(response.totalHits).toEqual(7);
+    expect(response.totalPages).toEqual(8);
+    expect(response.totalHits).toEqual(8);
   });
 
   test(`${permission} key: search with pagination parameters: page at 0`, async () => {
@@ -1001,7 +1029,7 @@ describe.each([
     expect(response.hitsPerPage).toEqual(20);
     expect(response.page).toEqual(0);
     expect(response.totalPages).toEqual(1);
-    expect(response.totalHits).toEqual(7);
+    expect(response.totalHits).toEqual(8);
   });
 
   test(`${permission} key: search with pagination parameters: hitsPerPage at 0 and page at 0`, async () => {
@@ -1024,7 +1052,7 @@ describe.each([
     expect(response.hitsPerPage).toEqual(0);
     expect(response.page).toEqual(0);
     expect(response.totalPages).toEqual(0);
-    expect(response.totalHits).toEqual(7);
+    expect(response.totalHits).toEqual(8);
   });
 
   test(`${permission} key: search with pagination parameters hitsPerPage/page and offset/limit`, async () => {
@@ -1046,8 +1074,8 @@ describe.each([
     expect(response.estimatedTotalHits).toBeUndefined();
     expect(response.hitsPerPage).toEqual(1);
     expect(response.page).toEqual(1);
-    expect(response.totalPages).toEqual(7);
-    expect(response.totalHits).toEqual(7);
+    expect(response.totalPages).toEqual(8);
+    expect(response.totalHits).toEqual(8);
   });
 
   test(`${permission} key: search with pagination parameters hitsPerPage/page and offset`, async () => {
@@ -1068,8 +1096,8 @@ describe.each([
     expect(response.estimatedTotalHits).toBeUndefined();
     expect(response.hitsPerPage).toEqual(1);
     expect(response.page).toEqual(1);
-    expect(response.totalHits).toEqual(7);
-    expect(response.totalPages).toEqual(7);
+    expect(response.totalHits).toEqual(8);
+    expect(response.totalPages).toEqual(8);
   });
 
   test(`${permission} key: search with pagination parameters hitsPerPage/page and limit`, async () => {
@@ -1090,8 +1118,8 @@ describe.each([
     expect(response.estimatedTotalHits).toBeUndefined();
     expect(response.page).toEqual(1);
     expect(response.hitsPerPage).toEqual(1);
-    expect(response.totalPages).toEqual(7);
-    expect(response.totalHits).toEqual(7);
+    expect(response.totalPages).toEqual(8);
+    expect(response.totalHits).toEqual(8);
   });
 
   test(`${permission} key: search on index with no documents and no primary key`, async () => {
@@ -1114,9 +1142,9 @@ describe.each([
     const client = await getClient(permission);
     const response = await client
       .index(index.uid)
-      .search("", { distinct: "genre" });
+      .search("", { distinct: "author" });
 
-    expect(response.hits.length).toEqual(4);
+    expect(response.hits.length).toEqual(7);
   });
 
   test(`${permission} key: search with retrieveVectors to true`, async () => {
@@ -1179,6 +1207,17 @@ describe.each([
     expect(searchResponse.hits.length).toEqual(2);
   });
 
+  test(`${permission} key: matches position contain indices`, async () => {
+    const client = await getClient(permission);
+    const response = await client.index(index.uid).search("fantasy", {
+      showMatchesPosition: true,
+    });
+    expect(response.hits[0]._matchesPosition).toEqual({
+      genre: [{ start: 0, length: 7, indices: [0] }],
+    });
+  });
+
+  // This test deletes the index, so following tests may fail if they need an existing index
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient("Master");

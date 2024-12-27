@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.46.0",
+  "version": "0.47.0",
   "description": "The Meilisearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -66,8 +66,8 @@
     "style:fix": "yarn fmt:fix && yarn lint:fix",
     "fmt": "prettier -c ./**/*.{js,ts}",
     "fmt:fix": "prettier -w ./**/*.{js,ts}",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "typingsheader": "node scripts/build.js"
   },
   "files": [
