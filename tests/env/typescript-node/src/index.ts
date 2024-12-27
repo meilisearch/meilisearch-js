@@ -1,12 +1,14 @@
 import {
   MeiliSearch,
+} from '../../../../src/index.js'
+import type {
   IndexObject,
   SearchResponse,
   Hits,
   Hit,
   SearchParams,
-} from '../../../../src/index'
-import { generateTenantToken } from '../../../../src/token'
+} from '../../../../src/index.js'
+import { generateTenantToken } from '../../../../src/token.js'
 
 const config = {
   host: 'http://127.0.0.1:7700',
@@ -60,7 +62,7 @@ const indexUid = "movies"
     console.log(hit?._formatted?.title)
   })
 
-  console.log(await generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', [], { apiKey: config.apiKey }))
+  console.log(generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', [], { apiKey: config.apiKey }))
 
   await index.delete()
 })()

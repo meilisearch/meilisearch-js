@@ -1,6 +1,5 @@
-import { MeiliSearch } from '../../../../'
-import { IndexObject } from '../../../../src'
-import { generateTenantToken } from '../../../../src/token'
+import { MeiliSearch, type IndexObject } from '../../../../src/index.js'
+import { generateTenantToken } from '../../../../src/token.js'
 
 const config = {
   host: 'http://127.0.0.1:7700',
@@ -22,5 +21,5 @@ function greeter(person: string) {
     user
   )} this is the list of all your indexes: \n ${uids.join(', ')}`
 
-  console.log(await generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', [], { apiKey: config.apiKey })) // Resolved using the `browser` field
+  console.log(generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', [], { apiKey: config.apiKey })) // Resolved using the `browser` field
 })()

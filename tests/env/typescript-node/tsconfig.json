@@ -2,11 +2,7 @@
   "extends": "../../../tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "noEmitOnError": true,
-    "moduleResolution": "node",
-    "module": "commonjs",
     "outDir": "./dist",
-    "verbatimModuleSyntax": false
   },
   "include": ["src/index.ts"]
 }

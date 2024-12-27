@@ -1,5 +1,3 @@
-// @TODO: This should be used to type check whole project with script `types`
-//        but for now because of tests/env this is not possible
 {
   "compilerOptions": {
     // We don't want to check node_modules

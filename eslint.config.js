@@ -5,35 +5,31 @@ import vitest from "@vitest/eslint-plugin";
 import globals from "globals";
 import prettier from "eslint-config-prettier";
 
-/** @type {import("eslint").Linter.Config[]} */
-export default [
-  {
-    ignores: ["dist/", "tests/env/", "coverage/", "playgrounds/", "docs/"],
-  },
-  // Standard linting for js files
+export default tseslint.config([
+  { ignores: ["dist/", "tests/env/", "coverage/", "playgrounds/", "docs/"] },
+  eslint.configs.recommended,
   {
     files: ["**/*.js"],
-    languageOptions: { sourceType: "module", globals: globals.node },
-    plugins: { eslint },
-    rules: eslint.configs.recommended.rules,
+    languageOptions: { globals: globals.node },
   },
-  // TypeScript linting for ts files
-  ...tseslint.configs.recommendedTypeChecked.map((config) => ({
-    ...config,
+  // TSDoc
+  {
+    files: ["src/**/*.ts"],
+    plugins: { tsdoc },
+    rules: { "tsdoc/syntax": "error" },
+  },
+  // TypeScript
+  {
     files: ["**/*.ts"],
+    extends: [tseslint.configs.recommendedTypeChecked],
     languageOptions: {
-      ...config.languageOptions,
-      globals: { ...config.languageOptions?.globals, ...globals.node },
       parserOptions: {
-        ...config.languageOptions?.parserOptions,
-        project: "tsconfig.json",
+        projectService: true,
+        tsconfigRootDir: __dirname,
       },
     },
-    plugins: { ...config.plugins, tsdoc },
     rules: {
-      ...config.rules,
-      "tsdoc/syntax": "error",
-      // @TODO: Remove the ones between "~~", adapt code
+      // TODO: Remove the ones between "~~", adapt code
       // ~~
       "@typescript-eslint/prefer-as-const": "off",
       "@typescript-eslint/ban-ts-comment": "off",
@@ -45,7 +41,7 @@ export default [
       "@typescript-eslint/no-floating-promises": "off",
       // ~~
       "@typescript-eslint/array-type": ["warn", { default: "array-simple" }],
-      // @TODO: Should be careful with this rule, should leave it be and disable
+      // TODO: Should be careful with this rule, should leave it be and disable
       //       it within files where necessary with explanations
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": [
@@ -54,16 +50,16 @@ export default [
         // varsIgnorePattern: https://eslint.org/docs/latest/rules/no-unused-vars#varsignorepattern
         { args: "all", argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-      // @TODO: Not recommended to disable rule, should instead disable locally
+      // TODO: Not recommended to disable rule, should instead disable locally
       //       with explanation
       "@typescript-eslint/ban-ts-ignore": "off",
     },
-  })),
-  // Vitest linting for test files
-  {
-    files: ["tests/*.ts"],
-    plugins: { vitest },
-    rules: vitest.configs.recommended.rules,
   },
+  // Vitest
+  {
+    files: ["tests/**/*.test.ts"],
+    extends: [vitest.configs.recommended],
+  },
+  // Disable any style linting, as prettier takes care of that separately
   prettier,
-];
+]);
