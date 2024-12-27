@@ -34,9 +34,8 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 
 To run this project, you will need:
 
-- Node.js >= v16 and node <= 18
-- Yarn
-- vitest
+- Node >= v18 and Node <= 20
+- Yarn v1.x
 
 ### Setup
 
