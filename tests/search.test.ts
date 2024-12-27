@@ -8,7 +8,12 @@ import {
   assert,
   vi,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types";
+import {
+  ErrorStatusCode,
+  FederatedMultiSearchParams,
+  MatchingStrategies,
+  MultiSearchParams,
+} from "../src/types";
 import { EnqueuedTask } from "../src/enqueued-task";
 import {
   clearAllIndexes,
@@ -20,11 +25,6 @@ import {
   HOST,
   getKey,
 } from "./utils/meilisearch-test-utils";
-
-if (typeof fetch === "undefined") {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require("cross-fetch/polyfill");
-}
 
 const index = {
   uid: "books",
@@ -182,7 +182,10 @@ describe.each([
       id: 1;
     };
 
-    const response = await client.multiSearch<MyIndex & Books>({
+    const response = await client.multiSearch<
+      MultiSearchParams,
+      MyIndex & Books
+    >({
       queries: [{ indexUid: index.uid, q: "prince" }],
     });
 
@@ -195,6 +198,7 @@ describe.each([
     const client = await getClient(permission);
 
     const response1 = await client.multiSearch<
+      FederatedMultiSearchParams,
       Books | { id: number; asd: string }
     >({
       federation: {},
@@ -253,7 +257,10 @@ describe.each([
     await masterClient.waitForTask(task2);
 
     // Make a multi search on both indexes with facetsByIndex
-    const response = await client.multiSearch<Books | Movies>({
+    const response = await client.multiSearch<
+      FederatedMultiSearchParams,
+      Books | Movies
+    >({
       federation: {
         limit: 20,
         offset: 0,
@@ -331,7 +338,10 @@ describe.each([
     await masterClient.waitForTask(task2);
 
     // Make a multi search on both indexes with mergeFacets
-    const response = await client.multiSearch<Books | Movies>({
+    const response = await client.multiSearch<
+      FederatedMultiSearchParams,
+      Books | Movies
+    >({
       federation: {
         limit: 20,
         offset: 0,
