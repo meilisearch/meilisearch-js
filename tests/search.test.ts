@@ -6,7 +6,12 @@ import {
   afterAll,
   beforeAll,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types";
+import {
+  ErrorStatusCode,
+  FederatedMultiSearchParams,
+  MatchingStrategies,
+  MultiSearchParams,
+} from "../src/types";
 import { EnqueuedTask } from "../src/enqueued-task";
 import {
   clearAllIndexes,
@@ -18,11 +23,6 @@ import {
   HOST,
   getKey,
 } from "./utils/meilisearch-test-utils";
-
-if (typeof fetch === "undefined") {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require("cross-fetch/polyfill");
-}
 
 const index = {
   uid: "books",
@@ -180,7 +180,10 @@ describe.each([
       id: 1;
     };
 
-    const response = await client.multiSearch<MyIndex & Books>({
+    const response = await client.multiSearch<
+      MultiSearchParams,
+      MyIndex & Books
+    >({
       queries: [{ indexUid: index.uid, q: "prince" }],
     });
 
