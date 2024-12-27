@@ -62,7 +62,7 @@ const indexUid = "movies"
     console.log(hit?._formatted?.title)
   })
 
-  console.log(generateTenantToken('e489fe16-3381-431b-bee3-00430192915d', [], { apiKey: config.apiKey }))
+  console.log(await generateTenantToken({ apiKey: config.apiKey, apiKeyUid: 'e489fe16-3381-431b-bee3-00430192915d' }))
 
   await index.delete()
 })()
