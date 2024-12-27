@@ -1465,7 +1465,7 @@ describe.each([
       assert.strictEqual(e.name, "MeiliSearchRequestError");
     }
 
-    vi.stubGlobal("fetch", (_, requestInit?: RequestInit) => {
+    vi.stubGlobal("fetch", (_: unknown, requestInit?: RequestInit) => {
       return new Promise((_, reject) => {
         setInterval(() => {
           if (requestInit?.signal?.aborted) {
