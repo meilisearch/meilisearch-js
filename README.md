@@ -95,7 +95,8 @@ Usage in an HTML (or alike) file:
 ```html
 <script src='https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js'></script>
 <script>
-  const client = new meilisearch.MeiliSearch({
+  // also works with window.MeiliSearch, meilisearch.MeiliSearch, window.meilisearch.MeiliSearch
+  const client = new MeiliSearch({
     host: 'http://127.0.0.1:7700',
     apiKey: 'masterKey',
   })

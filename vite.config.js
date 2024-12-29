@@ -5,6 +5,7 @@ const tokenInput = "src/token.ts";
 
 export default defineConfig(({ mode }) => {
   const isCJSBuild = mode === "production";
+  const globalVarName = "meilisearch";
 
   return {
     build: {
@@ -17,7 +18,7 @@ export default defineConfig(({ mode }) => {
       lib: {
         // leave out token from UMD build
         entry: isCJSBuild ? [indexInput, tokenInput] : indexInput,
-        name: isCJSBuild ? undefined : "meilisearch",
+        name: isCJSBuild ? undefined : globalVarName,
         formats: isCJSBuild ? ["cjs"] : ["umd"],
         fileName: (format, entryName) => {
           switch (format) {
@@ -35,7 +36,12 @@ export default defineConfig(({ mode }) => {
             // make sure external imports that should not be bundled are listed here for CJS build
             external: ["node:crypto"],
           }
-        : undefined,
+        : // https://github.com/vitejs/vite/issues/11624
+          {
+            output: {
+              footer: `(function(d,_){(d=typeof globalThis!="undefined"?globalThis:d||self,_(d))})(this,function(d){for(var k of Object.keys(d.${globalVarName})){d[k]=d.${globalVarName}[k]}})`,
+            },
+          },
     },
     test: {
       include: "tests/**/*.test.ts",

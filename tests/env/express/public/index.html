@@ -19,8 +19,8 @@
   (async () => {
     let content = ''
     let searchDiv = undefined
-    // also works with window.meilisearch
-    const client = new meilisearch.MeiliSearch({
+    // also works with window.MeiliSearch, meilisearch.MeiliSearch, window.meilisearch.MeiliSearch
+    const client = new MeiliSearch({
       host: 'http://127.0.0.1:7700',
       apiKey: 'masterKey',
     })
