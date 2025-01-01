@@ -114,7 +114,7 @@
     "rollup-plugin-typescript2": "^0.36.0",
     "shx": "^0.3.2",
     "typedoc": "^0.27.2",
-    "typescript": "^5.4.5",
+    "typescript": "^5.7.2",
     "typescript-eslint": "^8.16.0",
     "vitest": "2.0.5"
   },
