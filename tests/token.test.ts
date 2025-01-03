@@ -16,10 +16,10 @@ import {
   clearAllIndexes,
   config,
   HOST,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 import { createHmac } from "node:crypto";
-import { generateTenantToken } from "../src/token";
-import MeiliSearch from "../src";
+import { generateTenantToken } from "../src/token.js";
+import { MeiliSearch } from "../src/index.js";
 
 const HASH_ALGORITHM = "HS256";
 const TOKEN_TYP = "JWT";

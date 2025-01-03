@@ -1,16 +1,16 @@
-const eslint = require("@eslint/js");
-const tseslint = require("typescript-eslint");
-const tsdoc = require("eslint-plugin-tsdoc");
-const vitest = require("@vitest/eslint-plugin");
-const globals = require("globals");
-const prettier = require("eslint-config-prettier");
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import tsdoc from "eslint-plugin-tsdoc";
+import vitest from "@vitest/eslint-plugin";
+import globals from "globals";
+import prettier from "eslint-config-prettier";
 
-module.exports = tseslint.config([
+export default tseslint.config([
   { ignores: ["dist/", "tests/env/", "coverage/", "playgrounds/", "docs/"] },
   eslint.configs.recommended,
   {
     files: ["**/*.js"],
-    languageOptions: { sourceType: "commonjs", globals: globals.node },
+    languageOptions: { globals: globals.node },
   },
   // TSDoc
   {
@@ -25,7 +25,7 @@ module.exports = tseslint.config([
     languageOptions: {
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: __dirname,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     rules: {

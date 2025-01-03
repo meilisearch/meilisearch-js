@@ -72,6 +72,9 @@ To use one of our SDKs, you must first have a running Meilisearch instance. Cons
 
 After installing `meilisearch-js`, you must import it into your application. There are many ways of doing that depending on your development environment.
 
+> [!WARNING]
+> [Default export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#using_the_default_export) is deprecated and will be removed in a future version. [Issue](https://github.com/meilisearch/meilisearch-js/issues/1789).
+
 #### `import` syntax <!-- omit in toc -->
 
 Usage in an ES module environment:
@@ -92,6 +95,7 @@ Usage in an HTML (or alike) file:
 ```html
 <script src='https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js'></script>
 <script>
+  // also works with window.MeiliSearch, meilisearch.MeiliSearch, window.meilisearch.MeiliSearch
   const client = new MeiliSearch({
     host: 'http://127.0.0.1:7700',
     apiKey: 'masterKey',

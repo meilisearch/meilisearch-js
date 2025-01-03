@@ -3,7 +3,7 @@ import {
   config,
   getClient,
   clearAllIndexes,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const index = {
   uid: "batch-test",

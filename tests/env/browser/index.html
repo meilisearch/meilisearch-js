@@ -12,15 +12,14 @@
 </body>
 
 </html>
-<script src="meilisearch.umd.js"></script>
+<script src="../../../dist/bundles/meilisearch.umd.js"></script>
 <script>
-  ; (async () => {
+  (async () => {
 
     try {
       const UID = "testIndex"
 
-      // also works with window.MeiliSearch
-
+      // also works with window.MeiliSearch, meilisearch.MeiliSearch, window.meilisearch.MeiliSearch
       const client = new window.MeiliSearch({
         host: 'http://localhost:7700',
         apiKey: 'masterKey',
@@ -51,6 +50,4 @@
       console.error(e);
     }
   })()
-
-
 </script>

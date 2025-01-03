@@ -2,28 +2,14 @@
   "compilerOptions": {
     // We don't want to check node_modules
     "skipLibCheck": true,
-    // @TODO: perhaps "emitDeclarationOnly" should be used here (build fails with it), need to
-    //       investigate further https://www.typescriptlang.org/tsconfig#emitDeclarationOnly
-    //       probably need to update rollup and its config
-    "noEmit": true,
     "declaration": true,
     "declarationMap": true,
     "declarationDir": "./dist/types",
-    // Since we're using a bundler (rollup), and so TS isn't used to emit JS,
-    // this option should be set to "bundler"
-    // https://www.typescriptlang.org/docs/handbook/modules/reference.html#bundler
-    // However "module": "node16" or "nodenext" is a better option:
-    // https://www.typescriptlang.org/docs/handbook/modules/theory.html#module-resolution-for-libraries
-    // Also this should be applied too: https://www.typescriptlang.org/tsconfig#verbatimModuleSyntax
-    "moduleResolution": "bundler",
-    // "moduleResolution" = "bundler" requires this to be "esnext"
-    "module": "esnext",
+    "module": "node16",
     // Node.js 18 supports up to ES2022 according to https://www.npmjs.com/package/@tsconfig/node18
-    // This matters for the generated CJS and ESM file, UMD file is down-leveled further to support IE11
-    // (only the syntax, URL, URLSearchParams, fetch is not IE11 compatible) with the help of Babel.
     "target": "es2022",
     "lib": ["ESNext", "dom"],
     "strict": true,
-    "noImplicitReturns": true
+    "verbatimModuleSyntax": true
   }
 }

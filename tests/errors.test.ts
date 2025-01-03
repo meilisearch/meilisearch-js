@@ -1,11 +1,11 @@
 import { expect, test, describe, beforeEach, vi } from "vitest";
-import { MeiliSearch } from "./utils/meilisearch-test-utils";
+import { MeiliSearch } from "./utils/meilisearch-test-utils.js";
 import {
   MeiliSearchError,
   MeiliSearchApiError,
   MeiliSearchRequestError,
   MeiliSearchTimeOutError,
-} from "../src/errors";
+} from "../src/errors/index.js";
 
 const mockedFetch = vi.fn();
 globalThis.fetch = mockedFetch;
