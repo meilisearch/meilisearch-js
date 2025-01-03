@@ -801,8 +801,8 @@ get_localized_attribute_settings_1: |-
   client.index('INDEX_NAME').getLocalizedAttributes()
 update_localized_attribute_settings_1: |-
   client.index('INDEX_NAME').updateLocalizedAttributes([
-    { attributePatterns: ['jpn'], locales: ['*_ja'] },
-  ];)
+    { attributePatterns: ['*_ja'], locales: ['jpn'] },
+  ])
 reset_localized_attribute_settings_1: |-
   client.index('INDEX_NAME').resetLocalizedAttributes()
 get_facet_search_settings_1: |-
