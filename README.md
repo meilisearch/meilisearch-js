@@ -70,7 +70,8 @@ Instead of using a package manager, you may also import the library directly int
 After installing `meilisearch-js`, you must import it into your application. There are many ways of doing that depending on your development environment.
 
 > [!WARNING]
-> [Default export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#using_the_default_export) is deprecated and will be removed in a future version. [Issue](https://github.com/meilisearch/meilisearch-js/issues/1789).
+> - [default export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#using_the_default_export) is deprecated and will be removed in a future version https://github.com/meilisearch/meilisearch-js/issues/1789
+> - exports will stop being directly available on the global object (usually `window`) https://github.com/meilisearch/meilisearch-js/issues/1806
 
 #### `import` syntax <!-- omit in toc -->
 
