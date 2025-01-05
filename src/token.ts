@@ -1,8 +1,5 @@
 import type { webcrypto } from "node:crypto";
-import type {
-  TenantTokenGeneratorOptions,
-  TokenSearchRules,
-} from "./types.js";
+import type { TenantTokenGeneratorOptions, TokenSearchRules } from "./types.js";
 
 function getOptionsWithDefaults(options: TenantTokenGeneratorOptions) {
   const {
