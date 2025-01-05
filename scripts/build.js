@@ -3,9 +3,7 @@
 import { resolve, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readFileSync, writeFileSync } from "node:fs";
-import { createRequire } from "node:module";
-
-const pkg = createRequire(import.meta.url)("../package.json");
+import pkg from "../package.json" with { type: "json" };
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const TYPES_ROOT_FILE = resolve(ROOT, normalize(pkg.exports["."].types));

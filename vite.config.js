@@ -1,11 +1,12 @@
 import { defineConfig } from "vite";
+import pkg from "./package.json" with { type: "json" };
 
 const indexInput = "src/index.ts";
 const tokenInput = "src/token.ts";
+const globalVarName = pkg.name;
 
 export default defineConfig(({ mode }) => {
   const isCJSBuild = mode === "production";
-  const globalVarName = "meilisearch";
 
   return {
     build: {
