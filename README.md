@@ -64,6 +64,7 @@ Instead of using a package manager, you may also import the library directly int
 ⚡️ **Launch, scale, and streamline in minutes with Meilisearch Cloud**—no maintenance, no commitment, cancel anytime. [Try it free now](https://cloud.meilisearch.com/login?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
 
 🪨  Prefer to self-host? [Download and deploy](https://www.meilisearch.com/docs/learn/self_hosted/getting_started_with_self_hosted_meilisearch?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) our fast, open-source search engine on your own infrastructure.
+
 ### Import <!-- omit in toc -->
 
 After installing `meilisearch-js`, you must import it into your application. There are many ways of doing that depending on your development environment.
@@ -124,7 +125,6 @@ const client = new MeiliSearch({
   apiKey: 'masterKey',
 })
 ```
-
 
 ## 🚀 Getting started
 
