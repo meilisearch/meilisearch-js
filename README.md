@@ -34,7 +34,6 @@
 ## Table of Contents <!-- omit in TOC -->
 
 - [📖 Documentation](#-documentation)
-- [⚡ Supercharge your Meilisearch experience](#-supercharge-your-meilisearch-experience)
 - [🔧 Installation](#-installation)
 - [🎬 Getting started](#-getting-started)
 - [🤖 Compatibility with Meilisearch](#-compatibility-with-meilisearch)
@@ -47,10 +46,6 @@
 This readme and [Meilisearch JS documentation website](https://meilisearch.github.io/meilisearch-js/) contains all the information you need to start using this Meilisearch SDK.
 
 For general information on how to use Meilisearch—such as our API reference, tutorials, guides, and in-depth articles—refer to our [main documentation website](https://www.meilisearch.com/docs/).
-
-## ⚡ Supercharge your Meilisearch experience
-
-Say goodbye to server deployment and manual updates with [Meilisearch Cloud](https://www.meilisearch.com/cloud?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js). Get started with a 14-day free trial! No credit card required.
 
 ## 🔧 Installation
 
@@ -66,8 +61,9 @@ Instead of using a package manager, you may also import the library directly int
 
 ### Run Meilisearch <!-- omit in toc -->
 
-To use one of our SDKs, you must first have a running Meilisearch instance. Consult our documentation for [instructions on how to download and launch Meilisearch](https://www.meilisearch.com/docs/learn/getting_started/installation#installation).
+⚡️ **Launch, scale, and streamline in minutes with Meilisearch Cloud**—no maintenance, no commitment, cancel anytime. [Try it free now](https://cloud.meilisearch.com/login?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
 
+🪨  Prefer to self-host? [Download and deploy](https://www.meilisearch.com/docs/learn/self_hosted/getting_started_with_self_hosted_meilisearch?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) our fast, open-source search engine on your own infrastructure.
 ### Import <!-- omit in toc -->
 
 After installing `meilisearch-js`, you must import it into your application. There are many ways of doing that depending on your development environment.
@@ -129,7 +125,8 @@ const client = new MeiliSearch({
 })
 ```
 
-## 🎬 Getting started
+
+## 🚀 Getting started
 
 ### Add documents <!-- omit in toc -->
 
