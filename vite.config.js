@@ -12,12 +12,14 @@ export default defineConfig(({ mode }) => {
     build: {
       // for UMD build we do not want to empty directory, so previous builds stay intact
       emptyOutDir: isCJSBuild,
-      minify: true,
+      // don't minify CJS build, Node.js doesn't benefit from it
+      minify: !isCJSBuild,
       sourcemap: true,
-      // UMD build targets lower level ES, while CJS the lowest Node.js LTS version
+      // UMD build should target the lowest level ES,
+      // while CJS the lowest Node.js LTS compatible version
       target: isCJSBuild ? "es2022" : "es6",
       lib: {
-        // leave out token from UMD build
+        // leave out token export from UMD build
         entry: isCJSBuild ? [indexInput, tokenInput] : indexInput,
         name: isCJSBuild ? undefined : globalVarName,
         formats: isCJSBuild ? ["cjs"] : ["umd"],
@@ -37,7 +39,9 @@ export default defineConfig(({ mode }) => {
             // make sure external imports that should not be bundled are listed here for CJS build
             external: ["node:crypto"],
           }
-        : // https://github.com/vitejs/vite/issues/11624
+        : // the following code enables Vite in UMD mode to extend the global object with all of
+          // the exports, and not just a property of it ( https://github.com/vitejs/vite/issues/11624 )
+          // TODO: Remove this in the future ( https://github.com/meilisearch/meilisearch-js/issues/1806 )
           {
             output: {
               footer: `(function(d,_){(d=typeof globalThis!="undefined"?globalThis:d||self,_(d))})(this,function(d){for(var k of Object.keys(d.${globalVarName})){d[k]=d.${globalVarName}[k]}})`,

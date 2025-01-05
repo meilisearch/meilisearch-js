@@ -17,7 +17,7 @@
   ],
   "license": "MIT",
   "type": "module",
-  "jsdelivr": "./dist/umd/index.min.js",
+  "main": "./dist/umd/index.min.js",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
