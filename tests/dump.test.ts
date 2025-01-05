@@ -1,5 +1,5 @@
 import { expect, test, describe, beforeEach } from "vitest";
-import { ErrorStatusCode, TaskStatus } from "../src/types/types.js";
+import { ErrorStatusCode, TaskStatus } from "../src/types.js";
 import {
   clearAllIndexes,
   config,

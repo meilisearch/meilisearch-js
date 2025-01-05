@@ -6,11 +6,11 @@ import {
   afterAll,
   beforeAll,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types/types.js";
+import { ErrorStatusCode, MatchingStrategies } from "../src/types.js";
 import type {
   FederatedMultiSearchParams,
   MultiSearchParams,
-} from "../src/types/types.js";
+} from "../src/types.js";
 import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,

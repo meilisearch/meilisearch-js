@@ -14,7 +14,7 @@ if (to === undefined) {
 
 const umdAbsolutePath = resolve(
   dirname(fileURLToPath(import.meta.url)),
-  join("..", pkg.jsdelivr),
+  join("..", pkg.main),
 );
 
-await copyFile(umdAbsolutePath, join(to, basename(pkg.jsdelivr)));
+await copyFile(umdAbsolutePath, join(to, basename(pkg.main)));

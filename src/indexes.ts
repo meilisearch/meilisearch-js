@@ -55,7 +55,7 @@ import type {
   LocalizedAttributes,
   UpdateDocumentsByFunctionOptions,
   PrefixSearch,
-} from "./types/types.js";
+} from "./types.js";
 import { removeUndefinedFromObject } from "./utils.js";
 import { HttpRequests } from "./http-requests.js";
 import { Task, TaskClient } from "./task.js";

@@ -1,6 +1,6 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
 import { EnqueuedTask } from "../src/enqueued-task.js";
-import type { Embedders } from "../src/types/types.js";
+import type { Embedders } from "../src/types.js";
 import {
   clearAllIndexes,
   config,

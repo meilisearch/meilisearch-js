@@ -4,8 +4,8 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^3.8.3
 
-import { Task } from "../task.js";
-import { Batch } from "../batch.js";
+import { Task } from "./task.js";
+import { Batch } from "./batch.js";
 
 export type Config = {
   host: string;

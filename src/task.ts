@@ -8,8 +8,8 @@ import type {
   CancelTasksQuery,
   TasksResultsObject,
   DeleteTasksQuery,
-} from "./types/types.js";
-import { TaskStatus } from "./types/types.js";
+} from "./types.js";
+import { TaskStatus } from "./types.js";
 import { HttpRequests, toQueryParams } from "./http-requests.js";
 import { sleep } from "./utils.js";
 import { EnqueuedTask } from "./enqueued-task.js";
