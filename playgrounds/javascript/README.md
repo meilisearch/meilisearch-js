@@ -1,16 +1,17 @@
-# Javascript Playground
+# Meilisearch JavaScript playground
 
-## Project setup
-```
-yarn install
+This is an example vanilla JavaScript project using [Vite](https://vite.dev) and the [Yarn](https://classic.yarnpkg.com/en/docs/install) package manager.
+
+## Development
+
+Install the dependencies:
+
+```bash
+yarn
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn start
-```
+Run the app in development:
 
-### Compiles and minifies for production
-```
-yarn build
+```bash
+yarn dev
 ```
