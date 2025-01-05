@@ -1,11 +1,11 @@
-import { MeiliSearch } from "../../../src";
+import { Meilisearch } from "../../../src";
 
 const config = {
   host: "http://127.0.0.1:7700",
   apiKey: "masterKey",
 };
 
-const client = new MeiliSearch(config);
+const client = new Meilisearch(config);
 const indexUid = "movies";
 
 const addDataset = async () => {
