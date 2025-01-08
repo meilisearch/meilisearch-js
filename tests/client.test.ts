@@ -82,17 +82,21 @@ describe.each([
         },
       });
 
-      assert.isTrue(await client.isHealthy());
+      await client.multiSearch(
+        { queries: [] },
+        { headers: { "Jane-Doe": "John Doe" } },
+      );
 
       assert.isDefined(fetchSpy.mock.lastCall);
       const [, requestInit] = fetchSpy.mock.lastCall!;
 
       assert.isDefined(requestInit?.headers);
       assert.instanceOf(requestInit!.headers, Headers);
-      assert.strictEqual(
-        (requestInit!.headers! as Headers).get("Hello-There!"),
-        "General Kenobi",
-      );
+
+      const headers = requestInit!.headers! as Headers;
+
+      assert.strictEqual(headers.get("Hello-There!"), "General Kenobi");
+      assert.strictEqual(headers.get("Jane-Doe"), "John Doe");
     });
 
     test(`${permission} key: Create client with custom headers (array)`, async () => {
