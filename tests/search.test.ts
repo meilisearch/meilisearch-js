@@ -11,7 +11,6 @@ import type {
   FederatedMultiSearchParams,
   MultiSearchParams,
 } from "../src/types.js";
-import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,
   config,
@@ -128,12 +127,10 @@ describe.each([
     await client.createIndex(emptyIndex.uid);
 
     const newFilterableAttributes = ["genre", "title", "id", "author"];
-    const { taskUid: task1 }: EnqueuedTask = await client
-      .index(index.uid)
-      .updateSettings({
-        filterableAttributes: newFilterableAttributes,
-        sortableAttributes: ["id"],
-      });
+    const { taskUid: task1 } = await client.index(index.uid).updateSettings({
+      filterableAttributes: newFilterableAttributes,
+      sortableAttributes: ["id"],
+    });
     await client.waitForTask(task1);
 
     const { taskUid: task2 } = await client
@@ -241,7 +238,7 @@ describe.each([
     // Setup to have a new "movies" index
     await masterClient.createIndex("movies");
     const newFilterableAttributes = ["title", "id"];
-    const { taskUid: task1 }: EnqueuedTask = await masterClient
+    const { taskUid: task1 } = await masterClient
       .index("movies")
       .updateSettings({
         filterableAttributes: newFilterableAttributes,
@@ -322,7 +319,7 @@ describe.each([
     // Setup to have a new "movies" index
     await masterClient.createIndex("movies");
     const newFilterableAttributes = ["title", "id"];
-    const { taskUid: task1 }: EnqueuedTask = await masterClient
+    const { taskUid: task1 } = await masterClient
       .index("movies")
       .updateSettings({
         filterableAttributes: newFilterableAttributes,
@@ -1288,7 +1285,7 @@ describe.each([{ permission: "Master" }])(
 
     test(`${permission} key: search on nested content with searchable on specific nested field`, async () => {
       const client = await getClient(permission);
-      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
+      const { taskUid: settingsUpdateTask } = await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ["title", "info.comment"],
@@ -1309,7 +1306,7 @@ describe.each([{ permission: "Master" }])(
 
     test(`${permission} key: search on nested content with sort`, async () => {
       const client = await getClient(permission);
-      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
+      const { taskUid: settingsUpdateTask } = await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ["title", "info.comment"],

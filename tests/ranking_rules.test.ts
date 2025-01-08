@@ -1,6 +1,5 @@
 import { expect, test, describe, beforeEach, afterAll } from "vitest";
 import { ErrorStatusCode } from "../src/types.js";
-import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,
   config,
@@ -48,7 +47,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update ranking rules`, async () => {
       const client = await getClient(permission);
       const newRankingRules = ["title:asc", "typo", "description:desc"];
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
         .updateRankingRules(newRankingRules);
       await client.index(index.uid).waitForTask(task.taskUid);
@@ -62,9 +61,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update ranking rules at null`, async () => {
       const client = await getClient(permission);
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateRankingRules(null);
+      const task = await client.index(index.uid).updateRankingRules(null);
       await client.index(index.uid).waitForTask(task.taskUid);
 
       const response: string[] = await client
@@ -76,9 +73,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset ranking rules`, async () => {
       const client = await getClient(permission);
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .resetRankingRules();
+      const task = await client.index(index.uid).resetRankingRules();
       await client.index(index.uid).waitForTask(task.taskUid);
 
       const response: string[] = await client

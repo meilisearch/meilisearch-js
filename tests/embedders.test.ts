@@ -1,5 +1,4 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
-import { EnqueuedTask } from "../src/enqueued-task.js";
 import type { Embedders } from "../src/types.js";
 import {
   clearAllIndexes,
@@ -93,9 +92,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateEmbedders(newEmbedder);
+      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
 
       await client.waitForTask(task.taskUid);
 
@@ -124,9 +121,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateEmbedders(newEmbedder);
+      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
       await client.waitForTask(task.taskUid);
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
@@ -155,9 +150,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateEmbedders(newEmbedder);
+      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
       await client.waitForTask(task.taskUid, { timeOutMs: 60_000 });
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
@@ -198,9 +191,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateEmbedders(newEmbedder);
+      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
       await client.waitForTask(task.taskUid);
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
@@ -231,9 +222,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateEmbedders(newEmbedder);
+      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
       await client.waitForTask(task.taskUid);
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
@@ -255,9 +244,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           dimensions: 512,
         },
       };
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateEmbedders(newEmbedder);
+      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
 
       await client.waitForTask(task.taskUid);
 
@@ -268,7 +255,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset embedders`, async () => {
       const client = await getClient(permission);
-      const task: EnqueuedTask = await client.index(index.uid).resetEmbedders();
+      const task = await client.index(index.uid).resetEmbedders();
       await client.waitForTask(task.taskUid);
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
@@ -337,7 +324,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           dimensions: 3,
         },
       };
-      const { taskUid: updateEmbeddersTask }: EnqueuedTask = await client
+      const { taskUid: updateEmbeddersTask } = await client
         .index(index.uid)
         .updateEmbedders(newEmbedder);
 

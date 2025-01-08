@@ -1,5 +1,4 @@
 import { afterAll, beforeEach, describe, expect, test } from "vitest";
-import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,
   config,
@@ -38,7 +37,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update separator tokens`, async () => {
       const client = await getClient(permission);
       const newSeparatorTokens = ["&sep", "/", "|"];
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
         .updateSeparatorTokens(newSeparatorTokens);
       await client.index(index.uid).waitForTask(task.taskUid);
@@ -53,7 +52,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update separator tokens with null value`, async () => {
       const client = await getClient(permission);
       const newSeparatorTokens = null;
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
         .updateSeparatorTokens(newSeparatorTokens);
       await client.index(index.uid).waitForTask(task.taskUid);
@@ -67,9 +66,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset separator tokens`, async () => {
       const client = await getClient(permission);
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .resetSeparatorTokens();
+      const task = await client.index(index.uid).resetSeparatorTokens();
       await client.index(index.uid).waitForTask(task.taskUid);
 
       const response: string[] = await client

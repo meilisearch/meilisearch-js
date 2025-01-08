@@ -45,7 +45,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(enqueuedTask.status).toBeDefined();
       expect(enqueuedTask.type).toEqual(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE);
       expect(enqueuedTask.enqueuedAt).toBeDefined();
-      expect(enqueuedTask.enqueuedAt).toBeInstanceOf(Date);
+      expect(enqueuedTask.enqueuedAt).toBeTypeOf("string");
     });
 
     test(`${permission} key: Get one task`, async () => {
@@ -65,11 +65,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(task.details.receivedDocuments).toEqual(7);
       expect(task.duration).toBeDefined();
       expect(task.enqueuedAt).toBeDefined();
-      expect(task.enqueuedAt).toBeInstanceOf(Date);
+      expect(task.enqueuedAt).toBeTypeOf("string");
       expect(task.finishedAt).toBeDefined();
-      expect(task.finishedAt).toBeInstanceOf(Date);
+      expect(task.finishedAt).toBeTypeOf("string");
       expect(task.startedAt).toBeDefined();
-      expect(task.startedAt).toBeInstanceOf(Date);
+      expect(task.startedAt).toBeTypeOf("string");
       expect(task.error).toBeNull();
     });
 

@@ -1,6 +1,5 @@
 import { expect, test, describe, afterAll, beforeAll } from "vitest";
 import { ErrorStatusCode } from "../src/types.js";
-import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,
   config,
@@ -93,12 +92,10 @@ describe.each([
     await client.waitForTask(task2);
 
     const newFilterableAttributes = ["genre", "title", "id", "author"];
-    const { taskUid: task3 }: EnqueuedTask = await client
-      .index(index.uid)
-      .updateSettings({
-        filterableAttributes: newFilterableAttributes,
-        sortableAttributes: ["id"],
-      });
+    const { taskUid: task3 } = await client.index(index.uid).updateSettings({
+      filterableAttributes: newFilterableAttributes,
+      sortableAttributes: ["id"],
+    });
     await client.waitForTask(task3);
 
     const { taskUid: task4 } = await client

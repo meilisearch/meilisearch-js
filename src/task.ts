@@ -4,48 +4,16 @@ import type {
   WaitOptions,
   TasksQuery,
   TasksResults,
-  TaskObject,
+  Task,
   CancelTasksQuery,
-  TasksResultsObject,
   DeleteTasksQuery,
+  EnqueuedTask,
 } from "./types.js";
 import { TaskStatus } from "./types.js";
 import { HttpRequests, toQueryParams } from "./http-requests.js";
 import { sleep } from "./utils.js";
-import { EnqueuedTask } from "./enqueued-task.js";
 
-class Task {
-  indexUid: TaskObject["indexUid"];
-  status: TaskObject["status"];
-  type: TaskObject["type"];
-  uid: TaskObject["uid"];
-  batchUid: TaskObject["batchUid"];
-  canceledBy: TaskObject["canceledBy"];
-  details: TaskObject["details"];
-  error: TaskObject["error"];
-  duration: TaskObject["duration"];
-  startedAt: Date;
-  enqueuedAt: Date;
-  finishedAt: Date;
-
-  constructor(task: TaskObject) {
-    this.indexUid = task.indexUid;
-    this.status = task.status;
-    this.type = task.type;
-    this.uid = task.uid;
-    this.batchUid = task.batchUid;
-    this.details = task.details;
-    this.canceledBy = task.canceledBy;
-    this.error = task.error;
-    this.duration = task.duration;
-
-    this.startedAt = new Date(task.startedAt);
-    this.enqueuedAt = new Date(task.enqueuedAt);
-    this.finishedAt = new Date(task.finishedAt);
-  }
-}
-
-class TaskClient {
+export class TaskClient {
   httpRequest: HttpRequests;
 
   constructor(config: Config) {
@@ -60,8 +28,8 @@ class TaskClient {
    */
   async getTask(uid: number): Promise<Task> {
     const url = `tasks/${uid}`;
-    const taskItem = await this.httpRequest.get<TaskObject>(url);
-    return new Task(taskItem);
+    const task = await this.httpRequest.get<Task>(url);
+    return task;
   }
 
   /**
@@ -73,15 +41,12 @@ class TaskClient {
   async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
     const url = `tasks`;
 
-    const tasks = await this.httpRequest.get<Promise<TasksResultsObject>>(
+    const tasks = await this.httpRequest.get<TasksResults>(
       url,
       toQueryParams<TasksQuery>(parameters),
     );
 
-    return {
-      ...tasks,
-      results: tasks.results.map((task) => new Task(task)),
-    };
+    return tasks;
   }
 
   /**
@@ -151,7 +116,7 @@ class TaskClient {
       toQueryParams<CancelTasksQuery>(parameters),
     );
 
-    return new EnqueuedTask(task);
+    return task;
   }
 
   /**
@@ -168,8 +133,7 @@ class TaskClient {
       {},
       toQueryParams<DeleteTasksQuery>(parameters),
     );
-    return new EnqueuedTask(task);
+
+    return task;
   }
 }
-
-export { TaskClient, Task };

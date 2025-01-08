@@ -14,6 +14,7 @@ import type {
   Key,
   Health,
   Stats,
+  Task,
   Version,
   TasksQuery,
   WaitOptions,
@@ -23,7 +24,7 @@ import type {
   KeysQuery,
   KeysResults,
   TasksResults,
-  EnqueuedTaskObject,
+  EnqueuedTask,
   SwapIndexesParams,
   CancelTasksQuery,
   DeleteTasksQuery,
@@ -32,12 +33,12 @@ import type {
   BatchesResults,
   BatchesQuery,
   MultiSearchResponseOrSearchResponse,
+  Batch,
 } from "./types.js";
 import { ErrorStatusCode } from "./types.js";
 import { HttpRequests } from "./http-requests.js";
-import { TaskClient, type Task } from "./task.js";
-import { EnqueuedTask } from "./enqueued-task.js";
-import { type Batch, BatchClient } from "./batch.js";
+import { TaskClient } from "./task.js";
+import { BatchClient } from "./batch.js";
 
 export class MeiliSearch {
   config: Config;
@@ -464,10 +465,8 @@ export class MeiliSearch {
    */
   async createDump(): Promise<EnqueuedTask> {
     const url = `dumps`;
-    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(
-      url,
-    );
-    return new EnqueuedTask(task);
+    const task = await this.httpRequest.post<undefined, EnqueuedTask>(url);
+    return task;
   }
 
   ///
@@ -481,10 +480,8 @@ export class MeiliSearch {
    */
   async createSnapshot(): Promise<EnqueuedTask> {
     const url = `snapshots`;
-    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(
-      url,
-    );
+    const task = await this.httpRequest.post<undefined, EnqueuedTask>(url);
 
-    return new EnqueuedTask(task);
+    return task;
   }
 }

@@ -1,33 +1,13 @@
 import type {
   Config,
-  BatchObject,
+  Batch,
   BatchesQuery,
   BatchesResults,
   BatchesResultsObject,
 } from "./types.js";
 import { HttpRequests, toQueryParams } from "./http-requests.js";
 
-class Batch {
-  uid: BatchObject["uid"];
-  details: BatchObject["details"];
-  stats: BatchObject["stats"];
-  startedAt: BatchObject["startedAt"];
-  finishedAt: BatchObject["finishedAt"];
-  duration: BatchObject["duration"];
-  progress: BatchObject["progress"];
-
-  constructor(batch: BatchObject) {
-    this.uid = batch.uid;
-    this.details = batch.details;
-    this.stats = batch.stats;
-    this.startedAt = batch.startedAt;
-    this.finishedAt = batch.finishedAt;
-    this.duration = batch.duration;
-    this.progress = batch.progress;
-  }
-}
-
-class BatchClient {
+export class BatchClient {
   httpRequest: HttpRequests;
 
   constructor(config: Config) {
@@ -42,8 +22,8 @@ class BatchClient {
    */
   async getBatch(uid: number): Promise<Batch> {
     const url = `batches/${uid}`;
-    const batch = await this.httpRequest.get<BatchObject>(url);
-    return new Batch(batch);
+    const batch = await this.httpRequest.get<Batch>(url);
+    return batch;
   }
 
   /**
@@ -60,11 +40,6 @@ class BatchClient {
       toQueryParams<BatchesQuery>(parameters),
     );
 
-    return {
-      ...batches,
-      results: batches.results.map((batch) => new Batch(batch)),
-    };
+    return batches;
   }
 }
-
-export { BatchClient, Batch };

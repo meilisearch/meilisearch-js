@@ -1,5 +1,4 @@
 import { expect, test, describe, beforeEach, afterAll } from "vitest";
-import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,
   config,
@@ -38,7 +37,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update non separator tokens`, async () => {
       const client = await getClient(permission);
       const newNonSeparatorTokens = ["&sep", "/", "|"];
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
         .updateNonSeparatorTokens(newNonSeparatorTokens);
       await client.index(index.uid).waitForTask(task.taskUid);
@@ -53,7 +52,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update non separator tokens with null value`, async () => {
       const client = await getClient(permission);
       const newNonSeparatorTokens = null;
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
         .updateNonSeparatorTokens(newNonSeparatorTokens);
       await client.index(index.uid).waitForTask(task.taskUid);
@@ -67,9 +66,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset NonSeparator tokens`, async () => {
       const client = await getClient(permission);
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .resetNonSeparatorTokens();
+      const task = await client.index(index.uid).resetNonSeparatorTokens();
       await client.index(index.uid).waitForTask(task.taskUid);
 
       const response: string[] = await client

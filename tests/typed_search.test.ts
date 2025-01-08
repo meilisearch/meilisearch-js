@@ -7,7 +7,6 @@ import {
   test,
 } from "vitest";
 import { ErrorStatusCode, type SearchResponse } from "../src/types.js";
-import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,
   config,
@@ -120,7 +119,7 @@ describe.each([
     await client.waitForTask(task2.taskUid);
 
     const newFilterableAttributes = ["genre", "title"];
-    const task: EnqueuedTask = await client
+    const task = await client
       .index<Movie>(index.uid)
       .updateFilterableAttributes(newFilterableAttributes);
 
@@ -434,7 +433,7 @@ describe.each([{ permission: "Master" }])(
 
     test(`${permission} key: search on nested content with searchable on specific nested field`, async () => {
       const client = await getClient(permission);
-      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
+      const { taskUid: settingsUpdateTask } = await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ["title", "info.comment"],
@@ -451,7 +450,7 @@ describe.each([{ permission: "Master" }])(
 
     test(`${permission} key: search on nested content with sort`, async () => {
       const client = await getClient(permission);
-      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
+      const { taskUid: settingsUpdateTask } = await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ["title", "info.comment"],

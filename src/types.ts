@@ -4,9 +4,6 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^3.8.3
 
-import { Task } from "./task.js";
-import { Batch } from "./batch.js";
-
 export type Config = {
   host: string;
   apiKey?: string;
@@ -581,7 +578,7 @@ export type CancelTasksQuery = Omit<TasksQuery, "limit" | "from"> & {};
 
 export type DeleteTasksQuery = Omit<TasksQuery, "limit" | "from"> & {};
 
-export type EnqueuedTaskObject = {
+export type EnqueuedTask = {
   taskUid: number;
   indexUid?: string;
   status: TaskStatus;
@@ -590,7 +587,7 @@ export type EnqueuedTaskObject = {
   canceledBy: number;
 };
 
-export type TaskObject = Omit<EnqueuedTaskObject, "taskUid"> & {
+export type Task = Omit<EnqueuedTask, "taskUid"> & {
   uid: number;
   /** The UID of the batch that the task belongs to (`null` for enqueued tasks) */
   batchUid: number | null;
@@ -668,7 +665,7 @@ type CursorResults<T> = {
 };
 
 export type TasksResults = CursorResults<Task>;
-export type TasksResultsObject = CursorResults<TaskObject>;
+export type TasksResultsObject = CursorResults<Task>;
 
 export type WaitOptions = {
   timeOutMs?: number;
@@ -683,7 +680,7 @@ export type WaitOptions = {
  * Represents a batch operation object containing information about tasks
  * processing
  */
-export type BatchObject = {
+export type Batch = {
   /** Unique identifier for the batch */
   uid: number;
 
@@ -765,7 +762,7 @@ export type BatchesQuery = {
 };
 
 export type BatchesResults = CursorResults<Batch>;
-export type BatchesResultsObject = CursorResults<BatchObject>;
+export type BatchesResultsObject = CursorResults<Batch>;
 
 /*
  *** HEALTH
