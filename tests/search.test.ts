@@ -6,13 +6,12 @@ import {
   afterAll,
   beforeAll,
 } from "vitest";
-import {
-  ErrorStatusCode,
+import { ErrorStatusCode, MatchingStrategies } from "../src/types.js";
+import type {
   FederatedMultiSearchParams,
-  MatchingStrategies,
   MultiSearchParams,
-} from "../src/types";
-import { EnqueuedTask } from "../src/enqueued-task";
+} from "../src/types.js";
+import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,
   config,
@@ -22,7 +21,7 @@ import {
   datasetWithNests,
   HOST,
   getKey,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const index = {
   uid: "books",

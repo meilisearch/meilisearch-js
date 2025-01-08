@@ -1,5 +1,5 @@
-import { MeiliSearchErrorResponse } from "../types";
-import { MeiliSearchError } from "./meilisearch-error";
+import type { MeiliSearchErrorResponse } from "../types.js";
+import { MeiliSearchError } from "./meilisearch-error.js";
 
 export class MeiliSearchApiError extends MeiliSearchError {
   override name = "MeiliSearchApiError";

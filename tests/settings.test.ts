@@ -1,5 +1,5 @@
 import { afterAll, beforeEach, describe, expect, test } from "vitest";
-import { ErrorStatusCode, Settings } from "../src/types";
+import { ErrorStatusCode, type Settings } from "../src/types.js";
 import {
   clearAllIndexes,
   config,
@@ -9,7 +9,7 @@ import {
   dataset,
   getKey,
   HOST,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const index = {
   uid: "movies_test",

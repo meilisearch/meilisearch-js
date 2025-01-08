@@ -69,6 +69,10 @@ Instead of using a package manager, you may also import the library directly int
 
 After installing `meilisearch-js`, you must import it into your application. There are many ways of doing that depending on your development environment.
 
+> [!WARNING]
+> - [default export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#using_the_default_export) is deprecated and will be removed in a future version https://github.com/meilisearch/meilisearch-js/issues/1789
+> - exports will stop being directly available on the global object (usually `window`) https://github.com/meilisearch/meilisearch-js/issues/1806
+
 #### `import` syntax <!-- omit in toc -->
 
 Usage in an ES module environment:
@@ -89,7 +93,7 @@ Usage in an HTML (or alike) file:
 ```html
 <script src='https://cdn.jsdelivr.net/npm/meilisearch@latest/dist/bundles/meilisearch.umd.js'></script>
 <script>
-  const client = new MeiliSearch({
+  const client = new meilisearch.MeiliSearch({
     host: 'http://127.0.0.1:7700',
     apiKey: 'masterKey',
   })

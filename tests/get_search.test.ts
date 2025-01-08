@@ -1,6 +1,6 @@
 import { expect, test, describe, afterAll, beforeAll } from "vitest";
-import { ErrorStatusCode } from "../src/types";
-import { EnqueuedTask } from "../src/enqueued-task";
+import { ErrorStatusCode } from "../src/types.js";
+import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,
   config,
@@ -9,7 +9,7 @@ import {
   getClient,
   HOST,
   getKey,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const index = {
   uid: "movies_test",

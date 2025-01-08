@@ -6,8 +6,8 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode, SearchResponse } from "../src/types";
-import { EnqueuedTask } from "../src/enqueued-task";
+import { ErrorStatusCode, type SearchResponse } from "../src/types.js";
+import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,
   config,
@@ -15,7 +15,7 @@ import {
   MeiliSearch,
   getClient,
   datasetWithNests,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const index = {
   uid: "movies_test",

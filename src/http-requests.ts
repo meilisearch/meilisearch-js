@@ -1,13 +1,13 @@
-import { Config, EnqueuedTaskObject } from "./types";
-import { PACKAGE_VERSION } from "./package-version";
+import type { Config, EnqueuedTaskObject } from "./types.js";
+import { PACKAGE_VERSION } from "./package-version.js";
 
 import {
   MeiliSearchError,
   MeiliSearchApiError,
   MeiliSearchRequestError,
-} from "./errors";
+} from "./errors/index.js";
 
-import { addTrailingSlash, addProtocolIfNotPresent } from "./utils";
+import { addTrailingSlash, addProtocolIfNotPresent } from "./utils.js";
 
 type queryParams<T> = { [key in keyof T]: string };
 

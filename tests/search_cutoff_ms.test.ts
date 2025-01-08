@@ -6,7 +6,7 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode } from "../src/types";
+import { ErrorStatusCode } from "../src/types.js";
 import {
   clearAllIndexes,
   config,
@@ -14,7 +14,7 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const index = {
   uid: "movies_test",
