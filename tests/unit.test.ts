@@ -1,4 +1,11 @@
-import { afterAll, assert, beforeAll, MockInstance, test, vi } from "vitest";
+import {
+  afterAll,
+  assert,
+  beforeAll,
+  type MockInstance,
+  test,
+  vi,
+} from "vitest";
 import {
   clearAllIndexes,
   config,

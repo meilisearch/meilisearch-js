@@ -31,7 +31,7 @@ import type {
 } from "./types.js";
 import { ErrorStatusCode } from "./types.js";
 import { HttpRequests } from "./http-requests.js";
-import { TaskClient, type Task } from "./task.js";
+import { TaskClient } from "./task.js";
 import { EnqueuedTask } from "./enqueued-task.js";
 import { type Batch, BatchClient } from "./batch.js";
 
