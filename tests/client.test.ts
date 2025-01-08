@@ -9,8 +9,9 @@ import {
   beforeAll,
   assert,
 } from "vitest";
-import { ErrorStatusCode, Health, Version, Stats, TaskTypes } from "../src";
-import { PACKAGE_VERSION } from "../src/package-version";
+import type { Health, Version, Stats } from "../src/index.js";
+import { ErrorStatusCode, TaskTypes } from "../src/index.js";
+import { PACKAGE_VERSION } from "../src/package-version.js";
 import {
   clearAllIndexes,
   getKey,
@@ -19,7 +20,7 @@ import {
   MeiliSearch,
   BAD_HOST,
   HOST,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const indexNoPk = {
   uid: "movies_test",
@@ -273,8 +274,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = new MeiliSearch({
         ...config,
         apiKey: key,
-        async httpClient(url, init) {
-          const result = await fetch(url, init);
+        async httpClient(...params: Parameters<typeof fetch>) {
+          const result = await fetch(...params);
           return result.json();
         },
       });
@@ -425,7 +426,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         await client.waitForTask(taskUid);
 
         const { results } = await client.getRawIndexes();
-        const indexes = results.map((index) => index.uid);
+        const indexes = results.map((index: any) => index.uid);
         expect(indexes).toEqual(expect.arrayContaining([indexPk.uid]));
         expect(indexes.length).toEqual(1);
       });

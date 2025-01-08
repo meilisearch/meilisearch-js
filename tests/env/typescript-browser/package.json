@@ -2,6 +2,7 @@
   "name": "typescript-demo",
   "version": "0.1.0",
   "description": "Meilisearch Typescript Demo",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "build": "webpack",

@@ -1,12 +1,12 @@
 /** This file only purpose is to execute any build related tasks */
 
-const { resolve, normalize } = require("node:path");
-const { readFileSync, writeFileSync } = require("node:fs");
+import { resolve, normalize } from "node:path";
+import { fileURLToPath } from "node:url";
+import { readFileSync, writeFileSync } from "node:fs";
+import pkg from "../package.json" with { type: "json" };
 
-const pkg = require("../package.json");
-
-const ROOT = resolve(__dirname, "..");
-const TYPES_ROOT_FILE = resolve(ROOT, normalize(pkg.typings));
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
+const TYPES_ROOT_FILE = resolve(ROOT, normalize(pkg.exports["."].types));
 
 main();
 

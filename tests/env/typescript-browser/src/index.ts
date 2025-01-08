@@ -1,6 +1,5 @@
-import { MeiliSearch } from '../../../../'
-import { IndexObject } from '../../../../src'
-import { generateTenantToken } from '../../../../src/token'
+import { MeiliSearch, type IndexObject } from '../../../../src/index.js'
+import { generateTenantToken } from '../../../../src/token.js'
 
 const config = {
   host: 'http://127.0.0.1:7700',

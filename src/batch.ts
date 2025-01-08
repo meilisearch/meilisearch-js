@@ -1,11 +1,11 @@
-import {
+import type {
   Config,
   BatchObject,
   BatchesQuery,
   BatchesResults,
   BatchesResultsObject,
-} from "./types";
-import { HttpRequests } from "./http-requests";
+} from "./types.js";
+import { HttpRequests } from "./http-requests.js";
 
 class Batch {
   uid: BatchObject["uid"];

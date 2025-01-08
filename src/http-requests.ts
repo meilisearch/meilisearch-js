@@ -4,16 +4,16 @@ import type {
   MethodOptions,
   RequestOptions,
   URLSearchParamsRecord,
-} from "./types";
-import { PACKAGE_VERSION } from "./package-version";
+} from "./types.js";
+import { PACKAGE_VERSION } from "./package-version.js";
 
 import {
   MeiliSearchError,
   MeiliSearchApiError,
   MeiliSearchRequestError,
-} from "./errors";
+} from "./errors/index.js";
 
-import { addProtocolIfNotPresent, addTrailingSlash } from "./utils";
+import { addProtocolIfNotPresent, addTrailingSlash } from "./utils.js";
 
 function appendRecordToURLSearchParams(
   searchParams: URLSearchParams,

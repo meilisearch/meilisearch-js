@@ -1,7 +1,8 @@
-const { parseArgs } = require("node:util");
-const { resolve, join, basename } = require("node:path");
-const { copyFileSync } = require("node:fs");
-const pkg = require("../package.json");
+import { parseArgs } from "node:util";
+import pkg from "../package.json" with { type: "json" };
+import { fileURLToPath } from "node:url";
+import { resolve, dirname, join, basename } from "node:path";
+import { copyFile } from "node:fs/promises";
 
 const {
   values: { to },
@@ -11,6 +12,9 @@ if (to === undefined) {
   throw new Error("required argument `to` missing");
 }
 
-const umdAbsolutePath = resolve(__dirname, join("..", pkg.jsdelivr));
+const umdAbsolutePath = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  join("..", pkg.main),
+);
 
-copyFileSync(umdAbsolutePath, join(to, basename(pkg.jsdelivr)));
+await copyFile(umdAbsolutePath, join(to, basename(pkg.main)));

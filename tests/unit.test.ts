@@ -3,7 +3,7 @@ import {
   clearAllIndexes,
   config,
   MeiliSearch,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 let fetchSpy: MockInstance<typeof fetch>;
 

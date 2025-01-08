@@ -1,12 +1,12 @@
 import { expect, test, describe, beforeEach, afterAll } from "vitest";
-import { ErrorStatusCode } from "../src/types";
+import { ErrorStatusCode } from "../src/types.js";
 import {
   clearAllIndexes,
   config,
   BAD_HOST,
   MeiliSearch,
   getClient,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const indexNoPk = {
   uid: "movies_test",

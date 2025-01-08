@@ -1,5 +1,5 @@
 import { afterAll, describe, test, beforeEach, expect } from "vitest";
-import { EnqueuedTask } from "../src/enqueued-task";
+import { EnqueuedTask } from "../src/enqueued-task.js";
 import {
   clearAllIndexes,
   config,
@@ -7,7 +7,7 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-} from "./utils/meilisearch-test-utils";
+} from "./utils/meilisearch-test-utils.js";
 
 const index = {
   uid: "movies_test",

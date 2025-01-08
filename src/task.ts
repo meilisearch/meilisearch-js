@@ -1,8 +1,7 @@
-import { MeiliSearchTimeOutError } from "./errors";
-import {
+import { MeiliSearchTimeOutError } from "./errors/index.js";
+import type {
   Config,
   WaitOptions,
-  TaskStatus,
   TasksQuery,
   TasksResults,
   TaskObject,
@@ -10,10 +9,11 @@ import {
   TasksResultsObject,
   DeleteTasksQuery,
   EnqueuedTaskObject,
-} from "./types";
-import { HttpRequests } from "./http-requests";
-import { sleep } from "./utils";
-import { EnqueuedTask } from "./enqueued-task";
+} from "./types.js";
+import { TaskStatus } from "./types.js";
+import { HttpRequests } from "./http-requests.js";
+import { sleep } from "./utils.js";
+import { EnqueuedTask } from "./enqueued-task.js";
 
 class Task {
   indexUid: TaskObject["indexUid"];
