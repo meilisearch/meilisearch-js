@@ -115,7 +115,7 @@ export class MeiliSearch {
     parameters?: IndexesQuery,
   ): Promise<IndexesResults<IndexObject[]>> {
     return await this.httpRequest.get<IndexesResults<IndexObject[]>>({
-      relativeURL: "indexes",
+      path: "indexes",
       params: parameters,
     });
   }
@@ -186,7 +186,7 @@ export class MeiliSearch {
   async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
     const url = "/swap-indexes";
     const taks = await this.httpRequest.post<EnqueuedTaskObject>({
-      relativeURL: url,
+      path: url,
       body: params,
     });
 
@@ -228,7 +228,7 @@ export class MeiliSearch {
     return await this.httpRequest.post<
       MultiSearchResponseOrSearchResponse<T1, T2>
     >({
-      relativeURL: "multi-search",
+      path: "multi-search",
       body: queries,
       extraRequestInit,
     });
@@ -344,7 +344,7 @@ export class MeiliSearch {
    */
   async getKeys(parameters?: KeysQuery): Promise<KeysResults> {
     const keys = await this.httpRequest.get<KeysResults>({
-      relativeURL: "keys",
+      path: "keys",
       params: parameters,
     });
 
@@ -365,7 +365,7 @@ export class MeiliSearch {
    */
   async getKey(keyOrUid: string): Promise<Key> {
     return await this.httpRequest.get<Key>({
-      relativeURL: `keys/${keyOrUid}`,
+      path: `keys/${keyOrUid}`,
     });
   }
 
@@ -377,7 +377,7 @@ export class MeiliSearch {
    */
   async createKey(options: KeyCreation): Promise<Key> {
     return await this.httpRequest.post<Key>({
-      relativeURL: "keys",
+      path: "keys",
       body: options,
     });
   }
@@ -391,7 +391,7 @@ export class MeiliSearch {
    */
   async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
     return await this.httpRequest.patch<Key>({
-      relativeURL: `keys/${keyOrUid}`,
+      path: `keys/${keyOrUid}`,
       body: options,
     });
   }
@@ -403,7 +403,7 @@ export class MeiliSearch {
    * @returns
    */
   async deleteKey(keyOrUid: string): Promise<void> {
-    await this.httpRequest.delete({ relativeURL: `keys/${keyOrUid}` });
+    await this.httpRequest.delete({ path: `keys/${keyOrUid}` });
   }
 
   ///
@@ -416,7 +416,7 @@ export class MeiliSearch {
    * @returns Promise returning an object with health details
    */
   async health(): Promise<Health> {
-    return await this.httpRequest.get<Health>({ relativeURL: "health" });
+    return await this.httpRequest.get<Health>({ path: "health" });
   }
 
   /**
@@ -443,7 +443,7 @@ export class MeiliSearch {
    * @returns Promise returning object of all the stats
    */
   async getStats(): Promise<Stats> {
-    return await this.httpRequest.get<Stats>({ relativeURL: "stats" });
+    return await this.httpRequest.get<Stats>({ path: "stats" });
   }
 
   ///
@@ -456,7 +456,7 @@ export class MeiliSearch {
    * @returns Promise returning object with version details
    */
   async getVersion(): Promise<Version> {
-    return await this.httpRequest.get<Version>({ relativeURL: "version" });
+    return await this.httpRequest.get<Version>({ path: "version" });
   }
 
   ///
@@ -470,7 +470,7 @@ export class MeiliSearch {
    */
   async createDump(): Promise<EnqueuedTask> {
     const task = await this.httpRequest.post<EnqueuedTaskObject>({
-      relativeURL: "dumps",
+      path: "dumps",
     });
 
     return new EnqueuedTask(task);
@@ -487,7 +487,7 @@ export class MeiliSearch {
    */
   async createSnapshot(): Promise<EnqueuedTask> {
     const task = await this.httpRequest.post<EnqueuedTaskObject>({
-      relativeURL: "snapshots",
+      path: "snapshots",
     });
 
     return new EnqueuedTask(task);

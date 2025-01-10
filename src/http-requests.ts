@@ -1,20 +1,19 @@
 import type {
   Config,
   HttpRequestsRequestInit,
-  MethodOptions,
   RequestOptions,
+  RequestOptionsWithMethod,
   URLSearchParamsRecord,
 } from "./types.js";
 import { PACKAGE_VERSION } from "./package-version.js";
-
 import {
   MeiliSearchError,
   MeiliSearchApiError,
   MeiliSearchRequestError,
 } from "./errors/index.js";
-
 import { addProtocolIfNotPresent, addTrailingSlash } from "./utils.js";
 
+/** Append a set of key value pairs to a {@link URLSearchParams} object. */
 function appendRecordToURLSearchParams(
   searchParams: URLSearchParams,
   recordToAppend: URLSearchParamsRecord,
@@ -33,6 +32,12 @@ function appendRecordToURLSearchParams(
   }
 }
 
+/**
+ * Creates a new Headers object from a {@link HeadersInit} and adds various
+ * properties to it, some from {@link Config}.
+ *
+ * @returns A new Headers object
+ */
 function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
   const agentHeader = "X-Meilisearch-Client";
   const packageAgent = `Meilisearch JavaScript (v${PACKAGE_VERSION})`;
@@ -51,15 +56,10 @@ function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
   }
 
   // Creates the custom user agent with information on the package used.
-  if (config.clientAgents && Array.isArray(config.clientAgents)) {
+  if (config.clientAgents) {
     const clients = config.clientAgents.concat(packageAgent);
 
     headers.set(agentHeader, clients.join(" ; "));
-  } else if (config.clientAgents && !Array.isArray(config.clientAgents)) {
-    // If the header is defined but not an array
-    throw new MeiliSearchError(
-      `Meilisearch: The header "${agentHeader}" should be an array of string(s).\n`,
-    );
   } else {
     headers.set(agentHeader, packageAgent);
   }
@@ -68,15 +68,21 @@ function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
 }
 
 // This could be a symbol, but Node.js 18 fetch doesn't support that yet
+// and it might just go EOL before it ever does.
 // https://github.com/nodejs/node/issues/49557
 const TIMEOUT_OBJECT = {};
 
-// Attach a timeout signal to `requestInit`,
-// while preserving original signal functionality
-// NOTE: This could be a short few straight forward lines using the following:
-//       https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/any_static
-//       https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static
-//       But these aren't yet widely supported enough perhaps, nor polyfillable
+/**
+ * Attach a timeout signal to a {@link RequestInit}, while preserving original
+ * signal functionality, if there is one.
+ *
+ * @remarks
+ * This could be a short few straight forward lines using {@link AbortSignal.any}
+ * and {@link AbortSignal.timeout}, but these aren't yet widely supported enough,
+ * nor polyfillable, at the time of writing.
+ * @returns A new function which starts the timeout, which then returns another
+ *   function that clears the timeout
+ */
 function getTimeoutFn(
   requestInit: RequestInit,
   ms: number,
@@ -129,9 +135,11 @@ function getTimeoutFn(
   };
 }
 
+/** Class used to perform HTTP requests. */
 export class HttpRequests {
   #url: URL;
   #requestInit: HttpRequestsRequestInit;
+  #defaultContentType: string | null;
   #customRequestFn?: Config["httpClient"];
   #requestTimeout?: Config["timeout"];
 
@@ -151,14 +159,19 @@ export class HttpRequests {
       headers: getHeaders(config, config.requestInit?.headers),
     };
 
+    this.#defaultContentType = this.#requestInit.headers.get("Content-Type");
+
     this.#customRequestFn = config.httpClient;
     this.#requestTimeout = config.timeout;
   }
 
-  // combine headers, with the following priority:
-  // 1. `headers` - primary headers provided by functions in Index and Client
-  // 2. `this.#requestInit.headers` - main headers of this class
-  // 3. `extraHeaders` - extra headers provided in search functions by users
+  /**
+   * Combines provided extra {@link RequestInit} headers, class instance
+   * RequestInit headers and provided headers, prioritizing them in this order.
+   *
+   * @returns A new Headers object and a boolean indicating whether custom
+   *   content type is provided.
+   */
   #getHeaders(
     headers?: HeadersInit,
     extraHeaders?: HeadersInit,
@@ -167,7 +180,6 @@ export class HttpRequests {
 
     if (headers !== undefined || extraHeaders !== undefined) {
       headers = new Headers(headers);
-      isCustomContentTypeProvided = headers.has("Content-Type");
 
       for (const [key, val] of this.#requestInit.headers.entries()) {
         if (!headers.has(key)) {
@@ -182,6 +194,9 @@ export class HttpRequests {
           }
         }
       }
+
+      isCustomContentTypeProvided =
+        headers.get("Content-Type") !== this.#defaultContentType;
     } else {
       isCustomContentTypeProvided = false;
     }
@@ -191,15 +206,21 @@ export class HttpRequests {
     return { finalHeaders, isCustomContentTypeProvided };
   }
 
+  /**
+   * Sends a request with {@link fetch} or a custom HTTP client, combining
+   * parameters and class properties.
+   *
+   * @returns A promise containing the response
+   */
   async #request<T = unknown>({
-    relativeURL,
+    path,
     method,
     params,
     headers,
     body,
     extraRequestInit,
-  }: RequestOptions): Promise<T> {
-    const url = new URL(relativeURL, this.#url);
+  }: RequestOptionsWithMethod): Promise<T> {
+    const url = new URL(path, this.#url);
     if (params !== undefined) {
       appendRecordToURLSearchParams(url.searchParams, params);
     }
@@ -274,23 +295,28 @@ export class HttpRequests {
     return parsedResponse as T;
   }
 
-  get<T = unknown>(options: MethodOptions): Promise<T> {
+  /** Request with GET. */
+  get<T = unknown>(options: RequestOptions): Promise<T> {
     return this.#request<T>(options);
   }
 
-  post<T = unknown>(options: MethodOptions): Promise<T> {
+  /** Request with POST. */
+  post<T = unknown>(options: RequestOptions): Promise<T> {
     return this.#request<T>({ ...options, method: "POST" });
   }
 
-  put<T = unknown>(options: MethodOptions): Promise<T> {
+  /** Request with PUT. */
+  put<T = unknown>(options: RequestOptions): Promise<T> {
     return this.#request<T>({ ...options, method: "PUT" });
   }
 
-  patch<T = unknown>(options: MethodOptions): Promise<T> {
+  /** Request with PATCH. */
+  patch<T = unknown>(options: RequestOptions): Promise<T> {
     return this.#request<T>({ ...options, method: "PATCH" });
   }
 
-  delete<T = unknown>(options: MethodOptions): Promise<T> {
+  /** Request with DELETE. */
+  delete<T = unknown>(options: RequestOptions): Promise<T> {
     return this.#request<T>({ ...options, method: "DELETE" });
   }
 }
