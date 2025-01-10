@@ -57,7 +57,7 @@ import type {
   LocalizedAttributes,
   UpdateDocumentsByFunctionOptions,
   PrefixSearch,
-} from "./types.js";
+} from "./types/index.js";
 import { removeUndefinedFromObject } from "./utils.js";
 import { HttpRequests } from "./http-requests.js";
 import { TaskClient } from "./task.js";
@@ -79,7 +79,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     this.uid = uid;
     this.primaryKey = primaryKey;
     this.httpRequest = new HttpRequests(config);
-    this.tasks = new TaskClient(config);
+    this.tasks = new TaskClient(this.httpRequest);
   }
 
   ///
@@ -896,9 +896,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *
    * @returns Promise containing an array of filterable-attributes
    */
-  async getFilterableAttributes(): Promise<string[]> {
+  async getFilterableAttributes(): Promise<FilterableAttributes> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`;
-    return await this.httpRequest.get<string[]>(url);
+    return await this.httpRequest.get<FilterableAttributes>(url);
   }
 
   /**
@@ -909,7 +909,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @returns Promise containing an EnqueuedTask
    */
   async updateFilterableAttributes(
-    filterableAttributes: FilterableAttributes,
+    filterableAttributes: FilterableAttributes | null,
   ): Promise<EnqueuedTask> {
     const url = `indexes/${this.uid}/settings/filterable-attributes`;
     const task = await this.httpRequest.put(url, filterableAttributes);

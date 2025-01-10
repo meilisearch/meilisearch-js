@@ -1,6 +1,6 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
 import type { Health, Version, Stats } from "../src/index.js";
-import { ErrorStatusCode, TaskTypes } from "../src/index.js";
+import { ErrorStatusCode, TaskType } from "../src/index.js";
 import { PACKAGE_VERSION } from "../src/package-version.js";
 import {
   clearAllIndexes,

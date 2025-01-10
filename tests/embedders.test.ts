@@ -1,5 +1,5 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
-import type { Embedders } from "../src/types.js";
+import type { Embedders } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,

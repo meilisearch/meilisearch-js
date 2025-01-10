@@ -34,8 +34,8 @@ import type {
   BatchesQuery,
   MultiSearchResponseOrSearchResponse,
   Batch,
-} from "./types.js";
-import { ErrorStatusCode } from "./types.js";
+} from "./types/index.js";
+import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import { TaskClient } from "./task.js";
 import { BatchClient } from "./batch.js";
@@ -54,7 +54,7 @@ export class MeiliSearch {
   constructor(config: Config) {
     this.config = config;
     this.httpRequest = new HttpRequests(config);
-    this.tasks = new TaskClient(config);
+    this.tasks = new TaskClient(this.httpRequest);
     this.batches = new BatchClient(config);
   }
 

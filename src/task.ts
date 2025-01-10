@@ -1,6 +1,5 @@
 import { MeiliSearchTimeOutError } from "./errors/index.js";
 import type {
-  Config,
   WaitOptions,
   TasksQuery,
   TasksResults,
@@ -8,16 +7,14 @@ import type {
   CancelTasksQuery,
   DeleteTasksQuery,
   EnqueuedTask,
-} from "./types.js";
-import { TaskStatus } from "./types.js";
-import { HttpRequests, toQueryParams } from "./http-requests.js";
-import { sleep } from "./utils.js";
+} from "./types/index.js";
+import { type HttpRequests, toQueryParams } from "./http-requests.js";
 
 export class TaskClient {
-  httpRequest: HttpRequests;
+  readonly #httpRequest: HttpRequests;
 
-  constructor(config: Config) {
-    this.httpRequest = new HttpRequests(config);
+  constructor(httpRequest: HttpRequests) {
+    this.#httpRequest = httpRequest;
   }
 
   /**
@@ -28,7 +25,9 @@ export class TaskClient {
    */
   async getTask(uid: number): Promise<Task> {
     const url = `tasks/${uid}`;
-    const task = await this.httpRequest.get<Task>(url);
+
+    const task = await this.#httpRequest.get<Task>(url);
+
     return task;
   }
 
@@ -38,10 +37,10 @@ export class TaskClient {
    * @param parameters - Parameters to browse the tasks
    * @returns Promise containing all tasks
    */
-  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
+  async getTasks(parameters: TasksQuery): Promise<TasksResults> {
     const url = `tasks`;
 
-    const tasks = await this.httpRequest.get<TasksResults>(
+    const tasks = await this.#httpRequest.get<TasksResults>(
       url,
       toQueryParams<TasksQuery>(parameters),
     );
@@ -56,27 +55,43 @@ export class TaskClient {
    * @param options - Additional configuration options
    * @returns Promise returning a task after it has been processed
    */
-  async waitForTask(
-    taskUid: number,
-    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {},
-  ): Promise<Task> {
-    const startingTime = Date.now();
-    while (Date.now() - startingTime < timeOutMs) {
-      const response = await this.getTask(taskUid);
-      if (
-        !(
-          [
-            TaskStatus.TASK_ENQUEUED,
-            TaskStatus.TASK_PROCESSING,
-          ] as readonly string[]
-        ).includes(response.status)
-      )
-        return response;
-      await sleep(intervalMs);
-    }
-    throw new MeiliSearchTimeOutError(
-      `timeout of ${timeOutMs}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
-    );
+  waitForTask(taskUid: number, options?: WaitOptions): Promise<Task> {
+    const timeOutMs = options?.timeOutMs ?? 5_000;
+    const intervalMs = options?.intervalMs ?? 50;
+
+    return new Promise<Task>((resolve, reject) => {
+      const interval = setInterval(() => {
+        this.getTask(taskUid)
+          .then((response) => {
+            if (
+              response.status === "enqueued" ||
+              response.status === "processing"
+            ) {
+              clearTimers();
+              resolve(response);
+            }
+          })
+          .catch((error) => {
+            clearTimers();
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+            reject(error);
+          });
+      }, intervalMs);
+
+      const timeout = setTimeout(() => {
+        clearTimers();
+        reject(
+          new MeiliSearchTimeOutError(
+            `timeout of ${timeOutMs}ms has exceeded on process ${taskUid} when waiting a task to be resolved`,
+          ),
+        );
+      }, timeOutMs);
+
+      function clearTimers() {
+        clearInterval(interval);
+        clearTimeout(timeout);
+      }
+    });
   }
 
   /**
@@ -88,16 +103,14 @@ export class TaskClient {
    */
   async waitForTasks(
     taskUids: number[],
-    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {},
+    options?: WaitOptions,
   ): Promise<Task[]> {
-    const tasks: Task[] = [];
+    const tasks: Task[] = new Array(taskUids.length);
+
     for (const taskUid of taskUids) {
-      const task = await this.waitForTask(taskUid, {
-        timeOutMs,
-        intervalMs,
-      });
-      tasks.push(task);
+      tasks.push(await this.waitForTask(taskUid, options));
     }
+
     return tasks;
   }
 
@@ -107,10 +120,10 @@ export class TaskClient {
    * @param parameters - Parameters to filter the tasks.
    * @returns Promise containing an EnqueuedTask
    */
-  async cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask> {
+  async cancelTasks(parameters: CancelTasksQuery): Promise<EnqueuedTask> {
     const url = `tasks/cancel`;
 
-    const task = await this.httpRequest.post(
+    const task = await this.#httpRequest.post(
       url,
       {},
       toQueryParams<CancelTasksQuery>(parameters),
@@ -125,10 +138,10 @@ export class TaskClient {
    * @param parameters - Parameters to filter the tasks.
    * @returns Promise containing an EnqueuedTask
    */
-  async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
+  async deleteTasks(parameters: DeleteTasksQuery): Promise<EnqueuedTask> {
     const url = `tasks`;
 
-    const task = await this.httpRequest.delete(
+    const task = await this.#httpRequest.delete(
       url,
       {},
       toQueryParams<DeleteTasksQuery>(parameters),

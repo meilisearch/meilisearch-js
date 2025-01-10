@@ -1,4 +1,4 @@
-import type { Config, EnqueuedTask } from "./types.js";
+import type { Config, EnqueuedTask } from "./types/index.js";
 import { PACKAGE_VERSION } from "./package-version.js";
 
 import {
