@@ -139,7 +139,6 @@ function getTimeoutFn(
 export class HttpRequests {
   #url: URL;
   #requestInit: HttpRequestsRequestInit;
-  #defaultContentType: string | null;
   #customRequestFn?: Config["httpClient"];
   #requestTimeout?: Config["timeout"];
 
@@ -159,8 +158,6 @@ export class HttpRequests {
       headers: getHeaders(config, config.requestInit?.headers),
     };
 
-    this.#defaultContentType = this.#requestInit.headers.get("Content-Type");
-
     this.#customRequestFn = config.httpClient;
     this.#requestTimeout = config.timeout;
   }
@@ -169,15 +166,10 @@ export class HttpRequests {
    * Combines provided extra {@link RequestInit} headers, class instance
    * RequestInit headers and provided headers, prioritizing them in this order.
    *
-   * @returns A new Headers object and a boolean indicating whether custom
-   *   content type is provided.
+   * @returns A new Headers object or the main headers of this class if no
+   *   headers are provided
    */
-  #getHeaders(
-    headers?: HeadersInit,
-    extraHeaders?: HeadersInit,
-  ): { finalHeaders: Headers; isCustomContentTypeProvided: boolean } {
-    let isCustomContentTypeProvided: boolean;
-
+  #getHeaders(headers?: HeadersInit, extraHeaders?: HeadersInit): Headers {
     if (headers !== undefined || extraHeaders !== undefined) {
       headers = new Headers(headers);
 
@@ -194,16 +186,9 @@ export class HttpRequests {
           }
         }
       }
-
-      isCustomContentTypeProvided =
-        headers.get("Content-Type") !== this.#defaultContentType;
-    } else {
-      isCustomContentTypeProvided = false;
     }
 
-    const finalHeaders = headers ?? this.#requestInit.headers;
-
-    return { finalHeaders, isCustomContentTypeProvided };
+    return headers ?? this.#requestInit.headers;
   }
 
   /**
@@ -225,16 +210,12 @@ export class HttpRequests {
       appendRecordToURLSearchParams(url.searchParams, params);
     }
 
-    const { finalHeaders, isCustomContentTypeProvided } = this.#getHeaders(
-      headers,
-      extraRequestInit?.headers,
-    );
+    const finalHeaders = this.#getHeaders(headers, extraRequestInit?.headers);
 
     const requestInit: RequestInit = {
       method,
       body:
-        // in case a custom content-type is provided do not stringify body
-        typeof body !== "string" || !isCustomContentTypeProvided
+        typeof body !== "string"
           ? // this will throw an error for any value that is not serializable
             JSON.stringify(body)
           : body,
