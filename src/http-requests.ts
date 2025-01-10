@@ -210,18 +210,14 @@ export class HttpRequests {
       appendRecordToURLSearchParams(url.searchParams, params);
     }
 
-    const finalHeaders = this.#getHeaders(headers, extraRequestInit?.headers);
-
     const requestInit: RequestInit = {
       method,
-      body:
-        typeof body !== "string"
-          ? // this will throw an error for any value that is not serializable
-            JSON.stringify(body)
-          : body,
+      // This only supports string for now but it could support more in the future
+      // https://developer.mozilla.org/en-US/docs/Web/API/RequestInit#body
+      body: typeof body !== "string" ? JSON.stringify(body) : body,
       ...extraRequestInit,
       ...this.#requestInit,
-      headers: finalHeaders,
+      headers: this.#getHeaders(headers, extraRequestInit?.headers),
     };
 
     const startTimeout =
