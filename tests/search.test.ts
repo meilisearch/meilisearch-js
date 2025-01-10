@@ -1442,7 +1442,7 @@ describe.each([
     }
   });
 
-  test(`${permission} key: search should be aborted on already abort signal`, async () => {
+  test(`${permission} key: search should be aborted on abort signal`, async () => {
     const key = await getKey(permission);
     const client = new MeiliSearch({
       ...config,
@@ -1464,27 +1464,22 @@ describe.each([
       assert.strictEqual(e.name, "MeiliSearchRequestError");
     }
 
-    vi.stubGlobal("fetch", (_: unknown, requestInit?: RequestInit) => {
-      return new Promise((_, reject) => {
-        setInterval(() => {
-          if (requestInit?.signal?.aborted) {
+    // and now with a delayed abort, for this we have to stub fetch
+    vi.stubGlobal(
+      "fetch",
+      (_: unknown, requestInit?: RequestInit) =>
+        new Promise((_, reject) =>
+          requestInit?.signal?.addEventListener("abort", () =>
             // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-            reject(requestInit.signal.reason);
-          }
-        }, 5);
-      });
-    });
-
-    const clientWithStubbedFetch = new MeiliSearch({
-      ...config,
-      apiKey: key,
-      timeout: 1_000,
-    });
+            reject(requestInit.signal?.reason),
+          ),
+        ),
+    );
 
     try {
       const ac = new AbortController();
 
-      const promise = clientWithStubbedFetch.multiSearch(
+      const promise = client.multiSearch(
         { queries: [{ indexUid: "doesn't matter" }] },
         { signal: ac.signal },
       );
