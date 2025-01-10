@@ -31,7 +31,7 @@ export type Config = {
   apiKey?: string;
   clientAgents?: string[];
   requestInit?: BaseRequestInit;
-  httpClient?: typeof fetch;
+  httpClient?: (...args: Parameters<typeof fetch>) => Promise<unknown>;
   timeout?: number;
 };
 

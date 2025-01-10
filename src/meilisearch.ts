@@ -114,10 +114,10 @@ export class MeiliSearch {
   async getRawIndexes(
     parameters?: IndexesQuery,
   ): Promise<IndexesResults<IndexObject[]>> {
-    return (await this.httpRequest.get({
+    return await this.httpRequest.get<IndexesResults<IndexObject[]>>({
       relativeURL: "indexes",
       params: parameters,
-    })) as IndexesResults<IndexObject[]>;
+    });
   }
 
   /**
@@ -185,10 +185,10 @@ export class MeiliSearch {
    */
   async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
     const url = "/swap-indexes";
-    const taks = (await this.httpRequest.post({
+    const taks = await this.httpRequest.post<EnqueuedTaskObject>({
       relativeURL: url,
       body: params,
-    })) as EnqueuedTaskObject;
+    });
 
     return new EnqueuedTask(taks);
   }
@@ -225,11 +225,13 @@ export class MeiliSearch {
     queries: T1,
     extraRequestInit?: ExtraRequestInit,
   ): Promise<MultiSearchResponseOrSearchResponse<T1, T2>> {
-    return (await this.httpRequest.post({
+    return await this.httpRequest.post<
+      MultiSearchResponseOrSearchResponse<T1, T2>
+    >({
       relativeURL: "multi-search",
       body: queries,
       extraRequestInit,
-    })) as MultiSearchResponseOrSearchResponse<T1, T2>;
+    });
   }
 
   ///
@@ -341,10 +343,10 @@ export class MeiliSearch {
    * @returns Promise returning an object with keys
    */
   async getKeys(parameters?: KeysQuery): Promise<KeysResults> {
-    const keys = (await this.httpRequest.get({
+    const keys = await this.httpRequest.get<KeysResults>({
       relativeURL: "keys",
       params: parameters,
-    })) as KeysResults;
+    });
 
     keys.results = keys.results.map((key) => ({
       ...key,
@@ -362,9 +364,9 @@ export class MeiliSearch {
    * @returns Promise returning a key
    */
   async getKey(keyOrUid: string): Promise<Key> {
-    return (await this.httpRequest.get({
+    return await this.httpRequest.get<Key>({
       relativeURL: `keys/${keyOrUid}`,
-    })) as Key;
+    });
   }
 
   /**
@@ -374,10 +376,10 @@ export class MeiliSearch {
    * @returns Promise returning a key
    */
   async createKey(options: KeyCreation): Promise<Key> {
-    return (await this.httpRequest.post({
+    return await this.httpRequest.post<Key>({
       relativeURL: "keys",
       body: options,
-    })) as Key;
+    });
   }
 
   /**
@@ -388,10 +390,10 @@ export class MeiliSearch {
    * @returns Promise returning a key
    */
   async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
-    return (await this.httpRequest.patch({
+    return await this.httpRequest.patch<Key>({
       relativeURL: `keys/${keyOrUid}`,
       body: options,
-    })) as Key;
+    });
   }
 
   /**
@@ -414,7 +416,7 @@ export class MeiliSearch {
    * @returns Promise returning an object with health details
    */
   async health(): Promise<Health> {
-    return (await this.httpRequest.get({ relativeURL: "health" })) as Health;
+    return await this.httpRequest.get<Health>({ relativeURL: "health" });
   }
 
   /**
@@ -441,7 +443,7 @@ export class MeiliSearch {
    * @returns Promise returning object of all the stats
    */
   async getStats(): Promise<Stats> {
-    return (await this.httpRequest.get({ relativeURL: "stats" })) as Stats;
+    return await this.httpRequest.get<Stats>({ relativeURL: "stats" });
   }
 
   ///
@@ -454,7 +456,7 @@ export class MeiliSearch {
    * @returns Promise returning object with version details
    */
   async getVersion(): Promise<Version> {
-    return (await this.httpRequest.get({ relativeURL: "version" })) as Version;
+    return await this.httpRequest.get<Version>({ relativeURL: "version" });
   }
 
   ///
@@ -467,9 +469,9 @@ export class MeiliSearch {
    * @returns Promise returning object of the enqueued task
    */
   async createDump(): Promise<EnqueuedTask> {
-    const task = (await this.httpRequest.post({
+    const task = await this.httpRequest.post<EnqueuedTaskObject>({
       relativeURL: "dumps",
-    })) as EnqueuedTaskObject;
+    });
 
     return new EnqueuedTask(task);
   }
@@ -484,9 +486,9 @@ export class MeiliSearch {
    * @returns Promise returning object of the enqueued task
    */
   async createSnapshot(): Promise<EnqueuedTask> {
-    const task = (await this.httpRequest.post({
+    const task = await this.httpRequest.post<EnqueuedTaskObject>({
       relativeURL: "snapshots",
-    })) as EnqueuedTaskObject;
+    });
 
     return new EnqueuedTask(task);
   }

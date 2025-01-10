@@ -132,9 +132,8 @@ function getTimeoutFn(
 export class HttpRequests {
   #url: URL;
   #requestInit: HttpRequestsRequestInit;
-  #requestFn: typeof fetch;
-  #isCustomRequestFnProvided: boolean;
-  #requestTimeout?: number;
+  #customRequestFn?: Config["httpClient"];
+  #requestTimeout?: Config["timeout"];
 
   constructor(config: Config) {
     const host = addTrailingSlash(addProtocolIfNotPresent(config.host));
@@ -152,11 +151,7 @@ export class HttpRequests {
       headers: getHeaders(config, config.requestInit?.headers),
     };
 
-    this.#requestFn =
-      config.httpClient ??
-      // in browsers `fetch` can only be called with a `this` pointing to `window`
-      fetch.bind(typeof window !== "undefined" ? window : globalThis);
-    this.#isCustomRequestFnProvided = config.httpClient !== undefined;
+    this.#customRequestFn = config.httpClient;
     this.#requestTimeout = config.timeout;
   }
 
@@ -196,14 +191,14 @@ export class HttpRequests {
     return { finalHeaders, isCustomContentTypeProvided };
   }
 
-  async #request({
+  async #request<T = unknown>({
     relativeURL,
     method,
     params,
     headers,
     body,
     extraRequestInit,
-  }: RequestOptions): Promise<unknown> {
+  }: RequestOptions): Promise<T> {
     const url = new URL(relativeURL, this.#url);
     if (params !== undefined) {
       appendRecordToURLSearchParams(url.searchParams, params);
@@ -232,26 +227,41 @@ export class HttpRequests {
         ? getTimeoutFn(requestInit, this.#requestTimeout)
         : null;
 
-    const responsePromise = this.#requestFn(url, requestInit);
+    const getResponseAndHandleErrorAndTimeout = <
+      U extends ReturnType<NonNullable<Config["httpClient"]> | typeof fetch>,
+    >(
+      responsePromise: U,
+      stopTimeout?: ReturnType<NonNullable<typeof startTimeout>>,
+    ) =>
+      responsePromise
+        .catch((error: unknown) => {
+          throw new MeiliSearchRequestError(
+            url.toString(),
+            Object.is(error, TIMEOUT_OBJECT)
+              ? new Error(`request timed out after ${this.#requestTimeout}ms`, {
+                  cause: requestInit,
+                })
+              : error,
+          );
+        })
+        .finally(() => stopTimeout?.()) as U;
+
     const stopTimeout = startTimeout?.();
 
-    const response = await responsePromise
-      .catch((error: unknown) => {
-        throw new MeiliSearchRequestError(
-          url.toString(),
-          Object.is(error, TIMEOUT_OBJECT)
-            ? new Error(`request timed out after ${this.#requestTimeout}ms`, {
-                cause: requestInit,
-              })
-            : error,
-        );
-      })
-      .finally(() => stopTimeout?.());
+    if (this.#customRequestFn !== undefined) {
+      const response = await getResponseAndHandleErrorAndTimeout(
+        this.#customRequestFn(url, requestInit),
+        stopTimeout,
+      );
 
-    // When using a custom HTTP client, the response is returned to allow the user to parse/handle it as they see fit
-    if (this.#isCustomRequestFnProvided) {
-      return response;
+      // When using a custom HTTP client, the response should already be handled and ready to be returned
+      return response as T;
     }
+
+    const response = await getResponseAndHandleErrorAndTimeout(
+      fetch(url, requestInit),
+      stopTimeout,
+    );
 
     const responseBody = await response.text();
     const parsedResponse =
@@ -261,26 +271,26 @@ export class HttpRequests {
       throw new MeiliSearchApiError(response, parsedResponse);
     }
 
-    return parsedResponse;
+    return parsedResponse as T;
   }
 
-  get(options: MethodOptions) {
-    return this.#request(options);
+  get<T = unknown>(options: MethodOptions): Promise<T> {
+    return this.#request<T>(options);
   }
 
-  post(options: MethodOptions) {
-    return this.#request({ ...options, method: "POST" });
+  post<T = unknown>(options: MethodOptions): Promise<T> {
+    return this.#request<T>({ ...options, method: "POST" });
   }
 
-  put(options: MethodOptions) {
-    return this.#request({ ...options, method: "PUT" });
+  put<T = unknown>(options: MethodOptions): Promise<T> {
+    return this.#request<T>({ ...options, method: "PUT" });
   }
 
-  patch(options: MethodOptions) {
-    return this.#request({ ...options, method: "PATCH" });
+  patch<T = unknown>(options: MethodOptions): Promise<T> {
+    return this.#request<T>({ ...options, method: "PATCH" });
   }
 
-  delete(options: MethodOptions) {
-    return this.#request({ ...options, method: "DELETE" });
+  delete<T = unknown>(options: MethodOptions): Promise<T> {
+    return this.#request<T>({ ...options, method: "DELETE" });
   }
 }

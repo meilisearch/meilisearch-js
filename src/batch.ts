@@ -41,9 +41,9 @@ class BatchClient {
    * @returns
    */
   async getBatch(uid: number): Promise<Batch> {
-    const batch = (await this.httpRequest.get({
+    const batch = await this.httpRequest.get<BatchObject>({
       relativeURL: `batches/${uid}`,
-    })) as BatchObject;
+    });
     return new Batch(batch);
   }
 
@@ -54,10 +54,10 @@ class BatchClient {
    * @returns Promise containing all batches
    */
   async getBatches(batchesQuery?: BatchesQuery): Promise<BatchesResults> {
-    const batches = (await this.httpRequest.get({
+    const batches = await this.httpRequest.get<BatchesResultsObject>({
       relativeURL: "batches",
       params: batchesQuery,
-    })) as BatchesResultsObject;
+    });
 
     return {
       ...batches,
