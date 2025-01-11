@@ -2,7 +2,7 @@ import type {
   Config,
   HttpRequestsRequestInit,
   RequestOptions,
-  RequestOptionsWithMethod,
+  MainRequestOptions,
   URLSearchParamsRecord,
 } from "./types.js";
 import { PACKAGE_VERSION } from "./package-version.js";
@@ -52,11 +52,11 @@ function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
   }
 
   if (!headers.has(contentType)) {
-    headers.set("Content-Type", "application/json");
+    headers.set(contentType, "application/json");
   }
 
   // Creates the custom user agent with information on the package used.
-  if (config.clientAgents) {
+  if (config.clientAgents !== undefined) {
     const clients = config.clientAgents.concat(packageAgent);
 
     headers.set(agentHeader, clients.join(" ; "));
@@ -163,32 +163,30 @@ export class HttpRequests {
   }
 
   /**
-   * Combines provided extra {@link RequestInit} headers, class instance
-   * RequestInit headers and provided headers, prioritizing them in this order.
+   * Combines provided extra {@link RequestInit} headers, provided content type
+   * and class instance RequestInit headers, prioritizing them in this order.
    *
    * @returns A new Headers object or the main headers of this class if no
    *   headers are provided
    */
-  #getHeaders(headers?: HeadersInit, extraHeaders?: HeadersInit): Headers {
-    if (headers !== undefined || extraHeaders !== undefined) {
-      headers = new Headers(headers);
+  #getHeaders(extraHeaders?: HeadersInit, contentType?: string): Headers {
+    if (extraHeaders === undefined && contentType === undefined) {
+      return this.#requestInit.headers;
+    }
 
-      for (const [key, val] of this.#requestInit.headers.entries()) {
-        if (!headers.has(key)) {
-          headers.set(key, val);
-        }
-      }
+    const headers = new Headers(extraHeaders);
 
-      if (extraHeaders !== undefined) {
-        for (const [key, val] of new Headers(extraHeaders).entries()) {
-          if (!headers.has(key)) {
-            headers.set(key, val);
-          }
-        }
+    if (contentType !== undefined && !headers.has("Content-Type")) {
+      headers.set("Content-Type", contentType);
+    }
+
+    for (const [key, val] of this.#requestInit.headers) {
+      if (!headers.has(key)) {
+        headers.set(key, val);
       }
     }
 
-    return headers ?? this.#requestInit.headers;
+    return headers;
   }
 
   /**
@@ -201,10 +199,10 @@ export class HttpRequests {
     path,
     method,
     params,
-    headers,
+    contentType,
     body,
     extraRequestInit,
-  }: RequestOptionsWithMethod): Promise<T> {
+  }: MainRequestOptions): Promise<T> {
     const url = new URL(path, this.#url);
     if (params !== undefined) {
       appendRecordToURLSearchParams(url.searchParams, params);
@@ -212,12 +210,13 @@ export class HttpRequests {
 
     const requestInit: RequestInit = {
       method,
-      // This only supports string for now but it could support more in the future
-      // https://developer.mozilla.org/en-US/docs/Web/API/RequestInit#body
-      body: typeof body !== "string" ? JSON.stringify(body) : body,
+      body:
+        contentType === undefined || typeof body !== "string"
+          ? JSON.stringify(body)
+          : body,
       ...extraRequestInit,
       ...this.#requestInit,
-      headers: this.#getHeaders(headers, extraRequestInit?.headers),
+      headers: this.#getHeaders(extraRequestInit?.headers, contentType),
     };
 
     const startTimeout =

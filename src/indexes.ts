@@ -455,7 +455,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       path: `indexes/${this.uid}/documents`,
       body: documents,
       params: queryParams,
-      headers: { "Content-Type": contentType },
+      contentType,
     });
 
     return new EnqueuedTask(task);
@@ -544,7 +544,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       path: `indexes/${this.uid}/documents`,
       body: documents,
       params: queryParams,
-      headers: { "Content-Type": contentType },
+      contentType,
     });
 
     return new EnqueuedTask(task);

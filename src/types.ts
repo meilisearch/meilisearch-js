@@ -77,17 +77,27 @@ export type Config = {
 };
 
 /** Main options of a request. */
-export type RequestOptionsWithMethod = {
+export type MainRequestOptions = {
   /** The path or subpath of the URL to make a request to. */
   path: string;
   /** The REST method of the request. */
   method?: string;
   /** The search parameters of the URL. */
   params?: URLSearchParamsRecord;
-  /** The headers of the request. */
-  headers?: HeadersInit;
-  /** The body of the request. */
-  body?: unknown;
+  /**
+   * {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type | Content-Type}
+   * passed to request {@link Headers}.
+   */
+  contentType?: string;
+  /**
+   * The body of the request.
+   *
+   * @remarks
+   * This only really supports string for now (any other type gets stringified)
+   * but it could support more in the future.
+   * {@link https://developer.mozilla.org/en-US/docs/Web/API/RequestInit#body}
+   */
+  body?: string | boolean | number | object | null;
   /**
    * An extra, more limited {@link RequestInit}, that may override some of the
    * options.
@@ -95,7 +105,11 @@ export type RequestOptionsWithMethod = {
   extraRequestInit?: ExtraRequestInit;
 };
 
-export type RequestOptions = Omit<RequestOptionsWithMethod, "method">;
+/**
+ * {@link MainRequestOptions} without {@link MainRequestOptions.method}, for
+ * method functions.
+ */
+export type RequestOptions = Omit<MainRequestOptions, "method">;
 
 ///
 /// Resources
