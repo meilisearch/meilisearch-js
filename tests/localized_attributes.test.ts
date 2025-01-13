@@ -8,7 +8,7 @@ import {
 } from "vitest";
 import {
   ErrorStatusCode,
-  type LocalizedAttribute,
+  type UpdateableSettings,
 } from "../src/types/index.js";
 import {
   clearAllIndexes,
@@ -47,9 +47,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update localizedAttributes to valid value`, async () => {
       const client = await getClient(permission);
-      const newLocalizedAttributes: LocalizedAttribute[] = [
-        { attributePatterns: ["title"], locales: ["eng"] },
-      ];
+      const newLocalizedAttributes: UpdateableSettings["localizedAttributes"] =
+        [{ attributePatterns: ["title"], locales: ["eng"] }];
       await client
         .index(index.uid)
         .updateLocalizedAttributes(newLocalizedAttributes)
@@ -89,7 +88,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset localizedAttributes`, async () => {
       const client = await getClient(permission);
-      const newLocalizedAttributes: LocalizedAttribute[] = [];
+      const newLocalizedAttributes: UpdateableSettings["localizedAttributes"] =
+        [];
       await client
         .index(index.uid)
         .updateLocalizedAttributes(newLocalizedAttributes)

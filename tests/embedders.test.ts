@@ -1,5 +1,5 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
-import type { Embedders } from "../src/types/index.js";
+import type { UpdateableSettings } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -73,14 +73,14 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default embedders`, async () => {
       const client = await getClient(permission);
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(null);
     });
 
     test(`${permission} key: Update embedders with 'userProvided' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: UpdateableSettings["embedders"] = {
         default: {
           source: "userProvided",
           dimensions: 1,
@@ -93,7 +93,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       };
       await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(newEmbedder);
       expect(response).not.toHaveProperty("documentTemplateMaxBytes");
@@ -101,7 +101,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'openAi' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: UpdateableSettings["embedders"] = {
         default: {
           source: "openAi",
           apiKey: "<your-OpenAI-API-key>",
@@ -120,7 +120,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       };
       await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -132,7 +132,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'huggingFace' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: UpdateableSettings["embedders"] = {
         default: {
           source: "huggingFace",
           model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
@@ -151,14 +151,14 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateEmbedders(newEmbedder)
         .waitTask({ timeOutMs: 60_000 });
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(newEmbedder);
     });
 
     test(`${permission} key: Update embedders with 'rest' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: UpdateableSettings["embedders"] = {
         default: {
           source: "rest",
           url: "https://api.openai.com/v1/embeddings",
@@ -191,7 +191,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       };
       await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -203,7 +203,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'ollama' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: UpdateableSettings["embedders"] = {
         default: {
           source: "ollama",
           url: "http://localhost:11434/api/embeddings",
@@ -221,7 +221,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       };
       await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -234,7 +234,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update embedders with a specific name`, async () => {
       const client = await getClient(permission);
 
-      const newEmbedder: Embedders = {
+      const newEmbedder: UpdateableSettings["embedders"] = {
         image: {
           source: "userProvided",
           dimensions: 512,
@@ -242,7 +242,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       };
       await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(newEmbedder);
     });
@@ -251,7 +251,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).resetEmbedders().waitTask();
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(null);
     });
@@ -315,7 +315,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: search for similar documents`, async () => {
       const client = await getClient(permission);
 
-      const newEmbedder: Embedders = {
+      const newEmbedder: UpdateableSettings["embedders"] = {
         manual: {
           source: "userProvided",
           dimensions: 3,

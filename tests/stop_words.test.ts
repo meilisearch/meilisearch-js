@@ -27,7 +27,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default stop words`, async () => {
       const client = await getClient(permission);
-      const response: string[] = await client.index(index.uid).getStopWords();
+      const response = await client.index(index.uid).getStopWords();
 
       expect(response).toEqual([]);
     });
@@ -37,7 +37,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newStopWords = ["the"];
       await client.index(index.uid).updateStopWords(newStopWords).waitTask();
 
-      const response: string[] = await client.index(index.uid).getStopWords();
+      const response = await client.index(index.uid).getStopWords();
 
       expect(response).toEqual(newStopWords);
     });
@@ -47,7 +47,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newStopWords = null;
       await client.index(index.uid).updateStopWords(newStopWords).waitTask();
 
-      const response: string[] = await client.index(index.uid).getStopWords();
+      const response = await client.index(index.uid).getStopWords();
 
       expect(response).toEqual([]);
     });
@@ -56,7 +56,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).resetStopWords().waitTask();
 
-      const response: string[] = await client.index(index.uid).getStopWords();
+      const response = await client.index(index.uid).getStopWords();
 
       expect(response).toEqual([]);
     });

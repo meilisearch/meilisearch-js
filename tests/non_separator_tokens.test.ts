@@ -26,7 +26,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default non separator tokens`, async () => {
       const client = await getClient(permission);
-      const response: string[] = await client
+      const response = await client
         .index(index.uid)
         .getNonSeparatorTokens();
 
@@ -41,7 +41,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateNonSeparatorTokens(newNonSeparatorTokens)
         .waitTask();
 
-      const response: string[] = await client
+      const response = await client
         .index(index.uid)
         .getNonSeparatorTokens();
 
@@ -56,7 +56,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateNonSeparatorTokens(newNonSeparatorTokens)
         .waitTask();
 
-      const response: string[] = await client
+      const response = await client
         .index(index.uid)
         .getNonSeparatorTokens();
 
@@ -67,7 +67,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).resetNonSeparatorTokens().waitTask();
 
-      const response: string[] = await client
+      const response = await client
         .index(index.uid)
         .getNonSeparatorTokens();
 

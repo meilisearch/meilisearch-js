@@ -26,7 +26,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default dictionary`, async () => {
       const client = await getClient(permission);
-      const response: string[] = await client.index(index.uid).getDictionary();
+      const response = await client.index(index.uid).getDictionary();
 
       expect(response).toEqual([]);
     });
@@ -36,7 +36,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newDictionary = ["J. K.", "J. R. R."];
       await client.index(index.uid).updateDictionary(newDictionary).waitTask();
 
-      const response: string[] = await client.index(index.uid).getDictionary();
+      const response = await client.index(index.uid).getDictionary();
 
       expect(response).toEqual(newDictionary);
     });
@@ -46,7 +46,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newDictionary = null;
       await client.index(index.uid).updateDictionary(newDictionary).waitTask();
 
-      const response: string[] = await client.index(index.uid).getDictionary();
+      const response = await client.index(index.uid).getDictionary();
 
       expect(response).toEqual([]);
     });
@@ -55,7 +55,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).resetDictionary().waitTask();
 
-      const response: string[] = await client.index(index.uid).getDictionary();
+      const response = await client.index(index.uid).getDictionary();
 
       expect(response).toEqual([]);
     });

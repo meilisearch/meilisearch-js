@@ -25,13 +25,13 @@ import type {
   FederatedMultiSearchParams,
   MultiSearchResponseOrSearchResponse,
   EnqueuedTask,
+  EnqueuedTaskPromise,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
   getWaitTaskApplier,
   TaskClient,
-  type EnqueuedTaskPromise,
 } from "./task.js";
 import { BatchClient } from "./batch.js";
 

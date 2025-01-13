@@ -27,7 +27,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default synonyms`, async () => {
       const client = await getClient(permission);
-      const response: object = await client.index(index.uid).getSynonyms();
+      const response = await client.index(index.uid).getSynonyms();
 
       expect(response).toEqual({});
     });
@@ -39,7 +39,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       };
       await client.index(index.uid).updateSynonyms(newSynonyms).waitTask();
 
-      const response: object = await client.index(index.uid).getSynonyms();
+      const response = await client.index(index.uid).getSynonyms();
 
       expect(response).toEqual(newSynonyms);
     });
@@ -49,7 +49,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newSynonyms = null;
       await client.index(index.uid).updateSynonyms(newSynonyms).waitTask();
 
-      const response: object = await client.index(index.uid).getSynonyms();
+      const response = await client.index(index.uid).getSynonyms();
 
       expect(response).toEqual({});
     });
@@ -58,7 +58,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).resetSynonyms().waitTask();
 
-      const response: object = await client.index(index.uid).getSynonyms();
+      const response = await client.index(index.uid).getSynonyms();
 
       expect(response).toEqual({});
     });

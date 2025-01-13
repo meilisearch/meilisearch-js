@@ -1,97 +1,87 @@
-export type DisplayedAttribute = string;
+type ProximityPrecision = "byWord" | "byAttribute";
 
-export type SearchableAttribute = string;
-
-export type FilterableAttribute = string;
-
-export type SortableAttribute = string;
-
-export type RankingRule = string;
-
-export type StopWord = string;
-
-export type NonSeparatorToken = string;
-
-export type SeparatorToken = string;
-
-export type DictionaryElement = string;
-
-export type Synonyms = Record<string, string[]>;
-
-export type DistinctAttribute = string;
-
-export type ProximityPrecision = "byWord" | "byAttribute";
-
-export type TypoTolerance = {
-  enabled?: boolean;
-  minWordSizeForTypos?: { oneTypo?: number; twoTypos?: number };
-  disableOnWords?: string[];
-  disableOnAttributes?: string[];
+type TypoTolerance = {
+  enabled?: boolean | null;
+  minWordSizeForTypos?: {
+    oneTypo?: number | null;
+    twoTypos?: number | null;
+  } | null;
+  disableOnWords?: string[] | null;
+  disableOnAttributes?: string[] | null;
 };
 
-export type FacetOrder = "alpha" | "count";
+type FacetOrder = "alpha" | "count";
 
-export type Faceting = {
-  maxValuesPerFacet?: number;
-  sortFacetValuesBy?: Record<string, FacetOrder>;
+type Faceting = {
+  maxValuesPerFacet?: number | null;
+  sortFacetValuesBy?: Record<string, FacetOrder> | null;
 };
 
-export type PaginationSettings = { maxTotalHits?: number };
+type PaginationSettings = { maxTotalHits?: number | null };
 
-export type Distribution = {
+type Distribution = {
   mean: number;
   sigma: number;
 };
 
-export type EmbeddingSettings = {
+type EmbeddingSettings = {
   source?: "openAi" | "huggingFace" | "ollama" | "userProvided" | "rest";
-  model?: string;
-  revision?: string;
-  apiKey?: string;
-  dimensions?: number;
-  binaryQuantized?: boolean;
-  documentTemplate?: string;
-  documentTemplateMaxBytes?: number;
-  url?: string;
+  model?: string | null;
+  revision?: string | null;
+  apiKey?: string | null;
+  dimensions?: number | null;
+  binaryQuantized?: boolean | null;
+  documentTemplate?: string | null;
+  documentTemplateMaxBytes?: number | null;
+  url?: string | null;
   request?: unknown;
   response?: unknown;
-  headers?: Record<string, string>;
-  distribution?: Distribution;
+  headers?: Record<string, string> | null;
+  distribution?: Distribution | null;
 };
 
-export type Embedders = Record<string, EmbeddingSettings>;
-
-export type SearchCutoffMs = number;
-
-export type LocalizedAttribute = {
-  attributePatterns: string[];
-  locales: string[];
+type LocalizedAttribute = {
+  attributePatterns: string[] | null;
+  locales: string[] | null;
 };
 
-export type FacetSearch = boolean;
+type PrefixSearch = "indexingTime" | "disabled";
 
-export type PrefixSearch = "indexingTime" | "disabled";
+type NoNullField<T> = {
+  [P in keyof T]: T[P] extends any[]
+    ? Array<NoNullField<T[P][number]>>
+    : T[P] extends Record<string, any>
+      ? NoNullField<T[P]>
+      : NonNullable<T[P]>;
+};
 
 /** `meilisearch_types::settings::Settings` */
-export type Settings = {
-  displayedAttributes?: DisplayedAttribute[];
-  searchableAttributes?: SearchableAttribute[];
-  filterableAttributes?: FilterableAttribute[];
-  sortableAttributes?: SortableAttribute[];
-  rankingRules?: RankingRule[];
-  stopWords?: StopWord[];
-  nonSeparatorTokens?: NonSeparatorToken[];
-  separatorTokens?: SeparatorToken[];
-  dictionary?: DictionaryElement[];
-  synonyms?: Synonyms;
-  distinctAttribute?: DistinctAttribute;
-  proximityPrecision?: ProximityPrecision;
-  typoTolerance?: TypoTolerance;
-  faceting?: Faceting;
-  pagination?: PaginationSettings;
-  embedders?: Embedders;
-  searchCutoffMs?: SearchCutoffMs;
-  localizedAttributes?: LocalizedAttribute[];
-  facetSearch?: FacetSearch;
-  prefixSearch?: PrefixSearch;
+export type UpdateableSettings = {
+  displayedAttributes?: string[] | null;
+  searchableAttributes?: string[] | null;
+  filterableAttributes?: string[] | null;
+  sortableAttributes?: string[] | null;
+  rankingRules?: string[] | null;
+  stopWords?: string[] | null;
+  nonSeparatorTokens?: string[] | null;
+  separatorTokens?: string[] | null;
+  dictionary?: string[] | null;
+  //
+  synonyms?: Record<string, string[]> | null;
+  distinctAttribute?: string | null;
+  proximityPrecision?: ProximityPrecision | null;
+  typoTolerance?: TypoTolerance | null;
+  //
+  faceting?: Faceting | null;
+  pagination?: PaginationSettings | null;
+  //
+  embedders?: Record<string, EmbeddingSettings> | null;
+  searchCutoffMs?: number | null;
+  localizedAttributes?: LocalizedAttribute[] | null;
+  facetSearch?: boolean | null;
+  prefixSearch?: PrefixSearch | null;
 };
+
+export type RenameMeSettings = Required<UpdateableSettings>;
+
+export type Settings = NoNullField<UpdateableSettings>;
