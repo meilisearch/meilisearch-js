@@ -56,8 +56,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       expect(task.indexUid).toEqual(index.uid);
       expect(task.batchUid).toBeDefined();
-      assert.strictEqual(enqueuedTask.status, "succeeded");
-      assert.strictEqual(enqueuedTask.type, "documentAdditionOrUpdate");
+      assert.strictEqual(task.status, "succeeded");
+      assert.strictEqual(task.type, "documentAdditionOrUpdate");
       expect(task.uid).toEqual(enqueuedTask.taskUid);
       expect(task).toHaveProperty("details");
       expect(task.details?.indexedDocuments).toEqual(7);
