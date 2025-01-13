@@ -27,9 +27,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default attributes for filtering`, async () => {
       const client = await getClient(permission);
-      const response = await client
-        .index(index.uid)
-        .getFilterableAttributes();
+      const response = await client.index(index.uid).getFilterableAttributes();
 
       expect(response?.sort()).toEqual([]);
     });
@@ -42,9 +40,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateFilterableAttributes(newFilterableAttributes)
         .waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getFilterableAttributes();
+      const response = await client.index(index.uid).getFilterableAttributes();
       expect(response).toEqual(newFilterableAttributes);
     });
 
@@ -52,9 +48,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).updateFilterableAttributes(null).waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getFilterableAttributes();
+      const response = await client.index(index.uid).getFilterableAttributes();
 
       expect(response?.sort()).toEqual([]);
     });
@@ -63,9 +57,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).resetFilterableAttributes().waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getFilterableAttributes();
+      const response = await client.index(index.uid).getFilterableAttributes();
 
       expect(response?.sort()).toEqual([]);
     });

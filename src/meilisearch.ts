@@ -29,10 +29,7 @@ import type {
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
-import {
-  getWaitTaskApplier,
-  TaskClient,
-} from "./task.js";
+import { getWaitTaskApplier, TaskClient } from "./task.js";
 import { BatchClient } from "./batch.js";
 
 export class MeiliSearch {

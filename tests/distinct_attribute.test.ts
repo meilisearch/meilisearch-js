@@ -48,10 +48,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update distinct attribute at undefined`, async () => {
       const client = await getClient(permission);
-      await client
-        .index(index.uid)
-        .updateDistinctAttribute(null)
-        .waitTask();
+      await client.index(index.uid).updateDistinctAttribute(null).waitTask();
 
       const response = await client.index(index.uid).getDistinctAttribute();
 

@@ -35,9 +35,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Get default searchable attributes`, async () => {
       const client = await getClient(permission);
 
-      const response = await client
-        .index(index.uid)
-        .getSearchableAttributes();
+      const response = await client.index(index.uid).getSearchableAttributes();
 
       expect(response).toEqual(["*"]);
     });
@@ -50,9 +48,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateSearchableAttributes(newSearchableAttributes)
         .waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getSearchableAttributes();
+      const response = await client.index(index.uid).getSearchableAttributes();
 
       expect(response).toEqual(newSearchableAttributes);
     });
@@ -61,9 +57,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).updateSearchableAttributes(null).waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getSearchableAttributes();
+      const response = await client.index(index.uid).getSearchableAttributes();
 
       expect(response).toEqual(["*"]);
     });
@@ -72,9 +66,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).resetSearchableAttributes().waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getSearchableAttributes();
+      const response = await client.index(index.uid).getSearchableAttributes();
 
       expect(response).toEqual(["*"]);
     });

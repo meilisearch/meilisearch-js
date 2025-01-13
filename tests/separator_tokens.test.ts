@@ -26,9 +26,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default separator tokens`, async () => {
       const client = await getClient(permission);
-      const response = await client
-        .index(index.uid)
-        .getSeparatorTokens();
+      const response = await client.index(index.uid).getSeparatorTokens();
 
       expect(response).toEqual([]);
     });
@@ -41,9 +39,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateSeparatorTokens(newSeparatorTokens)
         .waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getSeparatorTokens();
+      const response = await client.index(index.uid).getSeparatorTokens();
 
       expect(response).toEqual(newSeparatorTokens);
     });
@@ -56,9 +52,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateSeparatorTokens(newSeparatorTokens)
         .waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getSeparatorTokens();
+      const response = await client.index(index.uid).getSeparatorTokens();
 
       expect(response).toEqual([]);
     });
@@ -67,9 +61,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).resetSeparatorTokens().waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getSeparatorTokens();
+      const response = await client.index(index.uid).getSeparatorTokens();
 
       expect(response).toEqual([]);
     });

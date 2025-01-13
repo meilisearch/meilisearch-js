@@ -26,9 +26,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default non separator tokens`, async () => {
       const client = await getClient(permission);
-      const response = await client
-        .index(index.uid)
-        .getNonSeparatorTokens();
+      const response = await client.index(index.uid).getNonSeparatorTokens();
 
       expect(response).toEqual([]);
     });
@@ -41,9 +39,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateNonSeparatorTokens(newNonSeparatorTokens)
         .waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getNonSeparatorTokens();
+      const response = await client.index(index.uid).getNonSeparatorTokens();
 
       expect(response).toEqual(newNonSeparatorTokens);
     });
@@ -56,9 +52,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateNonSeparatorTokens(newNonSeparatorTokens)
         .waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getNonSeparatorTokens();
+      const response = await client.index(index.uid).getNonSeparatorTokens();
 
       expect(response).toEqual([]);
     });
@@ -67,9 +61,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).resetNonSeparatorTokens().waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getNonSeparatorTokens();
+      const response = await client.index(index.uid).getNonSeparatorTokens();
 
       expect(response).toEqual([]);
     });

@@ -821,4 +821,3 @@ export const ErrorStatusCode = {
 
 export type ErrorStatusCode =
   (typeof ErrorStatusCode)[keyof typeof ErrorStatusCode];
-

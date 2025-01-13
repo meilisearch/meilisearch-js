@@ -37,9 +37,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default ranking rules`, async () => {
       const client = await getClient(permission);
-      const response = await client
-        .index(index.uid)
-        .getRankingRules();
+      const response = await client.index(index.uid).getRankingRules();
       expect(response).toEqual(defaultRankingRules);
     });
 
@@ -51,9 +49,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateRankingRules(newRankingRules)
         .waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getRankingRules();
+      const response = await client.index(index.uid).getRankingRules();
 
       expect(response).toEqual(newRankingRules);
     });
@@ -62,9 +58,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).updateRankingRules(null).waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getRankingRules();
+      const response = await client.index(index.uid).getRankingRules();
 
       expect(response).toEqual(defaultRankingRules);
     });
@@ -73,9 +67,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).resetRankingRules().waitTask();
 
-      const response = await client
-        .index(index.uid)
-        .getRankingRules();
+      const response = await client.index(index.uid).getRankingRules();
 
       expect(response).toEqual(defaultRankingRules);
     });
