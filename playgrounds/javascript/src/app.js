@@ -9,9 +9,8 @@ const client = new Meilisearch(config);
 const indexUid = "movies";
 
 const addDataset = async () => {
-  await client.deleteIndex(indexUid);
-  const task = await client.createIndex(indexUid);
-  await client.index(indexUid).waitForTask(task);
+  await client.deleteIndex(indexUid).waitTask();
+  await client.createIndex(indexUid).waitTask();
 
   const documents = await client.index(indexUid).getDocuments();
 
@@ -28,8 +27,7 @@ const addDataset = async () => {
     { id: 6, title: "Philadelphia", genres: ["Drama"] },
   ];
   if (documents.results.length === 0) {
-    const task = await client.index(indexUid).addDocuments(dataset);
-    await client.index(indexUid).waitForTask(task);
+    await client.index(indexUid).addDocuments(dataset).waitTask();
   }
 };
 

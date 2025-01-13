@@ -778,7 +778,7 @@ describe.each([
     );
   });
 
-  test.only(`on getTasks route`, async () => {
+  test(`on getTasks route`, async () => {
     const route = `tasks?indexUids=movies_test`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
