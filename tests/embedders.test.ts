@@ -68,8 +68,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         method: "PATCH",
       });
 
-      const task = await client.createIndex(index.uid);
-      await client.waitForTask(task.taskUid);
+      await client.createIndex(index.uid).waitTask();
     });
 
     test(`${permission} key: Get default embedders`, async () => {
@@ -92,9 +91,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
-
-      await client.waitForTask(task.taskUid);
+      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
@@ -121,8 +118,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
-      await client.waitForTask(task.taskUid);
+      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
@@ -150,8 +146,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
-      await client.waitForTask(task.taskUid, { timeOutMs: 60_000 });
+      await client
+        .index(index.uid)
+        .updateEmbedders(newEmbedder)
+        .waitTask({ timeOutMs: 60_000 });
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
@@ -191,8 +189,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
-      await client.waitForTask(task.taskUid);
+      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
@@ -222,8 +219,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
-      await client.waitForTask(task.taskUid);
+      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
@@ -244,9 +240,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           dimensions: 512,
         },
       };
-      const task = await client.index(index.uid).updateEmbedders(newEmbedder);
-
-      await client.waitForTask(task.taskUid);
+      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
@@ -255,8 +249,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset embedders`, async () => {
       const client = await getClient(permission);
-      const task = await client.index(index.uid).resetEmbedders();
-      await client.waitForTask(task.taskUid);
+      await client.index(index.uid).resetEmbedders().waitTask();
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
@@ -266,13 +259,15 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: search (POST) with vectors`, async () => {
       const client = await getClient(permission);
 
-      const { taskUid } = await client.index(index.uid).updateEmbedders({
-        default: {
-          source: "userProvided",
-          dimensions: 1,
-        },
-      });
-      await client.waitForTask(taskUid);
+      await client
+        .index(index.uid)
+        .updateEmbedders({
+          default: {
+            source: "userProvided",
+            dimensions: 1,
+          },
+        })
+        .waitTask();
 
       const response = await client.index(index.uid).search("", {
         vector: [1],
@@ -293,13 +288,15 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: search (GET) with vectors`, async () => {
       const client = await getClient(permission);
 
-      const { taskUid } = await client.index(index.uid).updateEmbedders({
-        default: {
-          source: "userProvided",
-          dimensions: 1,
-        },
-      });
-      await client.waitForTask(taskUid);
+      await client
+        .index(index.uid)
+        .updateEmbedders({
+          default: {
+            source: "userProvided",
+            dimensions: 1,
+          },
+        })
+        .waitTask();
 
       const response = await client.index(index.uid).searchGet("", {
         vector: [1],
@@ -324,17 +321,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           dimensions: 3,
         },
       };
-      const { taskUid: updateEmbeddersTask } = await client
+      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+
+      await client
         .index(index.uid)
-        .updateEmbedders(newEmbedder);
-
-      await client.waitForTask(updateEmbeddersTask);
-
-      const { taskUid: documentAdditionTask } = await client
-        .index(index.uid)
-        .addDocuments(datasetSimilarSearch);
-
-      await client.waitForTask(documentAdditionTask);
+        .addDocuments(datasetSimilarSearch)
+        .waitTask();
 
       const response = await client.index(index.uid).searchSimilarDocuments({
         embedder: "manual",

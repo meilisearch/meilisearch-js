@@ -22,8 +22,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
-      await client.waitForTask(taskUid);
+      await client.index(index.uid).addDocuments(dataset).waitTask();
     });
 
     test(`${permission} key: Get default synonyms`, async () => {
@@ -38,8 +37,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newSynonyms = {
         hp: ["harry potter"],
       };
-      const task = await client.index(index.uid).updateSynonyms(newSynonyms);
-      await client.waitForTask(task.taskUid);
+      await client.index(index.uid).updateSynonyms(newSynonyms).waitTask();
 
       const response: object = await client.index(index.uid).getSynonyms();
 
@@ -49,8 +47,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update synonyms with null value`, async () => {
       const client = await getClient(permission);
       const newSynonyms = null;
-      const task = await client.index(index.uid).updateSynonyms(newSynonyms);
-      await client.waitForTask(task.taskUid);
+      await client.index(index.uid).updateSynonyms(newSynonyms).waitTask();
 
       const response: object = await client.index(index.uid).getSynonyms();
 
@@ -59,8 +56,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset synonyms`, async () => {
       const client = await getClient(permission);
-      const task = await client.index(index.uid).resetSynonyms();
-      await client.waitForTask(task.taskUid);
+      await client.index(index.uid).resetSynonyms().waitTask();
 
       const response: object = await client.index(index.uid).getSynonyms();
 

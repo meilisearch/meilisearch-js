@@ -21,8 +21,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
-      await client.waitForTask(taskUid);
+      await client.index(index.uid).addDocuments(dataset).waitTask();
     });
 
     test(`${permission} key: Get default non separator tokens`, async () => {
@@ -37,10 +36,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update non separator tokens`, async () => {
       const client = await getClient(permission);
       const newNonSeparatorTokens = ["&sep", "/", "|"];
-      const task = await client
+      await client
         .index(index.uid)
-        .updateNonSeparatorTokens(newNonSeparatorTokens);
-      await client.index(index.uid).waitForTask(task.taskUid);
+        .updateNonSeparatorTokens(newNonSeparatorTokens)
+        .waitTask();
 
       const response: string[] = await client
         .index(index.uid)
@@ -52,10 +51,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update non separator tokens with null value`, async () => {
       const client = await getClient(permission);
       const newNonSeparatorTokens = null;
-      const task = await client
+      await client
         .index(index.uid)
-        .updateNonSeparatorTokens(newNonSeparatorTokens);
-      await client.index(index.uid).waitForTask(task.taskUid);
+        .updateNonSeparatorTokens(newNonSeparatorTokens)
+        .waitTask();
 
       const response: string[] = await client
         .index(index.uid)
@@ -66,8 +65,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset NonSeparator tokens`, async () => {
       const client = await getClient(permission);
-      const task = await client.index(index.uid).resetNonSeparatorTokens();
-      await client.index(index.uid).waitForTask(task.taskUid);
+      await client.index(index.uid).resetNonSeparatorTokens().waitTask();
 
       const response: string[] = await client
         .index(index.uid)

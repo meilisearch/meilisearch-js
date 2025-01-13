@@ -1,5 +1,4 @@
 import type {
-  Config,
   Batch,
   BatchesQuery,
   BatchesResults,
@@ -8,10 +7,10 @@ import type {
 import { HttpRequests, toQueryParams } from "./http-requests.js";
 
 export class BatchClient {
-  httpRequest: HttpRequests;
+  readonly #httpRequest: HttpRequests;
 
-  constructor(config: Config) {
-    this.httpRequest = new HttpRequests(config);
+  constructor(httpRequests: HttpRequests) {
+    this.#httpRequest = httpRequests;
   }
 
   /**
@@ -22,7 +21,7 @@ export class BatchClient {
    */
   async getBatch(uid: number): Promise<Batch> {
     const url = `batches/${uid}`;
-    const batch = await this.httpRequest.get<Batch>(url);
+    const batch = await this.#httpRequest.get<Batch>(url);
     return batch;
   }
 
@@ -35,7 +34,7 @@ export class BatchClient {
   async getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults> {
     const url = `batches`;
 
-    const batches = await this.httpRequest.get<Promise<BatchesResultsObject>>(
+    const batches = await this.#httpRequest.get<Promise<BatchesResultsObject>>(
       url,
       toQueryParams<BatchesQuery>(parameters),
     );

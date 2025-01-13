@@ -40,8 +40,8 @@ export type IndexOptions = {
 export type IndexObject = {
   uid: string;
   primaryKey?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type IndexesQuery = ResourceQuery & {};

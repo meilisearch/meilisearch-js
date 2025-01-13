@@ -1,5 +1,5 @@
-import { afterAll, expect, test, describe, beforeEach } from "vitest";
-import { ErrorStatusCode, TaskStatus, TaskType } from "../src/types/index.js";
+import { afterAll, expect, test, describe, beforeEach, assert } from "vitest";
+import { ErrorStatusCode } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -31,39 +31,31 @@ describe("Documents tests", () => {
       beforeEach(async () => {
         await clearAllIndexes(config);
         const client = await getClient("Master");
-        const { taskUid: taskCreateNoPk } = await client.createIndex(
-          indexNoPk.uid,
-        );
-        await client.waitForTask(taskCreateNoPk);
-        const { taskUid: taskCreateWithPk } = await client.createIndex(
-          indexPk.uid,
-          {
+        await client.createIndex(indexNoPk.uid).waitTask();
+        await client
+          .createIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
-          },
-        );
-        await client.waitForTask(taskCreateWithPk);
+          })
+          .waitTask();
       });
 
       test(`${permission} key: Add documents to uid with primary key in batch`, async () => {
         const client = await getClient(permission);
-        const tasks = await client
+        const tasks = client
           .index(indexPk.uid)
           .addDocumentsInBatches(dataset, 4);
 
         expect(tasks).toHaveLength(2);
         for (const task of tasks) {
-          const { type, status } = await client.waitForTask(task.taskUid);
-          expect(status).toBe(TaskStatus.TASK_SUCCEEDED);
-          expect(type).toBe(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE);
+          const { type, status } = await task.waitTask();
+          assert.strictEqual(status, "succeeded");
+          assert.strictEqual(type, "documentAdditionOrUpdate");
         }
       });
 
       test(`${permission} key: Get one document `, async () => {
         const client = await getClient(permission);
-        const { taskUid } = await client
-          .index(indexNoPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexNoPk.uid).waitForTask(taskUid);
+        await client.index(indexNoPk.uid).addDocuments(dataset).waitTask();
 
         const documentId = 1;
         const document = await client
@@ -75,10 +67,7 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Get one document with fields parameter`, async () => {
         const client = await getClient(permission);
-        const { taskUid } = await client
-          .index(indexNoPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexNoPk.uid).waitForTask(taskUid);
+        await client.index(indexNoPk.uid).addDocuments(dataset).waitTask();
 
         const documentId = 1;
         const document = await client
@@ -103,10 +92,7 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Get documents with array fields`, async () => {
         const client = await getClient(permission);
-        const { taskUid } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.waitForTask(taskUid);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const documents = await client.index(indexPk.uid).getDocuments<Book>({
           fields: ["id"],
@@ -126,10 +112,7 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Get documents with pagination`, async () => {
         const client = await getClient(permission);
-        const { taskUid } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.waitForTask(taskUid);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const documents = await client.index(indexPk.uid).getDocuments<Book>({
           limit: 1,
@@ -144,15 +127,12 @@ describe("Documents tests", () => {
       test(`${permission} key: Get documents with filters`, async () => {
         const client = await getClient(permission);
 
-        const { taskUid: updateFilterableAttributesTaskUid } = await client
+        await client
           .index(indexPk.uid)
-          .updateFilterableAttributes(["id"]);
-        await client.waitForTask(updateFilterableAttributesTaskUid);
+          .updateFilterableAttributes(["id"])
+          .waitTask();
 
-        const { taskUid } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.waitForTask(taskUid);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const documents = await client.index(indexPk.uid).getDocuments<Book>({
           filter: [["id = 1", "id = 2"]],
@@ -199,10 +179,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Get documents from index that has NO primary key`, async () => {
         const client = await getClient(permission);
-        const { taskUid } = await client
-          .index(indexNoPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexNoPk.uid).waitForTask(taskUid);
+        await client.index(indexNoPk.uid).addDocuments(dataset).waitTask();
 
         const documents = await client.index(indexNoPk.uid).getDocuments<Book>({
           fields: "id",
@@ -213,10 +190,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Get documents from index that has a primary key`, async () => {
         const client = await getClient(permission);
-        const { taskUid } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexPk.uid).waitForTask(taskUid);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const documents = await client.index(indexPk.uid).getDocuments<Book>();
         expect(documents.results.length).toEqual(dataset.length);
@@ -235,10 +209,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           method: "PATCH",
         });
 
-        const { taskUid } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexPk.uid).waitForTask(taskUid);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         // Get documents with POST
         const documentsPost = await client
@@ -278,10 +249,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           method: "PATCH",
         });
 
-        const { taskUid } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexPk.uid).waitForTask(taskUid);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         // Get documents with POST
         const documentsPost = await client
@@ -310,17 +278,14 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
         const client = await getClient(permission);
-        const { taskUid: addDocTask } = await client
-          .index(indexNoPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexNoPk.uid).waitForTask(addDocTask);
+        await client.index(indexNoPk.uid).addDocuments(dataset).waitTask();
         const id = 2;
         const title = "The Red And The Black";
 
-        const task = await client
+        await client
           .index(indexNoPk.uid)
-          .addDocuments([{ id, title }]);
-        await client.index(indexNoPk.uid).waitForTask(task.taskUid);
+          .addDocuments([{ id, title }])
+          .waitTask();
         const response = await client.index(indexNoPk.uid).getDocument(id);
 
         expect(response).toHaveProperty("id", id);
@@ -332,10 +297,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const id = 2;
         const title = "The Red And The Black";
 
-        const task = await client
+        await client
           .index(indexPk.uid)
-          .addDocuments([{ id, title }]);
-        await client.index(indexPk.uid).waitForTask(task.taskUid);
+          .addDocuments([{ id, title }])
+          .waitTask();
         const response = await client.index(indexPk.uid).getDocument(id);
 
         expect(response).toHaveProperty("id", id);
@@ -347,10 +312,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const id = 456;
         const title = "The Little Prince";
 
-        const task = await client
+        await client
           .index(indexNoPk.uid)
-          .updateDocuments([{ id, title }]);
-        await client.index(indexNoPk.uid).waitForTask(task.taskUid);
+          .updateDocuments([{ id, title }])
+          .waitTask();
         const response = await client.index(indexNoPk.uid).getDocument(id);
 
         expect(response).toHaveProperty("id", id);
@@ -361,10 +326,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const client = await getClient(permission);
         const id = 456;
         const title = "The Little Prince";
-        const task = await client
+        await client
           .index(indexPk.uid)
-          .updateDocuments([{ id, title }]);
-        await client.index(indexPk.uid).waitForTask(task.taskUid);
+          .updateDocuments([{ id, title }])
+          .waitTask();
         const response = await client.index(indexPk.uid).getDocument(id);
 
         expect(response).toHaveProperty("id", id);
@@ -374,10 +339,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       test(`${permission} key: Partial update of a document`, async () => {
         const client = await getClient(permission);
         const id = 456;
-        const task = await client
+        await client
           .index<Book>(indexPk.uid)
-          .updateDocuments([{ id }]);
-        await client.index(indexPk.uid).waitForTask(task.taskUid);
+          .updateDocuments([{ id }])
+          .waitTask();
 
         const response = await client.index(indexPk.uid).getDocument(id);
 
@@ -387,16 +352,14 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Update document from index that has a primary key in batch`, async () => {
         const client = await getClient(permission);
-        const tasks = await client
+        const tasks = client
           .index(indexPk.uid)
           .updateDocumentsInBatches(dataset, 2);
 
         for (const EnqueuedTask of tasks) {
-          const task = await client
-            .index(indexPk.uid)
-            .waitForTask(EnqueuedTask.taskUid);
-          expect(task.status).toBe(TaskStatus.TASK_SUCCEEDED);
-          expect(task.type).toBe(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE);
+          const task = await EnqueuedTask.waitTask();
+          assert.strictEqual(task.status, "succeeded");
+          assert.strictEqual(task.type, "documentAdditionOrUpdate");
         }
         expect(tasks).toHaveLength(4);
       });
@@ -405,34 +368,29 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const client = await getClient(permission);
         const partialDocument = { id: 1 };
 
-        const tasks = await client
+        const tasks = client
           .index<Book>(indexPk.uid)
           .updateDocumentsInBatches([partialDocument], 2);
 
         for (const EnqueuedTask of tasks) {
-          const task = await client
-            .index(indexPk.uid)
-            .waitForTask(EnqueuedTask.taskUid);
+          const task = await EnqueuedTask.waitTask();
 
-          expect(task.status).toBe(TaskStatus.TASK_SUCCEEDED);
-          expect(task.type).toBe(TaskTypes.DOCUMENTS_ADDITION_OR_UPDATE);
+          assert.strictEqual(task.status, "succeeded");
+          assert.strictEqual(task.type, "documentAdditionOrUpdate");
         }
         expect(tasks).toHaveLength(1);
       });
 
       test(`${permission} key: Add document with update documents function from index that has NO primary key`, async () => {
         const client = await getClient(permission);
-        const { taskUid: addDocTask } = await client
-          .index(indexNoPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexNoPk.uid).waitForTask(addDocTask);
+        await client.index(indexNoPk.uid).addDocuments(dataset).waitTask();
         const id = 9;
         const title = "1984";
 
-        const task = await client
+        await client
           .index(indexNoPk.uid)
-          .updateDocuments([{ id, title }]);
-        await client.index(indexNoPk.uid).waitForTask(task.taskUid);
+          .updateDocuments([{ id, title }])
+          .waitTask();
         const document = await client.index(indexNoPk.uid).getDocument(id);
         const documents = await client
           .index(indexNoPk.uid)
@@ -445,16 +403,13 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Add document with update documents function from index that has a primary key`, async () => {
         const client = await getClient(permission);
-        const { taskUid: addDocTask } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexPk.uid).waitForTask(addDocTask);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
         const id = 9;
         const title = "1984";
-        const task = await client
+        await client
           .index(indexPk.uid)
-          .updateDocuments([{ id, title }]);
-        await client.index(indexPk.uid).waitForTask(task.taskUid);
+          .updateDocuments([{ id, title }])
+          .waitTask();
 
         const document = await client.index(indexPk.uid).getDocument(id);
         const documents = await client.index(indexPk.uid).getDocuments<Book>();
@@ -471,10 +426,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           title: "hello",
           _id: 1,
         };
-        const { taskUid: addDocTask } = await client
-          .index(indexNoPk.uid)
-          .addDocuments([doc]);
-        await client.index(indexNoPk.uid).waitForTask(addDocTask);
+        await client.index(indexNoPk.uid).addDocuments([doc]).waitTask();
 
         const index = await client.index(indexNoPk.uid).fetchInfo();
 
@@ -487,10 +439,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           title: "hello",
           findmeid: 1,
         };
-        const { taskUid: addDocTask } = await client
-          .index(indexNoPk.uid)
-          .addDocuments([doc]);
-        await client.index(indexNoPk.uid).waitForTask(addDocTask);
+        await client.index(indexNoPk.uid).addDocuments([doc]).waitTask();
 
         const index = await client.index(indexNoPk.uid).fetchInfo();
 
@@ -504,10 +453,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           id: 1,
           _id: 1,
         };
-        const { taskUid: addDocTask } = await client
+        const task = await client
           .index(indexNoPk.uid)
-          .addDocuments([doc]);
-        const task = await client.index(indexNoPk.uid).waitForTask(addDocTask);
+          .addDocuments([doc])
+          .waitTask();
         const index = await client.index(indexNoPk.uid).fetchInfo();
 
         expect(task.error?.code).toEqual(
@@ -522,10 +471,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           title: "hello",
           idfindme: 1,
         };
-        const { taskUid: addDocTask } = await client
+        const task = await client
           .index(indexNoPk.uid)
-          .addDocuments([doc]);
-        const task = await client.index(indexNoPk.uid).waitForTask(addDocTask);
+          .addDocuments([doc])
+          .waitTask();
         const index = await client.index(indexNoPk.uid).fetchInfo();
 
         expect(task.error?.code).toEqual(
@@ -536,14 +485,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Delete a document from index that has NO primary key`, async () => {
         const client = await getClient(permission);
-        const { taskUid: addDocTask } = await client
-          .index(indexNoPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexNoPk.uid).waitForTask(addDocTask);
+        await client.index(indexNoPk.uid).addDocuments(dataset).waitTask();
         const id = 9;
 
-        const task = await client.index(indexNoPk.uid).deleteDocument(id);
-        await client.index(indexNoPk.uid).waitForTask(task.taskUid);
+        await client.index(indexNoPk.uid).deleteDocument(id).waitTask();
         const documents = await client
           .index(indexNoPk.uid)
           .getDocuments<Book>();
@@ -553,14 +498,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Delete a document from index that has a primary key`, async () => {
         const client = await getClient(permission);
-        const { taskUid: addDocTask } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexPk.uid).waitForTask(addDocTask);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const id = 9;
-        const task = await client.index(indexPk.uid).deleteDocument(id);
-        await client.index(indexPk.uid).waitForTask(task.taskUid);
+        await client.index(indexPk.uid).deleteDocument(id).waitTask();
         const response = await client.index(indexPk.uid).getDocuments<Book>();
 
         expect(response.results.length).toEqual(dataset.length);
@@ -569,65 +510,52 @@ Hint: It might not be working because maybe you're not up to date with the Meili
       test(`${permission} key: Delete some documents with string filters`, async () => {
         const client = await getClient(permission);
         await client.index(indexPk.uid).updateFilterableAttributes(["id"]);
-        const { taskUid: addDocTask } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexPk.uid).waitForTask(addDocTask);
-
-        const task = await client
-          .index(indexPk.uid)
-          .deleteDocuments({ filter: "id IN [1, 2]" });
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const resolvedTask = await client
           .index(indexPk.uid)
-          .waitForTask(task.taskUid);
+          .deleteDocuments({ filter: "id IN [1, 2]" })
+          .waitTask();
+
         const documents = await client.index(indexPk.uid).getDocuments<Book>();
 
-        expect(resolvedTask.details.deletedDocuments).toEqual(2);
+        expect(resolvedTask.details?.deletedDocuments).toEqual(2);
         expect(documents.results.length).toEqual(dataset.length - 2);
       });
 
       test(`${permission} key: Delete some documents with array filters`, async () => {
         const client = await getClient(permission);
         await client.index(indexPk.uid).updateFilterableAttributes(["id"]);
-        const { taskUid: addDocTask } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexPk.uid).waitForTask(addDocTask);
-
-        const task = await client
-          .index(indexPk.uid)
-          .deleteDocuments({ filter: [["id = 1", "id = 2"]] });
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const resolvedTask = await client
           .index(indexPk.uid)
-          .waitForTask(task.taskUid);
+          .deleteDocuments({ filter: [["id = 1", "id = 2"]] })
+          .waitTask();
+
         const documents = await client.index(indexPk.uid).getDocuments<Book>();
 
-        expect(resolvedTask.details.deletedDocuments).toEqual(2);
+        expect(resolvedTask.details?.deletedDocuments).toEqual(2);
         expect(documents.results.length).toEqual(dataset.length - 2);
       });
 
       test(`${permission} key: Delete some documents from index that has NO primary key`, async () => {
         const client = await getClient(permission);
-        const { taskUid: addDocTask } = await client
-          .index(indexNoPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexNoPk.uid).waitForTask(addDocTask);
+        await client.index(indexNoPk.uid).addDocuments(dataset).waitTask();
 
         const ids = [1, 2];
-        const task = await client.index(indexNoPk.uid).deleteDocuments(ids);
         const resolvedTask = await client
           .index(indexNoPk.uid)
-          .waitForTask(task.taskUid);
+          .deleteDocuments(ids)
+          .waitTask();
 
         const documents = await client
           .index(indexNoPk.uid)
           .getDocuments<Book>();
         const returnedIds = documents.results.map((x) => x.id);
 
-        expect(resolvedTask.details.deletedDocuments).toEqual(2);
-        expect(resolvedTask.details.providedIds).toEqual(2);
+        expect(resolvedTask.details?.deletedDocuments).toEqual(2);
+        expect(resolvedTask.details?.providedIds).toEqual(2);
         expect(documents.results.length).toEqual(dataset.length - 2);
         expect(returnedIds).not.toContain(ids[0]);
         expect(returnedIds).not.toContain(ids[1]);
@@ -635,14 +563,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Delete some documents from index that has a primary key`, async () => {
         const client = await getClient(permission);
-        const { taskUid: addDocTask } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.index(indexPk.uid).waitForTask(addDocTask);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const ids = [1, 2];
-        const task = await client.index(indexPk.uid).deleteDocuments(ids);
-        await client.index(indexPk.uid).waitForTask(task.taskUid);
+        await client.index(indexPk.uid).deleteDocuments(ids).waitTask();
         const documents = await client.index(indexPk.uid).getDocuments<Book>();
         const returnedIds = documents.results.map((x) => x.id);
 
@@ -653,8 +577,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Delete some documents should trigger error with a hint on a MeilisearchApiError`, async () => {
         const client = await getClient(permission);
-        const task = await client.createIndex(indexPk.uid);
-        await client.waitForTask(task.taskUid);
+        await client.createIndex(indexPk.uid).waitTask();
 
         try {
           await client.index(indexPk.uid).deleteDocuments({ filter: "" });
@@ -688,8 +611,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Delete all document from index that has NO primary key`, async () => {
         const client = await getClient(permission);
-        const task = await client.index(indexNoPk.uid).deleteAllDocuments();
-        await client.index(indexNoPk.uid).waitForTask(task.taskUid);
+        await client.index(indexNoPk.uid).deleteAllDocuments().waitTask();
 
         const documents = await client
           .index(indexNoPk.uid)
@@ -699,8 +621,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Delete all document from index that has a primary key`, async () => {
         const client = await getClient(permission);
-        const task = await client.index(indexPk.uid).deleteAllDocuments();
-        await client.index(indexPk.uid).waitForTask(task.taskUid);
+        await client.index(indexPk.uid).deleteAllDocuments().waitTask();
 
         const documents = await client.index(indexPk.uid).getDocuments<Book>();
         expect(documents.results.length).toEqual(0);
@@ -736,13 +657,12 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           },
         ];
         const pkIndex = "update_pk";
-        const { taskUid } = await client.createIndex(pkIndex);
-        await client.waitForTask(taskUid);
+        await client.createIndex(pkIndex).waitTask();
 
-        const task = await client
+        await client
           .index(pkIndex)
-          .addDocuments(docs, { primaryKey: "unique" });
-        await client.waitForTask(task.taskUid);
+          .addDocuments(docs, { primaryKey: "unique" })
+          .waitTask();
 
         const response = await client.index(pkIndex).getRawInfo();
         expect(response).toHaveProperty("uid", pkIndex);
@@ -757,10 +677,10 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           },
         ];
 
-        const { taskUid } = await client
+        const { error } = await client
           .index(indexNoPk.uid)
-          .addDocuments(docs);
-        const { error } = await client.waitForTask(taskUid);
+          .addDocuments(docs)
+          .waitTask();
 
         expect(error).toHaveProperty("code");
         expect(error).toHaveProperty("link");
@@ -770,14 +690,16 @@ Hint: It might not be working because maybe you're not up to date with the Meili
 
       test(`${permission} key: Try to add documents from index with no primary key with NO valid primary key, task should fail`, async () => {
         const client = await getClient(permission);
-        const { taskUid } = await client.index(indexNoPk.uid).addDocuments([
-          {
-            unique: 2,
-            title: "Le Rouge et le Noir",
-          },
-        ]);
+        const task = await client
+          .index(indexNoPk.uid)
+          .addDocuments([
+            {
+              unique: 2,
+              title: "Le Rouge et le Noir",
+            },
+          ])
+          .waitTask();
 
-        const task = await client.waitForTask(taskUid);
         const index = await client.index(indexNoPk.uid).getRawInfo();
 
         expect(index.uid).toEqual(indexNoPk.uid);
@@ -790,9 +712,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
         const index = client.index<(typeof dataset)[number]>(indexPk.uid);
         const adminKey = await getKey("Admin");
 
-        const { taskUid: updateFilterableAttributesTaskUid } =
-          await index.updateFilterableAttributes(["id"]);
-        await client.waitForTask(updateFilterableAttributesTaskUid);
+        await index.updateFilterableAttributes(["id"]).waitTask();
 
         await fetch(`${HOST}/experimental-features`, {
           body: JSON.stringify({ editDocumentsByFunction: true }),
@@ -803,18 +723,15 @@ Hint: It might not be working because maybe you're not up to date with the Meili
           method: "PATCH",
         });
 
-        const { taskUid: addDocumentsTaskUid } =
-          await index.addDocuments(dataset);
-        await index.waitForTask(addDocumentsTaskUid);
+        await index.addDocuments(dataset).waitTask();
 
-        const { taskUid: updateDocumentsByFunctionTaskUid } =
-          await index.updateDocumentsByFunction({
+        await index
+          .updateDocumentsByFunction({
             context: { ctx: "Harry" },
             filter: "id = 4",
             function: "doc.comment = `Yer a wizard, ${context.ctx}!`",
-          });
-
-        await client.waitForTask(updateDocumentsByFunctionTaskUid);
+          })
+          .waitTask();
 
         const doc = await index.getDocument(4);
 

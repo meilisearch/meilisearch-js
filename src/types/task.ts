@@ -2,6 +2,10 @@ import type { Settings } from "./settings.js";
 import type { CursorResults } from "./shared.js";
 import type { MeiliSearchErrorResponse } from "./types.js";
 
+export type EnqueuedTaskPromise = Promise<EnqueuedTask> & {
+  waitTask: (waitOptions?: WaitOptions) => Promise<Task>;
+};
+
 export type TaskStatus =
   | "enqueued"
   | "processing"

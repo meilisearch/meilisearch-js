@@ -21,8 +21,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
-      await client.waitForTask(taskUid);
+      await client.index(index.uid).addDocuments(dataset).waitTask();
     });
 
     test(`${permission} key: Get default proximity precision`, async () => {
@@ -37,10 +36,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update proximity precision with 'byAttribute' value`, async () => {
       const client = await getClient(permission);
       const newProximityPrecision = "byAttribute";
-      const task = await client
+      await client
         .index(index.uid)
-        .updateProximityPrecision(newProximityPrecision);
-      await client.index(index.uid).waitForTask(task.taskUid);
+        .updateProximityPrecision(newProximityPrecision)
+        .waitTask();
 
       const response: string = await client
         .index(index.uid)
@@ -52,10 +51,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update proximity precision with 'byWord' value`, async () => {
       const client = await getClient(permission);
       const newProximityPrecision = "byWord";
-      const task = await client
+      await client
         .index(index.uid)
-        .updateProximityPrecision(newProximityPrecision);
-      await client.index(index.uid).waitForTask(task.taskUid);
+        .updateProximityPrecision(newProximityPrecision)
+        .waitTask();
 
       const response: string = await client
         .index(index.uid)
@@ -66,8 +65,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset proximity precision`, async () => {
       const client = await getClient(permission);
-      const task = await client.index(index.uid).resetProximityPrecision();
-      await client.index(index.uid).waitForTask(task.taskUid);
+      await client.index(index.uid).resetProximityPrecision().waitTask();
 
       const response: string = await client
         .index(index.uid)

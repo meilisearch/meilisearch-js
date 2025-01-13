@@ -68,6 +68,8 @@ export type LocalizedAttribute = {
   locales: string[];
 };
 
+export type FacetSearch = boolean;
+
 export type PrefixSearch = "indexingTime" | "disabled";
 
 /** `meilisearch_types::settings::Settings` */
@@ -90,6 +92,6 @@ export type Settings = {
   embedders?: Embedders;
   searchCutoffMs?: SearchCutoffMs;
   localizedAttributes?: LocalizedAttribute[];
-  facetSearch?: boolean;
+  facetSearch?: FacetSearch;
   prefixSearch?: PrefixSearch;
 };

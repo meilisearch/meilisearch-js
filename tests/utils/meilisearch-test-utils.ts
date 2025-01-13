@@ -80,12 +80,11 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
   const { results } = await client.getRawIndexes();
   const indexes = results.map((elem) => elem.uid);
 
-  const taskIds: number[] = [];
-  for (const indexUid of indexes) {
-    const { taskUid } = await client.index(indexUid).delete();
-    taskIds.push(taskUid);
-  }
-  await client.waitForTasks(taskIds, { timeOutMs: 60_000 });
+  await Promise.all(
+    indexes.map((indexUid) =>
+      client.index(indexUid).delete().waitTask({ timeOutMs: 60_000 }),
+    ),
+  );
 };
 
 function decode64(buff: string) {

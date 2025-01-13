@@ -127,16 +127,15 @@ describe.each([
     await client.createIndex(emptyIndex.uid);
 
     const newFilterableAttributes = ["genre", "title", "id", "author"];
-    const { taskUid: task1 } = await client.index(index.uid).updateSettings({
-      filterableAttributes: newFilterableAttributes,
-      sortableAttributes: ["id"],
-    });
-    await client.waitForTask(task1);
-
-    const { taskUid: task2 } = await client
+    await client
       .index(index.uid)
-      .addDocuments(dataset);
-    await client.waitForTask(task2);
+      .updateSettings({
+        filterableAttributes: newFilterableAttributes,
+        sortableAttributes: ["id"],
+      })
+      .waitTask();
+
+    await client.index(index.uid).addDocuments(dataset).waitTask();
   });
 
   test(`${permission} key: Multi index search no queries`, async () => {
@@ -238,17 +237,14 @@ describe.each([
     // Setup to have a new "movies" index
     await masterClient.createIndex("movies");
     const newFilterableAttributes = ["title", "id"];
-    const { taskUid: task1 } = await masterClient
+    await masterClient
       .index("movies")
       .updateSettings({
         filterableAttributes: newFilterableAttributes,
         sortableAttributes: ["id"],
-      });
-    await masterClient.waitForTask(task1);
-    const { taskUid: task2 } = await masterClient
-      .index("movies")
-      .addDocuments(movies);
-    await masterClient.waitForTask(task2);
+      })
+      .waitTask();
+    await masterClient.index("movies").addDocuments(movies).waitTask();
 
     // Make a multi search on both indexes with facetsByIndex
     const response = await client.multiSearch<
@@ -319,17 +315,14 @@ describe.each([
     // Setup to have a new "movies" index
     await masterClient.createIndex("movies");
     const newFilterableAttributes = ["title", "id"];
-    const { taskUid: task1 } = await masterClient
+    await masterClient
       .index("movies")
       .updateSettings({
         filterableAttributes: newFilterableAttributes,
         sortableAttributes: ["id"],
-      });
-    await masterClient.waitForTask(task1);
-    const { taskUid: task2 } = await masterClient
-      .index("movies")
-      .addDocuments(movies);
-    await masterClient.waitForTask(task2);
+      })
+      .waitTask();
+    await masterClient.index("movies").addDocuments(movies).waitTask();
 
     // Make a multi search on both indexes with mergeFacets
     const response = await client.multiSearch<
@@ -1189,12 +1182,12 @@ describe.each([
     const client = await getClient(permission);
     const masterClient = await getClient("Master");
 
-    const { taskUid } = await masterClient
+    await masterClient
       .index(index.uid)
       .updateLocalizedAttributes([
         { attributePatterns: ["title", "comment"], locales: ["fra", "eng"] },
-      ]);
-    await masterClient.waitForTask(taskUid);
+      ])
+      .waitTask();
 
     const searchResponse = await client.index(index.uid).search("french", {
       locales: ["fra", "eng"],
@@ -1217,8 +1210,7 @@ describe.each([
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient("Master");
-    const { taskUid } = await masterClient.index(index.uid).delete();
-    await masterClient.waitForTask(taskUid);
+    await masterClient.index(index.uid).delete().waitTask();
 
     await expect(
       client.index(index.uid).search("prince", {}),
@@ -1231,8 +1223,7 @@ describe.each([{ permission: "No" }])(
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.createIndex(index.uid);
-      await client.waitForTask(taskUid);
+      await client.createIndex(index.uid).waitTask();
     });
 
     test(`${permission} key: Try Basic search and be denied`, async () => {
@@ -1263,10 +1254,7 @@ describe.each([{ permission: "Master" }])(
       const client = await getClient("Master");
       await client.createIndex(index.uid);
 
-      const { taskUid: documentAdditionTask } = await client
-        .index(index.uid)
-        .addDocuments(datasetWithNests);
-      await client.waitForTask(documentAdditionTask);
+      await client.index(index.uid).addDocuments(datasetWithNests).waitTask();
     });
 
     test(`${permission} key: search on nested content with no parameters`, async () => {
@@ -1285,12 +1273,12 @@ describe.each([{ permission: "Master" }])(
 
     test(`${permission} key: search on nested content with searchable on specific nested field`, async () => {
       const client = await getClient(permission);
-      const { taskUid: settingsUpdateTask } = await client
+      await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ["title", "info.comment"],
-        });
-      await client.waitForTask(settingsUpdateTask);
+        })
+        .waitTask();
 
       const response = await client.index(index.uid).search("An awesome", {});
 
@@ -1306,13 +1294,13 @@ describe.each([{ permission: "Master" }])(
 
     test(`${permission} key: search on nested content with sort`, async () => {
       const client = await getClient(permission);
-      const { taskUid: settingsUpdateTask } = await client
+      await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ["title", "info.comment"],
           sortableAttributes: ["info.reviewNb"],
-        });
-      await client.waitForTask(settingsUpdateTask);
+        })
+        .waitTask();
 
       const response = await client.index(index.uid).search("", {
         sort: ["info.reviewNb:desc"],
@@ -1338,8 +1326,7 @@ describe.each([
   beforeAll(async () => {
     const client = await getClient("Master");
     await clearAllIndexes(config);
-    const { taskUid } = await client.createIndex(index.uid);
-    await client.waitForTask(taskUid);
+    await client.createIndex(index.uid).waitTask();
   });
 
   test(`${permission} key: search on index and abort`, async () => {

@@ -22,8 +22,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
-      await client.waitForTask(taskUid);
+      await client.index(index.uid).addDocuments(dataset).waitTask();
     });
 
     test(`${permission} key: Get default attributes for filtering`, async () => {
@@ -38,10 +37,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update attributes for filtering`, async () => {
       const client = await getClient(permission);
       const newFilterableAttributes = ["genre"];
-      const task = await client
+      await client
         .index(index.uid)
-        .updateFilterableAttributes(newFilterableAttributes);
-      await client.index(index.uid).waitForTask(task.taskUid);
+        .updateFilterableAttributes(newFilterableAttributes)
+        .waitTask();
 
       const response: string[] = await client
         .index(index.uid)
@@ -51,10 +50,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update attributes for filtering at null`, async () => {
       const client = await getClient(permission);
-      const task = await client
-        .index(index.uid)
-        .updateFilterableAttributes(null);
-      await client.index(index.uid).waitForTask(task.taskUid);
+      await client.index(index.uid).updateFilterableAttributes(null).waitTask();
 
       const response: string[] = await client
         .index(index.uid)
@@ -65,8 +61,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset attributes for filtering`, async () => {
       const client = await getClient(permission);
-      const task = await client.index(index.uid).resetFilterableAttributes();
-      await client.index(index.uid).waitForTask(task.taskUid);
+      await client.index(index.uid).resetFilterableAttributes().waitTask();
 
       const response: string[] = await client
         .index(index.uid)
@@ -82,8 +77,7 @@ describe.each([{ permission: "Search" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.createIndex(index.uid);
-      await client.waitForTask(taskUid);
+      await client.createIndex(index.uid).waitTask();
     });
 
     test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
@@ -114,8 +108,7 @@ describe.each([{ permission: "No" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.createIndex(index.uid);
-      await client.waitForTask(taskUid);
+      await client.createIndex(index.uid).waitTask();
     });
 
     test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
