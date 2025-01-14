@@ -1,9 +1,9 @@
 import type { NoNullField } from "./shared.js";
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/settings#proximity-precision} */
+/** {@link https://www.meilisearch.com/docs/reference/api/settings#proximity-precision} */
 export type ProximityPrecision = "byWord" | "byAttribute";
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/settings#typo-tolerance} */
+/** {@link https://www.meilisearch.com/docs/reference/api/settings#typo-tolerance} */
 export type TypoTolerance = {
   enabled?: boolean | null;
   minWordSizeForTypos?: {
@@ -16,13 +16,13 @@ export type TypoTolerance = {
 
 export type FacetOrder = "alpha" | "count";
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/settings#faceting} */
+/** {@link https://www.meilisearch.com/docs/reference/api/settings#faceting} */
 export type Faceting = {
   maxValuesPerFacet?: number | null;
   sortFacetValuesBy?: Record<string, FacetOrder> | null;
 };
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/settings#pagination} */
+/** {@link https://www.meilisearch.com/docs/reference/api/settings#pagination} */
 export type PaginationSettings = { maxTotalHits?: number | null };
 
 export type Distribution = {
@@ -30,7 +30,7 @@ export type Distribution = {
   sigma: number;
 };
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/settings#embedders-experimental} */
+/** {@link https://www.meilisearch.com/docs/reference/api/settings#embedders-experimental} */
 export type EmbeddingSettings = {
   source?: "openAi" | "huggingFace" | "ollama" | "userProvided" | "rest" | null;
   model?: string | null;
@@ -47,7 +47,7 @@ export type EmbeddingSettings = {
   distribution?: Distribution | null;
 };
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/settings#localized-attributes} */
+/** {@link https://www.meilisearch.com/docs/reference/api/settings#localized-attributes} */
 export type LocalizedAttribute = {
   attributePatterns: string[] | null;
   locales: string[] | null;

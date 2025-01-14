@@ -63,10 +63,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
 
       await expect(
-        client
-          .index(index.uid)
-          .addDocuments(dataset)
-          .waitTask({ timeout: 1 }),
+        client.index(index.uid).addDocuments(dataset).waitTask({ timeout: 1 }),
       ).rejects.toHaveProperty("name", "MeiliSearchTimeOutError");
     });
 

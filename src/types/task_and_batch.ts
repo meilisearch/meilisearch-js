@@ -90,7 +90,10 @@ export type TasksOrBatchesQuery = {
  *
  * @see `meilisearch::routes::tasks::TaskDeletionOrCancelationQuery` at {@link https://github.com/meilisearch/meilisearch}
  */
-export type DeleteOrCancelTasksQuery = Omit<TasksOrBatchesQuery, "limit" | "from">;
+export type DeleteOrCancelTasksQuery = Omit<
+  TasksOrBatchesQuery,
+  "limit" | "from"
+>;
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/tasks#summarized-task-object}
