@@ -187,7 +187,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .addDocuments([{ id: 1 }]);
 
       const tasks = await client.tasks.getTasks({
-        beforeEnqueuedAt: currentTime,
+        beforeEnqueuedAt: currentTime.toISOString(),
       });
       const tasksUids = tasks.results.map((t) => t.uid);
 
@@ -206,7 +206,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTime = new Date(currentTimeStamp);
 
       const tasks = await client.tasks.getTasks({
-        afterEnqueuedAt: currentTime,
+        afterEnqueuedAt: currentTime.toISOString(),
       });
       const tasksUids = tasks.results.map((t) => t.uid);
 
@@ -226,7 +226,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       await client.tasks.waitForTask(taskUid); // ensures the tasks has a `startedAt` value
 
       const tasks = await client.tasks.getTasks({
-        beforeStartedAt: currentTime,
+        beforeStartedAt: currentTime.toISOString(),
       });
       const tasksUids = tasks.results.map((t) => t.uid);
 
@@ -246,7 +246,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTime = new Date(currentTimeStamp);
 
       const tasks = await client.tasks.getTasks({
-        afterStartedAt: currentTime,
+        afterStartedAt: currentTime.toISOString(),
       });
       const tasksUids = tasks.results.map((t) => t.uid);
 
@@ -266,7 +266,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       await client.tasks.waitForTask(taskUid); // ensures the tasks has a `finishedAt` value
 
       const tasks = await client.tasks.getTasks({
-        beforeFinishedAt: currentTime,
+        beforeFinishedAt: currentTime.toISOString(),
       });
       const tasksUids = tasks.results.map((t) => t.uid);
 
@@ -286,7 +286,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTime = new Date(currentTimeStamp);
 
       const tasks = await client.tasks.getTasks({
-        afterFinishedAt: currentTime,
+        afterFinishedAt: currentTime.toISOString(),
       });
       const tasksUids = tasks.results.map((t) => t.uid);
 
@@ -327,10 +327,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       await client.tasks.waitForTask(taskB.taskUid);
 
       const tasks = await client.tasks.getTasks({
-        afterEnqueuedAt: currentTime,
+        afterEnqueuedAt: currentTime.toISOString(),
       });
       const reversedTasks = await client.tasks.getTasks({
-        afterEnqueuedAt: currentTime,
+        afterEnqueuedAt: currentTime.toISOString(),
         reverse: true,
       });
       expect(tasks.results.map((t) => t.uid)).toEqual([
@@ -405,10 +405,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
 
       await expect(
-        client.tasks.getTasks(
-          // @ts-expect-error testing wrong date format
-          { beforeEnqueuedAt: "wrong" },
-        ),
+        client.tasks.getTasks({ beforeEnqueuedAt: "wrong" }),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.INVALID_TASK_BEFORE_ENQUEUED_AT,
@@ -483,7 +480,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.cancelTasks({
-        beforeEnqueuedAt: currentTime,
+        beforeEnqueuedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 
@@ -498,7 +495,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.cancelTasks({
-        afterEnqueuedAt: currentTime,
+        afterEnqueuedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 
@@ -513,7 +510,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.cancelTasks({
-        beforeStartedAt: currentTime,
+        beforeStartedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 
@@ -528,7 +525,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.cancelTasks({
-        afterStartedAt: currentTime,
+        afterStartedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 
@@ -543,7 +540,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.cancelTasks({
-        beforeFinishedAt: currentTime,
+        beforeFinishedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 
@@ -558,7 +555,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.cancelTasks({
-        afterFinishedAt: currentTime,
+        afterFinishedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 
@@ -640,7 +637,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.deleteTasks({
-        beforeEnqueuedAt: currentTime,
+        beforeEnqueuedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 
@@ -655,7 +652,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.deleteTasks({
-        afterEnqueuedAt: currentTime,
+        afterEnqueuedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 
@@ -670,7 +667,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.deleteTasks({
-        beforeStartedAt: currentTime,
+        beforeStartedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 
@@ -685,7 +682,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.deleteTasks({
-        afterStartedAt: currentTime,
+        afterStartedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 
@@ -700,7 +697,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.deleteTasks({
-        beforeFinishedAt: currentTime,
+        beforeFinishedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 
@@ -715,7 +712,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
       const enqueuedTask = await client.tasks.deleteTasks({
-        afterFinishedAt: currentTime,
+        afterFinishedAt: currentTime.toISOString(),
       });
       const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
 

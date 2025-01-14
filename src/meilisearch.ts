@@ -20,7 +20,7 @@ import type {
   IndexesResults,
   KeysQuery,
   KeysResults,
-  SwapIndexesParams,
+  IndexSwap,
   MultiSearchParams,
   FederatedMultiSearchParams,
   MultiSearchResponseOrSearchResponse,
@@ -204,7 +204,7 @@ export class MeiliSearch {
    * @param params - List of indexes tuples to swap.
    * @returns Promise returning object of the enqueued task
    */
-  swapIndexes(params: SwapIndexesParams): EnqueuedTaskPromise {
+  swapIndexes(params: IndexSwap[]): EnqueuedTaskPromise {
     const url = "/swap-indexes";
     return this.#applyWaitTask(this.httpRequests.post(url, params));
   }

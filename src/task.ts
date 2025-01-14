@@ -1,21 +1,23 @@
 import { MeiliSearchTimeOutError } from "./errors/index.js";
 import type {
   WaitOptions,
-  TasksQuery,
+  TasksOrBatchesQuery,
   TasksResults,
   Task,
-  CancelTasksQuery,
-  DeleteTasksQuery,
+  DeleteOrCancelTasksQuery,
   EnqueuedTask,
   EnqueuedTaskPromise,
 } from "./types/index.js";
 import { type HttpRequests, toQueryParams } from "./http-requests.js";
 
 const DEFAULT_TIMEOUT = 5_000;
-const DEFAULT_BATCH_TIMEOUT = 30_000;
 const DEFAULT_INTERVAL = 50;
 
-// TODO: Is there a way to pass context to this for stack trace? Is it even worth it?
+/**
+ * @returns A function which defines an extra function property on a
+ *   {@link Promise}, which resolves to {@link EnqueuedTask}, which awaits it and
+ *   resolves to a {@link Task}.
+ */
 export function getWaitTaskApplier(
   taskClient: TaskClient,
 ): (enqueuedTaskPromise: Promise<EnqueuedTask>) => EnqueuedTaskPromise {
@@ -46,6 +48,11 @@ const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask) =>
     ? taskUidOrEnqueuedTask
     : taskUidOrEnqueuedTask.taskUid;
 
+/**
+ * Class for handling tasks.
+ *
+ * @see {@link https://www.meilisearch.com/docs/reference/api/tasks}
+ */
 export class TaskClient {
   readonly #httpRequest: HttpRequests;
 
@@ -53,12 +60,7 @@ export class TaskClient {
     this.#httpRequest = httpRequest;
   }
 
-  /**
-   * Get one task
-   *
-   * @param uid - Unique identifier of the task
-   * @returns
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-one-task} */
   async getTask(uid: number): Promise<Task> {
     const url = `tasks/${uid}`;
 
@@ -67,172 +69,123 @@ export class TaskClient {
     return task;
   }
 
-  /**
-   * Get tasks
-   *
-   * @param parameters - Parameters to browse the tasks
-   * @returns Promise containing all tasks
-   */
-  async getTasks(parameters?: TasksQuery): Promise<TasksResults> {
+  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-tasks} */
+  async getTasks(parameters?: TasksOrBatchesQuery): Promise<TasksResults> {
     const url = `tasks`;
 
     const tasks = await this.#httpRequest.get<TasksResults>(
       url,
-      toQueryParams<TasksQuery>(parameters ?? {}),
+      toQueryParams<TasksOrBatchesQuery>(parameters ?? {}),
     );
 
     return tasks;
   }
 
-  // TODO: Rename
-  #taskThingy(
-    taskUid: number,
-    cbs: {
-      successCb: (task: Task) => number | void;
-      failureCb: (reason: unknown) => void;
-    },
-    waitOptions: Required<WaitOptions>,
-  ) {
-    let isFetchingTask = false;
-
-    const interval = setInterval(() => {
-      if (isFetchingTask) {
-        return;
-      }
-
-      isFetchingTask = true;
-      this.getTask(taskUid)
-        .then((task) => {
-          if (task.status !== "enqueued" && task.status !== "processing") {
-            const newTaskUid = cbs.successCb(task);
-
-            if (newTaskUid === undefined) {
-              clearTimers();
-            } else {
-              taskUid = newTaskUid;
-            }
-          }
-        })
-        .catch((reason) => {
-          clearTimers();
-          cbs.failureCb(reason);
-        })
-        .finally(() => {
-          isFetchingTask = false;
-        });
-    }, waitOptions.intervalMs);
-
-    // TODO: This should only be for batches, otherwise should just set a timeout on HTTP request
-    const timeout = setTimeout(() => {
-      clearTimers();
-      cbs.failureCb(
-        new MeiliSearchTimeOutError(
-          `timeout of ${waitOptions.timeOutMs}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
-        ),
-      );
-      // TODO: abort req
-    }, waitOptions.timeOutMs);
-
-    function clearTimers() {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    }
-  }
-
-  /**
-   * Wait for a task to be processed.
-   *
-   * @param taskUidOrEnqueuedTask - Task identifier
-   * @param options - Additional configuration options
-   * @returns Promise returning a task after it has been processed
-   */
+  /** Wait for an enqueued task to be processed. */
   waitForTask(
     taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask,
     options?: WaitOptions,
   ): Promise<Task> {
     const taskUid = getTaskUid(taskUidOrEnqueuedTask);
+    const timeout = options?.timeout ?? DEFAULT_TIMEOUT;
+    const interval = options?.interval ?? DEFAULT_INTERVAL;
 
-    return new Promise<Task>((resolve, reject) =>
-      this.#taskThingy(
-        taskUid,
-        { successCb: resolve, failureCb: reject },
-        {
-          timeOutMs: options?.timeOutMs ?? DEFAULT_TIMEOUT,
-          intervalMs: options?.intervalMs ?? DEFAULT_INTERVAL,
-        },
-      ),
-    );
-  }
+    return new Promise<Task>((resolve, reject) => {
+      let isFetchingTask = false;
 
-  /**
-   * Waits for multiple tasks to be processed
-   *
-   * @param taskUids - Tasks identifier list
-   * @param options - Wait options
-   * @returns Promise returning a list of tasks after they have been processed
-   */
-  async waitForTasks(
-    taskUidsOrEnqueuedTasks: TaskUidOrEnqueuedTask[],
-    options?: WaitOptions,
-  ): Promise<Task[]> {
-    const tasks = new Array(taskUidsOrEnqueuedTasks.length);
-    let index = 0;
+      const int = setInterval(() => {
+        if (isFetchingTask) {
+          return;
+        }
 
-    return new Promise<Task[]>((resolve, reject) =>
-      this.#taskThingy(
-        getTaskUid(taskUidsOrEnqueuedTasks[index]),
-        {
-          successCb(task) {
-            tasks[index] = task;
-            index += 1;
-
-            if (index !== taskUidsOrEnqueuedTasks.length) {
-              return getTaskUid(taskUidsOrEnqueuedTasks[index]);
+        isFetchingTask = true;
+        this.getTask(taskUid)
+          .then((task) => {
+            if (task.status !== "enqueued" && task.status !== "processing") {
+              resolve(task);
             }
+          })
+          .catch((reason) => {
+            clearTimers();
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+            reject(reason);
+          })
+          .finally(() => {
+            isFetchingTask = false;
+          });
+      }, interval);
 
-            resolve(tasks);
-          },
-          failureCb: reject,
-        },
-        {
-          timeOutMs: options?.timeOutMs ?? DEFAULT_BATCH_TIMEOUT,
-          intervalMs: options?.intervalMs ?? DEFAULT_INTERVAL,
-        },
-      ),
-    );
+      const to =
+        timeout !== 0
+          ? setTimeout(() => {
+              clearTimers();
+              reject(
+                new MeiliSearchTimeOutError(
+                  `timeout of ${timeout}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
+                ),
+              );
+              // TODO: abort request
+              // should first wait on https://github.com/meilisearch/meilisearch-js/pull/1741
+            }, timeout)
+          : null;
+
+      function clearTimers() {
+        clearInterval(int);
+        if (to !== null) {
+          clearTimeout(to);
+        }
+      }
+    });
   }
 
-  /**
-   * Cancel a list of enqueued or processing tasks.
-   *
-   * @param parameters - Parameters to filter the tasks.
-   * @returns Promise containing an EnqueuedTask
-   */
-  async cancelTasks(parameters: CancelTasksQuery): Promise<EnqueuedTask> {
+  /** Lazily wait for multiple enqueued tasks to be processed. */
+  async *waitForTasksIter(
+    taskUidsOrEnqueuedTasks: Iterable<TaskUidOrEnqueuedTask>,
+    options?: WaitOptions,
+  ): AsyncGenerator<Task, void, undefined> {
+    for (const taskUidOrEnqueuedTask of taskUidsOrEnqueuedTasks) {
+      yield await this.waitForTask(taskUidOrEnqueuedTask, options);
+    }
+  }
+
+  /** Wait for multiple enqueued tasks to be processed. */
+  async waitForTasks(
+    ...params: Parameters<typeof this.waitForTasksIter>
+  ): Promise<Task[]> {
+    const tasks: Task[] = [];
+
+    for await (const task of this.waitForTasksIter(...params)) {
+      tasks.push(task);
+    }
+
+    return tasks;
+  }
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks} */
+  async cancelTasks(
+    parameters: DeleteOrCancelTasksQuery,
+  ): Promise<EnqueuedTask> {
     const url = `tasks/cancel`;
 
     const task = await this.#httpRequest.post(
       url,
       {},
-      toQueryParams<CancelTasksQuery>(parameters),
+      toQueryParams<DeleteOrCancelTasksQuery>(parameters),
     );
 
     return task;
   }
 
-  /**
-   * Delete a list tasks.
-   *
-   * @param parameters - Parameters to filter the tasks.
-   * @returns Promise containing an EnqueuedTask
-   */
-  async deleteTasks(parameters: DeleteTasksQuery): Promise<EnqueuedTask> {
+  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#delete-tasks} */
+  async deleteTasks(
+    parameters: DeleteOrCancelTasksQuery,
+  ): Promise<EnqueuedTask> {
     const url = `tasks`;
 
     const task = await this.#httpRequest.delete(
       url,
       {},
-      toQueryParams<DeleteTasksQuery>(parameters),
+      toQueryParams<DeleteOrCancelTasksQuery>(parameters),
     );
 
     return task;

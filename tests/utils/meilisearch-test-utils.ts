@@ -82,7 +82,7 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
 
   await Promise.all(
     indexes.map((indexUid) =>
-      client.index(indexUid).delete().waitTask({ timeOutMs: 60_000 }),
+      client.index(indexUid).delete().waitTask({ timeout: 60_000 }),
     ),
   );
 };

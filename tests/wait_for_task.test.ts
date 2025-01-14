@@ -39,8 +39,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .index(index.uid)
         .addDocuments(dataset)
         .waitTask({
-          timeOutMs: 6000,
-          intervalMs: 100,
+          timeout: 6000,
+          interval: 100,
         });
 
       assert.strictEqual(update.status, "succeeded");
@@ -52,8 +52,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .index(index.uid)
         .addDocuments(dataset)
         .waitTask({
-          timeOutMs: 6000,
-          intervalMs: 0,
+          timeout: 6000,
+          interval: 0,
         });
 
       assert.strictEqual(update.status, "succeeded");
@@ -66,7 +66,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         client
           .index(index.uid)
           .addDocuments(dataset)
-          .waitTask({ timeOutMs: 0 }),
+          .waitTask({ timeout: 1 }),
       ).rejects.toHaveProperty("name", "MeiliSearchTimeOutError");
     });
 
@@ -108,8 +108,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .addDocuments(dataset);
 
       const tasks = await client.tasks.waitForTasks([task1, task2], {
-        timeOutMs: 6000,
-        intervalMs: 100,
+        timeout: 6000,
+        interval: 100,
       });
       const [update1, update2] = tasks;
 
@@ -127,8 +127,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .addDocuments(dataset);
 
       const tasks = await client.tasks.waitForTasks([task1, task2], {
-        timeOutMs: 6000,
-        intervalMs: 0,
+        timeout: 6000,
+        interval: 0,
       });
       const [update1, update2] = tasks;
 
@@ -147,7 +147,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .addDocuments(dataset);
 
       await expect(
-        client.tasks.waitForTasks([task1, task2], { timeOutMs: 0 }),
+        client.tasks.waitForTasks([task1, task2], { timeout: 1 }),
       ).rejects.toHaveProperty("name", "MeiliSearchTimeOutError");
     });
   },

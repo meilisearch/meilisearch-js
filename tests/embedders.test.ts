@@ -149,7 +149,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       await client
         .index(index.uid)
         .updateEmbedders(newEmbedder)
-        .waitTask({ timeOutMs: 60_000 });
+        .waitTask({ timeout: 60_000 });
 
       const response = await client.index(index.uid).getEmbedders();
 

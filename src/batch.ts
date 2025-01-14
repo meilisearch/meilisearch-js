@@ -1,11 +1,15 @@
 import type {
   Batch,
-  BatchesQuery,
   BatchesResults,
-  BatchesResultsObject,
+  TasksOrBatchesQuery,
 } from "./types/index.js";
-import { HttpRequests, toQueryParams } from "./http-requests.js";
+import { type HttpRequests, toQueryParams } from "./http-requests.js";
 
+/**
+ * Class for handling batches.
+ *
+ * @see {@link https://www.meilisearch.com/docs/reference/api/batches}
+ */
 export class BatchClient {
   readonly #httpRequest: HttpRequests;
 
@@ -13,30 +17,20 @@ export class BatchClient {
     this.#httpRequest = httpRequests;
   }
 
-  /**
-   * Get one batch
-   *
-   * @param uid - Unique identifier of the batch
-   * @returns
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/batches#get-one-batch} */
   async getBatch(uid: number): Promise<Batch> {
     const url = `batches/${uid}`;
     const batch = await this.#httpRequest.get<Batch>(url);
     return batch;
   }
 
-  /**
-   * Get batches
-   *
-   * @param parameters - Parameters to browse the batches
-   * @returns Promise containing all batches
-   */
-  async getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults> {
+  /** {@link https://www.meilisearch.com/docs/reference/api/batches#get-batches} */
+  async getBatches(parameters?: TasksOrBatchesQuery): Promise<BatchesResults> {
     const url = `batches`;
 
-    const batches = await this.#httpRequest.get<Promise<BatchesResultsObject>>(
+    const batches = await this.#httpRequest.get<Promise<BatchesResults>>(
       url,
-      toQueryParams<BatchesQuery>(parameters),
+      toQueryParams<TasksOrBatchesQuery>(parameters ?? {}),
     );
 
     return batches;

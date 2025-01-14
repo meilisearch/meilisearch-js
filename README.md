@@ -543,7 +543,7 @@ client.index('myIndex').getTask(uid: number): Promise<Task>
 ##### Using the client
 
 ```ts
-client.tasks.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>
+client.tasks.waitForTask(uid: number, { timeout?: number, interval?: number }): Promise<Task>
 ```
 
 #### Wait for multiple tasks
@@ -551,7 +551,7 @@ client.tasks.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number 
 ##### Using the client
 
 ```ts
-client.tasks.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Task[]>
+client.tasks.waitForTasks(uids: number[], { timeout?: number, interval?: number }): Promise<Task[]>
 ```
 
 ### Batches <!-- omit in toc -->
