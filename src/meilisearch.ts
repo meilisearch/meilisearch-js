@@ -72,7 +72,7 @@ export class MeiliSearch {
   index<T extends Record<string, any> = Record<string, any>>(
     indexUid: string,
   ): Index<T> {
-    return new Index<T>(this.httpRequests, this.#applyWaitTask, indexUid);
+    return new Index<T>(this.config, indexUid);
   }
 
   /**
@@ -85,11 +85,7 @@ export class MeiliSearch {
   async getIndex<T extends Record<string, any> = Record<string, any>>(
     indexUid: string,
   ): Promise<Index<T>> {
-    return new Index<T>(
-      this.httpRequests,
-      this.#applyWaitTask,
-      indexUid,
-    ).fetchInfo();
+    return new Index<T>(this.config, indexUid).fetchInfo();
   }
 
   /**
@@ -100,11 +96,7 @@ export class MeiliSearch {
    * @returns Promise returning index information
    */
   async getRawIndex(indexUid: string): Promise<IndexObject> {
-    return new Index(
-      this.httpRequests,
-      this.#applyWaitTask,
-      indexUid,
-    ).getRawInfo();
+    return new Index(this.config, indexUid).getRawInfo();
   }
 
   /**
@@ -118,13 +110,7 @@ export class MeiliSearch {
   ): Promise<IndexesResults<Index[]>> {
     const rawIndexes = await this.getRawIndexes(parameters);
     const indexes: Index[] = rawIndexes.results.map(
-      (index) =>
-        new Index(
-          this.httpRequests,
-          this.#applyWaitTask,
-          index.uid,
-          index.primaryKey,
-        ),
+      (index) => new Index(this.config, index.uid, index.primaryKey),
     );
     return { ...rawIndexes, results: indexes };
   }
@@ -153,7 +139,7 @@ export class MeiliSearch {
    * @returns Promise returning Index instance
    */
   createIndex(uid: string, options?: IndexOptions): EnqueuedTaskPromise {
-    return Index.create(uid, options, this.config, this.#applyWaitTask);
+    return Index.create(uid, options, this.config);
   }
 
   /**
@@ -164,9 +150,7 @@ export class MeiliSearch {
    * @returns Promise returning Index instance after updating
    */
   updateIndex(uid: string, options?: IndexOptions): EnqueuedTaskPromise {
-    return new Index(this.httpRequests, this.#applyWaitTask, uid).update(
-      options,
-    );
+    return new Index(this.config, uid).update(options);
   }
 
   /**
@@ -176,7 +160,7 @@ export class MeiliSearch {
    * @returns Promise which resolves when index is deleted successfully
    */
   deleteIndex(uid: string): EnqueuedTaskPromise {
-    return new Index(this.httpRequests, this.#applyWaitTask, uid).delete();
+    return new Index(this.config, uid).delete();
   }
 
   /**

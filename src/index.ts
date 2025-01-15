@@ -14,11 +14,3 @@ const defaultExport = MeiliSearch;
 
 export { MeiliSearch, MeiliSearch as Meilisearch };
 export default defaultExport;
-
-// TODO: Write this in PR
-// - some classes didnt even cover all of the possible properties
-// - we were just creating another object from 80-100% of an existing object
-// - why turn them to object dates, when 99% of the users don't ever need those dates
-// - what if user wants to turn those dates into a different kind of date object from a different library (lux, temporal)
-
-// - also create a new issue regarding testing and auto generating code samples
