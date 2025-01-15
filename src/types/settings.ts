@@ -56,6 +56,7 @@ export type LocalizedAttribute = {
 /** {@link https://www.meilisearch.com/docs/reference/api/settings#prefix-search} */
 export type PrefixSearch = "indexingTime" | "disabled";
 
+/** A version of {@link Settings} that can be used to update the settings. */
 export type UpdateableSettings = {
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#displayed-attributes} */
   displayedAttributes?: string[] | null;
@@ -99,12 +100,15 @@ export type UpdateableSettings = {
   prefixSearch?: PrefixSearch | null;
 };
 
-export type RenameMeSettings = Required<UpdateableSettings>;
+/**
+ * A version of {@link UpdateableSettings}, the first layer of properties of
+ * which is used to update individual settings.
+ */
+export type IndividualUpdateableSettings = Required<UpdateableSettings>;
 
 /**
- * TODO
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#settings}
  *
- * @see {@link https://www.meilisearch.com/docs/reference/api/settings#settings}
  * @see `meilisearch_types::settings::Settings` at {@link https://github.com/meilisearch/meilisearch}
  */
 export type Settings = NoNullField<UpdateableSettings>;

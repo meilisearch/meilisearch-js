@@ -27,15 +27,6 @@ exports[`Test on faceting > Admin key: Update faceting at null 1`] = `
 }
 `;
 
-exports[`Test on faceting > Admin key: Update faceting at undefined 1`] = `
-{
-  "maxValuesPerFacet": 100,
-  "sortFacetValuesBy": {
-    "*": "alpha",
-  },
-}
-`;
-
 exports[`Test on faceting > Admin key: Update faceting settings 1`] = `
 {
   "maxValuesPerFacet": 12,
@@ -65,15 +56,6 @@ exports[`Test on faceting > Master key: Reset faceting 1`] = `
 `;
 
 exports[`Test on faceting > Master key: Update faceting at null 1`] = `
-{
-  "maxValuesPerFacet": 100,
-  "sortFacetValuesBy": {
-    "*": "alpha",
-  },
-}
-`;
-
-exports[`Test on faceting > Master key: Update faceting at undefined 1`] = `
 {
   "maxValuesPerFacet": 100,
   "sortFacetValuesBy": {
