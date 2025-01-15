@@ -56,11 +56,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(response).toMatchSnapshot();
     });
 
-    test(`${permission} key: Update faceting at undefined`, async () => {
+    test(`${permission} key: Update faceting at null`, async () => {
       const client = await getClient(permission);
       await client
         .index(index.uid)
-        .updateFaceting({ maxValuesPerFacet: undefined })
+        .updateFaceting({ maxValuesPerFacet: null })
         .waitTask();
 
       const response = await client.index(index.uid).getFaceting();
