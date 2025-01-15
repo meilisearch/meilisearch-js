@@ -7,6 +7,7 @@ import type {
   DeleteOrCancelTasksQuery,
   EnqueuedTask,
   EnqueuedTaskPromise,
+  TaskUidOrEnqueuedTask,
 } from "./types/index.js";
 import { type HttpRequests, toQueryParams } from "./http-requests.js";
 
@@ -39,11 +40,7 @@ export function getWaitTaskApplier(
   };
 }
 
-type TaskUidOrEnqueuedTask =
-  | number
-  | (Record<string, unknown> & Pick<EnqueuedTask, "taskUid">);
-
-const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask) =>
+const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask): number =>
   typeof taskUidOrEnqueuedTask === "number"
     ? taskUidOrEnqueuedTask
     : taskUidOrEnqueuedTask.taskUid;
@@ -81,7 +78,13 @@ export class TaskClient {
     return tasks;
   }
 
-  /** Wait for an enqueued task to be processed. */
+  /**
+   * Wait for an enqueued task to be processed.
+   *
+   * @remarks
+   * It is recommended to instead use {@link EnqueuedTaskPromise.waitTask}, which
+   * is available on any method that resolves to an {@link EnqueuedTask}.
+   */
   waitForTask(
     taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask,
     options?: WaitOptions,

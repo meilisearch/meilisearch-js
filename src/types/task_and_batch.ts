@@ -20,18 +20,6 @@ export type WaitOptions = {
 };
 
 /**
- * A {@link Promise} resolving to an {@link EnqueuedTask} with an extra function
- * that returns a Promise that resolves to a {@link Task}.
- */
-export type EnqueuedTaskPromise = Promise<EnqueuedTask> & {
-  /**
-   * Function that, through polling, awaits the {@link EnqueuedTask} resolved by
-   * {@link EnqueuedTaskPromise}.
-   */
-  waitTask: (waitOptions?: WaitOptions) => Promise<Task>;
-};
-
-/**
  * {@link https://www.meilisearch.com/docs/reference/api/tasks#status}
  *
  * @see `meilisearch_types::tasks::Status` at {@link https://github.com/meilisearch/meilisearch}
@@ -108,6 +96,8 @@ export type EnqueuedTask = {
   enqueuedAt: string;
 };
 
+export type TaskUidOrEnqueuedTask = number | EnqueuedTask;
+
 /** @see `meilisearch_types::tasks::IndexSwap` at {@link https://github.com/meilisearch/meilisearch} */
 export type IndexSwap = { indexes: [string, string] };
 
@@ -147,6 +137,18 @@ export type Task = Omit<EnqueuedTask, "taskUid"> & {
   duration: string | null;
   startedAt: string | null;
   finishedAt: string | null;
+};
+
+/**
+ * A {@link Promise} resolving to an {@link EnqueuedTask} with an extra function
+ * that returns a Promise that resolves to a {@link Task}.
+ */
+export type EnqueuedTaskPromise = Promise<EnqueuedTask> & {
+  /**
+   * Function that, through polling, awaits the {@link EnqueuedTask} resolved by
+   * {@link EnqueuedTaskPromise}.
+   */
+  waitTask: (waitOptions?: WaitOptions) => Promise<Task>;
 };
 
 /**

@@ -536,19 +536,13 @@ client.index('myIndex').getTasks(parameters: TasksQuery): Promise<TasksResults>
 client.index('myIndex').getTask(uid: number): Promise<Task>
 ```
 
-<!-- TODO: document .waitTask() here as well -->
 #### Wait for one task
-
-
-##### Using the client
 
 ```ts
 client.tasks.waitForTask(uid: number, { timeout?: number, interval?: number }): Promise<Task>
 ```
 
 #### Wait for multiple tasks
-
-##### Using the client
 
 ```ts
 client.tasks.waitForTasks(uids: number[], { timeout?: number, interval?: number }): Promise<Task[]>
