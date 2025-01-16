@@ -6,10 +6,10 @@ export type CursorResults<T> = {
   total: number;
 };
 
-export type NoNullField<T> = {
+export type NonNullableDeepRecordValues<T> = {
   [P in keyof T]: T[P] extends any[]
-    ? Array<NoNullField<T[P][number]>>
+    ? Array<NonNullableDeepRecordValues<T[P][number]>>
     : T[P] extends Record<string, any>
-      ? NoNullField<T[P]>
+      ? NonNullableDeepRecordValues<T[P]>
       : NonNullable<T[P]>;
 };

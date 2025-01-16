@@ -19,11 +19,7 @@ export type WaitOptions = {
   interval?: number;
 };
 
-/**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#status}
- *
- * @see `meilisearch_types::tasks::Status` at {@link https://github.com/meilisearch/meilisearch}
- */
+/** {@link https://www.meilisearch.com/docs/reference/api/tasks#status} */
 export type TaskStatus =
   | "enqueued"
   | "processing"
@@ -31,11 +27,7 @@ export type TaskStatus =
   | "failed"
   | "canceled";
 
-/**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#type}
- *
- * @see `meilisearch_types::tasks::Kind` at {@link https://github.com/meilisearch/meilisearch}
- */
+/** {@link https://www.meilisearch.com/docs/reference/api/tasks#type} */
 export type TaskType =
   | "documentAdditionOrUpdate"
   | "documentEdition"
@@ -96,16 +88,13 @@ export type EnqueuedTask = {
   enqueuedAt: string;
 };
 
+/** Either a number or an {@link EnqueuedTask}. */
 export type TaskUidOrEnqueuedTask = number | EnqueuedTask;
 
-/** @see `meilisearch_types::tasks::IndexSwap` at {@link https://github.com/meilisearch/meilisearch} */
+/** {@link https://www.meilisearch.com/docs/reference/api/tasks#indexswap} */
 export type IndexSwap = { indexes: [string, string] };
 
-/**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#details}
- *
- * @see `meilisearch_types::task_view::DetailsView` at {@link https://github.com/meilisearch/meilisearch}
- */
+/** {@link https://www.meilisearch.com/docs/reference/api/tasks#details} */
 export type TaskDetails = Settings & {
   receivedDocuments?: number;
   indexedDocuments?: number;
@@ -158,20 +147,20 @@ export type EnqueuedTaskPromise = Promise<EnqueuedTask> & {
  */
 export type TasksResults = CursorResults<Task>;
 
-/** @see `milli::progress::ProgressStepView` */
+/** {@link https://www.meilisearch.com/docs/reference/api/batches#steps} */
 type BatchProgressStep = {
   currentStep: string;
   finished: number;
   total: number;
 };
 
-/** @see `milli::progress::ProgressView` */
+/** {@link https://www.meilisearch.com/docs/reference/api/batches#progress} */
 type BatchProgress = {
   steps: BatchProgressStep[];
   percentage: number;
 };
 
-/** @see `meilisearch_types::batches::BatchStats` */
+/** {@link https://www.meilisearch.com/docs/reference/api/batches#stats} */
 type BatchStats = {
   totalNbTasks: number;
   status: Record<TaskStatus, number>;

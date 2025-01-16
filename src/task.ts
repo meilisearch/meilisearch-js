@@ -11,9 +11,6 @@ import type {
 } from "./types/index.js";
 import { type HttpRequests, toQueryParams } from "./http-requests.js";
 
-const DEFAULT_TIMEOUT = 5_000;
-const DEFAULT_INTERVAL = 50;
-
 /**
  * @returns A function which defines an extra function property on a
  *   {@link Promise}, which resolves to {@link EnqueuedTask}, which awaits it and
@@ -52,9 +49,13 @@ const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask): number =>
  */
 export class TaskClient {
   readonly #httpRequest: HttpRequests;
+  readonly #defaultTimeout: number;
+  readonly #defaultInterval: number;
 
-  constructor(httpRequest: HttpRequests) {
+  constructor(httpRequest: HttpRequests, defaultWaitOptions?: WaitOptions) {
     this.#httpRequest = httpRequest;
+    this.#defaultTimeout = defaultWaitOptions?.timeout ?? 5_000;
+    this.#defaultInterval = defaultWaitOptions?.interval ?? 200;
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-one-task} */
@@ -82,16 +83,17 @@ export class TaskClient {
    * Wait for an enqueued task to be processed.
    *
    * @remarks
-   * It is recommended to instead use {@link EnqueuedTaskPromise.waitTask}, which
-   * is available on any method that resolves to an {@link EnqueuedTask}.
+   * If an {@link EnqueuedTask} needs to be awaited instantly, it is recommended
+   * to instead use {@link EnqueuedTaskPromise.waitTask}, which is available on
+   * any method that resolves to an {@link EnqueuedTask}.
    */
   waitForTask(
     taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask,
     options?: WaitOptions,
   ): Promise<Task> {
     const taskUid = getTaskUid(taskUidOrEnqueuedTask);
-    const timeout = options?.timeout ?? DEFAULT_TIMEOUT;
-    const interval = options?.interval ?? DEFAULT_INTERVAL;
+    const timeout = options?.timeout ?? this.#defaultTimeout;
+    const interval = options?.interval ?? this.#defaultInterval;
 
     return new Promise<Task>((resolve, reject) => {
       let isFetchingTask = false;
@@ -127,7 +129,7 @@ export class TaskClient {
                   `timeout of ${timeout}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
                 ),
               );
-              // TODO: abort request
+              // TODO: abort request, `getTask` should reject instead with the abort error
               // should first wait on https://github.com/meilisearch/meilisearch-js/pull/1741
             }, timeout)
           : null;

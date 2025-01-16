@@ -1,19 +1,23 @@
-import type { NoNullField } from "./shared.js";
+import type { NonNullableDeepRecordValues } from "./shared.js";
 
 /** {@link https://www.meilisearch.com/docs/reference/api/settings#proximity-precision} */
 export type ProximityPrecision = "byWord" | "byAttribute";
 
+/** @see `minWordSizeForTypos` at {@link https://www.meilisearch.com/docs/reference/api/settings#typo-tolerance} */
+export type MinWordSizeForTypos = {
+  oneTypo?: number | null;
+  twoTypos?: number | null;
+};
+
 /** {@link https://www.meilisearch.com/docs/reference/api/settings#typo-tolerance} */
 export type TypoTolerance = {
   enabled?: boolean | null;
-  minWordSizeForTypos?: {
-    oneTypo?: number | null;
-    twoTypos?: number | null;
-  } | null;
+  minWordSizeForTypos?: MinWordSizeForTypos | null;
   disableOnWords?: string[] | null;
   disableOnAttributes?: string[] | null;
 };
 
+/** @see `sortFacetValuesBy` at {@link https://www.meilisearch.com/docs/reference/api/settings#faceting} */
 export type FacetOrder = "alpha" | "count";
 
 /** {@link https://www.meilisearch.com/docs/reference/api/settings#faceting} */
@@ -25,14 +29,23 @@ export type Faceting = {
 /** {@link https://www.meilisearch.com/docs/reference/api/settings#pagination} */
 export type PaginationSettings = { maxTotalHits?: number | null };
 
+/** @see `distribution` at {@link https://www.meilisearch.com/docs/reference/api/settings#embedders-experimental} */
 export type Distribution = {
   mean: number;
   sigma: number;
 };
 
+/** @see `source` at {@link https://www.meilisearch.com/docs/reference/api/settings#embedders-experimental} */
+export type EmbedderSource =
+  | "openAi"
+  | "huggingFace"
+  | "ollama"
+  | "userProvided"
+  | "rest";
+
 /** {@link https://www.meilisearch.com/docs/reference/api/settings#embedders-experimental} */
 export type EmbeddingSettings = {
-  source?: "openAi" | "huggingFace" | "ollama" | "userProvided" | "rest" | null;
+  source?: EmbedderSource | null;
   model?: string | null;
   revision?: string | null;
   apiKey?: string | null;
@@ -107,8 +120,8 @@ export type UpdateableSettings = {
 export type IndividualUpdateableSettings = Required<UpdateableSettings>;
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/settings#settings}
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#body}
  *
  * @see `meilisearch_types::settings::Settings` at {@link https://github.com/meilisearch/meilisearch}
  */
-export type Settings = NoNullField<UpdateableSettings>;
+export type Settings = NonNullableDeepRecordValues<UpdateableSettings>;
