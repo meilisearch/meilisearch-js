@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.48.0",
+  "version": "0.48.1",
   "description": "The Meilisearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -17,6 +17,7 @@
   ],
   "license": "MIT",
   "type": "module",
+  "types": "./dist/types/index.d.ts",
   "main": "./dist/umd/index.min.js",
   "exports": {
     ".": {
