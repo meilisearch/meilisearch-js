@@ -143,7 +143,13 @@ export class TaskClient {
     });
   }
 
-  /** Lazily wait for multiple enqueued tasks to be processed. */
+  /**
+   * Lazily wait for multiple enqueued tasks to be processed.
+   *
+   * @remarks
+   * In this case {@link WaitOptions.timeout} is the maximum time to wait for any
+   * one task, not for all of the tasks to complete.
+   */
   async *waitForTasksIter(
     taskUidsOrEnqueuedTasks: Iterable<TaskUidOrEnqueuedTask>,
     options?: WaitOptions,
