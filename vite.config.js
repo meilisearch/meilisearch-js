@@ -44,7 +44,13 @@ export default defineConfig(({ mode }) => {
           // TODO: Remove this in the future ( https://github.com/meilisearch/meilisearch-js/issues/1806 )
           {
             output: {
-              footer: `(function(d,_){(d=typeof globalThis!="undefined"?globalThis:d||self,_(d))})(this,function(d){for(var k of Object.keys(d.${globalVarName})){d[k]=d.${globalVarName}[k]}})`,
+              footer: `(function () {
+                           if (typeof self !== "undefined") {
+                             var clonedGlobal = Object.assign({}, self.${globalVarName});
+                             delete clonedGlobal.default;
+                             Object.assign(self, clonedGlobal);
+                           }
+                       })();`,
             },
           },
     },
