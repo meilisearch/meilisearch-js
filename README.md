@@ -25,17 +25,31 @@
 
 <p align="center">⚡ The Meilisearch API client written for JavaScript</p>
 
-**Meilisearch JavaScript** is the Meilisearch API client for JavaScript developers.
+**Meilisearch JavaScript** is the Meilisearch API client for JavaScript
+developers.
 
-**Meilisearch** is an open-source search engine. [Learn more about Meilisearch.](https://github.com/meilisearch/meilisearch)
+**Meilisearch** is an open-source search engine.
+[Learn more about Meilisearch.](https://github.com/meilisearch/meilisearch)
 
 ## 📖 Documentation
 
-Refer to the [client library documentation](https://meilisearch.github.io/meilisearch-js/modules.html) for information on each exported item of this pacakge.
+Refer to the
+[client library documentation](https://meilisearch.github.io/meilisearch-js/modules.html)
+for information on each exported item of this pacakge.
 
-For general information on how to use Meilisearch—such as our API reference, tutorials, guides, and in-depth articles—refer to our [main documentation website](https://www.meilisearch.com/docs/).
+For general information on how to use Meilisearch—such as our API reference,
+tutorials, guides, and in-depth articles—refer to our
+[main documentation website](https://www.meilisearch.com/docs/).
 
 ## 🔧 Installation
+
+> [!WARNING]
+>
+> - [default export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#using_the_default_export)
+>   is deprecated and will be removed in a future version
+>   https://github.com/meilisearch/meilisearch-js/issues/1789
+> - exports will stop being directly available on the global object (usually
+>   `window`) https://github.com/meilisearch/meilisearch-js/issues/1806
 
 ```sh
 npm i meilisearch
@@ -46,28 +60,45 @@ pnpm add meilisearch
 ```
 
 <!-- TODO: Make sure these are the tested versions -->
-Node.js [LTS and Maintenance versions](https://github.com/nodejs/Release?tab=readme-ov-file#release-schedule) should be tested and supported.
 
-Other runtimes, like Deno and Bun aren't tested, but if they do not work with this package, pelase open an issue.
+Node.js
+[LTS and Maintenance versions](https://github.com/nodejs/Release?tab=readme-ov-file#release-schedule)
+is supported and tested.
+
+Other runtimes, like Deno and Bun aren't tested, but if they do not work with
+this package, pelase open an issue.
 
 ### Run Meilisearch
 
-⚡️ **Launch, scale, and streamline in minutes with Meilisearch Cloud**—no maintenance, no commitment, cancel anytime. [Try it free now](https://cloud.meilisearch.com/login?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
+⚡️ **Launch, scale, and streamline in minutes with Meilisearch Cloud**—no
+maintenance, no commitment, cancel anytime.
+[Try it free now](https://cloud.meilisearch.com/login?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
 
-🪨  Prefer to self-host? [Download and deploy](https://www.meilisearch.com/docs/learn/self_hosted/getting_started_with_self_hosted_meilisearch?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) our fast, open-source search engine on your own infrastructure.
+🪨 Prefer to self-host?
+[Download and deploy](https://www.meilisearch.com/docs/learn/self_hosted/getting_started_with_self_hosted_meilisearch?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js)
+our fast, open-source search engine on your own infrastructure.
 
 ## 🚀 Example code
 
-Take a look at the [playground](./playgrounds/javascript/src/meilisearch.ts) to see example code.
+Take a look at the [playground](./playgrounds/javascript/src/meilisearch.ts) to
+see an example.
 
 ## 🤖 Compatibility with Meilisearch
 
-This package guarantees compatibility with the [latest version of Meilisearch](https://github.com/meilisearch/meilisearch/releases/latest).
+This package guarantees compatibility with the
+[latest version of Meilisearch](https://github.com/meilisearch/meilisearch/releases/latest).
 
 ## ⚙️ Contributing
 
-We welcome all contributions, big and small! If you want to know more about this SDK's development workflow or want to contribute to the repo, please visit our [contributing guidelines](/CONTRIBUTING.md) for detailed instructions.
+We welcome all contributions, big and small! If you want to know more about this
+SDK's development workflow or want to contribute to the repo, please visit our
+[contributing guidelines](/CONTRIBUTING.md) for detailed instructions.
 
 ---
 
-Meilisearch provides and maintains many SDKs and integration tools like this one. We want to provide everyone with an **amazing search experience for any kind of project**. For a full overview of everything we create and maintain, take a look at the [integration-guides](https://github.com/meilisearch/integration-guides) repository.
+Meilisearch provides and maintains many SDKs and integration tools like this
+one. We want to provide everyone with an **amazing search experience for any
+kind of project**. For a full overview of everything we create and maintain,
+take a look at the
+[integration-guides](https://github.com/meilisearch/integration-guides)
+repository.
