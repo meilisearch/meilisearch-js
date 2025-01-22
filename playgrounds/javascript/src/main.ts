@@ -11,10 +11,24 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
     <h2>Search response:</h2>
     <div id="response" style="white-space: break-spaces"> - </div>
 
-    <h2 class="errors_title">Errors:</h2>
-    <div id="errors" style="white-space: break-spaces">None</div>
+    <h2>Errors:</h2>
+    <div id="errors">None</div>
   </div>
 `;
+
+function getErrorMessage(error: unknown): string {
+  if (!(error instanceof Error)) {
+    return JSON.stringify(error);
+  }
+
+  const message = String(error);
+
+  if (error.cause === undefined) {
+    return message;
+  }
+
+  return `${message}\nCaused by ${getErrorMessage(error.cause)}`;
+}
 
 try {
   await addDocuments();
@@ -22,9 +36,6 @@ try {
   await getSearchResponse(document.querySelector<HTMLDivElement>("#response")!);
 } catch (error) {
   console.error(error);
-  document.querySelector<HTMLDivElement>("#errors")!.innerText = JSON.stringify(
-    error,
-    null,
-    4,
-  );
+  document.querySelector<HTMLDivElement>("#errors")!.innerText =
+    getErrorMessage(error);
 }
