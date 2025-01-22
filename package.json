@@ -39,12 +39,12 @@
     "url": "https://github.com/meilisearch/meilisearch-js"
   },
   "scripts": {
-    "playground:javascript": "yarn --cwd ./playgrounds/javascript && yarn --cwd ./playgrounds/javascript dev",
+    "playground:javascript": "vite serve playgrounds/javascript --open",
     "build:docs": "typedoc",
     "build": "vite build && tsc -p tsconfig.build.json && vite --mode production-umd build",
     "postbuild": "node scripts/build.js",
     "test": "vitest run --coverage",
-    "types": "tsc -p tsconfig.json --noEmit",
+    "types": "tsc --noEmit",
     "types:watch": "yarn types --watch",
     "test:env:browser": "yarn build && node scripts/copy-umd-file.js --to ./tests/env/express/public && yarn --cwd tests/env/express && yarn --cwd tests/env/express test",
     "test:watch": "vitest watch",
@@ -55,6 +55,7 @@
     "test:env:nodejs": "yarn build && node tests/env/node/index.cjs && node tests/env/node/getting_started.cjs",
     "test:env:esm": "yarn --cwd tests/env/esm && yarn --cwd tests/env/esm start",
     "test:env:nitro-app": "yarn build && yarn --cwd tests/env/nitro-app test",
+    "todo": "open issue about formatting everything that can be formatted with prettier",
     "fmt": "prettier -c ./**/*.{js,ts}",
     "fmt:fix": "prettier -w ./**/*.{js,ts}",
     "lint": "eslint",

@@ -50,7 +50,7 @@ Node.js [LTS and Maintenance versions](https://github.com/nodejs/Release?tab=rea
 
 Other runtimes, like Deno and Bun aren't tested, but if they do not work with this package, pelase open an issue.
 
-### Run Meilisearch <!-- omit in toc -->
+### Run Meilisearch
 
 ⚡️ **Launch, scale, and streamline in minutes with Meilisearch Cloud**—no maintenance, no commitment, cancel anytime. [Try it free now](https://cloud.meilisearch.com/login?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
 
@@ -58,7 +58,7 @@ Other runtimes, like Deno and Bun aren't tested, but if they do not work with th
 
 ## 🚀 Example code
 
-<!-- TODO: It might look nice to have an example code here, but it's a pain to keep it up to date, so maybe just link to playground -->
+Take a look at the [playground](./playgrounds/javascript/src/meilisearch.ts) to see example code.
 
 ## 🤖 Compatibility with Meilisearch
 
