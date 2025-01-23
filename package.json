@@ -55,7 +55,6 @@
     "test:env:nodejs": "yarn build && node tests/env/node/index.cjs && node tests/env/node/getting_started.cjs",
     "test:env:esm": "yarn --cwd tests/env/esm && yarn --cwd tests/env/esm start",
     "test:env:nitro-app": "yarn build && yarn --cwd tests/env/nitro-app test",
-    "todo": "open issue about formatting everything that can be formatted with prettier",
     "fmt": "prettier -c ./**/*.{js,ts}",
     "fmt:fix": "prettier -w ./**/*.{js,ts}",
     "lint": "eslint",
