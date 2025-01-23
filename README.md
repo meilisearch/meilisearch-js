@@ -51,19 +51,15 @@ tutorials, guides, and in-depth articles—refer to our
 > - exports will stop being directly available on the global object (usually
 >   `window`) https://github.com/meilisearch/meilisearch-js/issues/1806
 
-```sh
-npm i meilisearch
-# or
-yarn add meilisearch
-# or
-pnpm add meilisearch
-```
-
 <!-- TODO: Make sure these are the tested versions -->
 
 Node.js
 [LTS and Maintenance versions](https://github.com/nodejs/Release?tab=readme-ov-file#release-schedule)
 is supported and tested.
+
+```sh
+npm i meilisearch
+```
 
 Other runtimes, like Deno and Bun aren't tested, but if they do not work with
 this package, pelase open an issue.
