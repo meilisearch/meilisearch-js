@@ -66,7 +66,7 @@ this package, please open an issue.
 > - [default export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#using_the_default_export)
 >   is deprecated and will be removed in a future version |
 >   [Issue](https://github.com/meilisearch/meilisearch-js/issues/1789)
-> - regarding usage of packages through
+> - regarding usage of package through
 >   [`script src`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#src),
 >   exports will stop being directly available on the
 >   [global object](https://developer.mozilla.org/en-US/docs/Glossary/Global_object)
