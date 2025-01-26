@@ -58,7 +58,7 @@ npm i meilisearch
 > are supported and tested. Other versions may or may not work.
 > [TypeScript has to be set up so that it supports `package.json` `"exports"` field](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-exports).
 
-Other runtimes, like Deno and Bun aren't tested, but if they do not work with
+Other runtimes, like Deno and Bun, aren't tested, but if they do not work with
 this package, please open an issue.
 
 > [!WARNING]
