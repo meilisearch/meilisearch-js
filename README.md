@@ -31,40 +31,7 @@ developers.
 **Meilisearch** is an open-source search engine.
 [Learn more about Meilisearch.](https://github.com/meilisearch/meilisearch)
 
-## 📖 Documentation
-
-Refer to the
-[client library documentation](https://meilisearch.github.io/meilisearch-js/modules.html)
-for information on each exported item of this pacakge.
-
-For general information on how to use Meilisearch—such as our API reference,
-tutorials, guides, and in-depth articles—refer to our
-[main documentation website](https://www.meilisearch.com/docs/).
-
-## 🔧 Installation
-
-> [!WARNING]
->
-> - [default export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#using_the_default_export)
->   is deprecated and will be removed in a future version
->   https://github.com/meilisearch/meilisearch-js/issues/1789
-> - exports will stop being directly available on the global object (usually
->   `window`) https://github.com/meilisearch/meilisearch-js/issues/1806
-
-<!-- TODO: Make sure these are the tested versions -->
-
-Node.js
-[LTS and Maintenance versions](https://github.com/nodejs/Release?tab=readme-ov-file#release-schedule)
-is supported and tested.
-
-```sh
-npm i meilisearch
-```
-
-Other runtimes, like Deno and Bun aren't tested, but if they do not work with
-this package, pelase open an issue.
-
-### Run Meilisearch
+## Run Meilisearch
 
 ⚡️ **Launch, scale, and streamline in minutes with Meilisearch Cloud**—no
 maintenance, no commitment, cancel anytime.
@@ -73,6 +40,47 @@ maintenance, no commitment, cancel anytime.
 🪨 Prefer to self-host?
 [Download and deploy](https://www.meilisearch.com/docs/learn/self_hosted/getting_started_with_self_hosted_meilisearch?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js)
 our fast, open-source search engine on your own infrastructure.
+
+## 🔧 Installation
+
+Package is published to [npm](https://www.npmjs.com/package/meilisearch).
+
+Installing with `npm`:
+
+```sh
+npm i meilisearch
+```
+
+> [!NOTE]
+>
+> Node.js
+> [LTS and Maintenance versions](https://github.com/nodejs/Release?tab=readme-ov-file#release-schedule)
+> are supported and tested. Other versions may or may not work.
+> [TypeScript has to be set up so that it supports `package.json` `"exports"` field](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-exports).
+
+Other runtimes, like Deno and Bun aren't tested, but if they do not work with
+this package, please open an issue.
+
+> [!WARNING]
+>
+> - [default export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#using_the_default_export)
+>   is deprecated and will be removed in a future version |
+>   [Issue](https://github.com/meilisearch/meilisearch-js/issues/1789)
+> - regarding usage of packages through
+>   [`script src`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#src),
+>   exports will stop being directly available on the
+>   [global object](https://developer.mozilla.org/en-US/docs/Glossary/Global_object)
+>   | [Issue](https://github.com/meilisearch/meilisearch-js/issues/1806)
+
+## 📖 Documentation
+
+Refer to the
+[client library documentation](https://meilisearch.github.io/meilisearch-js/modules.html)
+for information on each exported item of this package.
+
+For general information on how to use Meilisearch—such as our API reference,
+tutorials, guides, and in-depth articles—refer to our
+[main documentation website](https://www.meilisearch.com/docs/).
 
 ## 🚀 Example code
 
