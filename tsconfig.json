@@ -2,9 +2,6 @@
   "compilerOptions": {
     // We don't want to check node_modules
     "skipLibCheck": true,
-    "declaration": true,
-    "declarationMap": true,
-    "declarationDir": "./dist/types",
     "module": "node16",
     // Node.js 18 supports up to ES2022 according to https://www.npmjs.com/package/@tsconfig/node18
     "target": "es2022",
