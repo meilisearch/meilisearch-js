@@ -61,14 +61,26 @@ npm i meilisearch
 Other runtimes, like Deno and Bun, aren't tested, but if they do not work with
 this package, please open an issue.
 
+This package also contains a [UMD](https://stackoverflow.com/a/77284527) bundled
+version, which is meant to be used in a
+[`script src`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#src)
+tag:
+
+```html
+<script src="https://www.unpkg.com/meilisearch/dist/umd/index.min.js"></script>
+<script>
+  const client = new meilisearch.MeiliSearch(/* ... */);
+  // ...
+</script>
+```
+
 > [!WARNING]
 >
 > - [default export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#using_the_default_export)
 >   is deprecated and will be removed in a future version |
 >   [Issue](https://github.com/meilisearch/meilisearch-js/issues/1789)
-> - regarding usage of package through
->   [`script src`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#src),
->   exports will stop being directly available on the
+> - regarding usage of package's UMD version via `script src`, exports will stop
+>   being directly available on the
 >   [global object](https://developer.mozilla.org/en-US/docs/Glossary/Global_object)
 >   | [Issue](https://github.com/meilisearch/meilisearch-js/issues/1806)
 
