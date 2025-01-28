@@ -1,4 +1,4 @@
-name: publish to npm
+name: publish to npm and jsr
 on:
   release:
     types: [published]
