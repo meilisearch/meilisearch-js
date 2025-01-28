@@ -7,7 +7,7 @@ writeFileSync(
   new URL("../jsr.json", import.meta.url),
   JSON.stringify(
     {
-      name,
+      name: `@meilisearch/${name}`,
       version,
       exports: Object.fromEntries(
         Object.entries(exports).map(([key, val]) => [
