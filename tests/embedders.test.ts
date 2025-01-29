@@ -67,7 +67,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
-      expect(response).toEqual(null);
+      expect(response).toEqual({});
     });
 
     test(`${permission} key: Update embedders with 'userProvided' source`, async () => {
@@ -263,7 +263,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
-      expect(response).toEqual(null);
+      expect(response).toEqual({});
     });
 
     test(`${permission} key: search (POST) with vectors`, async () => {
