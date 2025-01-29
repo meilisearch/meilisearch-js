@@ -132,6 +132,8 @@ const client = new MeiliSearch({
 
 ## 🚀 Getting started
 
+Take a look at the [playground](./playgrounds/javascript/src/meilisearch.ts) for a concrete example.
+
 ### Add documents <!-- omit in toc -->
 
 ```js
