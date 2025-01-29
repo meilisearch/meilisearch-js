@@ -3,6 +3,7 @@ status = [
   'types-check',
   'integration-tests (Node.js 18)',
   'integration-tests (Node.js 20)',
+  'integration-tests (Node.js 22)',
 ]
 # 1 hour timeout
 timeout-sec = 3600
