@@ -45,5 +45,7 @@ export async function getSearchResponse(element: HTMLDivElement) {
 
   const response = await client.index(indexUid).search(...params);
 
-  element.innerText = `PARAMETERS: ${JSON.stringify(params, null, 4)}\nRESPONSE: ${JSON.stringify(response, null, 4)}`;
+  element.innerText =
+    `PARAMETERS: ${JSON.stringify(params, null, 4)}` +
+    `\nRESPONSE: ${JSON.stringify(response, null, 4)}`;
 }
