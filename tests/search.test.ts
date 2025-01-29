@@ -19,7 +19,6 @@ import {
   MeiliSearch,
   getClient,
   datasetWithNests,
-  HOST,
   getKey,
 } from "./utils/meilisearch-test-utils.js";
 

@@ -7,8 +7,6 @@ import {
   MeiliSearch,
   getClient,
   dataset,
-  getKey,
-  HOST,
 } from "./utils/meilisearch-test-utils.js";
 
 const index = {

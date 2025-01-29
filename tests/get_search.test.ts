@@ -7,8 +7,6 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
-  HOST,
-  getKey,
 } from "./utils/meilisearch-test-utils.js";
 
 const index = {
