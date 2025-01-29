@@ -1,6 +1,7 @@
 # Meilisearch JavaScript playground
 
-This is an example vanilla JavaScript project using [Vite](https://vite.dev) and the [Yarn](https://classic.yarnpkg.com/en/docs/install) package manager.
+This is an example vanilla JavaScript project using [Vite](https://vite.dev) and
+the [Yarn](https://classic.yarnpkg.com/en/docs/install) package manager.
 
 ## Development
 

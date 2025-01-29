@@ -39,7 +39,7 @@
     "url": "https://github.com/meilisearch/meilisearch-js"
   },
   "scripts": {
-    "playground:javascript": "yarn --cwd ./playgrounds/javascript && yarn --cwd ./playgrounds/javascript dev",
+    "playground:javascript": "vite serve playgrounds/javascript --open",
     "build:docs": "typedoc",
     "build": "vite build && tsc -p tsconfig.build.json && vite --mode production-umd build",
     "postbuild": "node scripts/build.js",
