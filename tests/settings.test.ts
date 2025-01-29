@@ -211,7 +211,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
 
       const newSettings: Settings = {
-        embedders: null,
+        embedders: {},
       };
       const task = await client.index(index.uid).updateSettings(newSettings);
       await client.index(index.uid).waitForTask(task.taskUid);
