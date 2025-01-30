@@ -51,11 +51,13 @@ export class TaskClient {
   readonly #httpRequest: HttpRequests;
   readonly #defaultTimeout: number;
   readonly #defaultInterval: number;
+  readonly #applyWaitTask: ReturnType<typeof getWaitTaskApplier>;
 
   constructor(httpRequest: HttpRequests, defaultWaitOptions?: WaitOptions) {
     this.#httpRequest = httpRequest;
     this.#defaultTimeout = defaultWaitOptions?.timeout ?? 5_000;
     this.#defaultInterval = defaultWaitOptions?.interval ?? 200;
+    this.#applyWaitTask = getWaitTaskApplier(this);
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-one-task} */
@@ -173,32 +175,28 @@ export class TaskClient {
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks} */
-  async cancelTasks(
-    parameters: DeleteOrCancelTasksQuery,
-  ): Promise<EnqueuedTask> {
+  cancelTasks(parameters: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
     const url = `tasks/cancel`;
 
-    const task = await this.#httpRequest.post(
-      url,
-      {},
-      toQueryParams<DeleteOrCancelTasksQuery>(parameters),
+    return this.#applyWaitTask(
+      this.#httpRequest.post(
+        url,
+        {},
+        toQueryParams<DeleteOrCancelTasksQuery>(parameters),
+      ),
     );
-
-    return task;
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#delete-tasks} */
-  async deleteTasks(
-    parameters: DeleteOrCancelTasksQuery,
-  ): Promise<EnqueuedTask> {
+  deleteTasks(parameters: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
     const url = `tasks`;
 
-    const task = await this.#httpRequest.delete(
-      url,
-      {},
-      toQueryParams<DeleteOrCancelTasksQuery>(parameters),
+    return this.#applyWaitTask(
+      this.#httpRequest.delete(
+        url,
+        {},
+        toQueryParams<DeleteOrCancelTasksQuery>(parameters),
+      ),
     );
-
-    return task;
   }
 }

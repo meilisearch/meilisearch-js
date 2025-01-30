@@ -1,13 +1,21 @@
-import { afterAll, beforeEach, describe, expect, test, assert } from "vitest";
+import {
+  afterAll,
+  assert,
+  beforeEach,
+  describe,
+  expect,
+  test,
+  vi,
+} from "vitest";
 import { ErrorStatusCode } from "../src/types/index.js";
 import { sleep } from "../src/utils.js";
 import {
+  BAD_HOST,
   clearAllIndexes,
   config,
-  BAD_HOST,
-  MeiliSearch,
-  getClient,
   dataset,
+  getClient,
+  MeiliSearch,
 } from "./utils/meilisearch-test-utils.js";
 
 const index = {
@@ -301,13 +309,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .addDocuments([{ id: 1 }]);
 
       // Cancel the task
-      const enqueuedCancelationTask = await client.tasks.cancelTasks({
-        uids: [addDocumentsTask.taskUid],
-      });
-      // wait for the task to be fully canceled
-      const cancelationTask = await client.tasks.waitForTask(
-        enqueuedCancelationTask.taskUid,
-      );
+      const cancelationTask = await client.tasks
+        .cancelTasks({ uids: [addDocumentsTask.taskUid] })
+        .waitTask();
 
       assert.strictEqual(cancelationTask.type, "taskCancelation");
       expect(cancelationTask.details?.originalFilter).toEqual(
@@ -419,10 +423,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .index(index.uid)
         .addDocuments([{ id: 1 }]);
 
-      const enqueuedTask = await client.tasks.cancelTasks({
-        uids: [addDocuments.taskUid],
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .cancelTasks({ uids: [addDocuments.taskUid] })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskCancelation");
       expect(task.details?.originalFilter).toContain("uids=");
@@ -434,10 +437,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Cancel a task using the indexUid filter`, async () => {
       const client = await getClient(permission);
 
-      const enqueuedTask = await client.tasks.cancelTasks({
-        indexUids: [index.uid],
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .cancelTasks({ indexUids: [index.uid] })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskCancelation");
       expect(task.details?.originalFilter).toEqual("?indexUids=movies_test");
@@ -447,10 +449,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Cancel a task using the type filter`, async () => {
       const client = await getClient(permission);
 
-      const enqueuedTask = await client.tasks.cancelTasks({
-        types: ["documentAdditionOrUpdate", "documentDeletion"],
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .cancelTasks({
+          types: ["documentAdditionOrUpdate", "documentDeletion"],
+        })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskCancelation");
       expect(task.details?.originalFilter).toEqual(
@@ -462,10 +465,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Cancel a task using the status filter`, async () => {
       const client = await getClient(permission);
 
-      const enqueuedTask = await client.tasks.cancelTasks({
-        statuses: ["enqueued", "processing"],
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .cancelTasks({ statuses: ["enqueued", "processing"] })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskCancelation");
       expect(task.details?.originalFilter).toEqual(
@@ -479,10 +481,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.cancelTasks({
-        beforeEnqueuedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .cancelTasks({ beforeEnqueuedAt: currentTime.toISOString() })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskCancelation");
       expect(task.details?.originalFilter).toContain("beforeEnqueuedAt");
@@ -494,10 +495,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.cancelTasks({
-        afterEnqueuedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .cancelTasks({ afterEnqueuedAt: currentTime.toISOString() })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskCancelation");
       expect(task.details?.originalFilter).toContain("afterEnqueuedAt");
@@ -509,10 +509,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.cancelTasks({
-        beforeStartedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .cancelTasks({ beforeStartedAt: currentTime.toISOString() })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskCancelation");
       expect(task.details?.originalFilter).toContain("beforeStartedAt");
@@ -524,10 +523,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.cancelTasks({
-        afterStartedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .cancelTasks({ afterStartedAt: currentTime.toISOString() })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskCancelation");
       expect(task.details?.originalFilter).toContain("afterStartedAt");
@@ -539,26 +537,26 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.cancelTasks({
-        beforeFinishedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .cancelTasks({ beforeFinishedAt: currentTime.toISOString() })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskCancelation");
       expect(task.details?.originalFilter).toContain("beforeFinishedAt");
     });
 
     // cancel: afterFinishedAt
-    test(`${permission} key: Cancel a task using afterFinishedAt filter`, async () => {
+    test(`${permission} key: Cancel a task using afterFinishedAt filter with no timeout`, async () => {
+      const spy = vi.spyOn(globalThis, "setTimeout");
       const client = await getClient(permission);
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.cancelTasks({
-        afterFinishedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .cancelTasks({ afterFinishedAt: currentTime.toISOString() })
+        .waitTask({ timeout: 0 });
 
+      assert.isEmpty(spy.mock.calls);
       assert.strictEqual(task.type, "taskCancelation");
       expect(task.details?.originalFilter).toContain("afterFinishedAt");
     });
@@ -570,10 +568,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .index(index.uid)
         .addDocuments([{ id: 1 }]);
 
-      const deleteTask = await client.tasks.deleteTasks({
-        uids: [addDocuments.taskUid],
-      });
-      const task = await client.tasks.waitForTask(deleteTask.taskUid);
+      const task = await client.tasks
+        .deleteTasks({ uids: [addDocuments.taskUid] })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskDeletion");
       expect(task.details?.deletedTasks).toBeDefined();
@@ -589,10 +586,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .index(index.uid)
         .addDocuments([{ id: 1 }]);
 
-      const enqueuedTask = await client.tasks.deleteTasks({
-        indexUids: [index.uid],
-      });
-      const deleteTask = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const deleteTask = await client.tasks
+        .deleteTasks({ indexUids: [index.uid] })
+        .waitTask();
 
       assert.strictEqual(deleteTask.type, "taskDeletion");
       await expect(
@@ -604,10 +600,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Delete a task using the type filter`, async () => {
       const client = await getClient(permission);
 
-      const enqueuedTask = await client.tasks.deleteTasks({
-        types: ["documentAdditionOrUpdate", "documentDeletion"],
-      });
-      const deleteTask = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const deleteTask = await client.tasks
+        .deleteTasks({
+          types: ["documentAdditionOrUpdate", "documentDeletion"],
+        })
+        .waitTask();
 
       assert.strictEqual(deleteTask.type, "taskDeletion");
       expect(deleteTask.details?.originalFilter).toEqual(
@@ -619,10 +616,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Delete a task using the status filter`, async () => {
       const client = await getClient(permission);
 
-      const enqueuedTask = await client.tasks.deleteTasks({
-        statuses: ["enqueued", "processing"],
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .deleteTasks({ statuses: ["enqueued", "processing"] })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskDeletion");
       expect(task.details?.originalFilter).toEqual(
@@ -636,10 +632,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.deleteTasks({
-        beforeEnqueuedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .deleteTasks({ beforeEnqueuedAt: currentTime.toISOString() })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskDeletion");
       expect(task.details?.originalFilter).toContain("beforeEnqueuedAt");
@@ -651,10 +646,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.deleteTasks({
-        afterEnqueuedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .deleteTasks({ afterEnqueuedAt: currentTime.toISOString() })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskDeletion");
       expect(task.details?.originalFilter).toContain("afterEnqueuedAt");
@@ -666,10 +660,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.deleteTasks({
-        beforeStartedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .deleteTasks({ beforeStartedAt: currentTime.toISOString() })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskDeletion");
       expect(task.details?.originalFilter).toContain("beforeStartedAt");
@@ -681,10 +674,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.deleteTasks({
-        afterStartedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .deleteTasks({ afterStartedAt: currentTime.toISOString() })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskDeletion");
       expect(task.details?.originalFilter).toContain("afterStartedAt");
@@ -696,10 +688,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.deleteTasks({
-        beforeFinishedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .deleteTasks({ beforeFinishedAt: currentTime.toISOString() })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskDeletion");
       expect(task.details?.originalFilter).toContain("beforeFinishedAt");
@@ -711,10 +702,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const currentTimeStamp = Date.now();
       const currentTime = new Date(currentTimeStamp);
-      const enqueuedTask = await client.tasks.deleteTasks({
-        afterFinishedAt: currentTime.toISOString(),
-      });
-      const task = await client.tasks.waitForTask(enqueuedTask.taskUid);
+      const task = await client.tasks
+        .deleteTasks({ afterFinishedAt: currentTime.toISOString() })
+        .waitTask();
 
       assert.strictEqual(task.type, "taskDeletion");
       expect(task.details?.originalFilter).toContain("afterFinishedAt");
