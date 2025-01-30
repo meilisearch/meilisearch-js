@@ -42,18 +42,6 @@ const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask): number =>
     ? taskUidOrEnqueuedTask
     : taskUidOrEnqueuedTask.taskUid;
 
-function getPromiseWithResolvers<T>() {
-  let resolve: (value: T | PromiseLike<T>) => void,
-    reject: (reason?: any) => void;
-  const promise = new Promise<T>((res, rej) => {
-    resolve = res;
-    reject = rej;
-  });
-
-  // @ts-expect-error https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers#description
-  return { promise, resolve, reject };
-}
-
 /**
  * Class for handling tasks.
  *
@@ -68,7 +56,7 @@ export class TaskClient {
   constructor(httpRequest: HttpRequests, defaultWaitOptions?: WaitOptions) {
     this.#httpRequest = httpRequest;
     this.#defaultTimeout = defaultWaitOptions?.timeout ?? 5_000;
-    this.#defaultInterval = defaultWaitOptions?.interval ?? 200;
+    this.#defaultInterval = defaultWaitOptions?.interval ?? 50; // 200
     this.#applyWaitTask = getWaitTaskApplier(this);
   }
 
@@ -101,7 +89,7 @@ export class TaskClient {
    * to instead use {@link EnqueuedTaskPromise.waitTask}, which is available on
    * any method that resolves to an {@link EnqueuedTask}.
    */
-  async waitForTask(
+  waitForTask(
     taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask,
     options?: WaitOptions,
   ): Promise<Task> {
@@ -109,43 +97,43 @@ export class TaskClient {
     const timeout = options?.timeout ?? this.#defaultTimeout;
     const interval = options?.interval ?? this.#defaultInterval;
 
-    const { promise, resolve, reject } = getPromiseWithResolvers<Task>();
+    return new Promise((resolve, reject) => {
+      (async () => {
+        const to =
+          timeout !== 0
+            ? setTimeout(() => {
+                reject(
+                  new MeiliSearchTimeOutError(
+                    `timeout of ${timeout}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
+                  ),
+                );
+                // TODO: abort request, `getTask` should reject instead with the abort error
+                // should first wait on https://github.com/meilisearch/meilisearch-js/pull/1741
+              }, timeout)
+            : undefined;
 
-    const to =
-      timeout !== 0
-        ? setTimeout(() => {
-            clearTimeout(sleepTO);
-            reject(
-              new MeiliSearchTimeOutError(
-                `timeout of ${timeout}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
-              ),
-            );
-            // TODO: abort request, `getTask` should reject instead with the abort error
-            // should first wait on https://github.com/meilisearch/meilisearch-js/pull/1741
-          }, timeout)
-        : undefined;
+        try {
+          for (;;) {
+            const task = await this.getTask(taskUid);
 
-    let sleepTO: ReturnType<typeof setTimeout> | undefined;
-    try {
-      for (;;) {
-        const task = await this.getTask(taskUid);
+            if (task.status !== "enqueued" && task.status !== "processing") {
+              clearTimeout(to);
+              resolve(task);
+              return;
+            }
 
-        if (task.status !== "enqueued" && task.status !== "processing") {
+            if (interval !== 0) {
+              // TODO: clearTimeout + AbortSignal solution: https://mattrossman.com/2024/04/10/cancelling-the-javascript-sleep-function
+              await new Promise((resolve) => setTimeout(resolve, interval));
+            }
+          }
+        } catch (error) {
           clearTimeout(to);
-          resolve(task);
-          break;
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+          reject(error);
         }
-
-        await new Promise(
-          (resolve) => void (sleepTO = setTimeout(resolve, interval)),
-        );
-      }
-    } catch (error) {
-      clearTimeout(to);
-      reject(error);
-    }
-
-    return await promise;
+      })().catch(reject);
+    });
   }
 
   /**
@@ -156,10 +144,12 @@ export class TaskClient {
    * one task, not for all of the tasks to complete.
    */
   async *waitForTasksIter(
-    taskUidsOrEnqueuedTasks: Iterable<TaskUidOrEnqueuedTask>,
+    taskUidsOrEnqueuedTasks:
+      | Iterable<TaskUidOrEnqueuedTask>
+      | AsyncIterable<TaskUidOrEnqueuedTask>,
     options?: WaitOptions,
   ): AsyncGenerator<Task, void, undefined> {
-    for (const taskUidOrEnqueuedTask of taskUidsOrEnqueuedTasks) {
+    for await (const taskUidOrEnqueuedTask of taskUidsOrEnqueuedTasks) {
       yield await this.waitForTask(taskUidOrEnqueuedTask, options);
     }
   }

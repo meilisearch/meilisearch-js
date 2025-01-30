@@ -81,12 +81,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     // Client Wait for tasks
     test(`${permission} key: Tests wait for tasks in client until done and resolved`, async () => {
       const client = await getClient(permission);
-      const { taskUid: task1 } = await client
-        .index(index.uid)
-        .addDocuments(dataset);
-      const { taskUid: task2 } = await client
-        .index(index.uid)
-        .addDocuments(dataset);
+      const task1 = await client.index(index.uid).addDocuments(dataset);
+      const task2 = await client.index(index.uid).addDocuments(dataset);
 
       const tasks = await client.tasks.waitForTasks([task1, task2]);
       const [update1, update2] = tasks;
@@ -97,12 +93,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Tests wait for tasks in client with custom interval and timeout until done and resolved`, async () => {
       const client = await getClient(permission);
-      const { taskUid: task1 } = await client
-        .index(index.uid)
-        .addDocuments(dataset);
-      const { taskUid: task2 } = await client
-        .index(index.uid)
-        .addDocuments(dataset);
+      const task1 = await client.index(index.uid).addDocuments(dataset);
+      const task2 = await client.index(index.uid).addDocuments(dataset);
 
       const tasks = await client.tasks.waitForTasks([task1, task2], {
         timeout: 6000,
@@ -116,12 +108,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Tests wait for tasks in client with custom timeout and interval at 0 done and resolved`, async () => {
       const client = await getClient(permission);
-      const { taskUid: task1 } = await client
-        .index(index.uid)
-        .addDocuments(dataset);
-      const { taskUid: task2 } = await client
-        .index(index.uid)
-        .addDocuments(dataset);
+      const task1 = await client.index(index.uid).addDocuments(dataset);
+      const task2 = await client.index(index.uid).addDocuments(dataset);
 
       const tasks = await client.tasks.waitForTasks([task1, task2], {
         timeout: 6000,
@@ -136,12 +124,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Tests to wait for tasks in client with small timeout and raise an error`, async () => {
       const client = await getClient(permission);
 
-      const { taskUid: task1 } = await client
-        .index(index.uid)
-        .addDocuments(dataset);
-      const { taskUid: task2 } = await client
-        .index(index.uid)
-        .addDocuments(dataset);
+      const task1 = await client.index(index.uid).addDocuments(dataset);
+      const task2 = await client.index(index.uid).addDocuments(dataset);
 
       await expect(
         client.tasks.waitForTasks([task1, task2], { timeout: 1 }),
