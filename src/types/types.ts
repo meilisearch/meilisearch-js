@@ -100,6 +100,9 @@ export type HybridSearch = {
   semanticRatio?: number;
 };
 
+// https://www.meilisearch.com/docs/reference/api/settings#localized-attributes
+export type Locale = string;
+
 export type SearchParams = Query &
   Pagination &
   Highlight &
@@ -122,7 +125,7 @@ export type SearchParams = Query &
     hybrid?: HybridSearch;
     distinct?: string;
     retrieveVectors?: boolean;
-    locales?: string[];
+    locales?: Locale[];
   };
 
 // Search parameters for searches made with the GET method
@@ -145,7 +148,7 @@ export type SearchRequestGET = Pagination &
     rankingScoreThreshold?: number;
     distinct?: string;
     retrieveVectors?: boolean;
-    locales?: string[];
+    locales?: Locale[];
   };
 
 export type MergeFacets = {
@@ -369,6 +372,158 @@ export type UpdateDocumentsByFunctionOptions = {
 };
 
 /*
+ ** Settings
+ */
+
+export type FilterableAttributes = string[] | null;
+export type DistinctAttribute = string | null;
+export type SearchableAttributes = string[] | null;
+export type SortableAttributes = string[] | null;
+export type DisplayedAttributes = string[] | null;
+export type RankingRules = string[] | null;
+export type StopWords = string[] | null;
+export type Synonyms = {
+  [field: string]: string[];
+} | null;
+export type TypoTolerance = {
+  enabled?: boolean | null;
+  disableOnAttributes?: string[] | null;
+  disableOnWords?: string[] | null;
+  minWordSizeForTypos?: {
+    oneTypo?: number | null;
+    twoTypos?: number | null;
+  };
+} | null;
+export type SeparatorTokens = string[] | null;
+export type NonSeparatorTokens = string[] | null;
+export type Dictionary = string[] | null;
+export type ProximityPrecision = "byWord" | "byAttribute";
+
+export type Distribution = {
+  mean: number;
+  sigma: number;
+};
+
+export type OpenAiEmbedder = {
+  source: "openAi";
+  model?: string;
+  apiKey?: string;
+  documentTemplate?: string;
+  dimensions?: number;
+  distribution?: Distribution;
+  url?: string;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
+};
+
+export type HuggingFaceEmbedder = {
+  source: "huggingFace";
+  model?: string;
+  revision?: string;
+  documentTemplate?: string;
+  distribution?: Distribution;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
+};
+
+export type UserProvidedEmbedder = {
+  source: "userProvided";
+  dimensions: number;
+  distribution?: Distribution;
+  binaryQuantized?: boolean;
+};
+
+export type RestEmbedder = {
+  source: "rest";
+  url: string;
+  apiKey?: string;
+  dimensions?: number;
+  documentTemplate?: string;
+  distribution?: Distribution;
+  request: Record<string, any>;
+  response: Record<string, any>;
+  headers?: Record<string, string>;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
+};
+
+export type OllamaEmbedder = {
+  source: "ollama";
+  url?: string;
+  apiKey?: string;
+  model?: string;
+  documentTemplate?: string;
+  distribution?: Distribution;
+  dimensions?: number;
+  documentTemplateMaxBytes?: number;
+  binaryQuantized?: boolean;
+};
+
+export type Embedder =
+  | OpenAiEmbedder
+  | HuggingFaceEmbedder
+  | UserProvidedEmbedder
+  | RestEmbedder
+  | OllamaEmbedder
+  | null;
+
+export type Embedders = Record<string, Embedder> | null;
+
+export type FacetOrder = "alpha" | "count";
+
+export type Faceting = {
+  maxValuesPerFacet?: number | null;
+  sortFacetValuesBy?: Record<string, FacetOrder> | null;
+};
+
+export type PaginationSettings = {
+  maxTotalHits?: number | null;
+};
+
+export type SearchCutoffMs = number | null;
+
+export type LocalizedAttribute = {
+  attributePatterns: string[];
+  locales: Locale[];
+};
+
+export type LocalizedAttributes = LocalizedAttribute[] | null;
+
+export type PrefixSearch = "indexingTime" | "disabled";
+
+export type Settings = {
+  filterableAttributes?: FilterableAttributes;
+  distinctAttribute?: DistinctAttribute;
+  sortableAttributes?: SortableAttributes;
+  searchableAttributes?: SearchableAttributes;
+  displayedAttributes?: DisplayedAttributes;
+  rankingRules?: RankingRules;
+  stopWords?: StopWords;
+  synonyms?: Synonyms;
+  typoTolerance?: TypoTolerance;
+  faceting?: Faceting;
+  pagination?: PaginationSettings;
+  separatorTokens?: SeparatorTokens;
+  nonSeparatorTokens?: NonSeparatorTokens;
+  dictionary?: Dictionary;
+  proximityPrecision?: ProximityPrecision;
+  embedders?: Embedders;
+  searchCutoffMs?: SearchCutoffMs;
+  localizedAttributes?: LocalizedAttributes;
+
+  /**
+   * Enable facet searching on all the filters of an index (requires
+   * Meilisearch 1.12.0 or later)
+   */
+  facetSearch?: boolean;
+  /**
+   * Enable the ability to search a word by prefix on an index (requires
+   * Meilisearch 1.12.0 or later)
+   */
+  prefixSearch?: "indexingTime" | "disabled";
+};
+
+/*
  *** HEALTH
  */
 
@@ -456,7 +611,7 @@ export type MeiliSearchErrorResponse = {
   link: string;
 };
 
-// @TODO: This doesn't seem to be up to date, and its usefullness comes into question.
+// @TODO: This doesn't seem to be up to date, and its usefulness comes into question.
 export const ErrorStatusCode = {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#index_creation_failed */
   INDEX_CREATION_FAILED: "index_creation_failed",

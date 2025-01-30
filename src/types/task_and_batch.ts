@@ -1,4 +1,4 @@
-import type { Settings } from "./settings.js";
+import type { Settings } from "./types.js";
 import type { CursorResults } from "./shared.js";
 import type { MeiliSearchErrorResponse } from "./types.js";
 

@@ -1,8 +1,5 @@
 import { afterAll, beforeEach, describe, expect, test } from "vitest";
-import {
-  ErrorStatusCode,
-  type UpdateableSettings,
-} from "../src/types/index.js";
+import { ErrorStatusCode, type Settings } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -60,7 +57,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update settings`, async () => {
       const client = await getClient(permission);
-      const newSettings: UpdateableSettings = {
+      const newSettings: Settings = {
         filterableAttributes: ["title"],
         sortableAttributes: ["title"],
         distinctAttribute: "title",
@@ -107,7 +104,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update settings with all null values`, async () => {
       const client = await getClient(permission);
-      const newSettings: UpdateableSettings = {
+      const newSettings: Settings = {
         filterableAttributes: null,
         sortableAttributes: null,
         distinctAttribute: null,
@@ -160,7 +157,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         method: "PATCH",
       });
 
-      const newSettings: UpdateableSettings = {
+      const newSettings: Settings = {
         embedders: {
           default: {
             source: "huggingFace",
@@ -223,7 +220,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         method: "PATCH",
       });
 
-      const newSettings: UpdateableSettings = {
+      const newSettings: Settings = {
         embedders: null,
       };
       await client.index(index.uid).updateSettings(newSettings).waitTask();
