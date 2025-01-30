@@ -56,7 +56,7 @@ export class TaskClient {
   constructor(httpRequest: HttpRequests, defaultWaitOptions?: WaitOptions) {
     this.#httpRequest = httpRequest;
     this.#defaultTimeout = defaultWaitOptions?.timeout ?? 5_000;
-    this.#defaultInterval = defaultWaitOptions?.interval ?? 50; // 200
+    this.#defaultInterval = defaultWaitOptions?.interval ?? 200;
     this.#applyWaitTask = getWaitTaskApplier(this);
   }
 
@@ -98,41 +98,56 @@ export class TaskClient {
     const interval = options?.interval ?? this.#defaultInterval;
 
     return new Promise((resolve, reject) => {
-      (async () => {
-        const to =
-          timeout !== 0
-            ? setTimeout(() => {
-                reject(
-                  new MeiliSearchTimeOutError(
-                    `timeout of ${timeout}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
-                  ),
-                );
-                // TODO: abort request, `getTask` should reject instead with the abort error
-                // should first wait on https://github.com/meilisearch/meilisearch-js/pull/1741
-              }, timeout)
-            : undefined;
+      let sleepTimeoutID: ReturnType<typeof setTimeout> | undefined;
+      const timeoutID =
+        timeout !== 0
+          ? setTimeout(() => {
+              clearTimeout(sleepTimeoutID);
+              reject(
+                new MeiliSearchTimeOutError(
+                  `timeout of ${timeout}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
+                ),
+              );
+              // TODO: abort request, `getTask` should reject instead with the abort error
+              // should first wait on https://github.com/meilisearch/meilisearch-js/pull/1741
+            }, timeout)
+          : undefined;
 
-        try {
-          for (;;) {
-            const task = await this.getTask(taskUid);
+      function rejectAndClearTimeout(error: unknown) {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+        reject(error);
+        clearTimeout(timeoutID);
+      }
 
-            if (task.status !== "enqueued" && task.status !== "processing") {
-              clearTimeout(to);
-              resolve(task);
-              return;
-            }
+      const getTaskThing = async () => {
+        const task = await this.getTask(taskUid);
 
-            if (interval !== 0) {
-              // TODO: clearTimeout + AbortSignal solution: https://mattrossman.com/2024/04/10/cancelling-the-javascript-sleep-function
-              await new Promise((resolve) => setTimeout(resolve, interval));
-            }
-          }
-        } catch (error) {
-          clearTimeout(to);
-          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-          reject(error);
+        if (task.status === "enqueued" || task.status === "processing") {
+          return false;
         }
-      })().catch(reject);
+
+        clearTimeout(timeoutID);
+        resolve(task);
+        return true;
+      };
+
+      let promiseChain = Promise.resolve<boolean | void>(undefined);
+      function loopWithTimeoutGetTaskThing(isDone: boolean) {
+        if (isDone) {
+          return;
+        }
+
+        sleepTimeoutID = setTimeout(() => {
+          promiseChain = promiseChain
+            .then(getTaskThing)
+            .then(loopWithTimeoutGetTaskThing)
+            .catch(rejectAndClearTimeout);
+        }, interval);
+      }
+
+      getTaskThing()
+        .then(loopWithTimeoutGetTaskThing)
+        .catch(rejectAndClearTimeout);
     });
   }
 
