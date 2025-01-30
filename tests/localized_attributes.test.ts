@@ -6,7 +6,10 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode, type LocalizedAttributes } from "../src/types/index.js";
+import {
+  ErrorStatusCode,
+  type LocalizedAttributes,
+} from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -86,8 +89,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset localizedAttributes`, async () => {
       const client = await getClient(permission);
-      const newLocalizedAttributes: LocalizedAttributes =
-        [];
+      const newLocalizedAttributes: LocalizedAttributes = [];
       await client
         .index(index.uid)
         .updateLocalizedAttributes(newLocalizedAttributes)

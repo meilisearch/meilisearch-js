@@ -512,8 +512,8 @@ export type Settings = {
   localizedAttributes?: LocalizedAttributes;
 
   /**
-   * Enable facet searching on all the filters of an index (requires
-   * Meilisearch 1.12.0 or later)
+   * Enable facet searching on all the filters of an index (requires Meilisearch
+   * 1.12.0 or later)
    */
   facetSearch?: boolean;
   /**
