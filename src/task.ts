@@ -56,8 +56,7 @@ export class TaskClient {
   constructor(httpRequest: HttpRequests, defaultWaitOptions?: WaitOptions) {
     this.#httpRequest = httpRequest;
     this.#defaultTimeout = defaultWaitOptions?.timeout ?? 5_000;
-    // 200
-    this.#defaultInterval = defaultWaitOptions?.interval ?? 50;
+    this.#defaultInterval = defaultWaitOptions?.interval ?? 200;
     this.#applyWaitTask = getWaitTaskApplier(this);
   }
 
@@ -109,7 +108,10 @@ export class TaskClient {
         isFetchingTask = true;
         this.getTask(taskUid)
           .then((task) => {
+            isFetchingTask = false;
+
             if (task.status !== "enqueued" && task.status !== "processing") {
+              clearTimers();
               resolve(task);
             }
           })
@@ -117,9 +119,6 @@ export class TaskClient {
             clearTimers();
             // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             reject(reason);
-          })
-          .finally(() => {
-            isFetchingTask = false;
           });
       }, interval);
 
