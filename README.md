@@ -55,7 +55,7 @@ We recommend installing `meilisearch-js` in your project with your package manag
 npm install meilisearch
 ```
 
-`meilisearch-js` officially supports `node` versions 18 LTS and 20 LTS.
+`meilisearch-js` officially supports `node` versions 18 Maintenance, 20 Maintenance and 22 LTS.
 
 Instead of using a package manager, you may also import the library directly into your [HTML via a CDN](#include-script-tag).
 
@@ -131,6 +131,8 @@ const client = new MeiliSearch({
 ```
 
 ## 🚀 Getting started
+
+Take a look at the [playground](./playgrounds/javascript/src/meilisearch.ts) for a concrete example.
 
 ### Add documents <!-- omit in toc -->
 

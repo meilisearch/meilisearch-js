@@ -1,6 +1,6 @@
 {
   "name": "meilisearch",
-  "version": "0.48.0",
+  "version": "0.48.2",
   "description": "The Meilisearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -17,6 +17,7 @@
   ],
   "license": "MIT",
   "type": "module",
+  "types": "./dist/types/index.d.ts",
   "main": "./dist/umd/index.min.js",
   "exports": {
     ".": {
@@ -38,7 +39,7 @@
     "url": "https://github.com/meilisearch/meilisearch-js"
   },
   "scripts": {
-    "playground:javascript": "yarn --cwd ./playgrounds/javascript && yarn --cwd ./playgrounds/javascript dev",
+    "playground:javascript": "vite serve playgrounds/javascript --open",
     "build:docs": "typedoc",
     "build": "vite build && tsc -p tsconfig.build.json && vite --mode production-umd build",
     "postbuild": "node scripts/build.js",
@@ -86,7 +87,7 @@
     "@vitest/eslint-plugin": "^1.1.23",
     "eslint-config-prettier": "^9.1.0",
     "typescript": "^5.7.2",
-    "vite": "^6.0.7",
+    "vite": "^6.0.9",
     "@typescript-eslint/utils": "^8.19.0",
     "globals": "^15.14.0",
     "lint-staged": "15.3.0",
