@@ -58,16 +58,6 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     beforeEach(async () => {
       await clearAllIndexes(config);
       const client = await getClient(permission);
-      const key = await getKey(permission);
-
-      await fetch(`${HOST}/experimental-features`, {
-        body: JSON.stringify({ vectorStore: true }),
-        headers: {
-          Authorization: `Bearer ${key}`,
-          "Content-Type": "application/json",
-        },
-        method: "PATCH",
-      });
 
       const task = await client.createIndex(index.uid);
       await client.waitForTask(task.taskUid);
