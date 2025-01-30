@@ -538,7 +538,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     });
 
     // cancel: afterFinishedAt
-    test.only(`${permission} key: Cancel a task using afterFinishedAt filter with no timeout`, async () => {
+    test(`${permission} key: Cancel a task using afterFinishedAt filter with no timeout`, async () => {
       const client = await getClient(permission);
 
       const currentTimeStamp = Date.now();

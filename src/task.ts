@@ -56,7 +56,8 @@ export class TaskClient {
   constructor(httpRequest: HttpRequests, defaultWaitOptions?: WaitOptions) {
     this.#httpRequest = httpRequest;
     this.#defaultTimeout = defaultWaitOptions?.timeout ?? 5_000;
-    this.#defaultInterval = defaultWaitOptions?.interval ?? 200;
+    // 200
+    this.#defaultInterval = defaultWaitOptions?.interval ?? 50;
     this.#applyWaitTask = getWaitTaskApplier(this);
   }
 
