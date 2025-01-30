@@ -42,6 +42,18 @@ const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask): number =>
     ? taskUidOrEnqueuedTask
     : taskUidOrEnqueuedTask.taskUid;
 
+function getPromiseWithResolvers<T>() {
+  let resolve: (value: T | PromiseLike<T>) => void,
+    reject: (reason?: any) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+
+  // @ts-expect-error https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers#description
+  return { promise, resolve, reject };
+}
+
 /**
  * Class for handling tasks.
  *
@@ -89,7 +101,7 @@ export class TaskClient {
    * to instead use {@link EnqueuedTaskPromise.waitTask}, which is available on
    * any method that resolves to an {@link EnqueuedTask}.
    */
-  waitForTask(
+  async waitForTask(
     taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask,
     options?: WaitOptions,
   ): Promise<Task> {
@@ -97,52 +109,43 @@ export class TaskClient {
     const timeout = options?.timeout ?? this.#defaultTimeout;
     const interval = options?.interval ?? this.#defaultInterval;
 
-    return new Promise<Task>((resolve, reject) => {
-      let isFetchingTask = false;
+    const { promise, resolve, reject } = getPromiseWithResolvers<Task>();
 
-      const int = setInterval(() => {
-        if (isFetchingTask) {
-          return;
-        }
+    const to =
+      timeout !== 0
+        ? setTimeout(() => {
+            clearTimeout(sleepTO);
+            reject(
+              new MeiliSearchTimeOutError(
+                `timeout of ${timeout}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
+              ),
+            );
+            // TODO: abort request, `getTask` should reject instead with the abort error
+            // should first wait on https://github.com/meilisearch/meilisearch-js/pull/1741
+          }, timeout)
+        : undefined;
 
-        isFetchingTask = true;
-        this.getTask(taskUid)
-          .then((task) => {
-            isFetchingTask = false;
+    let sleepTO: ReturnType<typeof setTimeout> | undefined;
+    try {
+      for (;;) {
+        const task = await this.getTask(taskUid);
 
-            if (task.status !== "enqueued" && task.status !== "processing") {
-              clearTimers();
-              resolve(task);
-            }
-          })
-          .catch((reason) => {
-            clearTimers();
-            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-            reject(reason);
-          });
-      }, interval);
-
-      const to =
-        timeout !== 0
-          ? setTimeout(() => {
-              clearTimers();
-              reject(
-                new MeiliSearchTimeOutError(
-                  `timeout of ${timeout}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
-                ),
-              );
-              // TODO: abort request, `getTask` should reject instead with the abort error
-              // should first wait on https://github.com/meilisearch/meilisearch-js/pull/1741
-            }, timeout)
-          : null;
-
-      function clearTimers() {
-        clearInterval(int);
-        if (to !== null) {
+        if (task.status !== "enqueued" && task.status !== "processing") {
           clearTimeout(to);
+          resolve(task);
+          break;
         }
+
+        await new Promise(
+          (resolve) => void (sleepTO = setTimeout(resolve, interval)),
+        );
       }
-    });
+    } catch (error) {
+      clearTimeout(to);
+      reject(error);
+    }
+
+    return await promise;
   }
 
   /**
