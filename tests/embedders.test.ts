@@ -4,11 +4,9 @@ import type { Embedders } from "../src/types.js";
 import {
   clearAllIndexes,
   config,
-  HOST,
   BAD_HOST,
   MeiliSearch,
   getClient,
-  getKey,
 } from "./utils/meilisearch-test-utils.js";
 
 const index = {
