@@ -6,9 +6,10 @@ const MASTER_KEY = "masterKey";
 const HOST = process.env.MEILISEARCH_URL || "http://127.0.0.1:7700";
 const BAD_HOST = "http://127.0.0.1:7701";
 
-const config = {
+const config: Config = {
   host: HOST,
   apiKey: MASTER_KEY,
+  defaultWaitOptions: { interval: 10 },
 };
 const badHostClient = new MeiliSearch({
   host: BAD_HOST,
@@ -17,10 +18,12 @@ const badHostClient = new MeiliSearch({
 const masterClient = new MeiliSearch({
   host: HOST,
   apiKey: MASTER_KEY,
+  defaultWaitOptions: { interval: 10 },
 });
 
 const anonymousClient = new MeiliSearch({
   host: HOST,
+  defaultWaitOptions: { interval: 10 },
 });
 
 async function getKey(permission: string): Promise<string> {
@@ -49,6 +52,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
   if (permission === "No") {
     const anonymousClient = new MeiliSearch({
       host: HOST,
+      defaultWaitOptions: { interval: 10 },
     });
     return anonymousClient;
   }
@@ -58,6 +62,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
     const searchClient = new MeiliSearch({
       host: HOST,
       apiKey: searchKey,
+      defaultWaitOptions: { interval: 10 },
     });
     return searchClient;
   }
@@ -67,6 +72,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
     const adminClient = new MeiliSearch({
       host: HOST,
       apiKey: adminKey,
+      defaultWaitOptions: { interval: 10 },
     });
     return adminClient;
   }
@@ -76,13 +82,11 @@ async function getClient(permission: string): Promise<MeiliSearch> {
 
 const clearAllIndexes = async (config: Config): Promise<void> => {
   const client = new MeiliSearch(config);
-
   const { results } = await client.getRawIndexes();
-  const indexes = results.map((elem) => elem.uid);
 
   await Promise.all(
-    indexes.map((indexUid) =>
-      client.index(indexUid).delete().waitTask({ timeout: 60_000 }),
+    results.map((v) =>
+      client.index(v.uid).delete().waitTask({ timeout: 60_000 }),
     ),
   );
 };

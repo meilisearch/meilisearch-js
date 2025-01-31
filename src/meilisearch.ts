@@ -57,7 +57,10 @@ export class MeiliSearch {
     this.config = config;
     this.httpRequests = new HttpRequests(config);
 
-    this.#taskClient = new TaskClient(this.httpRequests);
+    this.#taskClient = new TaskClient(
+      this.httpRequests,
+      config.defaultWaitOptions,
+    );
     this.#batchClient = new BatchClient(this.httpRequests);
 
     this.#applyWaitTask = getWaitTaskApplier(this.#taskClient);

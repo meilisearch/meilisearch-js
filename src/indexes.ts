@@ -76,7 +76,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     this.uid = uid;
     this.primaryKey = primaryKey;
     this.httpRequest = new HttpRequests(config);
-    this.tasks = new TaskClient(this.httpRequest);
+    this.tasks = new TaskClient(this.httpRequest, config.defaultWaitOptions);
     this.#applyWaitTask = getWaitTaskApplier(this.tasks);
   }
 

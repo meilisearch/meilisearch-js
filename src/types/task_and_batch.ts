@@ -14,7 +14,7 @@ export type WaitOptions = {
   /**
    * Task polling interval in milliseconds.
    *
-   * @defaultValue `200`
+   * @defaultValue `50`
    */
   interval?: number;
 };

@@ -4,6 +4,8 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^3.8.3
 
+import type { WaitOptions } from "./task_and_batch.js";
+
 export type Config = {
   host: string;
   apiKey?: string;
@@ -11,6 +13,7 @@ export type Config = {
   requestConfig?: Partial<Omit<RequestInit, "body" | "method">>;
   httpClient?: (input: string, init?: RequestInit) => Promise<any>;
   timeout?: number;
+  defaultWaitOptions?: WaitOptions;
 };
 
 ///
