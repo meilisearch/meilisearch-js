@@ -97,10 +97,10 @@ export class TaskClient {
     const timeout = options?.timeout ?? this.#defaultTimeout;
     const interval = options?.interval ?? this.#defaultInterval;
 
-    return new Promise((resolve, reject) => {
+    return new Promise<Task>((resolve, reject) => {
       let sleepTimeoutID: ReturnType<typeof setTimeout> | undefined;
       const timeoutID =
-        timeout !== 0
+        timeout > 0
           ? setTimeout(() => {
               clearTimeout(sleepTimeoutID);
               reject(
@@ -120,7 +120,7 @@ export class TaskClient {
         clearTimeout(timeoutID);
       }
 
-      const getTaskThing = async () => {
+      const tryGetTask = async () => {
         const task = await this.getTask(taskUid);
 
         if (task.status === "enqueued" || task.status === "processing") {
@@ -132,29 +132,27 @@ export class TaskClient {
         return true;
       };
 
-      let promiseChain: Promise<boolean | void>;
-      function chain() {
-        promiseChain = promiseChain
-          .then(getTaskThing)
-          .then(loopWithTimeoutGetTaskThing)
+      let promise: Promise<boolean | void>;
+      function chainFunctionsOnPromise() {
+        promise = promise
+          .then(tryGetTask)
+          .then(loopHelper)
           .catch(rejectAndClearTimeout);
       }
 
-      function loopWithTimeoutGetTaskThing(isDone: boolean) {
+      function loopHelper(isDone: boolean) {
         if (isDone) {
           return;
         }
 
         if (interval > 0) {
-          sleepTimeoutID = setTimeout(chain, interval);
+          sleepTimeoutID = setTimeout(chainFunctionsOnPromise, interval);
         } else {
-          chain();
+          chainFunctionsOnPromise();
         }
       }
 
-      promiseChain = getTaskThing()
-        .then(loopWithTimeoutGetTaskThing)
-        .catch(rejectAndClearTimeout);
+      promise = tryGetTask().then(loopHelper).catch(rejectAndClearTimeout);
     });
   }
 

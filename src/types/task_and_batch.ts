@@ -6,13 +6,14 @@ import type { MeiliSearchErrorResponse } from "./types.js";
 export type WaitOptions = {
   /**
    * Milliseconds until timeout error will be thrown for each awaited task. A
-   * value of `0` disables it.
+   * value of less than `1` disables it.
    *
    * @defaultValue `5000`
    */
   timeout?: number;
   /**
-   * Task polling interval in milliseconds.
+   * Task polling interval in milliseconds. A value of less than `1` disables
+   * it.
    *
    * @defaultValue `50`
    */
