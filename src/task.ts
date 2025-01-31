@@ -56,7 +56,7 @@ export class TaskClient {
   constructor(httpRequest: HttpRequests, defaultWaitOptions?: WaitOptions) {
     this.#httpRequest = httpRequest;
     this.#defaultTimeout = defaultWaitOptions?.timeout ?? 5_000;
-    this.#defaultInterval = defaultWaitOptions?.interval ?? 200;
+    this.#defaultInterval = defaultWaitOptions?.interval ?? 50;
     this.#applyWaitTask = getWaitTaskApplier(this);
   }
 
@@ -116,6 +116,7 @@ export class TaskClient {
       function rejectAndClearTimeout(error: unknown) {
         // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         reject(error);
+        clearTimeout(sleepTimeoutID);
         clearTimeout(timeoutID);
       }
 
