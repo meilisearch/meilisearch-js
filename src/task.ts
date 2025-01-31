@@ -131,7 +131,8 @@ export class TaskClient {
         return true;
       };
 
-      let promiseChain = Promise.resolve<boolean | void>(undefined);
+      let promiseChain: Promise<boolean | void>;
+
       function loopWithTimeoutGetTaskThing(isDone: boolean) {
         if (isDone) {
           return;
@@ -145,7 +146,7 @@ export class TaskClient {
         }, interval);
       }
 
-      getTaskThing()
+      promiseChain = getTaskThing()
         .then(loopWithTimeoutGetTaskThing)
         .catch(rejectAndClearTimeout);
     });
