@@ -135,10 +135,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Tests to wait for task that doesn't exist`, async () => {
       const client = await getClient(permission);
 
-      await expect(client.tasks.waitForTask(424242424242)).rejects.toHaveProperty(
-        "name",
-        "MeiliSearchApiError",
-      );
+      await expect(
+        client.tasks.waitForTask(424242424242),
+      ).rejects.toHaveProperty("name", "MeiliSearchApiError");
     });
   },
 );

@@ -133,18 +133,23 @@ export class TaskClient {
       };
 
       let promiseChain: Promise<boolean | void>;
+      function chain() {
+        promiseChain = promiseChain
+          .then(getTaskThing)
+          .then(loopWithTimeoutGetTaskThing)
+          .catch(rejectAndClearTimeout);
+      }
 
       function loopWithTimeoutGetTaskThing(isDone: boolean) {
         if (isDone) {
           return;
         }
 
-        sleepTimeoutID = setTimeout(() => {
-          promiseChain = promiseChain
-            .then(getTaskThing)
-            .then(loopWithTimeoutGetTaskThing)
-            .catch(rejectAndClearTimeout);
-        }, interval);
+        if (interval > 0) {
+          sleepTimeoutID = setTimeout(chain, interval);
+        } else {
+          chain();
+        }
       }
 
       promiseChain = getTaskThing()
