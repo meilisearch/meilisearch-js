@@ -49,7 +49,7 @@ export class MeiliSearch {
     return this.#batchClient;
   }
 
-  readonly #huh: HttpRequestsWithEnqueuedTaskPromise;
+  readonly #httpRequestsWithTask: HttpRequestsWithEnqueuedTaskPromise;
 
   /**
    * Creates new MeiliSearch instance
@@ -66,7 +66,7 @@ export class MeiliSearch {
     );
     this.#batchClient = new BatchClient(this.httpRequest);
 
-    this.#huh = getHttpRequestsWithEnqueuedTaskPromise(
+    this.#httpRequestsWithTask = getHttpRequestsWithEnqueuedTaskPromise(
       this.httpRequest,
       this.tasks,
     );
@@ -199,7 +199,7 @@ export class MeiliSearch {
    */
   swapIndexes(params: IndexSwap[]): EnqueuedTaskPromise {
     const url = "/swap-indexes";
-    return this.#huh.post(url, params);
+    return this.#httpRequestsWithTask.post(url, params);
   }
 
   ///
@@ -375,7 +375,7 @@ export class MeiliSearch {
    */
   createDump(): EnqueuedTaskPromise {
     const url = `dumps`;
-    return this.#huh.post(url);
+    return this.#httpRequestsWithTask.post(url);
   }
 
   ///
@@ -389,6 +389,6 @@ export class MeiliSearch {
    */
   createSnapshot(): EnqueuedTaskPromise {
     const url = `snapshots`;
-    return this.#huh.post(url);
+    return this.#httpRequestsWithTask.post(url);
   }
 }

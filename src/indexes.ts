@@ -69,7 +69,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
   updatedAt: Date | undefined;
   httpRequest: HttpRequests;
   tasks: TaskClient;
-  readonly #huh: HttpRequestsWithEnqueuedTaskPromise;
+  readonly #httpRequestsWithTask: HttpRequestsWithEnqueuedTaskPromise;
 
   /**
    * @param config - Request configuration options
@@ -81,7 +81,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     this.primaryKey = primaryKey;
     this.httpRequest = new HttpRequests(config);
     this.tasks = new TaskClient(this.httpRequest, config.defaultWaitOptions);
-    this.#huh = getHttpRequestsWithEnqueuedTaskPromise(
+    this.#httpRequestsWithTask = getHttpRequestsWithEnqueuedTaskPromise(
       this.httpRequest,
       this.tasks,
     );
@@ -274,7 +274,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   update(data?: IndexOptions): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}`;
-    return this.#huh.patch(url, data);
+    return this.#httpRequestsWithTask.patch(url, data);
   }
 
   /**
@@ -284,7 +284,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   delete(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -389,7 +389,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   addDocuments(documents: T[], options?: DocumentOptions): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/documents`;
-    return this.#huh.post(url, documents, options);
+    return this.#httpRequestsWithTask.post(url, documents, options);
   }
 
   /**
@@ -409,7 +409,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/documents`;
 
-    return this.#huh.post(url, documents, queryParams, {
+    return this.#httpRequestsWithTask.post(url, documents, queryParams, {
       headers: {
         "Content-Type": contentType,
       },
@@ -454,7 +454,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     options?: DocumentOptions,
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/documents`;
-    return this.#huh.put(url, documents, options);
+    return this.#httpRequestsWithTask.put(url, documents, options);
   }
 
   /**
@@ -500,7 +500,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/documents`;
 
-    return this.#huh.put(url, documents, queryParams, {
+    return this.#httpRequestsWithTask.put(url, documents, queryParams, {
       headers: {
         "Content-Type": contentType,
       },
@@ -515,7 +515,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   deleteDocument(documentId: string | number): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/documents/${documentId}`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   /**
@@ -540,7 +540,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
       : "documents/delete-batch";
     const url = `indexes/${this.uid}/${endpoint}`;
 
-    return this.#huh.post(url, params);
+    return this.#httpRequestsWithTask.post(url, params);
   }
 
   /**
@@ -550,7 +550,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   deleteAllDocuments(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/documents`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   /**
@@ -569,7 +569,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     options: UpdateDocumentsByFunctionOptions,
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/documents/edit`;
-    return this.#huh.post(url, options);
+    return this.#httpRequestsWithTask.post(url, options);
   }
 
   ///
@@ -594,7 +594,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updateSettings(settings: Settings): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings`;
-    return this.#huh.patch(url, settings);
+    return this.#httpRequestsWithTask.patch(url, settings);
   }
 
   /**
@@ -604,7 +604,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetSettings(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -629,7 +629,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updatePagination(pagination: PaginationSettings): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/pagination`;
-    return this.#huh.patch(url, pagination);
+    return this.#httpRequestsWithTask.patch(url, pagination);
   }
 
   /**
@@ -639,7 +639,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetPagination(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/pagination`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -664,7 +664,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updateSynonyms(synonyms: Synonyms): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/synonyms`;
-    return this.#huh.put(url, synonyms);
+    return this.#httpRequestsWithTask.put(url, synonyms);
   }
 
   /**
@@ -674,7 +674,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetSynonyms(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/synonyms`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -699,7 +699,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updateStopWords(stopWords: StopWords): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/stop-words`;
-    return this.#huh.put(url, stopWords);
+    return this.#httpRequestsWithTask.put(url, stopWords);
   }
 
   /**
@@ -709,7 +709,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetStopWords(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/stop-words`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -735,7 +735,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updateRankingRules(rankingRules: RankingRules): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/ranking-rules`;
-    return this.#huh.put(url, rankingRules);
+    return this.#httpRequestsWithTask.put(url, rankingRules);
   }
 
   /**
@@ -745,7 +745,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetRankingRules(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/ranking-rules`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -772,7 +772,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     distinctAttribute: DistinctAttribute,
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/distinct-attribute`;
-    return this.#huh.put(url, distinctAttribute);
+    return this.#httpRequestsWithTask.put(url, distinctAttribute);
   }
 
   /**
@@ -782,7 +782,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetDistinctAttribute(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/distinct-attribute`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -810,7 +810,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     filterableAttributes: FilterableAttributes,
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/filterable-attributes`;
-    return this.#huh.put(url, filterableAttributes);
+    return this.#httpRequestsWithTask.put(url, filterableAttributes);
   }
 
   /**
@@ -820,7 +820,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetFilterableAttributes(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/filterable-attributes`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -848,7 +848,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     sortableAttributes: SortableAttributes,
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/sortable-attributes`;
-    return this.#huh.put(url, sortableAttributes);
+    return this.#httpRequestsWithTask.put(url, sortableAttributes);
   }
 
   /**
@@ -858,7 +858,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetSortableAttributes(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/sortable-attributes`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -886,7 +886,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     searchableAttributes: SearchableAttributes,
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/searchable-attributes`;
-    return this.#huh.put(url, searchableAttributes);
+    return this.#httpRequestsWithTask.put(url, searchableAttributes);
   }
 
   /**
@@ -896,7 +896,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetSearchableAttributes(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/searchable-attributes`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -924,7 +924,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     displayedAttributes: DisplayedAttributes,
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/displayed-attributes`;
-    return this.#huh.put(url, displayedAttributes);
+    return this.#httpRequestsWithTask.put(url, displayedAttributes);
   }
 
   /**
@@ -934,7 +934,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetDisplayedAttributes(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/displayed-attributes`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -960,7 +960,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updateTypoTolerance(typoTolerance: TypoTolerance): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/typo-tolerance`;
-    return this.#huh.patch(url, typoTolerance);
+    return this.#httpRequestsWithTask.patch(url, typoTolerance);
   }
 
   /**
@@ -970,7 +970,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetTypoTolerance(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/typo-tolerance`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -995,7 +995,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updateFaceting(faceting: Faceting): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/faceting`;
-    return this.#huh.patch(url, faceting);
+    return this.#httpRequestsWithTask.patch(url, faceting);
   }
 
   /**
@@ -1005,7 +1005,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetFaceting(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/faceting`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -1030,7 +1030,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updateSeparatorTokens(separatorTokens: SeparatorTokens): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/separator-tokens`;
-    return this.#huh.put(url, separatorTokens);
+    return this.#httpRequestsWithTask.put(url, separatorTokens);
   }
 
   /**
@@ -1040,7 +1040,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetSeparatorTokens(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/separator-tokens`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -1067,7 +1067,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     nonSeparatorTokens: NonSeparatorTokens,
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/non-separator-tokens`;
-    return this.#huh.put(url, nonSeparatorTokens);
+    return this.#httpRequestsWithTask.put(url, nonSeparatorTokens);
   }
 
   /**
@@ -1077,7 +1077,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetNonSeparatorTokens(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/non-separator-tokens`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -1102,7 +1102,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updateDictionary(dictionary: Dictionary): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/dictionary`;
-    return this.#huh.put(url, dictionary);
+    return this.#httpRequestsWithTask.put(url, dictionary);
   }
 
   /**
@@ -1112,7 +1112,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetDictionary(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/dictionary`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -1140,7 +1140,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     proximityPrecision: ProximityPrecision,
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/proximity-precision`;
-    return this.#huh.put(url, proximityPrecision);
+    return this.#httpRequestsWithTask.put(url, proximityPrecision);
   }
 
   /**
@@ -1150,7 +1150,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetProximityPrecision(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/proximity-precision`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -1175,7 +1175,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updateEmbedders(embedders: Embedders): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/embedders`;
-    return this.#huh.patch(url, embedders);
+    return this.#httpRequestsWithTask.patch(url, embedders);
   }
 
   /**
@@ -1185,7 +1185,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetEmbedders(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/embedders`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -1210,7 +1210,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updateSearchCutoffMs(searchCutoffMs: SearchCutoffMs): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/search-cutoff-ms`;
-    return this.#huh.put(url, searchCutoffMs);
+    return this.#httpRequestsWithTask.put(url, searchCutoffMs);
   }
 
   /**
@@ -1220,7 +1220,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetSearchCutoffMs(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/search-cutoff-ms`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -1247,7 +1247,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     localizedAttributes: LocalizedAttributes,
   ): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/localized-attributes`;
-    return this.#huh.put(url, localizedAttributes);
+    return this.#httpRequestsWithTask.put(url, localizedAttributes);
   }
 
   /**
@@ -1257,7 +1257,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetLocalizedAttributes(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/localized-attributes`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -1282,7 +1282,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updateFacetSearch(facetSearch: boolean): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/facet-search`;
-    return this.#huh.put(url, facetSearch);
+    return this.#httpRequestsWithTask.put(url, facetSearch);
   }
 
   /**
@@ -1292,7 +1292,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetFacetSearch(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/facet-search`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 
   ///
@@ -1317,7 +1317,7 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   updatePrefixSearch(prefixSearch: PrefixSearch): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/prefix-search`;
-    return this.#huh.put(url, prefixSearch);
+    return this.#httpRequestsWithTask.put(url, prefixSearch);
   }
 
   /**
@@ -1327,6 +1327,6 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
    */
   resetPrefixSearch(): EnqueuedTaskPromise {
     const url = `indexes/${this.uid}/settings/prefix-search`;
-    return this.#huh.delete(url);
+    return this.#httpRequestsWithTask.delete(url);
   }
 }
