@@ -131,5 +131,14 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         client.tasks.waitForTasks([task1, task2], { timeout: 1 }),
       ).rejects.toHaveProperty("name", "MeiliSearchTimeOutError");
     });
+
+    test(`${permission} key: Tests to wait for task that doesn't exist`, async () => {
+      const client = await getClient(permission);
+
+      await expect(client.tasks.waitForTask(424242424242)).rejects.toHaveProperty(
+        "name",
+        "MeiliSearchApiError",
+      );
+    });
   },
 );
