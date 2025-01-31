@@ -62,7 +62,7 @@ describe.each([
         },
       },
     });
-    expect(client.httpRequests.headers["Hello-There!"]).toBe("General Kenobi");
+    expect(client.httpRequest.headers["Hello-There!"]).toBe("General Kenobi");
     const health = await client.isHealthy();
     expect(health).toBe(true);
   });
@@ -76,7 +76,7 @@ describe.each([
         headers: [["Hello-There!", "General Kenobi"]],
       },
     });
-    expect(client.httpRequests.headers["Hello-There!"]).toBe("General Kenobi");
+    expect(client.httpRequest.headers["Hello-There!"]).toBe("General Kenobi");
     const health = await client.isHealthy();
     expect(health).toBe(true);
   });
@@ -92,7 +92,7 @@ describe.each([
         headers,
       },
     });
-    expect(client.httpRequests.headers["hello-there!"]).toBe("General Kenobi");
+    expect(client.httpRequest.headers["hello-there!"]).toBe("General Kenobi");
     const health = await client.isHealthy();
     expect(health).toBe(true);
   });
@@ -261,7 +261,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         },
       });
 
-      expect(client.httpRequests.headers["X-Meilisearch-Client"]).toStrictEqual(
+      expect(client.httpRequest.headers["X-Meilisearch-Client"]).toStrictEqual(
         `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
       );
     });
@@ -274,7 +274,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         clientAgents: [],
       });
 
-      expect(client.httpRequests.headers["X-Meilisearch-Client"]).toStrictEqual(
+      expect(client.httpRequest.headers["X-Meilisearch-Client"]).toStrictEqual(
         `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
       );
     });
@@ -287,7 +287,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         clientAgents: ["random plugin 1", "random plugin 2"],
       });
 
-      expect(client.httpRequests.headers["X-Meilisearch-Client"]).toStrictEqual(
+      expect(client.httpRequest.headers["X-Meilisearch-Client"]).toStrictEqual(
         `random plugin 1 ; random plugin 2 ; Meilisearch JavaScript (v${PACKAGE_VERSION})`,
       );
     });

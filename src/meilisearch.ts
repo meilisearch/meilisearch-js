@@ -24,17 +24,20 @@ import type {
   MultiSearchParams,
   FederatedMultiSearchParams,
   MultiSearchResponseOrSearchResponse,
-  EnqueuedTask,
   EnqueuedTaskPromise,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
-import { getWaitTaskApplier, TaskClient } from "./task.js";
+import {
+  getHttpRequestsWithEnqueuedTaskPromise,
+  TaskClient,
+  type HttpRequestsWithEnqueuedTaskPromise,
+} from "./task.js";
 import { BatchClient } from "./batch.js";
 
 export class MeiliSearch {
   config: Config;
-  httpRequests: HttpRequests;
+  httpRequest: HttpRequests;
 
   readonly #taskClient: TaskClient;
   get tasks() {
@@ -46,7 +49,7 @@ export class MeiliSearch {
     return this.#batchClient;
   }
 
-  readonly #applyWaitTask: ReturnType<typeof getWaitTaskApplier>;
+  readonly #huh: HttpRequestsWithEnqueuedTaskPromise;
 
   /**
    * Creates new MeiliSearch instance
@@ -55,15 +58,18 @@ export class MeiliSearch {
    */
   constructor(config: Config) {
     this.config = config;
-    this.httpRequests = new HttpRequests(config);
+    this.httpRequest = new HttpRequests(config);
 
     this.#taskClient = new TaskClient(
-      this.httpRequests,
+      this.httpRequest,
       config.defaultWaitOptions,
     );
-    this.#batchClient = new BatchClient(this.httpRequests);
+    this.#batchClient = new BatchClient(this.httpRequest);
 
-    this.#applyWaitTask = getWaitTaskApplier(this.#taskClient);
+    this.#huh = getHttpRequestsWithEnqueuedTaskPromise(
+      this.httpRequest,
+      this.tasks,
+    );
   }
 
   /**
@@ -128,7 +134,7 @@ export class MeiliSearch {
     parameters: IndexesQuery = {},
   ): Promise<IndexesResults<IndexObject[]>> {
     const url = `indexes`;
-    return await this.httpRequests.get<IndexesResults<IndexObject[]>>(
+    return await this.httpRequest.get<IndexesResults<IndexObject[]>>(
       url,
       parameters,
     );
@@ -193,7 +199,7 @@ export class MeiliSearch {
    */
   swapIndexes(params: IndexSwap[]): EnqueuedTaskPromise {
     const url = "/swap-indexes";
-    return this.#applyWaitTask(this.httpRequests.post(url, params));
+    return this.#huh.post(url, params);
   }
 
   ///
@@ -230,7 +236,7 @@ export class MeiliSearch {
   ): Promise<MultiSearchResponseOrSearchResponse<T1, T2>> {
     const url = `multi-search`;
 
-    return await this.httpRequests.post(url, queries, undefined, config);
+    return await this.httpRequest.post(url, queries, undefined, config);
   }
 
   ///
@@ -245,7 +251,7 @@ export class MeiliSearch {
    */
   async getKeys(parameters: KeysQuery = {}): Promise<KeysResults> {
     const url = `keys`;
-    const keys = await this.httpRequests.get<KeysResults>(url, parameters);
+    const keys = await this.httpRequest.get<KeysResults>(url, parameters);
 
     keys.results = keys.results.map((key) => ({
       ...key,
@@ -264,7 +270,7 @@ export class MeiliSearch {
    */
   async getKey(keyOrUid: string): Promise<Key> {
     const url = `keys/${keyOrUid}`;
-    return await this.httpRequests.get<Key>(url);
+    return await this.httpRequest.get<Key>(url);
   }
 
   /**
@@ -275,7 +281,7 @@ export class MeiliSearch {
    */
   async createKey(options: KeyCreation): Promise<Key> {
     const url = `keys`;
-    return await this.httpRequests.post(url, options);
+    return await this.httpRequest.post(url, options);
   }
 
   /**
@@ -287,7 +293,7 @@ export class MeiliSearch {
    */
   async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
     const url = `keys/${keyOrUid}`;
-    return await this.httpRequests.patch(url, options);
+    return await this.httpRequest.patch(url, options);
   }
 
   /**
@@ -298,7 +304,7 @@ export class MeiliSearch {
    */
   async deleteKey(keyOrUid: string): Promise<void> {
     const url = `keys/${keyOrUid}`;
-    return await this.httpRequests.delete<any>(url);
+    return await this.httpRequest.delete<any>(url);
   }
 
   ///
@@ -312,7 +318,7 @@ export class MeiliSearch {
    */
   async health(): Promise<Health> {
     const url = `health`;
-    return await this.httpRequests.get<Health>(url);
+    return await this.httpRequest.get<Health>(url);
   }
 
   /**
@@ -323,7 +329,7 @@ export class MeiliSearch {
   async isHealthy(): Promise<boolean> {
     try {
       const url = `health`;
-      await this.httpRequests.get(url);
+      await this.httpRequest.get(url);
       return true;
     } catch {
       return false;
@@ -341,7 +347,7 @@ export class MeiliSearch {
    */
   async getStats(): Promise<Stats> {
     const url = `stats`;
-    return await this.httpRequests.get<Stats>(url);
+    return await this.httpRequest.get<Stats>(url);
   }
 
   ///
@@ -355,7 +361,7 @@ export class MeiliSearch {
    */
   async getVersion(): Promise<Version> {
     const url = `version`;
-    return await this.httpRequests.get<Version>(url);
+    return await this.httpRequest.get<Version>(url);
   }
 
   ///
@@ -369,9 +375,7 @@ export class MeiliSearch {
    */
   createDump(): EnqueuedTaskPromise {
     const url = `dumps`;
-    return this.#applyWaitTask(
-      this.httpRequests.post<undefined, EnqueuedTask>(url),
-    );
+    return this.#huh.post(url);
   }
 
   ///
@@ -385,8 +389,6 @@ export class MeiliSearch {
    */
   createSnapshot(): EnqueuedTaskPromise {
     const url = `snapshots`;
-    return this.#applyWaitTask(
-      this.httpRequests.post<undefined, EnqueuedTask>(url),
-    );
+    return this.#huh.post(url);
   }
 }

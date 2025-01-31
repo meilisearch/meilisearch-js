@@ -16,7 +16,7 @@ import { type HttpRequests, toQueryParams } from "./http-requests.js";
  *   {@link Promise}, which resolves to {@link EnqueuedTask}, which awaits it and
  *   resolves to a {@link Task}.
  */
-export function getWaitTaskApplier(
+function getWaitTaskApplier(
   taskClient: TaskClient,
 ): (enqueuedTaskPromise: Promise<EnqueuedTask>) => EnqueuedTaskPromise {
   return function (
@@ -209,4 +209,28 @@ export class TaskClient {
       ),
     );
   }
+}
+
+type PickedHttpRequestMethods = Pick<
+  HttpRequests,
+  "post" | "put" | "patch" | "delete"
+>;
+export type HttpRequestsWithEnqueuedTaskPromise = {
+  [TKey in keyof PickedHttpRequestMethods]: (
+    ...params: Parameters<PickedHttpRequestMethods[TKey]>
+  ) => EnqueuedTaskPromise;
+};
+
+export function getHttpRequestsWithEnqueuedTaskPromise(
+  httpRequest: HttpRequests,
+  taskClient: TaskClient,
+): HttpRequestsWithEnqueuedTaskPromise {
+  const applyWaitTask = getWaitTaskApplier(taskClient);
+
+  return {
+    post: (...params) => applyWaitTask(httpRequest.post(...params)),
+    put: (...params) => applyWaitTask(httpRequest.put(...params)),
+    patch: (...params) => applyWaitTask(httpRequest.patch(...params)),
+    delete: (...params) => applyWaitTask(httpRequest.delete(...params)),
+  };
 }
