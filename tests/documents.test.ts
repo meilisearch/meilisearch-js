@@ -152,9 +152,7 @@ describe("Documents tests", () => {
             "getDocuments should have raised an error when the route does not exist",
           );
         } catch (e: any) {
-          expect(e.message).toEqual(
-            "404: Not Found\nHint: It might not be working because maybe you're not up to date with the Meilisearch version that getDocuments call requires.",
-          );
+          expect(e.message).toEqual("404: Not Found");
         }
       });
 
@@ -171,8 +169,7 @@ describe("Documents tests", () => {
         } catch (e: any) {
           expect(e.message).toEqual(
             `Attribute \`id\` is not filterable. This index does not have configured filterable attributes.
-1:3 id = 1
-Hint: It might not be working because maybe you're not up to date with the Meilisearch version that getDocuments call requires.`,
+1:3 id = 1`,
           );
         }
       });
@@ -586,9 +583,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
             "deleteDocuments should have raised an error when the parameters are wrong",
           );
         } catch (e: any) {
-          expect(e.message).toEqual(
-            "Sending an empty filter is forbidden.\nHint: It might not be working because maybe you're not up to date with the Meilisearch version that deleteDocuments call requires.",
-          );
+          expect(e.message).toEqual("Sending an empty filter is forbidden.");
         }
       });
 
@@ -603,9 +598,7 @@ Hint: It might not be working because maybe you're not up to date with the Meili
             "deleteDocuments should have raised an error when the route does not exist",
           );
         } catch (e: any) {
-          expect(e.message).toEqual(
-            "404: Not Found\nHint: It might not be working because maybe you're not up to date with the Meilisearch version that deleteDocuments call requires.",
-          );
+          expect(e.message).toEqual("404: Not Found");
         }
       });
 

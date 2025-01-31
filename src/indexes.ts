@@ -5,12 +5,7 @@
  * Copyright: 2019, MeiliSearch
  */
 
-import {
-  MeiliSearchError,
-  MeiliSearchRequestError,
-  versionErrorHintMessage,
-  MeiliSearchApiError,
-} from "./errors/index.js";
+import { MeiliSearchError } from "./errors/index.js";
 import type {
   Config,
   SearchResponse,
@@ -319,22 +314,12 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
 
     // In case `filter` is provided, use `POST /documents/fetch`
     if (parameters.filter !== undefined) {
-      try {
-        const url = `indexes/${this.uid}/documents/fetch`;
+      const url = `indexes/${this.uid}/documents/fetch`;
 
-        return await this.httpRequest.post<
-          DocumentsQuery,
-          Promise<ResourceResults<D[]>>
-        >(url, parameters);
-      } catch (e) {
-        if (e instanceof MeiliSearchRequestError) {
-          e.message = versionErrorHintMessage(e.message, "getDocuments");
-        } else if (e instanceof MeiliSearchApiError) {
-          e.message = versionErrorHintMessage(e.message, "getDocuments");
-        }
-
-        throw e;
-      }
+      return await this.httpRequest.post<
+        DocumentsQuery,
+        Promise<ResourceResults<D[]>>
+      >(url, parameters);
       // Else use `GET /documents` method
     } else {
       const url = `indexes/${this.uid}/documents`;
