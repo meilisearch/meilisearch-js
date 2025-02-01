@@ -84,7 +84,7 @@
     "@types/node": "^22.10.1",
     "eslint": "^9.19.0",
     "eslint-plugin-tsdoc": "^0.4.0",
-    "@vitest/eslint-plugin": "^1.1.23",
+    "@vitest/eslint-plugin": "^1.1.25",
     "eslint-config-prettier": "^10.0.1",
     "typescript": "^5.7.3",
     "vite": "^6.0.9",
