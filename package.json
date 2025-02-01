@@ -44,7 +44,7 @@
     "build": "vite build && tsc -p tsconfig.build.json && vite --mode production-umd build",
     "postbuild": "node scripts/build.js",
     "test": "vitest run --coverage",
-    "types": "tsc -p tsconfig.json --noEmit",
+    "types": "tsc --noEmit",
     "types:watch": "yarn types --watch",
     "test:env:browser": "yarn build && node scripts/copy-umd-file.js --to ./tests/env/express/public && yarn --cwd tests/env/express && yarn --cwd tests/env/express test",
     "test:watch": "vitest watch",
