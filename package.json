@@ -60,7 +60,8 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "style": "yarn fmt && yarn lint",
-    "style:fix": "yarn fmt:fix && yarn lint:fix"
+    "style:fix": "yarn fmt:fix && yarn lint:fix",
+    "prepare": "husky"
   },
   "files": [
     "src",
