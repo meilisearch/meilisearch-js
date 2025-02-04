@@ -671,9 +671,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-pagination-settings} */
   async getPagination(): Promise<IndividualSettings["pagination"]> {
     const url = `indexes/${this.uid}/settings/pagination`;
-    return await this.httpRequest.get<
-      IndividualSettings["pagination"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["pagination"]>(url);
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-pagination-settings} */
@@ -701,9 +699,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-synonyms} */
   async getSynonyms(): Promise<IndividualSettings["synonyms"]> {
     const url = `indexes/${this.uid}/settings/synonyms`;
-    return await this.httpRequest.get<IndividualSettings["synonyms"]>(
-      url,
-    );
+    return await this.httpRequest.get<IndividualSettings["synonyms"]>(url);
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-synonyms} */
@@ -733,9 +729,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-stop-words} */
   async getStopWords(): Promise<IndividualSettings["stopWords"]> {
     const url = `indexes/${this.uid}/settings/stop-words`;
-    return await this.httpRequest.get<IndividualSettings["stopWords"]>(
-      url,
-    );
+    return await this.httpRequest.get<IndividualSettings["stopWords"]>(url);
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-stop-words} */
@@ -763,13 +757,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-ranking-rules} */
-  async getRankingRules(): Promise<
-    IndividualSettings["rankingRules"]
-  > {
+  async getRankingRules(): Promise<IndividualSettings["rankingRules"]> {
     const url = `indexes/${this.uid}/settings/ranking-rules`;
-    return await this.httpRequest.get<
-      IndividualSettings["rankingRules"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["rankingRules"]>(url);
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-ranking-rules} */
@@ -801,9 +791,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     IndividualSettings["distinctAttribute"]
   > {
     const url = `indexes/${this.uid}/settings/distinct-attribute`;
-    return await this.httpRequest.get<
-      IndividualSettings["distinctAttribute"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["distinctAttribute"]>(
+      url,
+    );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-distinct-attribute} */
@@ -869,9 +859,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     IndividualSettings["sortableAttributes"]
   > {
     const url = `indexes/${this.uid}/settings/sortable-attributes`;
-    return await this.httpRequest.get<
-      IndividualSettings["sortableAttributes"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["sortableAttributes"]>(
+      url,
+    );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-sortable-attributes} */
@@ -967,13 +957,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-typo-tolerance-settings} */
-  async getTypoTolerance(): Promise<
-    IndividualSettings["typoTolerance"]
-  > {
+  async getTypoTolerance(): Promise<IndividualSettings["typoTolerance"]> {
     const url = `indexes/${this.uid}/settings/typo-tolerance`;
-    return await this.httpRequest.get<
-      IndividualSettings["typoTolerance"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["typoTolerance"]>(url);
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-typo-tolerance-settings} */
@@ -1005,9 +991,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-faceting-settings} */
   async getFaceting(): Promise<IndividualSettings["faceting"]> {
     const url = `indexes/${this.uid}/settings/faceting`;
-    return await this.httpRequest.get<IndividualSettings["faceting"]>(
-      url,
-    );
+    return await this.httpRequest.get<IndividualSettings["faceting"]>(url);
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-faceting-settings} */
@@ -1033,13 +1017,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-separator-tokens} */
-  async getSeparatorTokens(): Promise<
-    IndividualSettings["separatorTokens"]
-  > {
+  async getSeparatorTokens(): Promise<IndividualSettings["separatorTokens"]> {
     const url = `indexes/${this.uid}/settings/separator-tokens`;
-    return await this.httpRequest.get<
-      IndividualSettings["separatorTokens"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["separatorTokens"]>(
+      url,
+    );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-separator-tokens} */
@@ -1071,9 +1053,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     IndividualSettings["nonSeparatorTokens"]
   > {
     const url = `indexes/${this.uid}/settings/non-separator-tokens`;
-    return await this.httpRequest.get<
-      IndividualSettings["nonSeparatorTokens"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["nonSeparatorTokens"]>(
+      url,
+    );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-non-separator-tokens} */
@@ -1103,9 +1085,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-dictionary} */
   async getDictionary(): Promise<IndividualSettings["dictionary"]> {
     const url = `indexes/${this.uid}/settings/dictionary`;
-    return await this.httpRequest.get<
-      IndividualSettings["dictionary"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["dictionary"]>(url);
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-dictionary} */
@@ -1137,9 +1117,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
     IndividualSettings["proximityPrecision"]
   > {
     const url = `indexes/${this.uid}/settings/proximity-precision`;
-    return await this.httpRequest.get<
-      IndividualSettings["proximityPrecision"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["proximityPrecision"]>(
+      url,
+    );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-proximity-precision-settings} */
@@ -1169,9 +1149,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-embedder-settings} */
   async getEmbedders(): Promise<IndividualSettings["embedders"]> {
     const url = `indexes/${this.uid}/settings/embedders`;
-    return await this.httpRequest.get<IndividualSettings["embedders"]>(
-      url,
-    );
+    return await this.httpRequest.get<IndividualSettings["embedders"]>(url);
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-embedder-settings} */
@@ -1199,13 +1177,11 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-search-cutoff} */
-  async getSearchCutoffMs(): Promise<
-    IndividualSettings["searchCutoffMs"]
-  > {
+  async getSearchCutoffMs(): Promise<IndividualSettings["searchCutoffMs"]> {
     const url = `indexes/${this.uid}/settings/search-cutoff-ms`;
-    return await this.httpRequest.get<
-      IndividualSettings["searchCutoffMs"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["searchCutoffMs"]>(
+      url,
+    );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-search-cutoff} */
@@ -1265,9 +1241,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-facet-search-settings} */
   async getFacetSearch(): Promise<IndividualSettings["facetSearch"]> {
     const url = `indexes/${this.uid}/settings/facet-search`;
-    return await this.httpRequest.get<
-      IndividualSettings["facetSearch"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["facetSearch"]>(url);
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-facet-search-settings} */
@@ -1291,13 +1265,9 @@ class Index<T extends Record<string, any> = Record<string, any>> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-prefix-search-settings} */
-  async getPrefixSearch(): Promise<
-    IndividualSettings["prefixSearch"]
-  > {
+  async getPrefixSearch(): Promise<IndividualSettings["prefixSearch"]> {
     const url = `indexes/${this.uid}/settings/prefix-search`;
-    return await this.httpRequest.get<
-      IndividualSettings["prefixSearch"]
-    >(url);
+    return await this.httpRequest.get<IndividualSettings["prefixSearch"]>(url);
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-prefix-search-settings} */
