@@ -1,6 +1,6 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
 import { EnqueuedTask } from "../src/enqueued-task.js";
-import type { Embedders } from "../src/types.js";
+import type { IndividualSettings } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -75,14 +75,14 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default embedders`, async () => {
       const client = await getClient(permission);
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(null);
     });
 
     test(`${permission} key: Update embedders with 'userProvided' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualSettings["embedders"] = {
         default: {
           source: "userProvided",
           dimensions: 1,
@@ -99,7 +99,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await client.waitForTask(task.taskUid);
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(newEmbedder);
       expect(response).not.toHaveProperty("documentTemplateMaxBytes");
@@ -107,7 +107,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'openAi' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualSettings["embedders"] = {
         default: {
           source: "openAi",
           apiKey: "<your-OpenAI-API-key>",
@@ -129,7 +129,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateEmbedders(newEmbedder);
       await client.waitForTask(task.taskUid);
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -141,7 +141,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'huggingFace' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualSettings["embedders"] = {
         default: {
           source: "huggingFace",
           model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
@@ -160,14 +160,14 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateEmbedders(newEmbedder);
       await client.waitForTask(task.taskUid, { timeOutMs: 60_000 });
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(newEmbedder);
     });
 
     test(`${permission} key: Update embedders with 'rest' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualSettings["embedders"] = {
         default: {
           source: "rest",
           url: "https://api.openai.com/v1/embeddings",
@@ -203,7 +203,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateEmbedders(newEmbedder);
       await client.waitForTask(task.taskUid);
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -215,7 +215,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'ollama' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualSettings["embedders"] = {
         default: {
           source: "ollama",
           url: "http://localhost:11434/api/embeddings",
@@ -236,7 +236,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateEmbedders(newEmbedder);
       await client.waitForTask(task.taskUid);
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -249,7 +249,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update embedders with a specific name`, async () => {
       const client = await getClient(permission);
 
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualSettings["embedders"] = {
         image: {
           source: "userProvided",
           dimensions: 512,
@@ -261,7 +261,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await client.waitForTask(task.taskUid);
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(newEmbedder);
     });
@@ -271,7 +271,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const task: EnqueuedTask = await client.index(index.uid).resetEmbedders();
       await client.waitForTask(task.taskUid);
 
-      const response: Embedders = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(null);
     });
@@ -331,7 +331,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: search for similar documents`, async () => {
       const client = await getClient(permission);
 
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualSettings["embedders"] = {
         manual: {
           source: "userProvided",
           dimensions: 3,
