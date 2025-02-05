@@ -404,8 +404,6 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
   /**
    * Add or replace multiples documents to an index in batches
    *
-   * @deprecated This function is deprecated, and will no longer be available in
-   *   a future version.
    * @param documents - Array of Document objects to add/replace
    * @param batchSize - Size of the batch
    * @param options - Options on document addition
@@ -445,8 +443,6 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
   /**
    * Add or update multiples documents to an index in batches
    *
-   * @deprecated This function is deprecated, and will no longer be available in
-   *   a future version.
    * @param documents - Array of Document objects to add/update
    * @param batchSize - Size of the batch
    * @param options - Options on document update
