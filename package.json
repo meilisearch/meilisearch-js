@@ -69,7 +69,7 @@
     "CONTRIBUTING.md"
   ],
   "devDependencies": {
-    "@eslint/js": "^9.16.0",
+    "@eslint/js": "^9.19.0",
     "@types/eslint__js": "^8.42.3",
     "@types/node": "^22.13.0",
     "@typescript-eslint/utils": "^8.19.0",
