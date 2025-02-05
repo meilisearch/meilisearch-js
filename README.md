@@ -118,8 +118,8 @@ tag:
 ```html
 <script src="https://www.unpkg.com/meilisearch/dist/umd/index.min.js"></script>
 <script>
-    const client = new meilisearch.MeiliSearch(/* ... */);
-    // ...
+  const client = new meilisearch.MeiliSearch(/* ... */);
+  // ...
 </script>
 ```
 
