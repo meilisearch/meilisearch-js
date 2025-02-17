@@ -223,15 +223,6 @@ describe("Documents tests", () => {
         const client = await getClient(permission);
         const adminKey = await getKey("Admin");
 
-        await fetch(`${HOST}/experimental-features`, {
-          body: JSON.stringify({ vectorStore: true }),
-          headers: {
-            Authorization: `Bearer ${adminKey}`,
-            "Content-Type": "application/json",
-          },
-          method: "PATCH",
-        });
-
         const { taskUid } = await client
           .index(indexPk.uid)
           .addDocuments(dataset);
@@ -265,15 +256,6 @@ describe("Documents tests", () => {
       test(`${permission} key: Get documents without retrieveVectors`, async () => {
         const client = await getClient(permission);
         const adminKey = await getKey("Admin");
-
-        await fetch(`${HOST}/experimental-features`, {
-          body: JSON.stringify({ vectorStore: true }),
-          headers: {
-            Authorization: `Bearer ${adminKey}`,
-            "Content-Type": "application/json",
-          },
-          method: "PATCH",
-        });
 
         const { taskUid } = await client
           .index(indexPk.uid)
