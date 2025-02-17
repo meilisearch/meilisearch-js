@@ -21,7 +21,6 @@ import {
   MeiliSearch,
   getClient,
   datasetWithNests,
-  HOST,
   getKey,
 } from "./utils/meilisearch-test-utils.js";
 
@@ -1150,16 +1149,6 @@ describe.each([
 
   test(`${permission} key: search with retrieveVectors to true`, async () => {
     const client = await getClient(permission);
-    const adminKey = await getKey("Admin");
-
-    await fetch(`${HOST}/experimental-features`, {
-      body: JSON.stringify({ vectorStore: true }),
-      headers: {
-        Authorization: `Bearer ${adminKey}`,
-        "Content-Type": "application/json",
-      },
-      method: "PATCH",
-    });
 
     const response = await client.index(index.uid).search("prince", {
       retrieveVectors: true,
@@ -1172,16 +1161,6 @@ describe.each([
 
   test(`${permission} key: search without retrieveVectors`, async () => {
     const client = await getClient(permission);
-    const adminKey = await getKey("Admin");
-
-    await fetch(`${HOST}/experimental-features`, {
-      body: JSON.stringify({ vectorStore: true }),
-      headers: {
-        Authorization: `Bearer ${adminKey}`,
-        "Content-Type": "application/json",
-      },
-      method: "PATCH",
-    });
 
     const response = await client.index(index.uid).search("prince");
 
