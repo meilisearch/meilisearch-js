@@ -3,11 +3,9 @@ import type { Embedders } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
-  HOST,
   BAD_HOST,
   MeiliSearch,
   getClient,
-  getKey,
 } from "./utils/meilisearch-test-utils.js";
 
 const index = {
@@ -57,16 +55,6 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     beforeEach(async () => {
       await clearAllIndexes(config);
       const client = await getClient(permission);
-      const key = await getKey(permission);
-
-      await fetch(`${HOST}/experimental-features`, {
-        body: JSON.stringify({ vectorStore: true }),
-        headers: {
-          Authorization: `Bearer ${key}`,
-          "Content-Type": "application/json",
-        },
-        method: "PATCH",
-      });
 
       await client.createIndex(index.uid).waitTask();
     });
@@ -75,7 +63,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       const response = await client.index(index.uid).getEmbedders();
 
-      expect(response).toEqual(null);
+      expect(response).toEqual({});
     });
 
     test(`${permission} key: Update embedders with 'userProvided' source`, async () => {
@@ -253,7 +241,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const response = await client.index(index.uid).getEmbedders();
 
-      expect(response).toEqual(null);
+      expect(response).toEqual({});
     });
 
     test(`${permission} key: search (POST) with vectors`, async () => {

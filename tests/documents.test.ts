@@ -197,16 +197,9 @@ describe("Documents tests", () => {
         const client = await getClient(permission);
         const adminKey = await getKey("Admin");
 
-        await fetch(`${HOST}/experimental-features`, {
-          body: JSON.stringify({ vectorStore: true }),
-          headers: {
-            Authorization: `Bearer ${adminKey}`,
-            "Content-Type": "application/json",
-          },
-          method: "PATCH",
-        });
-
-        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+        await client
+          .index(indexPk.uid)
+          .addDocuments(dataset).waitTask();
 
         // Get documents with POST
         const documentsPost = await client
@@ -237,16 +230,9 @@ describe("Documents tests", () => {
         const client = await getClient(permission);
         const adminKey = await getKey("Admin");
 
-        await fetch(`${HOST}/experimental-features`, {
-          body: JSON.stringify({ vectorStore: true }),
-          headers: {
-            Authorization: `Bearer ${adminKey}`,
-            "Content-Type": "application/json",
-          },
-          method: "PATCH",
-        });
-
-        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+        await client
+          .index(indexPk.uid)
+          .addDocuments(dataset).waitTask();
 
         // Get documents with POST
         const documentsPost = await client
