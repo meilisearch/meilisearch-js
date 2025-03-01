@@ -367,7 +367,6 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(response).toHaveProperty("fieldDistribution", {});
       expect(response).toHaveProperty("numberOfEmbeddedDocuments", 0);
       expect(response).toHaveProperty("numberOfEmbeddings", 0);
-
     });
 
     test(`${permission} key: Get updatedAt and createdAt through fetch info`, async () => {
