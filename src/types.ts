@@ -789,6 +789,7 @@ export type IndexStats = {
 
 export type Stats = {
   databaseSize: number;
+  usedDatabaseSize: number;
   lastUpdate: string;
   indexes: {
     [index: string]: IndexStats;
