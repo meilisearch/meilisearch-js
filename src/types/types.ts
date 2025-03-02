@@ -609,6 +609,8 @@ export type IndexStats = {
   numberOfDocuments: number;
   isIndexing: boolean;
   fieldDistribution: FieldDistribution;
+  numberOfEmbeddedDocuments: number;
+  numberOfEmbeddings: number;
 };
 
 export type Stats = {
