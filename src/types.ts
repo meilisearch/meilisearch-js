@@ -785,6 +785,8 @@ export type IndexStats = {
   fieldDistribution: FieldDistribution;
   numberOfEmbeddedDocuments: number;
   numberOfEmbeddings: number;
+  rawDocumentDbSize: number;
+  avgDocumentSize: number;
 };
 
 export type Stats = {
