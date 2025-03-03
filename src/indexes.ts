@@ -256,7 +256,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @param data - Data to update
    * @returns Promise to the current Index object with updated information
    */
-  async update(data?: IndexOptions): Promise<EnqueuedTask> {
+  async update(data: IndexOptions): Promise<EnqueuedTask> {
     const task = await this.httpRequest.patch<EnqueuedTaskObject>({
       path: `indexes/${this.uid}`,
       body: data,
