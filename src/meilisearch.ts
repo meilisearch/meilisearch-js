@@ -143,7 +143,7 @@ export class MeiliSearch {
    */
   async updateIndex(
     uid: string,
-    options?: IndexOptions,
+    options: IndexOptions = {},
   ): Promise<EnqueuedTask> {
     return await new Index(this.config, uid).update(options);
   }
