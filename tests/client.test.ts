@@ -547,6 +547,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         const client = await getClient(permission);
         const response: Stats = await client.getStats();
         expect(response).toHaveProperty("databaseSize", expect.any(Number));
+        expect(response).toHaveProperty("usedDatabaseSize", expect.any(Number));
         expect(response).toHaveProperty("lastUpdate"); // TODO: Could be null, find out why
         expect(response).toHaveProperty("indexes", expect.any(Object));
       });

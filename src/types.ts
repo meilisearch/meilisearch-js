@@ -783,10 +783,15 @@ export type IndexStats = {
   numberOfDocuments: number;
   isIndexing: boolean;
   fieldDistribution: FieldDistribution;
+  numberOfEmbeddedDocuments: number;
+  numberOfEmbeddings: number;
+  rawDocumentDbSize: number;
+  avgDocumentSize: number;
 };
 
 export type Stats = {
   databaseSize: number;
+  usedDatabaseSize: number;
   lastUpdate: string;
   indexes: {
     [index: string]: IndexStats;
