@@ -816,3 +816,39 @@ describe.each([
     );
   });
 });
+
+describe.each([{ permission: "Master" }])(
+  "Test instance methods",
+  ({ permission }) => {
+    const instanceName = "instance_1";
+
+    test(`${permission} key: Set remote instances`, async () => {
+      const client = await getClient(permission);
+
+      const instances = {
+        [instanceName]: {
+          url: "http://instance-1:7700",
+          searchApiKey: "search-key-1",
+        },
+      };
+
+      const response = await client.setRemoteInstances(instances);
+      expect(response).toHaveProperty("remotes");
+      expect(response.remotes).toHaveProperty("instance_1");
+      expect(response.remotes["instance_1"]).toHaveProperty(
+        "url",
+        instances[instanceName].url,
+      );
+      expect(response.remotes["instance_1"]).toHaveProperty(
+        "searchApiKey",
+        instances[instanceName].searchApiKey,
+      );
+    });
+
+    test(`${permission} key: Set instance name`, async () => {
+      const client = await getClient(permission);
+      const response = await client.setInstaceName(instanceName);
+      expect(response).toHaveProperty("self", instanceName);
+    });
+  },
+);
