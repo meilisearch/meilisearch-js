@@ -5,12 +5,7 @@
  * Copyright: 2019, MeiliSearch
  */
 
-import {
-  MeiliSearchError,
-  MeiliSearchRequestError,
-  versionErrorHintMessage,
-  MeiliSearchApiError,
-} from "./errors/index.js";
+import { MeiliSearchError } from "./errors/index.js";
 import type {
   Config,
   SearchResponse,
@@ -369,20 +364,10 @@ class Index<T extends Record<string, any> = Record<string, any>> {
 
     // In case `filter` is provided, use `POST /documents/fetch`
     if (params?.filter !== undefined) {
-      try {
-        return await this.httpRequest.post<ResourceResults<D[]>>({
-          path: `${relativeBaseURL}/fetch`,
-          body: params,
-        });
-      } catch (e) {
-        if (e instanceof MeiliSearchRequestError) {
-          e.message = versionErrorHintMessage(e.message, "getDocuments");
-        } else if (e instanceof MeiliSearchApiError) {
-          e.message = versionErrorHintMessage(e.message, "getDocuments");
-        }
-
-        throw e;
-      }
+      return await this.httpRequest.post<ResourceResults<D[]>>({
+        path: `${relativeBaseURL}/fetch`,
+        body: params,
+      });
     } else {
       // Else use `GET /documents` method
       return await this.httpRequest.get<ResourceResults<D[]>>({
@@ -585,22 +570,12 @@ class Index<T extends Record<string, any> = Record<string, any>> {
       ? "documents/delete"
       : "documents/delete-batch";
 
-    try {
-      const task = await this.httpRequest.post<EnqueuedTaskObject>({
-        path: `indexes/${this.uid}/${endpoint}`,
-        body: params,
-      });
+    const task = await this.httpRequest.post<EnqueuedTaskObject>({
+      path: `indexes/${this.uid}/${endpoint}`,
+      body: params,
+    });
 
-      return new EnqueuedTask(task);
-    } catch (e) {
-      if (e instanceof MeiliSearchRequestError && isDocumentsDeletionQuery) {
-        e.message = versionErrorHintMessage(e.message, "deleteDocuments");
-      } else if (e instanceof MeiliSearchApiError) {
-        e.message = versionErrorHintMessage(e.message, "deleteDocuments");
-      }
-
-      throw e;
-    }
+    return new EnqueuedTask(task);
   }
 
   /**
