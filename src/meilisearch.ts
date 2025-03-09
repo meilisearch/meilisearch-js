@@ -277,7 +277,6 @@ export class MeiliSearch {
    * @param name - Instance name
    * @returns Promise containing the self property
    * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#specify-the-name-of-the-current-instance}
-   * 
    */
   async setInstaceName(name: string) {
     const url = `network`;
