@@ -201,7 +201,8 @@ export class MeiliSearch {
    * Perform multiple search queries.
    *
    * It is possible to make multiple search queries on the same index or on
-   * different ones
+   * different ones. With network feature enabled, you can also search across
+   * remote instances.
    *
    * @example
    *
@@ -212,11 +213,33 @@ export class MeiliSearch {
    *     { indexUid: "books", q: "flower" },
    *   ],
    * });
+   *
+   * // Federated search with remote instance (requires network feature enabled)
+   * client.multiSearch({
+   *   federation: {},
+   *   queries: [
+   *     {
+   *       indexUid: "movies",
+   *       q: "wonder",
+   *       federationOptions: {
+   *         remote: "meilisearch instance name",
+   *       },
+   *     },
+   *     {
+   *       indexUid: "movies",
+   *       q: "wonder",
+   *       federationOptions: {
+   *         remote: "meilisearch instance name",
+   *       },
+   *     },
+   *   ],
+   * });
    * ```
    *
    * @param queries - Search queries
    * @param config - Additional request configuration options
    * @returns Promise containing the search responses
+   * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#perform-a-search}
    */
   async multiSearch<
     T1 extends MultiSearchParams | FederatedMultiSearchParams,
@@ -228,6 +251,37 @@ export class MeiliSearch {
     const url = `multi-search`;
 
     return await this.httpRequest.post(url, queries, undefined, config);
+  }
+
+  ///
+  ///  CONFIGURE NETWORK OBJECT
+  ///
+
+  /**
+   * Set the network.remotes
+   *
+   * @param instances - Instances
+   * @returns Promise containing the remotes object
+   * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#configuring-the-network-object}
+   */
+  async setRemoteInstances(
+    instances: Record<string, { url: string; searchApiKey: string }>,
+  ) {
+    const url = `network`;
+    return await this.httpRequest.patch(url, { remotes: instances });
+  }
+
+  /**
+   * Set the network.self
+   *
+   * @param name - Instance name
+   * @returns Promise containing the self property
+   * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#specify-the-name-of-the-current-instance}
+   * 
+   */
+  async setInstaceName(name: string) {
+    const url = `network`;
+    return await this.httpRequest.patch(url, { self: name });
   }
 
   ///
