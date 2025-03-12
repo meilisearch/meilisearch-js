@@ -253,7 +253,7 @@ export type MergeFacets = {
   maxValuesPerFacet?: number | null;
 };
 
-export type FederationOptions = { weight: number };
+export type FederationOptions = { weight: number; remote?: string };
 export type MultiSearchFederation = {
   limit?: number;
   offset?: number;
