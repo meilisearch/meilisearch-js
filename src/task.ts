@@ -9,7 +9,7 @@ import type {
   EnqueuedTaskPromise,
   TaskUidOrEnqueuedTask,
 } from "./types/index.js";
-import { type HttpRequests, toQueryParams } from "./http-requests.js";
+import type { HttpRequests } from "./http-requests.js";
 
 /**
  * @returns A function which defines an extra function property on a
@@ -62,22 +62,18 @@ export class TaskClient {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-one-task} */
   async getTask(uid: number): Promise<Task> {
-    const url = `tasks/${uid}`;
-
-    const task = await this.#httpRequest.get<Task>(url);
-
+    const task = await this.#httpRequest.get<Task>({
+      path: `tasks/${uid}`,
+    });
     return task;
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-tasks} */
-  async getTasks(parameters?: TasksOrBatchesQuery): Promise<TasksResults> {
-    const url = `tasks`;
-
-    const tasks = await this.#httpRequest.get<TasksResults>(
-      url,
-      toQueryParams<TasksOrBatchesQuery>(parameters ?? {}),
-    );
-
+  async getTasks(params?: TasksOrBatchesQuery): Promise<TasksResults> {
+    const tasks = await this.#httpRequest.get<TasksResults>({
+      path: "tasks",
+      params,
+    });
     return tasks;
   }
 
@@ -188,28 +184,22 @@ export class TaskClient {
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks} */
-  cancelTasks(parameters: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
-    const url = `tasks/cancel`;
-
+  cancelTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
     return this.#applyWaitTask(
-      this.#httpRequest.post(
-        url,
-        {},
-        toQueryParams<DeleteOrCancelTasksQuery>(parameters),
-      ),
+      this.#httpRequest.post({
+        path: "tasks/cancel",
+        params,
+      }),
     );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#delete-tasks} */
-  deleteTasks(parameters: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
-    const url = `tasks`;
-
+  deleteTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
     return this.#applyWaitTask(
-      this.#httpRequest.delete(
-        url,
-        {},
-        toQueryParams<DeleteOrCancelTasksQuery>(parameters),
-      ),
+      this.#httpRequest.delete({
+        path: "tasks",
+        params,
+      }),
     );
   }
 }

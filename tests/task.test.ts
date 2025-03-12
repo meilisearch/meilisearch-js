@@ -551,6 +551,16 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(task.details?.originalFilter).toContain("afterFinishedAt");
     });
 
+    // cancel error code: MISSING_TASK_FILTER
+    test(`${permission} key: Try to cancel without filters and fail`, async () => {
+      const client = await getClient(permission);
+
+      await expect(client.tasks.cancelTasks({})).rejects.toHaveProperty(
+        "cause.code",
+        ErrorStatusCode.MISSING_TASK_FILTERS,
+      );
+    });
+
     // delete: uid
     test(`${permission} key: Delete a task using the uid filter`, async () => {
       const client = await getClient(permission);

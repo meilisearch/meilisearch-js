@@ -25,6 +25,7 @@ import type {
   FederatedMultiSearchParams,
   MultiSearchResponseOrSearchResponse,
   EnqueuedTaskPromise,
+  ExtraRequestInit,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -115,7 +116,7 @@ export class MeiliSearch {
    * @returns Promise returning array of raw index information
    */
   async getIndexes(
-    parameters: IndexesQuery = {},
+    parameters?: IndexesQuery,
   ): Promise<IndexesResults<Index[]>> {
     const rawIndexes = await this.getRawIndexes(parameters);
     const indexes: Index[] = rawIndexes.results.map(
@@ -131,13 +132,12 @@ export class MeiliSearch {
    * @returns Promise returning array of raw index information
    */
   async getRawIndexes(
-    parameters: IndexesQuery = {},
+    parameters?: IndexesQuery,
   ): Promise<IndexesResults<IndexObject[]>> {
-    const url = `indexes`;
-    return await this.httpRequest.get<IndexesResults<IndexObject[]>>(
-      url,
-      parameters,
-    );
+    return await this.httpRequest.get<IndexesResults<IndexObject[]>>({
+      path: "indexes",
+      params: parameters,
+    });
   }
 
   /**
@@ -198,8 +198,10 @@ export class MeiliSearch {
    * @returns Promise returning object of the enqueued task
    */
   swapIndexes(params: IndexSwap[]): EnqueuedTaskPromise {
-    const url = "/swap-indexes";
-    return this.#httpRequestsWithTask.post(url, params);
+    return this.#httpRequestsWithTask.post({
+      path: "/swap-indexes",
+      body: params,
+    });
   }
 
   ///
@@ -224,19 +226,23 @@ export class MeiliSearch {
    * ```
    *
    * @param queries - Search queries
-   * @param config - Additional request configuration options
+   * @param extraRequestInit - Additional request configuration options
    * @returns Promise containing the search responses
    */
   async multiSearch<
     T1 extends MultiSearchParams | FederatedMultiSearchParams,
-    T2 extends Record<string, unknown> = Record<string, any>,
+    T2 extends Record<string, any> = Record<string, any>,
   >(
     queries: T1,
-    config?: Partial<Request>,
+    extraRequestInit?: ExtraRequestInit,
   ): Promise<MultiSearchResponseOrSearchResponse<T1, T2>> {
-    const url = `multi-search`;
-
-    return await this.httpRequest.post(url, queries, undefined, config);
+    return await this.httpRequest.post<
+      MultiSearchResponseOrSearchResponse<T1, T2>
+    >({
+      path: "multi-search",
+      body: queries,
+      extraRequestInit,
+    });
   }
 
   ///
@@ -249,9 +255,11 @@ export class MeiliSearch {
    * @param parameters - Parameters to browse the indexes
    * @returns Promise returning an object with keys
    */
-  async getKeys(parameters: KeysQuery = {}): Promise<KeysResults> {
-    const url = `keys`;
-    const keys = await this.httpRequest.get<KeysResults>(url, parameters);
+  async getKeys(parameters?: KeysQuery): Promise<KeysResults> {
+    const keys = await this.httpRequest.get<KeysResults>({
+      path: "keys",
+      params: parameters,
+    });
 
     keys.results = keys.results.map((key) => ({
       ...key,
@@ -269,8 +277,9 @@ export class MeiliSearch {
    * @returns Promise returning a key
    */
   async getKey(keyOrUid: string): Promise<Key> {
-    const url = `keys/${keyOrUid}`;
-    return await this.httpRequest.get<Key>(url);
+    return await this.httpRequest.get<Key>({
+      path: `keys/${keyOrUid}`,
+    });
   }
 
   /**
@@ -280,8 +289,10 @@ export class MeiliSearch {
    * @returns Promise returning a key
    */
   async createKey(options: KeyCreation): Promise<Key> {
-    const url = `keys`;
-    return await this.httpRequest.post(url, options);
+    return await this.httpRequest.post<Key>({
+      path: "keys",
+      body: options,
+    });
   }
 
   /**
@@ -292,8 +303,10 @@ export class MeiliSearch {
    * @returns Promise returning a key
    */
   async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
-    const url = `keys/${keyOrUid}`;
-    return await this.httpRequest.patch(url, options);
+    return await this.httpRequest.patch<Key>({
+      path: `keys/${keyOrUid}`,
+      body: options,
+    });
   }
 
   /**
@@ -303,8 +316,7 @@ export class MeiliSearch {
    * @returns
    */
   async deleteKey(keyOrUid: string): Promise<void> {
-    const url = `keys/${keyOrUid}`;
-    return await this.httpRequest.delete<any>(url);
+    await this.httpRequest.delete({ path: `keys/${keyOrUid}` });
   }
 
   ///
@@ -317,8 +329,7 @@ export class MeiliSearch {
    * @returns Promise returning an object with health details
    */
   async health(): Promise<Health> {
-    const url = `health`;
-    return await this.httpRequest.get<Health>(url);
+    return await this.httpRequest.get<Health>({ path: "health" });
   }
 
   /**
@@ -328,9 +339,8 @@ export class MeiliSearch {
    */
   async isHealthy(): Promise<boolean> {
     try {
-      const url = `health`;
-      await this.httpRequest.get(url);
-      return true;
+      const { status } = await this.health();
+      return status === "available";
     } catch {
       return false;
     }
@@ -346,8 +356,7 @@ export class MeiliSearch {
    * @returns Promise returning object of all the stats
    */
   async getStats(): Promise<Stats> {
-    const url = `stats`;
-    return await this.httpRequest.get<Stats>(url);
+    return await this.httpRequest.get<Stats>({ path: "stats" });
   }
 
   ///
@@ -360,8 +369,7 @@ export class MeiliSearch {
    * @returns Promise returning object with version details
    */
   async getVersion(): Promise<Version> {
-    const url = `version`;
-    return await this.httpRequest.get<Version>(url);
+    return await this.httpRequest.get<Version>({ path: "version" });
   }
 
   ///
@@ -374,8 +382,9 @@ export class MeiliSearch {
    * @returns Promise returning object of the enqueued task
    */
   createDump(): EnqueuedTaskPromise {
-    const url = `dumps`;
-    return this.#httpRequestsWithTask.post(url);
+    return this.#httpRequestsWithTask.post({
+      path: "dumps",
+    });
   }
 
   ///
@@ -388,7 +397,8 @@ export class MeiliSearch {
    * @returns Promise returning object of the enqueued task
    */
   createSnapshot(): EnqueuedTaskPromise {
-    const url = `snapshots`;
-    return this.#httpRequestsWithTask.post(url);
+    return this.#httpRequestsWithTask.post({
+      path: "snapshots",
+    });
   }
 }
