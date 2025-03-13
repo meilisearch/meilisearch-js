@@ -4,7 +4,7 @@ import {
   MeiliSearchError,
   MeiliSearchApiError,
   MeiliSearchRequestError,
-  MeiliSearchTimeOutError,
+  MeiliSearchRequestTimeOutError,
 } from "../src/errors/index.js";
 
 const mockedFetch = vi.fn();
@@ -56,7 +56,7 @@ describe("Test on updates", () => {
 
   test("MeiliSearchTimeOutError can be compared with the instanceof operator", () => {
     expect(
-      new MeiliSearchTimeOutError("message") instanceof MeiliSearchTimeOutError,
+      new MeiliSearchRequestTimeOutError("message") instanceof MeiliSearchRequestTimeOutError,
     ).toEqual(true);
   });
 });

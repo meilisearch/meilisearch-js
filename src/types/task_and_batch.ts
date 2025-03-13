@@ -91,7 +91,7 @@ export type EnqueuedTask = {
 };
 
 /** Either a number or an {@link EnqueuedTask}. */
-export type TaskUidOrEnqueuedTask = number | EnqueuedTask;
+export type TaskUidOrEnqueuedTask = EnqueuedTask["taskUid"] | EnqueuedTask;
 
 /** {@link https://www.meilisearch.com/docs/reference/api/tasks#indexswap} */
 export type IndexSwap = { indexes: [string, string] };
