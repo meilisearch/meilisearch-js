@@ -8,6 +8,7 @@ import type {
   EnqueuedTask,
   EnqueuedTaskPromise,
   TaskUidOrEnqueuedTask,
+  ExtraRequestInit,
 } from "./types/index.js";
 import type { HttpRequests } from "./http-requests.js";
 
@@ -61,9 +62,14 @@ export class TaskClient {
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-one-task} */
-  async getTask(uid: number): Promise<Task> {
+  async getTask(
+    uid: number,
+    // TODO: Need to do this for all other methods: https://github.com/meilisearch/meilisearch-js/issues/1476
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<Task> {
     const task = await this.#httpRequest.get<Task>({
       path: `tasks/${uid}`,
+      extraRequestInit,
     });
     return task;
   }
@@ -93,37 +99,39 @@ export class TaskClient {
     const timeout = options?.timeout ?? this.#defaultTimeout;
     const interval = options?.interval ?? this.#defaultInterval;
 
+    const ac = timeout > 0 ? new AbortController() : null;
+
     return new Promise<Task>((resolve, reject) => {
-      let sleepTimeoutID: ReturnType<typeof setTimeout> | undefined;
-      const timeoutID =
-        timeout > 0
+      let sleepToId: ReturnType<typeof setTimeout> | undefined;
+      const toId =
+        ac !== null
           ? setTimeout(() => {
-              clearTimeout(sleepTimeoutID);
-              reject(
+              ac.abort(
                 new MeiliSearchTimeOutError(
                   `timeout of ${timeout}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
+                  { cause: { timeout, taskUid } },
                 ),
               );
-              // TODO: abort request, `getTask` should reject instead with the abort error
-              // should first wait on https://github.com/meilisearch/meilisearch-js/pull/1741
+              clearTimeout(sleepToId);
             }, timeout)
           : undefined;
 
       function rejectAndClearTimeout(error: unknown) {
         // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         reject(error);
-        clearTimeout(sleepTimeoutID);
-        clearTimeout(timeoutID);
+        clearTimeout(sleepToId);
+        clearTimeout(toId);
       }
 
+      const extraRequestInit = { signal: ac?.signal };
       const tryGetTask = async () => {
-        const task = await this.getTask(taskUid);
+        const task = await this.getTask(taskUid, extraRequestInit);
 
         if (task.status === "enqueued" || task.status === "processing") {
           return false;
         }
 
-        clearTimeout(timeoutID);
+        clearTimeout(toId);
         resolve(task);
         return true;
       };
@@ -142,7 +150,7 @@ export class TaskClient {
         }
 
         if (interval > 0) {
-          sleepTimeoutID = setTimeout(chainFunctionsOnPromise, interval);
+          sleepToId = setTimeout(chainFunctionsOnPromise, interval);
         } else {
           chainFunctionsOnPromise();
         }
