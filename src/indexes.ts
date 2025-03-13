@@ -330,12 +330,9 @@ export class Index<T extends Record<string, any> = Record<string, any>> {
     documentId: string | number,
     parameters?: DocumentQuery<T>,
   ): Promise<D> {
-    const fields = (() => {
-      if (Array.isArray(parameters?.fields)) {
-        return parameters?.fields?.join(",");
-      }
-      return undefined;
-    })();
+    const fields = Array.isArray(parameters?.fields)
+      ? parameters.fields.join()
+      : undefined;
 
     return await this.httpRequest.get<D>({
       path: `indexes/${this.uid}/documents/${documentId}`,

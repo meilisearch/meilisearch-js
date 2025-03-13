@@ -49,20 +49,21 @@ export type TaskType =
  * @see `meilisearch::routes::tasks::TasksFilterQuery` at {@link https://github.com/meilisearch/meilisearch}
  */
 export type TasksOrBatchesQuery = {
-  indexUids?: string[];
-  uids?: number[];
-  types?: TaskType[];
-  statuses?: TaskStatus[];
-  canceledBy?: number[];
-  beforeEnqueuedAt?: string;
-  afterEnqueuedAt?: string;
-  beforeStartedAt?: string;
-  afterStartedAt?: string;
-  beforeFinishedAt?: string;
-  afterFinishedAt?: string;
   limit?: number;
   from?: number;
   reverse?: boolean;
+  batchUids?: number[];
+  uids?: number[];
+  canceledBy?: number[];
+  types?: TaskType[];
+  statuses?: TaskStatus[];
+  indexUids?: string[];
+  afterEnqueuedAt?: string;
+  beforeEnqueuedAt?: string;
+  afterStartedAt?: string;
+  beforeStartedAt?: string;
+  afterFinishedAt?: string;
+  beforeFinishedAt?: string;
 };
 
 /**
@@ -73,7 +74,7 @@ export type TasksOrBatchesQuery = {
  */
 export type DeleteOrCancelTasksQuery = Omit<
   TasksOrBatchesQuery,
-  "limit" | "from"
+  "limit" | "from" | "reverse"
 >;
 
 /**

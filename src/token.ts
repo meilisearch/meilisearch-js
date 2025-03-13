@@ -14,6 +14,7 @@ function getOptionsWithDefaults(options: TenantTokenGeneratorOptions) {
   return { searchRules, algorithm, force, ...restOfOptions };
 }
 
+// TODO: There's no point in this, or maybe even the above fn
 type TenantTokenGeneratorOptionsWithDefaults = ReturnType<
   typeof getOptionsWithDefaults
 >;

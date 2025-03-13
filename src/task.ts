@@ -83,7 +83,7 @@ export class TaskClient {
    * @remarks
    * If an {@link EnqueuedTask} needs to be awaited instantly, it is recommended
    * to instead use {@link EnqueuedTaskPromise.waitTask}, which is available on
-   * any method that resolves to an {@link EnqueuedTask}.
+   * any method that returns an {@link EnqueuedTaskPromise}.
    */
   waitForTask(
     taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask,
