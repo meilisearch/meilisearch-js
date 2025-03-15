@@ -6,7 +6,7 @@ export class MeiliSearchTaskTimeOutError extends MeiliSearchError {
 
   constructor(taskUid: number, timeout: number) {
     super(
-      `timeout of ${timeout}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
+      `timeout of ${timeout}ms has exceeded on task ${taskUid} when waiting for it to be resolved.`,
     );
 
     this.cause = { taskUid, timeout };
