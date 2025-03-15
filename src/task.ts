@@ -12,11 +12,6 @@ import type {
 } from "./types/index.js";
 import type { HttpRequests } from "./http-requests.js";
 
-// This could be a symbol, but Node.js 18 fetch doesn't support that yet
-// and it might just go EOL before it ever does.
-// https://github.com/nodejs/node/issues/49557
-const TIMEOUT_OBJECT = {};
-
 /**
  * @returns A function which defines an extra function property on a
  *   {@link Promise}, which resolves to {@link EnqueuedTask}, which awaits it and
@@ -111,18 +106,17 @@ export class TaskClient {
       const toId =
         ac !== null
           ? setTimeout(() => {
-              ac.abort(TIMEOUT_OBJECT);
+              reject(new MeiliSearchTaskTimeOutError(taskUid, timeout));
+              // TODO: Normally we would use error thrown by fetch to reject, but a bug prevents us from doing so
+              //       https://github.com/flevi29/meilisearch-js/issues/1
+              ac.abort();
               clearTimeout(sleepToId);
             }, timeout)
           : undefined;
 
       function rejectAndClearTimeout(error: unknown) {
         // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-        reject(
-          Object.is((error as Error).cause, TIMEOUT_OBJECT)
-            ? new MeiliSearchTaskTimeOutError(taskUid, timeout)
-            : error,
-        );
+        reject(error);
         clearTimeout(sleepToId);
         clearTimeout(toId);
       }
