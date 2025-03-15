@@ -206,7 +206,7 @@ export class HttpRequests {
       appendRecordToURLSearchParams(url.searchParams, params);
     }
 
-    const requestInit: RequestInit = {
+    const init: RequestInit = {
       method,
       body:
         contentType === undefined || typeof body !== "string"
@@ -219,47 +219,32 @@ export class HttpRequests {
 
     const startTimeout =
       this.#requestTimeout !== undefined
-        ? getTimeoutFn(requestInit, this.#requestTimeout)
+        ? getTimeoutFn(init, this.#requestTimeout)
         : null;
-
-    const getResponseAndHandleErrorAndTimeout = <
-      U extends ReturnType<NonNullable<Config["httpClient"]> | typeof fetch>,
-    >(
-      responsePromise: U,
-      stopTimeout?: ReturnType<NonNullable<typeof startTimeout>>,
-    ) =>
-      responsePromise
-        .catch((error: unknown) => {
-          throw new MeiliSearchRequestError(
-            url.toString(),
-            Object.is(error, TIMEOUT_ID)
-              ? new MeiliSearchRequestTimeOutError(
-                  this.#requestTimeout!,
-                  requestInit,
-                )
-              : error,
-          );
-        })
-        .finally(() => stopTimeout?.()) as U;
 
     const stopTimeout = startTimeout?.();
 
-    if (this.#customRequestFn !== undefined) {
-      const response = await getResponseAndHandleErrorAndTimeout(
-        this.#customRequestFn(url, requestInit),
-        stopTimeout,
-      );
+    let response: Response;
+    let responseBody: string;
+    try {
+      if (this.#customRequestFn !== undefined) {
+        // When using a custom HTTP client, the response should already be handled and ready to be returned
+        return (await this.#customRequestFn(url, init)) as T;
+      }
 
-      // When using a custom HTTP client, the response should already be handled and ready to be returned
-      return response as T;
+      response = await fetch(url, init);
+      responseBody = await response.text();
+    } catch (error) {
+      throw new MeiliSearchRequestError(
+        url.toString(),
+        Object.is(error, TIMEOUT_ID)
+          ? new MeiliSearchRequestTimeOutError(this.#requestTimeout!, init)
+          : error,
+      );
+    } finally {
+      stopTimeout?.();
     }
 
-    const response = await getResponseAndHandleErrorAndTimeout(
-      fetch(url, requestInit),
-      stopTimeout,
-    );
-
-    const responseBody = await response.text();
     const parsedResponse =
       responseBody === "" ? undefined : JSON.parse(responseBody);
 
