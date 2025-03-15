@@ -56,7 +56,8 @@ describe("Test on updates", () => {
 
   test("MeiliSearchTimeOutError can be compared with the instanceof operator", () => {
     expect(
-      new MeiliSearchRequestTimeOutError("message") instanceof MeiliSearchRequestTimeOutError,
+      new MeiliSearchRequestTimeOutError("message") instanceof
+        MeiliSearchRequestTimeOutError,
     ).toEqual(true);
   });
 });
