@@ -1,5 +1,6 @@
 import { MeiliSearchError } from "./meilisearch-error.js";
 
+/** Error thrown when a HTTP request times out. */
 export class MeiliSearchRequestTimeOutError extends MeiliSearchError {
   override name = "MeiliSearchRequestTimeOutError";
   override cause: { timeout: number; requestInit: RequestInit };
