@@ -68,7 +68,9 @@ function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
   return headers;
 }
 
-const TIMEOUT_ID = Symbol("timeout id");
+// TODO: Convert to Symbol("timeout id") when Node.js 18 is dropped
+/** Used to identify whether an error is a timeout error after fetch request. */
+const TIMEOUT_ID = {};
 
 /**
  * Attach a timeout signal to a {@link RequestInit}, while preserving original
