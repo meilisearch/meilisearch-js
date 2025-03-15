@@ -68,10 +68,7 @@ function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
   return headers;
 }
 
-// This could be a symbol, but Node.js 18 fetch doesn't support that yet
-// and it might just go EOL before it ever does.
-// https://github.com/nodejs/node/issues/49557
-const TIMEOUT_OBJECT = {};
+const TIMEOUT_ID = Symbol("timeout id");
 
 /**
  * Attach a timeout signal to a {@link RequestInit}, while preserving original
@@ -110,7 +107,7 @@ function getTimeoutFn(
         return;
       }
 
-      const to = setTimeout(() => ac.abort(TIMEOUT_OBJECT), ms);
+      const to = setTimeout(() => ac.abort(TIMEOUT_ID), ms);
       const fn = () => {
         clearTimeout(to);
 
@@ -131,7 +128,7 @@ function getTimeoutFn(
   requestInit.signal = ac.signal;
 
   return () => {
-    const to = setTimeout(() => ac.abort(TIMEOUT_OBJECT), ms);
+    const to = setTimeout(() => ac.abort(TIMEOUT_ID), ms);
     return () => clearTimeout(to);
   };
 }
@@ -235,7 +232,7 @@ export class HttpRequests {
         .catch((error: unknown) => {
           throw new MeiliSearchRequestError(
             url.toString(),
-            Object.is(error, TIMEOUT_OBJECT)
+            Object.is(error, TIMEOUT_ID)
               ? new MeiliSearchRequestTimeOutError(
                   this.#requestTimeout!,
                   requestInit,

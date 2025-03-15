@@ -12,6 +12,8 @@ import type {
 } from "./types/index.js";
 import type { HttpRequests } from "./http-requests.js";
 
+const TIMEOUT_ID = Symbol("timeout id");
+
 /**
  * @returns A function which defines an extra function property on a
  *   {@link Promise}, which resolves to {@link EnqueuedTask}, which awaits it and
@@ -91,7 +93,7 @@ export class TaskClient {
    * to instead use {@link EnqueuedTaskPromise.waitTask}, which is available on
    * any method that returns an {@link EnqueuedTaskPromise}.
    */
-  waitForTask(
+  async waitForTask(
     taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask,
     options?: WaitOptions,
   ): Promise<Task> {
@@ -101,61 +103,29 @@ export class TaskClient {
 
     const ac = timeout > 0 ? new AbortController() : null;
 
-    return new Promise<Task>((resolve, reject) => {
-      let sleepToId: ReturnType<typeof setTimeout> | undefined;
-      const toId =
-        ac !== null
-          ? setTimeout(() => {
-              reject(new MeiliSearchTaskTimeOutError(taskUid, timeout));
-              // TODO: Normally we would use error thrown by fetch to reject, but a bug prevents us from doing so
-              //       https://github.com/flevi29/meilisearch-js/issues/1
-              ac.abort();
-              clearTimeout(sleepToId);
-            }, timeout)
-          : undefined;
+    const toId =
+      ac !== null
+        ? setTimeout(() => void ac.abort(TIMEOUT_ID), timeout)
+        : undefined;
 
-      function rejectAndClearTimeout(error: unknown) {
-        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-        reject(error);
-        clearTimeout(sleepToId);
-        clearTimeout(toId);
-      }
+    try {
+      for (;;) {
+        const task = await this.getTask(taskUid, { signal: ac?.signal });
 
-      const extraRequestInit = { signal: ac?.signal };
-      const tryGetTask = async () => {
-        const task = await this.getTask(taskUid, extraRequestInit);
-
-        if (task.status === "enqueued" || task.status === "processing") {
-          return false;
-        }
-
-        clearTimeout(toId);
-        resolve(task);
-        return true;
-      };
-
-      let promise: Promise<boolean | void>;
-      function chainFunctionsOnPromise() {
-        promise = promise
-          .then(tryGetTask)
-          .then(loopHelper)
-          .catch(rejectAndClearTimeout);
-      }
-
-      function loopHelper(isDone: boolean) {
-        if (isDone) {
-          return;
+        if (task.status !== "enqueued" && task.status !== "processing") {
+          clearTimeout(toId);
+          return task;
         }
 
         if (interval > 0) {
-          sleepToId = setTimeout(chainFunctionsOnPromise, interval);
-        } else {
-          chainFunctionsOnPromise();
+          await new Promise((resolve) => setTimeout(resolve, interval));
         }
       }
-
-      promise = tryGetTask().then(loopHelper).catch(rejectAndClearTimeout);
-    });
+    } catch (error) {
+      throw Object.is((error as Error).cause, TIMEOUT_ID)
+        ? new MeiliSearchTaskTimeOutError(taskUid, timeout)
+        : error;
+    }
   }
 
   /**
