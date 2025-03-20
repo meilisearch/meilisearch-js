@@ -260,7 +260,7 @@ describe.each([
     });
 
     //set instance name
-    await masterClient.setInstaceName(instanceName);
+    await masterClient.setInstanceName(instanceName);
 
     const searchClient = await getClient(permission);
 

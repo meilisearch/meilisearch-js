@@ -930,7 +930,7 @@ describe.each([{ permission: "Master" }])(
 
     test(`${permission} key: Set instance name`, async () => {
       const client = await getClient(permission);
-      const response = await client.setInstaceName(instanceName);
+      const response = await client.setInstanceName(instanceName);
       expect(response).toHaveProperty("self", instanceName);
     });
   },
