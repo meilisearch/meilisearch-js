@@ -901,11 +901,11 @@ describe.each([
 });
 
 describe.each([{ permission: "Master" }])(
-  "Test instance methods",
+  "Test network methods",
   ({ permission }) => {
     const instanceName = "instance_1";
 
-    test(`${permission} key: Set remote instances`, async () => {
+    test(`${permission} key: Update and get network settings`, async () => {
       const client = await getClient(permission);
 
       const instances = {
@@ -915,7 +915,9 @@ describe.each([{ permission: "Master" }])(
         },
       };
 
-      const response = await client.setRemoteInstances(instances);
+      await client.updateNetwork({ self: instanceName, remotes: instances });
+      const response = await client.getNetwork();
+      expect(response).toHaveProperty("self", instanceName);
       expect(response).toHaveProperty("remotes");
       expect(response.remotes).toHaveProperty("instance_1");
       expect(response.remotes["instance_1"]).toHaveProperty(
@@ -926,12 +928,6 @@ describe.each([{ permission: "Master" }])(
         "searchApiKey",
         instances[instanceName].searchApiKey,
       );
-    });
-
-    test(`${permission} key: Set instance name`, async () => {
-      const client = await getClient(permission);
-      const response = await client.setInstanceName(instanceName);
-      expect(response).toHaveProperty("self", instanceName);
     });
   },
 );

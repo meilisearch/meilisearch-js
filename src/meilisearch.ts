@@ -28,7 +28,7 @@ import type {
   BatchesResults,
   BatchesQuery,
   MultiSearchResponseOrSearchResponse,
-  NetworkObject,
+  Network,
 } from "./types.js";
 import { ErrorStatusCode } from "./types.js";
 import { HttpRequests } from "./http-requests.js";
@@ -259,38 +259,27 @@ export class MeiliSearch {
   }
 
   ///
-  ///  CONFIGURE NETWORK OBJECT
+  ///  Network
   ///
 
   /**
-   * Set the network.remotes
+   * {@link https://www.meilisearch.com/docs/reference/api/network#get-the-network-object}
    *
-   * @param instances - Instances
-   * @returns Promise containing the remotes object
-   * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#configuring-the-network-object}
+   * @experimental
    */
-  async setRemoteInstances(
-    instances: Record<string, { url: string; searchApiKey: string }>,
-  ): Promise<NetworkObject> {
-    const url = `network`;
-    return await this.httpRequest.patch<NetworkObject>({
-      path: url,
-      body: { remotes: instances },
-    });
+  async getNetwork(): Promise<Network> {
+    return await this.httpRequest.get({ path: "network" });
   }
 
   /**
-   * Set the network.self
+   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
    *
-   * @param name - Instance name
-   * @returns Promise containing the self property
-   * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#specify-the-name-of-the-current-instance}
+   * @experimental
    */
-  async setInstanceName(name: string): Promise<NetworkObject> {
-    const url = `network`;
-    return await this.httpRequest.patch<NetworkObject>({
-      path: url,
-      body: { self: name },
+  async updateNetwork(network: Partial<Network>): Promise<Network> {
+    return await this.httpRequest.patch({
+      path: "network",
+      body: network,
     });
   }
 
