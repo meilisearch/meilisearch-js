@@ -273,7 +273,10 @@ export class MeiliSearch {
     instances: Record<string, { url: string; searchApiKey: string }>,
   ): Promise<NetworkObject> {
     const url = `network`;
-    return await this.httpRequest.patch<NetworkObject>({path:url, body: { remotes: instances }});
+    return await this.httpRequest.patch<NetworkObject>({
+      path: url,
+      body: { remotes: instances },
+    });
   }
 
   /**
@@ -283,9 +286,12 @@ export class MeiliSearch {
    * @returns Promise containing the self property
    * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#specify-the-name-of-the-current-instance}
    */
-  async setInstanceName(name: string):Promise<NetworkObject> {
+  async setInstanceName(name: string): Promise<NetworkObject> {
     const url = `network`;
-    return await this.httpRequest.patch<NetworkObject>({path:url, body:{ self: name }});
+    return await this.httpRequest.patch<NetworkObject>({
+      path: url,
+      body: { self: name },
+    });
   }
 
   ///
