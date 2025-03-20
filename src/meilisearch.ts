@@ -28,6 +28,7 @@ import type {
   BatchesResults,
   BatchesQuery,
   MultiSearchResponseOrSearchResponse,
+  NetworkObject,
 } from "./types.js";
 import { ErrorStatusCode } from "./types.js";
 import { HttpRequests } from "./http-requests.js";
@@ -270,9 +271,9 @@ export class MeiliSearch {
    */
   async setRemoteInstances(
     instances: Record<string, { url: string; searchApiKey: string }>,
-  ) {
+  ): Promise<NetworkObject> {
     const url = `network`;
-    return await this.httpRequest.patch(url, { remotes: instances });
+    return await this.httpRequest.patch<NetworkObject>({path:url, body: { remotes: instances }});
   }
 
   /**
@@ -282,9 +283,9 @@ export class MeiliSearch {
    * @returns Promise containing the self property
    * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#specify-the-name-of-the-current-instance}
    */
-  async setInstaceName(name: string) {
+  async setInstanceName(name: string):Promise<NetworkObject> {
     const url = `network`;
-    return await this.httpRequest.patch(url, { self: name });
+    return await this.httpRequest.patch<NetworkObject>({path:url, body:{ self: name }});
   }
 
   ///

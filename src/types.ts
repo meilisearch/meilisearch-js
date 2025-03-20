@@ -253,6 +253,16 @@ export type MergeFacets = {
   maxValuesPerFacet?: number | null;
 };
 
+export type NetworkObject = {
+  self: string;
+  remotes: {
+    [instanceName: string]: {
+      url: string;
+      searchApiKey: string;
+    };
+  };
+};
+
 export type FederationOptions = { weight: number; remote?: string };
 export type MultiSearchFederation = {
   limit?: number;
