@@ -253,14 +253,12 @@ describe.each([
 
     const searchKey = await getKey("Search");
 
-    // set the remote instances
+    // set the remote name and instances
     const instanceName = "instance_1";
-    await masterClient.setRemoteInstances({
-      [instanceName]: { url: HOST, searchApiKey: searchKey },
+    await masterClient.updateNetwork({
+      self: instanceName,
+      remotes: { [instanceName]: { url: HOST, searchApiKey: searchKey } },
     });
-
-    //set instance name
-    await masterClient.setInstanceName(instanceName);
 
     const searchClient = await getClient(permission);
 
