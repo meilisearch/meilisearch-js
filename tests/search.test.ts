@@ -22,6 +22,7 @@ import {
   getClient,
   datasetWithNests,
   getKey,
+  HOST,
 } from "./utils/meilisearch-test-utils.js";
 
 const index = {
@@ -233,6 +234,60 @@ describe.each([
     expect(Array.isArray(response2.hits)).toBe(true);
     expect(response2.hits.length).toEqual(2);
     expect(response2.hits[0].id).toEqual(1344);
+  });
+
+  test(`${permission} key: Multi index search with federation and remote`, async () => {
+    const adminKey = await getKey("Admin");
+
+    // first enable the network endpoint.
+    await fetch(`${HOST}/experimental-features`, {
+      body: JSON.stringify({ network: true }),
+      headers: {
+        Authorization: `Bearer ${adminKey}`,
+        "Content-Type": "application/json",
+      },
+      method: "PATCH",
+    });
+
+    const masterClient = await getClient("Master");
+
+    const searchKey = await getKey("Search");
+
+    // set the remote name and instances
+    const instanceName = "instance_1";
+    await masterClient.updateNetwork({
+      self: instanceName,
+      remotes: { [instanceName]: { url: HOST, searchApiKey: searchKey } },
+    });
+
+    const searchClient = await getClient(permission);
+
+    const response = await searchClient.multiSearch<
+      FederatedMultiSearchParams,
+      Books | { id: number; asd: string }
+    >({
+      federation: {},
+      queries: [
+        {
+          indexUid: index.uid,
+          q: "456",
+          attributesToSearchOn: ["id"],
+          federationOptions: { weight: 1, remote: instanceName },
+        },
+        {
+          indexUid: index.uid,
+          q: "1344",
+          federationOptions: { weight: 0.9, remote: instanceName },
+          attributesToSearchOn: ["id"],
+        },
+      ],
+    });
+
+    expect(response).toHaveProperty("hits");
+    expect(Array.isArray(response.hits)).toBe(true);
+    expect(response.hits.length).toEqual(2);
+    expect(response.hits[0].id).toEqual(456);
+    expect(response.hits[0]._federation).toHaveProperty("remote", instanceName);
   });
 
   test(`${permission} key: Multi search with facetsByIndex`, async () => {

@@ -28,6 +28,7 @@ import type {
   BatchesResults,
   BatchesQuery,
   MultiSearchResponseOrSearchResponse,
+  Network,
 } from "./types.js";
 import { ErrorStatusCode } from "./types.js";
 import { HttpRequests } from "./http-requests.js";
@@ -201,7 +202,8 @@ export class MeiliSearch {
    * Perform multiple search queries.
    *
    * It is possible to make multiple search queries on the same index or on
-   * different ones
+   * different ones. With network feature enabled, you can also search across
+   * remote instances.
    *
    * @example
    *
@@ -212,11 +214,33 @@ export class MeiliSearch {
    *     { indexUid: "books", q: "flower" },
    *   ],
    * });
+   *
+   * // Federated search with remote instance (requires network feature enabled)
+   * client.multiSearch({
+   *   federation: {},
+   *   queries: [
+   *     {
+   *       indexUid: "movies",
+   *       q: "wonder",
+   *       federationOptions: {
+   *         remote: "meilisearch instance name",
+   *       },
+   *     },
+   *     {
+   *       indexUid: "movies",
+   *       q: "wonder",
+   *       federationOptions: {
+   *         remote: "meilisearch instance name",
+   *       },
+   *     },
+   *   ],
+   * });
    * ```
    *
    * @param queries - Search queries
    * @param extraRequestInit - Additional request configuration options
    * @returns Promise containing the search responses
+   * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#perform-a-search}
    */
   async multiSearch<
     T1 extends MultiSearchParams | FederatedMultiSearchParams,
@@ -231,6 +255,31 @@ export class MeiliSearch {
       path: "multi-search",
       body: queries,
       extraRequestInit,
+    });
+  }
+
+  ///
+  ///  Network
+  ///
+
+  /**
+   * {@link https://www.meilisearch.com/docs/reference/api/network#get-the-network-object}
+   *
+   * @experimental
+   */
+  async getNetwork(): Promise<Network> {
+    return await this.httpRequest.get({ path: "network" });
+  }
+
+  /**
+   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   *
+   * @experimental
+   */
+  async updateNetwork(network: Partial<Network>): Promise<Network> {
+    return await this.httpRequest.patch({
+      path: "network",
+      body: network,
     });
   }
 
