@@ -876,3 +876,35 @@ describe.each([
     );
   });
 });
+
+describe.each([{ permission: "Master" }])(
+  "Test network methods",
+  ({ permission }) => {
+    const instanceName = "instance_1";
+
+    test(`${permission} key: Update and get network settings`, async () => {
+      const client = await getClient(permission);
+
+      const instances = {
+        [instanceName]: {
+          url: "http://instance-1:7700",
+          searchApiKey: "search-key-1",
+        },
+      };
+
+      await client.updateNetwork({ self: instanceName, remotes: instances });
+      const response = await client.getNetwork();
+      expect(response).toHaveProperty("self", instanceName);
+      expect(response).toHaveProperty("remotes");
+      expect(response.remotes).toHaveProperty("instance_1");
+      expect(response.remotes["instance_1"]).toHaveProperty(
+        "url",
+        instances[instanceName].url,
+      );
+      expect(response.remotes["instance_1"]).toHaveProperty(
+        "searchApiKey",
+        instances[instanceName].searchApiKey,
+      );
+    });
+  },
+);
