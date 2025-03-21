@@ -94,7 +94,7 @@ Some notes on GitHub PRs:
 
 - [Convert your PR as a draft](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/changing-the-stage-of-a-pull-request) if your changes are a work in progress: no one will review it until you pass your PR as ready for review.<br>
   The draft PR can be very useful if you want to show that you are working on something and make your work visible.
-- The branch related to the PR must be **up-to-date with `main`** before merging. Fortunately, this project [integrates a bot](https://github.com/meilisearch/integration-guides/blob/main/resources/bors.md) to automatically enforce this requirement without the PR author having to do it manually.
+- The branch related to the PR must be **up-to-date with `main`** before merging. Fortunately, this project uses [GitHub Merge Queues](https://github.blog/news-insights/product-news/github-merge-queue-is-generally-available/) to automatically enforce this requirement without the PR author having to rebase manually.
 - All PRs must be reviewed and approved by at least one maintainer.
 - The PR title should be accurate and descriptive of the changes. The title of the PR will be indeed automatically added to the next [release changelogs](https://github.com/meilisearch/meilisearch-js/releases/).
 
@@ -104,8 +104,7 @@ Meilisearch tools follow the [Semantic Versioning Convention](https://semver.org
 
 ### Automation to Rebase and Merge the PRs
 
-This project integrates a bot that helps us manage pull requests merging.<br>
-_[Read more about this](https://github.com/meilisearch/integration-guides/blob/main/resources/bors.md)._
+This project uses GitHub Merge Queues that helps us manage pull requests merging.
 
 ### Automated Changelogs
 
