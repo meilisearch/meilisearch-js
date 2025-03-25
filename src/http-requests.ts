@@ -4,6 +4,7 @@ import type {
   RequestOptions,
   MainRequestOptions,
   URLSearchParamsRecord,
+  MeiliSearchErrorResponse,
 } from "./types.js";
 import { PACKAGE_VERSION } from "./package-version.js";
 import {
@@ -261,14 +262,15 @@ export class HttpRequests {
     );
 
     const responseBody = await response.text();
-    const parsedResponse =
-      responseBody === "" ? undefined : JSON.parse(responseBody);
 
     if (!response.ok) {
-      throw new MeiliSearchApiError(response, parsedResponse);
+      throw new MeiliSearchApiError(
+        response,
+        JSON.parse(responseBody) as MeiliSearchErrorResponse,
+      );
     }
 
-    return parsedResponse as T;
+    return (responseBody === "" ? undefined : JSON.parse(responseBody)) as T;
   }
 
   /** Request with GET. */

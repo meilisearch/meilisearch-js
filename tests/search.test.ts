@@ -5,7 +5,6 @@ import {
   beforeEach,
   afterAll,
   beforeAll,
-  assert,
   vi,
 } from "vitest";
 import { ErrorStatusCode, MatchingStrategies } from "../src/types.js";
@@ -23,7 +22,9 @@ import {
   datasetWithNests,
   getKey,
   HOST,
+  assert,
 } from "./utils/meilisearch-test-utils.js";
+import { MeiliSearchRequestError } from "../src/index.js";
 
 const index = {
   uid: "books",
@@ -1384,18 +1385,13 @@ describe.each([
   test(`${permission} key: search on index and abort`, async () => {
     const controller = new AbortController();
     const client = await getClient(permission);
-    const searchPromise = client.index(index.uid).search(
-      "unreachable",
-      {},
-      {
-        // @ts-ignore qwe
-        signal: controller.signal,
-      },
-    );
+    const searchPromise = client
+      .index(index.uid)
+      .search("unreachable", {}, { signal: controller.signal });
 
     controller.abort();
 
-    searchPromise.catch((error: any) => {
+    searchPromise.catch((error) => {
       expect(error).toHaveProperty(
         "cause.message",
         "This operation was aborted",
@@ -1410,50 +1406,29 @@ describe.each([
     const controllerC = new AbortController();
     const searchQuery = "prince";
 
-    const searchAPromise = client.index(index.uid).search(
-      searchQuery,
-      {},
-      {
-        // @ts-ignore
-        signal: controllerA.signal,
-      },
-    );
+    const searchAPromise = client
+      .index(index.uid)
+      .search(searchQuery, {}, { signal: controllerA.signal });
 
-    const searchBPromise = client.index(index.uid).search(
-      searchQuery,
-      {},
-      {
-        // @ts-ignore
-        signal: controllerB.signal,
-      },
-    );
+    const searchBPromise = client
+      .index(index.uid)
+      .search(searchQuery, {}, { signal: controllerB.signal });
 
-    const searchCPromise = client.index(index.uid).search(
-      searchQuery,
-      {},
-      {
-        // @ts-ignore
-        signal: controllerC.signal,
-      },
-    );
+    const searchCPromise = client
+      .index(index.uid)
+      .search(searchQuery, {}, { signal: controllerC.signal });
 
     const searchDPromise = client.index(index.uid).search(searchQuery, {});
 
     controllerB.abort();
 
-    searchDPromise.then((response) => {
-      expect(response).toHaveProperty("query", searchQuery);
-    });
+    expect(await searchDPromise).toHaveProperty("query", searchQuery);
 
-    searchCPromise.then((response) => {
-      expect(response).toHaveProperty("query", searchQuery);
-    });
+    expect(await searchCPromise).toHaveProperty("query", searchQuery);
 
-    searchAPromise.then((response) => {
-      expect(response).toHaveProperty("query", searchQuery);
-    });
+    expect(await searchAPromise).toHaveProperty("query", searchQuery);
 
-    searchBPromise.catch((error: any) => {
+    await searchBPromise.catch((error) => {
       expect(error).toHaveProperty(
         "cause.message",
         "This operation was aborted",
@@ -1468,12 +1443,12 @@ describe.each([
       apiKey: key,
       timeout: 1,
     });
-    try {
-      await client.health();
-    } catch (e: any) {
-      expect(e.cause.message).toEqual("request timed out after 1ms");
-      expect(e.name).toEqual("MeiliSearchRequestError");
-    }
+
+    await assert.rejects(
+      client.health(),
+      MeiliSearchRequestError,
+      "request timed out after 1ms",
+    );
   });
 
   test(`${permission} key: search should be aborted on abort signal`, async () => {
@@ -1485,18 +1460,17 @@ describe.each([
     });
     const someErrorObj = {};
 
-    try {
-      const ac = new AbortController();
-      ac.abort(someErrorObj);
+    const ac = new AbortController();
+    ac.abort(someErrorObj);
 
-      await client.multiSearch(
+    const error = await assert.rejects(
+      client.multiSearch(
         { queries: [{ indexUid: "doesn't matter" }] },
         { signal: ac.signal },
-      );
-    } catch (e: any) {
-      assert.strictEqual(e.cause, someErrorObj);
-      assert.strictEqual(e.name, "MeiliSearchRequestError");
-    }
+      ),
+      MeiliSearchRequestError,
+    );
+    assert.strictEqual(error.cause, someErrorObj);
 
     // and now with a delayed abort, for this we have to stub fetch
     vi.stubGlobal(
@@ -1518,10 +1492,8 @@ describe.each([
         { signal: ac.signal },
       );
       setTimeout(() => ac.abort(someErrorObj), 1);
-      await promise;
-    } catch (e: any) {
-      assert.strictEqual(e.cause, someErrorObj);
-      assert.strictEqual(e.name, "MeiliSearchRequestError");
+      const error = await assert.rejects(promise, MeiliSearchRequestError);
+      assert.strictEqual(error.cause, someErrorObj);
     } finally {
       vi.unstubAllGlobals();
     }

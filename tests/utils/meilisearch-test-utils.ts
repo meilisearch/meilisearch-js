@@ -1,3 +1,4 @@
+import { assert as vitestAssert } from "vitest";
 import { MeiliSearch, Index } from "../../src/index.js";
 import type { Config } from "../../src/types.js";
 
@@ -30,16 +31,12 @@ async function getKey(permission: string): Promise<string> {
   const { results: keys } = await masterClient.getKeys();
 
   if (permission === "Search") {
-    const key = keys.find(
-      (key: any) => key.name === "Default Search API Key",
-    )?.key;
+    const key = keys.find((key) => key.name === "Default Search API Key")?.key;
     return key || "";
   }
 
   if (permission === "Admin") {
-    const key = keys.find(
-      (key: any) => key.name === "Default Admin API Key",
-    )?.key;
+    const key = keys.find((key) => key.name === "Default Admin API Key")?.key;
     return key || "";
   }
   return MASTER_KEY;
@@ -91,6 +88,39 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
 function decode64(buff: string) {
   return Buffer.from(buff, "base64").toString();
 }
+
+export const assert = {
+  ...vitestAssert,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async rejects<T extends { new (...args: any[]): any }>(
+    promise: Promise<unknown>,
+    errorConstructor: T,
+    errMsgMatcher?: RegExp | string,
+  ): Promise<InstanceType<T>> {
+    try {
+      const resolvedValue = await promise;
+      vitestAssert.fail(
+        resolvedValue,
+        undefined,
+        "value should have not been resolved",
+      );
+    } catch (error) {
+      vitestAssert.instanceOf(error, errorConstructor);
+
+      if (errMsgMatcher !== undefined) {
+        const { message } = error as Error;
+        if (typeof errMsgMatcher === "string") {
+          vitestAssert.strictEqual(message, errMsgMatcher);
+        } else {
+          vitestAssert.match(message, errMsgMatcher);
+        }
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return error as InstanceType<T>;
+    }
+  },
+};
 
 const datasetWithNests = [
   {

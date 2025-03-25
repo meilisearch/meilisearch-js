@@ -7,6 +7,9 @@
 import { Task } from "./task.js";
 import { Batch } from "./batch.js";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type RecordAny = Record<string, any>;
+
 /**
  * Shape of allowed record object that can be appended to a
  * {@link URLSearchParams}.
@@ -332,7 +335,7 @@ export type RankingScoreDetails = {
     matchType: string;
     score: number;
   };
-  [key: string]: Record<string, any> | undefined;
+  [key: string]: RecordAny | undefined;
 };
 
 export type FederationDetails = {
@@ -341,7 +344,7 @@ export type FederationDetails = {
   weightedRankingScore: number;
 };
 
-export type Hit<T = Record<string, any>> = T & {
+export type Hit<T = RecordAny> = T & {
   _formatted?: Partial<T>;
   _matchesPosition?: MatchesPosition<T>;
   _rankingScore?: number;
@@ -349,7 +352,7 @@ export type Hit<T = Record<string, any>> = T & {
   _federation?: FederationDetails;
 };
 
-export type Hits<T = Record<string, any>> = Array<Hit<T>>;
+export type Hits<T = RecordAny> = Array<Hit<T>>;
 
 export type FacetStat = { min: number; max: number };
 export type FacetStats = Record<string, FacetStat>;
@@ -363,7 +366,7 @@ export type FacetsByIndex = Record<
 >;
 
 export type SearchResponse<
-  T = Record<string, any>,
+  T = RecordAny,
   S extends SearchParams | undefined = undefined,
 > = {
   hits: Hits<T>;
@@ -411,13 +414,13 @@ type HasPage<S extends SearchParams> = undefined extends S["page"]
 
 export type MultiSearchResult<T> = SearchResponse<T> & { indexUid: string };
 
-export type MultiSearchResponse<T = Record<string, any>> = {
+export type MultiSearchResponse<T = RecordAny> = {
   results: Array<MultiSearchResult<T>>;
 };
 
 export type MultiSearchResponseOrSearchResponse<
   T1 extends FederatedMultiSearchParams | MultiSearchParams,
-  T2 extends Record<string, unknown> = Record<string, any>,
+  T2 extends RecordAny = RecordAny,
 > = T1 extends FederatedMultiSearchParams
   ? SearchResponse<T2>
   : MultiSearchResponse<T2>;
@@ -442,7 +445,7 @@ export type SearchSimilarDocumentsParams = {
  ** Documents
  */
 
-type Fields<T = Record<string, any>> =
+type Fields<T = RecordAny> =
   | Array<Extract<keyof T, string>>
   | Extract<keyof T, string>;
 
@@ -465,7 +468,7 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
   csvDelimiter?: string;
 };
 
-export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
+export type DocumentsQuery<T = RecordAny> = ResourceQuery & {
   fields?: Fields<T>;
   filter?: Filter;
   limit?: number;
@@ -473,7 +476,7 @@ export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   retrieveVectors?: boolean;
 };
 
-export type DocumentQuery<T = Record<string, any>> = {
+export type DocumentQuery<T = RecordAny> = {
   fields?: Fields<T>;
 };
 
@@ -486,7 +489,7 @@ export type DocumentsIds = string[] | number[];
 export type UpdateDocumentsByFunctionOptions = {
   function: string;
   filter?: string | string[];
-  context?: Record<string, any>;
+  context?: RecordAny;
 };
 
 /*
@@ -556,8 +559,8 @@ export type RestEmbedder = {
   dimensions?: number;
   documentTemplate?: string;
   distribution?: Distribution;
-  request: Record<string, any>;
-  response: Record<string, any>;
+  request: RecordAny;
+  response: RecordAny;
   headers?: Record<string, string>;
   documentTemplateMaxBytes?: number;
   binaryQuantized?: boolean;
@@ -1393,4 +1396,20 @@ export type TenantTokenGeneratorOptions = {
    * @defaultValue `false`
    */
   force?: boolean;
+};
+
+/**
+ * @see {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference | Tenant token payload reference}
+ * @see {@link https://github.com/meilisearch/meilisearch/blob/b21d7aedf9096539041362d438e973a18170f3fc/crates/meilisearch/src/extractors/authentication/mod.rs#L334-L340 | GitHub source code}
+ */
+export type TokenClaims = {
+  searchRules: TokenSearchRules;
+  exp?: number;
+  apiKeyUid: string;
+};
+
+/** JSON Web Token header. */
+export type TenantTokenHeader = {
+  alg: NonNullable<TenantTokenGeneratorOptions["algorithm"]>;
+  typ: "JWT";
 };

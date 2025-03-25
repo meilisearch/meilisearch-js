@@ -7,10 +7,13 @@ import {
   vi,
   type MockInstance,
   beforeAll,
-  assert,
 } from "vitest";
 import type { Health, Version, Stats } from "../src/index.js";
-import { ErrorStatusCode, TaskTypes } from "../src/index.js";
+import {
+  ErrorStatusCode,
+  MeiliSearchRequestError,
+  TaskTypes,
+} from "../src/index.js";
 import { PACKAGE_VERSION } from "../src/package-version.js";
 import {
   clearAllIndexes,
@@ -20,6 +23,7 @@ import {
   MeiliSearch,
   BAD_HOST,
   HOST,
+  assert,
 } from "./utils/meilisearch-test-utils.js";
 
 const indexNoPk = {
@@ -148,75 +152,67 @@ describe.each([
 
   test(`${permission} key: No double slash when on host with domain and path and trailing slash`, async () => {
     const key = await getKey(permission);
-    try {
-      const customHost = `${BAD_HOST}/api/`;
-      const client = new MeiliSearch({
-        host: customHost,
-        apiKey: key,
-      });
-      const health = await client.isHealthy();
-      expect(health).toBe(false); // Left here to trigger failed test if error is not thrown
-    } catch (e: any) {
-      expect(e.message).toMatch(`${BAD_HOST}/api/health`);
-      expect(e.name).toBe("MeiliSearchRequestError");
-    }
+    const customHost = `${BAD_HOST}/api/`;
+    const client = new MeiliSearch({
+      host: customHost,
+      apiKey: key,
+    });
+
+    await assert.rejects(
+      client.isHealthy(),
+      MeiliSearchRequestError,
+      `${BAD_HOST}/api/health`,
+    );
   });
 
   test(`${permission} key: No double slash when on host with domain and path and no trailing slash`, async () => {
     const key = await getKey(permission);
-    try {
-      const customHost = `${BAD_HOST}/api`;
-      const client = new MeiliSearch({
-        host: customHost,
-        apiKey: key,
-      });
-      const health = await client.isHealthy();
-      expect(health).toBe(false); // Left here to trigger failed test if error is not thrown
-    } catch (e: any) {
-      expect(e.message).toMatch(`${BAD_HOST}/api/health`);
-      expect(e.name).toBe("MeiliSearchRequestError");
-    }
+    const customHost = `${BAD_HOST}/api`;
+    const client = new MeiliSearch({
+      host: customHost,
+      apiKey: key,
+    });
+
+    await assert.rejects(
+      client.isHealthy(),
+      MeiliSearchRequestError,
+      `${BAD_HOST}/api/health`,
+    );
   });
 
   test(`${permission} key: host with double slash should keep double slash`, async () => {
     const key = await getKey(permission);
-    try {
-      const customHost = `${BAD_HOST}//`;
-      const client = new MeiliSearch({
-        host: customHost,
-        apiKey: key,
-      });
-      const health = await client.isHealthy();
-      expect(health).toBe(false); // Left here to trigger failed test if error is not thrown
-    } catch (e: any) {
-      expect(e.message).toMatch(`${BAD_HOST}//health`);
-      expect(e.name).toBe("MeiliSearchRequestError");
-    }
+    const customHost = `${BAD_HOST}//`;
+    const client = new MeiliSearch({
+      host: customHost,
+      apiKey: key,
+    });
+
+    await assert.rejects(
+      client.isHealthy(),
+      MeiliSearchRequestError,
+      `${BAD_HOST}//health`,
+    );
   });
 
   test(`${permission} key: host with one slash should not double slash`, async () => {
     const key = await getKey(permission);
-    try {
-      const customHost = `${BAD_HOST}/`;
-      const client = new MeiliSearch({
-        host: customHost,
-        apiKey: key,
-      });
-      const health = await client.isHealthy();
-      expect(health).toBe(false); // Left here to trigger failed test if error is not thrown
-    } catch (e: any) {
-      expect(e.message).toMatch(`${BAD_HOST}/health`);
-      expect(e.name).toBe("MeiliSearchRequestError");
-    }
+    const customHost = `${BAD_HOST}/`;
+    const client = new MeiliSearch({
+      host: customHost,
+      apiKey: key,
+    });
+
+    await assert.rejects(
+      client.isHealthy(),
+      MeiliSearchRequestError,
+      `${BAD_HOST}/health`,
+    );
   });
 
   test(`${permission} key: bad host raise CommunicationError`, async () => {
     const client = new MeiliSearch({ host: "http://localhost:9345" });
-    try {
-      await client.health();
-    } catch (e: any) {
-      expect(e.name).toEqual("MeiliSearchRequestError");
-    }
+    await assert.rejects(client.health(), MeiliSearchRequestError);
   });
 
   test(`${permission} key: host without HTTP should not throw Invalid URL Error`, () => {
@@ -280,7 +276,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         apiKey: key,
         async httpClient(...params: Parameters<typeof fetch>) {
           const result = await fetch(...params);
-          return result.json();
+          return result.json() as Promise<unknown>;
         },
       });
       const health = await client.isHealthy();
@@ -430,7 +426,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         await client.waitForTask(taskUid);
 
         const { results } = await client.getRawIndexes();
-        const indexes = results.map((index: any) => index.uid);
+        const indexes = results.map((index) => index.uid);
         expect(indexes).toEqual(expect.arrayContaining([indexPk.uid]));
         expect(indexes.length).toEqual(1);
       });

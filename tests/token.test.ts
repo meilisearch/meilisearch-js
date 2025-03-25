@@ -19,7 +19,11 @@ import {
 } from "./utils/meilisearch-test-utils.js";
 import { createHmac } from "node:crypto";
 import { generateTenantToken } from "../src/token.js";
-import { MeiliSearch } from "../src/index.js";
+import {
+  MeiliSearch,
+  type TenantTokenHeader,
+  type TokenClaims,
+} from "../src/index.js";
 
 const HASH_ALGORITHM = "HS256";
 const TOKEN_TYP = "JWT";
@@ -48,16 +52,16 @@ test("Should throw error for non-server-side environment", async () => {
         .mockImplementation(() => "ProbablySomeBrowserUA");
     }
 
-    const nodeEvnSpy = vi.spyOn(process, "versions", "get").mockImplementation(
+    const nodeEnvSpy = vi.spyOn(process, "versions", "get").mockImplementation(
       () =>
-        // @ts-expect-error
+        // @ts-expect-error The returned value is of no importance
         undefined,
     );
 
     return {
       [Symbol.dispose]() {
         userAgentSpy?.mockRestore();
-        nodeEvnSpy.mockRestore();
+        nodeEnvSpy.mockRestore();
       },
     };
   })();
@@ -103,7 +107,7 @@ describe.each([{ permission: "Admin" }])(
       const [header64] = token.split(".");
 
       // header
-      const { typ, alg } = JSON.parse(decode64(header64));
+      const { typ, alg } = JSON.parse(decode64(header64)) as TenantTokenHeader;
       expect(alg).toEqual(HASH_ALGORITHM);
       expect(typ).toEqual(TOKEN_TYP);
     });
@@ -140,7 +144,9 @@ describe.each([{ permission: "Admin" }])(
       const [_, payload64] = token.split(".");
 
       // payload
-      const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
+      const { apiKeyUid, exp, searchRules } = JSON.parse(
+        decode64(payload64),
+      ) as TokenClaims;
 
       expect(apiKeyUid).toEqual(uid);
       expect(exp).toBeUndefined();
@@ -159,7 +165,9 @@ describe.each([{ permission: "Admin" }])(
       const [_, payload64] = token.split(".");
 
       // payload
-      const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
+      const { apiKeyUid, exp, searchRules } = JSON.parse(
+        decode64(payload64),
+      ) as TokenClaims;
 
       expect(apiKeyUid).toEqual(uid);
       expect(exp).toBeUndefined();
@@ -178,7 +186,9 @@ describe.each([{ permission: "Admin" }])(
       const [_, payload64] = token.split(".");
 
       // payload
-      const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
+      const { apiKeyUid, exp, searchRules } = JSON.parse(
+        decode64(payload64),
+      ) as TokenClaims;
       expect(apiKeyUid).toEqual(uid);
       expect(exp).toBeUndefined();
       expect(searchRules).toEqual({ [UID]: {} });
@@ -235,7 +245,7 @@ describe.each([{ permission: "Admin" }])(
       const [_, payload] = token.split(".");
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
-      expect(JSON.parse(decode64(payload)).exp).toEqual(
+      expect((JSON.parse(decode64(payload)) as TokenClaims).exp).toEqual(
         Math.floor(date.getTime() / 1000),
       );
       await expect(

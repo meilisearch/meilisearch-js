@@ -29,24 +29,12 @@ export default tseslint.config([
       },
     },
     rules: {
-      // TODO: Remove the ones between "~~", adapt code
-      // ~~
-      "@typescript-eslint/no-unsafe-return": "off",
-      "@typescript-eslint/no-unsafe-assignment": "off",
-      // ~~
-      "@typescript-eslint/array-type": ["warn", { default: "array-simple" }],
-      // TODO: Should be careful with this rule, should leave it be and disable
-      //       it within files where necessary with explanations
-      "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
         // argsIgnorePattern: https://eslint.org/docs/latest/rules/no-unused-vars#argsignorepattern
         // varsIgnorePattern: https://eslint.org/docs/latest/rules/no-unused-vars#varsignorepattern
         { args: "all", argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-      // TODO: Not recommended to disable rule, should instead disable locally
-      //       with explanation
-      "@typescript-eslint/ban-ts-ignore": "off",
     },
   },
   // Vitest

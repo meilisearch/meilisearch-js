@@ -1,5 +1,10 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
-import { ErrorStatusCode, TaskStatus, TaskTypes } from "../src/types.js";
+import {
+  ErrorStatusCode,
+  TaskStatus,
+  TaskTypes,
+  type ResourceResults,
+} from "../src/types.js";
 import {
   clearAllIndexes,
   config,
@@ -10,6 +15,7 @@ import {
   type Book,
   getKey,
   HOST,
+  assert,
 } from "./utils/meilisearch-test-utils.js";
 
 const indexNoPk = {
@@ -165,33 +171,23 @@ describe("Documents tests", () => {
         const apiKey = await getKey(permission);
         const client = new MeiliSearch({ host: `${HOST}/indexes`, apiKey });
 
-        try {
-          await client.index(indexPk.uid).getDocuments({ filter: "" });
-
-          throw new Error(
-            "getDocuments should have raised an error when the route does not exist",
-          );
-        } catch (e: any) {
-          expect(e.message).toEqual("404: Not Found");
-        }
+        await assert.rejects(
+          client.index(indexPk.uid).getDocuments({ filter: "" }),
+          Error,
+          "404: Not Found",
+        );
       });
 
       test(`${permission} key: Get documents should trigger error with a hint on a MeilisearchApiError`, async () => {
         const apiKey = await getKey(permission);
         const client = new MeiliSearch({ host: `${HOST}`, apiKey });
 
-        try {
-          await client.index(indexPk.uid).getDocuments({ filter: "id = 1" });
-
-          throw new Error(
-            "getDocuments should have raised an error when the filter is badly formatted",
-          );
-        } catch (e: any) {
-          expect(e.message).toEqual(
-            `Attribute \`id\` is not filterable. This index does not have configured filterable attributes.
+        await assert.rejects(
+          client.index(indexPk.uid).getDocuments({ filter: "id = 1" }),
+          Error,
+          `Attribute \`id\` is not filterable. This index does not have configured filterable attributes.
 1:3 id = 1`,
-          );
-        }
+        );
       });
 
       test(`${permission} key: Get documents from index that has NO primary key`, async () => {
@@ -247,7 +243,7 @@ describe("Documents tests", () => {
             method: "GET",
           },
         );
-        const documentsGet = await res.json();
+        const documentsGet = (await res.json()) as ResourceResults<unknown[]>;
 
         expect(documentsGet.results.length).toEqual(dataset.length);
         expect(documentsGet.results[0]).toHaveProperty("_vectors");
@@ -281,7 +277,7 @@ describe("Documents tests", () => {
             method: "GET",
           },
         );
-        const documentsGet = await res.json();
+        const documentsGet = (await res.json()) as ResourceResults<unknown[]>;
 
         expect(documentsGet.results.length).toEqual(dataset.length);
         expect(documentsGet.results[0]).not.toHaveProperty("_vectors");
@@ -635,30 +631,22 @@ describe("Documents tests", () => {
         const task = await client.createIndex(indexPk.uid);
         await client.waitForTask(task.taskUid);
 
-        try {
-          await client.index(indexPk.uid).deleteDocuments({ filter: "" });
-
-          throw new Error(
-            "deleteDocuments should have raised an error when the parameters are wrong",
-          );
-        } catch (e: any) {
-          expect(e.message).toEqual("Sending an empty filter is forbidden.");
-        }
+        await assert.rejects(
+          client.index(indexPk.uid).deleteDocuments({ filter: "" }),
+          Error,
+          "Sending an empty filter is forbidden.",
+        );
       });
 
       test(`${permission} key: Delete some documents should trigger error with a hint on a MeilisearchRequestError`, async () => {
         const apiKey = await getKey(permission);
         const client = new MeiliSearch({ host: `${HOST}/indexes`, apiKey });
 
-        try {
-          await client.index(indexPk.uid).deleteDocuments({ filter: "id = 1" });
-
-          throw new Error(
-            "deleteDocuments should have raised an error when the route does not exist",
-          );
-        } catch (e: any) {
-          expect(e.message).toEqual("404: Not Found");
-        }
+        await assert.rejects(
+          client.index(indexPk.uid).deleteDocuments({ filter: "id = 1" }),
+          Error,
+          "404: Not Found",
+        );
       });
 
       test(`${permission} key: Delete all document from index that has NO primary key`, async () => {
