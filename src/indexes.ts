@@ -57,7 +57,7 @@ import { HttpRequests } from "./http-requests.js";
 import { Task, TaskClient } from "./task.js";
 import { EnqueuedTask } from "./enqueued-task.js";
 
-class Index<T extends Record<string, unknown> = Record<string, unknown>> {
+class Index<T extends Record<string, any> = Record<string, any>> {
   uid: string;
   primaryKey: string | undefined;
   createdAt: Date | undefined;
@@ -90,7 +90,7 @@ class Index<T extends Record<string, unknown> = Record<string, unknown>> {
    * @returns Promise containing the search response
    */
   async search<
-    D extends Record<string, unknown> = T,
+    D extends Record<string, any> = T,
     S extends SearchParams = SearchParams,
   >(
     query?: string | null,
@@ -113,7 +113,7 @@ class Index<T extends Record<string, unknown> = Record<string, unknown>> {
    * @returns Promise containing the search response
    */
   async searchGet<
-    D extends Record<string, unknown> = T,
+    D extends Record<string, any> = T,
     S extends SearchParams = SearchParams,
   >(
     query?: string | null,
@@ -175,7 +175,7 @@ class Index<T extends Record<string, unknown> = Record<string, unknown>> {
    * @returns Promise containing the search response
    */
   async searchSimilarDocuments<
-    D extends Record<string, unknown> = T,
+    D extends Record<string, any> = T,
     S extends SearchParams = SearchParams,
   >(params: SearchSimilarDocumentsParams): Promise<SearchResponse<D, S>> {
     return await this.httpRequest.post<SearchResponse<D, S>>({
@@ -357,7 +357,7 @@ class Index<T extends Record<string, unknown> = Record<string, unknown>> {
    *   the `filter` field only available in Meilisearch v1.2 and newer
    * @returns Promise containing the returned documents
    */
-  async getDocuments<D extends Record<string, unknown> = T>(
+  async getDocuments<D extends Record<string, any> = T>(
     params?: DocumentsQuery<D>,
   ): Promise<ResourceResults<D[]>> {
     const relativeBaseURL = `indexes/${this.uid}/documents`;
@@ -384,7 +384,7 @@ class Index<T extends Record<string, unknown> = Record<string, unknown>> {
    * @param parameters - Parameters applied on a document
    * @returns Promise containing Document response
    */
-  async getDocument<D extends Record<string, unknown> = T>(
+  async getDocument<D extends Record<string, any> = T>(
     documentId: string | number,
     parameters?: DocumentQuery<T>,
   ): Promise<D> {

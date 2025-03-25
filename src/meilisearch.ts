@@ -60,7 +60,7 @@ export class MeiliSearch {
    * @param indexUid - The index UID
    * @returns Instance of Index
    */
-  index<T extends Record<string, unknown> = Record<string, unknown>>(
+  index<T extends Record<string, any> = Record<string, any>>(
     indexUid: string,
   ): Index<T> {
     return new Index<T>(this.config, indexUid);
@@ -73,7 +73,7 @@ export class MeiliSearch {
    * @param indexUid - The index UID
    * @returns Promise returning Index instance
    */
-  async getIndex<T extends Record<string, unknown> = Record<string, unknown>>(
+  async getIndex<T extends Record<string, any> = Record<string, any>>(
     indexUid: string,
   ): Promise<Index<T>> {
     return new Index<T>(this.config, indexUid).fetchInfo();
@@ -170,11 +170,8 @@ export class MeiliSearch {
     try {
       await this.deleteIndex(uid);
       return true;
-    } catch (e) {
-      if (
-        e instanceof MeiliSearchApiError &&
-        e.cause?.code === ErrorStatusCode.INDEX_NOT_FOUND
-      ) {
+    } catch (e: any) {
+      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
         return false;
       }
       throw e;

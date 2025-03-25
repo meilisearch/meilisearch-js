@@ -1388,13 +1388,14 @@ describe.each([
       "unreachable",
       {},
       {
+        // @ts-ignore qwe
         signal: controller.signal,
       },
     );
 
     controller.abort();
 
-    searchPromise.catch((error) => {
+    searchPromise.catch((error: any) => {
       expect(error).toHaveProperty(
         "cause.message",
         "This operation was aborted",
@@ -1413,18 +1414,25 @@ describe.each([
       searchQuery,
       {},
       {
+        // @ts-ignore
         signal: controllerA.signal,
       },
     );
 
-    const searchBPromise = client
-      .index(index.uid)
-      .search(searchQuery, {}, { signal: controllerB.signal });
+    const searchBPromise = client.index(index.uid).search(
+      searchQuery,
+      {},
+      {
+        // @ts-ignore
+        signal: controllerB.signal,
+      },
+    );
 
     const searchCPromise = client.index(index.uid).search(
       searchQuery,
       {},
       {
+        // @ts-ignore
         signal: controllerC.signal,
       },
     );
@@ -1433,23 +1441,24 @@ describe.each([
 
     controllerB.abort();
 
-    await Promise.all([
-      searchDPromise.then((response) => {
-        expect(response).toHaveProperty("query", searchQuery);
-      }),
-      searchCPromise.then((response) => {
-        expect(response).toHaveProperty("query", searchQuery);
-      }),
-      searchAPromise.then((response) => {
-        expect(response).toHaveProperty("query", searchQuery);
-      }),
-      searchBPromise.catch((error) => {
-        expect(error).toHaveProperty(
-          "cause.message",
-          "This operation was aborted",
-        );
-      }),
-    ]);
+    searchDPromise.then((response) => {
+      expect(response).toHaveProperty("query", searchQuery);
+    });
+
+    searchCPromise.then((response) => {
+      expect(response).toHaveProperty("query", searchQuery);
+    });
+
+    searchAPromise.then((response) => {
+      expect(response).toHaveProperty("query", searchQuery);
+    });
+
+    searchBPromise.catch((error: any) => {
+      expect(error).toHaveProperty(
+        "cause.message",
+        "This operation was aborted",
+      );
+    });
   });
 
   test(`${permission} key: search should be aborted when reaching timeout`, async () => {
@@ -1461,10 +1470,8 @@ describe.each([
     });
     try {
       await client.health();
-    } catch (e) {
-      expect((e.cause as { message: string }).message).toEqual(
-        "request timed out after 1ms",
-      );
+    } catch (e: any) {
+      expect(e.cause.message).toEqual("request timed out after 1ms");
       expect(e.name).toEqual("MeiliSearchRequestError");
     }
   });
@@ -1486,7 +1493,7 @@ describe.each([
         { queries: [{ indexUid: "doesn't matter" }] },
         { signal: ac.signal },
       );
-    } catch (e) {
+    } catch (e: any) {
       assert.strictEqual(e.cause, someErrorObj);
       assert.strictEqual(e.name, "MeiliSearchRequestError");
     }
@@ -1512,7 +1519,7 @@ describe.each([
       );
       setTimeout(() => ac.abort(someErrorObj), 1);
       await promise;
-    } catch (e) {
+    } catch (e: any) {
       assert.strictEqual(e.cause, someErrorObj);
       assert.strictEqual(e.name, "MeiliSearchRequestError");
     } finally {

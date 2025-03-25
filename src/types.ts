@@ -332,7 +332,7 @@ export type RankingScoreDetails = {
     matchType: string;
     score: number;
   };
-  [key: string]: Record<string, unknown> | undefined;
+  [key: string]: Record<string, any> | undefined;
 };
 
 export type FederationDetails = {
@@ -341,7 +341,7 @@ export type FederationDetails = {
   weightedRankingScore: number;
 };
 
-export type Hit<T = Record<string, unknown>> = T & {
+export type Hit<T = Record<string, any>> = T & {
   _formatted?: Partial<T>;
   _matchesPosition?: MatchesPosition<T>;
   _rankingScore?: number;
@@ -349,7 +349,7 @@ export type Hit<T = Record<string, unknown>> = T & {
   _federation?: FederationDetails;
 };
 
-export type Hits<T = Record<string, unknown>> = Array<Hit<T>>;
+export type Hits<T = Record<string, any>> = Array<Hit<T>>;
 
 export type FacetStat = { min: number; max: number };
 export type FacetStats = Record<string, FacetStat>;
@@ -363,7 +363,7 @@ export type FacetsByIndex = Record<
 >;
 
 export type SearchResponse<
-  T = Record<string, unknown>,
+  T = Record<string, any>,
   S extends SearchParams | undefined = undefined,
 > = {
   hits: Hits<T>;
@@ -411,7 +411,7 @@ type HasPage<S extends SearchParams> = undefined extends S["page"]
 
 export type MultiSearchResult<T> = SearchResponse<T> & { indexUid: string };
 
-export type MultiSearchResponse<T = Record<string, unknown>> = {
+export type MultiSearchResponse<T = Record<string, any>> = {
   results: Array<MultiSearchResult<T>>;
 };
 
@@ -442,7 +442,7 @@ export type SearchSimilarDocumentsParams = {
  ** Documents
  */
 
-type Fields<T = Record<string, unknown>> =
+type Fields<T = Record<string, any>> =
   | Array<Extract<keyof T, string>>
   | Extract<keyof T, string>;
 
@@ -465,7 +465,7 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
   csvDelimiter?: string;
 };
 
-export type DocumentsQuery<T = Record<string, unknown>> = ResourceQuery & {
+export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   fields?: Fields<T>;
   filter?: Filter;
   limit?: number;
@@ -473,7 +473,7 @@ export type DocumentsQuery<T = Record<string, unknown>> = ResourceQuery & {
   retrieveVectors?: boolean;
 };
 
-export type DocumentQuery<T = Record<string, unknown>> = {
+export type DocumentQuery<T = Record<string, any>> = {
   fields?: Fields<T>;
 };
 
@@ -486,7 +486,7 @@ export type DocumentsIds = string[] | number[];
 export type UpdateDocumentsByFunctionOptions = {
   function: string;
   filter?: string | string[];
-  context?: Record<string, unknown>;
+  context?: Record<string, any>;
 };
 
 /*
@@ -556,8 +556,8 @@ export type RestEmbedder = {
   dimensions?: number;
   documentTemplate?: string;
   distribution?: Distribution;
-  request: Record<string, unknown>;
-  response: Record<string, unknown>;
+  request: Record<string, any>;
+  response: Record<string, any>;
   headers?: Record<string, string>;
   documentTemplateMaxBytes?: number;
   binaryQuantized?: boolean;

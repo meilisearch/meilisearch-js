@@ -186,7 +186,7 @@ describe("Documents tests", () => {
           throw new Error(
             "getDocuments should have raised an error when the filter is badly formatted",
           );
-        } catch (e) {
+        } catch (e: any) {
           expect(e.message).toEqual(
             `Attribute \`id\` is not filterable. This index does not have configured filterable attributes.
 1:3 id = 1`,
@@ -247,8 +247,7 @@ describe("Documents tests", () => {
             method: "GET",
           },
         );
-        const documentsGet: ResourceResults<Book[]> =
-          (await res.json()) as ResourceResults<Book[]>;
+        const documentsGet = await res.json();
 
         expect(documentsGet.results.length).toEqual(dataset.length);
         expect(documentsGet.results[0]).toHaveProperty("_vectors");
@@ -282,8 +281,7 @@ describe("Documents tests", () => {
             method: "GET",
           },
         );
-        const documentsGet: ResourceResults<Book[]> =
-          (await res.json()) as ResourceResults<Book[]>;
+        const documentsGet = await res.json();
 
         expect(documentsGet.results.length).toEqual(dataset.length);
         expect(documentsGet.results[0]).not.toHaveProperty("_vectors");

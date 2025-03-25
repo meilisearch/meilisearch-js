@@ -261,10 +261,8 @@ export class HttpRequests {
     );
 
     const responseBody = await response.text();
-    const parsedResponse: MeiliSearchErrorResponse | undefined =
-      responseBody === ""
-        ? undefined
-        : (JSON.parse(responseBody) as MeiliSearchErrorResponse);
+    const parsedResponse =
+      responseBody === "" ? undefined : JSON.parse(responseBody);
 
     if (!response.ok) {
       throw new MeiliSearchApiError(response, parsedResponse);

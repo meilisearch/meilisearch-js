@@ -25,12 +25,6 @@ const HASH_ALGORITHM = "HS256";
 const TOKEN_TYP = "JWT";
 const UID = "movies_test";
 
-type TokenPayload = {
-  apiKeyUid?: string;
-  exp?: number;
-  searchRules?: string[];
-};
-
 afterAll(() => {
   return clearAllIndexes(config);
 });
@@ -109,10 +103,7 @@ describe.each([{ permission: "Admin" }])(
       const [header64] = token.split(".");
 
       // header
-      const { typ, alg } = JSON.parse(decode64(header64)) as {
-        typ: string;
-        alg: string;
-      };
+      const { typ, alg } = JSON.parse(decode64(header64));
       expect(alg).toEqual(HASH_ALGORITHM);
       expect(typ).toEqual(TOKEN_TYP);
     });
@@ -149,9 +140,7 @@ describe.each([{ permission: "Admin" }])(
       const [_, payload64] = token.split(".");
 
       // payload
-      const { apiKeyUid, exp, searchRules } = JSON.parse(
-        decode64(payload64),
-      ) as TokenPayload;
+      const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
 
       expect(apiKeyUid).toEqual(uid);
       expect(exp).toBeUndefined();
@@ -170,9 +159,7 @@ describe.each([{ permission: "Admin" }])(
       const [_, payload64] = token.split(".");
 
       // payload
-      const { apiKeyUid, exp, searchRules } = JSON.parse(
-        decode64(payload64),
-      ) as TokenPayload;
+      const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
 
       expect(apiKeyUid).toEqual(uid);
       expect(exp).toBeUndefined();
@@ -191,9 +178,7 @@ describe.each([{ permission: "Admin" }])(
       const [_, payload64] = token.split(".");
 
       // payload
-      const { apiKeyUid, exp, searchRules } = JSON.parse(
-        decode64(payload64),
-      ) as TokenPayload;
+      const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
       expect(apiKeyUid).toEqual(uid);
       expect(exp).toBeUndefined();
       expect(searchRules).toEqual({ [UID]: {} });
@@ -247,12 +232,12 @@ describe.each([{ permission: "Admin" }])(
         expiresAt: date,
       });
 
-      const payload = token.split(".")?.[1];
+      const [_, payload] = token.split(".");
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
-      const { exp } = JSON.parse(decode64(payload)) as TokenPayload;
-
-      expect(exp).toEqual(Math.floor(date.getTime() / 1000));
+      expect(JSON.parse(decode64(payload)).exp).toEqual(
+        Math.floor(date.getTime() / 1000),
+      );
       await expect(
         searchClient.index(UID).search(),
       ).resolves.not.toBeUndefined();
