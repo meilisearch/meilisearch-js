@@ -18,7 +18,7 @@ export type URLSearchParamsRecord = Record<
   string,
   | string
   | string[]
-  | Array<string | string[]>
+  | (string | string[])[]
   | number
   | number[]
   | boolean
@@ -162,7 +162,7 @@ export const MatchingStrategies = {
 export type MatchingStrategies =
   (typeof MatchingStrategies)[keyof typeof MatchingStrategies];
 
-export type Filter = string | Array<string | string[]>;
+export type Filter = string | (string | string[])[];
 
 export type Query = {
   q?: string | null;
@@ -304,7 +304,7 @@ export type CategoriesDistribution = {
 export type Facet = string;
 export type FacetDistribution = Record<Facet, CategoriesDistribution>;
 export type MatchesPosition<T> = Partial<
-  Record<keyof T, Array<{ start: number; length: number; indices?: number[] }>>
+  Record<keyof T, { start: number; length: number; indices?: number[] }[]>
 >;
 
 export type RankingScoreDetails = {
@@ -352,7 +352,7 @@ export type Hit<T = RecordAny> = T & {
   _federation?: FederationDetails;
 };
 
-export type Hits<T = RecordAny> = Array<Hit<T>>;
+export type Hits<T = RecordAny> = Hit<T>[];
 
 export type FacetStat = { min: number; max: number };
 export type FacetStats = Record<string, FacetStat>;
@@ -415,7 +415,7 @@ type HasPage<S extends SearchParams> = undefined extends S["page"]
 export type MultiSearchResult<T> = SearchResponse<T> & { indexUid: string };
 
 export type MultiSearchResponse<T = RecordAny> = {
-  results: Array<MultiSearchResult<T>>;
+  results: MultiSearchResult<T>[];
 };
 
 export type MultiSearchResponseOrSearchResponse<
@@ -446,7 +446,7 @@ export type SearchSimilarDocumentsParams = {
  */
 
 type Fields<T = RecordAny> =
-  | Array<Extract<keyof T, string>>
+  | Extract<keyof T, string>[]
   | Extract<keyof T, string>;
 
 export type DocumentOptions = {
@@ -771,9 +771,7 @@ export type TaskObject = Omit<EnqueuedTaskObject, "taskUid"> & {
   finishedAt: string;
 };
 
-export type SwapIndexesParams = Array<{
-  indexes: string[];
-}>;
+export type SwapIndexesParams = { indexes: string[] }[];
 
 type CursorResults<T> = {
   results: T[];
@@ -816,7 +814,7 @@ export type BatchObject = {
   /** Progress and indexing step of the batch, null if the batch is finished */
   progress: null | {
     /** An array of all the steps currently being processed */
-    steps: Array<{
+    steps: {
       /**
        * A string representing the name of the current step NOT stable. Only use
        * for debugging purposes.
@@ -826,7 +824,7 @@ export type BatchObject = {
       finished: number;
       /** Total number of tasks to finish before moving to the next step */
       total: number;
-    }>;
+    }[];
     /** Percentage of progression of all steps currently being processed */
     percentage: number;
   };

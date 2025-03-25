@@ -474,7 +474,7 @@ class Index<T extends RecordAny = RecordAny> {
    * @returns Promise containing an EnqueuedTask
    */
   async updateDocuments(
-    documents: Array<Partial<T>>,
+    documents: Partial<T>[],
     options?: DocumentOptions,
   ): Promise<EnqueuedTask> {
     const task = await this.httpRequest.put<EnqueuedTaskObject>({
@@ -495,7 +495,7 @@ class Index<T extends RecordAny = RecordAny> {
    * @returns Promise containing array of enqueued task objects for each batch
    */
   async updateDocumentsInBatches(
-    documents: Array<Partial<T>>,
+    documents: Partial<T>[],
     batchSize = 1000,
     options?: DocumentOptions,
   ): Promise<EnqueuedTask[]> {
