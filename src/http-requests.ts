@@ -5,7 +5,7 @@ import type {
   MainRequestOptions,
   URLSearchParamsRecord,
   MeiliSearchErrorResponse,
-} from "./types.js";
+} from "./types/index.js";
 import { PACKAGE_VERSION } from "./package-version.js";
 import {
   MeiliSearchError,

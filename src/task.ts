@@ -9,8 +9,8 @@ import type {
   TasksResultsObject,
   DeleteTasksQuery,
   EnqueuedTaskObject,
-} from "./types.js";
-import { TaskStatus } from "./types.js";
+} from "./types/types.js";
+import { TaskStatus } from "./types/types.js";
 import { HttpRequests } from "./http-requests.js";
 import { sleep } from "./utils.js";
 import { EnqueuedTask } from "./enqueued-task.js";

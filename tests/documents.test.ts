@@ -4,7 +4,7 @@ import {
   TaskStatus,
   TaskTypes,
   type ResourceResults,
-} from "../src/types.js";
+} from "../src/index.js";
 import {
   clearAllIndexes,
   config,

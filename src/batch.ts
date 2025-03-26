@@ -4,7 +4,7 @@ import type {
   BatchesQuery,
   BatchesResults,
   BatchesResultsObject,
-} from "./types.js";
+} from "./types/types.js";
 import { HttpRequests } from "./http-requests.js";
 
 class Batch {
