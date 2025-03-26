@@ -15,7 +15,7 @@
   "author": "Charlotte Vermandel",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.6.2",
+    "typescript": "^5.8.2",
     "@types/node": "^20.16.10"
   },
   "dependencies": {}
