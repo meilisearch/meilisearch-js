@@ -48,7 +48,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Run tests
-        run: npm run test
+        run: npm test
       - name: Build project
         run: npm run build
       - name: Run ESM env

@@ -41,7 +41,7 @@ You can set up your local environment natively or using `docker`, check out the 
 Example of running all the checks with docker:
 
 ```bash
-docker-compose run --rm package bash -c "npm install && npm run test && npm run lint"
+docker-compose run --rm package bash -c "npm install && npm test && npm run lint"
 ```
 
 To install dependencies:
@@ -58,7 +58,7 @@ Each PR should pass the tests and the linter to be accepted.
 # Tests
 curl -L https://install.meilisearch.com | sh # download Meilisearch
 ./meilisearch --master-key=masterKey --no-analytics # run Meilisearch
-npm run test
+npm test
 # Linter
 npm run style
 # Linter with fixing
