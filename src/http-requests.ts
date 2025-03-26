@@ -262,15 +262,19 @@ export class HttpRequests {
     );
 
     const responseBody = await response.text();
+    const parsedResponse =
+      responseBody === ""
+        ? undefined
+        : (JSON.parse(responseBody) as T | MeiliSearchErrorResponse);
 
     if (!response.ok) {
       throw new MeiliSearchApiError(
         response,
-        JSON.parse(responseBody) as MeiliSearchErrorResponse,
+        parsedResponse as MeiliSearchErrorResponse | undefined,
       );
     }
 
-    return (responseBody === "" ? undefined : JSON.parse(responseBody)) as T;
+    return parsedResponse as T;
   }
 
   /** Request with GET. */

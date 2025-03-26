@@ -3,15 +3,18 @@ import { MeiliSearchError } from "./meilisearch-error.js";
 
 export class MeiliSearchApiError extends MeiliSearchError {
   override name = "MeiliSearchApiError";
-  override cause: MeiliSearchErrorResponse;
+  override cause?: MeiliSearchErrorResponse;
   readonly response: Response;
 
-  constructor(response: Response, responseBody: MeiliSearchErrorResponse) {
+  constructor(response: Response, responseBody?: MeiliSearchErrorResponse) {
     super(
       responseBody?.message ?? `${response.status}: ${response.statusText}`,
     );
 
     this.response = response;
-    this.cause = responseBody;
+
+    if (responseBody !== undefined) {
+      this.cause = responseBody;
+    }
   }
 }
