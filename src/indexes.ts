@@ -52,12 +52,13 @@ import type {
   EnqueuedTaskObject,
   ExtraRequestInit,
   PrefixSearch,
+  RecordAny,
 } from "./types.js";
 import { HttpRequests } from "./http-requests.js";
 import { Task, TaskClient } from "./task.js";
 import { EnqueuedTask } from "./enqueued-task.js";
 
-class Index<T extends Record<string, any> = Record<string, any>> {
+class Index<T extends RecordAny = RecordAny> {
   uid: string;
   primaryKey: string | undefined;
   createdAt: Date | undefined;
@@ -89,10 +90,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @param config - Additional request configuration options
    * @returns Promise containing the search response
    */
-  async search<
-    D extends Record<string, any> = T,
-    S extends SearchParams = SearchParams,
-  >(
+  async search<D extends RecordAny = T, S extends SearchParams = SearchParams>(
     query?: string | null,
     options?: S,
     extraRequestInit?: ExtraRequestInit,
@@ -113,7 +111,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @returns Promise containing the search response
    */
   async searchGet<
-    D extends Record<string, any> = T,
+    D extends RecordAny = T,
     S extends SearchParams = SearchParams,
   >(
     query?: string | null,
@@ -175,7 +173,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @returns Promise containing the search response
    */
   async searchSimilarDocuments<
-    D extends Record<string, any> = T,
+    D extends RecordAny = T,
     S extends SearchParams = SearchParams,
   >(params: SearchSimilarDocumentsParams): Promise<SearchResponse<D, S>> {
     return await this.httpRequest.post<SearchResponse<D, S>>({
@@ -357,7 +355,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    *   the `filter` field only available in Meilisearch v1.2 and newer
    * @returns Promise containing the returned documents
    */
-  async getDocuments<D extends Record<string, any> = T>(
+  async getDocuments<D extends RecordAny = T>(
     params?: DocumentsQuery<D>,
   ): Promise<ResourceResults<D[]>> {
     const relativeBaseURL = `indexes/${this.uid}/documents`;
@@ -384,7 +382,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @param parameters - Parameters applied on a document
    * @returns Promise containing Document response
    */
-  async getDocument<D extends Record<string, any> = T>(
+  async getDocument<D extends RecordAny = T>(
     documentId: string | number,
     parameters?: DocumentQuery<T>,
   ): Promise<D> {
@@ -476,7 +474,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @returns Promise containing an EnqueuedTask
    */
   async updateDocuments(
-    documents: Array<Partial<T>>,
+    documents: Partial<T>[],
     options?: DocumentOptions,
   ): Promise<EnqueuedTask> {
     const task = await this.httpRequest.put<EnqueuedTaskObject>({
@@ -497,7 +495,7 @@ class Index<T extends Record<string, any> = Record<string, any>> {
    * @returns Promise containing array of enqueued task objects for each batch
    */
   async updateDocumentsInBatches(
-    documents: Array<Partial<T>>,
+    documents: Partial<T>[],
     batchSize = 1000,
     options?: DocumentOptions,
   ): Promise<EnqueuedTask[]> {

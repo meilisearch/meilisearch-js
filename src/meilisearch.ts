@@ -29,12 +29,14 @@ import type {
   BatchesQuery,
   MultiSearchResponseOrSearchResponse,
   Network,
+  RecordAny,
 } from "./types.js";
 import { ErrorStatusCode } from "./types.js";
 import { HttpRequests } from "./http-requests.js";
 import { TaskClient } from "./task.js";
 import { EnqueuedTask } from "./enqueued-task.js";
 import { type Batch, BatchClient } from "./batch.js";
+import type { MeiliSearchApiError } from "./errors/meilisearch-api-error.js";
 
 export class MeiliSearch {
   config: Config;
@@ -60,9 +62,7 @@ export class MeiliSearch {
    * @param indexUid - The index UID
    * @returns Instance of Index
    */
-  index<T extends Record<string, any> = Record<string, any>>(
-    indexUid: string,
-  ): Index<T> {
+  index<T extends RecordAny = RecordAny>(indexUid: string): Index<T> {
     return new Index<T>(this.config, indexUid);
   }
 
@@ -73,7 +73,7 @@ export class MeiliSearch {
    * @param indexUid - The index UID
    * @returns Promise returning Index instance
    */
-  async getIndex<T extends Record<string, any> = Record<string, any>>(
+  async getIndex<T extends RecordAny = RecordAny>(
     indexUid: string,
   ): Promise<Index<T>> {
     return new Index<T>(this.config, indexUid).fetchInfo();
@@ -170,10 +170,14 @@ export class MeiliSearch {
     try {
       await this.deleteIndex(uid);
       return true;
-    } catch (e: any) {
-      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
+    } catch (e) {
+      if (
+        (e as MeiliSearchApiError)?.cause?.code ===
+        ErrorStatusCode.INDEX_NOT_FOUND
+      ) {
         return false;
       }
+
       throw e;
     }
   }
@@ -244,7 +248,7 @@ export class MeiliSearch {
    */
   async multiSearch<
     T1 extends MultiSearchParams | FederatedMultiSearchParams,
-    T2 extends Record<string, any> = Record<string, any>,
+    T2 extends RecordAny = RecordAny,
   >(
     queries: T1,
     extraRequestInit?: ExtraRequestInit,
