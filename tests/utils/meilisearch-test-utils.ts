@@ -122,7 +122,7 @@ export const assert = {
     vitestAssert.fail(
       resolvedValue,
       NOT_RESOLVED,
-      "value should have not been resolved",
+      "expected value to not resolve",
     );
   },
 };

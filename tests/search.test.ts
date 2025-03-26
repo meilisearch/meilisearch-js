@@ -1400,46 +1400,48 @@ describe.each([
   });
 
   test(`${permission} key: search on index multiple times, and abort only one request`, async () => {
-    const client = await getClient(permission);
+    const ind = (await getClient(permission)).index(index.uid);
     const controllerA = new AbortController();
     const controllerB = new AbortController();
     const controllerC = new AbortController();
     const searchQuery = "prince";
 
-    const searchAPromise = client
-      .index(index.uid)
-      .search(searchQuery, {}, { signal: controllerA.signal });
+    const searchAPromise = ind.search(
+      searchQuery,
+      {},
+      { signal: controllerA.signal },
+    );
 
-    const searchBPromise = client
-      .index(index.uid)
-      .search(searchQuery, {}, { signal: controllerB.signal });
+    const searchBPromise = ind.search(
+      searchQuery,
+      {},
+      { signal: controllerB.signal },
+    );
 
-    const searchCPromise = client
-      .index(index.uid)
-      .search(searchQuery, {}, { signal: controllerC.signal });
+    const searchCPromise = ind.search(
+      searchQuery,
+      {},
+      { signal: controllerC.signal },
+    );
 
-    const searchDPromise = client.index(index.uid).search(searchQuery, {});
+    const searchDPromise = ind.search(searchQuery, {});
 
     controllerB.abort();
 
-    const [d, c, a] = await Promise.all([
-      searchDPromise,
-      searchCPromise,
+    const [a, b, c, d] = await Promise.allSettled([
       searchAPromise,
+      searchBPromise,
+      searchCPromise,
+      searchDPromise,
     ]);
 
-    expect(d).toHaveProperty("query", searchQuery);
-
-    expect(c).toHaveProperty("query", searchQuery);
-
-    expect(a).toHaveProperty("query", searchQuery);
-
-    await searchBPromise.catch((error) => {
-      expect(error).toHaveProperty(
-        "cause.message",
-        "This operation was aborted",
-      );
-    });
+    expect(a).toHaveProperty("value.query", searchQuery);
+    expect(b).toHaveProperty(
+      "reason.cause.message",
+      "This operation was aborted",
+    );
+    expect(d).toHaveProperty("value.query", searchQuery);
+    expect(c).toHaveProperty("value.query", searchQuery);
   });
 
   test(`${permission} key: search should be aborted when reaching timeout`, async () => {
@@ -1450,9 +1452,13 @@ describe.each([
       timeout: 1,
     });
 
-    await assert.rejects(
+    const error = await assert.rejects(
       client.health(),
       MeiliSearchRequestError,
+    );
+
+    assert.strictEqual(
+      (error.cause as Error)?.message,
       "request timed out after 1ms",
     );
   });

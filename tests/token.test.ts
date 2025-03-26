@@ -1,4 +1,3 @@
-import * as assert from "node:assert";
 import {
   afterAll,
   beforeEach,
@@ -16,11 +15,13 @@ import {
   clearAllIndexes,
   config,
   HOST,
+  assert,
 } from "./utils/meilisearch-test-utils.js";
 import { createHmac } from "node:crypto";
 import { generateTenantToken } from "../src/token.js";
 import {
   MeiliSearch,
+  MeiliSearchApiError,
   type TenantTokenHeader,
   type TokenClaims,
 } from "../src/index.js";
@@ -39,7 +40,8 @@ test("Should throw error for invalid UID", async () => {
       apiKey: "wrong",
       apiKeyUid: "stuff",
     }),
-    /^Error: the uid of your key is not a valid UUIDv4$/,
+    Error,
+    "the uid of your key is not a valid UUIDv4",
   );
 });
 
@@ -71,7 +73,8 @@ test("Should throw error for non-server-side environment", async () => {
       apiKey: "wrong",
       apiKeyUid: "stuff",
     }),
-    /^Error: failed to detect a server-side environment;/,
+    Error,
+    /^failed to detect a server-side environment/,
   );
 });
 
@@ -269,7 +272,8 @@ describe.each([{ permission: "Admin" }])(
 
       await assert.rejects(
         searchClient.index(UID).search(),
-        /^MeiliSearchApiError: Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
+        MeiliSearchApiError,
+        /^Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
       );
     });
 
@@ -370,7 +374,8 @@ describe.each([{ permission: "Admin" }])(
 
       await assert.rejects(
         searchClient.index(UID).search(),
-        /^MeiliSearchApiError: Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
+        MeiliSearchApiError,
+        /^Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
       );
     });
   },

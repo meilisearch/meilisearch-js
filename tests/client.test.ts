@@ -159,9 +159,9 @@ describe.each([
     });
 
     await assert.rejects(
-      client.isHealthy(),
+      client.health(),
       MeiliSearchRequestError,
-      `${BAD_HOST}/api/health`,
+      `Request to ${BAD_HOST}/api/health has failed`,
     );
   });
 
@@ -174,9 +174,9 @@ describe.each([
     });
 
     await assert.rejects(
-      client.isHealthy(),
+      client.health(),
       MeiliSearchRequestError,
-      `${BAD_HOST}/api/health`,
+      `Request to ${BAD_HOST}/api/health has failed`,
     );
   });
 
@@ -189,9 +189,9 @@ describe.each([
     });
 
     await assert.rejects(
-      client.isHealthy(),
+      client.health(),
       MeiliSearchRequestError,
-      `${BAD_HOST}//health`,
+      `Request to ${BAD_HOST}//health has failed`,
     );
   });
 
@@ -204,9 +204,9 @@ describe.each([
     });
 
     await assert.rejects(
-      client.isHealthy(),
+      client.health(),
       MeiliSearchRequestError,
-      `${BAD_HOST}/health`,
+      `Request to ${BAD_HOST}/health has failed`,
     );
   });
 
