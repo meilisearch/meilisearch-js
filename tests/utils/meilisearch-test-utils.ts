@@ -89,6 +89,8 @@ function decode64(buff: string) {
   return Buffer.from(buff, "base64").toString();
 }
 
+const NOT_RESOLVED = Symbol("<not resolved>");
+
 export const assert = {
   ...vitestAssert,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -119,7 +121,7 @@ export const assert = {
 
     vitestAssert.fail(
       resolvedValue,
-      undefined,
+      NOT_RESOLVED,
       "value should have not been resolved",
     );
   },

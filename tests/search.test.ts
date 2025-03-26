@@ -1422,11 +1422,17 @@ describe.each([
 
     controllerB.abort();
 
-    expect(await searchDPromise).toHaveProperty("query", searchQuery);
+    const [d, c, a] = await Promise.all([
+      searchDPromise,
+      searchCPromise,
+      searchAPromise,
+    ]);
 
-    expect(await searchCPromise).toHaveProperty("query", searchQuery);
+    expect(d).toHaveProperty("query", searchQuery);
 
-    expect(await searchAPromise).toHaveProperty("query", searchQuery);
+    expect(c).toHaveProperty("query", searchQuery);
+
+    expect(a).toHaveProperty("query", searchQuery);
 
     await searchBPromise.catch((error) => {
       expect(error).toHaveProperty(
