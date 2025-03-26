@@ -6,7 +6,7 @@ Build the base project `/meilisearch-js` as this example uses the locally build 
 
 ```
 cd meilisearch-js
-yarn build
+npm run build
 ```
 
 ## Credentials
@@ -22,13 +22,13 @@ To try it out you need to follow these steps.
 ### 1. Install dependencies
 
 ```bash
-yarn
+npm install
 ```
 
 ### 2. Build
 
 ```bash
-yarn build
+npm run build
 ```
 
 ### 3. Serve

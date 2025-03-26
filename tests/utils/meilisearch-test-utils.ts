@@ -91,8 +91,7 @@ function decode64(buff: string) {
 
 const NOT_RESOLVED = Symbol("<not resolved>");
 
-export const assert = {
-  ...vitestAssert,
+const source = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async rejects<T extends { new (...args: any[]): any }>(
     promise: Promise<unknown>,
@@ -126,6 +125,10 @@ export const assert = {
     );
   },
 };
+export const assert: typeof vitestAssert & typeof source = Object.assign(
+  vitestAssert,
+  source,
+);
 
 const datasetWithNests = [
   {

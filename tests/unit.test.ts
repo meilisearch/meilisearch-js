@@ -32,8 +32,8 @@ test(`Client handles host URL with domain and path, and adds trailing slash`, as
   await client.isHealthy();
 
   assert.isDefined(fetchSpy.mock.lastCall);
-  const [input] = fetchSpy.mock.lastCall!;
+  const [input] = fetchSpy.mock.lastCall;
 
   assert.instanceOf(input, URL);
-  assert.strictEqual((input as URL).href, `${customHost}/health`);
+  assert.strictEqual(input.href, `${customHost}/health`);
 });
