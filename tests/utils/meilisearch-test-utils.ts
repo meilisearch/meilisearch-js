@@ -1,3 +1,4 @@
+import { assert as vitestAssert } from "vitest";
 import { MeiliSearch, Index } from "../../src/index.js";
 import type { Config } from "../../src/types/index.js";
 
@@ -33,16 +34,12 @@ async function getKey(permission: string): Promise<string> {
   const { results: keys } = await masterClient.getKeys();
 
   if (permission === "Search") {
-    const key = keys.find(
-      (key: any) => key.name === "Default Search API Key",
-    )?.key;
+    const key = keys.find((key) => key.name === "Default Search API Key")?.key;
     return key || "";
   }
 
   if (permission === "Admin") {
-    const key = keys.find(
-      (key: any) => key.name === "Default Admin API Key",
-    )?.key;
+    const key = keys.find((key) => key.name === "Default Admin API Key")?.key;
     return key || "";
   }
   return MASTER_KEY;
@@ -94,6 +91,44 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
 function decode64(buff: string) {
   return Buffer.from(buff, "base64").toString();
 }
+
+const NOT_RESOLVED = Symbol("<not resolved>");
+
+export const assert = {
+  ...vitestAssert,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async rejects<T extends { new (...args: any[]): any }>(
+    promise: Promise<unknown>,
+    errorConstructor: T,
+    errMsgMatcher?: RegExp | string,
+  ): Promise<InstanceType<T>> {
+    let resolvedValue;
+
+    try {
+      resolvedValue = await promise;
+    } catch (error) {
+      vitestAssert.instanceOf(error, errorConstructor);
+
+      if (errMsgMatcher !== undefined) {
+        const { message } = error as Error;
+        if (typeof errMsgMatcher === "string") {
+          vitestAssert.strictEqual(message, errMsgMatcher);
+        } else {
+          vitestAssert.match(message, errMsgMatcher);
+        }
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return error as InstanceType<T>;
+    }
+
+    vitestAssert.fail(
+      resolvedValue,
+      NOT_RESOLVED,
+      "expected value to not resolve",
+    );
+  },
+};
 
 const datasetWithNests = [
   {
@@ -147,7 +182,7 @@ const datasetWithNests = [
   { id: 7, title: "The Hitchhiker's Guide to the Galaxy" },
 ];
 
-const dataset: Array<{ id: number; title: string; comment?: string }> = [
+const dataset: { id: number; title: string; comment?: string }[] = [
   { id: 123, title: "Pride and Prejudice", comment: "A great book" },
   { id: 456, title: "Le Petit Prince", comment: "A french book" },
   { id: 2, title: "Le Rouge et le Noir", comment: "Another french book" },

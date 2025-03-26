@@ -55,3 +55,19 @@ export type TenantTokenGeneratorOptions = {
    */
   force?: boolean;
 };
+
+/**
+ * @see {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference | Tenant token payload reference}
+ * @see {@link https://github.com/meilisearch/meilisearch/blob/b21d7aedf9096539041362d438e973a18170f3fc/crates/meilisearch/src/extractors/authentication/mod.rs#L334-L340 | GitHub source code}
+ */
+export type TokenClaims = {
+  searchRules: TokenSearchRules;
+  exp?: number;
+  apiKeyUid: string;
+};
+
+/** JSON Web Token header. */
+export type TenantTokenHeader = {
+  alg: NonNullable<TenantTokenGeneratorOptions["algorithm"]>;
+  typ: "JWT";
+};

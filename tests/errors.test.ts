@@ -1,5 +1,6 @@
-import { expect, test, describe, beforeEach, vi } from "vitest";
-import { MeiliSearch } from "./utils/meilisearch-test-utils.js";
+import { test, describe, beforeEach, vi } from "vitest";
+import { MeiliSearch, assert } from "./utils/meilisearch-test-utils.js";
+import { MeiliSearchRequestError } from "../src/index.js";
 
 const mockedFetch = vi.fn();
 globalThis.fetch = mockedFetch;
@@ -13,10 +14,6 @@ describe("Test on updates", () => {
     mockedFetch.mockRejectedValue(new Error("fake error message"));
 
     const client = new MeiliSearch({ host: "http://localhost:9345" });
-    try {
-      await client.health();
-    } catch (error: any) {
-      expect(error.name).toEqual("MeiliSearchRequestError");
-    }
+    await assert.rejects(client.health(), MeiliSearchRequestError);
   });
 });

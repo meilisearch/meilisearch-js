@@ -1,7 +1,8 @@
 import type { webcrypto } from "node:crypto";
 import type {
   TenantTokenGeneratorOptions,
-  TokenSearchRules,
+  TenantTokenHeader,
+  TokenClaims,
 } from "./types/index.js";
 
 function getOptionsWithDefaults(options: TenantTokenGeneratorOptions) {
@@ -84,19 +85,9 @@ async function sign(
 function getHeader({
   algorithm: alg,
 }: TenantTokenGeneratorOptionsWithDefaults): string {
-  const header = { alg, typ: "JWT" };
+  const header: TenantTokenHeader = { alg, typ: "JWT" };
   return encodeToBase64(header).replace(/=/g, "");
 }
-
-/**
- * @see {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference | Tenant token payload reference}
- * @see {@link https://github.com/meilisearch/meilisearch/blob/b21d7aedf9096539041362d438e973a18170f3fc/crates/meilisearch/src/extractors/authentication/mod.rs#L334-L340 | GitHub source code}
- */
-type TokenClaims = {
-  searchRules: TokenSearchRules;
-  exp?: number;
-  apiKeyUid: string;
-};
 
 /** Create the payload of the token. */
 function getPayload({
@@ -128,8 +119,8 @@ function getPayload({
  * is the recommended way according to
  * {@link https://min-common-api.proposal.wintercg.org/#navigator-useragent-requirements | WinterCG specs}.
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Navigator/userAgent | User agent }
- * can be spoofed, `process` can be patched. It should prevent misuse for the
- * overwhelming majority of cases.
+ * can be spoofed, `process` can be patched. Even so it should prevent misuse
+ * for the overwhelming majority of cases.
  */
 function tryDetectEnvironment(): void {
   if (typeof navigator !== "undefined" && "userAgent" in navigator) {
