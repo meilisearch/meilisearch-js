@@ -97,13 +97,10 @@ export const assert = {
     errorConstructor: T,
     errMsgMatcher?: RegExp | string,
   ): Promise<InstanceType<T>> {
+    let resolvedValue;
+
     try {
-      const resolvedValue = await promise;
-      vitestAssert.fail(
-        resolvedValue,
-        undefined,
-        "value should have not been resolved",
-      );
+      resolvedValue = await promise;
     } catch (error) {
       vitestAssert.instanceOf(error, errorConstructor);
 
@@ -119,6 +116,12 @@ export const assert = {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return error as InstanceType<T>;
     }
+
+    vitestAssert.fail(
+      resolvedValue,
+      undefined,
+      "value should have not been resolved",
+    );
   },
 };
 
