@@ -3,7 +3,7 @@ import type {
   TenantTokenGeneratorOptions,
   TenantTokenHeader,
   TokenClaims,
-} from "./types.js";
+} from "./types/index.js";
 
 function getOptionsWithDefaults(options: TenantTokenGeneratorOptions) {
   const {
@@ -15,6 +15,7 @@ function getOptionsWithDefaults(options: TenantTokenGeneratorOptions) {
   return { searchRules, algorithm, force, ...restOfOptions };
 }
 
+// TODO: There's no point in this, or maybe even the above fn
 type TenantTokenGeneratorOptionsWithDefaults = ReturnType<
   typeof getOptionsWithDefaults
 >;
