@@ -1,5 +1,5 @@
 import { expect, test, describe, beforeEach, vi } from "vitest";
-import { MeiliSearch } from "./utils/meilisearch-test-utils.js";
+import { assert, MeiliSearch } from "./utils/meilisearch-test-utils.js";
 import {
   MeiliSearchError,
   MeiliSearchApiError,
@@ -15,15 +15,11 @@ describe("Test on updates", () => {
     mockedFetch.mockReset();
   });
 
-  test(`Throw MeilisearchRequestError when throwned error is not MeiliSearchApiError`, async () => {
+  test(`Throw MeilisearchRequestError when thrown error is not MeiliSearchApiError`, async () => {
     mockedFetch.mockRejectedValue(new Error("fake error message"));
 
     const client = new MeiliSearch({ host: "http://localhost:9345" });
-    try {
-      await client.health();
-    } catch (error: any) {
-      expect(error.name).toEqual("MeiliSearchRequestError");
-    }
+    await assert.rejects(client.health(), MeiliSearchRequestError);
   });
 
   test("MeiliSearchApiError can be compared with the instanceof operator", () => {

@@ -4,7 +4,8 @@ import type {
   RequestOptions,
   MainRequestOptions,
   URLSearchParamsRecord,
-} from "./types/types.js";
+  MeiliSearchErrorResponse,
+} from "./types/index.js";
 import { PACKAGE_VERSION } from "./package-version.js";
 import {
   MeiliSearchError,
@@ -67,10 +68,9 @@ function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
   return headers;
 }
 
-// This could be a symbol, but Node.js 18 fetch doesn't support that yet
-// and it might just go EOL before it ever does.
-// https://github.com/nodejs/node/issues/49557
-const TIMEOUT_OBJECT = {};
+// TODO: Convert to Symbol("timeout id") when Node.js 18 is dropped
+/** Used to identify whether an error is a timeout error after fetch request. */
+const TIMEOUT_ID = {};
 
 /**
  * Attach a timeout signal to a {@link RequestInit}, while preserving original
@@ -109,7 +109,7 @@ function getTimeoutFn(
         return;
       }
 
-      const to = setTimeout(() => ac.abort(TIMEOUT_OBJECT), ms);
+      const to = setTimeout(() => ac.abort(TIMEOUT_ID), ms);
       const fn = () => {
         clearTimeout(to);
 
@@ -130,7 +130,7 @@ function getTimeoutFn(
   requestInit.signal = ac.signal;
 
   return () => {
-    const to = setTimeout(() => ac.abort(TIMEOUT_OBJECT), ms);
+    const to = setTimeout(() => ac.abort(TIMEOUT_ID), ms);
     return () => clearTimeout(to);
   };
 }
@@ -208,7 +208,7 @@ export class HttpRequests {
       appendRecordToURLSearchParams(url.searchParams, params);
     }
 
-    const requestInit: RequestInit = {
+    const init: RequestInit = {
       method,
       body:
         contentType === undefined || typeof body !== "string"
@@ -221,51 +221,44 @@ export class HttpRequests {
 
     const startTimeout =
       this.#requestTimeout !== undefined
-        ? getTimeoutFn(requestInit, this.#requestTimeout)
+        ? getTimeoutFn(init, this.#requestTimeout)
         : null;
-
-    const getResponseAndHandleErrorAndTimeout = <
-      U extends ReturnType<NonNullable<Config["httpClient"]> | typeof fetch>,
-    >(
-      responsePromise: U,
-      stopTimeout?: ReturnType<NonNullable<typeof startTimeout>>,
-    ) =>
-      responsePromise
-        .catch((error: unknown) => {
-          throw new MeiliSearchRequestError(
-            url.toString(),
-            Object.is(error, TIMEOUT_OBJECT)
-              ? new Error(`request timed out after ${this.#requestTimeout}ms`, {
-                  cause: requestInit,
-                })
-              : error,
-          );
-        })
-        .finally(() => stopTimeout?.()) as U;
 
     const stopTimeout = startTimeout?.();
 
-    if (this.#customRequestFn !== undefined) {
-      const response = await getResponseAndHandleErrorAndTimeout(
-        this.#customRequestFn(url, requestInit),
-        stopTimeout,
-      );
+    let response: Response;
+    let responseBody: string;
+    try {
+      if (this.#customRequestFn !== undefined) {
+        // When using a custom HTTP client, the response should already be handled and ready to be returned
+        return (await this.#customRequestFn(url, init)) as T;
+      }
 
-      // When using a custom HTTP client, the response should already be handled and ready to be returned
-      return response as T;
+      response = await fetch(url, init);
+      responseBody = await response.text();
+    } catch (error) {
+      throw new MeiliSearchRequestError(
+        url.toString(),
+        Object.is(error, TIMEOUT_ID)
+          ? new Error(`request timed out after ${this.#requestTimeout}ms`, {
+              cause: init,
+            })
+          : error,
+      );
+    } finally {
+      stopTimeout?.();
     }
 
-    const response = await getResponseAndHandleErrorAndTimeout(
-      fetch(url, requestInit),
-      stopTimeout,
-    );
-
-    const responseBody = await response.text();
     const parsedResponse =
-      responseBody === "" ? undefined : JSON.parse(responseBody);
+      responseBody === ""
+        ? undefined
+        : (JSON.parse(responseBody) as T | MeiliSearchErrorResponse);
 
     if (!response.ok) {
-      throw new MeiliSearchApiError(response, parsedResponse);
+      throw new MeiliSearchApiError(
+        response,
+        parsedResponse as MeiliSearchErrorResponse | undefined,
+      );
     }
 
     return parsedResponse as T;

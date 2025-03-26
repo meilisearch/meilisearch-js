@@ -8,6 +8,9 @@ import { Task } from "../task.js";
 import { Batch } from "../batch.js";
 import type { Settings } from "./settings.js";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type RecordAny = Record<string, any>;
+
 /**
  * Shape of allowed record object that can be appended to a
  * {@link URLSearchParams}.
@@ -16,7 +19,7 @@ export type URLSearchParamsRecord = Record<
   string,
   | string
   | string[]
-  | Array<string | string[]>
+  | (string | string[])[]
   | number
   | number[]
   | boolean
@@ -160,7 +163,7 @@ export const MatchingStrategies = {
 export type MatchingStrategies =
   (typeof MatchingStrategies)[keyof typeof MatchingStrategies];
 
-export type Filter = string | Array<string | string[]>;
+export type Filter = string | (string | string[])[];
 
 export type Query = {
   q?: string | null;
@@ -302,7 +305,7 @@ export type CategoriesDistribution = {
 export type Facet = string;
 export type FacetDistribution = Record<Facet, CategoriesDistribution>;
 export type MatchesPosition<T> = Partial<
-  Record<keyof T, Array<{ start: number; length: number; indices?: number[] }>>
+  Record<keyof T, { start: number; length: number; indices?: number[] }[]>
 >;
 
 export type RankingScoreDetails = {
@@ -333,7 +336,7 @@ export type RankingScoreDetails = {
     matchType: string;
     score: number;
   };
-  [key: string]: Record<string, any> | undefined;
+  [key: string]: RecordAny | undefined;
 };
 
 export type FederationDetails = {
@@ -342,7 +345,7 @@ export type FederationDetails = {
   weightedRankingScore: number;
 };
 
-export type Hit<T = Record<string, any>> = T & {
+export type Hit<T = RecordAny> = T & {
   _formatted?: Partial<T>;
   _matchesPosition?: MatchesPosition<T>;
   _rankingScore?: number;
@@ -350,7 +353,7 @@ export type Hit<T = Record<string, any>> = T & {
   _federation?: FederationDetails;
 };
 
-export type Hits<T = Record<string, any>> = Array<Hit<T>>;
+export type Hits<T = RecordAny> = Hit<T>[];
 
 export type FacetStat = { min: number; max: number };
 export type FacetStats = Record<string, FacetStat>;
@@ -364,7 +367,7 @@ export type FacetsByIndex = Record<
 >;
 
 export type SearchResponse<
-  T = Record<string, any>,
+  T = RecordAny,
   S extends SearchParams | undefined = undefined,
 > = {
   hits: Hits<T>;
@@ -412,13 +415,13 @@ type HasPage<S extends SearchParams> = undefined extends S["page"]
 
 export type MultiSearchResult<T> = SearchResponse<T> & { indexUid: string };
 
-export type MultiSearchResponse<T = Record<string, any>> = {
-  results: Array<MultiSearchResult<T>>;
+export type MultiSearchResponse<T = RecordAny> = {
+  results: MultiSearchResult<T>[];
 };
 
 export type MultiSearchResponseOrSearchResponse<
   T1 extends FederatedMultiSearchParams | MultiSearchParams,
-  T2 extends Record<string, unknown> = Record<string, any>,
+  T2 extends RecordAny = RecordAny,
 > = T1 extends FederatedMultiSearchParams
   ? SearchResponse<T2>
   : MultiSearchResponse<T2>;
@@ -443,8 +446,8 @@ export type SearchSimilarDocumentsParams = {
  ** Documents
  */
 
-type Fields<T = Record<string, any>> =
-  | Array<Extract<keyof T, string>>
+type Fields<T = RecordAny> =
+  | Extract<keyof T, string>[]
   | Extract<keyof T, string>;
 
 export type DocumentOptions = {
@@ -466,7 +469,7 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
   csvDelimiter?: string;
 };
 
-export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
+export type DocumentsQuery<T = RecordAny> = ResourceQuery & {
   fields?: Fields<T>;
   filter?: Filter;
   limit?: number;
@@ -474,7 +477,7 @@ export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   retrieveVectors?: boolean;
 };
 
-export type DocumentQuery<T = Record<string, any>> = {
+export type DocumentQuery<T = RecordAny> = {
   fields?: Fields<T>;
 };
 
@@ -487,7 +490,7 @@ export type DocumentsIds = string[] | number[];
 export type UpdateDocumentsByFunctionOptions = {
   function: string;
   filter?: string | string[];
-  context?: Record<string, any>;
+  context?: RecordAny;
 };
 
 /*
@@ -596,9 +599,7 @@ export type TaskObject = Settings &
     finishedAt: string;
   };
 
-export type SwapIndexesParams = Array<{
-  indexes: string[];
-}>;
+export type SwapIndexesParams = { indexes: string[] }[];
 
 type CursorResults<T> = {
   results: T[];
@@ -641,7 +642,7 @@ export type BatchObject = {
   /** Progress and indexing step of the batch, null if the batch is finished */
   progress: null | {
     /** An array of all the steps currently being processed */
-    steps: Array<{
+    steps: {
       /**
        * A string representing the name of the current step NOT stable. Only use
        * for debugging purposes.
@@ -651,7 +652,7 @@ export type BatchObject = {
       finished: number;
       /** Total number of tasks to finish before moving to the next step */
       total: number;
-    }>;
+    }[];
     /** Percentage of progression of all steps currently being processed */
     percentage: number;
   };
@@ -1221,4 +1222,20 @@ export type TenantTokenGeneratorOptions = {
    * @defaultValue `false`
    */
   force?: boolean;
+};
+
+/**
+ * @see {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference | Tenant token payload reference}
+ * @see {@link https://github.com/meilisearch/meilisearch/blob/b21d7aedf9096539041362d438e973a18170f3fc/crates/meilisearch/src/extractors/authentication/mod.rs#L334-L340 | GitHub source code}
+ */
+export type TokenClaims = {
+  searchRules: TokenSearchRules;
+  exp?: number;
+  apiKeyUid: string;
+};
+
+/** JSON Web Token header. */
+export type TenantTokenHeader = {
+  alg: NonNullable<TenantTokenGeneratorOptions["algorithm"]>;
+  typ: "JWT";
 };

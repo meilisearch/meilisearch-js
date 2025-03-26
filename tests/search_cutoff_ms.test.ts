@@ -6,7 +6,7 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode } from "../src/types/index.js";
+import { ErrorStatusCode, type IndividualSettings } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -20,7 +20,7 @@ const index = {
   uid: "movies_test",
 };
 
-const DEFAULT_SEARCHCUTOFFMS = null;
+const DEFAULT_SEARCHCUTOFF_MS = null;
 
 afterAll(() => {
   return clearAllIndexes(config);
@@ -40,7 +40,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       const response = await client.index(index.uid).getSearchCutoffMs();
 
-      expect(response).toEqual(DEFAULT_SEARCHCUTOFFMS);
+      expect(response).toEqual(DEFAULT_SEARCHCUTOFF_MS);
     });
 
     test(`${permission} key: Update searchCutoffMs to valid value`, async () => {
@@ -66,12 +66,13 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const response = await client.index(index.uid).getSearchCutoffMs();
 
-      expect(response).toEqual(DEFAULT_SEARCHCUTOFFMS);
+      expect(response).toEqual(DEFAULT_SEARCHCUTOFF_MS);
     });
 
     test(`${permission} key: Update searchCutoffMs with invalid value`, async () => {
       const client = await getClient(permission);
-      const newSearchCutoffMs = "hello" as any; // bad searchCutoffMs value
+      const newSearchCutoffMs =
+        "hello" as unknown as IndividualSettings["searchCutoffMs"]; // bad searchCutoffMs value
 
       await expect(
         client.index(index.uid).updateSearchCutoffMs(newSearchCutoffMs),
@@ -93,7 +94,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const response = await client.index(index.uid).getSearchCutoffMs();
 
-      expect(response).toEqual(DEFAULT_SEARCHCUTOFFMS);
+      expect(response).toEqual(DEFAULT_SEARCHCUTOFF_MS);
     });
   },
 );
