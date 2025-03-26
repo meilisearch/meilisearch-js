@@ -132,4 +132,3 @@ package
 .idea
 dist_default_export_in_index
 no_default_export_in_index
-playgrounds/javascript/yarn.lock
