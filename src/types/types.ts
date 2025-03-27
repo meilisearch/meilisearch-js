@@ -541,6 +541,7 @@ export type HuggingFaceEmbedder = {
   revision?: string;
   documentTemplate?: string;
   distribution?: Distribution;
+  pooling?: "useModel" | "forceMean" | "forceCls";
   documentTemplateMaxBytes?: number;
   binaryQuantized?: boolean;
 };
