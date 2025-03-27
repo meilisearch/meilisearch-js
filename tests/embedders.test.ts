@@ -6,6 +6,8 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
+  getKey,
+  HOST,
 } from "./utils/meilisearch-test-utils.js";
 
 const index = {
@@ -234,6 +236,57 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual(newEmbedder);
+    });
+
+    test(`${permission} key: Update embedders with composite embedder`, async () => {
+      const adminKey = await getKey("Admin");
+
+      // first enable the network endpoint.
+      await fetch(`${HOST}/experimental-features`, {
+        body: JSON.stringify({ compositeEmbedders: true }),
+        headers: {
+          Authorization: `Bearer ${adminKey}`,
+          "Content-Type": "application/json",
+        },
+        method: "PATCH",
+      });
+
+      const client = await getClient(permission);
+      const embedders = {
+        default: {
+          source: "composite",
+          searchEmbedder: {
+            source: "openAi",
+            model: "text-embedding-3-small",
+            dimensions: 1536,
+          },
+          indexingEmbedder: {
+            source: "openAi",
+            model: "text-embedding-3-small",
+            documentTemplate: "{{doc.title}}",
+            documentTemplateMaxBytes: 400,
+            dimensions: 1536,
+          },
+        },
+      } satisfies Embedders;
+
+      const task: EnqueuedTask = await client
+        .index(index.uid)
+        .updateEmbedders(embedders);
+      await client.waitForTask(task.taskUid);
+      const response: Embedders = await client.index(index.uid).getEmbedders();
+
+      expect(response).toEqual({
+        default: {
+          source: "composite",
+          searchEmbedder: {
+            ...embedders.default.searchEmbedder,
+          },
+          indexingEmbedder: {
+            ...embedders.default.indexingEmbedder,
+          },
+        },
+      });
     });
 
     test(`${permission} key: Reset embedders`, async () => {
