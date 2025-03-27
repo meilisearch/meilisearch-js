@@ -579,12 +579,19 @@ export type OllamaEmbedder = {
   binaryQuantized?: boolean;
 };
 
+export type CompositeEmbedder = {
+  source: "composite";
+  searchEmbedder: Embedder;
+  indexingEmbedder: Embedder;
+};
+
 export type Embedder =
   | OpenAiEmbedder
   | HuggingFaceEmbedder
   | UserProvidedEmbedder
   | RestEmbedder
   | OllamaEmbedder
+  | CompositeEmbedder
   | null;
 
 export type Embedders = Record<string, Embedder> | null;
