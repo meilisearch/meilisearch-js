@@ -130,6 +130,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
             mean: 0.7,
             sigma: 0.3,
           },
+          pooling: "useModel",
           documentTemplateMaxBytes: 500,
           binaryQuantized: false,
         },
