@@ -240,7 +240,6 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with composite embedder`, async () => {
       const adminKey = await getKey("Admin");
-      const embedderName = "composite_embedder";
 
       // first enable the network endpoint.
       await fetch(`${HOST}/experimental-features`, {
@@ -254,19 +253,21 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const client = await getClient(permission);
       const embedders = {
-        [embedderName]: {
+        default: {
           source: "composite",
           searchEmbedder: {
-            source: "openAi",
-            model: "text-embedding-3-small",
-            dimensions: 1536,
+            source: "huggingFace",
+            model:
+              "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            pooling: "useModel",
           },
           indexingEmbedder: {
-            source: "openAi",
-            model: "text-embedding-3-small",
+            source: "huggingFace",
+            model:
+              "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
             documentTemplate: "{{doc.title}}",
-            documentTemplateMaxBytes: 400,
-            dimensions: 1536,
+            pooling: "useModel",
+            documentTemplateMaxBytes: 500,
           },
         },
       } satisfies Embedders;
@@ -279,18 +280,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const processedTask = await client.getTask(task.taskUid);
       expect(processedTask.status).toEqual("succeeded");
-
-      expect(response).toEqual({
-        [embedderName]: {
-          source: "composite",
-          searchEmbedder: {
-            ...embedders[embedderName].searchEmbedder,
-          },
-          indexingEmbedder: {
-            ...embedders[embedderName].indexingEmbedder,
-          },
-        },
-      });
+      expect(response).toEqual(embedders);
     });
 
     test(`${permission} key: Reset embedders`, async () => {
