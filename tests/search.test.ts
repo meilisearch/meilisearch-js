@@ -7,11 +7,11 @@ import {
   beforeAll,
   vi,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types/index.js";
+import { ErrorStatusCode, MatchingStrategies } from "../src/index.js";
 import type {
   FederatedMultiSearchParams,
   MultiSearchParams,
-} from "../src/types/index.js";
+} from "../src/index.js";
 import {
   clearAllIndexes,
   config,

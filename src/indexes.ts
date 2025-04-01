@@ -8,48 +8,31 @@
 import { MeiliSearchError } from "./errors/index.js";
 import type {
   Config,
-  SearchResponse,
-  SearchParams,
+  ContentType,
+  DocumentOptions,
+  DocumentQuery,
+  DocumentsDeletionQuery,
+  DocumentsIds,
+  DocumentsQuery,
+  EnqueuedTaskPromise,
+  ExtraRequestInit,
   Filter,
-  SearchRequestGET,
   IndexObject,
   IndexOptions,
   IndexStats,
-  DocumentsQuery,
-  DocumentQuery,
-  DocumentOptions,
-  Settings,
-  Synonyms,
-  StopWords,
-  RankingRules,
-  DistinctAttribute,
-  FilterableAttributes,
-  SortableAttributes,
-  SearchableAttributes,
-  DisplayedAttributes,
-  TypoTolerance,
-  PaginationSettings,
-  Faceting,
-  ResourceResults,
+  IndividualSettings,
   RawDocumentAdditionOptions,
-  ContentType,
-  DocumentsIds,
-  DocumentsDeletionQuery,
+  RecordAny,
+  ResourceResults,
   SearchForFacetValuesParams,
   SearchForFacetValuesResponse,
-  SeparatorTokens,
-  NonSeparatorTokens,
-  Dictionary,
-  ProximityPrecision,
-  Embedders,
-  SearchCutoffMs,
+  SearchParams,
+  SearchRequestGET,
+  SearchResponse,
   SearchSimilarDocumentsParams,
-  LocalizedAttributes,
+  Settings,
+  UpdatableSettings,
   UpdateDocumentsByFunctionOptions,
-  ExtraRequestInit,
-  PrefixSearch,
-  RecordAny,
-  EnqueuedTaskPromise,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -126,11 +109,11 @@ export class Index<T extends RecordAny = RecordAny> {
     // TODO: Make this a type thing instead of a runtime thing
     const parseFilter = (filter?: Filter): string | undefined => {
       if (typeof filter === "string") return filter;
-      else if (Array.isArray(filter))
+      else if (Array.isArray(filter)) {
         throw new MeiliSearchError(
           "The filter query parameter should be in string format when using searchGet",
         );
-      else return undefined;
+      } else return undefined;
     };
 
     const getParams: SearchRequestGET = {
@@ -540,35 +523,22 @@ export class Index<T extends RecordAny = RecordAny> {
   /// SETTINGS
   ///
 
-  /**
-   * Retrieve all settings
-   *
-   * @returns Promise containing Settings object
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-settings} */
   async getSettings(): Promise<Settings> {
     return await this.httpRequest.get<Settings>({
       path: `indexes/${this.uid}/settings`,
     });
   }
 
-  /**
-   * Update all settings Any parameters not provided will be left unchanged.
-   *
-   * @param settings - Object containing parameters with their updated values
-   * @returns Promise containing an EnqueuedTask
-   */
-  updateSettings(settings: Settings): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-settings} */
+  updateSettings(settings: UpdatableSettings): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings`,
       body: settings,
     });
   }
 
-  /**
-   * Reset settings.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-settings} */
   resetSettings(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings`,
@@ -579,35 +549,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// PAGINATION SETTINGS
   ///
 
-  /**
-   * Get the pagination settings.
-   *
-   * @returns Promise containing object of pagination settings
-   */
-  async getPagination(): Promise<PaginationSettings> {
-    return await this.httpRequest.get<PaginationSettings>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-pagination-settings} */
+  async getPagination(): Promise<IndividualSettings["pagination"]> {
+    return await this.httpRequest.get<IndividualSettings["pagination"]>({
       path: `indexes/${this.uid}/settings/pagination`,
     });
   }
 
-  /**
-   * Update the pagination settings.
-   *
-   * @param pagination - Pagination object
-   * @returns Promise containing an EnqueuedTask
-   */
-  updatePagination(pagination: PaginationSettings): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-pagination-settings} */
+  updatePagination(
+    pagination: IndividualSettings["pagination"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/pagination`,
       body: pagination,
     });
   }
 
-  /**
-   * Reset the pagination settings.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-pagination-settings} */
   resetPagination(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/pagination`,
@@ -618,35 +577,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// SYNONYMS
   ///
 
-  /**
-   * Get the list of all synonyms
-   *
-   * @returns Promise containing record of synonym mappings
-   */
-  async getSynonyms(): Promise<Record<string, string[]>> {
-    return await this.httpRequest.get<Record<string, string[]>>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-synonyms} */
+  async getSynonyms(): Promise<IndividualSettings["synonyms"]> {
+    return await this.httpRequest.get<IndividualSettings["synonyms"]>({
       path: `indexes/${this.uid}/settings/synonyms`,
     });
   }
 
-  /**
-   * Update the list of synonyms. Overwrite the old list.
-   *
-   * @param synonyms - Mapping of synonyms with their associated words
-   * @returns Promise containing an EnqueuedTask
-   */
-  updateSynonyms(synonyms: Synonyms): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-synonyms} */
+  updateSynonyms(
+    synonyms: IndividualSettings["synonyms"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/synonyms`,
       body: synonyms,
     });
   }
 
-  /**
-   * Reset the synonym list to be empty again
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-synonyms} */
   resetSynonyms(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/synonyms`,
@@ -657,35 +605,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// STOP WORDS
   ///
 
-  /**
-   * Get the list of all stop-words
-   *
-   * @returns Promise containing array of stop-words
-   */
-  async getStopWords(): Promise<string[]> {
-    return await this.httpRequest.get<string[]>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-stop-words} */
+  async getStopWords(): Promise<IndividualSettings["stopWords"]> {
+    return await this.httpRequest.get<IndividualSettings["stopWords"]>({
       path: `indexes/${this.uid}/settings/stop-words`,
     });
   }
 
-  /**
-   * Update the list of stop-words. Overwrite the old list.
-   *
-   * @param stopWords - Array of strings that contains the stop-words.
-   * @returns Promise containing an EnqueuedTask
-   */
-  updateStopWords(stopWords: StopWords): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-stop-words} */
+  updateStopWords(
+    stopWords: IndividualSettings["stopWords"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/stop-words`,
       body: stopWords,
     });
   }
 
-  /**
-   * Reset the stop-words list to be empty again
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-stop-words} */
   resetStopWords(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/stop-words`,
@@ -696,36 +633,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// RANKING RULES
   ///
 
-  /**
-   * Get the list of all ranking-rules
-   *
-   * @returns Promise containing array of ranking-rules
-   */
-  async getRankingRules(): Promise<string[]> {
-    return await this.httpRequest.get<string[]>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-ranking-rules} */
+  async getRankingRules(): Promise<IndividualSettings["rankingRules"]> {
+    return await this.httpRequest.get<IndividualSettings["rankingRules"]>({
       path: `indexes/${this.uid}/settings/ranking-rules`,
     });
   }
 
-  /**
-   * Update the list of ranking-rules. Overwrite the old list.
-   *
-   * @param rankingRules - Array that contain ranking rules sorted by order of
-   *   importance.
-   * @returns Promise containing an EnqueuedTask
-   */
-  updateRankingRules(rankingRules: RankingRules): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-ranking-rules} */
+  updateRankingRules(
+    rankingRules: IndividualSettings["rankingRules"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/ranking-rules`,
       body: rankingRules,
     });
   }
 
-  /**
-   * Reset the ranking rules list to its default value
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-ranking-rules} */
   resetRankingRules(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/ranking-rules`,
@@ -736,25 +661,18 @@ export class Index<T extends RecordAny = RecordAny> {
   /// DISTINCT ATTRIBUTE
   ///
 
-  /**
-   * Get the distinct-attribute
-   *
-   * @returns Promise containing the distinct-attribute of the index
-   */
-  async getDistinctAttribute(): Promise<DistinctAttribute> {
-    return await this.httpRequest.get<DistinctAttribute>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-distinct-attribute} */
+  async getDistinctAttribute(): Promise<
+    IndividualSettings["distinctAttribute"]
+  > {
+    return await this.httpRequest.get<IndividualSettings["distinctAttribute"]>({
       path: `indexes/${this.uid}/settings/distinct-attribute`,
     });
   }
 
-  /**
-   * Update the distinct-attribute.
-   *
-   * @param distinctAttribute - Field name of the distinct-attribute
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-distinct-attribute} */
   updateDistinctAttribute(
-    distinctAttribute: DistinctAttribute,
+    distinctAttribute: IndividualSettings["distinctAttribute"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/distinct-attribute`,
@@ -762,11 +680,7 @@ export class Index<T extends RecordAny = RecordAny> {
     });
   }
 
-  /**
-   * Reset the distinct-attribute.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-distinct-attribute} */
   resetDistinctAttribute(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/distinct-attribute`,
@@ -777,26 +691,20 @@ export class Index<T extends RecordAny = RecordAny> {
   /// FILTERABLE ATTRIBUTES
   ///
 
-  /**
-   * Get the filterable-attributes
-   *
-   * @returns Promise containing an array of filterable-attributes
-   */
-  async getFilterableAttributes(): Promise<string[]> {
-    return await this.httpRequest.get<string[]>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-filterable-attributes} */
+  async getFilterableAttributes(): Promise<
+    IndividualSettings["filterableAttributes"]
+  > {
+    return await this.httpRequest.get<
+      IndividualSettings["filterableAttributes"]
+    >({
       path: `indexes/${this.uid}/settings/filterable-attributes`,
     });
   }
 
-  /**
-   * Update the filterable-attributes.
-   *
-   * @param filterableAttributes - Array of strings containing the attributes
-   *   that can be used as filters at query time
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-filterable-attributes} */
   updateFilterableAttributes(
-    filterableAttributes: FilterableAttributes,
+    filterableAttributes: IndividualSettings["filterableAttributes"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/filterable-attributes`,
@@ -804,11 +712,7 @@ export class Index<T extends RecordAny = RecordAny> {
     });
   }
 
-  /**
-   * Reset the filterable-attributes.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-filterable-attributes} */
   resetFilterableAttributes(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/filterable-attributes`,
@@ -819,26 +723,20 @@ export class Index<T extends RecordAny = RecordAny> {
   /// SORTABLE ATTRIBUTES
   ///
 
-  /**
-   * Get the sortable-attributes
-   *
-   * @returns Promise containing array of sortable-attributes
-   */
-  async getSortableAttributes(): Promise<string[]> {
-    return await this.httpRequest.get<string[]>({
-      path: `indexes/${this.uid}/settings/sortable-attributes`,
-    });
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-sortable-attributes} */
+  async getSortableAttributes(): Promise<
+    IndividualSettings["sortableAttributes"]
+  > {
+    return await this.httpRequest.get<IndividualSettings["sortableAttributes"]>(
+      {
+        path: `indexes/${this.uid}/settings/sortable-attributes`,
+      },
+    );
   }
 
-  /**
-   * Update the sortable-attributes.
-   *
-   * @param sortableAttributes - Array of strings containing the attributes that
-   *   can be used to sort search results at query time
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-sortable-attributes} */
   updateSortableAttributes(
-    sortableAttributes: SortableAttributes,
+    sortableAttributes: IndividualSettings["sortableAttributes"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/sortable-attributes`,
@@ -846,11 +744,7 @@ export class Index<T extends RecordAny = RecordAny> {
     });
   }
 
-  /**
-   * Reset the sortable-attributes.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-sortable-attributes} */
   resetSortableAttributes(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/sortable-attributes`,
@@ -861,26 +755,20 @@ export class Index<T extends RecordAny = RecordAny> {
   /// SEARCHABLE ATTRIBUTE
   ///
 
-  /**
-   * Get the searchable-attributes
-   *
-   * @returns Promise containing array of searchable-attributes
-   */
-  async getSearchableAttributes(): Promise<string[]> {
-    return await this.httpRequest.get<string[]>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-searchable-attributes} */
+  async getSearchableAttributes(): Promise<
+    IndividualSettings["searchableAttributes"]
+  > {
+    return await this.httpRequest.get<
+      IndividualSettings["searchableAttributes"]
+    >({
       path: `indexes/${this.uid}/settings/searchable-attributes`,
     });
   }
 
-  /**
-   * Update the searchable-attributes.
-   *
-   * @param searchableAttributes - Array of strings that contains searchable
-   *   attributes sorted by order of importance(most to least important)
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-searchable-attributes} */
   updateSearchableAttributes(
-    searchableAttributes: SearchableAttributes,
+    searchableAttributes: IndividualSettings["searchableAttributes"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/searchable-attributes`,
@@ -888,11 +776,7 @@ export class Index<T extends RecordAny = RecordAny> {
     });
   }
 
-  /**
-   * Reset the searchable-attributes.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-searchable-attributes} */
   resetSearchableAttributes(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/searchable-attributes`,
@@ -903,26 +787,20 @@ export class Index<T extends RecordAny = RecordAny> {
   /// DISPLAYED ATTRIBUTE
   ///
 
-  /**
-   * Get the displayed-attributes
-   *
-   * @returns Promise containing array of displayed-attributes
-   */
-  async getDisplayedAttributes(): Promise<string[]> {
-    return await this.httpRequest.get<string[]>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-displayed-attributes} */
+  async getDisplayedAttributes(): Promise<
+    IndividualSettings["displayedAttributes"]
+  > {
+    return await this.httpRequest.get<
+      IndividualSettings["displayedAttributes"]
+    >({
       path: `indexes/${this.uid}/settings/displayed-attributes`,
     });
   }
 
-  /**
-   * Update the displayed-attributes.
-   *
-   * @param displayedAttributes - Array of strings that contains attributes of
-   *   an index to display
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-displayed-attributes} */
   updateDisplayedAttributes(
-    displayedAttributes: DisplayedAttributes,
+    displayedAttributes: IndividualSettings["displayedAttributes"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/displayed-attributes`,
@@ -930,11 +808,7 @@ export class Index<T extends RecordAny = RecordAny> {
     });
   }
 
-  /**
-   * Reset the displayed-attributes.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-displayed-attributes} */
   resetDisplayedAttributes(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/displayed-attributes`,
@@ -945,36 +819,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// TYPO TOLERANCE
   ///
 
-  /**
-   * Get the typo tolerance settings.
-   *
-   * @returns Promise containing the typo tolerance settings.
-   */
-  async getTypoTolerance(): Promise<TypoTolerance> {
-    return await this.httpRequest.get<TypoTolerance>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-typo-tolerance-settings} */
+  async getTypoTolerance(): Promise<IndividualSettings["typoTolerance"]> {
+    return await this.httpRequest.get<IndividualSettings["typoTolerance"]>({
       path: `indexes/${this.uid}/settings/typo-tolerance`,
     });
   }
 
-  /**
-   * Update the typo tolerance settings.
-   *
-   * @param typoTolerance - Object containing the custom typo tolerance
-   *   settings.
-   * @returns Promise containing object of the enqueued update
-   */
-  updateTypoTolerance(typoTolerance: TypoTolerance): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-typo-tolerance-settings} */
+  updateTypoTolerance(
+    typoTolerance: IndividualSettings["typoTolerance"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/typo-tolerance`,
       body: typoTolerance,
     });
   }
 
-  /**
-   * Reset the typo tolerance settings.
-   *
-   * @returns Promise containing object of the enqueued update
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-typo-tolerance-settings} */
   resetTypoTolerance(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/typo-tolerance`,
@@ -985,35 +847,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// FACETING
   ///
 
-  /**
-   * Get the faceting settings.
-   *
-   * @returns Promise containing object of faceting index settings
-   */
-  async getFaceting(): Promise<Faceting> {
-    return await this.httpRequest.get<Faceting>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-faceting-settings} */
+  async getFaceting(): Promise<IndividualSettings["faceting"]> {
+    return await this.httpRequest.get<IndividualSettings["faceting"]>({
       path: `indexes/${this.uid}/settings/faceting`,
     });
   }
 
-  /**
-   * Update the faceting settings.
-   *
-   * @param faceting - Faceting index settings object
-   * @returns Promise containing an EnqueuedTask
-   */
-  updateFaceting(faceting: Faceting): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-faceting-settings} */
+  updateFaceting(
+    faceting: IndividualSettings["faceting"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/faceting`,
       body: faceting,
     });
   }
 
-  /**
-   * Reset the faceting settings.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-faceting-settings} */
   resetFaceting(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/faceting`,
@@ -1024,35 +875,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// SEPARATOR TOKENS
   ///
 
-  /**
-   * Get the list of all separator tokens.
-   *
-   * @returns Promise containing array of separator tokens
-   */
-  async getSeparatorTokens(): Promise<string[]> {
-    return await this.httpRequest.get<string[]>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-separator-tokens} */
+  async getSeparatorTokens(): Promise<IndividualSettings["separatorTokens"]> {
+    return await this.httpRequest.get<IndividualSettings["separatorTokens"]>({
       path: `indexes/${this.uid}/settings/separator-tokens`,
     });
   }
 
-  /**
-   * Update the list of separator tokens. Overwrite the old list.
-   *
-   * @param separatorTokens - Array that contains separator tokens.
-   * @returns Promise containing an EnqueuedTask or null
-   */
-  updateSeparatorTokens(separatorTokens: SeparatorTokens): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-separator-tokens} */
+  updateSeparatorTokens(
+    separatorTokens: IndividualSettings["separatorTokens"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/separator-tokens`,
       body: separatorTokens,
     });
   }
 
-  /**
-   * Reset the separator tokens list to its default value
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-separator-tokens} */
   resetSeparatorTokens(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/separator-tokens`,
@@ -1063,25 +903,20 @@ export class Index<T extends RecordAny = RecordAny> {
   /// NON-SEPARATOR TOKENS
   ///
 
-  /**
-   * Get the list of all non-separator tokens.
-   *
-   * @returns Promise containing array of non-separator tokens
-   */
-  async getNonSeparatorTokens(): Promise<string[]> {
-    return await this.httpRequest.get<string[]>({
-      path: `indexes/${this.uid}/settings/non-separator-tokens`,
-    });
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-non-separator-tokens} */
+  async getNonSeparatorTokens(): Promise<
+    IndividualSettings["nonSeparatorTokens"]
+  > {
+    return await this.httpRequest.get<IndividualSettings["nonSeparatorTokens"]>(
+      {
+        path: `indexes/${this.uid}/settings/non-separator-tokens`,
+      },
+    );
   }
 
-  /**
-   * Update the list of non-separator tokens. Overwrite the old list.
-   *
-   * @param nonSeparatorTokens - Array that contains non-separator tokens.
-   * @returns Promise containing an EnqueuedTask or null
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-non-separator-tokens} */
   updateNonSeparatorTokens(
-    nonSeparatorTokens: NonSeparatorTokens,
+    nonSeparatorTokens: IndividualSettings["nonSeparatorTokens"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/non-separator-tokens`,
@@ -1089,11 +924,7 @@ export class Index<T extends RecordAny = RecordAny> {
     });
   }
 
-  /**
-   * Reset the non-separator tokens list to its default value
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-non-separator-tokens} */
   resetNonSeparatorTokens(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/non-separator-tokens`,
@@ -1104,35 +935,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// DICTIONARY
   ///
 
-  /**
-   * Get the dictionary settings of a Meilisearch index.
-   *
-   * @returns Promise containing the dictionary settings
-   */
-  async getDictionary(): Promise<string[]> {
-    return await this.httpRequest.get<string[]>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-dictionary} */
+  async getDictionary(): Promise<IndividualSettings["dictionary"]> {
+    return await this.httpRequest.get<IndividualSettings["dictionary"]>({
       path: `indexes/${this.uid}/settings/dictionary`,
     });
   }
 
-  /**
-   * Update the dictionary settings. Overwrite the old settings.
-   *
-   * @param dictionary - Array that contains the new dictionary settings.
-   * @returns Promise containing an EnqueuedTask or null
-   */
-  updateDictionary(dictionary: Dictionary): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-dictionary} */
+  updateDictionary(
+    dictionary: IndividualSettings["dictionary"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/dictionary`,
       body: dictionary,
     });
   }
 
-  /**
-   * Reset the dictionary settings to its default value
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-dictionary} */
   resetDictionary(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/dictionary`,
@@ -1143,26 +963,20 @@ export class Index<T extends RecordAny = RecordAny> {
   /// PROXIMITY PRECISION
   ///
 
-  /**
-   * Get the proximity precision settings of a Meilisearch index.
-   *
-   * @returns Promise containing the proximity precision settings
-   */
-  async getProximityPrecision(): Promise<ProximityPrecision> {
-    return await this.httpRequest.get<ProximityPrecision>({
-      path: `indexes/${this.uid}/settings/proximity-precision`,
-    });
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-proximity-precision-settings} */
+  async getProximityPrecision(): Promise<
+    IndividualSettings["proximityPrecision"]
+  > {
+    return await this.httpRequest.get<IndividualSettings["proximityPrecision"]>(
+      {
+        path: `indexes/${this.uid}/settings/proximity-precision`,
+      },
+    );
   }
 
-  /**
-   * Update the proximity precision settings. Overwrite the old settings.
-   *
-   * @param proximityPrecision - String that contains the new proximity
-   *   precision settings.
-   * @returns Promise containing an EnqueuedTask or null
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-proximity-precision-settings} */
   updateProximityPrecision(
-    proximityPrecision: ProximityPrecision,
+    proximityPrecision: IndividualSettings["proximityPrecision"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/proximity-precision`,
@@ -1170,11 +984,7 @@ export class Index<T extends RecordAny = RecordAny> {
     });
   }
 
-  /**
-   * Reset the proximity precision settings to its default value
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-proximity-precision-settings} */
   resetProximityPrecision(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/proximity-precision`,
@@ -1185,35 +995,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// EMBEDDERS
   ///
 
-  /**
-   * Get the embedders settings of a Meilisearch index.
-   *
-   * @returns Promise containing the embedders settings
-   */
-  async getEmbedders(): Promise<Embedders> {
-    return await this.httpRequest.get<Embedders>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-embedder-settings} */
+  async getEmbedders(): Promise<IndividualSettings["embedders"]> {
+    return await this.httpRequest.get<IndividualSettings["embedders"]>({
       path: `indexes/${this.uid}/settings/embedders`,
     });
   }
 
-  /**
-   * Update the embedders settings. Overwrite the old settings.
-   *
-   * @param embedders - Object that contains the new embedders settings.
-   * @returns Promise containing an EnqueuedTask or null
-   */
-  updateEmbedders(embedders: Embedders): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-embedder-settings} */
+  updateEmbedders(
+    embedders: IndividualSettings["embedders"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/embedders`,
       body: embedders,
     });
   }
 
-  /**
-   * Reset the embedders settings to its default value
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-embedder-settings} */
   resetEmbedders(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/embedders`,
@@ -1224,35 +1023,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// SEARCHCUTOFFMS SETTINGS
   ///
 
-  /**
-   * Get the SearchCutoffMs settings.
-   *
-   * @returns Promise containing object of SearchCutoffMs settings
-   */
-  async getSearchCutoffMs(): Promise<SearchCutoffMs> {
-    return await this.httpRequest.get<SearchCutoffMs>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-search-cutoff} */
+  async getSearchCutoffMs(): Promise<IndividualSettings["searchCutoffMs"]> {
+    return await this.httpRequest.get<IndividualSettings["searchCutoffMs"]>({
       path: `indexes/${this.uid}/settings/search-cutoff-ms`,
     });
   }
 
-  /**
-   * Update the SearchCutoffMs settings.
-   *
-   * @param searchCutoffMs - Object containing SearchCutoffMsSettings
-   * @returns Promise containing an EnqueuedTask
-   */
-  updateSearchCutoffMs(searchCutoffMs: SearchCutoffMs): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-search-cutoff} */
+  updateSearchCutoffMs(
+    searchCutoffMs: IndividualSettings["searchCutoffMs"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/search-cutoff-ms`,
       body: searchCutoffMs,
     });
   }
 
-  /**
-   * Reset the SearchCutoffMs settings.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-search-cutoff} */
   resetSearchCutoffMs(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/search-cutoff-ms`,
@@ -1263,25 +1051,20 @@ export class Index<T extends RecordAny = RecordAny> {
   /// LOCALIZED ATTRIBUTES SETTINGS
   ///
 
-  /**
-   * Get the localized attributes settings.
-   *
-   * @returns Promise containing object of localized attributes settings
-   */
-  async getLocalizedAttributes(): Promise<LocalizedAttributes> {
-    return await this.httpRequest.get<LocalizedAttributes>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-localized-attributes-settings} */
+  async getLocalizedAttributes(): Promise<
+    IndividualSettings["localizedAttributes"]
+  > {
+    return await this.httpRequest.get<
+      IndividualSettings["localizedAttributes"]
+    >({
       path: `indexes/${this.uid}/settings/localized-attributes`,
     });
   }
 
-  /**
-   * Update the localized attributes settings.
-   *
-   * @param localizedAttributes - Localized attributes object
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-localized-attribute-settings} */
   updateLocalizedAttributes(
-    localizedAttributes: LocalizedAttributes,
+    localizedAttributes: IndividualSettings["localizedAttributes"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/localized-attributes`,
@@ -1289,11 +1072,7 @@ export class Index<T extends RecordAny = RecordAny> {
     });
   }
 
-  /**
-   * Reset the localized attributes settings.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-localized-attributes-settings} */
   resetLocalizedAttributes(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/localized-attributes`,
@@ -1304,35 +1083,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// FACET SEARCH SETTINGS
   ///
 
-  /**
-   * Get the facet search settings.
-   *
-   * @returns Promise containing object of facet search settings
-   */
-  async getFacetSearch(): Promise<boolean> {
-    return await this.httpRequest.get<boolean>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-facet-search-settings} */
+  async getFacetSearch(): Promise<IndividualSettings["facetSearch"]> {
+    return await this.httpRequest.get<IndividualSettings["facetSearch"]>({
       path: `indexes/${this.uid}/settings/facet-search`,
     });
   }
 
-  /**
-   * Update the facet search settings.
-   *
-   * @param facetSearch - Boolean value
-   * @returns Promise containing an EnqueuedTask
-   */
-  updateFacetSearch(facetSearch: boolean): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-facet-search-settings} */
+  updateFacetSearch(
+    facetSearch: IndividualSettings["facetSearch"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/facet-search`,
       body: facetSearch,
     });
   }
 
-  /**
-   * Reset the facet search settings.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-facet-search-settings} */
   resetFacetSearch(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/facet-search`,
@@ -1343,35 +1111,24 @@ export class Index<T extends RecordAny = RecordAny> {
   /// PREFIX SEARCH SETTINGS
   ///
 
-  /**
-   * Get the prefix search settings.
-   *
-   * @returns Promise containing object of prefix search settings
-   */
-  async getPrefixSearch(): Promise<PrefixSearch> {
-    return await this.httpRequest.get<PrefixSearch>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-prefix-search-settings} */
+  async getPrefixSearch(): Promise<IndividualSettings["prefixSearch"]> {
+    return await this.httpRequest.get<IndividualSettings["prefixSearch"]>({
       path: `indexes/${this.uid}/settings/prefix-search`,
     });
   }
 
-  /**
-   * Update the prefix search settings.
-   *
-   * @param prefixSearch - PrefixSearch value
-   * @returns Promise containing an EnqueuedTask
-   */
-  updatePrefixSearch(prefixSearch: PrefixSearch): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-prefix-search-settings} */
+  updatePrefixSearch(
+    prefixSearch: IndividualSettings["prefixSearch"],
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/prefix-search`,
       body: prefixSearch,
     });
   }
 
-  /**
-   * Reset the prefix search settings.
-   *
-   * @returns Promise containing an EnqueuedTask
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#reset-prefix-search-settings} */
   resetPrefixSearch(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/prefix-search`,
