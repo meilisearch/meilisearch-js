@@ -64,10 +64,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           },
         },
       ];
-      const task = await client
+      await client
         .index(index.uid)
-        .updateFilterableAttributes(newFilterableAttributes);
-      await client.index(index.uid).waitForTask(task.taskUid);
+        .updateFilterableAttributes(newFilterableAttributes)
+        .waitTask();
 
       const response: string[] = await client
         .index(index.uid)
