@@ -81,10 +81,7 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Get multiple documents by IDs`, async () => {
         const client = await getClient(permission);
-        const { taskUid } = await client
-          .index(indexPk.uid)
-          .addDocuments(dataset);
-        await client.waitForTask(taskUid);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const documents = await client
           .index(indexPk.uid)
