@@ -88,12 +88,12 @@ describe.each([
       );
 
       assert.isDefined(fetchSpy.mock.lastCall);
-      const [, requestInit] = fetchSpy.mock.lastCall!;
+      const [, requestInit] = fetchSpy.mock.lastCall;
 
       assert.isDefined(requestInit?.headers);
-      assert.instanceOf(requestInit!.headers, Headers);
+      assert.instanceOf(requestInit.headers, Headers);
 
-      const headers = requestInit!.headers! as Headers;
+      const headers = requestInit.headers;
 
       assert.strictEqual(headers.get("Hello-There!"), "General Kenobi");
       assert.strictEqual(headers.get("Jane-Doe"), "John Doe");
@@ -112,12 +112,12 @@ describe.each([
       assert.isTrue(await client.isHealthy());
 
       assert.isDefined(fetchSpy.mock.lastCall);
-      const [, requestInit] = fetchSpy.mock.lastCall!;
+      const [, requestInit] = fetchSpy.mock.lastCall;
 
       assert.isDefined(requestInit?.headers);
-      assert.instanceOf(requestInit!.headers, Headers);
+      assert.instanceOf(requestInit.headers, Headers);
       assert.strictEqual(
-        (requestInit!.headers! as Headers).get("Hello-There!"),
+        requestInit.headers.get("Hello-There!"),
         "General Kenobi",
       );
     });
@@ -135,12 +135,12 @@ describe.each([
       assert.isTrue(await client.isHealthy());
 
       assert.isDefined(fetchSpy.mock.lastCall);
-      const [, requestInit] = fetchSpy.mock.lastCall!;
+      const [, requestInit] = fetchSpy.mock.lastCall;
 
       assert.isDefined(requestInit?.headers);
-      assert.instanceOf(requestInit!.headers, Headers);
+      assert.instanceOf(requestInit.headers, Headers);
       assert.strictEqual(
-        (requestInit!.headers! as Headers).get("Hello-There!"),
+        requestInit.headers.get("Hello-There!"),
         "General Kenobi",
       );
     });
@@ -314,12 +314,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         assert.isTrue(await client.isHealthy());
 
         assert.isDefined(fetchSpy.mock.lastCall);
-        const [, requestInit] = fetchSpy.mock.lastCall!;
+        const [, requestInit] = fetchSpy.mock.lastCall;
 
         assert.isDefined(requestInit?.headers);
-        assert.instanceOf(requestInit!.headers, Headers);
+        assert.instanceOf(requestInit.headers, Headers);
         assert.strictEqual(
-          (requestInit!.headers! as Headers).get("X-Meilisearch-Client"),
+          requestInit.headers.get("X-Meilisearch-Client"),
           `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
         );
       });
@@ -335,12 +335,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         assert.isTrue(await client.isHealthy());
 
         assert.isDefined(fetchSpy.mock.lastCall);
-        const [, requestInit] = fetchSpy.mock.lastCall!;
+        const [, requestInit] = fetchSpy.mock.lastCall;
 
         assert.isDefined(requestInit?.headers);
-        assert.instanceOf(requestInit!.headers, Headers);
+        assert.instanceOf(requestInit.headers, Headers);
         assert.strictEqual(
-          (requestInit!.headers! as Headers).get("X-Meilisearch-Client"),
+          requestInit.headers.get("X-Meilisearch-Client"),
           `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
         );
       });
@@ -356,12 +356,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         assert.isTrue(await client.isHealthy());
 
         assert.isDefined(fetchSpy.mock.lastCall);
-        const [, requestInit] = fetchSpy.mock.lastCall!;
+        const [, requestInit] = fetchSpy.mock.lastCall;
 
         assert.isDefined(requestInit?.headers);
-        assert.instanceOf(requestInit!.headers, Headers);
+        assert.instanceOf(requestInit.headers, Headers);
         assert.strictEqual(
-          (requestInit!.headers! as Headers).get("X-Meilisearch-Client"),
+          requestInit.headers.get("X-Meilisearch-Client"),
           `random plugin 1 ; random plugin 2 ; Meilisearch JavaScript (v${PACKAGE_VERSION})`,
         );
       });
