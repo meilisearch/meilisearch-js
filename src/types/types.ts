@@ -2,7 +2,7 @@
 // Project: https://github.com/meilisearch/meilisearch-js
 // Definitions by: qdequele <quentin@meilisearch.com> <https://github.com/meilisearch>
 // Definitions: https://github.com/meilisearch/meilisearch-js
-// TypeScript Version: ^3.8.3
+// TypeScript Version: ^5.8.2
 
 import type { WaitOptions } from "./task_and_batch.js";
 
