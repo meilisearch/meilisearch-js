@@ -183,6 +183,11 @@ export type Crop = {
 // `facetName` becomes mandatory when using `searchForFacetValues`
 export type SearchForFacetValuesParams = Omit<SearchParams, "facetName"> & {
   facetName: string;
+  /**
+   * If true, the facet search will return the exhaustive count of the facet
+   * values.
+   */
+  exhaustiveFacetCount?: boolean;
 };
 
 export type FacetHit = {

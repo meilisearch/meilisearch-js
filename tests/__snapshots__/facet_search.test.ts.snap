@@ -17,6 +17,19 @@ exports[`Test on POST search > Admin key: basic facet value search 1`] = `
 }
 `;
 
+exports[`Test on POST search > Admin key: facet value search with exhaustive facet count 1`] = `
+{
+  "facetHits": [
+    {
+      "count": 1,
+      "value": "adventure",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
 exports[`Test on POST search > Admin key: facet value search with filter 1`] = `
 {
   "facetHits": [
@@ -85,6 +98,19 @@ exports[`Test on POST search > Master key: basic facet value search 1`] = `
 }
 `;
 
+exports[`Test on POST search > Master key: facet value search with exhaustive facet count 1`] = `
+{
+  "facetHits": [
+    {
+      "count": 1,
+      "value": "adventure",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
 exports[`Test on POST search > Master key: facet value search with filter 1`] = `
 {
   "facetHits": [
@@ -145,6 +171,19 @@ exports[`Test on POST search > Search key: basic facet value search 1`] = `
     },
     {
       "count": 2,
+      "value": "adventure",
+    },
+  ],
+  "facetQuery": "a",
+  "processingTimeMs": 0,
+}
+`;
+
+exports[`Test on POST search > Search key: facet value search with exhaustive facet count 1`] = `
+{
+  "facetHits": [
+    {
+      "count": 1,
       "value": "adventure",
     },
   ],

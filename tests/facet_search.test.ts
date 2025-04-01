@@ -98,6 +98,21 @@ describe.each([
     // @TODO: This is flaky, processingTimeMs is not guaranteed
     expect(response).toMatchSnapshot();
   });
+
+  test(`${permission} key: facet value search with exhaustive facet count`, async () => {
+    const client = await getClient(permission);
+
+    const params = {
+      facetName: "genres",
+      facetQuery: "a",
+      q: "Alice",
+      exhaustiveFacetCount: true,
+    };
+    const response = await client.index(index.uid).searchForFacetValues(params);
+
+    // @TODO: This is flaky, processingTimeMs is not guaranteed
+    expect(response).toMatchSnapshot();
+  });
 });
 
 afterAll(() => {
