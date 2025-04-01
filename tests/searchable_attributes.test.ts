@@ -6,7 +6,7 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode } from "../src/types/index.js";
+import { ErrorStatusCode } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -29,8 +29,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
-      await client.waitForTask(taskUid);
+      await client.index(index.uid).addDocuments(dataset).waitTask();
     });
 
     test(`${permission} key: Get default searchable attributes`, async () => {
@@ -44,10 +43,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update searchable attributes`, async () => {
       const client = await getClient(permission);
       const newSearchableAttributes = ["title"];
-      const task = await client
+      await client
         .index(index.uid)
-        .updateSearchableAttributes(newSearchableAttributes);
-      await client.index(index.uid).waitForTask(task.taskUid);
+        .updateSearchableAttributes(newSearchableAttributes)
+        .waitTask();
 
       const response = await client.index(index.uid).getSearchableAttributes();
 
@@ -56,10 +55,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update searchable attributes at null`, async () => {
       const client = await getClient(permission);
-      const task = await client
-        .index(index.uid)
-        .updateSearchableAttributes(null);
-      await client.index(index.uid).waitForTask(task.taskUid);
+      await client.index(index.uid).updateSearchableAttributes(null).waitTask();
 
       const response = await client.index(index.uid).getSearchableAttributes();
 
@@ -68,8 +64,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset searchable attributes`, async () => {
       const client = await getClient(permission);
-      const task = await client.index(index.uid).resetSearchableAttributes();
-      await client.index(index.uid).waitForTask(task.taskUid);
+      await client.index(index.uid).resetSearchableAttributes().waitTask();
 
       const response = await client.index(index.uid).getSearchableAttributes();
 
@@ -83,8 +78,7 @@ describe.each([{ permission: "Search" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.createIndex(index.uid);
-      await client.waitForTask(taskUid);
+      await client.createIndex(index.uid).waitTask();
     });
 
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {
@@ -115,8 +109,7 @@ describe.each([{ permission: "No" }])(
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.createIndex(index.uid);
-      await client.waitForTask(taskUid);
+      await client.createIndex(index.uid).waitTask();
     });
 
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {

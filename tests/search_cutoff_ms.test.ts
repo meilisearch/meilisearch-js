@@ -32,8 +32,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     beforeEach(async () => {
       await clearAllIndexes(config);
       const client = await getClient("Master");
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
-      await client.waitForTask(taskUid);
+      await client.index(index.uid).addDocuments(dataset).waitTask();
     });
 
     test(`${permission} key: Get default searchCutoffMs settings`, async () => {
@@ -46,10 +45,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update searchCutoffMs to valid value`, async () => {
       const client = await getClient(permission);
       const newSearchCutoffMs = 100;
-      const task = await client
+      await client
         .index(index.uid)
-        .updateSearchCutoffMs(newSearchCutoffMs);
-      await client.waitForTask(task.taskUid);
+        .updateSearchCutoffMs(newSearchCutoffMs)
+        .waitTask();
 
       const response = await client.index(index.uid).getSearchCutoffMs();
 
@@ -59,10 +58,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update searchCutoffMs to null`, async () => {
       const client = await getClient(permission);
       const newSearchCutoffMs = null;
-      const task = await client
+      await client
         .index(index.uid)
-        .updateSearchCutoffMs(newSearchCutoffMs);
-      await client.index(index.uid).waitForTask(task.taskUid);
+        .updateSearchCutoffMs(newSearchCutoffMs)
+        .waitTask();
 
       const response = await client.index(index.uid).getSearchCutoffMs();
 
@@ -85,12 +84,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Reset searchCutoffMs`, async () => {
       const client = await getClient(permission);
       const newSearchCutoffMs = 100;
-      const updateTask = await client
+      await client
         .index(index.uid)
-        .updateSearchCutoffMs(newSearchCutoffMs);
-      await client.waitForTask(updateTask.taskUid);
-      const task = await client.index(index.uid).resetSearchCutoffMs();
-      await client.waitForTask(task.taskUid);
+        .updateSearchCutoffMs(newSearchCutoffMs)
+        .waitTask();
+      await client.index(index.uid).resetSearchCutoffMs().waitTask();
 
       const response = await client.index(index.uid).getSearchCutoffMs();
 
@@ -104,8 +102,7 @@ describe.each([{ permission: "Search" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.createIndex(index.uid);
-      await client.waitForTask(taskUid);
+      await client.createIndex(index.uid).waitTask();
     });
 
     test(`${permission} key: try to get searchCutoffMs and be denied`, async () => {
@@ -136,8 +133,7 @@ describe.each([{ permission: "No" }])(
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.createIndex(index.uid);
-      await client.waitForTask(taskUid);
+      await client.createIndex(index.uid).waitTask();
     });
 
     test(`${permission} key: try to get searchCutoffMs and be denied`, async () => {

@@ -1,6 +1,5 @@
 import { expect, test, describe, beforeEach, afterAll } from "vitest";
-import { ErrorStatusCode } from "../src/types/index.js";
-import { EnqueuedTask } from "../src/enqueued-task.js";
+import { ErrorStatusCode } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -33,8 +32,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     beforeEach(async () => {
       await clearAllIndexes(config);
       const client = await getClient("master");
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
-      await client.waitForTask(taskUid);
+      await client.index(index.uid).addDocuments(dataset).waitTask();
     });
 
     test(`${permission} key: Get default ranking rules`, async () => {
@@ -46,10 +44,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update ranking rules`, async () => {
       const client = await getClient(permission);
       const newRankingRules = ["title:asc", "typo", "description:desc"];
-      const task: EnqueuedTask = await client
+      await client
         .index(index.uid)
-        .updateRankingRules(newRankingRules);
-      await client.index(index.uid).waitForTask(task.taskUid);
+        .updateRankingRules(newRankingRules)
+        .waitTask();
 
       const response = await client.index(index.uid).getRankingRules();
 
@@ -58,10 +56,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update ranking rules at null`, async () => {
       const client = await getClient(permission);
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .updateRankingRules(null);
-      await client.index(index.uid).waitForTask(task.taskUid);
+      await client.index(index.uid).updateRankingRules(null).waitTask();
 
       const response = await client.index(index.uid).getRankingRules();
 
@@ -70,10 +65,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset ranking rules`, async () => {
       const client = await getClient(permission);
-      const task: EnqueuedTask = await client
-        .index(index.uid)
-        .resetRankingRules();
-      await client.index(index.uid).waitForTask(task.taskUid);
+      await client.index(index.uid).resetRankingRules().waitTask();
 
       const response = await client.index(index.uid).getRankingRules();
 

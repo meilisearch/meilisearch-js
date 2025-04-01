@@ -6,10 +6,7 @@ import {
   expect,
   test,
 } from "vitest";
-import {
-  ErrorStatusCode,
-  type IndividualSettings,
-} from "../src/types/index.js";
+import { ErrorStatusCode, type IndividualSettings } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -35,8 +32,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     beforeEach(async () => {
       await clearAllIndexes(config);
       const client = await getClient("Master");
-      const { taskUid } = await client.index(index.uid).addDocuments(dataset);
-      await client.waitForTask(taskUid);
+      await client.index(index.uid).addDocuments(dataset).waitTask();
     });
 
     test(`${permission} key: Get default localizedAttributes settings`, async () => {
@@ -50,10 +46,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       const newLocalizedAttributes: IndividualSettings["localizedAttributes"] =
         [{ attributePatterns: ["title"], locales: ["eng"] }];
-      const task = await client
+      await client
         .index(index.uid)
-        .updateLocalizedAttributes(newLocalizedAttributes);
-      await client.waitForTask(task.taskUid);
+        .updateLocalizedAttributes(newLocalizedAttributes)
+        .waitTask();
 
       const response = await client.index(index.uid).getLocalizedAttributes();
 
@@ -63,10 +59,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update localizedAttributes to null`, async () => {
       const client = await getClient(permission);
       const newLocalizedAttributes = null;
-      const task = await client
+      await client
         .index(index.uid)
-        .updateLocalizedAttributes(newLocalizedAttributes);
-      await client.index(index.uid).waitForTask(task.taskUid);
+        .updateLocalizedAttributes(newLocalizedAttributes)
+        .waitTask();
 
       const response = await client.index(index.uid).getLocalizedAttributes();
 
@@ -92,12 +88,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       const newLocalizedAttributes: IndividualSettings["localizedAttributes"] =
         [];
-      const updateTask = await client
+      await client
         .index(index.uid)
-        .updateLocalizedAttributes(newLocalizedAttributes);
-      await client.waitForTask(updateTask.taskUid);
-      const task = await client.index(index.uid).resetLocalizedAttributes();
-      await client.waitForTask(task.taskUid);
+        .updateLocalizedAttributes(newLocalizedAttributes)
+        .waitTask();
+      await client.index(index.uid).resetLocalizedAttributes().waitTask();
 
       const response = await client.index(index.uid).getLocalizedAttributes();
 
@@ -111,8 +106,7 @@ describe.each([{ permission: "Search" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.createIndex(index.uid);
-      await client.waitForTask(taskUid);
+      await client.createIndex(index.uid).waitTask();
     });
 
     test(`${permission} key: try to get localizedAttributes and be denied`, async () => {
@@ -143,8 +137,7 @@ describe.each([{ permission: "No" }])(
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.createIndex(index.uid);
-      await client.waitForTask(taskUid);
+      await client.createIndex(index.uid).waitTask();
     });
 
     test(`${permission} key: try to get localizedAttributes and be denied`, async () => {

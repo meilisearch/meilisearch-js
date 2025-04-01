@@ -11,6 +11,7 @@ import {
   MeiliSearchError,
   MeiliSearchApiError,
   MeiliSearchRequestError,
+  MeiliSearchRequestTimeOutError,
 } from "./errors/index.js";
 import { addProtocolIfNotPresent, addTrailingSlash } from "./utils.js";
 
@@ -79,7 +80,7 @@ const TIMEOUT_ID = {};
  * @remarks
  * This could be a short few straight forward lines using {@link AbortSignal.any}
  * and {@link AbortSignal.timeout}, but these aren't yet widely supported enough,
- * nor polyfillable, at the time of writing.
+ * nor polyfill -able, at the time of writing.
  * @returns A new function which starts the timeout, which then returns another
  *   function that clears the timeout
  */
@@ -240,9 +241,7 @@ export class HttpRequests {
       throw new MeiliSearchRequestError(
         url.toString(),
         Object.is(error, TIMEOUT_ID)
-          ? new Error(`request timed out after ${this.#requestTimeout}ms`, {
-              cause: init,
-            })
+          ? new MeiliSearchRequestTimeOutError(this.#requestTimeout!, init)
           : error,
       );
     } finally {

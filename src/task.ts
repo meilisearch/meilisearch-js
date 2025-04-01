@@ -1,169 +1,210 @@
-import { MeiliSearchTimeOutError } from "./errors/index.js";
+import { MeiliSearchTaskTimeOutError } from "./errors/index.js";
 import type {
-  Config,
   WaitOptions,
-  TasksQuery,
+  TasksOrBatchesQuery,
   TasksResults,
-  TaskObject,
-  CancelTasksQuery,
-  TasksResultsObject,
-  DeleteTasksQuery,
-  EnqueuedTaskObject,
-} from "./types/types.js";
-import { TaskStatus } from "./types/types.js";
-import { HttpRequests } from "./http-requests.js";
-import { sleep } from "./utils.js";
-import { EnqueuedTask } from "./enqueued-task.js";
+  Task,
+  DeleteOrCancelTasksQuery,
+  EnqueuedTask,
+  EnqueuedTaskPromise,
+  TaskUidOrEnqueuedTask,
+  ExtraRequestInit,
+} from "./types/index.js";
+import type { HttpRequests } from "./http-requests.js";
 
-class Task {
-  indexUid: TaskObject["indexUid"];
-  status: TaskObject["status"];
-  type: TaskObject["type"];
-  uid: TaskObject["uid"];
-  batchUid: TaskObject["batchUid"];
-  canceledBy: TaskObject["canceledBy"];
-  details: TaskObject["details"];
-  error: TaskObject["error"];
-  duration: TaskObject["duration"];
-  startedAt: Date;
-  enqueuedAt: Date;
-  finishedAt: Date;
+// TODO: Convert to Symbol("timeout id") when Node.js 18 is dropped
+/**
+ * Used to identify whether an error is a timeout error in
+ * {@link TaskClient.waitForTask}.
+ */
+const TIMEOUT_ID = {};
 
-  constructor(task: TaskObject) {
-    this.indexUid = task.indexUid;
-    this.status = task.status;
-    this.type = task.type;
-    this.uid = task.uid;
-    this.batchUid = task.batchUid;
-    this.details = task.details;
-    this.canceledBy = task.canceledBy;
-    this.error = task.error;
-    this.duration = task.duration;
-
-    this.startedAt = new Date(task.startedAt);
-    this.enqueuedAt = new Date(task.enqueuedAt);
-    this.finishedAt = new Date(task.finishedAt);
-  }
+/**
+ * @returns A function which defines an extra function property on a
+ *   {@link Promise}, which resolves to {@link EnqueuedTask}, which awaits it and
+ *   resolves to a {@link Task}.
+ */
+function getWaitTaskApplier(
+  taskClient: TaskClient,
+): (enqueuedTaskPromise: Promise<EnqueuedTask>) => EnqueuedTaskPromise {
+  return function (
+    enqueuedTaskPromise: Promise<EnqueuedTask>,
+  ): EnqueuedTaskPromise {
+    return Object.defineProperty(
+      enqueuedTaskPromise,
+      "waitTask" satisfies keyof Pick<EnqueuedTaskPromise, "waitTask">,
+      {
+        async value(waitOptions?: WaitOptions): Promise<Task> {
+          return await taskClient.waitForTask(
+            await enqueuedTaskPromise,
+            waitOptions,
+          );
+        },
+      },
+    ) as EnqueuedTaskPromise;
+  };
 }
 
-class TaskClient {
-  httpRequest: HttpRequests;
+const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask): number =>
+  typeof taskUidOrEnqueuedTask === "number"
+    ? taskUidOrEnqueuedTask
+    : taskUidOrEnqueuedTask.taskUid;
 
-  constructor(config: Config) {
-    this.httpRequest = new HttpRequests(config);
+/**
+ * Class for handling tasks.
+ *
+ * @see {@link https://www.meilisearch.com/docs/reference/api/tasks}
+ */
+export class TaskClient {
+  readonly #httpRequest: HttpRequests;
+  readonly #defaultTimeout: number;
+  readonly #defaultInterval: number;
+  readonly #applyWaitTask: ReturnType<typeof getWaitTaskApplier>;
+
+  constructor(httpRequest: HttpRequests, defaultWaitOptions?: WaitOptions) {
+    this.#httpRequest = httpRequest;
+    this.#defaultTimeout = defaultWaitOptions?.timeout ?? 5_000;
+    this.#defaultInterval = defaultWaitOptions?.interval ?? 50;
+    this.#applyWaitTask = getWaitTaskApplier(this);
   }
 
-  /**
-   * Get one task
-   *
-   * @param uid - Unique identifier of the task
-   * @returns
-   */
-  async getTask(uid: number): Promise<Task> {
-    const taskItem = await this.httpRequest.get<TaskObject>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-one-task} */
+  async getTask(
+    uid: number,
+    // TODO: Need to do this for all other methods: https://github.com/meilisearch/meilisearch-js/issues/1476
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<Task> {
+    const task = await this.#httpRequest.get<Task>({
       path: `tasks/${uid}`,
+      extraRequestInit,
     });
-    return new Task(taskItem);
+    return task;
   }
 
-  /**
-   * Get tasks
-   *
-   * @param params - Parameters to browse the tasks
-   * @returns Promise containing all tasks
-   */
-  async getTasks(params?: TasksQuery): Promise<TasksResults> {
-    const tasks = await this.httpRequest.get<TasksResultsObject>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-tasks} */
+  async getTasks(params?: TasksOrBatchesQuery): Promise<TasksResults> {
+    const tasks = await this.#httpRequest.get<TasksResults>({
       path: "tasks",
       params,
     });
-
-    return {
-      ...tasks,
-      results: tasks.results.map((task) => new Task(task)),
-    };
-  }
-
-  /**
-   * Wait for a task to be processed.
-   *
-   * @param taskUid - Task identifier
-   * @param options - Additional configuration options
-   * @returns Promise returning a task after it has been processed
-   */
-  async waitForTask(
-    taskUid: number,
-    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {},
-  ): Promise<Task> {
-    const startingTime = Date.now();
-    while (Date.now() - startingTime < timeOutMs) {
-      const response = await this.getTask(taskUid);
-      if (
-        !(
-          [
-            TaskStatus.TASK_ENQUEUED,
-            TaskStatus.TASK_PROCESSING,
-          ] as readonly string[]
-        ).includes(response.status)
-      )
-        return response;
-      await sleep(intervalMs);
-    }
-    throw new MeiliSearchTimeOutError(
-      `timeout of ${timeOutMs}ms has exceeded on process ${taskUid} when waiting a task to be resolved.`,
-    );
-  }
-
-  /**
-   * Waits for multiple tasks to be processed
-   *
-   * @param taskUids - Tasks identifier list
-   * @param options - Wait options
-   * @returns Promise returning a list of tasks after they have been processed
-   */
-  async waitForTasks(
-    taskUids: number[],
-    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {},
-  ): Promise<Task[]> {
-    const tasks: Task[] = [];
-    for (const taskUid of taskUids) {
-      const task = await this.waitForTask(taskUid, {
-        timeOutMs,
-        intervalMs,
-      });
-      tasks.push(task);
-    }
     return tasks;
   }
 
   /**
-   * Cancel a list of enqueued or processing tasks.
+   * Wait for an enqueued task to be processed.
    *
-   * @param params - Parameters to filter the tasks.
-   * @returns Promise containing an EnqueuedTask
+   * @remarks
+   * If an {@link EnqueuedTask} needs to be awaited instantly, it is recommended
+   * to instead use {@link EnqueuedTaskPromise.waitTask}, which is available on
+   * any method that returns an {@link EnqueuedTaskPromise}.
    */
-  async cancelTasks(params?: CancelTasksQuery): Promise<EnqueuedTask> {
-    const task = await this.httpRequest.post<EnqueuedTaskObject>({
-      path: "tasks/cancel",
-      params,
-    });
+  async waitForTask(
+    taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask,
+    options?: WaitOptions,
+  ): Promise<Task> {
+    const taskUid = getTaskUid(taskUidOrEnqueuedTask);
+    const timeout = options?.timeout ?? this.#defaultTimeout;
+    const interval = options?.interval ?? this.#defaultInterval;
 
-    return new EnqueuedTask(task);
+    const ac = timeout > 0 ? new AbortController() : null;
+
+    const toId =
+      ac !== null
+        ? setTimeout(() => void ac.abort(TIMEOUT_ID), timeout)
+        : undefined;
+
+    try {
+      for (;;) {
+        const task = await this.getTask(taskUid, { signal: ac?.signal });
+
+        if (task.status !== "enqueued" && task.status !== "processing") {
+          clearTimeout(toId);
+          return task;
+        }
+
+        if (interval > 0) {
+          await new Promise((resolve) => setTimeout(resolve, interval));
+        }
+      }
+    } catch (error) {
+      throw Object.is((error as Error).cause, TIMEOUT_ID)
+        ? new MeiliSearchTaskTimeOutError(taskUid, timeout)
+        : error;
+    }
   }
 
   /**
-   * Delete a list tasks.
+   * Lazily wait for multiple enqueued tasks to be processed.
    *
-   * @param params - Parameters to filter the tasks.
-   * @returns Promise containing an EnqueuedTask
+   * @remarks
+   * In this case {@link WaitOptions.timeout} is the maximum time to wait for any
+   * one task, not for all of the tasks to complete.
    */
-  async deleteTasks(params?: DeleteTasksQuery): Promise<EnqueuedTask> {
-    const task = await this.httpRequest.delete<EnqueuedTaskObject>({
-      path: "tasks",
-      params,
-    });
-    return new EnqueuedTask(task);
+  async *waitForTasksIter(
+    taskUidsOrEnqueuedTasks:
+      | Iterable<TaskUidOrEnqueuedTask>
+      | AsyncIterable<TaskUidOrEnqueuedTask>,
+    options?: WaitOptions,
+  ): AsyncGenerator<Task, void, undefined> {
+    for await (const taskUidOrEnqueuedTask of taskUidsOrEnqueuedTasks) {
+      yield await this.waitForTask(taskUidOrEnqueuedTask, options);
+    }
+  }
+
+  /** Wait for multiple enqueued tasks to be processed. */
+  async waitForTasks(
+    ...params: Parameters<typeof this.waitForTasksIter>
+  ): Promise<Task[]> {
+    const tasks: Task[] = [];
+
+    for await (const task of this.waitForTasksIter(...params)) {
+      tasks.push(task);
+    }
+
+    return tasks;
+  }
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks} */
+  cancelTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
+    return this.#applyWaitTask(
+      this.#httpRequest.post({
+        path: "tasks/cancel",
+        params,
+      }),
+    );
+  }
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#delete-tasks} */
+  deleteTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
+    return this.#applyWaitTask(
+      this.#httpRequest.delete({
+        path: "tasks",
+        params,
+      }),
+    );
   }
 }
 
-export { TaskClient, Task };
+type PickedHttpRequestMethods = Pick<
+  HttpRequests,
+  "post" | "put" | "patch" | "delete"
+>;
+export type HttpRequestsWithEnqueuedTaskPromise = {
+  [TKey in keyof PickedHttpRequestMethods]: (
+    ...params: Parameters<PickedHttpRequestMethods[TKey]>
+  ) => EnqueuedTaskPromise;
+};
+
+export function getHttpRequestsWithEnqueuedTaskPromise(
+  httpRequest: HttpRequests,
+  taskClient: TaskClient,
+): HttpRequestsWithEnqueuedTaskPromise {
+  const applyWaitTask = getWaitTaskApplier(taskClient);
+
+  return {
+    post: (...params) => applyWaitTask(httpRequest.post(...params)),
+    put: (...params) => applyWaitTask(httpRequest.put(...params)),
+    patch: (...params) => applyWaitTask(httpRequest.patch(...params)),
+    delete: (...params) => applyWaitTask(httpRequest.delete(...params)),
+  };
+}
