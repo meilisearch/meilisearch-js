@@ -496,7 +496,18 @@ export type UpdateDocumentsByFunctionOptions = {
  ** Settings
  */
 
-export type FilterableAttributes = string[] | null;
+type GranularFilterableAttribute = {
+  attributePatterns: string[];
+  features: {
+    facetSearch: boolean;
+    filter: { equality: boolean; comparison: boolean };
+  };
+};
+
+export type FilterableAttributes =
+  | string[]
+  | GranularFilterableAttribute[]
+  | null;
 export type DistinctAttribute = string | null;
 export type SearchableAttributes = string[] | null;
 export type SortableAttributes = string[] | null;

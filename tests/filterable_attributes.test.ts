@@ -53,6 +53,28 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(response?.sort()).toEqual([]);
     });
 
+    test(`${permission} key: Update attributes with granular attribute syntax`, async () => {
+      const client = await getClient(permission);
+      const newFilterableAttributes = [
+        {
+          attributePatterns: ["genre"],
+          features: {
+            facetSearch: true,
+            filter: { equality: true, comparison: false },
+          },
+        },
+      ];
+      const task = await client
+        .index(index.uid)
+        .updateFilterableAttributes(newFilterableAttributes);
+      await client.index(index.uid).waitForTask(task.taskUid);
+
+      const response: string[] = await client
+        .index(index.uid)
+        .getFilterableAttributes();
+      expect(response).toEqual(newFilterableAttributes);
+    });
+
     test(`${permission} key: Reset attributes for filtering`, async () => {
       const client = await getClient(permission);
       await client.index(index.uid).resetFilterableAttributes().waitTask();
