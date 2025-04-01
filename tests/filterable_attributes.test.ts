@@ -69,9 +69,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .updateFilterableAttributes(newFilterableAttributes)
         .waitTask();
 
-      const response: string[] = await client
-        .index(index.uid)
-        .getFilterableAttributes();
+      const response = await client.index(index.uid).getFilterableAttributes();
       expect(response).toEqual(newFilterableAttributes);
     });
 
