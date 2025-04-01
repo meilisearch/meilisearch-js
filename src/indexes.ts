@@ -782,8 +782,8 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an array of filterable-attributes
    */
-  async getFilterableAttributes(): Promise<string[]> {
-    return await this.httpRequest.get<string[]>({
+  async getFilterableAttributes(): Promise<FilterableAttributes> {
+    return await this.httpRequest.get<FilterableAttributes>({
       path: `indexes/${this.uid}/settings/filterable-attributes`,
     });
   }
