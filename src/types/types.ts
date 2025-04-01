@@ -469,6 +469,7 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
 };
 
 export type DocumentsQuery<T = RecordAny> = ResourceQuery & {
+  ids?: string[] | number[];
   fields?: Fields<T>;
   filter?: Filter;
   limit?: number;
