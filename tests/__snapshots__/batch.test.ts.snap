@@ -3,19 +3,19 @@
 exports[`Tests on batches > Admin key: Get one batch 1`] = `
 Batch {
   "details": {},
-  "duration": "PT0.000283625S",
-  "finishedAt": "2025-04-01T06:21:20.15406059Z",
+  "duration": "PT0.000219583S",
+  "finishedAt": "2025-04-01T07:00:51.408688632Z",
   "progress": null,
-  "startedAt": "2025-04-01T06:21:20.153776965Z",
+  "startedAt": "2025-04-01T07:00:51.408469049Z",
   "stats": {
     "indexUids": {
       "batch-test": 1,
     },
     "progressTrace": {
-      "processing tasks": "218.46µs",
-      "processing tasks > creating the index": "116.42µs",
-      "writing tasks to disk": "73.13µs",
-      "writing tasks to disk > task": "55.79µs",
+      "processing tasks": "180.17µs",
+      "processing tasks > creating the index": "93.63µs",
+      "writing tasks to disk": "64.29µs",
+      "writing tasks to disk > task": "47.54µs",
     },
     "status": {
       "failed": 1,
@@ -25,36 +25,35 @@ Batch {
       "indexCreation": 1,
     },
   },
-  "uid": 59,
+  "uid": 1839,
 }
 `;
 
 exports[`Tests on batches > Master key: Get one batch 1`] = `
 Batch {
   "details": {},
-  "duration": "PT0.005187709S",
-  "finishedAt": "2025-04-01T06:21:20.140031757Z",
+  "duration": "PT0.000211542S",
+  "finishedAt": "2025-04-01T07:00:51.336459757Z",
   "progress": null,
-  "startedAt": "2025-04-01T06:21:20.134844048Z",
+  "startedAt": "2025-04-01T07:00:51.336248215Z",
   "stats": {
     "indexUids": {
       "batch-test": 1,
     },
     "progressTrace": {
-      "processing tasks": "5.10ms",
-      "processing tasks > creating the index": "4.55ms",
-      "processing tasks > creating the index > updating the index": "530.00µs",
-      "writing tasks to disk": "90.75µs",
-      "writing tasks to disk > task": "53.21µs",
+      "processing tasks": "164.50µs",
+      "processing tasks > creating the index": "82.04µs",
+      "writing tasks to disk": "80.25µs",
+      "writing tasks to disk > task": "63.92µs",
     },
     "status": {
-      "succeeded": 1,
+      "failed": 1,
     },
     "totalNbTasks": 1,
     "types": {
       "indexCreation": 1,
     },
   },
-  "uid": 58,
+  "uid": 1837,
 }
 `;
