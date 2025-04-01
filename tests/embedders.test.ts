@@ -272,13 +272,13 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         },
       } satisfies Embedders;
 
-      const task: EnqueuedTask = await client
+      const task = await client
         .index(index.uid)
-        .updateEmbedders(embedders);
-      await client.waitForTask(task.taskUid);
+        .updateEmbedders(embedders)
+        .waitTask();
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
-      const processedTask = await client.getTask(task.taskUid);
+      const processedTask = await client.tasks.getTask(task.uid);
       expect(processedTask.status).toEqual("succeeded");
       expect(response).toEqual(embedders);
     });
