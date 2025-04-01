@@ -1,5 +1,5 @@
 import { afterAll, beforeEach, describe, expect, test } from "vitest";
-import { ErrorStatusCode, type Settings } from "../src/types.js";
+import { ErrorStatusCode, type Settings } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,

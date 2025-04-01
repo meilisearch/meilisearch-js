@@ -3,7 +3,7 @@ import type {
   TenantTokenGeneratorOptions,
   TenantTokenHeader,
   TokenClaims,
-} from "./types.js";
+} from "./types/index.js";
 
 function getOptionsWithDefaults(options: TenantTokenGeneratorOptions) {
   const {

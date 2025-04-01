@@ -53,7 +53,7 @@ import type {
   ExtraRequestInit,
   PrefixSearch,
   RecordAny,
-} from "./types.js";
+} from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import { Task, TaskClient } from "./task.js";
 import { EnqueuedTask } from "./enqueued-task.js";

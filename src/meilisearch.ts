@@ -30,8 +30,8 @@ import type {
   MultiSearchResponseOrSearchResponse,
   Network,
   RecordAny,
-} from "./types.js";
-import { ErrorStatusCode } from "./types.js";
+} from "./types/index.js";
+import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import { TaskClient } from "./task.js";
 import { EnqueuedTask } from "./enqueued-task.js";

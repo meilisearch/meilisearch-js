@@ -6,7 +6,7 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode, type SearchCutoffMs } from "../src/types.js";
+import { ErrorStatusCode, type SearchCutoffMs } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
