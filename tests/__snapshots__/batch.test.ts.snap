@@ -1,0 +1,60 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Tests on batches > Admin key: Get one batch 1`] = `
+Batch {
+  "details": {},
+  "duration": "PT0.000283625S",
+  "finishedAt": "2025-04-01T06:21:20.15406059Z",
+  "progress": null,
+  "startedAt": "2025-04-01T06:21:20.153776965Z",
+  "stats": {
+    "indexUids": {
+      "batch-test": 1,
+    },
+    "progressTrace": {
+      "processing tasks": "218.46µs",
+      "processing tasks > creating the index": "116.42µs",
+      "writing tasks to disk": "73.13µs",
+      "writing tasks to disk > task": "55.79µs",
+    },
+    "status": {
+      "failed": 1,
+    },
+    "totalNbTasks": 1,
+    "types": {
+      "indexCreation": 1,
+    },
+  },
+  "uid": 59,
+}
+`;
+
+exports[`Tests on batches > Master key: Get one batch 1`] = `
+Batch {
+  "details": {},
+  "duration": "PT0.005187709S",
+  "finishedAt": "2025-04-01T06:21:20.140031757Z",
+  "progress": null,
+  "startedAt": "2025-04-01T06:21:20.134844048Z",
+  "stats": {
+    "indexUids": {
+      "batch-test": 1,
+    },
+    "progressTrace": {
+      "processing tasks": "5.10ms",
+      "processing tasks > creating the index": "4.55ms",
+      "processing tasks > creating the index > updating the index": "530.00µs",
+      "writing tasks to disk": "90.75µs",
+      "writing tasks to disk > task": "53.21µs",
+    },
+    "status": {
+      "succeeded": 1,
+    },
+    "totalNbTasks": 1,
+    "types": {
+      "indexCreation": 1,
+    },
+  },
+  "uid": 58,
+}
+`;
