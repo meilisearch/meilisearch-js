@@ -240,6 +240,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with composite embedder`, async () => {
       const adminKey = await getKey("Admin");
+      const embedderName = "composite_embedder";
 
       // first enable the network endpoint.
       await fetch(`${HOST}/experimental-features`, {
@@ -253,7 +254,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const client = await getClient(permission);
       const embedders = {
-        default: {
+        [embedderName]: {
           source: "composite",
           searchEmbedder: {
             source: "openAi",
@@ -276,14 +277,17 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       await client.waitForTask(task.taskUid);
       const response: Embedders = await client.index(index.uid).getEmbedders();
 
+      const processedTask = await client.getTask(task.taskUid);
+      expect(processedTask.status).toEqual("succeeded");
+
       expect(response).toEqual({
-        default: {
+        [embedderName]: {
           source: "composite",
           searchEmbedder: {
-            ...embedders.default.searchEmbedder,
+            ...embedders[embedderName].searchEmbedder,
           },
           indexingEmbedder: {
-            ...embedders.default.indexingEmbedder,
+            ...embedders[embedderName].indexingEmbedder,
           },
         },
       });
