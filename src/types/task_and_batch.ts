@@ -168,6 +168,8 @@ type BatchStats = {
   status: Record<TaskStatus, number>;
   types: Record<TaskType, number>;
   indexUids: Record<string, number>;
+  progressTrace: Record<string, number>;
+  internalDatabaseSizes?: Record<string, number>;
 };
 
 /**
