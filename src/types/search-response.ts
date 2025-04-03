@@ -1,4 +1,4 @@
-import type { RecordAny } from "./types.js";
+import type { RecordAny } from "./shared.js";
 
 /** @see `milli::search::new::matches::MatchBounds` */
 export type MatchBounds = { start: number; length: number; indices: number[] };
@@ -44,13 +44,14 @@ export type FacetStats = {
   max: number;
 };
 
+type ProcessingTime = { processingTimeMs: number };
+
 type SearchResultCore = {
   query: string;
-  processingTimeMs: number;
   facetDistribution?: Record<string, Record<string, number>>;
   facetStats?: Record<string, FacetStats>;
   semanticHitCount?: number;
-};
+} & ProcessingTime;
 
 export type SearchResultWithPagination<T extends RecordAny = RecordAny> =
   SearchResultCore & { hits: SearchHit<T>[] } & Pagination;
@@ -59,8 +60,8 @@ export type SearchResultWithOffsetLimit<T extends RecordAny = RecordAny> =
 
 /** @see `meilisearch::search::SearchResult` */
 export type SearchResult<T extends RecordAny = RecordAny> =
-  | SearchResultWithPagination<T>
-  | SearchResultWithOffsetLimit<T>;
+  | SearchResultWithOffsetLimit<T>
+  | SearchResultWithPagination<T>;
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/multi_search#federated-multi-search-requests}
@@ -92,3 +93,23 @@ export type SearchResultWithIndex<T extends RecordAny = RecordAny> =
 export type SearchResults<T extends RecordAny = RecordAny> = {
   results: SearchResultWithIndex<T>[];
 };
+
+/** @see `milli::search::facet::search::FacetValueHit` */
+export type FacetValueHit = { value: string; count: number };
+
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/facet_search#response}
+ *
+ * @see `meilisearch::search::FacetSearchResult`
+ */
+export type FacetSearchResult = {
+  facetHits: FacetValueHit[];
+  facetQuery: string | null;
+} & ProcessingTime;
+
+/** @see `meilisearch::search::SimilarResult` */
+export type SimilarResult = {
+  hits: SearchHit[];
+  id: string;
+} & ProcessingTime &
+  OffsetLimit;
