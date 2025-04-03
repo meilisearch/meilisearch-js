@@ -1,5 +1,7 @@
+import type { SearchQuery } from "./search-parameters.js";
+
 /** @see {@link TokenSearchRules} */
-export type TokenIndexRules = { filter?: Filter };
+export type TokenIndexRules = Pick<SearchQuery, "filter">;
 
 /**
  * {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference#search-rules}

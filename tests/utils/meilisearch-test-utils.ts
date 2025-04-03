@@ -7,9 +7,10 @@ const MASTER_KEY = "masterKey";
 const HOST = process.env.MEILISEARCH_URL || "http://127.0.0.1:7700";
 const BAD_HOST = "http://127.0.0.1:7701";
 
-const config = {
+const config: Config = {
   host: HOST,
   apiKey: MASTER_KEY,
+  defaultWaitOptions: { interval: 10 },
 };
 const badHostClient = new MeiliSearch({
   host: BAD_HOST,
@@ -18,10 +19,12 @@ const badHostClient = new MeiliSearch({
 const masterClient = new MeiliSearch({
   host: HOST,
   apiKey: MASTER_KEY,
+  defaultWaitOptions: { interval: 10 },
 });
 
 const anonymousClient = new MeiliSearch({
   host: HOST,
+  defaultWaitOptions: { interval: 10 },
 });
 
 async function getKey(permission: string): Promise<string> {
@@ -46,6 +49,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
   if (permission === "No") {
     const anonymousClient = new MeiliSearch({
       host: HOST,
+      defaultWaitOptions: { interval: 10 },
     });
     return anonymousClient;
   }
@@ -55,6 +59,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
     const searchClient = new MeiliSearch({
       host: HOST,
       apiKey: searchKey,
+      defaultWaitOptions: { interval: 10 },
     });
     return searchClient;
   }
@@ -64,6 +69,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
     const adminClient = new MeiliSearch({
       host: HOST,
       apiKey: adminKey,
+      defaultWaitOptions: { interval: 10 },
     });
     return adminClient;
   }
@@ -73,16 +79,13 @@ async function getClient(permission: string): Promise<MeiliSearch> {
 
 const clearAllIndexes = async (config: Config): Promise<void> => {
   const client = new MeiliSearch(config);
-
   const { results } = await client.getRawIndexes();
-  const indexes = results.map(({ uid }) => uid);
 
-  const taskIds: number[] = [];
-  for (const indexUid of indexes) {
-    const { taskUid } = await client.index(indexUid).delete();
-    taskIds.push(taskUid);
-  }
-  await client.waitForTasks(taskIds, { timeOutMs: 60_000 });
+  await Promise.all(
+    results.map((v) =>
+      client.index(v.uid).delete().waitTask({ timeout: 60_000 }),
+    ),
+  );
 };
 
 function decode64(buff: string) {
@@ -91,8 +94,7 @@ function decode64(buff: string) {
 
 const NOT_RESOLVED = Symbol("<not resolved>");
 
-export const assert = {
-  ...vitestAssert,
+const source = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async rejects<T extends { new (...args: any[]): any }>(
     promise: Promise<unknown>,
@@ -126,6 +128,10 @@ export const assert = {
     );
   },
 };
+export const assert: typeof vitestAssert & typeof source = Object.assign(
+  vitestAssert,
+  source,
+);
 
 const datasetWithNests = [
   {

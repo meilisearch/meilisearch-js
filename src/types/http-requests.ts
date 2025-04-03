@@ -1,3 +1,5 @@
+import type { WaitOptions } from "./task-and-batch.js";
+
 /**
  * Shape of allowed record object that can be appended to a
  * {@link URLSearchParams}.
@@ -40,8 +42,8 @@ export type Config = {
    */
   apiKey?: string;
   /**
-   * Custom strings that will be concatted to the "X-Meilisearch-Client" header
-   * on each request.
+   * Custom strings that will be concatenated to the "X-Meilisearch-Client"
+   * header on each request.
    */
   clientAgents?: string[];
   /** Base request options that may override the default ones. */
@@ -57,6 +59,8 @@ export type Config = {
   httpClient?: (...args: Parameters<typeof fetch>) => Promise<unknown>;
   /** Timeout in milliseconds for each HTTP request. */
   timeout?: number;
+  /** Options for waiting on tasks. */
+  defaultWaitOptions?: WaitOptions;
 };
 
 /** Main options of a request. */
