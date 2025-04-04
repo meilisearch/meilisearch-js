@@ -169,6 +169,7 @@ type BatchStats = {
   types: Record<TaskType, number>;
   indexUids: Record<string, number>;
   progressTrace: Record<string, number>;
+  // Do not type this field because the keys can change in a breaking way
   internalDatabaseSizes?: Record<string, number>;
 };
 
