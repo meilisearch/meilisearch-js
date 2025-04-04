@@ -78,7 +78,7 @@
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-tsdoc": "^0.4.0",
     "typescript": "^5.8.2",
-    "vite": "^6.2.4",
+    "vite": "^6.2.5",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "lint-staged": "15.5.0",
