@@ -94,6 +94,10 @@ export type SearchResults<T extends RecordAny = RecordAny> = {
   results: SearchResultWithIndex<T>[];
 };
 
+export type SearchResultsOrFederatedSearchResult<
+  T extends RecordAny = RecordAny,
+> = SearchResults<T> | FederatedSearchResult<T>;
+
 /** @see `milli::search::facet::search::FacetValueHit` */
 export type FacetValueHit = { value: string; count: number };
 

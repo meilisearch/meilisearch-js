@@ -7,7 +7,6 @@
 
 import { Index } from "./indexes.js";
 import type {
-  KeyCreation,
   Config,
   IndexOptions,
   IndexObject,
@@ -15,19 +14,19 @@ import type {
   Health,
   Stats,
   Version,
-  KeyUpdate,
   IndexesQuery,
   IndexesResults,
-  KeysQuery,
-  KeysResults,
   IndexSwap,
-  MultiSearchParams,
-  FederatedMultiSearchParams,
-  MultiSearchResponseOrSearchResponse,
   EnqueuedTaskPromise,
   ExtraRequestInit,
   Network,
   RecordAny,
+  MultiSearchOrFederatedSearch,
+  SearchResultsOrFederatedSearchResult,
+  KeysQuery,
+  KeysResults,
+  KeyCreation,
+  KeyUpdate,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -38,6 +37,7 @@ import {
 } from "./task.js";
 import { BatchClient } from "./batch.js";
 import type { MeiliSearchApiError } from "./errors/index.js";
+import type { FederatedSearchFn, MultiSearchFn } from "./types/functions.js";
 
 export class MeiliSearch {
   config: Config;
@@ -213,65 +213,27 @@ export class MeiliSearch {
   /// Multi Search
   ///
 
-  /**
-   * Perform multiple search queries.
-   *
-   * It is possible to make multiple search queries on the same index or on
-   * different ones. With network feature enabled, you can also search across
-   * remote instances.
-   *
-   * @example
-   *
-   * ```ts
-   * client.multiSearch({
-   *   queries: [
-   *     { indexUid: "movies", q: "wonder" },
-   *     { indexUid: "books", q: "flower" },
-   *   ],
-   * });
-   *
-   * // Federated search with remote instance (requires network feature enabled)
-   * client.multiSearch({
-   *   federation: {},
-   *   queries: [
-   *     {
-   *       indexUid: "movies",
-   *       q: "wonder",
-   *       federationOptions: {
-   *         remote: "meilisearch instance name",
-   *       },
-   *     },
-   *     {
-   *       indexUid: "movies",
-   *       q: "wonder",
-   *       federationOptions: {
-   *         remote: "meilisearch instance name",
-   *       },
-   *     },
-   *   ],
-   * });
-   * ```
-   *
-   * @param queries - Search queries
-   * @param extraRequestInit - Additional request configuration options
-   * @returns Promise containing the search responses
-   * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#perform-a-search}
-   */
-  async multiSearch<
-    T1 extends MultiSearchParams | FederatedMultiSearchParams,
-    T2 extends RecordAny = RecordAny,
-  >(
-    queries: T1,
-    extraRequestInit?: ExtraRequestInit,
-  ): Promise<MultiSearchResponseOrSearchResponse<T1, T2>> {
-    return await this.httpRequest.post<
-      MultiSearchResponseOrSearchResponse<T1, T2>
-    >({
-      path: "multi-search",
-      body: queries,
-      extraRequestInit,
-    });
+  async #multiSearch<T extends RecordAny>(
+    queries: MultiSearchOrFederatedSearch,
+    init?: ExtraRequestInit,
+  ) {
+    return await this.httpRequest.post<SearchResultsOrFederatedSearchResult<T>>(
+      {
+        path: "multi-search",
+        body: queries,
+        extraRequestInit: init,
+      },
+    );
   }
+
+  // TODO: There's still the problem of generic T not accepting multiple indexes
+  // TODO: Could make this more generic, by mapping query parameters to responses,
+  //       but since we have a required generic as well, it's not possible
+  /** {@link https://www.meilisearch.com/docs/reference/api/multi_search} */
+  readonly multiSearch = this.#multiSearch.bind(this) as MultiSearchFn;
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/multi_search} */
+  readonly federatedSearch = this.#multiSearch.bind(this) as FederatedSearchFn;
 
   ///
   ///  Network

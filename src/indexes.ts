@@ -25,7 +25,6 @@ import type {
   TypoTolerance,
   PaginationSettings,
   Faceting,
-  ResourceResults,
   RawDocumentAdditionOptions,
   ContentType,
   DocumentsIds,
@@ -42,12 +41,12 @@ import type {
   PrefixSearch,
   RecordAny,
   SearchQuery,
-  SearchResult,
   FacetSearchQuery,
   FacetSearchResult,
   SimilarQuery,
   SimilarResult,
   EnqueuedTaskPromise,
+  ConditionalSearchResult,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -87,10 +86,10 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/search} */
-  async search(
-    searchQuery: SearchQuery,
+  async search<U extends SearchQuery>(
+    searchQuery: U,
     init?: ExtraRequestInit,
-  ): Promise<SearchResult<T>> {
+  ): Promise<ConditionalSearchResult<U, T>> {
     return await this.httpRequest.post({
       path: `indexes/${this.uid}/search`,
       body: searchQuery,
@@ -99,10 +98,10 @@ export class Index<T extends RecordAny = RecordAny> {
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/search#search-in-an-index-with-get} */
-  async searchGet(
-    searchQuery: SearchQuery,
+  async searchGet<U extends SearchQuery>(
+    searchQuery: U,
     init?: ExtraRequestInit,
-  ): Promise<SearchResult<T>> {
+  ): Promise<ConditionalSearchResult<U, T>> {
     return await this.httpRequest.get({
       path: `indexes/${this.uid}/search`,
       params: stringifyRecordKeyValues(searchQuery, ["filter", "hybrid"]),

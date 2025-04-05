@@ -32,7 +32,7 @@ type OffsetLimit = {
   limit?: number | null;
 };
 
-type Pagination = {
+export type Pagination = {
   /** {@link https://www.meilisearch.com/docs/reference/api/search#page} */
   page?: number | null;
   /** {@link https://www.meilisearch.com/docs/reference/api/search#number-of-results-per-page} */
@@ -111,6 +111,8 @@ export type SearchQueryWithRequiredPagination = RequiredKeys<
   "page"
 >;
 
+export type RequiredPagination = RequiredKeys<Pagination, "page">;
+
 /** @see `meilisearch::search::SearchQuery` */
 export type SearchQuery =
   | SearchQueryWithOffsetLimit
@@ -152,6 +154,8 @@ export type FederatedSearch = {
 
 /** @see `meilisearch::search::federated::types::FederatedSearch` */
 export type MultiSearch = { queries: SearchQueryWithIndex[] };
+
+export type MultiSearchOrFederatedSearch = MultiSearch | FederatedSearch;
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/facet_search#body}
