@@ -54,9 +54,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(searchKey).toHaveProperty("indexes");
       expect(searchKey).toHaveProperty("expiresAt", null);
       expect(searchKey).toHaveProperty("createdAt");
-      expect(searchKey?.createdAt).toBeInstanceOf(Date);
+      expect(searchKey?.createdAt).toBeTypeOf("string");
       expect(searchKey).toHaveProperty("updatedAt");
-      expect(searchKey?.updatedAt).toBeInstanceOf(Date);
+      expect(searchKey?.updatedAt).toBeTypeOf("string");
 
       const adminKey = keys.results.find(
         (key) => key.name === "Default Admin API Key",
@@ -72,9 +72,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(adminKey).toHaveProperty("indexes");
       expect(adminKey).toHaveProperty("expiresAt", null);
       expect(adminKey).toHaveProperty("createdAt");
-      expect(searchKey?.createdAt).toBeInstanceOf(Date);
+      expect(searchKey?.createdAt).toBeTypeOf("string");
       expect(adminKey).toHaveProperty("updatedAt");
-      expect(searchKey?.updatedAt).toBeInstanceOf(Date);
+      expect(searchKey?.updatedAt).toBeTypeOf("string");
     });
 
     test(`${permission} key: get keys with pagination`, async () => {
@@ -156,7 +156,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         description: "Indexing Products API key",
         actions: ["documents.add"],
         indexes: ["products"],
-        expiresAt: new Date("2050-11-13T00:00:00Z"), // Test will fail in 2050
+        expiresAt: new Date("2050-11-13T00:00:00Z").toISOString(), // Test will fail in 2050
       });
 
       expect(key).toBeDefined();
@@ -171,7 +171,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         description: "Indexing Products API key",
         actions: ["documents.add"],
         indexes: ["products"],
-        expiresAt: new Date("2050-11-13T00:00:00Z"), // Test will fail in 2050
+        expiresAt: new Date("2050-11-13T00:00:00Z").toISOString(), // Test will fail in 2050
       });
 
       const updatedKey = await client.updateKey(key.key, {
@@ -194,7 +194,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         description: "Indexing Products API key",
         actions: ["documents.add"],
         indexes: ["products"],
-        expiresAt: new Date("2050-11-13T00:00:00Z"), // Test will fail in 2050
+        expiresAt: new Date("2050-11-13T00:00:00Z").toISOString(), // Test will fail in 2050
       });
 
       const deletedKey = await client.deleteKey(key.key);
