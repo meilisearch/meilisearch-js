@@ -72,9 +72,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(adminKey).toHaveProperty("indexes");
       expect(adminKey).toHaveProperty("expiresAt", null);
       expect(adminKey).toHaveProperty("createdAt");
-      expect(searchKey?.createdAt).toBeTypeOf("string");
+      expect(adminKey?.createdAt).toBeTypeOf("string");
       expect(adminKey).toHaveProperty("updatedAt");
-      expect(searchKey?.updatedAt).toBeTypeOf("string");
+      expect(adminKey?.updatedAt).toBeTypeOf("string");
     });
 
     test(`${permission} key: get keys with pagination`, async () => {
