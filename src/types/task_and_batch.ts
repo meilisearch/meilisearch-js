@@ -1,6 +1,6 @@
-import type { Settings } from "./types.js";
-import type { CursorResults } from "./shared.js";
-import type { MeiliSearchErrorResponse } from "./types.js";
+import type { Settings, MeiliSearchErrorResponse } from "./types.js";
+import type { PaginationView } from "./shared.js";
+import type { SwapIndexesPayload } from "./indexes.js";
 
 /** Options for awaiting {@link EnqueuedTask}. */
 export type WaitOptions = {
@@ -93,9 +93,6 @@ export type EnqueuedTask = {
 /** Either a number or an {@link EnqueuedTask}. */
 export type TaskUidOrEnqueuedTask = EnqueuedTask["taskUid"] | EnqueuedTask;
 
-/** {@link https://www.meilisearch.com/docs/reference/api/tasks#indexswap} */
-export type IndexSwap = { indexes: [string, string] };
-
 /** {@link https://www.meilisearch.com/docs/reference/api/tasks#details} */
 export type TaskDetails = Settings & {
   receivedDocuments?: number;
@@ -111,7 +108,7 @@ export type TaskDetails = Settings & {
   dumpUid?: string | null;
   context?: Record<string, unknown> | null;
   function?: string;
-  swaps?: IndexSwap[];
+  swaps?: SwapIndexesPayload[];
 };
 
 /**
@@ -147,7 +144,7 @@ export type EnqueuedTaskPromise = Promise<EnqueuedTask> & {
  *
  * @see `meilisearch::routes::tasks::AllTasks` at {@link https://github.com/meilisearch/meilisearch}
  */
-export type TasksResults = CursorResults<Task>;
+export type TasksResults = PaginationView<Task>;
 
 /** {@link https://www.meilisearch.com/docs/reference/api/batches#steps} */
 type BatchProgressStep = {
@@ -190,4 +187,4 @@ export type Batch = {
  *
  * @see `meilisearch::routes::batches::AllBatches` at {@link https://github.com/meilisearch/meilisearch}
  */
-export type BatchesResults = CursorResults<Batch>;
+export type BatchesResults = PaginationView<Batch>;

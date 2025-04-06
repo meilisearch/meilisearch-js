@@ -8,7 +8,7 @@ import {
   type MockInstance,
   beforeAll,
 } from "vitest";
-import type { Health, Version, Stats, IndexSwap } from "../src/index.js";
+import type { Health, Version, Stats, SwapIndexesPayload } from "../src/index.js";
 import { ErrorStatusCode, MeiliSearchRequestError } from "../src/index.js";
 import { PACKAGE_VERSION } from "../src/package-version.js";
 import {
@@ -519,7 +519,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           .index(index2.uid)
           .addDocuments([{ id: 1, title: "index_2" }])
           .waitTask();
-        const swaps: IndexSwap[] = [{ indexes: [index.uid, index2.uid] }];
+        const swaps: SwapIndexesPayload[] = [{ indexes: [index.uid, index2.uid] }];
 
         const resolvedTask = await client.swapIndexes(swaps).waitTask();
         const docIndex1 = await client.index(index.uid).getDocument(1);
@@ -539,7 +539,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           .addDocuments([{ id: 1, title: "index_2" }])
           .waitTask();
 
-        const swaps: IndexSwap[] = [
+        const swaps: SwapIndexesPayload[] = [
           { indexes: ["does_not_exist", index2.uid] },
         ];
 
@@ -556,7 +556,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       test(`${permission} key: Swap two one index with itself`, async () => {
         const client = await getClient(permission);
 
-        const swaps: IndexSwap[] = [{ indexes: [index.uid, index.uid] }];
+        const swaps: SwapIndexesPayload[] = [{ indexes: [index.uid, index.uid] }];
 
         await expect(client.swapIndexes(swaps)).rejects.toHaveProperty(
           "cause.code",

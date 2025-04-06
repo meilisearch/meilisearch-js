@@ -9,18 +9,14 @@ import { Index } from "./indexes.js";
 import type {
   KeyCreation,
   Config,
-  IndexOptions,
-  IndexObject,
   Key,
   Health,
   Stats,
   Version,
   KeyUpdate,
-  IndexesQuery,
-  IndexesResults,
   KeysQuery,
   KeysResults,
-  IndexSwap,
+  SwapIndexesPayload,
   MultiSearchParams,
   FederatedMultiSearchParams,
   MultiSearchResponseOrSearchResponse,
@@ -28,8 +24,12 @@ import type {
   ExtraRequestInit,
   Network,
   RecordAny,
+  IndexViewList,
+  ListIndexes,
+  IndexView,
+  IndexCreateRequest,
+  UpdateIndexRequest,
 } from "./types/index.js";
-import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
   getHttpRequestsWithEnqueuedTaskPromise,
@@ -37,7 +37,6 @@ import {
   type HttpRequestsWithEnqueuedTaskPromise,
 } from "./task.js";
 import { BatchClient } from "./batch.js";
-import type { MeiliSearchApiError } from "./errors/index.js";
 
 export class MeiliSearch {
   config: Config;
@@ -77,135 +76,61 @@ export class MeiliSearch {
   }
 
   /**
-   * Return an Index instance
+   * Get an {@link Index} instance.
    *
-   * @param indexUid - The index UID
-   * @returns Instance of Index
+   * @param indexUid - The UID of the index
+   * @returns An instance of {@link Index}
    */
   index<T extends RecordAny = RecordAny>(indexUid: string): Index<T> {
     return new Index<T>(this.config, indexUid);
   }
 
-  /**
-   * Gather information about an index by calling MeiliSearch and return an
-   * Index instance with the gathered information
-   *
-   * @param indexUid - The index UID
-   * @returns Promise returning Index instance
-   */
-  async getIndex<T extends RecordAny = RecordAny>(
-    indexUid: string,
-  ): Promise<Index<T>> {
-    return new Index<T>(this.config, indexUid).fetchInfo();
-  }
-
-  /**
-   * Gather information about an index by calling MeiliSearch and return the raw
-   * JSON response
-   *
-   * @param indexUid - The index UID
-   * @returns Promise returning index information
-   */
-  async getRawIndex(indexUid: string): Promise<IndexObject> {
-    return new Index(this.config, indexUid).getRawInfo();
-  }
-
-  /**
-   * Get all the indexes as Index instances.
-   *
-   * @param parameters - Parameters to browse the indexes
-   * @returns Promise returning array of raw index information
-   */
-  async getIndexes(
-    parameters?: IndexesQuery,
-  ): Promise<IndexesResults<Index[]>> {
-    const rawIndexes = await this.getRawIndexes(parameters);
-    const indexes: Index[] = rawIndexes.results.map(
-      (index) => new Index(this.config, index.uid, index.primaryKey),
-    );
-    return { ...rawIndexes, results: indexes };
-  }
-
-  /**
-   * Get all the indexes in their raw value (no Index instances).
-   *
-   * @param parameters - Parameters to browse the indexes
-   * @returns Promise returning array of raw index information
-   */
-  async getRawIndexes(
-    parameters?: IndexesQuery,
-  ): Promise<IndexesResults<IndexObject[]>> {
-    return await this.httpRequest.get<IndexesResults<IndexObject[]>>({
-      path: "indexes",
-      params: parameters,
+  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#get-one-index} */
+  async getIndex(indexUid: string): Promise<IndexView> {
+    return await this.httpRequest.get({
+      path: `indexes/${indexUid}`,
     });
   }
 
-  /**
-   * Create a new index
-   *
-   * @param uid - The index UID
-   * @param options - Index options
-   * @returns Promise returning Index instance
-   */
-  createIndex(uid: string, options?: IndexOptions): EnqueuedTaskPromise {
-    return Index.create(uid, options, this.config);
+  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#list-all-indexes} */
+  async getIndexes(listIndexes?: ListIndexes): Promise<IndexViewList> {
+    return await this.httpRequest.get({
+      path: "indexes",
+      params: listIndexes,
+    });
   }
 
-  /**
-   * Update an index
-   *
-   * @param uid - The index UID
-   * @param options - Index options to update
-   * @returns Promise returning Index instance after updating
-   */
-  updateIndex(uid: string, options?: IndexOptions): EnqueuedTaskPromise {
-    return new Index(this.config, uid).update(options);
+  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#create-an-index} */
+  createIndex(indexCreateRequest: IndexCreateRequest): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.post({
+      path: "indexes",
+      body: indexCreateRequest,
+    });
   }
 
-  /**
-   * Delete an index
-   *
-   * @param uid - The index UID
-   * @returns Promise which resolves when index is deleted successfully
-   */
-  deleteIndex(uid: string): EnqueuedTaskPromise {
-    return new Index(this.config, uid).delete();
+  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#update-an-index} */
+  updateIndex(
+    indexUid: string,
+    updateIndexRequest: UpdateIndexRequest,
+  ): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.patch({
+      path: `indexes/${indexUid}`,
+      body: updateIndexRequest,
+    });
   }
 
-  /**
-   * Deletes an index if it already exists.
-   *
-   * @param uid - The index UID
-   * @returns Promise which resolves to true when index exists and is deleted
-   *   successfully, otherwise false if it does not exist
-   */
-  async deleteIndexIfExists(uid: string): Promise<boolean> {
-    try {
-      await this.deleteIndex(uid);
-      return true;
-    } catch (e) {
-      if (
-        (e as MeiliSearchApiError)?.cause?.code ===
-        ErrorStatusCode.INDEX_NOT_FOUND
-      ) {
-        return false;
-      }
-
-      throw e;
-    }
+  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#delete-an-index} */
+  deleteIndex(indexUid: string): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.delete({
+      path: `indexes/${indexUid}`,
+    });
   }
 
-  /**
-   * Swaps a list of index tuples.
-   *
-   * @param params - List of indexes tuples to swap.
-   * @returns Promise returning object of the enqueued task
-   */
-  swapIndexes(params: IndexSwap[]): EnqueuedTaskPromise {
+  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#swap-indexes} */
+  swapIndexes(swapIndexesPayloads: SwapIndexesPayload[]): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
       path: "/swap-indexes",
-      body: params,
+      body: swapIndexesPayloads,
     });
   }
 

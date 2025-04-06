@@ -130,25 +130,6 @@ export type ResourceResults<T> = Pagination & {
   total: number;
 };
 
-///
-/// Indexes
-///
-
-export type IndexOptions = {
-  primaryKey?: string;
-};
-
-export type IndexObject = {
-  uid: string;
-  primaryKey?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type IndexesQuery = ResourceQuery & {};
-
-export type IndexesResults<T> = ResourceResults<T> & {};
-
 /*
  * SEARCH PARAMETERS
  */

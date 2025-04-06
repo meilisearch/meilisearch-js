@@ -12,8 +12,6 @@ import type {
   SearchParams,
   Filter,
   SearchRequestGET,
-  IndexObject,
-  IndexOptions,
   IndexStats,
   DocumentsQuery,
   DocumentQuery,
@@ -61,8 +59,6 @@ import {
 export class Index<T extends RecordAny = RecordAny> {
   uid: string;
   primaryKey: string | undefined;
-  createdAt: Date | undefined;
-  updatedAt: Date | undefined;
   httpRequest: HttpRequests;
   tasks: TaskClient;
   readonly #httpRequestsWithTask: HttpRequestsWithEnqueuedTaskPromise;
@@ -184,92 +180,6 @@ export class Index<T extends RecordAny = RecordAny> {
     return await this.httpRequest.post<SearchResponse<D, S>>({
       path: `indexes/${this.uid}/similar`,
       body: params,
-    });
-  }
-
-  ///
-  /// INDEX
-  ///
-
-  /**
-   * Get index information.
-   *
-   * @returns Promise containing index information
-   */
-  async getRawInfo(): Promise<IndexObject> {
-    const res = await this.httpRequest.get<IndexObject>({
-      path: `indexes/${this.uid}`,
-    });
-    this.primaryKey = res.primaryKey;
-    this.updatedAt = new Date(res.updatedAt);
-    this.createdAt = new Date(res.createdAt);
-    return res;
-  }
-
-  /**
-   * Fetch and update Index information.
-   *
-   * @returns Promise to the current Index object with updated information
-   */
-  async fetchInfo(): Promise<this> {
-    await this.getRawInfo();
-    return this;
-  }
-
-  /**
-   * Get Primary Key.
-   *
-   * @returns Promise containing the Primary Key of the index
-   */
-  async fetchPrimaryKey(): Promise<string | undefined> {
-    this.primaryKey = (await this.getRawInfo()).primaryKey;
-    return this.primaryKey;
-  }
-
-  /**
-   * Create an index.
-   *
-   * @param uid - Unique identifier of the Index
-   * @param options - Index options
-   * @param config - Request configuration options
-   * @returns Newly created Index object
-   */
-  static create(
-    uid: string,
-    options: IndexOptions = {},
-    config: Config,
-  ): EnqueuedTaskPromise {
-    const httpRequests = new HttpRequests(config);
-    return getHttpRequestsWithEnqueuedTaskPromise(
-      httpRequests,
-      new TaskClient(httpRequests),
-    ).post({
-      path: "indexes",
-      body: { ...options, uid },
-    });
-  }
-
-  /**
-   * Update an index.
-   *
-   * @param data - Data to update
-   * @returns Promise to the current Index object with updated information
-   */
-  update(data?: IndexOptions): EnqueuedTaskPromise {
-    return this.#httpRequestsWithTask.patch({
-      path: `indexes/${this.uid}`,
-      body: data,
-    });
-  }
-
-  /**
-   * Delete an index.
-   *
-   * @returns Promise which resolves when index is deleted successfully
-   */
-  delete(): EnqueuedTaskPromise {
-    return this.#httpRequestsWithTask.delete({
-      path: `indexes/${this.uid}`,
     });
   }
 
