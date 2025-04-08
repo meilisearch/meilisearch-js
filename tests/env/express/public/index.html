@@ -30,7 +30,7 @@
 
       await client.index(UID).addDocuments([{ id: 1, title: "wonder woman" }]).waitTask()
 
-      const index = await client.index(UID).getRawInfo()
+      const index = await client.getIndex(UID)
 
       // Create dynamic element to wait on with puppeteer
       const indexDiv = document.createElement("div");
@@ -48,6 +48,6 @@
     }
     searchDiv.innerHTML = content
     document.body.insertBefore(searchDiv, document.querySelector("#content"));
-    await client.index(UID).delete().waitTask()
+    await client.deleteIndex(UID).waitTask()
   })()
 </script>
