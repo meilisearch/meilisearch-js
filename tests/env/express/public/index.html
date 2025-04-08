@@ -26,7 +26,7 @@
     const UID = "testIndex"
 
     try {
-      await client.createIndex(UID).waitTask()
+      await client.createIndex({ uid: UID }).waitTask()
 
       await client.index(UID).addDocuments([{ id: 1, title: "wonder woman" }]).waitTask()
 

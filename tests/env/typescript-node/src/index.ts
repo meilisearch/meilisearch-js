@@ -28,7 +28,7 @@ const indexUid = "movies"
 
 ;(async () => {
   await client.deleteIndex(indexUid).waitTask()
-  await client.createIndex({ uid:indexUid }).waitTask()
+  await client.createIndex({ uid: indexUid }).waitTask()
 
   const index = client.index(indexUid)
   const indexes = await client.getIndexes()
