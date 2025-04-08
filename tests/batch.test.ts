@@ -5,9 +5,7 @@ import {
   clearAllIndexes,
 } from "./utils/meilisearch-test-utils.js";
 
-const index = {
-  uid: "batch-test",
-};
+const index = { uid: "batch-test" };
 
 afterAll(() => {
   return clearAllIndexes(config);
@@ -18,7 +16,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex(index).waitTask();
     });
 
     test(`${permission} key: Get all batches`, async () => {

@@ -41,7 +41,7 @@ describe.each([
     await clearAllIndexes(config);
     const client = await getClient("Master");
     const newFilterableAttributes = ["genres", "title"];
-    await client.createIndex(index.uid);
+    await client.createIndex({ uid: index.uid });
     await client.index(index.uid).updateSettings({
       filterableAttributes: newFilterableAttributes,
     });

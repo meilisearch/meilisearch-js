@@ -19,7 +19,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex({ uid: index.uid }).waitTask();
     });
 
     // Client Wait for task

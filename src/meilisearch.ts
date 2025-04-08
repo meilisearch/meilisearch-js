@@ -37,6 +37,7 @@ import {
   type HttpRequestsWithEnqueuedTaskPromise,
 } from "./task.js";
 import { BatchClient } from "./batch.js";
+import type { MeiliSearchApiError } from "./errors/meilisearch-api-error.js";
 
 export class MeiliSearch {
   config: Config;
@@ -111,7 +112,7 @@ export class MeiliSearch {
   /** {@link https://www.meilisearch.com/docs/reference/api/indexes#update-an-index} */
   updateIndex(
     indexUid: string,
-    updateIndexRequest: UpdateIndexRequest,
+    updateIndexRequest?: UpdateIndexRequest,
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${indexUid}`,
@@ -124,6 +125,27 @@ export class MeiliSearch {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${indexUid}`,
     });
+  }
+
+  /**
+   * Deletes an index. In case it does not exist, this function will not throw.
+   * Otherwise it's the same as {@link MeiliSearch.deleteIndex}.
+   *
+   * @param uid - The UID of the index
+   * @returns A promise that resolves to false if index does not exist,
+   *   otherwise to true.
+   */
+  async deleteIndexIfExists(uid: string): Promise<boolean> {
+    try {
+      await this.deleteIndex(uid);
+      return true;
+    } catch (error) {
+      if ((error as MeiliSearchApiError)?.cause?.code === "index_not_found") {
+        return false;
+      }
+
+      throw error;
+    }
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/indexes#swap-indexes} */

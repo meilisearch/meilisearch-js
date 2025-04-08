@@ -144,7 +144,13 @@ export type EnqueuedTaskPromise = Promise<EnqueuedTask> & {
  *
  * @see `meilisearch::routes::tasks::AllTasks` at {@link https://github.com/meilisearch/meilisearch}
  */
-export type TasksResults = PaginationView<Task>;
+export type TasksResults = {
+  results: Task[];
+  total: number;
+  limit: number;
+  from: number | null;
+  next: number | null;
+};
 
 /** {@link https://www.meilisearch.com/docs/reference/api/batches#steps} */
 type BatchProgressStep = {

@@ -30,7 +30,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     beforeEach(async () => {
       await clearAllIndexes(config);
       const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex({ uid: index.uid }).waitTask();
 
       await client.index(index.uid).addDocuments(dataset).waitTask();
     });
@@ -89,7 +89,7 @@ describe.each([{ permission: "Search" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex({ uid: index.uid }).waitTask();
     });
 
     test(`${permission} key: try to get faceting and be denied`, async () => {
@@ -118,7 +118,7 @@ describe.each([{ permission: "Search" }])(
 describe.each([{ permission: "No" }])("Test on faceting", ({ permission }) => {
   beforeAll(async () => {
     const client = await getClient("Master");
-    await client.createIndex(index.uid).waitTask();
+    await client.createIndex({ uid: index.uid }).waitTask();
   });
 
   test(`${permission} key: try to get faceting and be denied`, async () => {

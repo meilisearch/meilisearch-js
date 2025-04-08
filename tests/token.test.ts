@@ -83,7 +83,7 @@ describe.each([{ permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      await client.index(UID).delete();
+      await client.deleteIndex(UID).waitTask();
       await client.index(UID).addDocuments(dataset).waitTask();
 
       const keys = await client.getKeys();

@@ -2,7 +2,6 @@ import {
   MeiliSearch,
 } from '../../../../src/index.js'
 import type {
-  IndexObject,
   SearchResponse,
   Hits,
   Hit,
@@ -29,11 +28,11 @@ const indexUid = "movies"
 
 ;(async () => {
   await client.deleteIndex(indexUid).waitTask()
-  await client.createIndex(indexUid).waitTask()
+  await client.createIndex({uid:indexUid}).waitTask()
 
   const index = client.index(indexUid)
-  const indexes = await client.getRawIndexes()
-  indexes.results.map((index: IndexObject) => {
+  const indexes = await client.getIndexes()
+  indexes.results.map((index) => {
     console.log(index.uid)
     // console.log(index.something) -> ERROR
   })
@@ -44,7 +43,7 @@ const indexUid = "movies"
     attributesToHighlight: ['title'],
     // test: true -> ERROR Test does not exist on type SearchParams
   }
-  indexes.results.map((index: IndexObject) => index.uid)
+  indexes.results.map((index) => index.uid)
   const res: SearchResponse<Movie> = await index.search(
     'avenger',
     searchParams
