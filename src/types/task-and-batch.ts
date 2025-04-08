@@ -1,5 +1,4 @@
 import type { Settings, MeiliSearchErrorResponse } from "./types.js";
-import type { PaginationView } from "./shared.js";
 import type { SwapIndexesPayload } from "./indexes.js";
 
 /** Options for awaiting {@link EnqueuedTask}. */
@@ -139,18 +138,20 @@ export type EnqueuedTaskPromise = Promise<EnqueuedTask> & {
   waitTask: (waitOptions?: WaitOptions) => Promise<Task>;
 };
 
-/**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#response}
- *
- * @see `meilisearch::routes::tasks::AllTasks` at {@link https://github.com/meilisearch/meilisearch}
- */
-export type TasksResults = {
-  results: Task[];
+type Results<T> = {
+  results: T[];
   total: number;
   limit: number;
   from: number | null;
   next: number | null;
 };
+
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/tasks#response}
+ *
+ * @see `meilisearch::routes::tasks::AllTasks` at {@link https://github.com/meilisearch/meilisearch}
+ */
+export type TasksResults = Results<Task>;
 
 /** {@link https://www.meilisearch.com/docs/reference/api/batches#steps} */
 type BatchProgressStep = {
@@ -193,4 +194,4 @@ export type Batch = {
  *
  * @see `meilisearch::routes::batches::AllBatches` at {@link https://github.com/meilisearch/meilisearch}
  */
-export type BatchesResults = PaginationView<Batch>;
+export type BatchesResults = Results<Batch>;

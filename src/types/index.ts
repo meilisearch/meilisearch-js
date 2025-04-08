@@ -1,4 +1,4 @@
 export * from "./indexes.js";
-export * from "./task_and_batch.js";
+export * from "./task-and-batch.js";
 export * from "./token.js";
 export * from "./types.js";
