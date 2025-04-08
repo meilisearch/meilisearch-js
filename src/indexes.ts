@@ -58,7 +58,6 @@ import {
 
 export class Index<T extends RecordAny = RecordAny> {
   uid: string;
-  primaryKey: string | undefined;
   httpRequest: HttpRequests;
   tasks: TaskClient;
   readonly #httpRequestsWithTask: HttpRequestsWithEnqueuedTaskPromise;
@@ -68,9 +67,8 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param uid - UID of the index
    * @param primaryKey - Primary Key of the index
    */
-  constructor(config: Config, uid: string, primaryKey?: string) {
+  constructor(config: Config, uid: string) {
     this.uid = uid;
-    this.primaryKey = primaryKey;
     this.httpRequest = new HttpRequests(config);
     this.tasks = new TaskClient(this.httpRequest, config.defaultWaitOptions);
     this.#httpRequestsWithTask = getHttpRequestsWithEnqueuedTaskPromise(
