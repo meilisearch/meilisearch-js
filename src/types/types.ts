@@ -511,8 +511,7 @@ type GranularFilterableAttribute = {
 };
 
 export type FilterableAttributes =
-  | string[]
-  | GranularFilterableAttribute[]
+  | (string | GranularFilterableAttribute)[]
   | null;
 export type DistinctAttribute = string | null;
 export type SearchableAttributes = string[] | null;
