@@ -56,6 +56,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update attributes with granular attribute syntax`, async () => {
       const client = await getClient(permission);
       const newFilterableAttributes = [
+        "author",
         {
           attributePatterns: ["genre"],
           features: {
