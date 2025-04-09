@@ -592,23 +592,17 @@ client.getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults>
 
 ### Indexes <!-- omit in toc -->
 
-#### [Get all indexes in Index instances](https://www.meilisearch.com/docs/reference/api/indexes#list-all-indexes)
-
-```ts
-client.getIndexes(parameters: IndexesQuery): Promise<IndexesResults<Index[]>>
-```
-
 #### [Get all indexes](https://www.meilisearch.com/docs/reference/api/indexes#list-all-indexes)
 
 ```ts
-client.getRawIndexes(parameters: IndexesQuery): Promise<IndexesResults<IndexObject[]>>
+client.getIndexes(listIndexes?: ListIndexes): Promise<IndexViewList>
 ```
 
 
 #### [Create a new index](https://www.meilisearch.com/docs/reference/api/indexes#create-an-index)
 
 ```ts
-client.createIndex<T>(uid: string, options?: IndexOptions): Promise<EnqueuedTask>
+client.createIndex(indexCreateRequest: IndexCreateRequest): EnqueuedTaskPromise
 ```
 
 #### Create a local reference to an index
@@ -617,66 +611,28 @@ client.createIndex<T>(uid: string, options?: IndexOptions): Promise<EnqueuedTask
 client.index<T>(uid: string): Index<T>
 ```
 
-#### [Get an index instance completed with information fetched from Meilisearch](https://www.meilisearch.com/docs/reference/api/indexes#get-one-index)
-
-```ts
-client.getIndex<T>(uid: string): Promise<Index<T>>
-```
-
 #### [Get the raw index JSON response from Meilisearch](https://www.meilisearch.com/docs/reference/api/indexes#get-one-index)
 
 ```ts
-client.getRawIndex(uid: string): Promise<IndexObject>
-```
-
-#### [Get an object with information about the index](https://www.meilisearch.com/docs/reference/api/indexes#get-one-index)
-
-```ts
-client.index('myIndex').getRawInfo(): Promise<IndexObject>
+client.getIndex(uidOrIndex: UidOrIndex): Promise<IndexView>
 ```
 
 #### [Update Index](https://www.meilisearch.com/docs/reference/api/indexes#update-an-index)
 
-##### Using the client
-
 ```ts
-client.updateIndex(uid: string, options: IndexOptions): Promise<EnqueuedTask>
-```
-
-##### Using the index object
-
-```ts
-client.index('myIndex').update(data: IndexOptions): Promise<EnqueuedTask>
+client.updateIndex(uidOrIndex: UidOrIndex, updateIndexRequest?: UpdateIndexRequest): EnqueuedTaskPromise
 ```
 
 #### [Delete index](https://www.meilisearch.com/docs/reference/api/indexes#delete-an-index)
 
-##### Using the client
 ```ts
-client.deleteIndex(uid): Promise<void>
-```
-
-##### Using the index object
-```ts
-client.index('myIndex').delete(): Promise<void>
+client.deleteIndex(uidOrIndex: UidOrIndex): EnqueuedTaskPromise
 ```
 
 #### [Get specific index stats](https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-an-index)
 
 ```ts
 client.index('myIndex').getStats(): Promise<IndexStats>
-```
-
-##### Return Index instance with updated information
-
-```ts
-client.index('myIndex').fetchInfo(): Promise<Index>
-```
-
-##### Get Primary Key of an Index
-
-```ts
-client.index('myIndex').fetchPrimaryKey(): Promise<string | undefined>
 ```
 
 ##### Swap two indexes

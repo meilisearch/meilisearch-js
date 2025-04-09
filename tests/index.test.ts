@@ -9,6 +9,7 @@ const client = await getClient("Master");
 test.concurrent("index method", () => {
   const myIndex = client.index(MY_INDEX_ONE);
   assert.instanceOf(myIndex, Index);
+  assert.strictEqual(myIndex.uid, MY_INDEX_ONE);
 });
 
 afterAll(async () => {
@@ -80,4 +81,11 @@ test("swapIndexes method", async () => {
     { type, details },
     { details: { swaps }, type: "indexSwap" },
   );
+});
+
+test("deleteIndexIfExists method where index doesn't exist", async () => {
+  const result = await client.deleteIndexIfExists(
+    "57b78d25-8c88-4ffb-b16e-d16485edc76a",
+  );
+  assert.isFalse(result.success);
 });

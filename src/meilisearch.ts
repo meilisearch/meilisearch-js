@@ -29,6 +29,7 @@ import type {
   IndexView,
   IndexCreateRequest,
   UpdateIndexRequest,
+  ConditionalIndexDeleteResult as SafeIndexDeletionResult,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -37,13 +38,7 @@ import {
   type HttpRequestsWithEnqueuedTaskPromise,
 } from "./task.js";
 import { BatchClient } from "./batch.js";
-import type { MeiliSearchApiError } from "./errors/index.js";
-
-type UidOrIndex = Index | string;
-
-function getUid(value: UidOrIndex): string {
-  return typeof value === "string" ? value : value.uid;
-}
+import { MeiliSearchApiError } from "./errors/index.js";
 
 export class MeiliSearch {
   config: Config;
@@ -93,9 +88,9 @@ export class MeiliSearch {
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/indexes#get-one-index} */
-  async getIndex(uidOrIndex: UidOrIndex): Promise<IndexView> {
+  async getIndex(indexUid: string): Promise<IndexView> {
     return await this.httpRequest.get({
-      path: `indexes/${getUid(uidOrIndex)}`,
+      path: `indexes/${indexUid}`,
     });
   }
 
@@ -117,19 +112,19 @@ export class MeiliSearch {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/indexes#update-an-index} */
   updateIndex(
-    uidOrIndex: UidOrIndex,
+    indexUid: string,
     updateIndexRequest?: UpdateIndexRequest,
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
-      path: `indexes/${getUid(uidOrIndex)}`,
+      path: `indexes/${indexUid}`,
       body: updateIndexRequest,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/indexes#delete-an-index} */
-  deleteIndex(uidOrIndex: UidOrIndex): EnqueuedTaskPromise {
+  deleteIndex(indexUid: string): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
-      path: `indexes/${getUid(uidOrIndex)}`,
+      path: `indexes/${indexUid}`,
     });
   }
 
@@ -137,17 +132,22 @@ export class MeiliSearch {
    * Deletes an index. In case it does not exist, this function will not throw.
    * Otherwise it's the same as {@link MeiliSearch.deleteIndex}.
    *
-   * @param uidOrIndex - The UID of the index
+   * @param indexUid - The UID of the index
    * @returns A promise that resolves to false if index does not exist,
    *   otherwise to true.
    */
-  async deleteIndexIfExists(uidOrIndex: UidOrIndex): Promise<boolean> {
+  async deleteIndexIfExists(
+    indexUid: string,
+  ): Promise<SafeIndexDeletionResult> {
     try {
-      await this.deleteIndex(uidOrIndex);
-      return true;
+      const value = await this.deleteIndex(indexUid).waitTask();
+      return { success: true, value };
     } catch (error) {
-      if ((error as MeiliSearchApiError)?.cause?.code === "index_not_found") {
-        return false;
+      if (
+        error instanceof MeiliSearchApiError &&
+        error.cause?.code === "index_not_found"
+      ) {
+        return { success: false, value: error };
       }
 
       throw error;
