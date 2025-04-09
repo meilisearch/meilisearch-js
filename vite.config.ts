@@ -55,7 +55,7 @@ export default defineConfig(({ mode }) => {
           },
     },
     test: {
-      include: ["tests/**/index.test.ts"],
+      include: ["tests/**/*.test.ts"],
       exclude: ["tests/env/**"],
       fileParallelism: false,
       testTimeout: 100_000, // 100 seconds
