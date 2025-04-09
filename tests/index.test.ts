@@ -14,8 +14,8 @@ test.concurrent("index method", () => {
 
 afterAll(async () => {
   await Promise.all([
-    client.deleteIndexIfExists(MY_INDEX_ONE),
-    client.deleteIndexIfExists(MY_INDEX_TWO),
+    client.deleteIndex(MY_INDEX_ONE).waitTask(),
+    client.deleteIndex(MY_INDEX_TWO).waitTask(),
   ]);
 });
 
@@ -81,11 +81,4 @@ test("swapIndexes method", async () => {
     { type, details },
     { details: { swaps }, type: "indexSwap" },
   );
-});
-
-test("deleteIndexIfExists method where index doesn't exist", async () => {
-  const result = await client.deleteIndexIfExists(
-    "57b78d25-8c88-4ffb-b16e-d16485edc76a",
-  );
-  assert.isFalse(result.success);
 });

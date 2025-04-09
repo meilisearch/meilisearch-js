@@ -10,7 +10,7 @@ const index = client.index<{ id: number; title: string; genres: string[] }>(
 );
 
 export async function addDocuments(): Promise<void> {
-  await client.deleteIndexIfExists(indexUid);
+  await client.deleteIndex(indexUid).waitTask();
 
   await client.createIndex({ uid: indexUid }).waitTask();
 

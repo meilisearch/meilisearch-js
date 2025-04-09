@@ -4,8 +4,7 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^5.8.2
 
-import type { MeiliSearchApiError } from "../errors/index.js";
-import type { Task, WaitOptions } from "./task-and-batch.js";
+import type { WaitOptions } from "./task-and-batch.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RecordAny = Record<string, any>;
@@ -1082,7 +1081,3 @@ export const ErrorStatusCode = {
 
 export type ErrorStatusCode =
   (typeof ErrorStatusCode)[keyof typeof ErrorStatusCode];
-
-export type ConditionalIndexDeleteResult =
-  | { success: true; value: Task }
-  | { success: false; value: MeiliSearchApiError };

@@ -29,7 +29,6 @@ import type {
   IndexView,
   IndexCreateRequest,
   UpdateIndexRequest,
-  ConditionalIndexDeleteResult as SafeIndexDeletionResult,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -38,7 +37,6 @@ import {
   type HttpRequestsWithEnqueuedTaskPromise,
 } from "./task.js";
 import { BatchClient } from "./batch.js";
-import { MeiliSearchApiError } from "./errors/index.js";
 
 export class MeiliSearch {
   config: Config;
@@ -126,32 +124,6 @@ export class MeiliSearch {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${indexUid}`,
     });
-  }
-
-  /**
-   * Deletes an index. In case it does not exist, this function will not throw.
-   * Otherwise it's the same as {@link MeiliSearch.deleteIndex}.
-   *
-   * @param indexUid - The UID of the index
-   * @returns A promise that resolves to false if index does not exist,
-   *   otherwise to true.
-   */
-  async deleteIndexIfExists(
-    indexUid: string,
-  ): Promise<SafeIndexDeletionResult> {
-    try {
-      const value = await this.deleteIndex(indexUid).waitTask();
-      return { success: true, value };
-    } catch (error) {
-      if (
-        error instanceof MeiliSearchApiError &&
-        error.cause?.code === "index_not_found"
-      ) {
-        return { success: false, value: error };
-      }
-
-      throw error;
-    }
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/indexes#swap-indexes} */
