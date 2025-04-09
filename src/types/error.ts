@@ -217,7 +217,7 @@ export type ErrorType = PascalToSnakeCase<
  *
  * @see `meilisearch_types::error::ResponseError`
  */
-export type MeiliSearchResponseError = {
+export type ResponseError = {
   message: string;
   code: Code;
   type: ErrorType;
