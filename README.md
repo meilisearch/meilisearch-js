@@ -614,19 +614,19 @@ client.index<T>(uid: string): Index<T>
 #### [Get the raw index JSON response from Meilisearch](https://www.meilisearch.com/docs/reference/api/indexes#get-one-index)
 
 ```ts
-client.getIndex(uidOrIndex: UidOrIndex): Promise<IndexView>
+client.getIndex(uid: string): Promise<IndexView>
 ```
 
 #### [Update Index](https://www.meilisearch.com/docs/reference/api/indexes#update-an-index)
 
 ```ts
-client.updateIndex(uidOrIndex: UidOrIndex, updateIndexRequest?: UpdateIndexRequest): EnqueuedTaskPromise
+client.updateIndex(uid: string, updateIndexRequest?: UpdateIndexRequest): EnqueuedTaskPromise
 ```
 
 #### [Delete index](https://www.meilisearch.com/docs/reference/api/indexes#delete-an-index)
 
 ```ts
-client.deleteIndex(uidOrIndex: UidOrIndex): EnqueuedTaskPromise
+client.deleteIndex(uid: string): EnqueuedTaskPromise
 ```
 
 #### [Get specific index stats](https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-an-index)
