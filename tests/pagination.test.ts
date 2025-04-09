@@ -6,7 +6,6 @@
   afterAll,
   beforeAll,
 } from "vitest";
-import { ErrorStatusCode } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -91,21 +90,21 @@ describe.each([{ permission: "Search" }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getPagination(),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 
     test(`${permission} key: try to update pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updatePagination({ maxTotalHits: 10 }),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 
     test(`${permission} key: try to reset pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetPagination(),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
   },
 );
@@ -122,30 +121,21 @@ describe.each([{ permission: "No" }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getPagination(),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-      );
+      ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
     });
 
     test(`${permission} key: try to update pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updatePagination({ maxTotalHits: 10 }),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-      );
+      ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
     });
 
     test(`${permission} key: try to reset pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetPagination(),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-      );
+      ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
     });
   },
 );

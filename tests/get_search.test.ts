@@ -1,5 +1,4 @@
 import { expect, test, describe, afterAll, beforeAll } from "vitest";
-import { ErrorStatusCode } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -549,7 +548,7 @@ describe.each([
     await masterClient.index(index.uid).delete().waitTask();
     await expect(
       client.index(index.uid).searchGet("prince"),
-    ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INDEX_NOT_FOUND);
+    ).rejects.toHaveProperty("cause.code", "index_not_found");
   });
 });
 

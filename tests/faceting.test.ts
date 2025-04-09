@@ -6,7 +6,7 @@ import {
   afterAll,
   beforeAll,
 } from "vitest";
-import { ErrorStatusCode, type Faceting } from "../src/index.js";
+import type { Faceting } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -96,21 +96,21 @@ describe.each([{ permission: "Search" }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getFaceting(),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 
     test(`${permission} key: try to update faceting and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateFaceting({ maxValuesPerFacet: 13 }),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 
     test(`${permission} key: try to reset faceting and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetFaceting(),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
   },
 );
@@ -125,7 +125,7 @@ describe.each([{ permission: "No" }])("Test on faceting", ({ permission }) => {
     const client = await getClient(permission);
     await expect(client.index(index.uid).getFaceting()).rejects.toHaveProperty(
       "cause.code",
-      ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+      "missing_authorization_header",
     );
   });
 
@@ -133,20 +133,14 @@ describe.each([{ permission: "No" }])("Test on faceting", ({ permission }) => {
     const client = await getClient(permission);
     await expect(
       client.index(index.uid).updateFaceting({ maxValuesPerFacet: 13 }),
-    ).rejects.toHaveProperty(
-      "cause.code",
-      ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-    );
+    ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
   });
 
   test(`${permission} key: try to reset faceting and be denied`, async () => {
     const client = await getClient(permission);
     await expect(
       client.index(index.uid).resetFaceting(),
-    ).rejects.toHaveProperty(
-      "cause.code",
-      ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-    );
+    ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
   });
 });
 

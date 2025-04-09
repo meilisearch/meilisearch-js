@@ -1,6 +1,6 @@
 import type { Settings } from "./types.js";
 import type { CursorResults } from "./shared.js";
-import type { MeiliSearchErrorResponse } from "./types.js";
+import type { MeiliSearchResponseError } from "./error.js";
 
 /** Options for awaiting {@link EnqueuedTask}. */
 export type WaitOptions = {
@@ -124,7 +124,7 @@ export type Task = Omit<EnqueuedTask, "taskUid"> & {
   batchUid: number | null;
   canceledBy: number | null;
   details?: TaskDetails;
-  error: MeiliSearchErrorResponse | null;
+  error: MeiliSearchResponseError | null;
   duration: string | null;
   startedAt: string | null;
   finishedAt: string | null;
