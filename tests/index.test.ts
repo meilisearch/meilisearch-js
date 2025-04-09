@@ -51,8 +51,18 @@ test("updateIndex method", async () => {
 });
 
 test("deleteIndex method", async () => {
-  const task = await client.deleteIndex(MY_INDEX_ONE).waitTask();
-  assert.strictEqual(task.status, "succeeded");
+  const { indexUid, status, type } = await client
+    .deleteIndex(MY_INDEX_ONE)
+    .waitTask();
+
+  assert.deepEqual(
+    { indexUid, status, type },
+    {
+      indexUid: MY_INDEX_ONE,
+      status: "succeeded",
+      type: "indexDeletion",
+    },
+  );
 });
 
 test("swapIndexes method", async () => {
