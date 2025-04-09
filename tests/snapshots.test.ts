@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, test, assert } from "vitest";
-import { ErrorStatusCode } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -31,7 +30,7 @@ describe.each([{ permission: "Search" }])(
       const client = await getClient(permission);
       await expect(client.createSnapshot()).rejects.toHaveProperty(
         "cause.code",
-        ErrorStatusCode.INVALID_API_KEY,
+        "invalid_api_key",
       );
     });
   },
@@ -44,7 +43,7 @@ describe.each([{ permission: "No" }])(
       const client = await getClient(permission);
       await expect(client.createSnapshot()).rejects.toHaveProperty(
         "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+        "missing_authorization_header",
       );
     });
   },

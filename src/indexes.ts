@@ -277,15 +277,9 @@ export class Index<T extends RecordAny = RecordAny> {
   /// STATS
   ///
 
-  /**
-   * Get stats of an index
-   *
-   * @returns Promise containing object with stats of the index
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-an-index} */
   async getStats(): Promise<IndexStats> {
-    return await this.httpRequest.get<IndexStats>({
-      path: `indexes/${this.uid}/stats`,
-    });
+    return await this.httpRequest.get({ path: `indexes/${this.uid}/stats` });
   }
 
   ///
