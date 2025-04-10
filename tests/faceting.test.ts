@@ -38,7 +38,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Get default faceting object`, async () => {
       const client = await getClient(permission);
 
-      const response = await client.index(index.uid).getFaceting();
+      const response = await client.index(index.uid).setting.getFaceting();
 
       expect(response).toMatchSnapshot();
     });
@@ -49,9 +49,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         maxValuesPerFacet: 12,
         sortFacetValuesBy: { test: "count" },
       };
-      await client.index(index.uid).updateFaceting(newFaceting).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateFaceting(newFaceting)
+        .waitTask();
 
-      const response = await client.index(index.uid).getFaceting();
+      const response = await client.index(index.uid).setting.getFaceting();
 
       expect(response).toMatchSnapshot();
     });
@@ -60,10 +63,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client
         .index(index.uid)
-        .updateFaceting({ maxValuesPerFacet: null })
+        .setting.updateFaceting({ maxValuesPerFacet: null })
         .waitTask();
 
-      const response = await client.index(index.uid).getFaceting();
+      const response = await client.index(index.uid).setting.getFaceting();
 
       expect(response).toMatchSnapshot();
     });
@@ -72,12 +75,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client
         .index(index.uid)
-        .updateFaceting({ maxValuesPerFacet: 12 })
+        .setting.updateFaceting({ maxValuesPerFacet: 12 })
         .waitTask();
 
-      await client.index(index.uid).resetFaceting().waitTask();
+      await client.index(index.uid).setting.resetFaceting().waitTask();
 
-      const response = await client.index(index.uid).getFaceting();
+      const response = await client.index(index.uid).setting.getFaceting();
 
       expect(response).toMatchSnapshot();
     });
@@ -95,21 +98,23 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get faceting and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getFaceting(),
+        client.index(index.uid).setting.getFaceting(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update faceting and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateFaceting({ maxValuesPerFacet: 13 }),
+        client
+          .index(index.uid)
+          .setting.updateFaceting({ maxValuesPerFacet: 13 }),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset faceting and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetFaceting(),
+        client.index(index.uid).setting.resetFaceting(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -123,7 +128,9 @@ describe.each([{ permission: "No" }])("Test on faceting", ({ permission }) => {
 
   test(`${permission} key: try to get faceting and be denied`, async () => {
     const client = await getClient(permission);
-    await expect(client.index(index.uid).getFaceting()).rejects.toHaveProperty(
+    await expect(
+      client.index(index.uid).setting.getFaceting(),
+    ).rejects.toHaveProperty(
       "cause.code",
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
     );
@@ -132,7 +139,7 @@ describe.each([{ permission: "No" }])("Test on faceting", ({ permission }) => {
   test(`${permission} key: try to update faceting and be denied`, async () => {
     const client = await getClient(permission);
     await expect(
-      client.index(index.uid).updateFaceting({ maxValuesPerFacet: 13 }),
+      client.index(index.uid).setting.updateFaceting({ maxValuesPerFacet: 13 }),
     ).rejects.toHaveProperty(
       "cause.code",
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -142,7 +149,7 @@ describe.each([{ permission: "No" }])("Test on faceting", ({ permission }) => {
   test(`${permission} key: try to reset faceting and be denied`, async () => {
     const client = await getClient(permission);
     await expect(
-      client.index(index.uid).resetFaceting(),
+      client.index(index.uid).setting.resetFaceting(),
     ).rejects.toHaveProperty(
       "cause.code",
       ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -159,7 +166,9 @@ describe.each([
     const route = `indexes/${index.uid}/settings/faceting`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
-    await expect(client.index(index.uid).getFaceting()).rejects.toHaveProperty(
+    await expect(
+      client.index(index.uid).setting.getFaceting(),
+    ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
@@ -170,7 +179,9 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateFaceting({ maxValuesPerFacet: undefined }),
+      client
+        .index(index.uid)
+        .setting.updateFaceting({ maxValuesPerFacet: undefined }),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -182,7 +193,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetFaceting(),
+      client.index(index.uid).setting.resetFaceting(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

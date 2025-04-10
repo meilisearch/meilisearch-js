@@ -6,4 +6,5 @@ export type CursorResults<T> = {
   total: number;
 };
 
+// taken from https://stackoverflow.com/a/65642944
 export type PascalToCamelCase<S extends string> = Uncapitalize<S>;

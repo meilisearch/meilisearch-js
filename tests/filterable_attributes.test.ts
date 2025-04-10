@@ -27,7 +27,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default attributes for filtering`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getFilterableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getFilterableAttributes();
 
       expect(response?.sort()).toEqual([]);
     });
@@ -37,27 +39,39 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newFilterableAttributes = ["genre"];
       await client
         .index(index.uid)
-        .updateFilterableAttributes(newFilterableAttributes)
+        .setting.updateFilterableAttributes(newFilterableAttributes)
         .waitTask();
 
-      const response = await client.index(index.uid).getFilterableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getFilterableAttributes();
       expect(response).toEqual(newFilterableAttributes);
     });
 
     test(`${permission} key: Update attributes for filtering at null`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).updateFilterableAttributes(null).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateFilterableAttributes(null)
+        .waitTask();
 
-      const response = await client.index(index.uid).getFilterableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getFilterableAttributes();
 
       expect(response?.sort()).toEqual([]);
     });
 
     test(`${permission} key: Reset attributes for filtering`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).resetFilterableAttributes().waitTask();
+      await client
+        .index(index.uid)
+        .setting.resetFilterableAttributes()
+        .waitTask();
 
-      const response = await client.index(index.uid).getFilterableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getFilterableAttributes();
 
       expect(response?.sort()).toEqual([]);
     });
@@ -75,21 +89,21 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getFilterableAttributes(),
+        client.index(index.uid).setting.getFilterableAttributes(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update attributes for filtering and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateFilterableAttributes([]),
+        client.index(index.uid).setting.updateFilterableAttributes([]),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset attributes for filtering and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetFilterableAttributes(),
+        client.index(index.uid).setting.resetFilterableAttributes(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -106,7 +120,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to get attributes for filtering and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getFilterableAttributes(),
+        client.index(index.uid).setting.getFilterableAttributes(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -116,7 +130,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to update attributes for filtering and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateFilterableAttributes([]),
+        client.index(index.uid).setting.updateFilterableAttributes([]),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -126,7 +140,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to reset attributes for filtering and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetFilterableAttributes(),
+        client.index(index.uid).setting.resetFilterableAttributes(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -145,7 +159,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getFilterableAttributes(),
+      client.index(index.uid).setting.getFilterableAttributes(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -157,7 +171,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateFilterableAttributes([]),
+      client.index(index.uid).setting.updateFilterableAttributes([]),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -169,7 +183,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetFilterableAttributes(),
+      client.index(index.uid).setting.resetFilterableAttributes(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

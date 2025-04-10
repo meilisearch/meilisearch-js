@@ -38,7 +38,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default typo tolerance settings`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getTypoTolerance();
+      const response = await client.index(index.uid).setting.getTypoTolerance();
       expect(response).toEqual(defaultTypoTolerance);
     });
 
@@ -55,28 +55,31 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       };
       await client
         .index(index.uid)
-        .updateTypoTolerance(newTypoTolerance)
+        .setting.updateTypoTolerance(newTypoTolerance)
         .waitTask();
 
-      const response = await client.index(index.uid).getTypoTolerance();
+      const response = await client.index(index.uid).setting.getTypoTolerance();
 
       expect(response).toEqual(newTypoTolerance);
     });
 
     test(`${permission} key: Update typo tolerance using null as value`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).updateTypoTolerance(null).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateTypoTolerance(null)
+        .waitTask();
 
-      const response = await client.index(index.uid).getTypoTolerance();
+      const response = await client.index(index.uid).setting.getTypoTolerance();
 
       expect(response).toEqual(defaultTypoTolerance);
     });
 
     test(`${permission} key: Reset typo tolerance settings`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).resetTypoTolerance().waitTask();
+      await client.index(index.uid).setting.resetTypoTolerance().waitTask();
 
-      const response = await client.index(index.uid).getTypoTolerance();
+      const response = await client.index(index.uid).setting.getTypoTolerance();
 
       expect(response).toEqual(defaultTypoTolerance);
     });
@@ -93,21 +96,21 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get typo tolerance settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getTypoTolerance(),
+        client.index(index.uid).setting.getTypoTolerance(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update typo tolerance settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateTypoTolerance({}),
+        client.index(index.uid).setting.updateTypoTolerance({}),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset typo tolerance settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetTypoTolerance(),
+        client.index(index.uid).setting.resetTypoTolerance(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -123,7 +126,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to get typo tolerance settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getTypoTolerance(),
+        client.index(index.uid).setting.getTypoTolerance(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -133,7 +136,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to update typo tolerance settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateTypoTolerance({}),
+        client.index(index.uid).setting.updateTypoTolerance({}),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -143,7 +146,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to reset typo tolerance settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetTypoTolerance(),
+        client.index(index.uid).setting.resetTypoTolerance(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -162,7 +165,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getTypoTolerance(),
+      client.index(index.uid).setting.getTypoTolerance(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -174,7 +177,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateTypoTolerance({}),
+      client.index(index.uid).setting.updateTypoTolerance({}),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -186,7 +189,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetTypoTolerance(),
+      client.index(index.uid).setting.resetTypoTolerance(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

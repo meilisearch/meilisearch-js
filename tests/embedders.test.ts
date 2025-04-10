@@ -61,7 +61,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default embedders`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual({});
     });
@@ -79,9 +79,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual(newEmbedder);
       expect(response).not.toHaveProperty("documentTemplateMaxBytes");
@@ -106,9 +109,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -136,10 +142,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       };
       await client
         .index(index.uid)
-        .updateEmbedders(newEmbedder)
+        .setting.updateEmbedders(newEmbedder)
         .waitTask({ timeout: 60_000 });
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual(newEmbedder);
     });
@@ -177,9 +183,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -207,9 +216,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -228,18 +240,21 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           dimensions: 512,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual(newEmbedder);
     });
 
     test(`${permission} key: Reset embedders`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).resetEmbedders().waitTask();
+      await client.index(index.uid).setting.resetEmbedders().waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual({});
     });
@@ -249,7 +264,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await client
         .index(index.uid)
-        .updateEmbedders({
+        .setting.updateEmbedders({
           default: {
             source: "userProvided",
             dimensions: 1,
@@ -278,7 +293,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await client
         .index(index.uid)
-        .updateEmbedders({
+        .setting.updateEmbedders({
           default: {
             source: "userProvided",
             dimensions: 1,
@@ -309,7 +324,10 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           dimensions: 3,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
       await client
         .index(index.uid)
@@ -339,7 +357,9 @@ describe.each([
     const route = `indexes/${index.uid}/settings/embedders`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
-    await expect(client.index(index.uid).getEmbedders()).rejects.toHaveProperty(
+    await expect(
+      client.index(index.uid).setting.getEmbedders(),
+    ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
@@ -350,7 +370,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateEmbedders({}),
+      client.index(index.uid).setting.updateEmbedders({}),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -362,7 +382,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetEmbedders(),
+      client.index(index.uid).setting.resetEmbedders(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

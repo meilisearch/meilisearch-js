@@ -29,25 +29,30 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Get prefixSearch settings on empty index`, async () => {
       const client = await getClient(permission);
 
-      const response = await client.index(index.uid).getPrefixSearch();
+      const response = await client.index(index.uid).setting.getPrefixSearch();
       expect(response).toMatchSnapshot();
     });
 
     test(`${permission} key: Set prefixSearch settings with dedicated endpoint on empty index`, async () => {
       const client = await getClient(permission);
 
-      await client.index(index.uid).updatePrefixSearch("disabled").waitTask();
+      await client
+        .index(index.uid)
+        .setting.updatePrefixSearch("disabled")
+        .waitTask();
 
-      const updatedSettings = await client.index(index.uid).getPrefixSearch();
+      const updatedSettings = await client
+        .index(index.uid)
+        .setting.getPrefixSearch();
       expect(updatedSettings).toBe("disabled");
     });
 
     test(`${permission} key: Reset prefixSearch settings on an empty index`, async () => {
       const client = await getClient(permission);
 
-      await client.index(index.uid).resetPrefixSearch().waitTask();
+      await client.index(index.uid).setting.resetPrefixSearch().waitTask();
 
-      const response = await client.index(index.uid).getPrefixSearch();
+      const response = await client.index(index.uid).setting.getPrefixSearch();
       expect(response).toMatchSnapshot();
     });
   },
@@ -65,21 +70,21 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get prefix search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getPrefixSearch(),
+        client.index(index.uid).setting.getPrefixSearch(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update prefix search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updatePrefixSearch("disabled"),
+        client.index(index.uid).setting.updatePrefixSearch("disabled"),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset prefix search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetPrefixSearch(),
+        client.index(index.uid).setting.resetPrefixSearch(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -97,7 +102,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to get prefix search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getPrefixSearch(),
+        client.index(index.uid).setting.getPrefixSearch(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -107,7 +112,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to update prefix search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updatePrefixSearch("disabled"),
+        client.index(index.uid).setting.updatePrefixSearch("disabled"),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -117,7 +122,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to reset prefix search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetPrefixSearch(),
+        client.index(index.uid).setting.resetPrefixSearch(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -136,7 +141,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getPrefixSearch(),
+      client.index(index.uid).setting.getPrefixSearch(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -148,7 +153,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updatePrefixSearch("disabled"),
+      client.index(index.uid).setting.updatePrefixSearch("disabled"),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -160,7 +165,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetPrefixSearch(),
+      client.index(index.uid).setting.resetPrefixSearch(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

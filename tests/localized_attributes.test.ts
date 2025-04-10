@@ -40,7 +40,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default localizedAttributes settings`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getLocalizedAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getLocalizedAttributes();
 
       expect(response).toEqual(DEFAULT_LOCALIZED_ATTRIBUTES);
     });
@@ -51,10 +53,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         [{ attributePatterns: ["title"], locales: ["eng"] }];
       await client
         .index(index.uid)
-        .updateLocalizedAttributes(newLocalizedAttributes)
+        .setting.updateLocalizedAttributes(newLocalizedAttributes)
         .waitTask();
 
-      const response = await client.index(index.uid).getLocalizedAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getLocalizedAttributes();
 
       expect(response).toEqual(newLocalizedAttributes);
     });
@@ -64,10 +68,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newLocalizedAttributes = null;
       await client
         .index(index.uid)
-        .updateLocalizedAttributes(newLocalizedAttributes)
+        .setting.updateLocalizedAttributes(newLocalizedAttributes)
         .waitTask();
 
-      const response = await client.index(index.uid).getLocalizedAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getLocalizedAttributes();
 
       expect(response).toEqual(DEFAULT_LOCALIZED_ATTRIBUTES);
     });
@@ -80,7 +86,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       await expect(
         client
           .index(index.uid)
-          .updateLocalizedAttributes(newLocalizedAttributes),
+          .setting.updateLocalizedAttributes(newLocalizedAttributes),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.INVALID_SETTINGS_LOCALIZED_ATTRIBUTES,
@@ -93,11 +99,16 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         [];
       await client
         .index(index.uid)
-        .updateLocalizedAttributes(newLocalizedAttributes)
+        .setting.updateLocalizedAttributes(newLocalizedAttributes)
         .waitTask();
-      await client.index(index.uid).resetLocalizedAttributes().waitTask();
+      await client
+        .index(index.uid)
+        .setting.resetLocalizedAttributes()
+        .waitTask();
 
-      const response = await client.index(index.uid).getLocalizedAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getLocalizedAttributes();
 
       expect(response).toEqual(DEFAULT_LOCALIZED_ATTRIBUTES);
     });
@@ -115,21 +126,21 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get localizedAttributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getLocalizedAttributes(),
+        client.index(index.uid).setting.getLocalizedAttributes(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update localizedAttributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateLocalizedAttributes([]),
+        client.index(index.uid).setting.updateLocalizedAttributes([]),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset localizedAttributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetLocalizedAttributes(),
+        client.index(index.uid).setting.resetLocalizedAttributes(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -146,7 +157,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to get localizedAttributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getLocalizedAttributes(),
+        client.index(index.uid).setting.getLocalizedAttributes(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -156,7 +167,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to update localizedAttributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateLocalizedAttributes([]),
+        client.index(index.uid).setting.updateLocalizedAttributes([]),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -166,7 +177,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to reset localizedAttributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetLocalizedAttributes(),
+        client.index(index.uid).setting.resetLocalizedAttributes(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -185,7 +196,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getLocalizedAttributes(),
+      client.index(index.uid).setting.getLocalizedAttributes(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -197,7 +208,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateLocalizedAttributes(null),
+      client.index(index.uid).setting.updateLocalizedAttributes(null),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -209,7 +220,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetLocalizedAttributes(),
+      client.index(index.uid).setting.resetLocalizedAttributes(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

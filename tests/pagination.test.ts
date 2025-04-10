@@ -35,7 +35,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default pagination settings`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getPagination();
+      const response = await client.index(index.uid).setting.getPagination();
 
       expect(response).toEqual({ maxTotalHits: 1000 });
     });
@@ -45,9 +45,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newPagination = {
         maxTotalHits: 100,
       };
-      await client.index(index.uid).updatePagination(newPagination).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updatePagination(newPagination)
+        .waitTask();
 
-      const response = await client.index(index.uid).getPagination();
+      const response = await client.index(index.uid).setting.getPagination();
 
       expect(response).toEqual(newPagination);
     });
@@ -57,9 +60,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newPagination = {
         maxTotalHits: null,
       };
-      await client.index(index.uid).updatePagination(newPagination).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updatePagination(newPagination)
+        .waitTask();
 
-      const response = await client.index(index.uid).getPagination();
+      const response = await client.index(index.uid).setting.getPagination();
 
       expect(response).toEqual({ maxTotalHits: 1000 });
     });
@@ -69,10 +75,13 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newPagination = {
         maxTotalHits: 100,
       };
-      await client.index(index.uid).updatePagination(newPagination).waitTask();
-      await client.index(index.uid).resetPagination().waitTask();
+      await client
+        .index(index.uid)
+        .setting.updatePagination(newPagination)
+        .waitTask();
+      await client.index(index.uid).setting.resetPagination().waitTask();
 
-      const response = await client.index(index.uid).getPagination();
+      const response = await client.index(index.uid).setting.getPagination();
 
       expect(response).toEqual({ maxTotalHits: 1000 });
     });
@@ -90,21 +99,21 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getPagination(),
+        client.index(index.uid).setting.getPagination(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updatePagination({ maxTotalHits: 10 }),
+        client.index(index.uid).setting.updatePagination({ maxTotalHits: 10 }),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetPagination(),
+        client.index(index.uid).setting.resetPagination(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -121,7 +130,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to get pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getPagination(),
+        client.index(index.uid).setting.getPagination(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -131,7 +140,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to update pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updatePagination({ maxTotalHits: 10 }),
+        client.index(index.uid).setting.updatePagination({ maxTotalHits: 10 }),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -141,7 +150,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to reset pagination and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetPagination(),
+        client.index(index.uid).setting.resetPagination(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -160,7 +169,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getPagination(),
+      client.index(index.uid).setting.getPagination(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -172,7 +181,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updatePagination({ maxTotalHits: null }),
+      client.index(index.uid).setting.updatePagination({ maxTotalHits: null }),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -184,7 +193,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetPagination(),
+      client.index(index.uid).setting.resetPagination(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

@@ -35,7 +35,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Get default searchable attributes`, async () => {
       const client = await getClient(permission);
 
-      const response = await client.index(index.uid).getSearchableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getSearchableAttributes();
 
       expect(response).toEqual(["*"]);
     });
@@ -45,28 +47,40 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newSearchableAttributes = ["title"];
       await client
         .index(index.uid)
-        .updateSearchableAttributes(newSearchableAttributes)
+        .setting.updateSearchableAttributes(newSearchableAttributes)
         .waitTask();
 
-      const response = await client.index(index.uid).getSearchableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getSearchableAttributes();
 
       expect(response).toEqual(newSearchableAttributes);
     });
 
     test(`${permission} key: Update searchable attributes at null`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).updateSearchableAttributes(null).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateSearchableAttributes(null)
+        .waitTask();
 
-      const response = await client.index(index.uid).getSearchableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getSearchableAttributes();
 
       expect(response).toEqual(["*"]);
     });
 
     test(`${permission} key: Reset searchable attributes`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).resetSearchableAttributes().waitTask();
+      await client
+        .index(index.uid)
+        .setting.resetSearchableAttributes()
+        .waitTask();
 
-      const response = await client.index(index.uid).getSearchableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getSearchableAttributes();
 
       expect(response).toEqual(["*"]);
     });
@@ -84,21 +98,21 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getSearchableAttributes(),
+        client.index(index.uid).setting.getSearchableAttributes(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update searchable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateSearchableAttributes([]),
+        client.index(index.uid).setting.updateSearchableAttributes([]),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetSearchableAttributes(),
+        client.index(index.uid).setting.resetSearchableAttributes(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -115,7 +129,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to get searchable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getSearchableAttributes(),
+        client.index(index.uid).setting.getSearchableAttributes(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -125,7 +139,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to update searchable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateSearchableAttributes([]),
+        client.index(index.uid).setting.updateSearchableAttributes([]),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -135,7 +149,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to reset searchable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetSearchableAttributes(),
+        client.index(index.uid).setting.resetSearchableAttributes(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -154,7 +168,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getSearchableAttributes(),
+      client.index(index.uid).setting.getSearchableAttributes(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -166,7 +180,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateSearchableAttributes([]),
+      client.index(index.uid).setting.updateSearchableAttributes([]),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -178,7 +192,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetSearchableAttributes(),
+      client.index(index.uid).setting.resetSearchableAttributes(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

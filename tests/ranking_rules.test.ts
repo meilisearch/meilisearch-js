@@ -37,7 +37,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default ranking rules`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getRankingRules();
+      const response = await client.index(index.uid).setting.getRankingRules();
       expect(response).toEqual(defaultRankingRules);
     });
 
@@ -50,28 +50,28 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       ];
       await client
         .index(index.uid)
-        .updateRankingRules(newRankingRules)
+        .setting.updateRankingRules(newRankingRules)
         .waitTask();
 
-      const response = await client.index(index.uid).getRankingRules();
+      const response = await client.index(index.uid).setting.getRankingRules();
 
       expect(response).toEqual(newRankingRules);
     });
 
     test(`${permission} key: Update ranking rules at null`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).updateRankingRules(null).waitTask();
+      await client.index(index.uid).setting.updateRankingRules(null).waitTask();
 
-      const response = await client.index(index.uid).getRankingRules();
+      const response = await client.index(index.uid).setting.getRankingRules();
 
       expect(response).toEqual(defaultRankingRules);
     });
 
     test(`${permission} key: Reset ranking rules`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).resetRankingRules().waitTask();
+      await client.index(index.uid).setting.resetRankingRules().waitTask();
 
-      const response = await client.index(index.uid).getRankingRules();
+      const response = await client.index(index.uid).setting.getRankingRules();
 
       expect(response).toEqual(defaultRankingRules);
     });
@@ -88,21 +88,21 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get ranking rules and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getRankingRules(),
+        client.index(index.uid).setting.getRankingRules(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update ranking rules and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateRankingRules([]),
+        client.index(index.uid).setting.updateRankingRules([]),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset ranking rules and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetRankingRules(),
+        client.index(index.uid).setting.resetRankingRules(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -118,7 +118,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to get ranking rules and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getRankingRules(),
+        client.index(index.uid).setting.getRankingRules(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -128,7 +128,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to update ranking rules and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateRankingRules([]),
+        client.index(index.uid).setting.updateRankingRules([]),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -138,7 +138,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to reset ranking rules and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetRankingRules(),
+        client.index(index.uid).setting.resetRankingRules(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -157,7 +157,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getRankingRules(),
+      client.index(index.uid).setting.getRankingRules(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -169,7 +169,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateRankingRules([]),
+      client.index(index.uid).setting.updateRankingRules([]),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -181,7 +181,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetRankingRules(),
+      client.index(index.uid).setting.resetRankingRules(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

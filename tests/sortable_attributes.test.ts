@@ -37,7 +37,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Get default sortable attributes`, async () => {
       const client = await getClient(permission);
 
-      const response = await client.index(index.uid).getSortableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getSortableAttributes();
 
       expect(response).toEqual([]);
     });
@@ -47,27 +49,39 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newSortableAttributes = ["title"];
       await client
         .index(index.uid)
-        .updateSortableAttributes(newSortableAttributes)
+        .setting.updateSortableAttributes(newSortableAttributes)
         .waitTask();
 
-      const response = await client.index(index.uid).getSortableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getSortableAttributes();
       expect(response).toEqual(newSortableAttributes);
     });
 
     test(`${permission} key: Update sortable attributes at null`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).updateSortableAttributes(null).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateSortableAttributes(null)
+        .waitTask();
 
-      const response = await client.index(index.uid).getSortableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getSortableAttributes();
 
       expect(response).toEqual([]);
     });
 
     test(`${permission} key: Reset sortable attributes`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).resetSortableAttributes().waitTask();
+      await client
+        .index(index.uid)
+        .setting.resetSortableAttributes()
+        .waitTask();
 
-      const response = await client.index(index.uid).getSortableAttributes();
+      const response = await client
+        .index(index.uid)
+        .setting.getSortableAttributes();
 
       expect(response).toEqual([]);
     });
@@ -85,21 +99,21 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get sortable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getSortableAttributes(),
+        client.index(index.uid).setting.getSortableAttributes(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update sortable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateSortableAttributes([]),
+        client.index(index.uid).setting.updateSortableAttributes([]),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset sortable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetSortableAttributes(),
+        client.index(index.uid).setting.resetSortableAttributes(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -116,7 +130,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to get sortable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getSortableAttributes(),
+        client.index(index.uid).setting.getSortableAttributes(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -127,7 +141,7 @@ describe.each([{ permission: "No" }])(
       const client = await getClient(permission);
       const resetSortable: string[] = [];
       await expect(
-        client.index(index.uid).updateSortableAttributes(resetSortable),
+        client.index(index.uid).setting.updateSortableAttributes(resetSortable),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -137,7 +151,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to reset sortable attributes and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetSortableAttributes(),
+        client.index(index.uid).setting.resetSortableAttributes(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -156,7 +170,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getSortableAttributes(),
+      client.index(index.uid).setting.getSortableAttributes(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -168,7 +182,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateSortableAttributes([]),
+      client.index(index.uid).setting.updateSortableAttributes([]),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -180,7 +194,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetSortableAttributes(),
+      client.index(index.uid).setting.resetSortableAttributes(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

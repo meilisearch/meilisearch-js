@@ -40,7 +40,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default searchCutoffMs settings`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getSearchCutoffMs();
+      const response = await client
+        .index(index.uid)
+        .setting.getSearchCutoffMs();
 
       expect(response).toEqual(DEFAULT_SEARCHCUTOFF_MS);
     });
@@ -50,10 +52,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newSearchCutoffMs = 100;
       await client
         .index(index.uid)
-        .updateSearchCutoffMs(newSearchCutoffMs)
+        .setting.updateSearchCutoffMs(newSearchCutoffMs)
         .waitTask();
 
-      const response = await client.index(index.uid).getSearchCutoffMs();
+      const response = await client
+        .index(index.uid)
+        .setting.getSearchCutoffMs();
 
       expect(response).toEqual(newSearchCutoffMs);
     });
@@ -63,10 +67,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newSearchCutoffMs = null;
       await client
         .index(index.uid)
-        .updateSearchCutoffMs(newSearchCutoffMs)
+        .setting.updateSearchCutoffMs(newSearchCutoffMs)
         .waitTask();
 
-      const response = await client.index(index.uid).getSearchCutoffMs();
+      const response = await client
+        .index(index.uid)
+        .setting.getSearchCutoffMs();
 
       expect(response).toEqual(DEFAULT_SEARCHCUTOFF_MS);
     });
@@ -77,7 +83,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         "hello" as unknown as IndividualUpdatableSettings["searchCutoffMs"]; // bad searchCutoffMs value
 
       await expect(
-        client.index(index.uid).updateSearchCutoffMs(newSearchCutoffMs),
+        client.index(index.uid).setting.updateSearchCutoffMs(newSearchCutoffMs),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.INVALID_SETTINGS_SEARCH_CUTOFF_MS,
@@ -89,11 +95,13 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newSearchCutoffMs = 100;
       await client
         .index(index.uid)
-        .updateSearchCutoffMs(newSearchCutoffMs)
+        .setting.updateSearchCutoffMs(newSearchCutoffMs)
         .waitTask();
-      await client.index(index.uid).resetSearchCutoffMs().waitTask();
+      await client.index(index.uid).setting.resetSearchCutoffMs().waitTask();
 
-      const response = await client.index(index.uid).getSearchCutoffMs();
+      const response = await client
+        .index(index.uid)
+        .setting.getSearchCutoffMs();
 
       expect(response).toEqual(DEFAULT_SEARCHCUTOFF_MS);
     });
@@ -111,21 +119,21 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getSearchCutoffMs(),
+        client.index(index.uid).setting.getSearchCutoffMs(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateSearchCutoffMs(100),
+        client.index(index.uid).setting.updateSearchCutoffMs(100),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetSearchCutoffMs(),
+        client.index(index.uid).setting.resetSearchCutoffMs(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -142,7 +150,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to get searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getSearchCutoffMs(),
+        client.index(index.uid).setting.getSearchCutoffMs(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -152,7 +160,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to update searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateSearchCutoffMs(100),
+        client.index(index.uid).setting.updateSearchCutoffMs(100),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -162,7 +170,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to reset searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetSearchCutoffMs(),
+        client.index(index.uid).setting.resetSearchCutoffMs(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -181,7 +189,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getSearchCutoffMs(),
+      client.index(index.uid).setting.getSearchCutoffMs(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -193,7 +201,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateSearchCutoffMs(null),
+      client.index(index.uid).setting.updateSearchCutoffMs(null),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -205,7 +213,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetSearchCutoffMs(),
+      client.index(index.uid).setting.resetSearchCutoffMs(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

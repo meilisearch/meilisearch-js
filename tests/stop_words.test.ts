@@ -27,7 +27,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default stop words`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getStopWords();
+      const response = await client.index(index.uid).setting.getStopWords();
 
       expect(response).toEqual([]);
     });
@@ -35,9 +35,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update stop words`, async () => {
       const client = await getClient(permission);
       const newStopWords = ["the"];
-      await client.index(index.uid).updateStopWords(newStopWords).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateStopWords(newStopWords)
+        .waitTask();
 
-      const response = await client.index(index.uid).getStopWords();
+      const response = await client.index(index.uid).setting.getStopWords();
 
       expect(response).toEqual(newStopWords);
     });
@@ -45,18 +48,21 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update stop words with null value`, async () => {
       const client = await getClient(permission);
       const newStopWords = null;
-      await client.index(index.uid).updateStopWords(newStopWords).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateStopWords(newStopWords)
+        .waitTask();
 
-      const response = await client.index(index.uid).getStopWords();
+      const response = await client.index(index.uid).setting.getStopWords();
 
       expect(response).toEqual([]);
     });
 
     test(`${permission} key: Reset stop words`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).resetStopWords().waitTask();
+      await client.index(index.uid).setting.resetStopWords().waitTask();
 
-      const response = await client.index(index.uid).getStopWords();
+      const response = await client.index(index.uid).setting.getStopWords();
 
       expect(response).toEqual([]);
     });
@@ -73,21 +79,21 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get stop words and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getStopWords(),
+        client.index(index.uid).setting.getStopWords(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update stop words and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateStopWords([]),
+        client.index(index.uid).setting.updateStopWords([]),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset stop words and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetStopWords(),
+        client.index(index.uid).setting.resetStopWords(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -103,7 +109,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to get stop words and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getStopWords(),
+        client.index(index.uid).setting.getStopWords(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -113,7 +119,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to update stop words and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateStopWords([]),
+        client.index(index.uid).setting.updateStopWords([]),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -123,7 +129,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to reset stop words and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetStopWords(),
+        client.index(index.uid).setting.resetStopWords(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -141,7 +147,9 @@ describe.each([
     const route = `indexes/${index.uid}/settings/stop-words`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
-    await expect(client.index(index.uid).getStopWords()).rejects.toHaveProperty(
+    await expect(
+      client.index(index.uid).setting.getStopWords(),
+    ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
@@ -152,7 +160,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateStopWords([]),
+      client.index(index.uid).setting.updateStopWords([]),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -164,7 +172,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetStopWords(),
+      client.index(index.uid).setting.resetStopWords(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

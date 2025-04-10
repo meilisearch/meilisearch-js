@@ -29,25 +29,27 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Get facetSearch settings on empty index`, async () => {
       const client = await getClient(permission);
 
-      const response = await client.index(index.uid).getFacetSearch();
+      const response = await client.index(index.uid).setting.getFacetSearch();
       expect(response).toMatchSnapshot();
     });
 
     test(`${permission} key: Set facetSearch settings with dedicated endpoint on empty index`, async () => {
       const client = await getClient(permission);
 
-      await client.index(index.uid).updateFacetSearch(false).waitTask();
+      await client.index(index.uid).setting.updateFacetSearch(false).waitTask();
 
-      const updatedSettings = await client.index(index.uid).getFacetSearch();
+      const updatedSettings = await client
+        .index(index.uid)
+        .setting.getFacetSearch();
       expect(updatedSettings).toBe(false);
     });
 
     test(`${permission} key: Reset facetSearch settings on an empty index`, async () => {
       const client = await getClient(permission);
 
-      await client.index(index.uid).resetFacetSearch().waitTask();
+      await client.index(index.uid).setting.resetFacetSearch().waitTask();
 
-      const response = await client.index(index.uid).getFacetSearch();
+      const response = await client.index(index.uid).setting.getFacetSearch();
       expect(response).toMatchSnapshot();
     });
   },
@@ -65,21 +67,21 @@ describe.each([{ permission: "Search" }])(
     test(`${permission} key: try to get facet search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getFacetSearch(),
+        client.index(index.uid).setting.getFacetSearch(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to update facet search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateFacetSearch(false),
+        client.index(index.uid).setting.updateFacetSearch(false),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
 
     test(`${permission} key: try to reset facet search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetFacetSearch(),
+        client.index(index.uid).setting.resetFacetSearch(),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
     });
   },
@@ -97,7 +99,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to get facet search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).getFacetSearch(),
+        client.index(index.uid).setting.getFacetSearch(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -107,7 +109,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to update facet search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).updateFacetSearch(false),
+        client.index(index.uid).setting.updateFacetSearch(false),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -117,7 +119,7 @@ describe.each([{ permission: "No" }])(
     test(`${permission} key: try to reset facet search settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
-        client.index(index.uid).resetFacetSearch(),
+        client.index(index.uid).setting.resetFacetSearch(),
       ).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
@@ -136,7 +138,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getFacetSearch(),
+      client.index(index.uid).setting.getFacetSearch(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -148,7 +150,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateFacetSearch(false),
+      client.index(index.uid).setting.updateFacetSearch(false),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -160,7 +162,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetFacetSearch(),
+      client.index(index.uid).setting.resetFacetSearch(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

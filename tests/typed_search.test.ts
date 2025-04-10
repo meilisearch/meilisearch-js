@@ -118,8 +118,8 @@ describe.each([
 
     const newFilterableAttributes = ["genre", "title"];
     await client
-      .index<Movie>(index.uid)
-      .updateFilterableAttributes(newFilterableAttributes)
+      .index(index.uid)
+      .setting.updateFilterableAttributes(newFilterableAttributes)
       .waitTask();
 
     await client.index<Movie>(index.uid).addDocuments(dataset).waitTask();
