@@ -1,127 +1,197 @@
-import type { NonNullableDeepRecordValues } from "./shared.js";
+import type { PascalToCamelCase } from "./shared.js";
 
-/** {@link https://www.meilisearch.com/docs/reference/api/settings#proximity-precision} */
-export type ProximityPrecision = "byWord" | "byAttribute";
-
-/** @see `minWordSizeForTypos` at {@link https://www.meilisearch.com/docs/reference/api/settings#typo-tolerance} */
-export type MinWordSizeForTypos = {
-  oneTypo?: number | null;
-  twoTypos?: number | null;
+/** Deeply map every property of a record to itself excluding null. */
+type NonNullableDeepRecordValues<T> = {
+  [TKey in keyof T]: Exclude<NonNullableDeepRecordValues<T[TKey]>, null>;
 };
 
-/** {@link https://www.meilisearch.com/docs/reference/api/settings#typo-tolerance} */
-export type TypoTolerance = {
-  enabled?: boolean | null;
-  minWordSizeForTypos?: MinWordSizeForTypos | null;
-  disableOnWords?: string[] | null;
-  disableOnAttributes?: string[] | null;
-};
+/** Map properties of a record to be optional and nullable. */
+type PartialAndNullable<T> = { [P in keyof T]?: T[P] | null };
 
-/** @see `sortFacetValuesBy` at {@link https://www.meilisearch.com/docs/reference/api/settings#faceting} */
-export type FacetOrder = "alpha" | "count";
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#proximity-precision}
+ *
+ * @see `meilisearch_types::settings::ProximityPrecisionView`
+ */
+export type ProximityPrecisionView = PascalToCamelCase<
+  "ByWord" | "ByAttribute"
+>;
 
-/** {@link https://www.meilisearch.com/docs/reference/api/settings#faceting} */
-export type Faceting = {
-  maxValuesPerFacet?: number | null;
-  sortFacetValuesBy?: Record<string, FacetOrder> | null;
-};
+/**
+ * @see `minWordSizeForTypos` at {@link https://www.meilisearch.com/docs/reference/api/settings#typo-tolerance}
+ *
+ * @see `meilisearch_types::settings::MinWordSizeTyposSetting`
+ */
+export type MinWordSizeTyposSetting = PartialAndNullable<{
+  oneTypo: number;
+  twoTypos: number;
+}>;
 
-/** {@link https://www.meilisearch.com/docs/reference/api/settings#pagination} */
-export type PaginationSettings = { maxTotalHits?: number | null };
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#typo-tolerance}
+ *
+ * @see `meilisearch_types::settings::TypoSettings`
+ */
+export type TypoSettings = PartialAndNullable<{
+  enabled: boolean;
+  minWordSizeForTypos: MinWordSizeTyposSetting;
+  disableOnWords: string[];
+  disableOnAttributes: string[];
+}>;
 
-/** @see `distribution` at {@link https://www.meilisearch.com/docs/reference/api/settings#embedders-experimental} */
-export type Distribution = {
+/**
+ * @see `sortFacetValuesBy` at {@link https://www.meilisearch.com/docs/reference/api/settings#faceting}
+ * @see `meilisearch_types::facet_values_sort::FacetValuesSort`
+ */
+export type FacetValuesSort = PascalToCamelCase<"Alpha" | "Count">;
+
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#faceting}
+ *
+ * @see `meilisearch_types::settings::FacetingSettings`
+ */
+export type FacetingSettings = PartialAndNullable<{
+  maxValuesPerFacet: number;
+  sortFacetValuesBy: Record<string, FacetValuesSort>;
+}>;
+
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#pagination}
+ *
+ * @see `meilisearch_types::settings::PaginationSettings`
+ */
+export type PaginationSettings = PartialAndNullable<{ maxTotalHits: number }>;
+
+/**
+ * @see `distribution` at {@link https://www.meilisearch.com/docs/reference/api/settings#embedders}
+ * @see `milli::vector::DistributionShift`
+ */
+export type DistributionShift = {
   mean: number;
   sigma: number;
 };
 
-/** @see `source` at {@link https://www.meilisearch.com/docs/reference/api/settings#embedders-experimental} */
-export type EmbedderSource =
-  | "openAi"
-  | "huggingFace"
-  | "ollama"
-  | "userProvided"
-  | "rest";
+/** @see `source` at {@link https://www.meilisearch.com/docs/reference/api/settings#embedders} */
+export type EmbedderSource = PascalToCamelCase<
+  "OpenAi" | "HuggingFace" | "Ollama" | "UserProvided" | "Rest"
+>;
 
-/** {@link https://www.meilisearch.com/docs/reference/api/settings#embedders-experimental} */
-export type EmbeddingSettings = {
-  source?: EmbedderSource | null;
-  model?: string | null;
-  revision?: string | null;
-  apiKey?: string | null;
-  dimensions?: number | null;
-  binaryQuantized?: boolean | null;
-  documentTemplate?: string | null;
-  documentTemplateMaxBytes?: number | null;
-  url?: string | null;
-  request?: unknown;
-  response?: unknown;
-  headers?: Record<string, string> | null;
-  distribution?: Distribution | null;
+/** @see `milli::vector::hf::OverridePooling` */
+export type OverridePooling = PascalToCamelCase<
+  "UseModel" | "ForceCls" | "ForceMean"
+>;
+
+/** @see `milli::vector::settings::SubEmbeddingSettings` */
+export type SubEmbeddingSettings = PartialAndNullable<{
+  source: EmbedderSource;
+  model: string;
+  revision: string;
+  pooling: OverridePooling;
+  apiKey: string;
+  dimensions: number;
+  documentTemplate: string;
+  documentTemplateMaxBytes: number;
+  url: string;
+  request: unknown;
+  response: unknown;
+  headers: Record<string, string>;
+}>;
+
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#embedders}
+ *
+ * @see `milli::vector::settings::EmbeddingSettings`
+ */
+export type EmbeddingSettings = PartialAndNullable<{
+  distribution: DistributionShift;
+  binaryQuantized: boolean;
+  // upcoming properties
+  // searchEmbedder: SubEmbeddingSettings;
+  // indexingEmbedder: SubEmbeddingSettings;
+}> &
+  SubEmbeddingSettings;
+
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#localized-attributes}
+ *
+ * @see `meilisearch_types::locales::LocalizedAttributesRuleView`
+ */
+export type LocalizedAttributesRuleView = {
+  /** @see `milli::attribute_patterns::AttributePatterns` */
+  attributePatterns: string[];
+  /** @see `meilisearch_types::locales::Locale` */
+  locales: string[];
 };
 
-/** {@link https://www.meilisearch.com/docs/reference/api/settings#localized-attributes} */
-export type LocalizedAttribute = {
-  attributePatterns: string[] | null;
-  locales: string[] | null;
-};
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#prefix-search}
+ *
+ * @see `meilisearch_types::settings::PrefixSearchSettings`
+ */
+export type PrefixSearchSettings = PascalToCamelCase<
+  "IndexingTime" | "Disabled"
+>;
 
-/** {@link https://www.meilisearch.com/docs/reference/api/settings#prefix-search} */
-export type PrefixSearch = "indexingTime" | "disabled";
+/** @see `meilisearch_types::settings::RankingRuleView` */
+export type RankingRuleView =
+  | PascalToCamelCase<
+      "Words" | "Typo" | "Proximity" | "Attribute" | "Sort" | "Exactness"
+    >
+  | `${string}:${"asc" | "desc"}`;
 
 /** A version of {@link Settings} that can be used to update the settings. */
-export type UpdatableSettings = {
+export type UpdatableSettings = PartialAndNullable<{
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#displayed-attributes} */
-  displayedAttributes?: string[] | null;
+  displayedAttributes: string[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#searchable-attributes} */
-  searchableAttributes?: string[] | null;
+  searchableAttributes: string[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#filterable-attributes} */
-  filterableAttributes?: string[] | null;
+  filterableAttributes: string[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#sortable-attributes} */
-  sortableAttributes?: string[] | null;
+  sortableAttributes: string[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#ranking-rules} */
-  rankingRules?: string[] | null;
+  rankingRules: RankingRuleView[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#stop-words} */
-  stopWords?: string[] | null;
+  stopWords: string[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#non-separator-tokens} */
-  nonSeparatorTokens?: string[] | null;
+  nonSeparatorTokens: string[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#separator-tokens} */
-  separatorTokens?: string[] | null;
+  separatorTokens: string[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#dictionary} */
-  dictionary?: string[] | null;
+  dictionary: string[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#synonyms} */
-  synonyms?: Record<string, string[]> | null;
+  synonyms: Record<string, string[]>;
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#distinct-attribute} */
-  distinctAttribute?: string | null;
+  distinctAttribute: string;
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#proximity-precision} */
-  proximityPrecision?: ProximityPrecision | null;
+  proximityPrecision: ProximityPrecisionView;
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#typo-tolerance} */
-  typoTolerance?: TypoTolerance | null;
+  typoTolerance: TypoSettings;
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#faceting} */
-  faceting?: Faceting | null;
+  faceting: FacetingSettings;
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#pagination} */
-  pagination?: PaginationSettings | null;
-  /** {@link https://www.meilisearch.com/docs/reference/api/settings#embedders-experimental} */
-  embedders?: Record<string, EmbeddingSettings> | null;
+  pagination: PaginationSettings;
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#embedders} */
+  embedders: PartialAndNullable<Record<string, EmbeddingSettings>>;
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#search-cutoff} */
-  searchCutoffMs?: number | null;
+  searchCutoffMs: number;
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#localized-attributes} */
-  localizedAttributes?: LocalizedAttribute[] | null;
+  localizedAttributes: LocalizedAttributesRuleView[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#facet-search} */
-  facetSearch?: boolean | null;
+  facetSearch: boolean;
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#prefix-search} */
-  prefixSearch?: PrefixSearch | null;
-};
+  prefixSearch: PrefixSearchSettings;
+}>;
 
 /**
  * A version of {@link UpdatableSettings}, the first layer of properties of which
  * is used to update or get individual settings.
  */
-export type IndividualSettings = Required<UpdatableSettings>;
+export type IndividualUpdatableSettings = Required<UpdatableSettings>;
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/settings#body}
  *
- * @see `meilisearch_types::settings::Settings` at {@link https://github.com/meilisearch/meilisearch}
+ * @see `meilisearch_types::settings::Settings`
  */
 export type Settings = NonNullableDeepRecordValues<UpdatableSettings>;

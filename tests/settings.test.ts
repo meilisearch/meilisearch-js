@@ -165,7 +165,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update settings on empty index with primary key`, async () => {
       const client = await getClient(permission);
-      const newSettings = {
+      const newSettings: UpdatableSettings = {
         distinctAttribute: "title",
         rankingRules: ["title:asc", "typo"],
         stopWords: ["the"],

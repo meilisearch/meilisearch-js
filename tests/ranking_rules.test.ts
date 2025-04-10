@@ -1,5 +1,5 @@
 import { expect, test, describe, beforeEach, afterAll } from "vitest";
-import { ErrorStatusCode } from "../src/index.js";
+import { ErrorStatusCode, type RankingRuleView } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -43,7 +43,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update ranking rules`, async () => {
       const client = await getClient(permission);
-      const newRankingRules = ["title:asc", "typo", "description:desc"];
+      const newRankingRules: RankingRuleView[] = [
+        "title:asc",
+        "typo",
+        "description:desc",
+      ];
       await client
         .index(index.uid)
         .updateRankingRules(newRankingRules)

@@ -6,7 +6,10 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode, type IndividualSettings } from "../src/index.js";
+import {
+  ErrorStatusCode,
+  type IndividualUpdatableSettings,
+} from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -44,7 +47,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update localizedAttributes to valid value`, async () => {
       const client = await getClient(permission);
-      const newLocalizedAttributes: IndividualSettings["localizedAttributes"] =
+      const newLocalizedAttributes: IndividualUpdatableSettings["localizedAttributes"] =
         [{ attributePatterns: ["title"], locales: ["eng"] }];
       await client
         .index(index.uid)
@@ -72,7 +75,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update localizedAttributes with invalid value`, async () => {
       const client = await getClient(permission);
       const newLocalizedAttributes =
-        "hello" as unknown as IndividualSettings["localizedAttributes"]; // bad localizedAttributes value
+        "hello" as unknown as IndividualUpdatableSettings["localizedAttributes"]; // bad localizedAttributes value
 
       await expect(
         client
@@ -86,7 +89,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Reset localizedAttributes`, async () => {
       const client = await getClient(permission);
-      const newLocalizedAttributes: IndividualSettings["localizedAttributes"] =
+      const newLocalizedAttributes: IndividualUpdatableSettings["localizedAttributes"] =
         [];
       await client
         .index(index.uid)

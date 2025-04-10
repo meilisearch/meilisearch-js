@@ -20,7 +20,7 @@ import type {
   IndexObject,
   IndexOptions,
   IndexStats,
-  IndividualSettings,
+  IndividualUpdatableSettings,
   RawDocumentAdditionOptions,
   RecordAny,
   ResourceResults,
@@ -550,15 +550,17 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-pagination-settings} */
-  async getPagination(): Promise<IndividualSettings["pagination"]> {
-    return await this.httpRequest.get<IndividualSettings["pagination"]>({
+  async getPagination(): Promise<IndividualUpdatableSettings["pagination"]> {
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["pagination"]
+    >({
       path: `indexes/${this.uid}/settings/pagination`,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-pagination-settings} */
   updatePagination(
-    pagination: IndividualSettings["pagination"],
+    pagination: IndividualUpdatableSettings["pagination"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/pagination`,
@@ -578,15 +580,15 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-synonyms} */
-  async getSynonyms(): Promise<IndividualSettings["synonyms"]> {
-    return await this.httpRequest.get<IndividualSettings["synonyms"]>({
+  async getSynonyms(): Promise<IndividualUpdatableSettings["synonyms"]> {
+    return await this.httpRequest.get<IndividualUpdatableSettings["synonyms"]>({
       path: `indexes/${this.uid}/settings/synonyms`,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-synonyms} */
   updateSynonyms(
-    synonyms: IndividualSettings["synonyms"],
+    synonyms: IndividualUpdatableSettings["synonyms"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/synonyms`,
@@ -606,15 +608,17 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-stop-words} */
-  async getStopWords(): Promise<IndividualSettings["stopWords"]> {
-    return await this.httpRequest.get<IndividualSettings["stopWords"]>({
-      path: `indexes/${this.uid}/settings/stop-words`,
-    });
+  async getStopWords(): Promise<IndividualUpdatableSettings["stopWords"]> {
+    return await this.httpRequest.get<IndividualUpdatableSettings["stopWords"]>(
+      {
+        path: `indexes/${this.uid}/settings/stop-words`,
+      },
+    );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-stop-words} */
   updateStopWords(
-    stopWords: IndividualSettings["stopWords"],
+    stopWords: IndividualUpdatableSettings["stopWords"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/stop-words`,
@@ -634,15 +638,19 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-ranking-rules} */
-  async getRankingRules(): Promise<IndividualSettings["rankingRules"]> {
-    return await this.httpRequest.get<IndividualSettings["rankingRules"]>({
+  async getRankingRules(): Promise<
+    IndividualUpdatableSettings["rankingRules"]
+  > {
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["rankingRules"]
+    >({
       path: `indexes/${this.uid}/settings/ranking-rules`,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-ranking-rules} */
   updateRankingRules(
-    rankingRules: IndividualSettings["rankingRules"],
+    rankingRules: IndividualUpdatableSettings["rankingRules"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/ranking-rules`,
@@ -663,16 +671,18 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-distinct-attribute} */
   async getDistinctAttribute(): Promise<
-    IndividualSettings["distinctAttribute"]
+    IndividualUpdatableSettings["distinctAttribute"]
   > {
-    return await this.httpRequest.get<IndividualSettings["distinctAttribute"]>({
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["distinctAttribute"]
+    >({
       path: `indexes/${this.uid}/settings/distinct-attribute`,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-distinct-attribute} */
   updateDistinctAttribute(
-    distinctAttribute: IndividualSettings["distinctAttribute"],
+    distinctAttribute: IndividualUpdatableSettings["distinctAttribute"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/distinct-attribute`,
@@ -693,10 +703,10 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-filterable-attributes} */
   async getFilterableAttributes(): Promise<
-    IndividualSettings["filterableAttributes"]
+    IndividualUpdatableSettings["filterableAttributes"]
   > {
     return await this.httpRequest.get<
-      IndividualSettings["filterableAttributes"]
+      IndividualUpdatableSettings["filterableAttributes"]
     >({
       path: `indexes/${this.uid}/settings/filterable-attributes`,
     });
@@ -704,7 +714,7 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-filterable-attributes} */
   updateFilterableAttributes(
-    filterableAttributes: IndividualSettings["filterableAttributes"],
+    filterableAttributes: IndividualUpdatableSettings["filterableAttributes"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/filterable-attributes`,
@@ -725,18 +735,18 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-sortable-attributes} */
   async getSortableAttributes(): Promise<
-    IndividualSettings["sortableAttributes"]
+    IndividualUpdatableSettings["sortableAttributes"]
   > {
-    return await this.httpRequest.get<IndividualSettings["sortableAttributes"]>(
-      {
-        path: `indexes/${this.uid}/settings/sortable-attributes`,
-      },
-    );
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["sortableAttributes"]
+    >({
+      path: `indexes/${this.uid}/settings/sortable-attributes`,
+    });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-sortable-attributes} */
   updateSortableAttributes(
-    sortableAttributes: IndividualSettings["sortableAttributes"],
+    sortableAttributes: IndividualUpdatableSettings["sortableAttributes"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/sortable-attributes`,
@@ -757,10 +767,10 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-searchable-attributes} */
   async getSearchableAttributes(): Promise<
-    IndividualSettings["searchableAttributes"]
+    IndividualUpdatableSettings["searchableAttributes"]
   > {
     return await this.httpRequest.get<
-      IndividualSettings["searchableAttributes"]
+      IndividualUpdatableSettings["searchableAttributes"]
     >({
       path: `indexes/${this.uid}/settings/searchable-attributes`,
     });
@@ -768,7 +778,7 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-searchable-attributes} */
   updateSearchableAttributes(
-    searchableAttributes: IndividualSettings["searchableAttributes"],
+    searchableAttributes: IndividualUpdatableSettings["searchableAttributes"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/searchable-attributes`,
@@ -789,10 +799,10 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-displayed-attributes} */
   async getDisplayedAttributes(): Promise<
-    IndividualSettings["displayedAttributes"]
+    IndividualUpdatableSettings["displayedAttributes"]
   > {
     return await this.httpRequest.get<
-      IndividualSettings["displayedAttributes"]
+      IndividualUpdatableSettings["displayedAttributes"]
     >({
       path: `indexes/${this.uid}/settings/displayed-attributes`,
     });
@@ -800,7 +810,7 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-displayed-attributes} */
   updateDisplayedAttributes(
-    displayedAttributes: IndividualSettings["displayedAttributes"],
+    displayedAttributes: IndividualUpdatableSettings["displayedAttributes"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/displayed-attributes`,
@@ -820,15 +830,19 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-typo-tolerance-settings} */
-  async getTypoTolerance(): Promise<IndividualSettings["typoTolerance"]> {
-    return await this.httpRequest.get<IndividualSettings["typoTolerance"]>({
+  async getTypoTolerance(): Promise<
+    IndividualUpdatableSettings["typoTolerance"]
+  > {
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["typoTolerance"]
+    >({
       path: `indexes/${this.uid}/settings/typo-tolerance`,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-typo-tolerance-settings} */
   updateTypoTolerance(
-    typoTolerance: IndividualSettings["typoTolerance"],
+    typoTolerance: IndividualUpdatableSettings["typoTolerance"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/typo-tolerance`,
@@ -848,15 +862,15 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-faceting-settings} */
-  async getFaceting(): Promise<IndividualSettings["faceting"]> {
-    return await this.httpRequest.get<IndividualSettings["faceting"]>({
+  async getFaceting(): Promise<IndividualUpdatableSettings["faceting"]> {
+    return await this.httpRequest.get<IndividualUpdatableSettings["faceting"]>({
       path: `indexes/${this.uid}/settings/faceting`,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-faceting-settings} */
   updateFaceting(
-    faceting: IndividualSettings["faceting"],
+    faceting: IndividualUpdatableSettings["faceting"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/faceting`,
@@ -876,15 +890,19 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-separator-tokens} */
-  async getSeparatorTokens(): Promise<IndividualSettings["separatorTokens"]> {
-    return await this.httpRequest.get<IndividualSettings["separatorTokens"]>({
+  async getSeparatorTokens(): Promise<
+    IndividualUpdatableSettings["separatorTokens"]
+  > {
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["separatorTokens"]
+    >({
       path: `indexes/${this.uid}/settings/separator-tokens`,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-separator-tokens} */
   updateSeparatorTokens(
-    separatorTokens: IndividualSettings["separatorTokens"],
+    separatorTokens: IndividualUpdatableSettings["separatorTokens"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/separator-tokens`,
@@ -905,18 +923,18 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-non-separator-tokens} */
   async getNonSeparatorTokens(): Promise<
-    IndividualSettings["nonSeparatorTokens"]
+    IndividualUpdatableSettings["nonSeparatorTokens"]
   > {
-    return await this.httpRequest.get<IndividualSettings["nonSeparatorTokens"]>(
-      {
-        path: `indexes/${this.uid}/settings/non-separator-tokens`,
-      },
-    );
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["nonSeparatorTokens"]
+    >({
+      path: `indexes/${this.uid}/settings/non-separator-tokens`,
+    });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-non-separator-tokens} */
   updateNonSeparatorTokens(
-    nonSeparatorTokens: IndividualSettings["nonSeparatorTokens"],
+    nonSeparatorTokens: IndividualUpdatableSettings["nonSeparatorTokens"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/non-separator-tokens`,
@@ -936,15 +954,17 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-dictionary} */
-  async getDictionary(): Promise<IndividualSettings["dictionary"]> {
-    return await this.httpRequest.get<IndividualSettings["dictionary"]>({
+  async getDictionary(): Promise<IndividualUpdatableSettings["dictionary"]> {
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["dictionary"]
+    >({
       path: `indexes/${this.uid}/settings/dictionary`,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-dictionary} */
   updateDictionary(
-    dictionary: IndividualSettings["dictionary"],
+    dictionary: IndividualUpdatableSettings["dictionary"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/dictionary`,
@@ -965,18 +985,18 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-proximity-precision-settings} */
   async getProximityPrecision(): Promise<
-    IndividualSettings["proximityPrecision"]
+    IndividualUpdatableSettings["proximityPrecision"]
   > {
-    return await this.httpRequest.get<IndividualSettings["proximityPrecision"]>(
-      {
-        path: `indexes/${this.uid}/settings/proximity-precision`,
-      },
-    );
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["proximityPrecision"]
+    >({
+      path: `indexes/${this.uid}/settings/proximity-precision`,
+    });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-proximity-precision-settings} */
   updateProximityPrecision(
-    proximityPrecision: IndividualSettings["proximityPrecision"],
+    proximityPrecision: IndividualUpdatableSettings["proximityPrecision"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/proximity-precision`,
@@ -996,15 +1016,17 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-embedder-settings} */
-  async getEmbedders(): Promise<IndividualSettings["embedders"]> {
-    return await this.httpRequest.get<IndividualSettings["embedders"]>({
-      path: `indexes/${this.uid}/settings/embedders`,
-    });
+  async getEmbedders(): Promise<IndividualUpdatableSettings["embedders"]> {
+    return await this.httpRequest.get<IndividualUpdatableSettings["embedders"]>(
+      {
+        path: `indexes/${this.uid}/settings/embedders`,
+      },
+    );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-embedder-settings} */
   updateEmbedders(
-    embedders: IndividualSettings["embedders"],
+    embedders: IndividualUpdatableSettings["embedders"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/embedders`,
@@ -1024,15 +1046,19 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-search-cutoff} */
-  async getSearchCutoffMs(): Promise<IndividualSettings["searchCutoffMs"]> {
-    return await this.httpRequest.get<IndividualSettings["searchCutoffMs"]>({
+  async getSearchCutoffMs(): Promise<
+    IndividualUpdatableSettings["searchCutoffMs"]
+  > {
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["searchCutoffMs"]
+    >({
       path: `indexes/${this.uid}/settings/search-cutoff-ms`,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-search-cutoff} */
   updateSearchCutoffMs(
-    searchCutoffMs: IndividualSettings["searchCutoffMs"],
+    searchCutoffMs: IndividualUpdatableSettings["searchCutoffMs"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/search-cutoff-ms`,
@@ -1053,10 +1079,10 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-localized-attributes-settings} */
   async getLocalizedAttributes(): Promise<
-    IndividualSettings["localizedAttributes"]
+    IndividualUpdatableSettings["localizedAttributes"]
   > {
     return await this.httpRequest.get<
-      IndividualSettings["localizedAttributes"]
+      IndividualUpdatableSettings["localizedAttributes"]
     >({
       path: `indexes/${this.uid}/settings/localized-attributes`,
     });
@@ -1064,7 +1090,7 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-localized-attribute-settings} */
   updateLocalizedAttributes(
-    localizedAttributes: IndividualSettings["localizedAttributes"],
+    localizedAttributes: IndividualUpdatableSettings["localizedAttributes"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/localized-attributes`,
@@ -1084,15 +1110,17 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-facet-search-settings} */
-  async getFacetSearch(): Promise<IndividualSettings["facetSearch"]> {
-    return await this.httpRequest.get<IndividualSettings["facetSearch"]>({
+  async getFacetSearch(): Promise<IndividualUpdatableSettings["facetSearch"]> {
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["facetSearch"]
+    >({
       path: `indexes/${this.uid}/settings/facet-search`,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-facet-search-settings} */
   updateFacetSearch(
-    facetSearch: IndividualSettings["facetSearch"],
+    facetSearch: IndividualUpdatableSettings["facetSearch"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/facet-search`,
@@ -1112,15 +1140,19 @@ export class Index<T extends RecordAny = RecordAny> {
   ///
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#get-prefix-search-settings} */
-  async getPrefixSearch(): Promise<IndividualSettings["prefixSearch"]> {
-    return await this.httpRequest.get<IndividualSettings["prefixSearch"]>({
+  async getPrefixSearch(): Promise<
+    IndividualUpdatableSettings["prefixSearch"]
+  > {
+    return await this.httpRequest.get<
+      IndividualUpdatableSettings["prefixSearch"]
+    >({
       path: `indexes/${this.uid}/settings/prefix-search`,
     });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#update-prefix-search-settings} */
   updatePrefixSearch(
-    prefixSearch: IndividualSettings["prefixSearch"],
+    prefixSearch: IndividualUpdatableSettings["prefixSearch"],
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/prefix-search`,

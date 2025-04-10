@@ -6,7 +6,7 @@ import {
   afterAll,
   beforeAll,
 } from "vitest";
-import { ErrorStatusCode, type Faceting } from "../src/index.js";
+import { ErrorStatusCode, type FacetingSettings } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -45,7 +45,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update faceting settings`, async () => {
       const client = await getClient(permission);
-      const newFaceting: Faceting = {
+      const newFaceting: FacetingSettings = {
         maxValuesPerFacet: 12,
         sortFacetValuesBy: { test: "count" },
       };
