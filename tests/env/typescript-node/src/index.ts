@@ -27,7 +27,7 @@ const client = new MeiliSearch(config)
 const indexUid = "movies"
 
 ;(async () => {
-  await client.deleteIndex(indexUid).waitTask()
+  await client.index(indexUid).deleteIndex().waitTask()
   await client.createIndex({ uid: indexUid }).waitTask()
 
   const index = client.index(indexUid)
@@ -62,5 +62,5 @@ const indexUid = "movies"
 
   console.log(await generateTenantToken({ apiKey: config.apiKey, apiKeyUid: 'e489fe16-3381-431b-bee3-00430192915d' }))
 
-  await client.deleteIndex(indexUid).waitTask()
+  await client.index(indexUid).deleteIndex().waitTask()
 })()

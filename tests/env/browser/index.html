@@ -41,7 +41,7 @@
       searchDiv.innerHTML = JSON.stringify(search)
       document.body.insertBefore(searchDiv, document.querySelector("#content"));
 
-      await client.deleteIndex(UID).waitTask()
+      await client.index(UID).deleteIndex().waitTask()
     } catch (e) {
       console.error(e);
     }

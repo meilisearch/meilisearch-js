@@ -48,6 +48,8 @@ import type {
   PrefixSearch,
   RecordAny,
   EnqueuedTaskPromise,
+  IndexView,
+  UpdateIndexRequest,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -183,6 +185,28 @@ export class Index<T extends RecordAny = RecordAny> {
       path: `indexes/${this.#uid}/similar`,
       body: params,
     });
+  }
+
+  ///
+  /// INDEX
+  ///
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#get-one-index} */
+  async getIndex(): Promise<IndexView> {
+    return await this.httpRequest.get({ path: `indexes/${this.#uid}` });
+  }
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#update-an-index} */
+  updateIndex(updateIndexRequest?: UpdateIndexRequest): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.patch({
+      path: `indexes/${this.#uid}`,
+      body: updateIndexRequest,
+    });
+  }
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#delete-an-index} */
+  deleteIndex(): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.delete({ path: `indexes/${this.#uid}` });
   }
 
   ///

@@ -546,7 +546,7 @@ describe.each([
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient("Master");
-    await masterClient.deleteIndex(index.uid).waitTask();
+    await masterClient.index(index.uid).deleteIndex().waitTask();
     await expect(
       client.index(index.uid).searchGet("prince"),
     ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INDEX_NOT_FOUND);

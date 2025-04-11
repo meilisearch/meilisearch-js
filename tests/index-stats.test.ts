@@ -5,7 +5,7 @@ const INDEX_UID = "stats-index";
 const client = await getClient("Master");
 
 afterAll(async () => {
-  await client.deleteIndex(INDEX_UID).waitTask();
+  await client.index(INDEX_UID).deleteIndex().waitTask();
 });
 
 test("getStats method", async () => {

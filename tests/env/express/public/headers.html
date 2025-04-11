@@ -40,7 +40,7 @@
     errorDiv.innerHTML = error
     document.body.insertBefore(errorDiv, document.querySelector("#content"));
 
-    await client.deleteIndex(UID).waitTask()
+    await client.index(UID).deleteIndex().waitTask()
   })()
 
 

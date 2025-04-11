@@ -14,8 +14,8 @@ test.concurrent("index method", () => {
 
 afterAll(async () => {
   await Promise.all([
-    client.deleteIndex(MY_INDEX_ONE).waitTask(),
-    client.deleteIndex(MY_INDEX_TWO).waitTask(),
+    client.index(MY_INDEX_ONE).deleteIndex().waitTask(),
+    client.index(MY_INDEX_TWO).deleteIndex().waitTask(),
   ]);
 });
 
@@ -23,8 +23,9 @@ test("createIndex and getIndex method", async () => {
   const primaryKey = "objectID";
   await client.createIndex({ uid: MY_INDEX_ONE, primaryKey }).waitTask();
 
-  const { createdAt, updatedAt, ...myIndex } =
-    await client.getIndex(MY_INDEX_ONE);
+  const { createdAt, updatedAt, ...myIndex } = await client
+    .index(MY_INDEX_ONE)
+    .getIndex();
 
   assert.deepEqual(myIndex, {
     primaryKey,
@@ -36,13 +37,10 @@ test("createIndex and getIndex method", async () => {
 
 test("updateIndex method", async () => {
   const primaryKey = "id";
-  await client.updateIndex(MY_INDEX_ONE, { primaryKey }).waitTask();
+  const index = client.index(MY_INDEX_ONE);
+  await index.updateIndex({ primaryKey }).waitTask();
 
-  const {
-    createdAt: _ca,
-    updatedAt: _ua,
-    ...myIndex
-  } = await client.getIndex(MY_INDEX_ONE);
+  const { createdAt: _ca, updatedAt: _ua, ...myIndex } = await index.getIndex();
 
   assert.deepEqual(myIndex, {
     primaryKey,
@@ -52,7 +50,8 @@ test("updateIndex method", async () => {
 
 test("deleteIndex method", async () => {
   const { indexUid, status, type } = await client
-    .deleteIndex(MY_INDEX_ONE)
+    .index(MY_INDEX_ONE)
+    .deleteIndex()
     .waitTask();
 
   assert.deepEqual(

@@ -48,6 +48,6 @@
     }
     searchDiv.innerHTML = content
     document.body.insertBefore(searchDiv, document.querySelector("#content"));
-    await client.deleteIndex(UID).waitTask()
+    await client.index(UID).deleteIndex().waitTask()
   })()
 </script>

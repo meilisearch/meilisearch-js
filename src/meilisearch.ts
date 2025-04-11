@@ -26,9 +26,7 @@ import type {
   RecordAny,
   IndexViewList,
   ListIndexes,
-  IndexView,
   IndexCreateRequest,
-  UpdateIndexRequest,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -85,13 +83,6 @@ export class MeiliSearch {
     return new Index<T>(this.config, indexUid);
   }
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#get-one-index} */
-  async getIndex(indexUid: string): Promise<IndexView> {
-    return await this.httpRequest.get({
-      path: `indexes/${indexUid}`,
-    });
-  }
-
   /** {@link https://www.meilisearch.com/docs/reference/api/indexes#list-all-indexes} */
   async getIndexes(listIndexes?: ListIndexes): Promise<IndexViewList> {
     return await this.httpRequest.get({
@@ -105,24 +96,6 @@ export class MeiliSearch {
     return this.#httpRequestsWithTask.post({
       path: "indexes",
       body: indexCreateRequest,
-    });
-  }
-
-  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#update-an-index} */
-  updateIndex(
-    indexUid: string,
-    updateIndexRequest?: UpdateIndexRequest,
-  ): EnqueuedTaskPromise {
-    return this.#httpRequestsWithTask.patch({
-      path: `indexes/${indexUid}`,
-      body: updateIndexRequest,
-    });
-  }
-
-  /** {@link https://www.meilisearch.com/docs/reference/api/indexes#delete-an-index} */
-  deleteIndex(indexUid: string): EnqueuedTaskPromise {
-    return this.#httpRequestsWithTask.delete({
-      path: `indexes/${indexUid}`,
     });
   }
 

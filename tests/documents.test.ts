@@ -399,7 +399,7 @@ describe("Documents tests", () => {
         };
         await client.index(indexNoPk.uid).addDocuments([doc]).waitTask();
 
-        const index = await client.getIndex(indexNoPk.uid);
+        const index = await client.index(indexNoPk.uid).getIndex();
 
         expect(index).toHaveProperty("primaryKey", "_id");
       });
@@ -412,7 +412,7 @@ describe("Documents tests", () => {
         };
         await client.index(indexNoPk.uid).addDocuments([doc]).waitTask();
 
-        const index = await client.getIndex(indexNoPk.uid);
+        const index = await client.index(indexNoPk.uid).getIndex();
 
         expect(index).toHaveProperty("primaryKey", "findmeid");
       });
@@ -428,7 +428,7 @@ describe("Documents tests", () => {
           .index(indexNoPk.uid)
           .addDocuments([doc])
           .waitTask();
-        const index = await client.getIndex(indexNoPk.uid);
+        const index = await client.index(indexNoPk.uid).getIndex();
 
         expect(task.error?.code).toEqual(
           "index_primary_key_multiple_candidates_found",
@@ -446,7 +446,7 @@ describe("Documents tests", () => {
           .index(indexNoPk.uid)
           .addDocuments([doc])
           .waitTask();
-        const index = await client.getIndex(indexNoPk.uid);
+        const index = await client.index(indexNoPk.uid).getIndex();
 
         expect(task.error?.code).toEqual(
           "index_primary_key_no_candidate_found",
@@ -623,7 +623,7 @@ describe("Documents tests", () => {
           .addDocuments(docs, { primaryKey: "unique" })
           .waitTask();
 
-        const response = await client.getIndex(pkIndex);
+        const response = await client.index(pkIndex).getIndex();
         expect(response).toHaveProperty("uid", pkIndex);
         expect(response).toHaveProperty("primaryKey", "unique");
       });
@@ -659,7 +659,7 @@ describe("Documents tests", () => {
           ])
           .waitTask();
 
-        const index = await client.getIndex(indexNoPk.uid);
+        const index = await client.index(indexNoPk.uid).getIndex();
 
         expect(index.uid).toEqual(indexNoPk.uid);
         expect(index.primaryKey).toEqual(null);
