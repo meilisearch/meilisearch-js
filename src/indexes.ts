@@ -571,8 +571,13 @@ export class Index<T extends RecordAny = RecordAny> {
     });
   }
 
-  // TODO: Doc
   readonly #setting: SettingFns;
+
+  /**
+   * Contains the get, update and reset functions for every individual setting.
+   *
+   * @see {@link https://www.meilisearch.com/docs/reference/api/settings}
+   */
   get setting() {
     return this.#setting;
   }

@@ -6,11 +6,12 @@ import type {
   RecordAny,
 } from "./types/index.js";
 
-/** Each setting mapped to their REST method required for updates. */
+/** Each setting property mapped to their REST method required for updates. */
 type MakeSettingsRecord = {
   [TKey in keyof IndividualUpdatableSettings]: "put" | "patch";
 };
 
+/** Each setting property mapped to its get, update and reset functions. */
 export type SettingFns = {
   [TKey in keyof IndividualUpdatableSettings as `get${Capitalize<TKey>}`]: () => Promise<
     IndividualUpdatableSettings[TKey]
@@ -31,7 +32,7 @@ function camelToKebabCase(str: string): string {
   return str.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 }
 
-// TODO: Doc
+/** Returns an object containing all the setting functions. */
 export function makeSettingFns(
   httpRequest: HttpRequests,
   httpRequestsWithTask: HttpRequestsWithEnqueuedTaskPromise,
