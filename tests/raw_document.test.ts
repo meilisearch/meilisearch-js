@@ -4,7 +4,7 @@ import {
   config,
   getClient,
 } from "./utils/meilisearch-test-utils.js";
-import { ContentTypeEnum } from "../src/types/index.js";
+import { ContentTypeEnum } from "../src/index.js";
 
 beforeEach(() => clearAllIndexes(config));
 

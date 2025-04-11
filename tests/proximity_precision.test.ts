@@ -26,7 +26,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default proximity precision`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getProximityPrecision();
+      const response = await client
+        .index(index.uid)
+        .setting.getProximityPrecision();
 
       expect(response).toEqual("byWord");
     });
@@ -36,10 +38,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newProximityPrecision = "byAttribute";
       await client
         .index(index.uid)
-        .updateProximityPrecision(newProximityPrecision)
+        .setting.updateProximityPrecision(newProximityPrecision)
         .waitTask();
 
-      const response = await client.index(index.uid).getProximityPrecision();
+      const response = await client
+        .index(index.uid)
+        .setting.getProximityPrecision();
 
       expect(response).toEqual(newProximityPrecision);
     });
@@ -49,19 +53,26 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newProximityPrecision = "byWord";
       await client
         .index(index.uid)
-        .updateProximityPrecision(newProximityPrecision)
+        .setting.updateProximityPrecision(newProximityPrecision)
         .waitTask();
 
-      const response = await client.index(index.uid).getProximityPrecision();
+      const response = await client
+        .index(index.uid)
+        .setting.getProximityPrecision();
 
       expect(response).toEqual(newProximityPrecision);
     });
 
     test(`${permission} key: Reset proximity precision`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).resetProximityPrecision().waitTask();
+      await client
+        .index(index.uid)
+        .setting.resetProximityPrecision()
+        .waitTask();
 
-      const response = await client.index(index.uid).getProximityPrecision();
+      const response = await client
+        .index(index.uid)
+        .setting.getProximityPrecision();
 
       expect(response).toEqual("byWord");
     });
@@ -78,7 +89,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getProximityPrecision(),
+      client.index(index.uid).setting.getProximityPrecision(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -90,7 +101,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateProximityPrecision("byAttribute"),
+      client.index(index.uid).setting.updateProximityPrecision("byAttribute"),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -102,7 +113,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetProximityPrecision(),
+      client.index(index.uid).setting.resetProximityPrecision(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

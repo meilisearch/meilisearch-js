@@ -19,7 +19,7 @@ const { MeiliSearch } = require('../../../dist/cjs/index.cjs')
   ]
 
   // If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
-  await index.updateFilterableAttributes([
+  await index.setting.updateFilterableAttributes([
     'director',
     'genres',
     'id'

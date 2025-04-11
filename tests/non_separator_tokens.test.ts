@@ -26,7 +26,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default non separator tokens`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getNonSeparatorTokens();
+      const response = await client
+        .index(index.uid)
+        .setting.getNonSeparatorTokens();
 
       expect(response).toEqual([]);
     });
@@ -36,10 +38,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newNonSeparatorTokens = ["&sep", "/", "|"];
       await client
         .index(index.uid)
-        .updateNonSeparatorTokens(newNonSeparatorTokens)
+        .setting.updateNonSeparatorTokens(newNonSeparatorTokens)
         .waitTask();
 
-      const response = await client.index(index.uid).getNonSeparatorTokens();
+      const response = await client
+        .index(index.uid)
+        .setting.getNonSeparatorTokens();
 
       expect(response).toEqual(newNonSeparatorTokens);
     });
@@ -49,19 +53,26 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const newNonSeparatorTokens = null;
       await client
         .index(index.uid)
-        .updateNonSeparatorTokens(newNonSeparatorTokens)
+        .setting.updateNonSeparatorTokens(newNonSeparatorTokens)
         .waitTask();
 
-      const response = await client.index(index.uid).getNonSeparatorTokens();
+      const response = await client
+        .index(index.uid)
+        .setting.getNonSeparatorTokens();
 
       expect(response).toEqual([]);
     });
 
     test(`${permission} key: Reset NonSeparator tokens`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).resetNonSeparatorTokens().waitTask();
+      await client
+        .index(index.uid)
+        .setting.resetNonSeparatorTokens()
+        .waitTask();
 
-      const response = await client.index(index.uid).getNonSeparatorTokens();
+      const response = await client
+        .index(index.uid)
+        .setting.getNonSeparatorTokens();
 
       expect(response).toEqual([]);
     });
@@ -78,7 +89,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getNonSeparatorTokens(),
+      client.index(index.uid).setting.getNonSeparatorTokens(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -90,7 +101,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateNonSeparatorTokens([]),
+      client.index(index.uid).setting.updateNonSeparatorTokens([]),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -102,7 +113,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetNonSeparatorTokens(),
+      client.index(index.uid).setting.resetNonSeparatorTokens(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

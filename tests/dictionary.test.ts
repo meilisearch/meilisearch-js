@@ -26,7 +26,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default dictionary`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getDictionary();
+      const response = await client.index(index.uid).setting.getDictionary();
 
       expect(response).toEqual([]);
     });
@@ -34,9 +34,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update dictionary`, async () => {
       const client = await getClient(permission);
       const newDictionary = ["J. K.", "J. R. R."];
-      await client.index(index.uid).updateDictionary(newDictionary).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateDictionary(newDictionary)
+        .waitTask();
 
-      const response = await client.index(index.uid).getDictionary();
+      const response = await client.index(index.uid).setting.getDictionary();
 
       expect(response).toEqual(newDictionary);
     });
@@ -44,18 +47,21 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update dictionary with null value`, async () => {
       const client = await getClient(permission);
       const newDictionary = null;
-      await client.index(index.uid).updateDictionary(newDictionary).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateDictionary(newDictionary)
+        .waitTask();
 
-      const response = await client.index(index.uid).getDictionary();
+      const response = await client.index(index.uid).setting.getDictionary();
 
       expect(response).toEqual([]);
     });
 
     test(`${permission} key: Reset dictionary`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).resetDictionary().waitTask();
+      await client.index(index.uid).setting.resetDictionary().waitTask();
 
-      const response = await client.index(index.uid).getDictionary();
+      const response = await client.index(index.uid).setting.getDictionary();
 
       expect(response).toEqual([]);
     });
@@ -72,7 +78,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).getDictionary(),
+      client.index(index.uid).setting.getDictionary(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -84,7 +90,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateDictionary([]),
+      client.index(index.uid).setting.updateDictionary([]),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -96,7 +102,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetDictionary(),
+      client.index(index.uid).setting.resetDictionary(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,

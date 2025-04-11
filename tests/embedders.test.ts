@@ -1,5 +1,5 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
-import type { Embedders } from "../src/types/index.js";
+import type { IndividualUpdatableSettings } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -61,14 +61,14 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Get default embedders`, async () => {
       const client = await getClient(permission);
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual({});
     });
 
     test(`${permission} key: Update embedders with 'userProvided' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
         default: {
           source: "userProvided",
           dimensions: 1,
@@ -79,9 +79,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual(newEmbedder);
       expect(response).not.toHaveProperty("documentTemplateMaxBytes");
@@ -89,7 +92,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'openAi' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
         default: {
           source: "openAi",
           apiKey: "<your-OpenAI-API-key>",
@@ -106,9 +109,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -120,7 +126,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'huggingFace' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
         default: {
           source: "huggingFace",
           model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
@@ -136,17 +142,17 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       };
       await client
         .index(index.uid)
-        .updateEmbedders(newEmbedder)
+        .setting.updateEmbedders(newEmbedder)
         .waitTask({ timeout: 60_000 });
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual(newEmbedder);
     });
 
     test(`${permission} key: Update embedders with 'rest' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
         default: {
           source: "rest",
           url: "https://api.openai.com/v1/embeddings",
@@ -177,9 +183,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -191,7 +200,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'ollama' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
         default: {
           source: "ollama",
           url: "http://localhost:11434/api/embeddings",
@@ -207,9 +216,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           binaryQuantized: false,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual({
         default: {
@@ -222,24 +234,27 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update embedders with a specific name`, async () => {
       const client = await getClient(permission);
 
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
         image: {
           source: "userProvided",
           dimensions: 512,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual(newEmbedder);
     });
 
     test(`${permission} key: Reset embedders`, async () => {
       const client = await getClient(permission);
-      await client.index(index.uid).resetEmbedders().waitTask();
+      await client.index(index.uid).setting.resetEmbedders().waitTask();
 
-      const response = await client.index(index.uid).getEmbedders();
+      const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual({});
     });
@@ -249,7 +264,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await client
         .index(index.uid)
-        .updateEmbedders({
+        .setting.updateEmbedders({
           default: {
             source: "userProvided",
             dimensions: 1,
@@ -278,7 +293,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await client
         .index(index.uid)
-        .updateEmbedders({
+        .setting.updateEmbedders({
           default: {
             source: "userProvided",
             dimensions: 1,
@@ -303,13 +318,16 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: search for similar documents`, async () => {
       const client = await getClient(permission);
 
-      const newEmbedder: Embedders = {
+      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
         manual: {
           source: "userProvided",
           dimensions: 3,
         },
       };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+      await client
+        .index(index.uid)
+        .setting.updateEmbedders(newEmbedder)
+        .waitTask();
 
       await client
         .index(index.uid)
@@ -339,7 +357,9 @@ describe.each([
     const route = `indexes/${index.uid}/settings/embedders`;
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
-    await expect(client.index(index.uid).getEmbedders()).rejects.toHaveProperty(
+    await expect(
+      client.index(index.uid).setting.getEmbedders(),
+    ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
@@ -350,7 +370,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).updateEmbedders({}),
+      client.index(index.uid).setting.updateEmbedders({}),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
@@ -362,7 +382,7 @@ describe.each([
     const client = new MeiliSearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
-      client.index(index.uid).resetEmbedders(),
+      client.index(index.uid).setting.resetEmbedders(),
     ).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
