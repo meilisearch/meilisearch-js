@@ -74,7 +74,7 @@ describe.each([{ permission: "Search" }])(
     beforeEach(async () => {
       await clearAllIndexes(config);
       const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex({ uid: index.uid }).waitTask();
     });
 
     test(`${permission} key: try to get displayed attributes and be denied`, async () => {
@@ -106,7 +106,7 @@ describe.each([{ permission: "No" }])(
     beforeEach(async () => {
       await clearAllIndexes(config);
       const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex({ uid: index.uid }).waitTask();
     });
 
     test(`${permission} key: try to get displayed attributes and be denied`, async () => {

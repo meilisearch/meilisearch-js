@@ -79,11 +79,11 @@ async function getClient(permission: string): Promise<MeiliSearch> {
 
 const clearAllIndexes = async (config: Config): Promise<void> => {
   const client = new MeiliSearch(config);
-  const { results } = await client.getRawIndexes();
+  const { results } = await client.getIndexes();
 
   await Promise.all(
     results.map((v) =>
-      client.index(v.uid).delete().waitTask({ timeout: 60_000 }),
+      client.index(v.uid).deleteIndex().waitTask({ timeout: 60_000 }),
     ),
   );
 };

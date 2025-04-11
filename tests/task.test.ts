@@ -31,7 +31,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex({ uid: index.uid }).waitTask();
     });
 
     test(`${permission} key: Get one enqueued task`, async () => {
@@ -92,7 +92,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       await client.index(index.uid).addDocuments([{ id: 1 }]);
       await client.index(index.uid).deleteDocument(1);
-      await client.createIndex(index2.uid);
+      await client.createIndex({ uid: index2.uid });
 
       const tasks = await client.tasks.getTasks({
         types: ["documentAdditionOrUpdate", "documentDeletion"],
