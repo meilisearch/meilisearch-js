@@ -257,7 +257,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         })
         .waitTask();
 
-      const response = await client.index(index.uid).search("", {
+      const response = await client.index(index.uid).search({
+        q: "",
         vector: [1],
         hybrid: {
           embedder: "default",
@@ -286,7 +287,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         })
         .waitTask();
 
-      const response = await client.index(index.uid).searchGet("", {
+      const response = await client.index(index.uid).searchGet({
+        q: "",
         vector: [1],
         hybridEmbedder: "default",
         hybridSemanticRatio: 1.0,

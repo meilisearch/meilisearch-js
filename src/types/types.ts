@@ -4,8 +4,24 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^5.8.2
 
-import type { ResourceQuery, ResourceResults } from "./resources.js";
+import type { FilterExpression } from "./search-parameters.js";
 import type { RecordAny } from "./shared.js";
+
+///
+/// Resources
+///
+
+type Pagination = {
+  offset?: number;
+  limit?: number;
+};
+
+export type ResourceQuery = Pagination & {};
+
+export type ResourceResults<T> = Pagination & {
+  results: T;
+  total: number;
+};
 
 ///
 /// Indexes
@@ -55,7 +71,7 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
 
 export type DocumentsQuery<T = RecordAny> = ResourceQuery & {
   fields?: Fields<T>;
-  filter?: Filter;
+  filter?: FilterExpression;
   limit?: number;
   offset?: number;
   retrieveVectors?: boolean;
@@ -66,7 +82,7 @@ export type DocumentQuery<T = RecordAny> = {
 };
 
 export type DocumentsDeletionQuery = {
-  filter: Filter;
+  filter: FilterExpression;
 };
 
 export type DocumentsIds = string[] | number[];
@@ -186,6 +202,13 @@ export type PaginationSettings = {
 
 export type SearchCutoffMs = number | null;
 
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#locales}
+ *
+ * @see `meilisearch_types::locales::Locale`
+ */
+export type Locale = string;
+
 export type LocalizedAttribute = {
   attributePatterns: string[];
   locales: Locale[];
@@ -226,6 +249,11 @@ export type Settings = {
    */
   prefixSearch?: "indexingTime" | "disabled";
 };
+
+/** 
+ * @see `fieldDistribution` at {@link https://www.meilisearch.com/docs/reference/api/stats#stats-object}
+ * @see `milli::FieldDistribution` */
+export type FieldDistribution = Record<string, number>;
 
 /*
  *** HEALTH

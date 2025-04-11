@@ -1,4 +1,5 @@
 import type { RecordAny } from "./shared.js";
+import type { FieldDistribution } from "./types.js";
 
 /** @see `milli::search::new::matches::MatchBounds` */
 export type MatchBounds = { start: number; length: number; indices: number[] };
@@ -14,6 +15,11 @@ export type SearchHit<T extends RecordAny = RecordAny> = T & {
   _rankingScoreDetails?: RecordAny;
 };
 
+/**
+ * @remarks
+ * This is an untyped structure in the source code.
+ * @see `meilisearch::search::federated::perform::SearchByIndex::execute`
+ */
 export type FederationDetails = {
   indexUid: string;
   queriesPosition: number;
@@ -48,7 +54,7 @@ type ProcessingTime = { processingTimeMs: number };
 
 type SearchResultCore = {
   query: string;
-  facetDistribution?: Record<string, Record<string, number>>;
+  facetDistribution?: Record<string, FieldDistribution>;
   facetStats?: Record<string, FacetStats>;
   semanticHitCount?: number;
 } & ProcessingTime;
@@ -68,8 +74,9 @@ export type SearchResult<T extends RecordAny = RecordAny> =
  *
  * @see `meilisearch::search::federated::types::FederatedSearchResult`
  */
-export type FederatedSearchResult<T extends RecordAny = RecordAny> =
-  SearchResultCore & { hits: FederatedSearchHit<T>[] } & OffsetLimit;
+export type FederatedSearchResult = SearchResultCore & {
+  hits: FederatedSearchHit<Record<string, unknown>>[];
+} & OffsetLimit;
 
 type SearchResultIndex = { indexUid: string };
 
@@ -90,13 +97,13 @@ export type SearchResultWithIndex<T extends RecordAny = RecordAny> =
  *
  * @see `meilisearch::routes::multi_search::SearchResults`
  */
-export type SearchResults<T extends RecordAny = RecordAny> = {
-  results: SearchResultWithIndex<T>[];
+export type SearchResults = {
+  results: SearchResultWithIndex<Record<string, unknown>>[];
 };
 
-export type SearchResultsOrFederatedSearchResult<
-  T extends RecordAny = RecordAny,
-> = SearchResults<T> | FederatedSearchResult<T>;
+export type SearchResultsOrFederatedSearchResult =
+  | SearchResults
+  | FederatedSearchResult;
 
 /** @see `milli::search::facet::search::FacetValueHit` */
 export type FacetValueHit = { value: string; count: number };

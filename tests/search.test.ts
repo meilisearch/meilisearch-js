@@ -7,11 +7,7 @@ import {
   beforeAll,
   vi,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types/index.js";
-import type {
-  FederatedMultiSearchParams,
-  MultiSearchParams,
-} from "../src/types/index.js";
+import { ErrorStatusCode, type MatchingStrategy } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -174,14 +170,7 @@ describe.each([
   test(`${permission} key: Multi index search with one query`, async () => {
     const client = await getClient(permission);
 
-    type MyIndex = {
-      id: 1;
-    };
-
-    const response = await client.multiSearch<
-      MultiSearchParams,
-      MyIndex & Books
-    >({
+    const response = await client.multiSearch({
       queries: [{ indexUid: index.uid, q: "prince" }],
     });
 
@@ -193,10 +182,7 @@ describe.each([
   test(`${permission} key: Multi index search with federation`, async () => {
     const client = await getClient(permission);
 
-    const response1 = await client.multiSearch<
-      FederatedMultiSearchParams,
-      Books | { id: number; asd: string }
-    >({
+    const response1 = await client.multiSearch({
       federation: {},
       queries: [
         { indexUid: index.uid, q: "456", attributesToSearchOn: ["id"] },
@@ -259,10 +245,7 @@ describe.each([
 
     const searchClient = await getClient(permission);
 
-    const response = await searchClient.multiSearch<
-      FederatedMultiSearchParams,
-      Books | { id: number; asd: string }
-    >({
+    const response = await searchClient.multiSearch({
       federation: {},
       queries: [
         {
@@ -304,10 +287,7 @@ describe.each([
     await masterClient.index("movies").addDocuments(movies).waitTask();
 
     // Make a multi search on both indexes with facetsByIndex
-    const response = await client.multiSearch<
-      FederatedMultiSearchParams,
-      Books | Movies
-    >({
+    const response = await client.multiSearch({
       federation: {
         limit: 20,
         offset: 0,

@@ -38,8 +38,7 @@ export async function getAllHits(element: HTMLDivElement): Promise<void> {
 
 export async function getSearchResponse(element: HTMLDivElement) {
   const params: Parameters<Index["search"]> = [
-    "philoudelphia",
-    { attributesToHighlight: ["title"] },
+    { q: "philoudelphia", attributesToHighlight: ["title"] },
   ];
 
   const response = await client.index(indexUid).search(...params);

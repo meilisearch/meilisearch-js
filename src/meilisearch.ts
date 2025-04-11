@@ -27,6 +27,10 @@ import type {
   KeysResults,
   KeyCreation,
   KeyUpdate,
+  FederatedSearchResult,
+  FederatedSearch,
+  MultiSearch,
+  SearchResults,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -37,7 +41,6 @@ import {
 } from "./task.js";
 import { BatchClient } from "./batch.js";
 import type { MeiliSearchApiError } from "./errors/index.js";
-import type { FederatedSearchFn, MultiSearchFn } from "./types/functions.js";
 
 export class MeiliSearch {
   config: Config;
@@ -213,27 +216,25 @@ export class MeiliSearch {
   /// Multi Search
   ///
 
-  async #multiSearch<T extends RecordAny>(
+  /** {@link https://www.meilisearch.com/docs/reference/api/multi_search} */
+  multiSearch(
+    queries: MultiSearch,
+    init?: ExtraRequestInit,
+  ): Promise<SearchResults>;
+  multiSearch(
+    queries: FederatedSearch,
+    init?: ExtraRequestInit,
+  ): Promise<FederatedSearchResult>;
+  async multiSearch(
     queries: MultiSearchOrFederatedSearch,
     init?: ExtraRequestInit,
-  ) {
-    return await this.httpRequest.post<SearchResultsOrFederatedSearchResult<T>>(
-      {
-        path: "multi-search",
-        body: queries,
-        extraRequestInit: init,
-      },
-    );
+  ): Promise<SearchResultsOrFederatedSearchResult> {
+    return await this.httpRequest.post({
+      path: "multi-search",
+      body: queries,
+      extraRequestInit: init,
+    });
   }
-
-  // TODO: There's still the problem of generic T not accepting multiple indexes
-  // TODO: Could make this more generic, by mapping query parameters to responses,
-  //       but since we have a required generic as well, it's not possible
-  /** {@link https://www.meilisearch.com/docs/reference/api/multi_search} */
-  readonly multiSearch = this.#multiSearch.bind(this) as MultiSearchFn;
-
-  /** {@link https://www.meilisearch.com/docs/reference/api/multi_search} */
-  readonly federatedSearch = this.#multiSearch.bind(this) as FederatedSearchFn;
 
   ///
   ///  Network

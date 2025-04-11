@@ -47,6 +47,7 @@ import type {
   SimilarResult,
   EnqueuedTaskPromise,
   ConditionalSearchResult,
+  ResourceResults,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -87,7 +88,7 @@ export class Index<T extends RecordAny = RecordAny> {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/search} */
   async search<U extends SearchQuery>(
-    searchQuery: U,
+    searchQuery?: U,
     init?: ExtraRequestInit,
   ): Promise<ConditionalSearchResult<U, T>> {
     return await this.httpRequest.post({
@@ -271,7 +272,7 @@ export class Index<T extends RecordAny = RecordAny> {
       : // Else use `GET /documents` method
         await this.httpRequest.get<ResourceResults<D[]>>({
           path: relativeBaseURL,
-          params,
+          params: params as Omit<typeof params, "filter">,
         });
   }
 

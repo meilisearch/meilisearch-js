@@ -1,4 +1,5 @@
-import type { NonNullKeys, RequiredKeys } from "./shared.js";
+import type { NonNullKeys, PascalToCamelCase, RequiredKeys } from "./shared.js";
+import type { Locale } from "./types.js";
 
 /** @see `meilisearch::search::HybridQuery` */
 export type HybridQuery = {
@@ -11,7 +12,7 @@ export type HybridQuery = {
  *
  * @see `meilisearch::search::MatchingStrategy`
  */
-export type MatchingStrategy = "last" | "all" | "frequency";
+export type MatchingStrategy = PascalToCamelCase<"Last" | "All" | "Frequency">;
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/multi_search#federationoptions}
@@ -39,9 +40,12 @@ export type Pagination = {
   hitsPerPage?: number | null;
 };
 
+/** {@link https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference} */
+export type FilterExpression = string | (string | string[])[];
+
 type FirstPartOfFacetAndSearchQuerySegment = {
   /** {@link https://www.meilisearch.com/docs/reference/api/search#filter} */
-  filter?: string | (string | string[])[] | null;
+  filter?: FilterExpression | null;
   /** {@link https://www.meilisearch.com/docs/reference/api/search#ranking-score-threshold} */
   rankingScoreThreshold?: number | null;
 };
@@ -58,7 +62,7 @@ type FacetAndSearchQuerySegment = {
   /** {@link https://www.meilisearch.com/docs/reference/api/search#customize-attributes-to-search-on-at-search-time} */
   attributesToSearchOn?: string[] | null;
   /** {@link https://www.meilisearch.com/docs/reference/api/search#query-locales} */
-  locales?: string[] | null;
+  locales?: Locale[] | null;
 } & FirstPartOfFacetAndSearchQuerySegment;
 
 type FirstPartOfSearchQueryCore = {
@@ -111,7 +115,7 @@ export type SearchQueryWithRequiredPagination = RequiredKeys<
   "page"
 >;
 
-export type RequiredPagination = RequiredKeys<Pagination, "page">;
+// export type RequiredPagination = RequiredKeys<Pagination, "page">;
 
 /** @see `meilisearch::search::SearchQuery` */
 export type SearchQuery =
