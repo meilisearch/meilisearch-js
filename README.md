@@ -262,7 +262,7 @@ await index.search(
 To enable filtering, you must first add your attributes to the [`filterableAttributes` index setting](https://www.meilisearch.com/docs/reference/api/settings#filterable-attributes).
 
 ```js
-await index.updateFilterableAttributes([
+await index.setting.updateFilterableAttributes([
     'id',
     'genres'
   ])
@@ -710,19 +710,19 @@ client.index('myIndex').resetSettings(): Promise<EnqueuedTask>
 #### [Get pagination](https://www.meilisearch.com/docs/reference/api/settings#get-pagination-settings)
 
 ```ts
-client.index('myIndex').getPagination(): Promise<PaginationSettings>
+client.index('myIndex').setting.getPagination(): Promise<PaginationSettings>
 ```
 
 #### [Update pagination](https://www.meilisearch.com/docs/reference/api/settings#update-pagination-settings)
 
 ```ts
-client.index('myIndex').updatePagination(pagination: PaginationSettings): Promise<EnqueuedTask>
+client.index('myIndex').setting.updatePagination(pagination: PaginationSettings): Promise<EnqueuedTask>
 ```
 
 #### [Reset pagination](https://www.meilisearch.com/docs/reference/api/settings#reset-pagination-settings)
 
 ```ts
-client.index('myIndex').resetPagination(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetPagination(): Promise<EnqueuedTask>
 ```
 
 ### Synonyms <!-- omit in toc -->
@@ -730,19 +730,19 @@ client.index('myIndex').resetPagination(): Promise<EnqueuedTask>
 #### [Get synonyms](https://www.meilisearch.com/docs/reference/api/settings#get-synonyms)
 
 ```ts
-client.index('myIndex').getSynonyms(): Promise<Synonyms>
+client.index('myIndex').setting.getSynonyms(): Promise<Synonyms>
 ```
 
 #### [Update synonyms](https://www.meilisearch.com/docs/reference/api/settings#update-synonyms)
 
 ```ts
-client.index('myIndex').updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateSynonyms(synonyms: Synonyms): Promise<EnqueuedTask>
 ```
 
 #### [Reset synonyms](https://www.meilisearch.com/docs/reference/api/settings#reset-synonyms)
 
 ```ts
-client.index('myIndex').resetSynonyms(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetSynonyms(): Promise<EnqueuedTask>
 ```
 
 ### Stop words <!-- omit in toc -->
@@ -750,19 +750,19 @@ client.index('myIndex').resetSynonyms(): Promise<EnqueuedTask>
 #### [Get stop words](https://www.meilisearch.com/docs/reference/api/settings#get-stop-words)
 
 ```ts
-client.index('myIndex').getStopWords(): Promise<string[]>
+client.index('myIndex').setting.getStopWords(): Promise<string[]>
 ```
 
 #### [Update stop words](https://www.meilisearch.com/docs/reference/api/settings#update-stop-words)
 
 ```ts
-client.index('myIndex').updateStopWords(stopWords: string[] | null ): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateStopWords(stopWords: string[] | null ): Promise<EnqueuedTask>
 ```
 
 #### [Reset stop words](https://www.meilisearch.com/docs/reference/api/settings#reset-stop-words)
 
 ```ts
-client.index('myIndex').resetStopWords(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetStopWords(): Promise<EnqueuedTask>
 ```
 
 ### Ranking rules <!-- omit in toc -->
@@ -770,19 +770,19 @@ client.index('myIndex').resetStopWords(): Promise<EnqueuedTask>
 #### [Get ranking rules](https://www.meilisearch.com/docs/reference/api/settings#get-ranking-rules)
 
 ```ts
-client.index('myIndex').getRankingRules(): Promise<string[]>
+client.index('myIndex').setting.getRankingRules(): Promise<string[]>
 ```
 
 #### [Update ranking rules](https://www.meilisearch.com/docs/reference/api/settings#update-ranking-rules)
 
 ```ts
-client.index('myIndex').updateRankingRules(rankingRules: string[] | null): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateRankingRules(rankingRules: string[] | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset ranking rules](https://www.meilisearch.com/docs/reference/api/settings#reset-ranking-rules)
 
 ```ts
-client.index('myIndex').resetRankingRules(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetRankingRules(): Promise<EnqueuedTask>
 ```
 
 ### Distinct Attribute <!-- omit in toc -->
@@ -790,19 +790,19 @@ client.index('myIndex').resetRankingRules(): Promise<EnqueuedTask>
 #### [Get distinct attribute](https://www.meilisearch.com/docs/reference/api/settings#get-distinct-attribute)
 
 ```ts
-client.index('myIndex').getDistinctAttribute(): Promise<string | void>
+client.index('myIndex').setting.getDistinctAttribute(): Promise<string | void>
 ```
 
 #### [Update distinct attribute](https://www.meilisearch.com/docs/reference/api/settings#update-distinct-attribute)
 
 ```ts
-client.index('myIndex').updateDistinctAttribute(distinctAttribute: string | null): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateDistinctAttribute(distinctAttribute: string | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset distinct attribute](https://www.meilisearch.com/docs/reference/api/settings#reset-distinct-attribute)
 
 ```ts
-client.index('myIndex').resetDistinctAttribute(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetDistinctAttribute(): Promise<EnqueuedTask>
 ```
 
 ### Searchable attributes <!-- omit in toc -->
@@ -810,19 +810,19 @@ client.index('myIndex').resetDistinctAttribute(): Promise<EnqueuedTask>
 #### [Get searchable attributes](https://www.meilisearch.com/docs/reference/api/settings#get-searchable-attributes)
 
 ```ts
-client.index('myIndex').getSearchableAttributes(): Promise<string[]>
+client.index('myIndex').setting.getSearchableAttributes(): Promise<string[]>
 ```
 
 #### [Update searchable attributes](https://www.meilisearch.com/docs/reference/api/settings#update-searchable-attributes)
 
 ```ts
-client.index('myIndex').updateSearchableAttributes(searchableAttributes: string[] | null): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateSearchableAttributes(searchableAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset searchable attributes](https://www.meilisearch.com/docs/reference/api/settings#reset-searchable-attributes)
 
 ```ts
-client.index('myIndex').resetSearchableAttributes(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetSearchableAttributes(): Promise<EnqueuedTask>
 ```
 
 ### Displayed attributes <!-- omit in toc -->
@@ -830,19 +830,19 @@ client.index('myIndex').resetSearchableAttributes(): Promise<EnqueuedTask>
 #### [Get displayed attributes](https://www.meilisearch.com/docs/reference/api/settings#get-displayed-attributes)
 
 ```ts
-client.index('myIndex').getDisplayedAttributes(): Promise<string[]>
+client.index('myIndex').setting.getDisplayedAttributes(): Promise<string[]>
 ```
 
 #### [Update displayed attributes](https://www.meilisearch.com/docs/reference/api/settings#update-displayed-attributes)
 
 ```ts
-client.index('myIndex').updateDisplayedAttributes(displayedAttributes: string[] | null): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateDisplayedAttributes(displayedAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset displayed attributes](https://www.meilisearch.com/docs/reference/api/settings#reset-displayed-attributes)
 
 ```ts
-client.index('myIndex').resetDisplayedAttributes(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetDisplayedAttributes(): Promise<EnqueuedTask>
 ```
 
 ### Filterable attributes <!-- omit in toc -->
@@ -850,19 +850,19 @@ client.index('myIndex').resetDisplayedAttributes(): Promise<EnqueuedTask>
 #### [Get filterable attributes](https://www.meilisearch.com/docs/reference/api/settings#get-filterable-attributes)
 
 ```ts
-client.index('myIndex').getFilterableAttributes(): Promise<string[]>
+client.index('myIndex').setting.getFilterableAttributes(): Promise<string[]>
 ```
 
 #### [Update filterable attributes](https://www.meilisearch.com/docs/reference/api/settings#update-filterable-attributes)
 
 ```ts
-client.index('myIndex').updateFilterableAttributes(filterableAttributes: string[] | null): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateFilterableAttributes(filterableAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset filterable attributes](https://www.meilisearch.com/docs/reference/api/settings#reset-filterable-attributes)
 
 ```ts
-client.index('myIndex').resetFilterableAttributes(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetFilterableAttributes(): Promise<EnqueuedTask>
 ```
 
 ### Sortable attributes <!-- omit in toc -->
@@ -870,19 +870,19 @@ client.index('myIndex').resetFilterableAttributes(): Promise<EnqueuedTask>
 #### [Get sortable attributes](https://www.meilisearch.com/docs/reference/api/settings#get-sortable-attributes)
 
 ```ts
-client.index('myIndex').getSortableAttributes(): Promise<string[]>
+client.index('myIndex').setting.getSortableAttributes(): Promise<string[]>
 ```
 
 #### [Update sortable attributes](https://www.meilisearch.com/docs/reference/api/settings#update-sortable-attributes)
 
 ```ts
-client.index('myIndex').updateSortableAttributes(sortableAttributes: string[] | null): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateSortableAttributes(sortableAttributes: string[] | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset sortable attributes](https://www.meilisearch.com/docs/reference/api/settings#reset-sortable-attributes)
 
 ```ts
-client.index('myIndex').resetSortableAttributes(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetSortableAttributes(): Promise<EnqueuedTask>
 ```
 
 ### Faceting <!-- omit in toc -->
@@ -890,19 +890,19 @@ client.index('myIndex').resetSortableAttributes(): Promise<EnqueuedTask>
 #### [Get faceting](https://www.meilisearch.com/docs/reference/api/settings#get-faceting-settings)
 
 ```ts
-client.index('myIndex').getFaceting(): Promise<Faceting>
+client.index('myIndex').setting.getFaceting(): Promise<Faceting>
 ```
 
 #### [Update faceting](https://www.meilisearch.com/docs/reference/api/settings#update-faceting-settings)
 
 ```ts
-client.index('myIndex').updateFaceting(faceting: Faceting): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateFaceting(faceting: Faceting): Promise<EnqueuedTask>
 ```
 
 #### [Reset faceting](https://www.meilisearch.com/docs/reference/api/settings#reset-faceting-settings)
 
 ```ts
-client.index('myIndex').resetFaceting(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetFaceting(): Promise<EnqueuedTask>
 ```
 
 ### Typo tolerance <!-- omit in toc -->
@@ -910,19 +910,19 @@ client.index('myIndex').resetFaceting(): Promise<EnqueuedTask>
 #### [Get typo tolerance](https://www.meilisearch.com/docs/reference/api/settings#get-typo-tolerance-settings)
 
 ```ts
-client.index('myIndex').getTypoTolerance(): Promise<TypoTolerance>
+client.index('myIndex').setting.getTypoTolerance(): Promise<TypoTolerance>
 ```
 
 #### [Update typo tolerance](https://www.meilisearch.com/docs/reference/api/settings#update-typo-tolerance-settings)
 
 ```ts
-client.index('myIndex').updateTypoTolerance(typoTolerance: TypoTolerance | null): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateTypoTolerance(typoTolerance: TypoTolerance | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset typo tolerance](https://www.meilisearch.com/docs/reference/api/settings#reset-typo-tolerance-settings)
 
 ```ts
-client.index('myIndex').resetTypoTolerance(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetTypoTolerance(): Promise<EnqueuedTask>
 ```
 
 
@@ -931,19 +931,19 @@ client.index('myIndex').resetTypoTolerance(): Promise<EnqueuedTask>
 #### [Get separator tokens](https://www.meilisearch.com/docs/reference/api/settings#get-separator-tokens)
 
 ```ts
-client.index('myIndex').getSeparatorTokens(): Promise<SeparatorTokens>
+client.index('myIndex').setting.getSeparatorTokens(): Promise<SeparatorTokens>
 ```
 
 #### [Update separator tokens](https://www.meilisearch.com/docs/reference/api/settings#update-separator-tokens)
 
 ```ts
-client.index('myIndex').updateSeparatorTokens(separatorTokens: SeparatorTokens | null): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateSeparatorTokens(separatorTokens: SeparatorTokens | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset separator tokens](https://www.meilisearch.com/docs/reference/api/settings#reset-separator-tokens)
 
 ```ts
-client.index('myIndex').resetSeparatorTokens(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetSeparatorTokens(): Promise<EnqueuedTask>
 ```
 
 ### Non Separator tokens <!-- omit in toc -->
@@ -951,19 +951,19 @@ client.index('myIndex').resetSeparatorTokens(): Promise<EnqueuedTask>
 #### [Get non separator tokens](https://www.meilisearch.com/docs/reference/api/settings#get-non-separator-tokens)
 
 ```ts
-client.index('myIndex').getNonSeparatorTokens(): Promise<NonSeparatorTokens>
+client.index('myIndex').setting.getNonSeparatorTokens(): Promise<NonSeparatorTokens>
 ```
 
 #### [Update non separator tokens](https://www.meilisearch.com/docs/reference/api/settings#update-non-separator-tokens)
 
 ```ts
-client.index('myIndex').updateNonSeparatorTokens(nonSeparatorTokens: NonSeparatorTokens | null): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateNonSeparatorTokens(nonSeparatorTokens: NonSeparatorTokens | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset non separator tokens](https://www.meilisearch.com/docs/reference/api/settings#reset-non-separator-tokens)
 
 ```ts
-client.index('myIndex').resetNonSeparatorTokens(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetNonSeparatorTokens(): Promise<EnqueuedTask>
 ```
 
 ### Dictionary <!-- omit in toc -->
@@ -971,19 +971,19 @@ client.index('myIndex').resetNonSeparatorTokens(): Promise<EnqueuedTask>
 #### [Get dictionary](https://www.meilisearch.com/docs/reference/api/settings#get-dictionary)
 
 ```ts
-client.index('myIndex').getDictionary(): Promise<Dictionary>
+client.index('myIndex').setting.getDictionary(): Promise<Dictionary>
 ```
 
 #### [Update dictionary](https://www.meilisearch.com/docs/reference/api/settings#update-dictionary)
 
 ```ts
-client.index('myIndex').updateDictionary(dictionary: Dictionary | null): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateDictionary(dictionary: Dictionary | null): Promise<EnqueuedTask>
 ```
 
 #### [Reset dictionary](https://www.meilisearch.com/docs/reference/api/settings#reset-dictionary)
 
 ```ts
-client.index('myIndex').resetDictionary(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetDictionary(): Promise<EnqueuedTask>
 ```
 
 ### Proximity Precision <!-- omit in toc -->
@@ -991,19 +991,19 @@ client.index('myIndex').resetDictionary(): Promise<EnqueuedTask>
 #### [Get proximity precision](https://www.meilisearch.com/docs/reference/api/settings#get-proximity-precision-settings)
 
 ```ts
-client.index('myIndex').getProximityPrecision(): Promise<ProximityPrecision>
+client.index('myIndex').setting.getProximityPrecision(): Promise<ProximityPrecision>
 ```
 
 #### [Update proximity precision](https://www.meilisearch.com/docs/reference/api/settings#update-proximity-precision-settings)
 
 ```ts
-client.index('myIndex').updateProximityPrecision(proximityPrecision: ProximityPrecision): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateProximityPrecision(proximityPrecision: ProximityPrecision): Promise<EnqueuedTask>
 ```
 
 #### [Reset proximity precision](https://www.meilisearch.com/docs/reference/api/settings#reset-proximity-precision-settings)
 
 ```ts
-client.index('myIndex').resetProximityPrecision(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetProximityPrecision(): Promise<EnqueuedTask>
 ```
 
 ### Facet search settings <!-- omit in toc -->
@@ -1011,19 +1011,19 @@ client.index('myIndex').resetProximityPrecision(): Promise<EnqueuedTask>
 #### [Get facet search settings](https://www.meilisearch.com/docs/reference/api/settings#get-facet-search-settings)
 
 ```ts
-client.index('myIndex').getFacetSearch(): Promise<boolean>
+client.index('myIndex').setting.getFacetSearch(): Promise<boolean>
 ```
 
 #### [Update facet search settings](https://www.meilisearch.com/docs/reference/api/settings#update-facet-search-settings)
 
 ```ts
-client.index('myIndex').updateFacetSearch(enabled: boolean): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateFacetSearch(enabled: boolean): Promise<EnqueuedTask>
 ```
 
 #### [Reset facet search settings](https://www.meilisearch.com/docs/reference/api/settings#reset-facet-search-settings)
 
 ```ts
-client.index('myIndex').resetFacetSearch(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetFacetSearch(): Promise<EnqueuedTask>
 ```
 
 ### Prefix search settings <!-- omit in toc -->
@@ -1031,19 +1031,19 @@ client.index('myIndex').resetFacetSearch(): Promise<EnqueuedTask>
 #### [Get prefix search settings](https://www.meilisearch.com/docs/reference/api/settings#get-prefix-search-settings)
 
 ```ts
-client.index('myIndex').getPrefixSearch(): Promise<PrefixSearch>
+client.index('myIndex').setting.getPrefixSearch(): Promise<PrefixSearch>
 ```
 
 #### [Update prefix search settings](https://www.meilisearch.com/docs/reference/api/settings#update-prefix-search-settings)
 
 ```ts
-client.index('myIndex').updatePrefixSearch(prefixSearch: PrefixSearch): Promise<EnqueuedTask>
+client.index('myIndex').setting.updatePrefixSearch(prefixSearch: PrefixSearch): Promise<EnqueuedTask>
 ```
 
 #### [Reset prefix search settings](https://www.meilisearch.com/docs/reference/api/settings#reset-prefix-search-settings)
 
 ```ts
-client.index('myIndex').resetPrefixSearch(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetPrefixSearch(): Promise<EnqueuedTask>
 ```
 
 ### Embedders <!-- omit in toc -->
@@ -1051,19 +1051,19 @@ client.index('myIndex').resetPrefixSearch(): Promise<EnqueuedTask>
 #### Get embedders
 
 ```ts
-client.index('myIndex').getEmbedders(): Promise<Embedders>
+client.index('myIndex').setting.getEmbedders(): Promise<Embedders>
 ```
 
 #### Update embedders
 
 ```ts
-client.index('myIndex').updateEmbedders(embedders: Embedders): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateEmbedders(embedders: Embedders): Promise<EnqueuedTask>
 ```
 
 #### Reset embedders
 
 ```ts
-client.index('myIndex').resetEmbedders(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetEmbedders(): Promise<EnqueuedTask>
 ```
 
 ### SearchCutoffMs <!-- omit in toc -->
@@ -1071,19 +1071,19 @@ client.index('myIndex').resetEmbedders(): Promise<EnqueuedTask>
 #### [Get SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#get-search-cutoff)
 
 ```ts
-client.index('myIndex').getSearchCutoffMs(): Promise<SearchCutoffMs>
+client.index('myIndex').setting.getSearchCutoffMs(): Promise<SearchCutoffMs>
 ```
 
 #### [Update SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#update-search-cutoff)
 
 ```ts
-client.index('myIndex').updateSearchCutoffMs(searchCutoffMs: SearchCutoffMs): Promise<EnqueuedTask>
+client.index('myIndex').setting.updateSearchCutoffMs(searchCutoffMs: SearchCutoffMs): Promise<EnqueuedTask>
 ```
 
 #### [Reset SearchCutoffMs](https://www.meilisearch.com/docs/reference/api/settings#reset-search-cutoff)
 
 ```ts
-client.index('myIndex').resetSearchCutoffMs(): Promise<EnqueuedTask>
+client.index('myIndex').setting.resetSearchCutoffMs(): Promise<EnqueuedTask>
 ```
 
 ### Keys <!-- omit in toc -->
