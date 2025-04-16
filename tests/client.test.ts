@@ -8,8 +8,8 @@ import {
   type MockInstance,
   beforeAll,
 } from "vitest";
-import type { Health, Version, Stats, IndexSwap } from "../src/index.js";
-import { ErrorStatusCode, MeiliSearchRequestError } from "../src/index.js";
+import type { IndexSwap } from "../src/index.js";
+import { MeiliSearchRequestError } from "../src/index.js";
 import { PACKAGE_VERSION } from "../src/package-version.js";
 import {
   clearAllIndexes,
@@ -436,7 +436,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
         await expect(client.getIndex("does_not_exist")).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.INDEX_NOT_FOUND,
+          "index_not_found",
         );
       });
 
@@ -506,7 +506,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         const index = client.index(indexPk.uid);
         await expect(index.getRawInfo()).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.INDEX_NOT_FOUND,
+          "index_not_found",
         );
       });
 
@@ -546,9 +546,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         const resolvedTask = await client.swapIndexes(swaps).waitTask();
 
         expect(resolvedTask.type).toEqual("indexSwap");
-        expect(resolvedTask.error?.code).toEqual(
-          ErrorStatusCode.INDEX_NOT_FOUND,
-        );
+        expect(resolvedTask.error?.code).toEqual("index_not_found");
         expect(resolvedTask.details!.swaps).toEqual(swaps);
       });
 
@@ -560,7 +558,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
         await expect(client.swapIndexes(swaps)).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.INVALID_SWAP_DUPLICATE_INDEX_FOUND,
+          "invalid_swap_duplicate_index_found",
         );
       });
     });
@@ -568,7 +566,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     describe("Test on base routes", () => {
       test(`${permission} key: get health`, async () => {
         const client = await getClient(permission);
-        const response: Health = await client.health();
+        const response = await client.health();
         expect(response).toHaveProperty(
           "status",
           expect.stringMatching("available"),
@@ -589,7 +587,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       test(`${permission} key: get version`, async () => {
         const client = await getClient(permission);
-        const response: Version = await client.getVersion();
+        const response = await client.getVersion();
         expect(response).toHaveProperty("commitSha", expect.any(String));
         expect(response).toHaveProperty("commitDate", expect.any(String));
         expect(response).toHaveProperty("pkgVersion", expect.any(String));
@@ -597,7 +595,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       test(`${permission} key: get /stats information`, async () => {
         const client = await getClient(permission);
-        const response: Stats = await client.getStats();
+        const response = await client.getStats();
         expect(response).toHaveProperty("databaseSize", expect.any(Number));
         expect(response).toHaveProperty("usedDatabaseSize", expect.any(Number));
         expect(response).toHaveProperty("lastUpdate"); // TODO: Could be null, find out why
@@ -619,7 +617,7 @@ describe.each([{ permission: "Search" }])(
         const client = await getClient(permission);
         await expect(client.getIndexes()).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.INVALID_API_KEY,
+          "invalid_api_key",
         );
       });
 
@@ -629,14 +627,14 @@ describe.each([{ permission: "Search" }])(
           client.createIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           }),
-        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", "invalid_api_key");
       });
 
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.INVALID_API_KEY,
+          "invalid_api_key",
         );
       });
 
@@ -644,7 +642,7 @@ describe.each([{ permission: "Search" }])(
         const client = await getClient(permission);
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.INVALID_API_KEY,
+          "invalid_api_key",
         );
       });
 
@@ -654,14 +652,14 @@ describe.each([{ permission: "Search" }])(
           client.updateIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           }),
-        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", "invalid_api_key");
       });
     });
 
     describe("Test on misc client methods", () => {
       test(`${permission} key: get health`, async () => {
         const client = await getClient(permission);
-        const response: Health = await client.health();
+        const response = await client.health();
         expect(response).toHaveProperty(
           "status",
           expect.stringMatching("available"),
@@ -672,7 +670,7 @@ describe.each([{ permission: "Search" }])(
         const client = await getClient(permission);
         await expect(client.getVersion()).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.INVALID_API_KEY,
+          "invalid_api_key",
         );
       });
 
@@ -680,7 +678,7 @@ describe.each([{ permission: "Search" }])(
         const client = await getClient(permission);
         await expect(client.getStats()).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.INVALID_API_KEY,
+          "invalid_api_key",
         );
       });
     });
@@ -699,7 +697,7 @@ describe.each([{ permission: "No" }])(
         const client = await getClient(permission);
         await expect(client.getIndexes()).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+          "missing_authorization_header",
         );
       });
 
@@ -709,17 +707,14 @@ describe.each([{ permission: "No" }])(
           client.createIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           }),
-        ).rejects.toHaveProperty(
-          "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-        );
+        ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
       });
 
       test(`${permission} key: try to create Index with NO primary key and be denied`, async () => {
         const client = await getClient(permission);
         await expect(client.createIndex(indexNoPk.uid)).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+          "missing_authorization_header",
         );
       });
 
@@ -727,7 +722,7 @@ describe.each([{ permission: "No" }])(
         const client = await getClient(permission);
         await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+          "missing_authorization_header",
         );
       });
 
@@ -737,17 +732,14 @@ describe.each([{ permission: "No" }])(
           client.updateIndex(indexPk.uid, {
             primaryKey: indexPk.primaryKey,
           }),
-        ).rejects.toHaveProperty(
-          "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-        );
+        ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
       });
     });
 
     describe("Test on misc client methods", () => {
       test(`${permission} key: get health`, async () => {
         const client = await getClient(permission);
-        const response: Health = await client.health();
+        const response = await client.health();
         expect(response).toHaveProperty(
           "status",
           expect.stringMatching("available"),
@@ -758,7 +750,7 @@ describe.each([{ permission: "No" }])(
         const client = await getClient(permission);
         await expect(client.getVersion()).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+          "missing_authorization_header",
         );
       });
 
@@ -766,7 +758,7 @@ describe.each([{ permission: "No" }])(
         const client = await getClient(permission);
         await expect(client.getStats()).rejects.toHaveProperty(
           "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+          "missing_authorization_header",
         );
       });
     });

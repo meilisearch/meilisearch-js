@@ -6,7 +6,7 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode, type SearchCutoffMs } from "../src/index.js";
+import type { SearchCutoffMs } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -76,7 +76,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         client.index(index.uid).updateSearchCutoffMs(newSearchCutoffMs),
       ).rejects.toHaveProperty(
         "cause.code",
-        ErrorStatusCode.INVALID_SETTINGS_SEARCH_CUTOFF_MS,
+        "invalid_settings_search_cutoff_ms",
       );
     });
 
@@ -108,21 +108,21 @@ describe.each([{ permission: "Search" }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getSearchCutoffMs(),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 
     test(`${permission} key: try to update searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateSearchCutoffMs(100),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 
     test(`${permission} key: try to reset searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetSearchCutoffMs(),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
   },
 );
@@ -139,30 +139,21 @@ describe.each([{ permission: "No" }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getSearchCutoffMs(),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-      );
+      ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
     });
 
     test(`${permission} key: try to update searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateSearchCutoffMs(100),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-      );
+      ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
     });
 
     test(`${permission} key: try to reset searchCutoffMs and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetSearchCutoffMs(),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-      );
+      ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
     });
   },
 );

@@ -7,7 +7,7 @@ import {
   beforeAll,
   vi,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types/index.js";
+import { MatchingStrategies } from "../src/types/index.js";
 import type {
   FederatedMultiSearchParams,
   MultiSearchParams,
@@ -1251,7 +1251,7 @@ describe.each([
 
     await expect(
       client.index(index.uid).search("prince", {}),
-    ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INDEX_NOT_FOUND);
+    ).rejects.toHaveProperty("cause.code", "index_not_found");
   });
 });
 
@@ -1267,17 +1267,14 @@ describe.each([{ permission: "No" }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).search("prince"),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-      );
+      ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
     });
 
     test(`${permission} key: Try multi search and be denied`, async () => {
       const client = await getClient(permission);
       await expect(client.multiSearch({ queries: [] })).rejects.toHaveProperty(
         "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+        "missing_authorization_header",
       );
     });
   },
