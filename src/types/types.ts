@@ -183,6 +183,11 @@ export type Crop = {
 // `facetName` becomes mandatory when using `searchForFacetValues`
 export type SearchForFacetValuesParams = Omit<SearchParams, "facetName"> & {
   facetName: string;
+  /**
+   * If true, the facet search will return the exhaustive count of the facet
+   * values.
+   */
+  exhaustiveFacetCount?: boolean;
 };
 
 export type FacetHit = {
@@ -467,6 +472,7 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
 };
 
 export type DocumentsQuery<T = RecordAny> = ResourceQuery & {
+  ids?: string[] | number[];
   fields?: Fields<T>;
   filter?: Filter;
   limit?: number;
@@ -494,7 +500,17 @@ export type UpdateDocumentsByFunctionOptions = {
  ** Settings
  */
 
-export type FilterableAttributes = string[] | null;
+type GranularFilterableAttribute = {
+  attributePatterns: string[];
+  features: {
+    facetSearch: boolean;
+    filter: { equality: boolean; comparison: boolean };
+  };
+};
+
+export type FilterableAttributes =
+  | (string | GranularFilterableAttribute)[]
+  | null;
 export type DistinctAttribute = string | null;
 export type SearchableAttributes = string[] | null;
 export type SortableAttributes = string[] | null;
@@ -539,6 +555,7 @@ export type HuggingFaceEmbedder = {
   revision?: string;
   documentTemplate?: string;
   distribution?: Distribution;
+  pooling?: "useModel" | "forceMean" | "forceCls";
   documentTemplateMaxBytes?: number;
   binaryQuantized?: boolean;
 };
@@ -576,12 +593,19 @@ export type OllamaEmbedder = {
   binaryQuantized?: boolean;
 };
 
+export type CompositeEmbedder = {
+  source: "composite";
+  searchEmbedder: Embedder;
+  indexingEmbedder: Embedder;
+};
+
 export type Embedder =
   | OpenAiEmbedder
   | HuggingFaceEmbedder
   | UserProvidedEmbedder
   | RestEmbedder
   | OllamaEmbedder
+  | CompositeEmbedder
   | null;
 
 export type Embedders = Record<string, Embedder> | null;
