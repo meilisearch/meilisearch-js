@@ -16,4 +16,27 @@ function addTrailingSlash(url: string): string {
   return url;
 }
 
-export { sleep, addProtocolIfNotPresent, addTrailingSlash };
+function stringifyRecordKeyValues<
+  T extends Record<string, unknown>,
+  const U extends (keyof T)[],
+>(v: T | undefined, keys: U) {
+  if (v === undefined) {
+    return;
+  }
+
+  return Object.fromEntries(
+    Object.entries(v).map(([key, val]) => [
+      key,
+      keys.includes(key) ? JSON.stringify(val) : val,
+    ]),
+  ) as { [TKey in Exclude<keyof T, U[number]>]: T[TKey] } & {
+    [TKey in U[number]]: string;
+  };
+}
+
+export {
+  sleep,
+  addProtocolIfNotPresent,
+  addTrailingSlash,
+  stringifyRecordKeyValues,
+};

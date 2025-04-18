@@ -93,6 +93,7 @@ function decode64(buff: string) {
 }
 
 const NOT_RESOLVED = Symbol("<not resolved>");
+const RESOLVED = Symbol("<resolved>");
 
 const source = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -126,6 +127,13 @@ const source = {
       NOT_RESOLVED,
       "expected value to not resolve",
     );
+  },
+  async resolves(promise: Promise<unknown>): Promise<void> {
+    try {
+      await promise;
+    } catch (error) {
+      vitestAssert.fail(error, RESOLVED, "expected value to not reject");
+    }
   },
 };
 export const assert: typeof vitestAssert & typeof source = Object.assign(
