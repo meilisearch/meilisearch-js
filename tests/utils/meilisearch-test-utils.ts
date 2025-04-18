@@ -193,24 +193,63 @@ const datasetWithNests = [
   { id: 7, title: "The Hitchhiker's Guide to the Galaxy" },
 ];
 
-const dataset: { id: number; title: string; comment?: string }[] = [
-  { id: 123, title: "Pride and Prejudice", comment: "A great book" },
-  { id: 456, title: "Le Petit Prince", comment: "A french book" },
-  { id: 2, title: "Le Rouge et le Noir", comment: "Another french book" },
-  { id: 1, title: "Alice In Wonderland", comment: "A weird book" },
-  { id: 1344, title: "The Hobbit", comment: "An awesome book" },
+const dataset: Book[] = [
+  {
+    id: 123,
+    title: "Pride and Prejudice",
+    comment: "A great book",
+    genre: ["romance", "classic", "literary fiction"],
+    author: "Jane Austen",
+  },
+  {
+    id: 456,
+    title: "Le Petit Prince",
+    comment: "A french book",
+    genre: ["children", "fantasy", "philosophical"],
+    author: "Antoine de Saint-Exupéry",
+  },
+  {
+    id: 2,
+    title: "Le Rouge et le Noir",
+    comment: "Another french book",
+    genre: ["classic", "psychological", "historical fiction"],
+    author: "Stendhal",
+  },
+  {
+    id: 1,
+    title: "Alice In Wonderland",
+    comment: "A weird book",
+    genre: ["fantasy", "children", "classics"],
+    author: "Lewis Carroll",
+  },
+  {
+    id: 1344,
+    title: "The Hobbit",
+    comment: "An awesome book",
+    genre: ["fantasy", "adventure", "young adult"],
+    author: "J.R.R. Tolkien",
+  },
   {
     id: 4,
     title: "Harry Potter and the Half-Blood Prince",
     comment: "The best book",
+    genre: ["fantasy", "young adult", "magic"],
+    author: "J.K. Rowling",
   },
-  { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
+  {
+    id: 42,
+    title: "The Hitchhiker's Guide to the Galaxy",
+    genre: ["science fiction", "comedy", "satire"],
+    author: "Douglas Adams",
+  },
 ];
 
 export type Book = {
   id: number;
   title: string;
-  comment: string;
+  comment?: string;
+  genre: string[];
+  author: string;
 };
 
 export {

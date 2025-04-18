@@ -70,6 +70,7 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
 };
 
 export type DocumentsQuery<T = RecordAny> = ResourceQuery & {
+  ids?: string[] | number[];
   fields?: Fields<T>;
   filter?: FilterExpression;
   limit?: number;
@@ -97,7 +98,17 @@ export type UpdateDocumentsByFunctionOptions = {
  ** Settings
  */
 
-export type FilterableAttributes = string[] | null;
+type GranularFilterableAttribute = {
+  attributePatterns: string[];
+  features: {
+    facetSearch: boolean;
+    filter: { equality: boolean; comparison: boolean };
+  };
+};
+
+export type FilterableAttributes =
+  | (string | GranularFilterableAttribute)[]
+  | null;
 export type DistinctAttribute = string | null;
 export type SearchableAttributes = string[] | null;
 export type SortableAttributes = string[] | null;
@@ -142,6 +153,7 @@ export type HuggingFaceEmbedder = {
   revision?: string;
   documentTemplate?: string;
   distribution?: Distribution;
+  pooling?: "useModel" | "forceMean" | "forceCls";
   documentTemplateMaxBytes?: number;
   binaryQuantized?: boolean;
 };
@@ -179,12 +191,19 @@ export type OllamaEmbedder = {
   binaryQuantized?: boolean;
 };
 
+export type CompositeEmbedder = {
+  source: "composite";
+  searchEmbedder: Embedder;
+  indexingEmbedder: Embedder;
+};
+
 export type Embedder =
   | OpenAiEmbedder
   | HuggingFaceEmbedder
   | UserProvidedEmbedder
   | RestEmbedder
   | OllamaEmbedder
+  | CompositeEmbedder
   | null;
 
 export type Embedders = Record<string, Embedder> | null;
@@ -250,9 +269,10 @@ export type Settings = {
   prefixSearch?: "indexingTime" | "disabled";
 };
 
-/** 
+/**
  * @see `fieldDistribution` at {@link https://www.meilisearch.com/docs/reference/api/stats#stats-object}
- * @see `milli::FieldDistribution` */
+ * @see `milli::FieldDistribution`
+ */
 export type FieldDistribution = Record<string, number>;
 
 /*
