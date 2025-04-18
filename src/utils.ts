@@ -19,7 +19,11 @@ function addTrailingSlash(url: string): string {
 function stringifyRecordKeyValues<
   T extends Record<string, unknown>,
   const U extends (keyof T)[],
->(v: T, keys: U) {
+>(v: T | undefined, keys: U) {
+  if (v === undefined) {
+    return;
+  }
+
   return Object.fromEntries(
     Object.entries(v).map(([key, val]) => [
       key,

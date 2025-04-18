@@ -46,8 +46,15 @@ import type {
   SimilarQuery,
   SimilarResult,
   EnqueuedTaskPromise,
-  ConditionalSearchResult,
   ResourceResults,
+  SearchQueryWithOffsetLimit,
+  SearchResultWithOffsetLimit,
+  SearchQueryWithRequiredPagination,
+  SearchResultWithPagination,
+  SearchResult,
+  SearchQueryGet,
+  SearchQueryWithRequiredPaginationGet,
+  SearchQueryWithOffsetLimitGet,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -86,11 +93,21 @@ export class Index<T extends RecordAny = RecordAny> {
   /// SEARCH
   ///
 
+  // TODO: If no params are provided, it's set to pagination | offset limit
+  //       If empty object param is provided it's set to pagination
   /** {@link https://www.meilisearch.com/docs/reference/api/search} */
-  async search<U extends SearchQuery>(
-    searchQuery?: U,
+  search(
+    searchQuery?: SearchQueryWithOffsetLimit,
     init?: ExtraRequestInit,
-  ): Promise<ConditionalSearchResult<U, T>> {
+  ): Promise<SearchResultWithOffsetLimit<T>>;
+  search(
+    searchQuery?: SearchQueryWithRequiredPagination,
+    init?: ExtraRequestInit,
+  ): Promise<SearchResultWithPagination<T>>;
+  async search(
+    searchQuery?: SearchQuery,
+    init?: ExtraRequestInit,
+  ): Promise<SearchResult<T>> {
     return await this.httpRequest.post({
       path: `indexes/${this.uid}/search`,
       body: searchQuery,
@@ -99,13 +116,21 @@ export class Index<T extends RecordAny = RecordAny> {
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/search#search-in-an-index-with-get} */
-  async searchGet<U extends SearchQuery>(
-    searchQuery: U,
+  searchGet(
+    searchQuery?: SearchQueryWithOffsetLimitGet,
     init?: ExtraRequestInit,
-  ): Promise<ConditionalSearchResult<U, T>> {
+  ): Promise<SearchResultWithOffsetLimit<T>>;
+  searchGet(
+    searchQuery?: SearchQueryWithRequiredPaginationGet,
+    init?: ExtraRequestInit,
+  ): Promise<SearchResultWithPagination<T>>;
+  async searchGet(
+    searchQuery?: SearchQueryGet,
+    init?: ExtraRequestInit,
+  ): Promise<SearchResult<T>> {
     return await this.httpRequest.get({
       path: `indexes/${this.uid}/search`,
-      params: stringifyRecordKeyValues(searchQuery, ["filter", "hybrid"]),
+      params: stringifyRecordKeyValues(searchQuery, ["filter"]),
       extraRequestInit: init,
     });
   }

@@ -5,9 +5,9 @@ export type NonNullKeys<T extends RecordAny, U extends keyof T = keyof T> = {
   [TKey in U]: Exclude<T[TKey], null>;
 } & { [TKey in Exclude<keyof T, U>]: T[TKey] };
 
-export type RequiredKeys<T extends RecordAny, U extends keyof T = keyof T> = {
+export type RequiredKeys<T extends RecordAny, U extends keyof T> = {
   [TKey in U]-?: Exclude<T[TKey], null>;
-} & { [TKey in Exclude<keyof T, U>]: T[TKey] };
+} & Omit<T, U>;
 
 export type CursorResults<T> = {
   results: T[];
@@ -19,3 +19,11 @@ export type CursorResults<T> = {
 
 // taken from https://stackoverflow.com/a/65642944
 export type PascalToCamelCase<S extends string> = Uncapitalize<S>;
+
+export type DeepStringRecord<T> = {
+  [TKey in keyof T]: T[TKey] extends object
+    ? DeepStringRecord<T[TKey]>
+    : string;
+};
+
+export type SafeOmit<T, K extends keyof T> = Omit<T, K>;

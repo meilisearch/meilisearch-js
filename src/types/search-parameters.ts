@@ -1,4 +1,9 @@
-import type { NonNullKeys, PascalToCamelCase, RequiredKeys } from "./shared.js";
+import type {
+  NonNullKeys,
+  PascalToCamelCase,
+  RequiredKeys,
+  SafeOmit,
+} from "./shared.js";
 import type { Locale } from "./types.js";
 
 /** @see `meilisearch::search::HybridQuery` */
@@ -23,6 +28,10 @@ export type FederationOptions = {
   weight?: number;
   /** @experimental */
   remote?: string | null;
+  /**
+   * @privateRemarks
+   * Undocumented.
+   */
   queryPosition?: number | null;
 };
 
@@ -40,7 +49,13 @@ export type Pagination = {
   hitsPerPage?: number | null;
 };
 
-/** {@link https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference} */
+/**
+ * {@link https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference}
+ *
+ * @privateRemarks
+ * It is not strongly typed in any way in the source code.
+ * @see `milli::search::facet::filter::Filter::from_json`
+ */
 export type FilterExpression = string | (string | string[])[];
 
 type FirstPartOfFacetAndSearchQuerySegment = {
@@ -59,6 +74,8 @@ type FacetAndSearchQuerySegment = {
   hybrid?: HybridQuery | null;
   /** {@link https://www.meilisearch.com/docs/reference/api/search#matching-strategy} */
   matchingStrategy?: MatchingStrategy;
+  // TODO: Could use generic record to type these kinds of settings, but is it worth it?
+  //       https://stackoverflow.com/a/76547796
   /** {@link https://www.meilisearch.com/docs/reference/api/search#customize-attributes-to-search-on-at-search-time} */
   attributesToSearchOn?: string[] | null;
   /** {@link https://www.meilisearch.com/docs/reference/api/search#query-locales} */
@@ -100,8 +117,17 @@ type SearchQueryCore = {
 } & FacetAndSearchQuerySegment &
   FirstPartOfSearchQueryCore;
 
+type IntoGet<T extends FacetAndSearchQuerySegment> = SafeOmit<T, "hybrid"> & {
+  [TKey in keyof HybridQuery as `hybrid${Capitalize<TKey>}`]?:
+    | HybridQuery[TKey]
+    | null;
+};
+
 export type SearchQueryWithOffsetLimit = SearchQueryCore & OffsetLimit;
+export type SearchQueryWithOffsetLimitGet = IntoGet<SearchQueryWithOffsetLimit>;
+
 type SearchQueryWithPagination = SearchQueryCore & Pagination;
+export type SearchQueryWithPaginationGet = IntoGet<SearchQueryWithPagination>;
 
 /**
  * @remarks
@@ -114,13 +140,18 @@ export type SearchQueryWithRequiredPagination = RequiredKeys<
   SearchQueryWithPagination,
   "page"
 >;
-
-// export type RequiredPagination = RequiredKeys<Pagination, "page">;
+export type SearchQueryWithRequiredPaginationGet =
+  IntoGet<SearchQueryWithRequiredPagination>;
 
 /** @see `meilisearch::search::SearchQuery` */
 export type SearchQuery =
   | SearchQueryWithOffsetLimit
   | SearchQueryWithPagination;
+
+/** @see `meilisearch::routes::indexes::search::SearchQueryGet` */
+export type SearchQueryGet =
+  | SearchQueryWithOffsetLimitGet
+  | SearchQueryWithPaginationGet;
 
 type SearchQueryWithIndexCore = SearchQueryCore & { indexUid: string };
 
@@ -150,15 +181,24 @@ export type Federation = {
   mergeFacets?: MergeFacets | null;
 };
 
-/** @see `meilisearch::search::federated::types::FederatedSearch` */
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/multi_search#body}
+ *
+ * @see `meilisearch::search::federated::types::FederatedSearch`
+ */
 export type FederatedSearch = {
   queries: SearchQueryWithIndexAndFederation[];
-  federation?: Federation | null;
+  federation: Federation;
 };
 
-/** @see `meilisearch::search::federated::types::FederatedSearch` */
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/multi_search#body}
+ *
+ * @see `meilisearch::search::federated::types::FederatedSearch`
+ */
 export type MultiSearch = { queries: SearchQueryWithIndex[] };
 
+/** {@link https://www.meilisearch.com/docs/reference/api/multi_search#body} */
 export type MultiSearchOrFederatedSearch = MultiSearch | FederatedSearch;
 
 /**
@@ -169,10 +209,6 @@ export type MultiSearchOrFederatedSearch = MultiSearch | FederatedSearch;
 export type FacetSearchQuery = {
   facetQuery?: string | null;
   facetName: string;
-  /**
-   * @remarks
-   * Undocumented.
-   */
   exhaustiveFacetCount?: boolean | null;
 } & FacetAndSearchQuerySegment;
 
@@ -183,7 +219,6 @@ export type FacetSearchQuery = {
  */
 export type SimilarQuery = {
   id: string | number;
-  /** {@link https://www.meilisearch.com/docs/reference/api/search#hybrid-search} */
   embedder: string;
 } & FirstPartOfFacetAndSearchQuerySegment &
   FirstPartOfSearchQueryCore &
