@@ -31,11 +31,14 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const batches = await client.batches.getBatches();
       const batch = await client.batches.getBatch(batches.results[0].uid);
       expect(batch.uid).toEqual(batches.results[0].uid);
+
+      // Can't use toMatchSnapshot because the output changes every time
       expect(batch.details).toBeDefined();
       expect(batch.stats).toHaveProperty("totalNbTasks");
       expect(batch.stats).toHaveProperty("status");
       expect(batch.stats).toHaveProperty("types");
       expect(batch.stats).toHaveProperty("indexUids");
+      expect(batch.stats).toHaveProperty("progressTrace");
       expect(batch.duration).toBeDefined();
       expect(batch.startedAt).toBeDefined();
       expect(batch.finishedAt).toBeDefined();
