@@ -127,7 +127,7 @@ export class TaskClient {
         }
       }
     } catch (error) {
-      throw Object.is((error as Error).cause, TIMEOUT_ID)
+      throw Object.is((error as Error)?.cause, TIMEOUT_ID)
         ? new MeiliSearchTaskTimeOutError(taskUid, timeout)
         : error;
     }

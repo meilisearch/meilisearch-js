@@ -13,7 +13,7 @@ import {
   MeiliSearchRequestError,
   MeiliSearchRequestTimeOutError,
 } from "./errors/index.js";
-import { addProtocolIfNotPresent, addTrailingSlash } from "./utils.js";
+import { addProtocolIfNotPresent } from "./utils.js";
 
 /** Append a set of key value pairs to a {@link URLSearchParams} object. */
 function appendRecordToURLSearchParams(
@@ -34,36 +34,32 @@ function appendRecordToURLSearchParams(
   }
 }
 
+const AGENT_HEADER_KEY = "X-Meilisearch-Client";
+const CONTENT_TYPE_KEY = "Content-Type";
+const AUTHORIZATION_KEY = "Authorization";
+const PACAKGE_AGENT = `Meilisearch JavaScript (v${PACKAGE_VERSION})`;
+
 /**
  * Creates a new Headers object from a {@link HeadersInit} and adds various
- * properties to it, some from {@link Config}.
- *
- * @returns A new Headers object
+ * properties to it, as long as they're not already provided by the user.
  */
 function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
-  const agentHeader = "X-Meilisearch-Client";
-  const packageAgent = `Meilisearch JavaScript (v${PACKAGE_VERSION})`;
-  const contentType = "Content-Type";
-  const authorization = "Authorization";
-
   const headers = new Headers(headersInit);
 
-  // do not override if user provided the header
-  if (config.apiKey && !headers.has(authorization)) {
-    headers.set(authorization, `Bearer ${config.apiKey}`);
+  if (config.apiKey && !headers.has(AUTHORIZATION_KEY)) {
+    headers.set(AUTHORIZATION_KEY, `Bearer ${config.apiKey}`);
   }
 
-  if (!headers.has(contentType)) {
-    headers.set(contentType, "application/json");
+  if (!headers.has(CONTENT_TYPE_KEY)) {
+    headers.set(CONTENT_TYPE_KEY, "application/json");
   }
 
   // Creates the custom user agent with information on the package used.
   if (config.clientAgents !== undefined) {
-    const clients = config.clientAgents.concat(packageAgent);
-
-    headers.set(agentHeader, clients.join(" ; "));
+    const agents = config.clientAgents.concat(PACAKGE_AGENT);
+    headers.set(AGENT_HEADER_KEY, agents.join(" ; "));
   } else {
-    headers.set(agentHeader, packageAgent);
+    headers.set(AGENT_HEADER_KEY, PACAKGE_AGENT);
   }
 
   return headers;
@@ -85,11 +81,13 @@ const TIMEOUT_ID = {};
  *   function that clears the timeout
  */
 function getTimeoutFn(
-  requestInit: RequestInit,
+  init: RequestInit,
   ms: number,
 ): () => (() => void) | void {
-  const { signal } = requestInit;
+  const { signal } = init;
   const ac = new AbortController();
+
+  init.signal = ac.signal;
 
   if (signal != null) {
     let acSignalFn: (() => void) | null = null;
@@ -97,7 +95,9 @@ function getTimeoutFn(
     if (signal.aborted) {
       ac.abort(signal.reason);
     } else {
-      const fn = () => ac.abort(signal.reason);
+      const fn = () => {
+        ac.abort(signal.reason);
+      };
 
       signal.addEventListener("abort", fn, { once: true });
 
@@ -110,7 +110,9 @@ function getTimeoutFn(
         return;
       }
 
-      const to = setTimeout(() => ac.abort(TIMEOUT_ID), ms);
+      const to = setTimeout(() => {
+        ac.abort(TIMEOUT_ID);
+      }, ms);
       const fn = () => {
         clearTimeout(to);
 
@@ -128,10 +130,10 @@ function getTimeoutFn(
     };
   }
 
-  requestInit.signal = ac.signal;
-
   return () => {
-    const to = setTimeout(() => ac.abort(TIMEOUT_ID), ms);
+    const to = setTimeout(() => {
+      ac.abort(TIMEOUT_ID);
+    }, ms);
     return () => clearTimeout(to);
   };
 }
@@ -144,10 +146,10 @@ export class HttpRequests {
   #requestTimeout?: Config["timeout"];
 
   constructor(config: Config) {
-    const host = addTrailingSlash(addProtocolIfNotPresent(config.host));
+    const host = addProtocolIfNotPresent(config.host);
 
     try {
-      this.#url = new URL(host);
+      this.#url = new URL(host.endsWith("/") ? host : host + "/");
     } catch (error) {
       throw new MeiliSearchError("The provided host is not valid", {
         cause: error,
@@ -177,8 +179,8 @@ export class HttpRequests {
 
     const headers = new Headers(extraHeaders);
 
-    if (contentType !== undefined && !headers.has("Content-Type")) {
-      headers.set("Content-Type", contentType);
+    if (contentType !== undefined && !headers.has(CONTENT_TYPE_KEY)) {
+      headers.set(CONTENT_TYPE_KEY, contentType);
     }
 
     for (const [key, val] of this.#requestInit.headers) {
