@@ -12,12 +12,11 @@ import type {
 } from "./types/index.js";
 import type { HttpRequests } from "./http-requests.js";
 
-// TODO: Convert to Symbol("timeout id") when Node.js 18 is dropped
 /**
  * Used to identify whether an error is a timeout error in
  * {@link TaskClient.waitForTask}.
  */
-const TIMEOUT_ID = {};
+const TIMEOUT_ID = Symbol("<task timeout>");
 
 /**
  * @returns A function which defines an extra function property on a
