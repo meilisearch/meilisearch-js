@@ -528,8 +528,14 @@ get_filterable_attributes_1: |-
 update_filterable_attributes_1: |-
   client.index('movies')
     .setting.updateFilterableAttributes([
-      'genres',
-      'director'
+      "genres",
+      {
+        attributePatterns: ["genre"],
+        features: {
+          facetSearch: true,
+          filter: { equality: true, comparison: false },
+        },
+      }
     ])
 reset_filterable_attributes_1: |-
   client.index('movies').setting.resetFilterableAttributes()

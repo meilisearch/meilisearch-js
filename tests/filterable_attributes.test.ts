@@ -1,5 +1,8 @@
 import { expect, test, describe, beforeEach, afterAll } from "vitest";
-import { ErrorStatusCode } from "../src/index.js";
+import {
+  ErrorStatusCode,
+  type IndividualUpdatableSettings,
+} from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -60,6 +63,30 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .setting.getFilterableAttributes();
 
       expect(response?.sort()).toEqual([]);
+    });
+
+    test(`${permission} key: Update attributes with granular attribute syntax`, async () => {
+      const client = await getClient(permission);
+      const newFilterableAttributes: IndividualUpdatableSettings["filterableAttributes"] =
+        [
+          "author",
+          {
+            attributePatterns: ["genre"],
+            features: {
+              facetSearch: true,
+              filter: { equality: true, comparison: false },
+            },
+          },
+        ];
+      await client
+        .index(index.uid)
+        .setting.updateFilterableAttributes(newFilterableAttributes)
+        .waitTask();
+
+      const response = await client
+        .index(index.uid)
+        .setting.getFilterableAttributes();
+      expect(response).toEqual(newFilterableAttributes);
     });
 
     test(`${permission} key: Reset attributes for filtering`, async () => {

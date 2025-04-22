@@ -6,6 +6,8 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
+  getKey,
+  HOST,
 } from "./utils/meilisearch-test-utils.js";
 
 const index = {
@@ -136,6 +138,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
             mean: 0.7,
             sigma: 0.3,
           },
+          pooling: "useModel",
           documentTemplateMaxBytes: 500,
           binaryQuantized: false,
         },
@@ -248,6 +251,51 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const response = await client.index(index.uid).setting.getEmbedders();
 
       expect(response).toEqual(newEmbedder);
+    });
+
+    test(`${permission} key: Update embedders with composite embedder`, async () => {
+      const adminKey = await getKey("Admin");
+
+      // first enable the network endpoint.
+      await fetch(`${HOST}/experimental-features`, {
+        body: JSON.stringify({ compositeEmbedders: true }),
+        headers: {
+          Authorization: `Bearer ${adminKey}`,
+          "Content-Type": "application/json",
+        },
+        method: "PATCH",
+      });
+
+      const client = await getClient(permission);
+      const embedders: IndividualUpdatableSettings["embedders"] = {
+        default: {
+          source: "composite",
+          searchEmbedder: {
+            source: "huggingFace",
+            model:
+              "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            pooling: "useModel",
+          },
+          indexingEmbedder: {
+            source: "huggingFace",
+            model:
+              "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            documentTemplate: "{{doc.title}}",
+            pooling: "useModel",
+            documentTemplateMaxBytes: 500,
+          },
+        },
+      };
+
+      const task = await client
+        .index(index.uid)
+        .setting.updateEmbedders(embedders)
+        .waitTask();
+      const response = await client.index(index.uid).setting.getEmbedders();
+
+      const processedTask = await client.tasks.getTask(task.uid);
+      expect(processedTask.status).toEqual("succeeded");
+      expect(response).toEqual(embedders);
     });
 
     test(`${permission} key: Reset embedders`, async () => {

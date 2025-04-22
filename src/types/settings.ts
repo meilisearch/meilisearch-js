@@ -1,5 +1,26 @@
 import type { PascalToCamelCase } from "./shared.js";
 
+/** @see `milli::filterable_attributes_rules::FilterFeatures` */
+export type FilterFeatures = {
+  equality?: boolean;
+  comparison?: boolean;
+};
+
+/** @see `milli::filterable_attributes_rules::FilterableAttributesFeatures` */
+export type FilterableAttributesFeatures = {
+  facetSearch?: boolean;
+  filter?: FilterFeatures;
+};
+
+/** @see `milli::filterable_attributes_rules::FilterableAttributesPatterns` */
+export type FilterableAttributesPatterns = {
+  attributePatterns: string[];
+  features?: FilterableAttributesFeatures;
+};
+
+/** @see `milli::filterable_attributes_rules::FilterableAttributesRule` */
+export type FilterableAttributesRule = string | FilterableAttributesPatterns;
+
 /** Deeply map every property of a record to itself excluding null. */
 type NonNullableDeepRecordValues<T> = {
   [TKey in keyof T]: Exclude<NonNullableDeepRecordValues<T[TKey]>, null>;
@@ -63,7 +84,9 @@ export type FacetingSettings = PartialAndNullable<{
 export type PaginationSettings = PartialAndNullable<{ maxTotalHits: number }>;
 
 /**
- * @see `distribution` at {@link https://www.meilisearch.com/docs/reference/api/settings#embedders}
+ * `distribution` at
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#embedders}
+ *
  * @see `milli::vector::DistributionShift`
  */
 export type DistributionShift = {
@@ -71,9 +94,14 @@ export type DistributionShift = {
   sigma: number;
 };
 
-/** @see `source` at {@link https://www.meilisearch.com/docs/reference/api/settings#embedders} */
+/**
+ * `source` at
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#embedders}
+ *
+ * @see `milli::vector::settings::EmbedderSource`
+ */
 export type EmbedderSource = PascalToCamelCase<
-  "OpenAi" | "HuggingFace" | "Ollama" | "UserProvided" | "Rest"
+  "OpenAi" | "HuggingFace" | "Ollama" | "UserProvided" | "Rest" | "Composite"
 >;
 
 /** @see `milli::vector::hf::OverridePooling` */
@@ -105,9 +133,8 @@ export type SubEmbeddingSettings = PartialAndNullable<{
 export type EmbeddingSettings = PartialAndNullable<{
   distribution: DistributionShift;
   binaryQuantized: boolean;
-  // upcoming properties
-  // searchEmbedder: SubEmbeddingSettings;
-  // indexingEmbedder: SubEmbeddingSettings;
+  searchEmbedder: SubEmbeddingSettings;
+  indexingEmbedder: SubEmbeddingSettings;
 }> &
   SubEmbeddingSettings;
 
@@ -146,7 +173,7 @@ export type UpdatableSettings = PartialAndNullable<{
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#searchable-attributes} */
   searchableAttributes: string[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#filterable-attributes} */
-  filterableAttributes: string[];
+  filterableAttributes: FilterableAttributesRule[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#sortable-attributes} */
   sortableAttributes: string[];
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#ranking-rules} */
