@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
       minify: !isCJSBuild,
       sourcemap: true,
       // UMD build should target the lowest level ES,
-      // while CJS the lowest Node.js LTS compatible version (https://node.green/#ES2023)
+      // while CJS the lowest Node.js LTS/Maintenance compatible version (https://node.green/#ES2023)
       target: isCJSBuild ? "es2023" : "es6",
       lib: {
         // leave out token export from UMD build
