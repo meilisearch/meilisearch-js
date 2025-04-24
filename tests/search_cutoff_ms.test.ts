@@ -6,10 +6,7 @@ import {
   expect,
   test,
 } from "vitest";
-import {
-  ErrorStatusCode,
-  type IndividualUpdatableSettings,
-} from "../src/index.js";
+import { ErrorStatusCode, type SingleUpdatableSettings } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -80,7 +77,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update searchCutoffMs with invalid value`, async () => {
       const client = await getClient(permission);
       const newSearchCutoffMs =
-        "hello" as unknown as IndividualUpdatableSettings["searchCutoffMs"]; // bad searchCutoffMs value
+        "hello" as unknown as SingleUpdatableSettings["searchCutoffMs"]; // bad searchCutoffMs value
 
       await expect(
         client.index(index.uid).setting.updateSearchCutoffMs(newSearchCutoffMs),

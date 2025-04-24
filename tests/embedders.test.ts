@@ -1,5 +1,5 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
-import type { IndividualUpdatableSettings } from "../src/index.js";
+import type { SingleUpdatableSettings } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -70,7 +70,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'userProvided' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
+      const newEmbedder: SingleUpdatableSettings["embedders"] = {
         default: {
           source: "userProvided",
           dimensions: 1,
@@ -94,7 +94,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'openAi' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
+      const newEmbedder: SingleUpdatableSettings["embedders"] = {
         default: {
           source: "openAi",
           apiKey: "<your-OpenAI-API-key>",
@@ -128,7 +128,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'huggingFace' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
+      const newEmbedder: SingleUpdatableSettings["embedders"] = {
         default: {
           source: "huggingFace",
           model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
@@ -155,7 +155,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'rest' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
+      const newEmbedder: SingleUpdatableSettings["embedders"] = {
         default: {
           source: "rest",
           url: "https://api.openai.com/v1/embeddings",
@@ -203,7 +203,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update embedders with 'ollama' source`, async () => {
       const client = await getClient(permission);
-      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
+      const newEmbedder: SingleUpdatableSettings["embedders"] = {
         default: {
           source: "ollama",
           url: "http://localhost:11434/api/embeddings",
@@ -237,7 +237,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Update embedders with a specific name`, async () => {
       const client = await getClient(permission);
 
-      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
+      const newEmbedder: SingleUpdatableSettings["embedders"] = {
         image: {
           source: "userProvided",
           dimensions: 512,
@@ -267,7 +267,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       });
 
       const client = await getClient(permission);
-      const embedders: IndividualUpdatableSettings["embedders"] = {
+      const embedders: SingleUpdatableSettings["embedders"] = {
         default: {
           source: "composite",
           searchEmbedder: {
@@ -366,7 +366,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: search for similar documents`, async () => {
       const client = await getClient(permission);
 
-      const newEmbedder: IndividualUpdatableSettings["embedders"] = {
+      const newEmbedder: SingleUpdatableSettings["embedders"] = {
         manual: {
           source: "userProvided",
           dimensions: 3,

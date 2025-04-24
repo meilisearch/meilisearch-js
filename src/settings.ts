@@ -2,26 +2,26 @@ import type { HttpRequests } from "./http-requests.js";
 import type { HttpRequestsWithEnqueuedTaskPromise } from "./task.js";
 import type {
   EnqueuedTaskPromise,
-  IndividualUpdatableSettings,
+  SingleUpdatableSettings,
   RecordAny,
 } from "./types/index.js";
 
 /** Each setting property mapped to their REST method required for updates. */
 type MakeSettingsRecord = {
-  [TKey in keyof IndividualUpdatableSettings]: "put" | "patch";
+  [TKey in keyof SingleUpdatableSettings]: "put" | "patch";
 };
 
 /** Each setting property mapped to its get, update and reset functions. */
 export type SettingFns = {
-  [TKey in keyof IndividualUpdatableSettings as `get${Capitalize<TKey>}`]: () => Promise<
-    IndividualUpdatableSettings[TKey]
+  [TKey in keyof SingleUpdatableSettings as `get${Capitalize<TKey>}`]: () => Promise<
+    SingleUpdatableSettings[TKey]
   >;
 } & {
-  [TKey in keyof IndividualUpdatableSettings as `update${Capitalize<TKey>}`]: (
-    body: IndividualUpdatableSettings[TKey],
+  [TKey in keyof SingleUpdatableSettings as `update${Capitalize<TKey>}`]: (
+    body: SingleUpdatableSettings[TKey],
   ) => EnqueuedTaskPromise;
 } & {
-  [TKey in keyof IndividualUpdatableSettings as `reset${Capitalize<TKey>}`]: () => EnqueuedTaskPromise;
+  [TKey in keyof SingleUpdatableSettings as `reset${Capitalize<TKey>}`]: () => EnqueuedTaskPromise;
 };
 
 function capitalize(str: string): string {
@@ -46,13 +46,13 @@ export function makeSettingFns(
     const path = `${basePath}/${camelToKebabCase(name)}`;
 
     settingFns[`get${uppercaseName}`] = async function (): Promise<
-      IndividualUpdatableSettings[keyof typeof opts]
+      SingleUpdatableSettings[keyof typeof opts]
     > {
       return await httpRequest.get({ path });
     };
 
     settingFns[`update${uppercaseName}`] = function (
-      body: IndividualUpdatableSettings[keyof typeof opts],
+      body: SingleUpdatableSettings[keyof typeof opts],
     ): EnqueuedTaskPromise {
       return httpRequestsWithTask[method]({ path, body });
     };

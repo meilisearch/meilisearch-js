@@ -1,6 +1,6 @@
 import { assert as vitestAssert } from "vitest";
 import { MeiliSearch, Index } from "../../src/index.js";
-import type { Config } from "../../src/types/index.js";
+import type { Config, Task } from "../../src/types/index.js";
 
 // testing
 const MASTER_KEY = "masterKey";
@@ -127,6 +127,10 @@ const source = {
       "expected value to not resolve",
     );
   },
+  isTaskSuccessful(task: Task) {
+    vitestAssert.isNull(task.error);
+    vitestAssert.strictEqual(task.status, "succeeded");
+  },
 };
 export const assert: typeof vitestAssert & typeof source = Object.assign(
   vitestAssert,
@@ -244,7 +248,12 @@ export type Book = {
   author: string;
 };
 
+function ObjectKeys<T extends string>(o: { [TKey in T]: null }): T[] {
+  return Object.keys(o) as T[];
+}
+
 export {
+  ObjectKeys,
   clearAllIndexes,
   config,
   masterClient,

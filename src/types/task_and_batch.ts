@@ -1,4 +1,4 @@
-import type { Settings } from "./settings.js";
+import type { UpdatableSettings } from "./settings.js";
 import type { CursorResults } from "./shared.js";
 import type { MeiliSearchErrorResponse } from "./types.js";
 
@@ -97,7 +97,7 @@ export type TaskUidOrEnqueuedTask = EnqueuedTask["taskUid"] | EnqueuedTask;
 export type IndexSwap = { indexes: [string, string] };
 
 /** {@link https://www.meilisearch.com/docs/reference/api/tasks#details} */
-export type TaskDetails = Settings & {
+export type TaskDetails = UpdatableSettings & {
   receivedDocuments?: number;
   indexedDocuments?: number;
   editedDocuments?: number;

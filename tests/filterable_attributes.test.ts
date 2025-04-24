@@ -1,8 +1,5 @@
 import { expect, test, describe, beforeEach, afterAll } from "vitest";
-import {
-  ErrorStatusCode,
-  type IndividualUpdatableSettings,
-} from "../src/index.js";
+import { ErrorStatusCode, type SingleUpdatableSettings } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -67,7 +64,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Update attributes with granular attribute syntax`, async () => {
       const client = await getClient(permission);
-      const newFilterableAttributes: IndividualUpdatableSettings["filterableAttributes"] =
+      const newFilterableAttributes: SingleUpdatableSettings["filterableAttributes"] =
         [
           "author",
           {

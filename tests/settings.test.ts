@@ -1,359 +1,617 @@
-import { afterAll, beforeEach, describe, expect, test } from "vitest";
-import { ErrorStatusCode, type UpdatableSettings } from "../src/index.js";
+import { test, describe, afterAll } from "vitest";
+import type {
+  EnqueuedTaskPromise,
+  FacetValuesSort,
+  SingleUpdatableSettings,
+  PrefixSearchSettings,
+  ProximityPrecisionView,
+  RankingRuleView,
+  EmbedderSource,
+  UpdatableSettings,
+} from "../src/index.js";
 import {
-  clearAllIndexes,
-  config,
-  BAD_HOST,
-  MeiliSearch,
+  assert,
   getClient,
-  dataset,
+  ObjectKeys,
 } from "./utils/meilisearch-test-utils.js";
 
-const index = {
-  uid: "movies_test",
-};
-const indexAndPK = {
-  uid: "movies_test_with_pk",
-  primaryKey: "id",
+const INDEX_UID = "e16993ea-0cd2-4a29-9365-b99778a92c74";
+const ms = await getClient("Master");
+const index = ms.index(INDEX_UID);
+
+type InputAndAssertion<T extends keyof SingleUpdatableSettings> = {
+  input: SingleUpdatableSettings[T];
+  assertion: (
+    input: SingleUpdatableSettings[T],
+    output: SingleUpdatableSettings[T],
+  ) => void;
 };
 
-afterAll(() => {
-  return clearAllIndexes(config);
+type MappedSettings = {
+  [TKey in keyof SingleUpdatableSettings]: [
+    text: string | undefined,
+    inputAndAssertion: InputAndAssertion<TKey>,
+  ][];
+};
+
+const mappedSettings = {
+  displayedAttributes: [
+    [
+      undefined,
+      {
+        input: ["uno", "dos"],
+        assertion: (input, output) => {
+          assert.isNotNull(input);
+          assert.isNotNull(output);
+          assert.sameMembers(input, output);
+        },
+      },
+    ],
+  ],
+
+  searchableAttributes: [
+    [
+      undefined,
+      {
+        input: ["tres", "cuatro"],
+        assertion: (input, output) => {
+          assert.isNotNull(input);
+          assert.isNotNull(output);
+          assert.sameMembers(input, output);
+        },
+      },
+    ],
+  ],
+
+  filterableAttributes: [
+    [
+      undefined,
+      {
+        input: [
+          // pattern
+          "genre",
+          // granular
+          {
+            attributePatterns: ["modèleUn", "modèleDeux"],
+            features: {
+              facetSearch: true,
+              filter: { equality: true, comparison: true },
+            },
+          },
+        ],
+        assertion: (input, output) => {
+          assert.isNotNull(input);
+          assert.isNotNull(output);
+          assert.sameDeepMembers(input, output);
+        },
+      },
+    ],
+  ],
+
+  sortableAttributes: [
+    [
+      undefined,
+      {
+        input: ["cinco", "seis"],
+        assertion: (input, output) => {
+          assert.isNotNull(input);
+          assert.isNotNull(output);
+          assert.sameMembers(input, output);
+        },
+      },
+    ],
+  ],
+
+  rankingRules: [
+    [
+      undefined,
+      {
+        input: ObjectKeys<RankingRuleView>({
+          words: null,
+          typo: null,
+          proximity: null,
+          attribute: null,
+          sort: null,
+          exactness: null,
+          "some_field:asc": null,
+          "some_other_field:desc": null,
+        }),
+        assertion: (input, output) => {
+          assert.isNotNull(input);
+          assert.isNotNull(output);
+          assert.sameMembers(input, output);
+        },
+      },
+    ],
+  ],
+
+  stopWords: [
+    [
+      undefined,
+      {
+        input: ["siete", "ocho"],
+        assertion: (input, output) => {
+          assert.isNotNull(input);
+          assert.isNotNull(output);
+          assert.sameMembers(input, output);
+        },
+      },
+    ],
+  ],
+
+  nonSeparatorTokens: [
+    [
+      undefined,
+      {
+        input: ["nueve", "diez"],
+        assertion: (input, output) => {
+          assert.isNotNull(input);
+          assert.isNotNull(output);
+          assert.sameMembers(input, output);
+        },
+      },
+    ],
+  ],
+
+  separatorTokens: [
+    [
+      undefined,
+      {
+        input: ["once", "doce"],
+        assertion: (input, output) => {
+          assert.isNotNull(input);
+          assert.isNotNull(output);
+          assert.sameMembers(input, output);
+        },
+      },
+    ],
+  ],
+
+  dictionary: [
+    [
+      undefined,
+      {
+        input: ["suge", "bucle"],
+        assertion: (input, output) => {
+          assert.isNotNull(input);
+          assert.isNotNull(output);
+          assert.sameMembers(input, output);
+        },
+      },
+    ],
+  ],
+
+  synonyms: [
+    [
+      undefined,
+      {
+        input: {
+          language: ["speech", "tongue", "lingo"],
+          land: ["country", "nation", "state"],
+        },
+        assertion: (input, output) => {
+          assert.deepEqual(input, output);
+        },
+      },
+    ],
+  ],
+
+  distinctAttribute: [
+    [
+      undefined,
+      {
+        input: "trece",
+        assertion: (input, output) => {
+          assert.strictEqual(input, output);
+        },
+      },
+    ],
+  ],
+
+  proximityPrecision: ObjectKeys<ProximityPrecisionView>({
+    byWord: null,
+    byAttribute: null,
+  }).map((v) => [
+    v,
+    {
+      input: v,
+      assertion: (input, output) => {
+        assert.strictEqual(input, output);
+      },
+    },
+  ]),
+
+  typoTolerance: [
+    [
+      undefined,
+      {
+        input: {
+          enabled: true,
+          minWordSizeForTypos: { oneTypo: 2, twoTypos: 3 },
+          disableOnWords: ["mot-un", "mot-deux"],
+          disableOnAttributes: ["attributUn", "attributDeux"],
+        },
+        assertion: (input, output) => {
+          assert.isNotNull(input);
+          assert.isNotNull(output);
+
+          const {
+            disableOnWords: dow1,
+            disableOnAttributes: doa1,
+            ...restInput
+          } = input;
+          const {
+            disableOnWords: dow2,
+            disableOnAttributes: doa2,
+            ...restOutput
+          } = output;
+
+          assert(dow1 != null);
+          assert(dow2 != null);
+          assert(doa1 != null);
+          assert(doa2 != null);
+
+          assert.sameMembers(dow1, dow2);
+          assert.sameMembers(doa1, doa2);
+
+          assert.deepEqual(restInput, restOutput);
+        },
+      },
+    ],
+  ],
+
+  faceting: ObjectKeys<FacetValuesSort>({
+    alpha: null,
+    count: null,
+  }).map((v) => [
+    `${v} facet value sort`,
+    {
+      input: { maxValuesPerFacet: 42, sortFacetValuesBy: { random_field: v } },
+      assertion: (input, output) => {
+        assert.isNotNull(input);
+        assert.isNotNull(output);
+
+        assert(output.sortFacetValuesBy != null);
+        const star = output.sortFacetValuesBy["*"];
+        delete output.sortFacetValuesBy["*"];
+        assert.oneOf(star, ["alpha", undefined]);
+
+        assert.deepEqual(input, output);
+      },
+    },
+  ]),
+
+  pagination: [
+    [
+      undefined,
+      {
+        input: { maxTotalHits: 42 },
+        assertion: (input, output) => {
+          assert.deepEqual(input, output);
+        },
+      },
+    ],
+  ],
+
+  embedders: ObjectKeys<EmbedderSource>({
+    openAi: null,
+    huggingFace: null,
+    ollama: null,
+    userProvided: null,
+    rest: null,
+    composite: null,
+  }).map((source) => {
+    return [
+      source,
+      (() => {
+        switch (source) {
+          case "openAi":
+            return {
+              input: {
+                default: {
+                  source,
+                  apiKey: "<your-OpenAI-API-key>",
+                  model: "text-embedding-3-small",
+                  documentTemplate:
+                    "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
+                  dimensions: 1536,
+                  distribution: {
+                    mean: 0.7,
+                    sigma: 0.3,
+                  },
+                  url: "https://api.openai.com/v1/embeddings",
+                  documentTemplateMaxBytes: 500,
+                  binaryQuantized: false,
+                },
+              },
+              assertion: (input, output) => {
+                assert.deepEqual(input, output);
+              },
+            };
+          case "huggingFace":
+            return {
+              input: {
+                default: {
+                  source,
+                  model:
+                    "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                  documentTemplate:
+                    "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
+                  distribution: {
+                    mean: 0.7,
+                    sigma: 0.3,
+                  },
+                  pooling: "useModel",
+                  documentTemplateMaxBytes: 500,
+                  binaryQuantized: false,
+                },
+              },
+              assertion: (input, output) => {
+                assert.deepEqual(input, output);
+              },
+            };
+          case "ollama":
+            return {
+              input: {
+                default: {
+                  source,
+                  url: "http://localhost:11434/api/embeddings",
+                  apiKey: "<your-ollama-api-key>",
+                  model: "nomic-embed-text",
+                  documentTemplate: "blabla",
+                  distribution: {
+                    mean: 0.7,
+                    sigma: 0.3,
+                  },
+                  dimensions: 512,
+                  documentTemplateMaxBytes: 500,
+                  binaryQuantized: false,
+                },
+              },
+              assertion: (input, output) => {
+                assert.deepEqual(input, output);
+              },
+            };
+          case "userProvided":
+            return {
+              input: {
+                default: {
+                  source,
+                  dimensions: 1,
+                  distribution: {
+                    mean: 0.7,
+                    sigma: 0.3,
+                  },
+                  binaryQuantized: false,
+                },
+              },
+              assertion: (input, output) => {
+                assert.deepEqual(input, output);
+              },
+            };
+          case "rest":
+            return {
+              input: {
+                default: {
+                  source,
+                  url: "https://api.openai.com/v1/embeddings",
+                  apiKey: "<your-openai-api-key>",
+                  dimensions: 1536,
+                  documentTemplate:
+                    "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
+                  distribution: {
+                    mean: 0.7,
+                    sigma: 0.3,
+                  },
+                  request: {
+                    model: "text-embedding-3-small",
+                    input: ["{{text}}", "{{..}}"],
+                  },
+                  response: {
+                    data: [
+                      {
+                        embedding: "{{embedding}}",
+                      },
+                      "{{..}}",
+                    ],
+                  },
+                  headers: {
+                    "Custom-Header": "CustomValue",
+                  },
+                  documentTemplateMaxBytes: 500,
+                  binaryQuantized: false,
+                },
+              },
+              assertion: (input, output) => {
+                assert.deepEqual(input, output);
+              },
+            };
+          case "composite":
+            return {
+              input: {
+                default: {
+                  source,
+                  searchEmbedder: {
+                    source: "huggingFace",
+                    model:
+                      "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                    pooling: "useModel",
+                  },
+                  indexingEmbedder: {
+                    source: "huggingFace",
+                    model:
+                      "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                    documentTemplate: "{{doc.title}}",
+                    pooling: "useModel",
+                    documentTemplateMaxBytes: 500,
+                  },
+                },
+              },
+              assertion: (input, output) => {
+                assert.deepEqual(input, output);
+              },
+            };
+          default:
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            assert.fail(`untested source ${source}`);
+        }
+      })(),
+    ];
+  }),
+
+  searchCutoffMs: [
+    [
+      undefined,
+      {
+        input: 100,
+        assertion: (input, output) => {
+          assert.strictEqual(input, output);
+        },
+      },
+    ],
+  ],
+
+  localizedAttributes: [
+    [
+      undefined,
+      {
+        input: [{ attributePatterns: ["title"], locales: ["eng"] }],
+        assertion: (input, output) => {
+          assert.deepEqual(input, output);
+        },
+      },
+    ],
+  ],
+
+  facetSearch: [
+    [
+      undefined,
+      {
+        input: true,
+        assertion: (input, output) => {
+          assert.strictEqual(input, output);
+        },
+      },
+    ],
+  ],
+
+  prefixSearch: ObjectKeys<PrefixSearchSettings>({
+    indexingTime: null,
+    disabled: null,
+  }).map((v) => [
+    v,
+    {
+      input: v,
+      assertion: (input, output) => {
+        assert.strictEqual(input, output);
+      },
+    },
+  ]),
+} satisfies MappedSettings as Record<
+  string,
+  [
+    text: string | undefined,
+    inputAndAssertion: InputAndAssertion<keyof SingleUpdatableSettings>,
+  ][]
+>;
+
+afterAll(async () => {
+  const task = await index.delete().waitTask();
+  assert.isTaskSuccessful(task);
 });
 
-describe.each([{ permission: "Master" }, { permission: "Admin" }])(
-  "Test on settings",
-  ({ permission }) => {
-    beforeEach(async () => {
-      await clearAllIndexes(config);
-      const client = await getClient("Master");
-      await client
-        .index(indexAndPK.uid)
-        .addDocuments(dataset, {
-          primaryKey: indexAndPK.primaryKey,
-        })
-        .waitTask();
+describe.for(Object.entries(mappedSettings))("%s", ([key, mappedSetting]) => {
+  const castKey = key as keyof MappedSettings;
+  const capitalizedKey = (castKey.charAt(0).toUpperCase() +
+    key.slice(1)) as Capitalize<keyof MappedSettings>;
 
-      await client.index(index.uid).addDocuments(dataset, {}).waitTask();
-    });
+  // Union of functions results in intersection of their parameters
+  // https://github.com/microsoft/TypeScript/issues/30581
 
-    test(`${permission} key: Get default settings of an index`, async () => {
-      const client = await getClient(permission);
+  const getSetting = index.setting[`get${capitalizedKey}`].bind(
+    index,
+  ) as () => Promise<SingleUpdatableSettings[keyof SingleUpdatableSettings]>;
 
-      const response = await client.index(index.uid).getSettings();
+  const updateSetting = index.setting[`update${capitalizedKey}`].bind(
+    index,
+  ) as (
+    v: SingleUpdatableSettings[keyof SingleUpdatableSettings],
+  ) => EnqueuedTaskPromise;
 
-      expect(response).toMatchSnapshot();
-    });
+  const resetSetting = index.setting[`reset${capitalizedKey}`].bind(index);
 
-    test(`${permission} key: Get default settings of empty index with primary key`, async () => {
-      const client = await getClient(permission);
+  mappedSetting = mappedSetting.map(([a, b]) => [
+    a === undefined ? "" : ` with ${a}`,
+    b,
+  ]);
 
-      const response = await client.index(indexAndPK.uid).getSettings();
+  test.for(mappedSetting)(
+    "single update and get methods%s",
+    async ([, { input, assertion }]) => {
+      const task = await updateSetting(input).waitTask();
+      assert.isTaskSuccessful(task);
 
-      expect(response).toMatchSnapshot();
-    });
+      const taskSetting = task.details?.[castKey];
+      assert.isDefined(taskSetting);
+      assertion(input, taskSetting);
 
-    test(`${permission} key: Update settings`, async () => {
-      const client = await getClient(permission);
-      const newSettings: UpdatableSettings = {
-        filterableAttributes: ["title"],
-        sortableAttributes: ["title"],
-        distinctAttribute: "title",
-        proximityPrecision: "byAttribute",
-        searchableAttributes: ["title"],
-        displayedAttributes: ["title"],
-        rankingRules: ["id:asc", "typo"],
-        stopWords: ["the"],
-        synonyms: { harry: ["potter"] },
-        typoTolerance: {
-          enabled: false,
-          minWordSizeForTypos: {
-            oneTypo: 1,
-            twoTypos: 100,
-          },
-          disableOnWords: ["prince"],
-          disableOnAttributes: ["comment"],
-        },
-        pagination: {
-          maxTotalHits: 1000,
-        },
-        faceting: {
-          maxValuesPerFacet: 50,
-          sortFacetValuesBy: {
-            "*": "alpha",
-          },
-        },
-        separatorTokens: ["&sep", "/", "|"],
-        nonSeparatorTokens: ["&sep", "/", "|"],
-        dictionary: ["J. K.", "J. R. R."],
-        searchCutoffMs: 1000,
-        facetSearch: true,
-        prefixSearch: "indexingTime",
-      };
-      // Add the settings
-      await client.index(index.uid).updateSettings(newSettings).waitTask();
+      const setting = await getSetting();
+      assertion(input, setting);
+    },
+  );
 
-      // Fetch the settings
-      const response = await client.index(index.uid).getSettings();
-
-      // tests
-      expect(response).toMatchSnapshot();
-    });
-
-    test(`${permission} key: Update settings with all null values`, async () => {
-      const client = await getClient(permission);
-      const newSettings: UpdatableSettings = {
-        filterableAttributes: null,
-        sortableAttributes: null,
-        distinctAttribute: null,
-        searchableAttributes: null,
-        displayedAttributes: null,
-        rankingRules: null,
-        stopWords: null,
-        synonyms: null,
-        typoTolerance: {
-          enabled: null,
-          minWordSizeForTypos: {
-            oneTypo: null,
-            twoTypos: null,
-          },
-          disableOnWords: null,
-          disableOnAttributes: null,
-        },
-        faceting: {
-          maxValuesPerFacet: null,
-          sortFacetValuesBy: null,
-        },
-        pagination: {
-          maxTotalHits: null,
-        },
-        separatorTokens: null,
-        nonSeparatorTokens: null,
-        dictionary: null,
-        searchCutoffMs: null,
-      };
-      // Add the settings
-      await client.index(index.uid).updateSettings(newSettings).waitTask();
-
-      // Fetch the settings
-      const response = await client.index(index.uid).getSettings();
-
-      // tests
-      expect(response).toMatchSnapshot();
-    });
-
-    test(`${permission} key: Update embedders settings `, async () => {
-      const client = await getClient(permission);
-
-      const newSettings: UpdatableSettings = {
-        embedders: {
-          default: {
-            source: "huggingFace",
-            model:
-              "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-          },
-        },
-      };
-      await client
-        .index(index.uid)
-        .updateSettings(newSettings)
-        .waitTask({ timeout: 60_000 });
-      const response = await client.index(index.uid).getSettings();
-
-      expect(response).toMatchSnapshot();
-    });
-
-    test(`${permission} key: Update settings on empty index with primary key`, async () => {
-      const client = await getClient(permission);
-      const newSettings: UpdatableSettings = {
-        distinctAttribute: "title",
-        rankingRules: ["title:asc", "typo"],
-        stopWords: ["the"],
-      };
-      await client.index(indexAndPK.uid).updateSettings(newSettings).waitTask();
-
-      const response = await client.index(indexAndPK.uid).getSettings();
-
-      expect(response).toMatchSnapshot();
-    });
-
-    test(`${permission} key: Reset settings`, async () => {
-      const client = await getClient(permission);
-      await client.index(index.uid).resetSettings().waitTask();
-
-      const response = await client.index(index.uid).getSettings();
-
-      expect(response).toMatchSnapshot();
-    });
-
-    test(`${permission} key: Reset settings of empty index`, async () => {
-      const client = await getClient(permission);
-      await client.index(indexAndPK.uid).resetSettings().waitTask();
-
-      const response = await client.index(indexAndPK.uid).getSettings();
-
-      expect(response).toMatchSnapshot();
-    });
-
-    test(`${permission} key: Reset embedders settings `, async () => {
-      const client = await getClient(permission);
-
-      const newSettings: UpdatableSettings = {
-        embedders: null,
-      };
-      await client.index(index.uid).updateSettings(newSettings).waitTask();
-      const response = await client.index(index.uid).getSettings();
-
-      expect(response).toMatchSnapshot();
-    });
-
-    test(`${permission} key: Update searchableAttributes settings on empty index`, async () => {
-      const client = await getClient(permission);
-      const newSettings = {
-        searchableAttributes: ["title"],
-      };
-      await client.index(index.uid).updateSettings(newSettings).waitTask();
-
-      const response = await client.index(index.uid).getSettings();
-
-      expect(response).toMatchSnapshot();
-    });
-
-    test(`${permission} key: Update searchableAttributes settings on empty index with a primary key`, async () => {
-      const client = await getClient(permission);
-      const newSettings = {
-        searchableAttributes: ["title"],
-      };
-      // Update settings
-      await client.index(indexAndPK.uid).updateSettings(newSettings).waitTask();
-      // Wait for setting addition to be done
-
-      // Fetch settings
-      const response = await client.index(indexAndPK.uid).getSettings();
-
-      expect(response).toMatchSnapshot();
-    });
-
-    test(`${permission} key: Update facetSearch settings on empty index`, async () => {
-      const client = await getClient(permission);
-
-      await client
-        .index(index.uid)
-        .updateSettings({ facetSearch: false })
-        .waitTask();
-
-      const response = await client.index(index.uid).getSettings();
-      expect(response).toMatchSnapshot();
-    });
-
-    test(`${permission} key: Update prefixSearch settings on an empty index`, async () => {
-      const client = await getClient(permission);
-
-      await client
-        .index(index.uid)
-        .updateSettings({ prefixSearch: "disabled" })
-        .waitTask();
-
-      const response = await client.index(index.uid).getSettings();
-      expect(response).toMatchSnapshot();
-    });
-  },
-);
-
-describe.each([{ permission: "Search" }])(
-  "Test on settings",
-  ({ permission }) => {
-    beforeEach(async () => {
-      await clearAllIndexes(config);
-    });
-    test(`${permission} key: try to get settings and be denied`, async () => {
-      const client = await getClient(permission);
-      await expect(
-        client.index(index.uid).getSettings(),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
-    });
-    test(`${permission} key: try to update settings and be denied`, async () => {
-      const client = await getClient(permission);
-      await expect(
-        client.index(index.uid).updateSettings({}),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
-    });
-    test(`${permission} key: try to reset settings and be denied`, async () => {
-      const client = await getClient(permission);
-      await expect(
-        client.index(index.uid).resetSettings(),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
-    });
-  },
-);
-
-describe.each([{ permission: "No" }])("Test on settings", ({ permission }) => {
-  beforeEach(async () => {
-    await clearAllIndexes(config);
+  test("single reset method", async () => {
+    const task = await resetSetting().waitTask();
+    assert.includeDeepMembers([null, ["*"]], [task.details?.[castKey]]);
+    assert.isTaskSuccessful(task);
   });
-  test(`${permission} key: try to get settings and be denied`, async () => {
-    const client = await getClient(permission);
-    await expect(client.index(index.uid).getSettings()).rejects.toHaveProperty(
-      "cause.code",
-      ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-    );
-  });
-  test(`${permission} key: try to update settings and be denied`, async () => {
-    const client = await getClient(permission);
-    await expect(
-      client.index(index.uid).updateSettings({}),
-    ).rejects.toHaveProperty(
-      "cause.code",
-      ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-    );
-  });
-  test(`${permission} key: try to reset settings and be denied`, async () => {
-    const client = await getClient(permission);
-    await expect(
-      client.index(index.uid).resetSettings(),
-    ).rejects.toHaveProperty(
-      "cause.code",
-      ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-    );
+
+  test.for(mappedSetting)(
+    `${index.updateSettings.name} and ${index.getSettings.name} methods%s`,
+    async ([, { input, assertion }]) => {
+      const task = await index.updateSettings({ [castKey]: input }).waitTask();
+      assert.isTaskSuccessful(task);
+
+      const taskSetting = task.details?.[castKey];
+      assert.isDefined(taskSetting);
+      assertion(input, taskSetting);
+
+      const settings = await index.getSettings();
+      assert.isDefined(settings[castKey]);
+      assertion(input, settings[castKey]);
+    },
+  );
+
+  test(`reset with ${index.updateSettings.name} method`, async () => {
+    const task = await index.updateSettings({ [castKey]: null }).waitTask();
+    assert.includeDeepMembers([null, ["*"]], [task.details?.[castKey]]);
+    assert.isTaskSuccessful(task);
   });
 });
 
-describe.each([
-  { host: BAD_HOST, trailing: false },
-  { host: `${BAD_HOST}/api`, trailing: false },
-  { host: `${BAD_HOST}/trailing/`, trailing: true },
-])("Tests on url construction", ({ host, trailing }) => {
-  test(`getSettings route`, async () => {
-    const route = `indexes/${index.uid}/settings`;
-    const client = new MeiliSearch({ host });
-    const strippedHost = trailing ? host.slice(0, -1) : host;
-    await expect(client.index(index.uid).getSettings()).rejects.toHaveProperty(
-      "message",
-      `Request to ${strippedHost}/${route} has failed`,
-    );
-  });
-
-  test(`updateSettings route`, async () => {
-    const route = `indexes/${index.uid}/settings`;
-    const client = new MeiliSearch({ host });
-    const strippedHost = trailing ? host.slice(0, -1) : host;
-    await expect(
-      client.index(index.uid).updateSettings({}),
-    ).rejects.toHaveProperty(
-      "message",
-      `Request to ${strippedHost}/${route} has failed`,
-    );
-  });
-
-  test(`resetSettings route`, async () => {
-    const route = `indexes/${index.uid}/settings`;
-    const client = new MeiliSearch({ host });
-    const strippedHost = trailing ? host.slice(0, -1) : host;
-    await expect(
-      client.index(index.uid).resetSettings(),
-    ).rejects.toHaveProperty(
-      "message",
-      `Request to ${strippedHost}/${route} has failed`,
-    );
-  });
+test(`${index.resetSettings.name} method`, async () => {
+  const task = await index.resetSettings().waitTask();
+  assert.isTaskSuccessful(task);
+  assert.deepEqual(task.details, {
+    dictionary: null,
+    displayedAttributes: ["*"],
+    distinctAttribute: null,
+    embedders: null,
+    facetSearch: null,
+    faceting: null,
+    filterableAttributes: null,
+    localizedAttributes: null,
+    nonSeparatorTokens: null,
+    pagination: null,
+    prefixSearch: null,
+    proximityPrecision: null,
+    rankingRules: null,
+    searchCutoffMs: null,
+    searchableAttributes: ["*"],
+    separatorTokens: null,
+    sortableAttributes: null,
+    stopWords: null,
+    synonyms: null,
+    typoTolerance: null,
+  } satisfies Required<UpdatableSettings>);
 });

@@ -214,7 +214,7 @@ export type UpdatableSettings = PartialAndNullable<{
  * A version of {@link UpdatableSettings}, the first layer of properties of which
  * is used to update or get individual settings.
  */
-export type IndividualUpdatableSettings = Required<UpdatableSettings>;
+export type SingleUpdatableSettings = Required<UpdatableSettings>;
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/settings#body}
