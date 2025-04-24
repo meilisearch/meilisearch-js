@@ -1,4 +1,4 @@
-import { test, describe, afterAll } from "vitest";
+import { test, describe, afterAll, beforeAll } from "vitest";
 import type {
   EnqueuedTaskPromise,
   FacetValuesSort,
@@ -303,133 +303,76 @@ const mappedSettings = {
   }).map((source) => {
     return [
       source,
-      (() => {
-        switch (source) {
-          case "openAi":
-            return {
-              input: {
-                default: {
+      {
+        input: {
+          [source]: (() => {
+            switch (source) {
+              case "openAi":
+                return {
                   source,
                   apiKey: "<your-OpenAI-API-key>",
                   model: "text-embedding-3-small",
                   documentTemplate:
                     "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
                   dimensions: 1536,
-                  distribution: {
-                    mean: 0.7,
-                    sigma: 0.3,
-                  },
+                  distribution: { mean: 0.7, sigma: 0.3 },
                   url: "https://api.openai.com/v1/embeddings",
                   documentTemplateMaxBytes: 500,
                   binaryQuantized: false,
-                },
-              },
-              assertion: (input, output) => {
-                assert.deepEqual(input, output);
-              },
-            };
-          case "huggingFace":
-            return {
-              input: {
-                default: {
+                };
+              case "huggingFace":
+                return {
                   source,
                   model:
                     "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
                   documentTemplate:
                     "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
-                  distribution: {
-                    mean: 0.7,
-                    sigma: 0.3,
-                  },
+                  distribution: { mean: 0.7, sigma: 0.3 },
                   pooling: "useModel",
                   documentTemplateMaxBytes: 500,
                   binaryQuantized: false,
-                },
-              },
-              assertion: (input, output) => {
-                assert.deepEqual(input, output);
-              },
-            };
-          case "ollama":
-            return {
-              input: {
-                default: {
+                };
+              case "ollama":
+                return {
                   source,
                   url: "http://localhost:11434/api/embeddings",
                   apiKey: "<your-ollama-api-key>",
                   model: "nomic-embed-text",
                   documentTemplate: "blabla",
-                  distribution: {
-                    mean: 0.7,
-                    sigma: 0.3,
-                  },
+                  distribution: { mean: 0.7, sigma: 0.3 },
                   dimensions: 512,
                   documentTemplateMaxBytes: 500,
                   binaryQuantized: false,
-                },
-              },
-              assertion: (input, output) => {
-                assert.deepEqual(input, output);
-              },
-            };
-          case "userProvided":
-            return {
-              input: {
-                default: {
+                };
+              case "userProvided":
+                return {
                   source,
                   dimensions: 1,
-                  distribution: {
-                    mean: 0.7,
-                    sigma: 0.3,
-                  },
+                  distribution: { mean: 0.7, sigma: 0.3 },
                   binaryQuantized: false,
-                },
-              },
-              assertion: (input, output) => {
-                assert.deepEqual(input, output);
-              },
-            };
-          case "rest":
-            return {
-              input: {
-                default: {
+                };
+              case "rest":
+                return {
                   source,
                   url: "https://api.openai.com/v1/embeddings",
                   apiKey: "<your-openai-api-key>",
                   dimensions: 1536,
                   documentTemplate:
                     "A movie titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
-                  distribution: {
-                    mean: 0.7,
-                    sigma: 0.3,
-                  },
+                  distribution: { mean: 0.7, sigma: 0.3 },
                   request: {
                     model: "text-embedding-3-small",
                     input: ["{{text}}", "{{..}}"],
                   },
                   response: {
-                    data: [
-                      {
-                        embedding: "{{embedding}}",
-                      },
-                      "{{..}}",
-                    ],
+                    data: [{ embedding: "{{embedding}}" }, "{{..}}"],
                   },
-                  headers: {
-                    "Custom-Header": "CustomValue",
-                  },
+                  headers: { "Custom-Header": "CustomValue" },
                   documentTemplateMaxBytes: 500,
                   binaryQuantized: false,
-                },
-              },
-              assertion: (input, output) => {
-                assert.deepEqual(input, output);
-              },
-            };
-          case "composite":
-            return {
-              input: {
-                default: {
+                };
+              case "composite":
+                return {
                   source,
                   searchEmbedder: {
                     source: "huggingFace",
@@ -445,17 +388,32 @@ const mappedSettings = {
                     pooling: "useModel",
                     documentTemplateMaxBytes: 500,
                   },
-                },
-              },
-              assertion: (input, output) => {
-                assert.deepEqual(input, output);
-              },
-            };
-          default:
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            assert.fail(`untested source ${source}`);
-        }
-      })(),
+                };
+              default:
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                assert.fail(`untested embedder source ${source}`);
+            }
+          })(),
+        },
+        assertion: (input, output) => {
+          const inputEmbeddingSettings = input?.[source];
+          const outputEmbeddingSettings = output?.[source];
+          assert(
+            inputEmbeddingSettings != null && outputEmbeddingSettings != null,
+          );
+
+          const { apiKey: inputApiKey, ...restOfInputEmbeddingSettings } =
+            inputEmbeddingSettings;
+          const { apiKey: outputApiKey, ...restOfOutputEmbeddingSettings } =
+            outputEmbeddingSettings;
+
+          assert.deepEqual(
+            restOfInputEmbeddingSettings,
+            restOfOutputEmbeddingSettings,
+          );
+          assert(typeof inputApiKey === typeof outputApiKey);
+        },
+      },
     ];
   }),
 
@@ -515,7 +473,12 @@ const mappedSettings = {
   ][]
 >;
 
+beforeAll(async () => {
+  await ms.updateExperimentalFeatures({ compositeEmbedders: true });
+});
+
 afterAll(async () => {
+  await ms.updateExperimentalFeatures({ compositeEmbedders: false });
   const task = await index.delete().waitTask();
   assert.isTaskSuccessful(task);
 });
