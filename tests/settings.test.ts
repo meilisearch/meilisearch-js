@@ -39,7 +39,7 @@ const mappedSettings = {
     [
       undefined,
       {
-        input: ["uno", "dos"],
+        input: ["augustus", "nero"],
         assertion: (input, output) => {
           assert.isNotNull(input);
           assert.isNotNull(output);
@@ -53,7 +53,7 @@ const mappedSettings = {
     [
       undefined,
       {
-        input: ["tres", "cuatro"],
+        input: ["charlemagne", "ferdinand"],
         assertion: (input, output) => {
           assert.isNotNull(input);
           assert.isNotNull(output);
@@ -68,9 +68,7 @@ const mappedSettings = {
       undefined,
       {
         input: [
-          // pattern
-          "genre",
-          // granular
+          "modèleZéro",
           {
             attributePatterns: ["modèleUn", "modèleDeux"],
             features: {
@@ -92,7 +90,7 @@ const mappedSettings = {
     [
       undefined,
       {
-        input: ["cinco", "seis"],
+        input: ["madsMikkelsen", "nikolajCosterWaldau"],
         assertion: (input, output) => {
           assert.isNotNull(input);
           assert.isNotNull(output);
@@ -129,7 +127,7 @@ const mappedSettings = {
     [
       undefined,
       {
-        input: ["siete", "ocho"],
+        input: ["hideakiAnno", "hayaoMiyazaki"],
         assertion: (input, output) => {
           assert.isNotNull(input);
           assert.isNotNull(output);
@@ -143,7 +141,7 @@ const mappedSettings = {
     [
       undefined,
       {
-        input: ["nueve", "diez"],
+        input: ["nile", "amazonRiver"],
         assertion: (input, output) => {
           assert.isNotNull(input);
           assert.isNotNull(output);
@@ -171,7 +169,7 @@ const mappedSettings = {
     [
       undefined,
       {
-        input: ["suge", "bucle"],
+        input: ["mountEverest", "k2"],
         assertion: (input, output) => {
           assert.isNotNull(input);
           assert.isNotNull(output);
@@ -200,7 +198,7 @@ const mappedSettings = {
     [
       undefined,
       {
-        input: "trece",
+        input: "benjaminFranklin",
         assertion: (input, output) => {
           assert.strictEqual(input, output);
         },
@@ -246,10 +244,7 @@ const mappedSettings = {
             ...restOutput
           } = output;
 
-          assert(dow1 != null);
-          assert(dow2 != null);
-          assert(doa1 != null);
-          assert(doa2 != null);
+          assert(dow1 != null && dow2 != null && doa1 != null && doa2 != null);
 
           assert.sameMembers(dow1, dow2);
           assert.sameMembers(doa1, doa2);
