@@ -15,9 +15,10 @@ test(`${ms.index.name} method`, () => {
 
 afterAll(async () => {
   await Promise.all(
-    [INDEX_UID_ONE, INDEX_UID_TWO].map((i) =>
-      ms.index(i).deleteIndex().waitTask(),
-    ),
+    [INDEX_UID_ONE, INDEX_UID_TWO].map(async (i) => {
+      const task = await ms.index(i).deleteIndex().waitTask();
+      assert.isTaskSuccessful(task);
+    }),
   );
 });
 

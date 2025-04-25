@@ -1,25 +1,40 @@
-import { afterAll, expect, test } from "vitest";
-import { getClient } from "./utils/meilisearch-test-utils.js";
+import { afterAll, test } from "vitest";
+import { assert, getClient } from "./utils/meilisearch-test-utils.js";
 
-const INDEX_UID = "stats-index";
-const client = await getClient("Master");
+const INDEX_UID = "7dfb3954-d408-4fb9-9cb9-acede082f650";
+const ms = await getClient("Master");
+const index = ms.index(INDEX_UID);
 
 afterAll(async () => {
-  await client.index(INDEX_UID).deleteIndex().waitTask();
+  const task = await ms.index(INDEX_UID).deleteIndex().waitTask();
+  assert.isTaskSuccessful(task);
 });
 
-test("getStats method", async () => {
-  await client.createIndex({ uid: INDEX_UID }).waitTask();
-  const stats = await client.index(INDEX_UID).getStats();
-  expect(stats).toMatchInlineSnapshot(`
-    {
-      "avgDocumentSize": 0,
-      "fieldDistribution": {},
-      "isIndexing": false,
-      "numberOfDocuments": 0,
-      "numberOfEmbeddedDocuments": 0,
-      "numberOfEmbeddings": 0,
-      "rawDocumentDbSize": 0,
-    }
-  `);
+test(`${index.getStats.name} method`, async () => {
+  const task = await index
+    .addDocuments([
+      { id: 1, liberté: true },
+      { id: 2, égalité: true },
+      { id: 3, fraternité: true },
+    ])
+    .waitTask();
+
+  assert.isTaskSuccessful(task);
+
+  const stats = await index.getStats();
+
+  assert.deepEqual(stats, {
+    avgDocumentSize: 1357,
+    fieldDistribution: {
+      fraternité: 1,
+      id: 3,
+      liberté: 1,
+      égalité: 1,
+    },
+    isIndexing: false,
+    numberOfDocuments: 3,
+    numberOfEmbeddedDocuments: 0,
+    numberOfEmbeddings: 0,
+    rawDocumentDbSize: 4096,
+  });
 });
