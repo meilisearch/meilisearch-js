@@ -14,13 +14,15 @@ date_guide_index_1: |-
 date_guide_filterable_attributes_1: |-
   client.index('games').updateFilterableAttributes(['release_timestamp'])
 date_guide_filter_1: |-
-  client.index('games').search('', {
+  client.index('games').search({
+    q: '',
     filter: 'release_timestamp >= 1514761200 AND release_timestamp < 1672527600'
   })
 date_guide_sortable_attributes_1: |-
   client.index('games').updateSortableAttributes(['release_timestamp'])
 date_guide_sort_1: |-
-  client.index('games').search('', {
+  client.index('games').search({
+    q: '',
     sort: ['release_timestamp:desc'],
   })
 get_one_index_1: |-
@@ -78,9 +80,9 @@ delete_documents_by_filter_1: |-
     filter: 'genres = action OR genres = adventure'
   })
 search_post_1: |-
-  client.index('movies').search('American ninja')
+  client.index('movies').search({ q: 'American ninja' })
 search_get_1: |-
-  client.index('movies').searchGet('American ninja')
+  client.index('movies').searchGet({ q: 'American ninja' })
 multi_search_1: |-
   client.multiSearch({ queries: [
     {
@@ -302,81 +304,99 @@ field_properties_guide_displayed_1: |-
     ]
   )
 filtering_guide_1: |-
-  client.index('movie_ratings').search('Avengers', {
+  client.index('movie_ratings').search({
+    q: 'Avengers',
     filter: 'release_date > 795484800'
   })
 filtering_guide_2: |-
-  client.index('movie_ratings').search('Batman', {
+  client.index('movie_ratings').search({
+    q: 'Batman',
     filter: 'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")'
   })
 filtering_guide_3: |-
-  client.index('movie_ratings').search('Planet of the Apes', {
+  client.index('movie_ratings').search({
+    q: 'Planet of the Apes',
     filter: "release_date > 1577884550 AND (NOT director = \"Tim Burton\")"
   })
 filtering_guide_nested_1: |-
-  client.index('movie_ratings').search('thriller', {
+  client.index('movie_ratings').search({
+    q: 'thriller',
     filter: 'rating.users >= 90'
   })
 search_parameter_guide_query_1: |-
-  client.index('movies').search('shifu')
+  client.index('movies').search({ q: 'shifu' })
 search_parameter_guide_offset_1: |-
-  client.index('movies').search('shifu', {
+  client.index('movies').search({
+    q: 'shifu',
     offset: 1
   })
 search_parameter_guide_limit_1: |-
-  client.index('movies').search('shifu', {
+  client.index('movies').search({
+    q: 'shifu',
     limit: 2
   })
 search_parameter_guide_retrieve_1: |-
-  client.index('movies').search('shifu', {
+  client.index('movies').search({
+    q: 'shifu',
     attributesToRetrieve: ['overview', 'title']
   })
 search_parameter_guide_crop_1: |-
-  client.index('movies').search('shifu', {
+  client.index('movies').search({
+    q: 'shifu',
     attributesToCrop: ['overview'],
     cropLength: 5
   })
 search_parameter_guide_crop_marker_1: |-
-  client.index('movies').search('shifu', {
+  client.index('movies').search({
+    q: 'shifu',
     attributesToCrop: ['overview'],
     cropMarker: '[…]'
   })
 search_parameter_guide_highlight_1: |-
-  client.index('movies').search('winter feast', {
+  client.index('movies').search({
+    q: 'winter feast',
     attributesToHighlight: ['overview']
   })
 search_parameter_guide_highlight_tag_1: |-
-  client.index('movies').search('winter feast', {
+  client.index('movies').search({
+    q: 'winter feast',
     attributesToHighlight: ['overview'],
     highlightPreTag: '<span class="highlight">',
     highlightPostTag: '</span>'
   })
 search_parameter_guide_show_matches_position_1: |-
-  client.index('movies').search('winter feast', {
+  client.index('movies').search({
+    q: 'winter feast',
     showMatchesPosition: true
   })
 search_parameter_guide_matching_strategy_1: |-
-  client.index('movies').search('big fat liar', {
+  client.index('movies').search({
+    q: 'big fat liar',
     matchingStrategy: 'last'
   })
 search_parameter_guide_matching_strategy_2: |-
-  client.index('movies').search('big fat liar', {
+  client.index('movies').search({
+    q: 'big fat liar',
     matchingStrategy: 'all'
   })
 search_parameter_guide_hitsperpage_1: |-
-  client.index('movies').search('', {
+  client.index('movies').search({
+    q: '',
     hitsPerPage: 15
   })
 search_parameter_guide_page_1: |-
-  client.index('movies').search('', {
+  client.index('movies').search({
+    q: '',
     page: 2
   })
 search_parameter_guide_show_ranking_score_1: |-
-  client.index('movies').search('dragon', {
+  client.index('movies').search({
+    q: 'dragon',
     showRankingScore: true
   })
 search_parameter_guide_attributes_to_search_on_1: |-
-  client.index('movies').search('adventure', {
+  client.index('movies').search({
+    q: 'adventure',
     attributesToSearchOn: ['overview']
   })
 typo_tolerance_guide_1: |-
@@ -454,7 +474,7 @@ getting_started_add_documents_md: |-
   [About this SDK](https://github.com/meilisearch/meilisearch-js/)
 getting_started_search_md: |-
   ```js
-  client.index('movies').search('botman').then((res) => console.log(res))
+  client.index('movies').search({ q: 'botman' }).then((res) => console.log(res))
   ```
 
   [About this SDK](https://github.com/meilisearch/meilisearch-js/)
@@ -498,11 +518,14 @@ getting_started_configure_settings: |-
     sortableAttributes: ['mass', '_geo']
   })
 getting_started_geo_radius: |-
-  client.index('meteorites').search('', { filter: '_geoRadius(46.9480, 7.4474, 210000)' })
+  client.index('meteorites').search({
+    q: '', filter: '_geoRadius(46.9480, 7.4474, 210000)' })
 getting_started_geo_point: |-
-  client.index('meteorites').search('', { sort: ['_geoPoint(48.8583701, 2.2922926):asc'] })
+  client.index('meteorites').search({
+    q: '', sort: ['_geoPoint(48.8583701, 2.2922926):asc'] })
 getting_started_sorting: |-
-  client.index('meteorites').search('', {
+  client.index('meteorites').search({
+    q: '',
     sort: ['mass:asc'],
     filter: 'mass < 200'
   })
@@ -520,7 +543,8 @@ getting_started_typo_tolerance: |-
     }
   })
 getting_started_filtering: |-
-  client.index('meteorites').search('', { filter: 'mass < 200' })
+  client.index('meteorites').search({
+    q: '', filter: 'mass < 200' })
 getting_started_pagination: |-
   client.index('movies').updatePagination({ maxTotalHits: 500 })
 get_filterable_attributes_1: |-
@@ -547,20 +571,21 @@ filtering_update_settings_1: |-
     ])
 faceted_search_walkthrough_filter_1: |-
   client.index('movies')
-    .search('thriller', {
+    .search({
+      q: 'thriller',
       filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
     })
 faceted_search_update_settings_1: |-
   client.index('movie_ratings').updateFilterableAttributes(['genres', 'rating', 'language'])
 faceted_search_1: |-
-  client.index('books').search('classic', { facets: ['genres', 'rating', 'language'] })
+  client.index('books').search({ q: 'classic', facets: ['genres', 'rating', 'language'] })
 post_dump_1: |-
   client.createDump()
 create_snapshot_1: |-
   client.createSnapshot()
 phrase_search_1: |-
   client.index('movies')
-    .search('"african american" horror')
+    .search({ q: '"african american" horror' })
 sorting_guide_update_sortable_attributes_1: |-
   client.index('books').updateSortableAttributes([
       'author',
@@ -576,15 +601,18 @@ sorting_guide_update_ranking_rules_1: |-
     'exactness'
   ])
 sorting_guide_sort_parameter_1: |-
-  client.index('books').search('science fiction', {
+  client.index('books').search({
+    q: 'science fiction',
     sort: ['price:asc'],
   })
 sorting_guide_sort_parameter_2: |-
-  client.index('books').search('butler', {
+  client.index('books').search({
+    q: 'butler',
     sort: ['author:desc'],
   })
 sorting_guide_sort_nested_1: |-
-  client.index('books').search('science fiction', {
+  client.index('books').search({
+    q: 'science fiction',
     'sort': ['rating.users:asc'],
   })
 get_sortable_attributes_1: |-
@@ -622,7 +650,8 @@ update_dictionary_1: |-
 reset_dictionary_1: |-
   client.index('books').resetDictionary()
 search_parameter_guide_sort_1: |-
-  client.index('books').search('science fiction', {
+  client.index('books').search({
+    q: 'science fiction',
     sort: ['price:asc'],
   })
 get_separator_tokens_1: |-
@@ -650,22 +679,25 @@ update_search_cutoff_1: |-
 reset_search_cutoff_1: |-
   client.index('movies').resetSearchCutoffMs()
 search_parameter_guide_facet_stats_1: |-
-  client.index('movie_ratings').search('Batman', { facets: ['genres', 'rating'] })
+  client.index('movie_ratings').search({ q: 'Batman', facets: ['genres', 'rating'] })
 geosearch_guide_filter_settings_1: |-
   client.index('restaurants')
   .updateFilterableAttributes([
     '_geo'
   ])
 geosearch_guide_filter_usage_1: |-
-  client.index('restaurants').search('', {
+  client.index('restaurants').search({
+    q: '',
     filter: ['_geoRadius(45.472735, 9.184019, 2000)'],
   })
 geosearch_guide_filter_usage_2: |-
-  client.index('restaurants').search('', {
+  client.index('restaurants').search({
+    q: '',
     filter: ['_geoRadius(45.472735, 9.184019, 2000) AND type = pizza'],
   })
 geosearch_guide_filter_usage_3: |-
-  client.index('restaurants').search('', {
+  client.index('restaurants').search({
+    q: '',
     filter: ['_geoBoundingBox([45.494181, 9.214024], [45.449484, 9.179175])'],
   })
 geosearch_guide_sort_settings_1: |-
@@ -673,11 +705,13 @@ geosearch_guide_sort_settings_1: |-
     '_geo'
   ])
 geosearch_guide_sort_usage_1: |-
-  client.index('restaurants').search('', {
+  client.index('restaurants').search({
+    q: '',
     sort: ['_geoPoint(48.8561446, 2.2978204):asc'],
   })
 geosearch_guide_sort_usage_2: |-
-  client.index('restaurants').search('', {
+  client.index('restaurants').search({
+    q: '',
     sort: ['_geoPoint(48.8561446, 2.2978204):asc', 'rating:desc'],
   })
 security_guide_search_key_1: |-
@@ -720,7 +754,7 @@ tenant_token_guide_generate_sdk_1: |-
   const token = await generateTenantToken({ apiKey, apiKeyUid, searchRules, expiresAt })
 tenant_token_guide_search_sdk_1: |-
   const frontEndClient = new MeiliSearch({ host: 'http://localhost:7700', apiKey: token })
-  frontEndClient.index('patient_medical_records').search('blood test')
+  frontEndClient.index('patient_medical_records').search({ q: 'blood test' })
 landing_getting_started_1: |-
   const client = new MeiliSearch('http://localhost:7700', 'masterKey')
 
@@ -734,7 +768,7 @@ landing_getting_started_1: |-
   ])
 
   // be aware this client is using the masterKey, it should not be used in front end
-  const search = await index.search('philodelphia')
+  const search = await index.search({ q: 'philodelphia' })
   console.log(search)
 facet_search_1: |-
   client.index('books').searchForFacetValues({
@@ -754,22 +788,24 @@ facet_search_3: |-
     facetName: 'genres'
   })
 search_parameter_guide_show_ranking_score_details_1: |-
-  client.index('movies').search('dragon', { showRankingScoreDetails: true })
+  client.index('movies').search({ q: 'dragon', showRankingScoreDetails: true })
 negative_search_1: |-
-  client.index('movies').search('-escape')
+  client.index('movies').search({ q: '-escape' })
 negative_search_2: |-
-  client.index('movies').search('-"escape"')
+  client.index('movies').search({ q: '-"escape"' })
 search_parameter_reference_ranking_score_threshold_1: |-
-  client.index('INDEX_NAME').search('badman', { rankingScoreThreshold: 0.2 })
+  client.index('INDEX_NAME').search({ q: 'badman', rankingScoreThreshold: 0.2 })
 search_parameter_reference_retrieve_vectors_1: |-
-  client.index('INDEX_NAME').search('kitchen utensils', {
+  client.index('INDEX_NAME').search({
+    q: 'kitchen utensils',
     retrieveVectors: true,
     hybrid: {
       embedder: 'EMBEDDER_NAME'
     }
   })
 search_parameter_guide_hybrid_1: |-
-  client.index('INDEX_NAME').search('kitchen utensils', {
+  client.index('INDEX_NAME').search({
+    q: 'kitchen utensils',
     hybrid: {
       semanticRatio: 0.9,
       embedder: 'EMBEDDER_NAME'
@@ -778,17 +814,18 @@ search_parameter_guide_hybrid_1: |-
 get_similar_post_1: |-
   client.index('INDEX_NAME').searchSimilarDocuments({ id: 'TARGET_DOCUMENT_ID', embedder: 'default' })
 search_parameter_guide_matching_strategy_3: |-
-  client.index('movies').search('white shirt', {
+  client.index('movies').search({
+    q: 'white shirt',
     matchingStrategy: 'frequency'
   })
 search_parameter_reference_distinct_1: |-
-  client.index('INDEX_NAME').search('QUERY TERMS', { distinct: 'ATTRIBUTE_A' })
+  client.index('INDEX_NAME').search({ q: 'QUERY TERMS', distinct: 'ATTRIBUTE_A' })
 distinct_attribute_guide_filterable_1: |-
   client.index('products').updateFilterableAttributes(['product_id', 'sku', 'url'])
 distinct_attribute_guide_distinct_parameter_1: |-
-  client.index('products').search('white shirt', { distinct: 'sku' })
+  client.index('products').search({ q: 'white shirt', distinct: 'sku' })
 multi_search_federated_1: |-
-  client.multiSearch({
+  client.federatedMultiSearch({
     federation: {},
     queries: [
       {
@@ -802,7 +839,7 @@ multi_search_federated_1: |-
     ]
   })
 search_parameter_reference_locales_1: |-
-  client.index('INDEX_NAME').search('QUERY TEXT IN JAPANESE', { locales: ['jpn'] })
+  client.index('INDEX_NAME').search({ q: 'QUERY TEXT IN JAPANESE', locales: ['jpn'] })
 get_localized_attribute_settings_1: |-
   client.index('INDEX_NAME').getLocalizedAttributes()
 update_localized_attribute_settings_1: |-
