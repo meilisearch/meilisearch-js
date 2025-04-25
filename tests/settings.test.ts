@@ -470,12 +470,14 @@ const mappedSettings = {
 
 beforeAll(async () => {
   await ms.updateExperimentalFeatures({ compositeEmbedders: true });
+  const task = await ms.createIndex(INDEX_UID).waitTask();
+  assert.isTaskSuccessful(task);
 });
 
 afterAll(async () => {
-  await ms.updateExperimentalFeatures({ compositeEmbedders: false });
   const task = await index.delete().waitTask();
   assert.isTaskSuccessful(task);
+  await ms.updateExperimentalFeatures({ compositeEmbedders: false });
 });
 
 describe.for(Object.entries(mappedSettings))("%s", ([key, mappedSetting]) => {
@@ -506,8 +508,9 @@ describe.for(Object.entries(mappedSettings))("%s", ([key, mappedSetting]) => {
   test.for(mappedSetting)(
     "single update and get methods%s",
     async ([, { input, assertion }]) => {
-      const task = await updateSetting(input).waitTask();
+      const task = await updateSetting(input).waitTask({ timeout: 30_000 });
       assert.isTaskSuccessful(task);
+      assert.strictEqual(task.type, "settingsUpdate");
 
       const taskSetting = task.details?.[castKey];
       assert.isDefined(taskSetting);
@@ -522,13 +525,17 @@ describe.for(Object.entries(mappedSettings))("%s", ([key, mappedSetting]) => {
     const task = await resetSetting().waitTask();
     assert.includeDeepMembers([null, ["*"]], [task.details?.[castKey]]);
     assert.isTaskSuccessful(task);
+    assert.strictEqual(task.type, "settingsUpdate");
   });
 
   test.for(mappedSetting)(
     `${index.updateSettings.name} and ${index.getSettings.name} methods%s`,
     async ([, { input, assertion }]) => {
-      const task = await index.updateSettings({ [castKey]: input }).waitTask();
+      const task = await index
+        .updateSettings({ [castKey]: input })
+        .waitTask({ timeout: 30_000 });
       assert.isTaskSuccessful(task);
+      assert.strictEqual(task.type, "settingsUpdate");
 
       const taskSetting = task.details?.[castKey];
       assert.isDefined(taskSetting);
@@ -544,11 +551,13 @@ describe.for(Object.entries(mappedSettings))("%s", ([key, mappedSetting]) => {
     const task = await index.updateSettings({ [castKey]: null }).waitTask();
     assert.includeDeepMembers([null, ["*"]], [task.details?.[castKey]]);
     assert.isTaskSuccessful(task);
+    assert.strictEqual(task.type, "settingsUpdate");
   });
 });
 
 test(`${index.resetSettings.name} method`, async () => {
   const task = await index.resetSettings().waitTask();
+
   assert.isTaskSuccessful(task);
   assert.deepEqual(task.details, {
     dictionary: null,
@@ -572,4 +581,5 @@ test(`${index.resetSettings.name} method`, async () => {
     synonyms: null,
     typoTolerance: null,
   } satisfies Required<UpdatableSettings>);
+  assert.strictEqual(task.type, "settingsUpdate");
 });
