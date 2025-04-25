@@ -188,6 +188,3 @@ test.concurrent("custom http client", async () => {
   assert.instanceOf(input, URL);
   assert(input.href.startsWith(HOST));
 });
-
-// TODO: Describe how this PR depends on improve indexes PR
-// TODO: Error tests
