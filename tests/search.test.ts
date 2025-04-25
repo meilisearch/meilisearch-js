@@ -1,5 +1,10 @@
 import { afterAll, beforeAll, test, describe } from "vitest";
-import { assert, HOST, MASTER_KEY } from "./utils/meilisearch-test-utils.js";
+import {
+  assert,
+  HOST,
+  MASTER_KEY,
+  ObjectKeys,
+} from "./utils/meilisearch-test-utils.js";
 import { type Film, FILMS } from "./utils/test-data/films.js";
 import type {
   ExplicitVectors,
@@ -291,12 +296,11 @@ describe.concurrent("`showMatchesPosition` param", () => {
   );
 });
 
-const possibleMatchingStrategies = Object.keys({
+const possibleMatchingStrategies = ObjectKeys<MatchingStrategy>({
   last: null,
   all: null,
   frequency: null,
-  // record because cannot convert union to tuple (https://github.com/microsoft/TypeScript/issues/42857)
-} satisfies { [TKey in MatchingStrategy]: null }) as MatchingStrategy[];
+});
 
 describe.concurrent.for(possibleMatchingStrategies)(
   "`matchingStrategy` = `%s` param",
@@ -487,5 +491,3 @@ describe.concurrent("embedding related params", () => {
     },
   );
 });
-
-test.todo("abortable http request");

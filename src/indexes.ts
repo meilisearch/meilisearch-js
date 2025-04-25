@@ -93,8 +93,6 @@ export class Index<T extends RecordAny = RecordAny> {
   /// SEARCH
   ///
 
-  // TODO: If no params are provided, it's set to pagination | offset limit
-  //       If empty object param is provided it's set to pagination
   /** {@link https://www.meilisearch.com/docs/reference/api/search} */
   search(
     searchQuery?: SearchQueryWithOffsetLimit,
@@ -105,7 +103,7 @@ export class Index<T extends RecordAny = RecordAny> {
     init?: ExtraRequestInit,
   ): Promise<SearchResultWithPagination<T>>;
   async search(
-    searchQuery?: SearchQuery,
+    searchQuery: SearchQuery = {},
     init?: ExtraRequestInit,
   ): Promise<SearchResult<T>> {
     return await this.httpRequest.post({

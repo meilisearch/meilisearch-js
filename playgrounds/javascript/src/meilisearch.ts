@@ -1,4 +1,7 @@
-import { Index, Meilisearch } from "../../../src/index.js";
+import {
+  Meilisearch,
+  type SearchQueryWithOffsetLimit,
+} from "../../../src/index.js";
 
 const client = new Meilisearch({
   host: "http://127.0.0.1:7700",
@@ -37,13 +40,13 @@ export async function getAllHits(element: HTMLDivElement): Promise<void> {
 }
 
 export async function getSearchResponse(element: HTMLDivElement) {
-  const params: Parameters<Index["search"]> = [
-    { q: "philoudelphia", attributesToHighlight: ["title"] },
-  ];
-
-  const response = await client.index(indexUid).search(...params);
+  const searchQuery: SearchQueryWithOffsetLimit = {
+    q: "philoudelphia",
+    attributesToHighlight: ["title"],
+  };
+  const response = await client.index(indexUid).search(searchQuery);
 
   element.innerText =
-    `PARAMETERS: ${JSON.stringify(params, null, 4)}` +
+    `PARAMETERS: ${JSON.stringify(searchQuery, null, 4)}` +
     `\nRESPONSE: ${JSON.stringify(response, null, 4)}`;
 }
