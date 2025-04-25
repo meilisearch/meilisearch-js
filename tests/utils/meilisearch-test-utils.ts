@@ -1,6 +1,6 @@
 import { assert as vitestAssert } from "vitest";
 import { MeiliSearch, Index } from "../../src/index.js";
-import type { Config } from "../../src/types/index.js";
+import type { Config, Task } from "../../src/types/index.js";
 
 // testing
 const MASTER_KEY = "masterKey";
@@ -126,6 +126,10 @@ const source = {
       NOT_RESOLVED,
       "expected value to not resolve",
     );
+  },
+  isTaskSuccessful(task: Task) {
+    vitestAssert.isNull(task.error);
+    vitestAssert.strictEqual(task.status, "succeeded");
   },
 };
 export const assert: typeof vitestAssert & typeof source = Object.assign(
