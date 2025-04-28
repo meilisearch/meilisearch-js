@@ -425,7 +425,6 @@ getting_started_add_documents: |-
   // yarn add meilisearch
 
   // In your .js file:
-  
   // With the `require` syntax:
   const { MeiliSearch } = require('meilisearch')
   const movies = require('./movies.json')
