@@ -1,4 +1,3 @@
-import * as assert from "node:assert";
 import {
   afterAll,
   beforeEach,
@@ -16,10 +15,16 @@ import {
   clearAllIndexes,
   config,
   HOST,
+  assert,
 } from "./utils/meilisearch-test-utils.js";
 import { createHmac } from "node:crypto";
 import { generateTenantToken } from "../src/token.js";
-import { MeiliSearch } from "../src/index.js";
+import {
+  MeiliSearch,
+  MeiliSearchApiError,
+  type TenantTokenHeader,
+  type TokenClaims,
+} from "../src/index.js";
 
 const HASH_ALGORITHM = "HS256";
 const TOKEN_TYP = "JWT";
@@ -35,7 +40,8 @@ test("Should throw error for invalid UID", async () => {
       apiKey: "wrong",
       apiKeyUid: "stuff",
     }),
-    /^Error: the uid of your key is not a valid UUIDv4$/,
+    Error,
+    "the uid of your key is not a valid UUIDv4",
   );
 });
 
@@ -48,16 +54,16 @@ test("Should throw error for non-server-side environment", async () => {
         .mockImplementation(() => "ProbablySomeBrowserUA");
     }
 
-    const nodeEvnSpy = vi.spyOn(process, "versions", "get").mockImplementation(
+    const nodeEnvSpy = vi.spyOn(process, "versions", "get").mockImplementation(
       () =>
-        // @ts-expect-error
+        // @ts-expect-error The returned value is of no importance
         undefined,
     );
 
     return {
       [Symbol.dispose]() {
         userAgentSpy?.mockRestore();
-        nodeEvnSpy.mockRestore();
+        nodeEnvSpy.mockRestore();
       },
     };
   })();
@@ -67,7 +73,8 @@ test("Should throw error for non-server-side environment", async () => {
       apiKey: "wrong",
       apiKeyUid: "stuff",
     }),
-    /^Error: failed to detect a server-side environment;/,
+    Error,
+    /^failed to detect a server-side environment/,
   );
 });
 
@@ -77,8 +84,7 @@ describe.each([{ permission: "Admin" }])(
     beforeEach(async () => {
       const client = await getClient("Master");
       await client.index(UID).delete();
-      const { taskUid } = await client.index(UID).addDocuments(dataset);
-      await client.waitForTask(taskUid);
+      await client.index(UID).addDocuments(dataset).waitTask();
 
       const keys = await client.getKeys();
 
@@ -103,7 +109,7 @@ describe.each([{ permission: "Admin" }])(
       const [header64] = token.split(".");
 
       // header
-      const { typ, alg } = JSON.parse(decode64(header64));
+      const { typ, alg } = JSON.parse(decode64(header64)) as TenantTokenHeader;
       expect(alg).toEqual(HASH_ALGORITHM);
       expect(typ).toEqual(TOKEN_TYP);
     });
@@ -140,7 +146,9 @@ describe.each([{ permission: "Admin" }])(
       const [_, payload64] = token.split(".");
 
       // payload
-      const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
+      const { apiKeyUid, exp, searchRules } = JSON.parse(
+        decode64(payload64),
+      ) as TokenClaims;
 
       expect(apiKeyUid).toEqual(uid);
       expect(exp).toBeUndefined();
@@ -159,7 +167,9 @@ describe.each([{ permission: "Admin" }])(
       const [_, payload64] = token.split(".");
 
       // payload
-      const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
+      const { apiKeyUid, exp, searchRules } = JSON.parse(
+        decode64(payload64),
+      ) as TokenClaims;
 
       expect(apiKeyUid).toEqual(uid);
       expect(exp).toBeUndefined();
@@ -178,7 +188,9 @@ describe.each([{ permission: "Admin" }])(
       const [_, payload64] = token.split(".");
 
       // payload
-      const { apiKeyUid, exp, searchRules } = JSON.parse(decode64(payload64));
+      const { apiKeyUid, exp, searchRules } = JSON.parse(
+        decode64(payload64),
+      ) as TokenClaims;
       expect(apiKeyUid).toEqual(uid);
       expect(exp).toBeUndefined();
       expect(searchRules).toEqual({ [UID]: {} });
@@ -235,7 +247,7 @@ describe.each([{ permission: "Admin" }])(
       const [_, payload] = token.split(".");
       const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
 
-      expect(JSON.parse(decode64(payload)).exp).toEqual(
+      expect((JSON.parse(decode64(payload)) as TokenClaims).exp).toEqual(
         Math.floor(date.getTime() / 1000),
       );
       await expect(
@@ -259,7 +271,8 @@ describe.each([{ permission: "Admin" }])(
 
       await assert.rejects(
         searchClient.index(UID).search(),
-        /^MeiliSearchApiError: Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
+        MeiliSearchApiError,
+        /^Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
       );
     });
 
@@ -284,10 +297,10 @@ describe.each([{ permission: "Admin" }])(
     test(`${permission} key: Search in tenant token with specific index and specific rules`, async () => {
       // add filterable
       const masterClient = await getClient("master");
-      const { taskUid } = await masterClient
+      await masterClient
         .index(UID)
-        .updateFilterableAttributes(["id"]);
-      await masterClient.waitForTask(taskUid);
+        .updateFilterableAttributes(["id"])
+        .waitTask();
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
       const { uid } = await client.getKey(apiKey);
@@ -360,7 +373,8 @@ describe.each([{ permission: "Admin" }])(
 
       await assert.rejects(
         searchClient.index(UID).search(),
-        /^MeiliSearchApiError: Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
+        MeiliSearchApiError,
+        /^Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
       );
     });
   },

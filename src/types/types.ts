@@ -2,10 +2,12 @@
 // Project: https://github.com/meilisearch/meilisearch-js
 // Definitions by: qdequele <quentin@meilisearch.com> <https://github.com/meilisearch>
 // Definitions: https://github.com/meilisearch/meilisearch-js
-// TypeScript Version: ^3.8.3
+// TypeScript Version: ^5.8.2
 
-import { Task } from "./task.js";
-import { Batch } from "./batch.js";
+import type { WaitOptions } from "./task_and_batch.js";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type RecordAny = Record<string, any>;
 
 /**
  * Shape of allowed record object that can be appended to a
@@ -15,7 +17,7 @@ export type URLSearchParamsRecord = Record<
   string,
   | string
   | string[]
-  | Array<string | string[]>
+  | (string | string[])[]
   | number
   | number[]
   | boolean
@@ -74,6 +76,7 @@ export type Config = {
   httpClient?: (...args: Parameters<typeof fetch>) => Promise<unknown>;
   /** Timeout in milliseconds for each HTTP request. */
   timeout?: number;
+  defaultWaitOptions?: WaitOptions;
 };
 
 /** Main options of a request. */
@@ -138,8 +141,8 @@ export type IndexOptions = {
 export type IndexObject = {
   uid: string;
   primaryKey?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type IndexesQuery = ResourceQuery & {};
@@ -159,7 +162,7 @@ export const MatchingStrategies = {
 export type MatchingStrategies =
   (typeof MatchingStrategies)[keyof typeof MatchingStrategies];
 
-export type Filter = string | Array<string | string[]>;
+export type Filter = string | (string | string[])[];
 
 export type Query = {
   q?: string | null;
@@ -180,6 +183,11 @@ export type Crop = {
 // `facetName` becomes mandatory when using `searchForFacetValues`
 export type SearchForFacetValuesParams = Omit<SearchParams, "facetName"> & {
   facetName: string;
+  /**
+   * If true, the facet search will return the exhaustive count of the facet
+   * values.
+   */
+  exhaustiveFacetCount?: boolean;
 };
 
 export type FacetHit = {
@@ -301,7 +309,7 @@ export type CategoriesDistribution = {
 export type Facet = string;
 export type FacetDistribution = Record<Facet, CategoriesDistribution>;
 export type MatchesPosition<T> = Partial<
-  Record<keyof T, Array<{ start: number; length: number; indices?: number[] }>>
+  Record<keyof T, { start: number; length: number; indices?: number[] }[]>
 >;
 
 export type RankingScoreDetails = {
@@ -332,7 +340,7 @@ export type RankingScoreDetails = {
     matchType: string;
     score: number;
   };
-  [key: string]: Record<string, any> | undefined;
+  [key: string]: RecordAny | undefined;
 };
 
 export type FederationDetails = {
@@ -341,7 +349,7 @@ export type FederationDetails = {
   weightedRankingScore: number;
 };
 
-export type Hit<T = Record<string, any>> = T & {
+export type Hit<T = RecordAny> = T & {
   _formatted?: Partial<T>;
   _matchesPosition?: MatchesPosition<T>;
   _rankingScore?: number;
@@ -349,7 +357,7 @@ export type Hit<T = Record<string, any>> = T & {
   _federation?: FederationDetails;
 };
 
-export type Hits<T = Record<string, any>> = Array<Hit<T>>;
+export type Hits<T = RecordAny> = Hit<T>[];
 
 export type FacetStat = { min: number; max: number };
 export type FacetStats = Record<string, FacetStat>;
@@ -363,7 +371,7 @@ export type FacetsByIndex = Record<
 >;
 
 export type SearchResponse<
-  T = Record<string, any>,
+  T = RecordAny,
   S extends SearchParams | undefined = undefined,
 > = {
   hits: Hits<T>;
@@ -411,13 +419,13 @@ type HasPage<S extends SearchParams> = undefined extends S["page"]
 
 export type MultiSearchResult<T> = SearchResponse<T> & { indexUid: string };
 
-export type MultiSearchResponse<T = Record<string, any>> = {
-  results: Array<MultiSearchResult<T>>;
+export type MultiSearchResponse<T = RecordAny> = {
+  results: MultiSearchResult<T>[];
 };
 
 export type MultiSearchResponseOrSearchResponse<
   T1 extends FederatedMultiSearchParams | MultiSearchParams,
-  T2 extends Record<string, unknown> = Record<string, any>,
+  T2 extends RecordAny = RecordAny,
 > = T1 extends FederatedMultiSearchParams
   ? SearchResponse<T2>
   : MultiSearchResponse<T2>;
@@ -442,8 +450,8 @@ export type SearchSimilarDocumentsParams = {
  ** Documents
  */
 
-type Fields<T = Record<string, any>> =
-  | Array<Extract<keyof T, string>>
+type Fields<T = RecordAny> =
+  | Extract<keyof T, string>[]
   | Extract<keyof T, string>;
 
 export type DocumentOptions = {
@@ -465,7 +473,8 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
   csvDelimiter?: string;
 };
 
-export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
+export type DocumentsQuery<T = RecordAny> = ResourceQuery & {
+  ids?: string[] | number[];
   fields?: Fields<T>;
   filter?: Filter;
   limit?: number;
@@ -473,7 +482,7 @@ export type DocumentsQuery<T = Record<string, any>> = ResourceQuery & {
   retrieveVectors?: boolean;
 };
 
-export type DocumentQuery<T = Record<string, any>> = {
+export type DocumentQuery<T = RecordAny> = {
   fields?: Fields<T>;
 };
 
@@ -486,14 +495,24 @@ export type DocumentsIds = string[] | number[];
 export type UpdateDocumentsByFunctionOptions = {
   function: string;
   filter?: string | string[];
-  context?: Record<string, any>;
+  context?: RecordAny;
 };
 
 /*
  ** Settings
  */
 
-export type FilterableAttributes = string[] | null;
+type GranularFilterableAttribute = {
+  attributePatterns: string[];
+  features: {
+    facetSearch: boolean;
+    filter: { equality: boolean; comparison: boolean };
+  };
+};
+
+export type FilterableAttributes =
+  | (string | GranularFilterableAttribute)[]
+  | null;
 export type DistinctAttribute = string | null;
 export type SearchableAttributes = string[] | null;
 export type SortableAttributes = string[] | null;
@@ -538,6 +557,7 @@ export type HuggingFaceEmbedder = {
   revision?: string;
   documentTemplate?: string;
   distribution?: Distribution;
+  pooling?: "useModel" | "forceMean" | "forceCls";
   documentTemplateMaxBytes?: number;
   binaryQuantized?: boolean;
 };
@@ -556,8 +576,8 @@ export type RestEmbedder = {
   dimensions?: number;
   documentTemplate?: string;
   distribution?: Distribution;
-  request: Record<string, any>;
-  response: Record<string, any>;
+  request: RecordAny;
+  response: RecordAny;
   headers?: Record<string, string>;
   documentTemplateMaxBytes?: number;
   binaryQuantized?: boolean;
@@ -575,12 +595,19 @@ export type OllamaEmbedder = {
   binaryQuantized?: boolean;
 };
 
+export type CompositeEmbedder = {
+  source: "composite";
+  searchEmbedder: Embedder;
+  indexingEmbedder: Embedder;
+};
+
 export type Embedder =
   | OpenAiEmbedder
   | HuggingFaceEmbedder
   | UserProvidedEmbedder
   | RestEmbedder
   | OllamaEmbedder
+  | CompositeEmbedder
   | null;
 
 export type Embedders = Record<string, Embedder> | null;
@@ -638,247 +665,6 @@ export type Settings = {
    */
   prefixSearch?: "indexingTime" | "disabled";
 };
-
-/*
- ** TASKS
- */
-
-export const TaskStatus = {
-  TASK_SUCCEEDED: "succeeded",
-  TASK_PROCESSING: "processing",
-  TASK_FAILED: "failed",
-  TASK_ENQUEUED: "enqueued",
-  TASK_CANCELED: "canceled",
-} as const;
-
-export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus];
-
-export const TaskTypes = {
-  DOCUMENTS_ADDITION_OR_UPDATE: "documentAdditionOrUpdate",
-  DOCUMENT_DELETION: "documentDeletion",
-  DUMP_CREATION: "dumpCreation",
-  INDEX_CREATION: "indexCreation",
-  INDEX_DELETION: "indexDeletion",
-  INDEXES_SWAP: "indexSwap",
-  INDEX_UPDATE: "indexUpdate",
-  SETTINGS_UPDATE: "settingsUpdate",
-  SNAPSHOT_CREATION: "snapshotCreation",
-  TASK_CANCELATION: "taskCancelation",
-  TASK_DELETION: "taskDeletion",
-} as const;
-
-export type TaskTypes = (typeof TaskTypes)[keyof typeof TaskTypes];
-
-export type TasksQuery = {
-  indexUids?: string[];
-  uids?: number[];
-  types?: TaskTypes[];
-  statuses?: TaskStatus[];
-  canceledBy?: number[];
-  beforeEnqueuedAt?: Date;
-  afterEnqueuedAt?: Date;
-  beforeStartedAt?: Date;
-  afterStartedAt?: Date;
-  beforeFinishedAt?: Date;
-  afterFinishedAt?: Date;
-  limit?: number;
-  from?: number;
-  /**
-   * If true, the tasks are returned in reverse order (requires Meilisearch
-   * 1.12.0 or later)
-   */
-  reverse?: boolean;
-};
-
-export type CancelTasksQuery = Omit<TasksQuery, "limit" | "from">;
-
-export type DeleteTasksQuery = Omit<TasksQuery, "limit" | "from">;
-
-export type EnqueuedTaskObject = {
-  taskUid: number;
-  indexUid?: string;
-  status: TaskStatus;
-  type: TaskTypes;
-  enqueuedAt: string;
-  canceledBy: number;
-};
-
-export type TaskObject = Omit<EnqueuedTaskObject, "taskUid"> & {
-  uid: number;
-  /** The UID of the batch that the task belongs to (`null` for enqueued tasks) */
-  batchUid: number | null;
-  details: {
-    // Number of documents sent
-    receivedDocuments?: number;
-
-    // Number of documents successfully indexed/updated in Meilisearch
-    indexedDocuments?: number;
-
-    // Number of deleted documents
-    deletedDocuments?: number;
-
-    // Number of documents found on a batch-delete
-    providedIds?: number;
-
-    // Primary key on index creation
-    primaryKey?: string;
-
-    // Ranking rules on settings actions
-    rankingRules?: RankingRules;
-
-    // Searchable attributes on settings actions
-    searchableAttributes?: SearchableAttributes;
-
-    // Displayed attributes on settings actions
-    displayedAttributes?: DisplayedAttributes;
-
-    // Filterable attributes on settings actions
-    filterableAttributes?: FilterableAttributes;
-
-    // Sortable attributes on settings actions
-    sortableAttributes?: SortableAttributes;
-
-    // Stop words on settings actions
-    stopWords?: StopWords;
-
-    // Stop words on settings actions
-    synonyms?: Synonyms;
-
-    // Distinct attribute on settings actions
-    distinctAttribute?: DistinctAttribute;
-
-    // Object containing the payload originating the `indexSwap` task creation
-    swaps?: SwapIndexesParams;
-
-    // Number of tasks that matched the originalQuery filter
-    matchedTasks?: number;
-
-    // Number of tasks that were canceled
-    canceledTasks?: number;
-
-    // Number of tasks that were deleted
-    deletedTasks?: number;
-
-    // Query parameters used to filter the tasks
-    originalFilter?: string;
-  };
-  error: MeiliSearchErrorResponse | null;
-  duration: string;
-  startedAt: string;
-  finishedAt: string;
-};
-
-export type SwapIndexesParams = Array<{
-  indexes: string[];
-}>;
-
-type CursorResults<T> = {
-  results: T[];
-  limit: number;
-  from: number;
-  next: number;
-  total: number;
-};
-
-export type TasksResults = CursorResults<Task>;
-export type TasksResultsObject = CursorResults<TaskObject>;
-
-export type WaitOptions = {
-  timeOutMs?: number;
-  intervalMs?: number;
-};
-
-/*
- ** BATCHES
- */
-
-/**
- * Represents a batch operation object containing information about tasks
- * processing
- */
-export type BatchObject = {
-  /** Unique identifier for the batch */
-  uid: number;
-
-  /** Details about document processing */
-  details: {
-    /** Number of documents received in the batch */
-    receivedDocuments?: number;
-    /** Number of documents successfully indexed */
-    indexedDocuments?: number;
-    /** Number of documents deleted in the batch */
-    deletedDocuments?: number;
-  };
-
-  /** Progress and indexing step of the batch, null if the batch is finished */
-  progress: null | {
-    /** An array of all the steps currently being processed */
-    steps: Array<{
-      /**
-       * A string representing the name of the current step NOT stable. Only use
-       * for debugging purposes.
-       */
-      currentStep: string;
-      /** Number of finished tasks */
-      finished: number;
-      /** Total number of tasks to finish before moving to the next step */
-      total: number;
-    }>;
-    /** Percentage of progression of all steps currently being processed */
-    percentage: number;
-  };
-
-  /** Statistics about tasks within the batch */
-  stats: {
-    /** Total number of tasks in the batch */
-    totalNbTasks: number;
-    /** Count of tasks in each status */
-    status: {
-      /** Number of successfully completed tasks */
-      succeeded: number;
-      /** Number of failed tasks */
-      failed: number;
-      /** Number of canceled tasks */
-      canceled: number;
-      /** Number of tasks currently processing */
-      processing: number;
-      /** Number of tasks waiting to be processed */
-      enqueued: number;
-    };
-    /** Count of tasks by type */
-    types: Record<TaskTypes, number>;
-    /** Count of tasks by index UID */
-    indexUids: Record<string, number>;
-  };
-
-  /** Timestamp when the batch started processing (rfc3339 format) */
-  startedAt: string;
-  /** Timestamp when the batch finished processing (rfc3339 format) */
-  finishedAt: string;
-  /** Duration of batch processing */
-  duration: string;
-};
-
-export type BatchesQuery = {
-  /** The batch should contain the specified task UIDs */
-  uids?: number[];
-  batchUids?: number[];
-  types?: TaskTypes[];
-  statuses?: TaskStatus[];
-  indexUids?: string[];
-  canceledBy?: number[];
-  beforeEnqueuedAt?: Date;
-  afterEnqueuedAt?: Date;
-  beforeStartedAt?: Date;
-  afterStartedAt?: Date;
-  beforeFinishedAt?: Date;
-  afterFinishedAt?: Date;
-  limit?: number;
-  from?: number;
-};
-
-export type BatchesResults = CursorResults<Batch>;
-export type BatchesResultsObject = CursorResults<BatchObject>;
 
 /*
  *** HEALTH
@@ -973,7 +759,7 @@ export type MeiliSearchErrorResponse = {
   link: string;
 };
 
-// @TODO: This doesn't seem to be up to date, and its usefullness comes into question.
+// @TODO: This doesn't seem to be up to date, and its usefulness comes into question.
 export const ErrorStatusCode = {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#index_creation_failed */
   INDEX_CREATION_FAILED: "index_creation_failed",
@@ -1338,59 +1124,3 @@ export const ErrorStatusCode = {
 
 export type ErrorStatusCode =
   (typeof ErrorStatusCode)[keyof typeof ErrorStatusCode];
-
-/** @see {@link TokenSearchRules} */
-export type TokenIndexRules = { filter?: Filter };
-
-/**
- * {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference#search-rules}
- *
- * @remarks
- * Not well documented.
- * @see `meilisearch_auth::SearchRules` at {@link https://github.com/meilisearch/meilisearch}
- */
-export type TokenSearchRules =
-  | Record<string, TokenIndexRules | null>
-  | string[];
-
-/** Options object for tenant token generation. */
-export type TenantTokenGeneratorOptions = {
-  /** API key used to sign the token. */
-  apiKey: string;
-  /**
-   * The uid of the api key used as issuer of the token.
-   *
-   * @see {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference#api-key-uid}
-   */
-  apiKeyUid: string;
-  /**
-   * Search rules that are applied to every search.
-   *
-   * @defaultValue `["*"]`
-   */
-  searchRules?: TokenSearchRules;
-  /**
-   * {@link https://en.wikipedia.org/wiki/Unix_time | UNIX timestamp} or
-   * {@link Date} object at which the token expires.
-   *
-   * @see {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference#expiry-date}
-   */
-  expiresAt?: number | Date;
-  /**
-   * Encryption algorithm used to sign the JWT. Supported values by Meilisearch
-   * are HS256, HS384, HS512. (HS[number] means HMAC using SHA-[number])
-   *
-   * @defaultValue `"HS256"`
-   * @see {@link https://www.meilisearch.com/docs/learn/security/generate_tenant_token_scratch#prepare-token-header}
-   */
-  algorithm?: `HS${256 | 384 | 512}`;
-  /**
-   * By default if a non-safe environment is detected, an error is thrown.
-   * Setting this to `true` skips environment detection. This is intended for
-   * server-side environments where detection fails or usage in a browser is
-   * intentional (Use at your own risk).
-   *
-   * @defaultValue `false`
-   */
-  force?: boolean;
-};

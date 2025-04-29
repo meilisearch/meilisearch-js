@@ -45,8 +45,7 @@ describe.each([
     await client.index(index.uid).updateSettings({
       filterableAttributes: newFilterableAttributes,
     });
-    const { taskUid } = await client.index(index.uid).addDocuments(dataset);
-    await client.waitForTask(taskUid);
+    await client.index(index.uid).addDocuments(dataset).waitTask();
   });
 
   test(`${permission} key: basic facet value search`, async () => {
@@ -93,6 +92,21 @@ describe.each([
       facetName: "genres",
       facetQuery: "a",
       q: "Alice",
+    };
+    const response = await client.index(index.uid).searchForFacetValues(params);
+
+    // @TODO: This is flaky, processingTimeMs is not guaranteed
+    expect(response).toMatchSnapshot();
+  });
+
+  test(`${permission} key: facet value search with exhaustive facet count`, async () => {
+    const client = await getClient(permission);
+
+    const params = {
+      facetName: "genres",
+      facetQuery: "a",
+      q: "Alice",
+      exhaustiveFacetCount: true,
     };
     const response = await client.index(index.uid).searchForFacetValues(params);
 

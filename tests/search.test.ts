@@ -5,15 +5,13 @@ import {
   beforeEach,
   afterAll,
   beforeAll,
-  assert,
   vi,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types.js";
+import { ErrorStatusCode, MatchingStrategies } from "../src/types/index.js";
 import type {
   FederatedMultiSearchParams,
   MultiSearchParams,
-} from "../src/types.js";
-import { EnqueuedTask } from "../src/enqueued-task.js";
+} from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -23,7 +21,9 @@ import {
   datasetWithNests,
   getKey,
   HOST,
+  assert,
 } from "./utils/meilisearch-test-utils.js";
+import { MeiliSearchRequestError } from "../src/index.js";
 
 const index = {
   uid: "books",
@@ -130,18 +130,15 @@ describe.each([
     await client.createIndex(emptyIndex.uid);
 
     const newFilterableAttributes = ["genre", "title", "id", "author"];
-    const { taskUid: task1 }: EnqueuedTask = await client
+    await client
       .index(index.uid)
       .updateSettings({
         filterableAttributes: newFilterableAttributes,
         sortableAttributes: ["id"],
-      });
-    await client.waitForTask(task1);
+      })
+      .waitTask();
 
-    const { taskUid: task2 } = await client
-      .index(index.uid)
-      .addDocuments(dataset);
-    await client.waitForTask(task2);
+    await client.index(index.uid).addDocuments(dataset).waitTask();
   });
 
   test(`${permission} key: Multi index search no queries`, async () => {
@@ -297,17 +294,14 @@ describe.each([
     // Setup to have a new "movies" index
     await masterClient.createIndex("movies");
     const newFilterableAttributes = ["title", "id"];
-    const { taskUid: task1 }: EnqueuedTask = await masterClient
+    await masterClient
       .index("movies")
       .updateSettings({
         filterableAttributes: newFilterableAttributes,
         sortableAttributes: ["id"],
-      });
-    await masterClient.waitForTask(task1);
-    const { taskUid: task2 } = await masterClient
-      .index("movies")
-      .addDocuments(movies);
-    await masterClient.waitForTask(task2);
+      })
+      .waitTask();
+    await masterClient.index("movies").addDocuments(movies).waitTask();
 
     // Make a multi search on both indexes with facetsByIndex
     const response = await client.multiSearch<
@@ -378,17 +372,14 @@ describe.each([
     // Setup to have a new "movies" index
     await masterClient.createIndex("movies");
     const newFilterableAttributes = ["title", "id"];
-    const { taskUid: task1 }: EnqueuedTask = await masterClient
+    await masterClient
       .index("movies")
       .updateSettings({
         filterableAttributes: newFilterableAttributes,
         sortableAttributes: ["id"],
-      });
-    await masterClient.waitForTask(task1);
-    const { taskUid: task2 } = await masterClient
-      .index("movies")
-      .addDocuments(movies);
-    await masterClient.waitForTask(task2);
+      })
+      .waitTask();
+    await masterClient.index("movies").addDocuments(movies).waitTask();
 
     // Make a multi search on both indexes with mergeFacets
     const response = await client.multiSearch<
@@ -1228,12 +1219,12 @@ describe.each([
     const client = await getClient(permission);
     const masterClient = await getClient("Master");
 
-    const { taskUid } = await masterClient
+    await masterClient
       .index(index.uid)
       .updateLocalizedAttributes([
         { attributePatterns: ["title", "comment"], locales: ["fra", "eng"] },
-      ]);
-    await masterClient.waitForTask(taskUid);
+      ])
+      .waitTask();
 
     const searchResponse = await client.index(index.uid).search("french", {
       locales: ["fra", "eng"],
@@ -1256,8 +1247,7 @@ describe.each([
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient("Master");
-    const { taskUid } = await masterClient.index(index.uid).delete();
-    await masterClient.waitForTask(taskUid);
+    await masterClient.index(index.uid).delete().waitTask();
 
     await expect(
       client.index(index.uid).search("prince", {}),
@@ -1270,8 +1260,7 @@ describe.each([{ permission: "No" }])(
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient("Master");
-      const { taskUid } = await client.createIndex(index.uid);
-      await client.waitForTask(taskUid);
+      await client.createIndex(index.uid).waitTask();
     });
 
     test(`${permission} key: Try Basic search and be denied`, async () => {
@@ -1302,10 +1291,7 @@ describe.each([{ permission: "Master" }])(
       const client = await getClient("Master");
       await client.createIndex(index.uid);
 
-      const { taskUid: documentAdditionTask } = await client
-        .index(index.uid)
-        .addDocuments(datasetWithNests);
-      await client.waitForTask(documentAdditionTask);
+      await client.index(index.uid).addDocuments(datasetWithNests).waitTask();
     });
 
     test(`${permission} key: search on nested content with no parameters`, async () => {
@@ -1324,12 +1310,12 @@ describe.each([{ permission: "Master" }])(
 
     test(`${permission} key: search on nested content with searchable on specific nested field`, async () => {
       const client = await getClient(permission);
-      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
+      await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ["title", "info.comment"],
-        });
-      await client.waitForTask(settingsUpdateTask);
+        })
+        .waitTask();
 
       const response = await client.index(index.uid).search("An awesome", {});
 
@@ -1345,13 +1331,13 @@ describe.each([{ permission: "Master" }])(
 
     test(`${permission} key: search on nested content with sort`, async () => {
       const client = await getClient(permission);
-      const { taskUid: settingsUpdateTask }: EnqueuedTask = await client
+      await client
         .index(index.uid)
         .updateSettings({
           searchableAttributes: ["title", "info.comment"],
           sortableAttributes: ["info.reviewNb"],
-        });
-      await client.waitForTask(settingsUpdateTask);
+        })
+        .waitTask();
 
       const response = await client.index(index.uid).search("", {
         sort: ["info.reviewNb:desc"],
@@ -1377,25 +1363,19 @@ describe.each([
   beforeAll(async () => {
     const client = await getClient("Master");
     await clearAllIndexes(config);
-    const { taskUid } = await client.createIndex(index.uid);
-    await client.waitForTask(taskUid);
+    await client.createIndex(index.uid).waitTask();
   });
 
   test(`${permission} key: search on index and abort`, async () => {
     const controller = new AbortController();
     const client = await getClient(permission);
-    const searchPromise = client.index(index.uid).search(
-      "unreachable",
-      {},
-      {
-        // @ts-ignore qwe
-        signal: controller.signal,
-      },
-    );
+    const searchPromise = client
+      .index(index.uid)
+      .search("unreachable", {}, { signal: controller.signal });
 
     controller.abort();
 
-    searchPromise.catch((error: any) => {
+    searchPromise.catch((error) => {
       expect(error).toHaveProperty(
         "cause.message",
         "This operation was aborted",
@@ -1404,61 +1384,48 @@ describe.each([
   });
 
   test(`${permission} key: search on index multiple times, and abort only one request`, async () => {
-    const client = await getClient(permission);
+    const ind = (await getClient(permission)).index(index.uid);
     const controllerA = new AbortController();
     const controllerB = new AbortController();
     const controllerC = new AbortController();
     const searchQuery = "prince";
 
-    const searchAPromise = client.index(index.uid).search(
+    const searchAPromise = ind.search(
       searchQuery,
       {},
-      {
-        // @ts-ignore
-        signal: controllerA.signal,
-      },
+      { signal: controllerA.signal },
     );
 
-    const searchBPromise = client.index(index.uid).search(
+    const searchBPromise = ind.search(
       searchQuery,
       {},
-      {
-        // @ts-ignore
-        signal: controllerB.signal,
-      },
+      { signal: controllerB.signal },
     );
 
-    const searchCPromise = client.index(index.uid).search(
+    const searchCPromise = ind.search(
       searchQuery,
       {},
-      {
-        // @ts-ignore
-        signal: controllerC.signal,
-      },
+      { signal: controllerC.signal },
     );
 
-    const searchDPromise = client.index(index.uid).search(searchQuery, {});
+    const searchDPromise = ind.search(searchQuery, {});
 
     controllerB.abort();
 
-    searchDPromise.then((response) => {
-      expect(response).toHaveProperty("query", searchQuery);
-    });
+    const [a, b, c, d] = await Promise.allSettled([
+      searchAPromise,
+      searchBPromise,
+      searchCPromise,
+      searchDPromise,
+    ]);
 
-    searchCPromise.then((response) => {
-      expect(response).toHaveProperty("query", searchQuery);
-    });
-
-    searchAPromise.then((response) => {
-      expect(response).toHaveProperty("query", searchQuery);
-    });
-
-    searchBPromise.catch((error: any) => {
-      expect(error).toHaveProperty(
-        "cause.message",
-        "This operation was aborted",
-      );
-    });
+    expect(a).toHaveProperty("value.query", searchQuery);
+    expect(b).toHaveProperty(
+      "reason.cause.message",
+      "This operation was aborted",
+    );
+    expect(d).toHaveProperty("value.query", searchQuery);
+    expect(c).toHaveProperty("value.query", searchQuery);
   });
 
   test(`${permission} key: search should be aborted when reaching timeout`, async () => {
@@ -1468,12 +1435,16 @@ describe.each([
       apiKey: key,
       timeout: 1,
     });
-    try {
-      await client.health();
-    } catch (e: any) {
-      expect(e.cause.message).toEqual("request timed out after 1ms");
-      expect(e.name).toEqual("MeiliSearchRequestError");
-    }
+
+    const error = await assert.rejects(
+      client.health(),
+      MeiliSearchRequestError,
+    );
+
+    assert.strictEqual(
+      (error.cause as Error)?.message,
+      "request timed out after 1ms",
+    );
   });
 
   test(`${permission} key: search should be aborted on abort signal`, async () => {
@@ -1485,18 +1456,17 @@ describe.each([
     });
     const someErrorObj = {};
 
-    try {
-      const ac = new AbortController();
-      ac.abort(someErrorObj);
+    const ac = new AbortController();
+    ac.abort(someErrorObj);
 
-      await client.multiSearch(
+    const error = await assert.rejects(
+      client.multiSearch(
         { queries: [{ indexUid: "doesn't matter" }] },
         { signal: ac.signal },
-      );
-    } catch (e: any) {
-      assert.strictEqual(e.cause, someErrorObj);
-      assert.strictEqual(e.name, "MeiliSearchRequestError");
-    }
+      ),
+      MeiliSearchRequestError,
+    );
+    assert.strictEqual(error.cause, someErrorObj);
 
     // and now with a delayed abort, for this we have to stub fetch
     vi.stubGlobal(
@@ -1518,10 +1488,8 @@ describe.each([
         { signal: ac.signal },
       );
       setTimeout(() => ac.abort(someErrorObj), 1);
-      await promise;
-    } catch (e: any) {
-      assert.strictEqual(e.cause, someErrorObj);
-      assert.strictEqual(e.name, "MeiliSearchRequestError");
+      const error = await assert.rejects(promise, MeiliSearchRequestError);
+      assert.strictEqual(error.cause, someErrorObj);
     } finally {
       vi.unstubAllGlobals();
     }

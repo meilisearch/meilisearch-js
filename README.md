@@ -20,7 +20,7 @@
   <a href="https://codecov.io/gh/meilisearch/meilisearch-js"><img src="https://codecov.io/github/meilisearch/meilisearch-js/coverage.svg?branch=main" alt="Codecov"></a>
   <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/styled_with-prettier-ff69b4.svg" alt="Prettier"></a>
   <a href="https://github.com/meilisearch/meilisearch-js/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
-  <a href="https://ms-bors.herokuapp.com/repositories/10"><img src="https://bors.tech/images/badge_small.svg" alt="Bors enabled"></a>
+  <a href="https://github.com/meilisearch/meilisearch-js/queue"><img alt="Merge Queues enabled" src="https://img.shields.io/badge/Merge_Queues-enabled-%2357cf60?logo=github"></a>
 </p>
 
 <p align="center">⚡ The Meilisearch API client written for JavaScript</p>
@@ -564,34 +564,16 @@ client.index('myIndex').getTasks(parameters: TasksQuery): Promise<TasksResults>
 client.index('myIndex').getTask(uid: number): Promise<Task>
 ```
 
-
 #### Wait for one task
 
-
-##### Using the client
-
 ```ts
-client.waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>
-```
-
-##### Using the index
-
-```ts
-client.index('myIndex').waitForTask(uid: number, { timeOutMs?: number, intervalMs?: number }): Promise<Task>
+client.tasks.waitForTask(uid: number, { timeout?: number, interval?: number }): Promise<Task>
 ```
 
 #### Wait for multiple tasks
 
-##### Using the client
-
 ```ts
-client.waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Task[]>
-```
-
-##### Using the index
-
-```ts
-client.index('myIndex').waitForTasks(uids: number[], { timeOutMs?: number, intervalMs?: number }): Promise<Task[]>
+client.tasks.waitForTasks(uids: number[], { timeout?: number, interval?: number }): Promise<Task[]>
 ```
 
 ### Batches <!-- omit in toc -->
