@@ -1,14 +1,16 @@
+import { assert as vitestAssert } from "vitest";
 import { MeiliSearch, Index } from "../../src/index.js";
-import type { Config } from "../../src/types.js";
+import type { Config } from "../../src/types/index.js";
 
 // testing
 const MASTER_KEY = "masterKey";
 const HOST = process.env.MEILISEARCH_URL || "http://127.0.0.1:7700";
 const BAD_HOST = "http://127.0.0.1:7701";
 
-const config = {
+const config: Config = {
   host: HOST,
   apiKey: MASTER_KEY,
+  defaultWaitOptions: { interval: 10 },
 };
 const badHostClient = new MeiliSearch({
   host: BAD_HOST,
@@ -17,10 +19,12 @@ const badHostClient = new MeiliSearch({
 const masterClient = new MeiliSearch({
   host: HOST,
   apiKey: MASTER_KEY,
+  defaultWaitOptions: { interval: 10 },
 });
 
 const anonymousClient = new MeiliSearch({
   host: HOST,
+  defaultWaitOptions: { interval: 10 },
 });
 
 async function getKey(permission: string): Promise<string> {
@@ -30,16 +34,12 @@ async function getKey(permission: string): Promise<string> {
   const { results: keys } = await masterClient.getKeys();
 
   if (permission === "Search") {
-    const key = keys.find(
-      (key: any) => key.name === "Default Search API Key",
-    )?.key;
+    const key = keys.find((key) => key.name === "Default Search API Key")?.key;
     return key || "";
   }
 
   if (permission === "Admin") {
-    const key = keys.find(
-      (key: any) => key.name === "Default Admin API Key",
-    )?.key;
+    const key = keys.find((key) => key.name === "Default Admin API Key")?.key;
     return key || "";
   }
   return MASTER_KEY;
@@ -49,6 +49,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
   if (permission === "No") {
     const anonymousClient = new MeiliSearch({
       host: HOST,
+      defaultWaitOptions: { interval: 10 },
     });
     return anonymousClient;
   }
@@ -58,6 +59,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
     const searchClient = new MeiliSearch({
       host: HOST,
       apiKey: searchKey,
+      defaultWaitOptions: { interval: 10 },
     });
     return searchClient;
   }
@@ -67,6 +69,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
     const adminClient = new MeiliSearch({
       host: HOST,
       apiKey: adminKey,
+      defaultWaitOptions: { interval: 10 },
     });
     return adminClient;
   }
@@ -76,21 +79,59 @@ async function getClient(permission: string): Promise<MeiliSearch> {
 
 const clearAllIndexes = async (config: Config): Promise<void> => {
   const client = new MeiliSearch(config);
-
   const { results } = await client.getRawIndexes();
-  const indexes = results.map((elem) => elem.uid);
 
-  const taskIds: number[] = [];
-  for (const indexUid of indexes) {
-    const { taskUid } = await client.index(indexUid).delete();
-    taskIds.push(taskUid);
-  }
-  await client.waitForTasks(taskIds, { timeOutMs: 60_000 });
+  await Promise.all(
+    results.map((v) =>
+      client.index(v.uid).delete().waitTask({ timeout: 60_000 }),
+    ),
+  );
 };
 
 function decode64(buff: string) {
   return Buffer.from(buff, "base64").toString();
 }
+
+const NOT_RESOLVED = Symbol("<not resolved>");
+
+const source = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async rejects<T extends { new (...args: any[]): any }>(
+    promise: Promise<unknown>,
+    errorConstructor: T,
+    errMsgMatcher?: RegExp | string,
+  ): Promise<InstanceType<T>> {
+    let resolvedValue;
+
+    try {
+      resolvedValue = await promise;
+    } catch (error) {
+      vitestAssert.instanceOf(error, errorConstructor);
+
+      if (errMsgMatcher !== undefined) {
+        const { message } = error as Error;
+        if (typeof errMsgMatcher === "string") {
+          vitestAssert.strictEqual(message, errMsgMatcher);
+        } else {
+          vitestAssert.match(message, errMsgMatcher);
+        }
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return error as InstanceType<T>;
+    }
+
+    vitestAssert.fail(
+      resolvedValue,
+      NOT_RESOLVED,
+      "expected value to not resolve",
+    );
+  },
+};
+export const assert: typeof vitestAssert & typeof source = Object.assign(
+  vitestAssert,
+  source,
+);
 
 const datasetWithNests = [
   {
@@ -144,24 +185,63 @@ const datasetWithNests = [
   { id: 7, title: "The Hitchhiker's Guide to the Galaxy" },
 ];
 
-const dataset: Array<{ id: number; title: string; comment?: string }> = [
-  { id: 123, title: "Pride and Prejudice", comment: "A great book" },
-  { id: 456, title: "Le Petit Prince", comment: "A french book" },
-  { id: 2, title: "Le Rouge et le Noir", comment: "Another french book" },
-  { id: 1, title: "Alice In Wonderland", comment: "A weird book" },
-  { id: 1344, title: "The Hobbit", comment: "An awesome book" },
+const dataset: Book[] = [
+  {
+    id: 123,
+    title: "Pride and Prejudice",
+    comment: "A great book",
+    genre: ["romance", "classic", "literary fiction"],
+    author: "Jane Austen",
+  },
+  {
+    id: 456,
+    title: "Le Petit Prince",
+    comment: "A french book",
+    genre: ["children", "fantasy", "philosophical"],
+    author: "Antoine de Saint-Exupéry",
+  },
+  {
+    id: 2,
+    title: "Le Rouge et le Noir",
+    comment: "Another french book",
+    genre: ["classic", "psychological", "historical fiction"],
+    author: "Stendhal",
+  },
+  {
+    id: 1,
+    title: "Alice In Wonderland",
+    comment: "A weird book",
+    genre: ["fantasy", "children", "classics"],
+    author: "Lewis Carroll",
+  },
+  {
+    id: 1344,
+    title: "The Hobbit",
+    comment: "An awesome book",
+    genre: ["fantasy", "adventure", "young adult"],
+    author: "J.R.R. Tolkien",
+  },
   {
     id: 4,
     title: "Harry Potter and the Half-Blood Prince",
     comment: "The best book",
+    genre: ["fantasy", "young adult", "magic"],
+    author: "J.K. Rowling",
   },
-  { id: 42, title: "The Hitchhiker's Guide to the Galaxy" },
+  {
+    id: 42,
+    title: "The Hitchhiker's Guide to the Galaxy",
+    genre: ["science fiction", "comedy", "satire"],
+    author: "Douglas Adams",
+  },
 ];
 
 export type Book = {
   id: number;
   title: string;
-  comment: string;
+  comment?: string;
+  genre: string[];
+  author: string;
 };
 
 export {

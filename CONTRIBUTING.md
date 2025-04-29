@@ -8,7 +8,7 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 - [How to Contribute](#how-to-contribute)
 - [Development Workflow](#development-workflow)
 - [Git Guidelines](#git-guidelines)
-- [Release Process (for internal team only)](#release-process-for-internal-team-only)
+- [Release Process (for internal team only)](#release-process-for-the-internal-team-only)
 
 <!-- /MarkdownTOC -->
 
@@ -42,6 +42,7 @@ To run this project, you will need:
 You can set up your local environment natively or using `docker`, check out the [`docker-compose.yml`](/docker-compose.yml).
 
 Example of running all the checks with docker:
+
 ```bash
 docker-compose run --rm package bash -c "yarn install && yarn test && yarn lint"
 ```
@@ -79,6 +80,7 @@ We do not enforce any branch naming style, but please use something descriptive 
 ### Git Commits
 
 As minimal requirements, your commit message should:
+
 - be capitalized
 - not finish by a dot or any other punctuation character (!,?)
 - start with a verb so that we can read your commit message this way: "This commit will ...", where "..." is the commit message.
@@ -92,7 +94,7 @@ Some notes on GitHub PRs:
 
 - [Convert your PR as a draft](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/changing-the-stage-of-a-pull-request) if your changes are a work in progress: no one will review it until you pass your PR as ready for review.<br>
   The draft PR can be very useful if you want to show that you are working on something and make your work visible.
-- The branch related to the PR must be **up-to-date with `main`** before merging. Fortunately, this project [integrates a bot](https://github.com/meilisearch/integration-guides/blob/main/resources/bors.md) to automatically enforce this requirement without the PR author having to do it manually.
+- The branch related to the PR must be **up-to-date with `main`** before merging. Fortunately, this project uses [GitHub Merge Queues](https://github.blog/news-insights/product-news/github-merge-queue-is-generally-available/) to automatically enforce this requirement without the PR author having to rebase manually.
 - All PRs must be reviewed and approved by at least one maintainer.
 - The PR title should be accurate and descriptive of the changes. The title of the PR will be indeed automatically added to the next [release changelogs](https://github.com/meilisearch/meilisearch-js/releases/).
 
@@ -102,8 +104,7 @@ Meilisearch tools follow the [Semantic Versioning Convention](https://semver.org
 
 ### Automation to Rebase and Merge the PRs
 
-This project integrates a bot that helps us manage pull requests merging.<br>
-_[Read more about this](https://github.com/meilisearch/integration-guides/blob/main/resources/bors.md)._
+This project uses GitHub Merge Queues that helps us manage pull requests merging.
 
 ### Automated Changelogs
 
@@ -119,11 +120,13 @@ _[Read more about this](https://github.com/meilisearch/integration-guides/blob/m
 Make a PR modifying the following files with the right version:
 
 [`package.json`](/package.json):
+
 ```javascript
 "version": "X.X.X",
 ```
 
 [`src/package-version`](/src/package-version.ts)
+
 ```javascript
 export const PACKAGE_VERSION = 'X.X.X'
 ```
@@ -137,6 +140,7 @@ GitHub Actions will be triggered and push the package to [npm](https://www.npmjs
 #### Release a `beta` Version
 
 This package is able to create multiple types of betas:
+
 - A standard package beta, working on the latest version of Meilisearch.
 - A beta implementing the changes of a rc version of Meilisearch.
 - A beta implementing a specific feature `prototype` of Meilisearch.
@@ -159,16 +163,16 @@ Here are the steps to release a beta version of this package depending on its ty
 
 3. Commit and push your code to the newly created branch (step 1).
 
-
 4. Go to the [GitHub interface for releasing](https://github.com/meilisearch/meilisearch-js/releases): on this page, click on `Draft a new release`.
 
 5. Create a GitHub pre-release:
-  - Fill the description with the detailed changelogs
-  - Fill the title with `vX.X.X-beta.0`
-  - Fill the tag with `vX.X.X-beta.0`
-  - ⚠️ Select the `vX.X.X-beta.0` branch and NOT `main`
-  - ⚠️ Click on the "This is a pre-release" checkbox
-  - Click on "Publish release"
+
+- Fill the description with the detailed changelogs
+- Fill the title with `vX.X.X-beta.0`
+- Fill the tag with `vX.X.X-beta.0`
+- ⚠️ Select the `vX.X.X-beta.0` branch and NOT `main`
+- ⚠️ Click on the "This is a pre-release" checkbox
+- Click on "Publish release"
 
 <hr>
 
