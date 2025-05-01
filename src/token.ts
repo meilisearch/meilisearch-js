@@ -1,4 +1,3 @@
-import type { webcrypto } from "node:crypto";
 import type {
   TenantTokenGeneratorOptions,
   TenantTokenHeader,
@@ -31,19 +30,6 @@ function encodeToBase64(data: unknown): string {
   return btoa(typeof data === "string" ? data : JSON.stringify(data));
 }
 
-// missing crypto global for Node.js 18 https://nodejs.org/api/globals.html#crypto_1
-let cryptoPonyfill: Promise<Crypto | typeof webcrypto> | undefined;
-function getCrypto(): NonNullable<typeof cryptoPonyfill> {
-  if (cryptoPonyfill === undefined) {
-    cryptoPonyfill =
-      typeof crypto === "undefined"
-        ? import("node:crypto").then((v) => v.webcrypto)
-        : Promise.resolve(crypto);
-  }
-
-  return cryptoPonyfill;
-}
-
 const textEncoder = new TextEncoder();
 
 /** Create the signature of the token. */
@@ -52,8 +38,6 @@ async function sign(
   encodedPayload: string,
   encodedHeader: string,
 ): Promise<string> {
-  const crypto = await getCrypto();
-
   const cryptoKey = await crypto.subtle.importKey(
     // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#raw
     "raw",

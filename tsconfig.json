@@ -3,8 +3,8 @@
     // We don't want to check node_modules
     "skipLibCheck": true,
     "module": "node18",
-    // Node.js 18 supports up to ES2022 according to https://www.npmjs.com/package/@tsconfig/node18
-    "target": "es2022",
+    // Node.js 20 at https://node.green/#ES2023
+    "target": "es2023",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "resolveJsonModule": true,
     "strict": true,
