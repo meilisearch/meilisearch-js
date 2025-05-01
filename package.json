@@ -75,7 +75,7 @@
     "@typescript-eslint/utils": "^8.29.0",
     "@vitest/eslint-plugin": "^1.1.38",
     "eslint": "^9.25.1",
-    "eslint-config-prettier": "^10.1.1",
+    "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-tsdoc": "^0.4.0",
     "typescript": "^5.8.3",
     "vite": "^6.3.4",
