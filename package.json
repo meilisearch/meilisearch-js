@@ -74,7 +74,7 @@
     "@types/node": "^22.13.15",
     "@typescript-eslint/utils": "^8.29.0",
     "@vitest/eslint-plugin": "^1.1.38",
-    "eslint": "^9.23.0",
+    "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-tsdoc": "^0.4.0",
     "typescript": "^5.8.2",
