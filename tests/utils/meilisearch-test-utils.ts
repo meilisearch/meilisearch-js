@@ -1,6 +1,12 @@
 import { assert as vitestAssert } from "vitest";
 import { MeiliSearch, Index } from "../../src/index.js";
-import type { Config } from "../../src/types/index.js";
+import type {
+  Config,
+  Kind,
+  MeiliSearchErrorResponse,
+  Status,
+  TaskView,
+} from "../../src/index.js";
 
 // testing
 const MASTER_KEY = "masterKey";
@@ -93,6 +99,7 @@ function decode64(buff: string) {
 }
 
 const NOT_RESOLVED = Symbol("<not resolved>");
+const RESOLVED = Symbol("<resolved>");
 
 const source = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -126,6 +133,94 @@ const source = {
       NOT_RESOLVED,
       "expected value to not resolve",
     );
+  },
+  async resolves(promise: Promise<unknown>): Promise<void> {
+    try {
+      await promise;
+    } catch (error) {
+      vitestAssert.fail(error, RESOLVED, "expected value to not reject");
+    }
+  },
+  isErrorResponse(error: MeiliSearchErrorResponse) {
+    vitestAssert.lengthOf(Object.keys(error), 4);
+    const { message, code, type, link } = error;
+    for (const val of Object.values({ message, code, type, link })) {
+      vitestAssert.typeOf(val, "string");
+    }
+  },
+  isTask(task: TaskView) {
+    const { length } = Object.keys(task);
+    vitestAssert(length >= 11 && length <= 12);
+    const {
+      indexUid,
+      status,
+      type,
+      enqueuedAt,
+      uid,
+      batchUid,
+      canceledBy,
+      details,
+      error,
+      duration,
+      startedAt,
+      finishedAt,
+    } = task;
+
+    vitestAssert(indexUid === null || typeof indexUid === "string");
+
+    vitestAssert.oneOf(
+      status,
+      objectKeys<Status>({
+        enqueued: null,
+        processing: null,
+        succeeded: null,
+        failed: null,
+        canceled: null,
+      }),
+    );
+
+    vitestAssert.oneOf(
+      type,
+      objectKeys<Kind>({
+        documentAdditionOrUpdate: null,
+        documentEdition: null,
+        documentDeletion: null,
+        settingsUpdate: null,
+        indexCreation: null,
+        indexDeletion: null,
+        indexUpdate: null,
+        indexSwap: null,
+        taskCancelation: null,
+        taskDeletion: null,
+        dumpCreation: null,
+        snapshotCreation: null,
+        upgradeDatabase: null,
+      }),
+    );
+
+    vitestAssert.typeOf(enqueuedAt, "string");
+    vitestAssert.typeOf(uid, "number");
+    vitestAssert(batchUid === null || typeof batchUid === "number");
+    vitestAssert(canceledBy === null || typeof canceledBy === "number");
+
+    vitestAssert(
+      details === undefined ||
+        (details !== null && typeof details === "object"),
+    );
+
+    vitestAssert(typeof error === "object");
+    if (error !== null) {
+      this.isErrorResponse(error);
+    }
+
+    vitestAssert(duration === null || typeof duration === "string");
+    vitestAssert(startedAt === null || typeof startedAt === "string");
+    vitestAssert(finishedAt === null || typeof finishedAt === "string");
+  },
+  isTaskSuccessful(task: TaskView) {
+    this.isTask(task);
+    vitestAssert.isNull(task.error);
+    vitestAssert.strictEqual(task.status, "succeeded");
   },
 };
 export const assert: typeof vitestAssert & typeof source = Object.assign(
@@ -205,7 +300,18 @@ export type Book = {
   comment: string;
 };
 
+function objectKeys<T extends string>(o: { [TKey in T]: null }): T[] {
+  return Object.keys(o) as T[];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const objectEntries = Object.entries as <T extends Record<string, any>>(
+  o: T,
+) => [key: keyof T, val: T[keyof T]][];
+
 export {
+  objectEntries,
+  objectKeys,
   clearAllIndexes,
   config,
   masterClient,
