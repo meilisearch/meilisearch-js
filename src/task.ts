@@ -78,7 +78,7 @@ export class TaskClient {
     // TODO: Need to do this for all other methods: https://github.com/meilisearch/meilisearch-js/issues/1476
     extraRequestInit?: ExtraRequestInit,
   ): Promise<TaskView> {
-    return await this.#httpRequest.get<TaskView>({
+    return await this.#httpRequest.get({
       path: `tasks/${uid}`,
       extraRequestInit,
     });
