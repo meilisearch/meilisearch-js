@@ -417,47 +417,29 @@ primary_field_guide_add_document_primary_key: |-
       price: 5.00
     }
   ], { primaryKey: 'reference_number' })
-getting_started_add_documents_md: |-
-  ```bash
-  npm install meilisearch
-  ```
+getting_started_add_documents: |-
+  // With npm:
+  // npm install meilisearch
 
-  Or, if you are using `yarn`
-  ```bash
-  yarn add meilisearch
-  ```
+  // Or with yarn:
+  // yarn add meilisearch
 
-  **Import**
-
-  `require` syntax:
-  ```js
+  // In your .js file:
+  // With the `require` syntax:
   const { MeiliSearch } = require('meilisearch')
   const movies = require('./movies.json')
-  ```
-
-  `import` syntax:
-  ```js
+  // With the `import` syntax:
   import { MeiliSearch } from 'meilisearch'
   import movies from './movies.json'
-  ```
 
-  **Use**
-  ```js
   const client = new MeiliSearch({
     host: 'http://localhost:7700',
     apiKey: 'aSampleMasterKey'
   })
   client.index('movies').addDocuments(movies)
     .then((res) => console.log(res))
-  ```
-
-  [About this SDK](https://github.com/meilisearch/meilisearch-js/)
-getting_started_search_md: |-
-  ```js
+getting_started_search: |-
   client.index('movies').search('botman').then((res) => console.log(res))
-  ```
-
-  [About this SDK](https://github.com/meilisearch/meilisearch-js/)
 getting_started_update_ranking_rules: |-
   client.index('movies').updateRankingRules([
     'exactness',
@@ -528,8 +510,14 @@ get_filterable_attributes_1: |-
 update_filterable_attributes_1: |-
   client.index('movies')
     .updateFilterableAttributes([
-      'genres',
-      'director'
+      "genres",
+      {
+        attributePatterns: ["genre"],
+        features: {
+          facetSearch: true,
+          filter: { equality: true, comparison: false },
+        },
+      }
     ])
 reset_filterable_attributes_1: |-
   client.index('movies').resetFilterableAttributes()
