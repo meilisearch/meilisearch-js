@@ -13,13 +13,13 @@ import {
   objectKeys,
   objectEntries,
 } from "./utils/meilisearch-test-utils.js";
-import type { SafeOmit } from "../dist/types/index.js";
+import type { SafeOmit } from "../src/types/shared.js";
 
 const INDEX_UID = "536438df-c883-4c65-9e1d-3852b3f82330";
 const ms = await getClient("Master");
 const index = ms.index(INDEX_UID);
 
-const nowIsoString = new Date().toISOString();
+const NOW_ISO_STRING = new Date().toISOString();
 const possibleStatuses = objectKeys<Status>({
   enqueued: null,
   processing: null,
@@ -43,9 +43,11 @@ const possibleKinds = objectKeys<Kind>({
   upgradeDatabase: null,
 });
 
-function assertIsSummarizedTask(value: SummarizedTaskView) {
-  assert.lengthOf(Object.keys(value), 5);
-  const { taskUid, indexUid, status, type, enqueuedAt } = value;
+function assertIsSummarizedTask(summarizedTask: SummarizedTaskView) {
+  assert.lengthOf(Object.keys(summarizedTask), 5);
+
+  const { taskUid, indexUid, status, type, enqueuedAt } = summarizedTask;
+
   assert.typeOf(taskUid, "number");
   assert(
     indexUid === null || typeof indexUid === "string",
@@ -63,14 +65,20 @@ function assertIsBatch(batch: BatchView) {
     batch;
 
   assert.typeOf(uid, "number");
-  assert(typeof progress === "object");
+  assert(
+    typeof progress === "object",
+    "expected progress to be of type object or null",
+  );
+
   if (progress !== null) {
     assert.lengthOf(Object.keys(progress), 2);
     const { steps, percentage } = progress;
 
     for (const step of steps) {
       assert.lengthOf(Object.keys(step), 3);
+
       const { currentStep, finished, total } = step;
+
       assert.typeOf(currentStep, "string");
       assert.typeOf(finished, "number");
       assert.typeOf(total, "number");
@@ -79,10 +87,13 @@ function assertIsBatch(batch: BatchView) {
     assert.typeOf(percentage, "number");
   }
 
-  assert(details !== null && typeof details === "object");
+  assert.typeOf(details, "object");
 
   const { length } = Object.keys(stats);
-  assert(length >= 4 && length <= 7);
+
+  assert.isAtLeast(length, 4);
+  assert.isAtMost(length, 7);
+
   const {
     totalNbTasks,
     status,
@@ -95,48 +106,66 @@ function assertIsBatch(batch: BatchView) {
 
   assert.typeOf(totalNbTasks, "number");
 
-  for (const [a, b] of Object.entries(status)) {
-    assert.oneOf(a, possibleStatuses);
-    assert.typeOf(b, "number");
+  for (const [key, val] of Object.entries(status)) {
+    assert.oneOf(key, possibleStatuses);
+    assert.typeOf(val, "number");
   }
 
-  for (const [a, b] of Object.entries(types)) {
-    assert.oneOf(a, possibleKinds);
-    assert.typeOf(b, "number");
+  for (const [key, val] of Object.entries(types)) {
+    assert.oneOf(key, possibleKinds);
+    assert.typeOf(val, "number");
   }
 
-  for (const a of Object.values(indexUids)) {
-    assert.typeOf(a, "number");
+  for (const val of Object.values(indexUids)) {
+    assert.typeOf(val, "number");
   }
 
   assert(
     progressTrace === undefined ||
       (progressTrace !== null && typeof progressTrace === "object"),
+    "expected progressTrace to be undefined or an object",
   );
 
   assert(
     writeChannelCongestion === undefined ||
       (writeChannelCongestion !== null &&
         typeof writeChannelCongestion === "object"),
+    "expected writeChannelCongestion to be undefined or an object",
   );
 
   assert(
     internalDatabaseSizes === undefined ||
       (internalDatabaseSizes !== null &&
         typeof internalDatabaseSizes === "object"),
+    "expected internalDatabaseSizes to be undefined or an object",
   );
 
-  assert(duration === null || typeof duration === "string");
-  assert(startedAt === null || typeof startedAt === "string");
-  assert(finishedAt === null || typeof finishedAt === "string");
+  assert(
+    duration === null || typeof duration === "string",
+    "expected duration to be null or string",
+  );
+  assert(
+    startedAt === null || typeof startedAt === "string",
+    "expected startedAt to be null or string",
+  );
+  assert(
+    finishedAt === null || typeof finishedAt === "string",
+    "expected finishedAt to be null or string",
+  );
 }
 
 function assertIsResult(value: SafeOmit<AllTasks, "results">) {
   assert.lengthOf(Object.keys(value), 4);
   assert.typeOf(value.total, "number");
   assert.typeOf(value.limit, "number");
-  assert(value.from === null || typeof value.from === "number");
-  assert(value.next === null || typeof value.next === "number");
+  assert(
+    value.from === null || typeof value.from === "number",
+    "expected from to be null or number",
+  );
+  assert(
+    value.next === null || typeof value.next === "number",
+    "expected next to be null or number",
+  );
 }
 
 type TestValues = {
@@ -189,32 +218,32 @@ const testValuesRecord = {
   ],
 
   afterEnqueuedAt: [
-    [undefined, nowIsoString],
+    [undefined, NOW_ISO_STRING],
     ["*", "*"],
   ],
 
   beforeEnqueuedAt: [
-    [undefined, nowIsoString],
+    [undefined, NOW_ISO_STRING],
     ["*", "*"],
   ],
 
   afterStartedAt: [
-    [undefined, nowIsoString],
+    [undefined, NOW_ISO_STRING],
     ["*", "*"],
   ],
 
   beforeStartedAt: [
-    [undefined, nowIsoString],
+    [undefined, NOW_ISO_STRING],
     ["*", "*"],
   ],
 
   afterFinishedAt: [
-    [undefined, nowIsoString],
+    [undefined, NOW_ISO_STRING],
     ["*", "*"],
   ],
 
   beforeFinishedAt: [
-    [undefined, nowIsoString],
+    [undefined, NOW_ISO_STRING],
     ["*", "*"],
   ],
 } satisfies TestValues as SimplifiedTestValues;
