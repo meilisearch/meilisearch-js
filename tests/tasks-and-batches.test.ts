@@ -1,172 +1,17 @@
-import { afterAll, describe, test } from "vitest";
-import type {
-  AllTasks,
-  BatchView,
-  Kind,
-  Status,
-  SummarizedTaskView,
-  TasksFilterQuery,
-} from "../src/types/index.js";
+import { beforeAll, describe, test } from "vitest";
+import type { TasksFilterQuery } from "../src/types/index.js";
+import { getClient, objectEntries } from "./utils/meilisearch-test-utils.js";
 import {
   assert,
-  getClient,
-  objectKeys,
-  objectEntries,
-} from "./utils/meilisearch-test-utils.js";
-import type { SafeOmit } from "../src/types/shared.js";
+  possibleKinds,
+  possibleStatuses,
+} from "./utils/tasks-and-batches.js";
 
 const INDEX_UID = "536438df-c883-4c65-9e1d-3852b3f82330";
 const ms = await getClient("Master");
 const index = ms.index(INDEX_UID);
 
 const NOW_ISO_STRING = new Date().toISOString();
-const possibleStatuses = objectKeys<Status>({
-  enqueued: null,
-  processing: null,
-  succeeded: null,
-  failed: null,
-  canceled: null,
-});
-const possibleKinds = objectKeys<Kind>({
-  documentAdditionOrUpdate: null,
-  documentEdition: null,
-  documentDeletion: null,
-  settingsUpdate: null,
-  indexCreation: null,
-  indexDeletion: null,
-  indexUpdate: null,
-  indexSwap: null,
-  taskCancelation: null,
-  taskDeletion: null,
-  dumpCreation: null,
-  snapshotCreation: null,
-  upgradeDatabase: null,
-});
-
-function assertIsSummarizedTask(summarizedTask: SummarizedTaskView) {
-  assert.lengthOf(Object.keys(summarizedTask), 5);
-
-  const { taskUid, indexUid, status, type, enqueuedAt } = summarizedTask;
-
-  assert.typeOf(taskUid, "number");
-  assert(
-    indexUid === null || typeof indexUid === "string",
-    `expected ${indexUid} to be null or string`,
-  );
-  assert.oneOf(status, possibleStatuses);
-  assert.oneOf(type, possibleKinds);
-  assert.typeOf(enqueuedAt, "string");
-}
-
-function assertIsBatch(batch: BatchView) {
-  assert.lengthOf(Object.keys(batch), 7);
-
-  const { uid, progress, details, stats, duration, startedAt, finishedAt } =
-    batch;
-
-  assert.typeOf(uid, "number");
-  assert(
-    typeof progress === "object",
-    "expected progress to be of type object or null",
-  );
-
-  if (progress !== null) {
-    assert.lengthOf(Object.keys(progress), 2);
-    const { steps, percentage } = progress;
-
-    for (const step of steps) {
-      assert.lengthOf(Object.keys(step), 3);
-
-      const { currentStep, finished, total } = step;
-
-      assert.typeOf(currentStep, "string");
-      assert.typeOf(finished, "number");
-      assert.typeOf(total, "number");
-    }
-
-    assert.typeOf(percentage, "number");
-  }
-
-  assert.typeOf(details, "object");
-
-  const { length } = Object.keys(stats);
-
-  assert.isAtLeast(length, 4);
-  assert.isAtMost(length, 7);
-
-  const {
-    totalNbTasks,
-    status,
-    types,
-    indexUids,
-    progressTrace,
-    writeChannelCongestion,
-    internalDatabaseSizes,
-  } = stats;
-
-  assert.typeOf(totalNbTasks, "number");
-
-  for (const [key, val] of Object.entries(status)) {
-    assert.oneOf(key, possibleStatuses);
-    assert.typeOf(val, "number");
-  }
-
-  for (const [key, val] of Object.entries(types)) {
-    assert.oneOf(key, possibleKinds);
-    assert.typeOf(val, "number");
-  }
-
-  for (const val of Object.values(indexUids)) {
-    assert.typeOf(val, "number");
-  }
-
-  assert(
-    progressTrace === undefined ||
-      (progressTrace !== null && typeof progressTrace === "object"),
-    "expected progressTrace to be undefined or an object",
-  );
-
-  assert(
-    writeChannelCongestion === undefined ||
-      (writeChannelCongestion !== null &&
-        typeof writeChannelCongestion === "object"),
-    "expected writeChannelCongestion to be undefined or an object",
-  );
-
-  assert(
-    internalDatabaseSizes === undefined ||
-      (internalDatabaseSizes !== null &&
-        typeof internalDatabaseSizes === "object"),
-    "expected internalDatabaseSizes to be undefined or an object",
-  );
-
-  assert(
-    duration === null || typeof duration === "string",
-    "expected duration to be null or string",
-  );
-  assert(
-    startedAt === null || typeof startedAt === "string",
-    "expected startedAt to be null or string",
-  );
-  assert(
-    finishedAt === null || typeof finishedAt === "string",
-    "expected finishedAt to be null or string",
-  );
-}
-
-function assertIsResult(value: SafeOmit<AllTasks, "results">) {
-  assert.lengthOf(Object.keys(value), 4);
-  assert.typeOf(value.total, "number");
-  assert.typeOf(value.limit, "number");
-  assert(
-    value.from === null || typeof value.from === "number",
-    "expected from to be null or number",
-  );
-  assert(
-    value.next === null || typeof value.next === "number",
-    "expected next to be null or number",
-  );
-}
 
 type TestValues = {
   [TKey in keyof TasksFilterQuery]-?: [
@@ -248,7 +93,7 @@ const testValuesRecord = {
   ],
 } satisfies TestValues as SimplifiedTestValues;
 
-// transform names
+// transform names for printing purposes
 for (const testValues of Object.values(testValuesRecord)) {
   for (const testValue of testValues) {
     const [name] = testValue;
@@ -267,13 +112,13 @@ const testValuesRecordExceptSome = (() => {
   return r;
 })();
 
-afterAll(async () => {
+beforeAll(async () => {
   await index.delete().waitTask();
 });
 
 test(`${ms.tasks.waitForTask.name} and ${ms.tasks.getTask.name} methods`, async () => {
   const summarizedTask = await index.addDocuments([{ id: 1 }, { id: 2 }]);
-  assertIsSummarizedTask(summarizedTask);
+  assert.isSummarizedTask(summarizedTask);
 
   const taskThroughGet = await ms.tasks.getTask(summarizedTask.taskUid);
   assert.isTask(taskThroughGet);
@@ -294,7 +139,7 @@ test(`${ms.tasks.waitForTasks.name} method`, async () => {
   ]);
 
   for (const summarizedTask of summarizedTasks) {
-    assertIsSummarizedTask(summarizedTask);
+    assert.isSummarizedTask(summarizedTask);
   }
 
   const tasks = await ms.tasks.waitForTasks(summarizedTasks);
@@ -304,8 +149,6 @@ test(`${ms.tasks.waitForTasks.name} method`, async () => {
   }
 });
 
-// TODO: Should probably extend assert locally
-// eslint-disable-next-line vitest/expect-expect
 test(`${ms.batches.getBatch.name} method`, async () => {
   await Promise.all([
     index.addDocuments([{ id: 9 }, { id: 10 }]),
@@ -318,7 +161,7 @@ test(`${ms.batches.getBatch.name} method`, async () => {
 
   for (const { uid } of allBatches.results) {
     const batch = await ms.batches.getBatch(uid);
-    assertIsBatch(batch);
+    assert.isBatch(batch);
   }
 });
 
@@ -328,7 +171,7 @@ describe.for(objectEntries(testValuesRecord))("%s", ([key, testValues]) => {
     async ([, value]) => {
       const { results, ...r } = await ms.tasks.getTasks({ [key]: value });
 
-      assertIsResult(r);
+      assert.isResult(r);
 
       for (const task of results) {
         assert.isTask(task);
@@ -341,10 +184,10 @@ describe.for(objectEntries(testValuesRecord))("%s", ([key, testValues]) => {
     async ([, value]) => {
       const { results, ...r } = await ms.batches.getBatches({ [key]: value });
 
-      assertIsResult(r);
+      assert.isResult(r);
 
       for (const batch of results) {
-        assertIsBatch(batch);
+        assert.isBatch(batch);
       }
     },
   );
@@ -357,7 +200,7 @@ describe.for(objectEntries(testValuesRecordExceptSome))(
       `${ms.tasks.cancelTasks.name} method%s`,
       async ([, value]) => {
         const summarizedTask = await ms.tasks.cancelTasks({ [key]: value });
-        assertIsSummarizedTask(summarizedTask);
+        assert.isSummarizedTask(summarizedTask);
         const task = await ms.tasks.waitForTask(summarizedTask);
         assert.isTask(task);
 
@@ -374,7 +217,7 @@ describe.for(objectEntries(testValuesRecordExceptSome))(
       `${ms.tasks.deleteTasks.name} method%s`,
       async ([, value]) => {
         const summarizedTask = await ms.tasks.deleteTasks({ [key]: value });
-        assertIsSummarizedTask(summarizedTask);
+        assert.isSummarizedTask(summarizedTask);
         const task = await ms.tasks.waitForTask(summarizedTask);
         assert.isTask(task);
 

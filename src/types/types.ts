@@ -4,7 +4,7 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^5.8.2
 
-import type { WaitOptions } from "./task_and_batch.js";
+import type { WaitOptions } from "./task-and-batch.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RecordAny = Record<string, any>;
@@ -76,7 +76,7 @@ export type Config = {
   httpClient?: (...args: Parameters<typeof fetch>) => Promise<unknown>;
   /** Timeout in milliseconds for each HTTP request. */
   timeout?: number;
-  /** TODO */
+  /** Customizable default options for awaiting tasks. */
   defaultWaitOptions?: WaitOptions;
 };
 
