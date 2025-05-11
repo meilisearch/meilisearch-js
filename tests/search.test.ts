@@ -3,7 +3,7 @@ import {
   assert,
   HOST,
   MASTER_KEY,
-  ObjectKeys,
+  objectKeys,
 } from "./utils/meilisearch-test-utils.js";
 import { type Film, FILMS } from "./utils/test-data/films.js";
 import type {
@@ -31,7 +31,6 @@ import {
 } from "./utils/search.js";
 
 beforeAll(async () => {
-  // TODO: If this disables the rest of the experimental features, that might be a problem, consider https://vitest.dev/config/#globalsetup
   await client.updateExperimentalFeatures({ network: true });
   await client.updateNetwork({
     self: INDEX_UID,
@@ -56,28 +55,20 @@ beforeAll(async () => {
       },
     })
     .waitTask()
-    .then(({ status, error }) => {
-      assert.isNull(error);
-      assert.strictEqual(status, "succeeded");
+    .then((task) => {
+      assert.isTaskSuccessful(task);
     });
 
   await index
     .addDocuments(FILMS)
     .waitTask()
-    .then(({ status, error }) => {
-      assert.isNull(error);
-      assert.strictEqual(status, "succeeded");
+    .then((task) => {
+      assert.isTaskSuccessful(task);
     });
 });
 
 afterAll(async () => {
-  await index
-    .delete()
-    .waitTask()
-    .then(({ status, error }) => {
-      assert.isNull(error);
-      assert.strictEqual(status, "succeeded");
-    });
+  await index.delete().waitTask();
   await client.updateNetwork({});
 });
 
@@ -296,7 +287,7 @@ describe.concurrent("`showMatchesPosition` param", () => {
   );
 });
 
-const possibleMatchingStrategies = ObjectKeys<MatchingStrategy>({
+const possibleMatchingStrategies = objectKeys<MatchingStrategy>({
   last: null,
   all: null,
   frequency: null,
@@ -324,7 +315,6 @@ describe.concurrent.for(possibleMatchingStrategies)(
   },
 );
 
-// TODO: Another filter with geo filtering
 const filterExpressions: [name: string, filter: FilterExpression][] = [
   ["string", `release_date < ${Date.parse("1998-01-01")} AND id = 607`],
   ["array", [[`release_date < ${Date.parse("1998-01-01")}`], ["id = 607"]]],

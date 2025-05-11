@@ -1,7 +1,7 @@
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/network#the-remote-object}
  *
- * @see `meilisearch_types::features::Remote` at {@link https://github.com/meilisearch/meilisearch}
+ * @see `meilisearch_types::features::Remote`
  */
 export type Remote = {
   url: string;
@@ -11,7 +11,7 @@ export type Remote = {
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/network#the-network-object}
  *
- * @see `meilisearch_types::features::Network` at {@link https://github.com/meilisearch/meilisearch}
+ * @see `meilisearch_types::features::Network`
  */
 export type Network = {
   self: string | null;

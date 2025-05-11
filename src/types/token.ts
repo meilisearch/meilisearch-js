@@ -8,7 +8,7 @@ export type TokenIndexRules = Pick<SearchQuery, "filter">;
  *
  * @remarks
  * Not well documented.
- * @see `meilisearch_auth::SearchRules` at {@link https://github.com/meilisearch/meilisearch}
+ * @see `meilisearch_auth::SearchRules`
  */
 export type TokenSearchRules =
   | Record<string, TokenIndexRules | null>

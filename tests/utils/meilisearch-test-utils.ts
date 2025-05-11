@@ -256,12 +256,12 @@ export type Book = {
   author: string;
 };
 
-function ObjectKeys<T extends string>(o: { [TKey in T]: null }): T[] {
+function objectKeys<T extends string>(o: { [TKey in T]: null }): T[] {
   return Object.keys(o) as T[];
 }
 
 export {
-  ObjectKeys,
+  objectKeys,
   clearAllIndexes,
   config,
   masterClient,
