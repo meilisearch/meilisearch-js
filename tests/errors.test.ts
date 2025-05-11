@@ -52,3 +52,6 @@ test(`${MeiliSearchApiError.name}`, async () => {
   const error = await assert.rejects(ms.health(), MeiliSearchApiError);
   assert.deepEqual(error.cause, simulatedCause);
 });
+
+// TODO: Mention other errors, and how they are tested in another file perhaps
+// Also maybe move these tests into meilisearch.test.ts
