@@ -38,7 +38,7 @@ describe("abort", () => {
   });
 
   afterAll(() => {
-    spy.mockReset();
+    spy.mockRestore();
   });
 
   test.concurrent("with global timeout", async () => {
@@ -171,7 +171,7 @@ test("headers with API key, clientAgents, global headers, and custom headers", a
     ...customHeaders,
   });
 
-  spy.mockReset();
+  spy.mockRestore();
 });
 
 test.concurrent("custom http client", async () => {
