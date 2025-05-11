@@ -164,7 +164,7 @@ test("headers with API key, clientAgents, global headers, and custom headers", a
 
   assert.strictEqual(authorization, `Bearer ${apiKey}`);
 
-  // note how they overwrite eachother, top priority being the custom headers
+  // note how they overwrite each other, top priority being the custom headers
   assert.deepEqual(Object.fromEntries(headers.entries()), {
     "content-type": "application/json",
     ...globalHeaders,

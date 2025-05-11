@@ -1,19 +1,54 @@
-import { test, describe, beforeEach, vi } from "vitest";
-import { MeiliSearch, assert } from "./utils/meilisearch-test-utils.js";
-import { MeiliSearchRequestError } from "../src/index.js";
+import { afterEach, test, vi, afterAll } from "vitest";
+import { assert } from "./utils/meilisearch-test-utils.js";
+import {
+  MeiliSearch,
+  MeiliSearchApiError,
+  MeiliSearchError,
+  MeiliSearchRequestError,
+  type MeiliSearchErrorResponse,
+} from "../src/index.js";
 
-const mockedFetch = vi.fn();
-globalThis.fetch = mockedFetch;
+const spy = vi.spyOn(globalThis, "fetch");
 
-describe("Test on updates", () => {
-  beforeEach(() => {
-    mockedFetch.mockReset();
-  });
+afterAll(() => {
+  spy.mockRestore();
+});
 
-  test(`Throw MeilisearchRequestError when thrown error is not MeiliSearchApiError`, async () => {
-    mockedFetch.mockRejectedValue(new Error("fake error message"));
+afterEach(() => {
+  spy.mockReset();
+});
 
-    const client = new MeiliSearch({ host: "http://localhost:9345" });
-    await assert.rejects(client.health(), MeiliSearchRequestError);
-  });
+test(`${MeiliSearchError.name}`, () => {
+  assert.throws(
+    () => new MeiliSearch({ host: "http:// invalid URL" }),
+    MeiliSearchError,
+    "The provided host is not valid",
+  );
+});
+
+test(`${MeiliSearchRequestError.name}`, async () => {
+  const simulatedError = new TypeError("simulated network error");
+  spy.mockImplementation(() => Promise.reject(simulatedError));
+
+  const ms = new MeiliSearch({ host: "https://politi.dk/en/" });
+  const error = await assert.rejects(ms.health(), MeiliSearchRequestError);
+  assert.deepEqual(error.cause, simulatedError);
+});
+
+test(`${MeiliSearchApiError.name}`, async () => {
+  const simulatedCause: MeiliSearchErrorResponse = {
+    message: "message",
+    code: "code",
+    type: "type",
+    link: "link",
+  };
+  spy.mockImplementation(() =>
+    Promise.resolve(
+      new Response(JSON.stringify(simulatedCause), { status: 400 }),
+    ),
+  );
+
+  const ms = new MeiliSearch({ host: "https://polisen.se/en/" });
+  const error = await assert.rejects(ms.health(), MeiliSearchApiError);
+  assert.deepEqual(error.cause, simulatedCause);
 });
