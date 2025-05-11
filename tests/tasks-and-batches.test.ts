@@ -1,4 +1,4 @@
-import { beforeAll, describe, test } from "vitest";
+import { beforeAll, describe, test, vi } from "vitest";
 import type { TasksFilterQuery } from "../src/types/index.js";
 import { getClient, objectEntries } from "./utils/meilisearch-test-utils.js";
 import {
@@ -123,7 +123,22 @@ test(`${ms.tasks.waitForTask.name} and ${ms.tasks.getTask.name} methods`, async 
   const taskThroughGet = await ms.tasks.getTask(summarizedTask.taskUid);
   assert.isTask(taskThroughGet);
 
-  const taskThroughWaitOne = await ms.tasks.waitForTask(summarizedTask);
+  // test timeout and interval
+  const spy = vi.spyOn(globalThis, "setTimeout");
+
+  const interval = 42;
+  const timeout = 61_234;
+  const taskThroughWaitOne = await ms.tasks.waitForTask(summarizedTask, {
+    interval,
+    timeout,
+  });
+
+  const timeoutParams = spy.mock.calls.map(([, to]) => to);
+  assert.include(timeoutParams, interval);
+  assert.include(timeoutParams, timeout);
+
+  spy.mockRestore();
+
   assert.isTask(taskThroughWaitOne);
 
   const taskThroughWaitTwo = await ms.tasks.waitForTask(summarizedTask.taskUid);
