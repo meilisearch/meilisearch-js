@@ -200,7 +200,10 @@ test.concurrent("custom http client", async () => {
 });
 
 describe("errors", () => {
-  const spy = vi.spyOn(globalThis, "fetch");
+  let spy: MockInstance<typeof fetch>;
+  beforeAll(() => {
+    spy = vi.spyOn(globalThis, "fetch");
+  });
 
   afterAll(() => {
     spy.mockRestore();
