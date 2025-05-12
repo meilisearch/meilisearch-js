@@ -1,5 +1,6 @@
 import {
   afterAll,
+  afterEach,
   beforeAll,
   describe,
   test,
@@ -10,6 +11,9 @@ import {
   MeiliSearch,
   MeiliSearchRequestTimeOutError,
   MeiliSearchRequestError,
+  MeiliSearchError,
+  MeiliSearchApiError,
+  type MeiliSearchErrorResponse,
 } from "../src/index.js";
 import { assert, HOST } from "./utils/meilisearch-test-utils.js";
 
@@ -45,35 +49,32 @@ describe("abort", () => {
     const timeout = 1;
     const ms = new MeiliSearch({ host: HOST, timeout });
 
-    const { cause } = await assert.rejects(
-      ms.health(),
-      MeiliSearchRequestError,
-    );
-    assert.instanceOf(cause, MeiliSearchRequestTimeOutError);
-    assert.strictEqual(cause.cause.timeout, timeout);
+    const error = await assert.rejects(ms.health(), MeiliSearchRequestError);
+    assert.instanceOf(error.cause, MeiliSearchRequestTimeOutError);
+    assert.strictEqual(error.cause.cause.timeout, timeout);
   });
 
   test.concurrent("with signal", async () => {
     const ms = new MeiliSearch({ host: HOST });
     const reason = Symbol("<reason>");
 
-    const { cause } = await assert.rejects(
+    const error = await assert.rejects(
       ms.multiSearch({ queries: [] }, { signal: AbortSignal.abort(reason) }),
       MeiliSearchRequestError,
     );
-    assert.strictEqual(cause, reason);
+    assert.strictEqual(error.cause, reason);
   });
 
   test.concurrent("with signal with a timeout", async () => {
     const ms = new MeiliSearch({ host: HOST });
 
-    const { cause } = await assert.rejects(
+    const error = await assert.rejects(
       ms.multiSearch({ queries: [] }, { signal: AbortSignal.timeout(5) }),
       MeiliSearchRequestError,
     );
 
     assert.strictEqual(
-      String(cause),
+      String(error.cause),
       "TimeoutError: The operation was aborted due to timeout",
     );
   });
@@ -86,7 +87,7 @@ describe("abort", () => {
     async ([timeout, signalTimeout]) => {
       const ms = new MeiliSearch({ host: HOST, timeout });
 
-      const { cause } = await assert.rejects(
+      const error = await assert.rejects(
         ms.multiSearch(
           { queries: [] },
           { signal: AbortSignal.timeout(signalTimeout) },
@@ -96,12 +97,12 @@ describe("abort", () => {
 
       if (timeout > signalTimeout) {
         assert.strictEqual(
-          String(cause),
+          String(error.cause),
           "TimeoutError: The operation was aborted due to timeout",
         );
       } else {
-        assert.instanceOf(cause, MeiliSearchRequestTimeOutError);
-        assert.strictEqual(cause.cause.timeout, timeout);
+        assert.instanceOf(error.cause, MeiliSearchRequestTimeOutError);
+        assert.strictEqual(error.cause.cause.timeout, timeout);
       }
     },
   );
@@ -112,20 +113,31 @@ describe("abort", () => {
       const ms = new MeiliSearch({ host: HOST, timeout: 1 });
       const reason = Symbol("<reason>");
 
-      const { cause } = await assert.rejects(
+      const error = await assert.rejects(
         ms.multiSearch({ queries: [] }, { signal: AbortSignal.abort(reason) }),
         MeiliSearchRequestError,
       );
 
-      assert.strictEqual(cause, reason);
+      assert.strictEqual(error.cause, reason);
     },
   );
 });
 
 test("headers with API key, clientAgents, global headers, and custom headers", async () => {
-  const spy = vi
-    .spyOn(globalThis, "fetch")
-    .mockImplementation(() => Promise.resolve(new Response()));
+  using spy = (() => {
+    const spy = vi
+      .spyOn(globalThis, "fetch")
+      .mockImplementation(() => Promise.resolve(new Response()));
+
+    return {
+      get value() {
+        return spy;
+      },
+      [Symbol.dispose]() {
+        spy.mockRestore();
+      },
+    };
+  })();
 
   const apiKey = "secrète";
   const clientAgents = ["TEST"];
@@ -141,7 +153,7 @@ test("headers with API key, clientAgents, global headers, and custom headers", a
   const customHeaders = { my: "header", not: "yours" };
   await ms.multiSearch({ queries: [] }, { headers: customHeaders });
 
-  const { calls } = spy.mock;
+  const { calls } = spy.value.mock;
   assert.lengthOf(calls, 1);
 
   const headers = calls[0][1]?.headers;
@@ -170,8 +182,6 @@ test("headers with API key, clientAgents, global headers, and custom headers", a
     ...globalHeaders,
     ...customHeaders,
   });
-
-  spy.mockRestore();
 });
 
 test.concurrent("custom http client", async () => {
@@ -187,4 +197,53 @@ test.concurrent("custom http client", async () => {
 
   assert.instanceOf(input, URL);
   assert(input.href.startsWith(HOST));
+});
+
+describe("other errors", () => {
+  const spy = vi.spyOn(globalThis, "fetch");
+
+  afterAll(() => {
+    spy.mockRestore();
+  });
+
+  afterEach(() => {
+    spy.mockReset();
+  });
+
+  test(`${MeiliSearchError.name}`, () => {
+    assert.throws(
+      () => new MeiliSearch({ host: "http:// invalid URL" }),
+      MeiliSearchError,
+      "The provided host is not valid",
+    );
+  });
+
+  test(`${MeiliSearchRequestError.name}`, async () => {
+    const simulatedError = new TypeError("simulated network error");
+    spy.mockImplementation(() => Promise.reject(simulatedError));
+
+    const ms = new MeiliSearch({ host: "https://politi.dk/en/" });
+    const error = await assert.rejects(ms.health(), MeiliSearchRequestError);
+    assert.deepEqual(error.cause, simulatedError);
+  });
+
+  test(`${MeiliSearchApiError.name}`, async () => {
+    const simulatedCause: MeiliSearchErrorResponse = {
+      message: "message",
+      code: "code",
+      type: "type",
+      link: "link",
+    };
+    spy.mockImplementation(() =>
+      Promise.resolve(
+        new Response(JSON.stringify(simulatedCause), { status: 400 }),
+      ),
+    );
+
+    const ms = new MeiliSearch({ host: "https://polisen.se/en/" });
+    const error = await assert.rejects(ms.health(), MeiliSearchApiError);
+    assert.deepEqual(error.cause, simulatedCause);
+  });
+
+  // MeiliSearchTaskTimeOutError is tested by tasks-and-batches tests
 });
