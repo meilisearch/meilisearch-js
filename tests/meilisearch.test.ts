@@ -199,7 +199,7 @@ test.concurrent("custom http client", async () => {
   assert(input.href.startsWith(HOST));
 });
 
-describe("other errors", () => {
+describe("errors", () => {
   const spy = vi.spyOn(globalThis, "fetch");
 
   afterAll(() => {
