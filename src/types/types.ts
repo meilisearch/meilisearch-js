@@ -45,12 +45,7 @@ export type HttpRequestsRequestInit = Omit<BaseRequestInit, "headers"> & {
 
 /** Main configuration object for the meilisearch client. */
 export type Config = {
-  /**
-   * The base URL for reaching a meilisearch instance.
-   *
-   * @remarks
-   * Protocol and trailing slash can be omitted.
-   */
+  /** The base URL for reaching a meilisearch instance. */
   host: string;
   /**
    * API key for interacting with a meilisearch instance.
@@ -59,8 +54,8 @@ export type Config = {
    */
   apiKey?: string;
   /**
-   * Custom strings that will be concatted to the "X-Meilisearch-Client" header
-   * on each request.
+   * Custom strings that will be concatenated to the "X-Meilisearch-Client"
+   * header on each request.
    */
   clientAgents?: string[];
   /** Base request options that may override the default ones. */
@@ -69,12 +64,19 @@ export type Config = {
    * Custom function that can be provided in place of {@link fetch}.
    *
    * @remarks
-   * API response errors will have to be handled manually with this as well.
+   * API response errors have to be handled manually.
    * @deprecated This will be removed in a future version. See
    *   {@link https://github.com/meilisearch/meilisearch-js/issues/1824 | issue}.
    */
   httpClient?: (...args: Parameters<typeof fetch>) => Promise<unknown>;
-  /** Timeout in milliseconds for each HTTP request. */
+  /**
+   * Timeout in milliseconds for each HTTP request.
+   *
+   * @remarks
+   * This uses {@link setTimeout}, which is not guaranteed to respect the
+   * provided milliseconds accurately.
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout#reasons_for_delays_longer_than_specified}
+   */
   timeout?: number;
   defaultWaitOptions?: WaitOptions;
 };
