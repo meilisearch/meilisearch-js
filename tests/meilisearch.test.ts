@@ -227,6 +227,7 @@ describe("errors", () => {
 
     const ms = new MeiliSearch({ host: "https://politi.dk/en/" });
     const error = await assert.rejects(ms.health(), MeiliSearchRequestError);
+    assert.typeOf(error.message, "string");
     assert.deepEqual(error.cause, simulatedError);
   });
 
@@ -245,7 +246,9 @@ describe("errors", () => {
 
     const ms = new MeiliSearch({ host: "https://polisen.se/en/" });
     const error = await assert.rejects(ms.health(), MeiliSearchApiError);
+    assert.typeOf(error.message, "string");
     assert.deepEqual(error.cause, simulatedCause);
+    assert.instanceOf(error.response, Response);
   });
 
   // MeiliSearchTaskTimeOutError is tested by tasks-and-batches tests
