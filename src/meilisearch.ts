@@ -7,19 +7,14 @@
 
 import { Index } from "./indexes.js";
 import type {
-  KeyCreation,
   Config,
   IndexOptions,
   IndexObject,
-  Key,
   Health,
   Stats,
   Version,
-  KeyUpdate,
   IndexesQuery,
   IndexesResults,
-  KeysQuery,
-  KeysResults,
   IndexSwap,
   MultiSearchParams,
   FederatedMultiSearchParams,
@@ -28,6 +23,11 @@ import type {
   ExtraRequestInit,
   Network,
   RecordAny,
+  CreateApiKey,
+  KeyView,
+  KeyViewList,
+  ListApiKeys,
+  PatchApiKey,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -302,72 +302,41 @@ export class MeiliSearch {
   /// KEYS
   ///
 
-  /**
-   * Get all API keys
-   *
-   * @param parameters - Parameters to browse the indexes
-   * @returns Promise returning an object with keys
-   */
-  async getKeys(parameters?: KeysQuery): Promise<KeysResults> {
-    const keys = await this.httpRequest.get<KeysResults>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/keys#get-all-keys} */
+  async getKeys(listApiKeys?: ListApiKeys): Promise<KeyViewList> {
+    return await this.httpRequest.get({
       path: "keys",
-      params: parameters,
+      params: listApiKeys,
     });
-
-    keys.results = keys.results.map((key) => ({
-      ...key,
-      createdAt: new Date(key.createdAt),
-      updatedAt: new Date(key.updatedAt),
-    }));
-
-    return keys;
   }
 
-  /**
-   * Get one API key
-   *
-   * @param keyOrUid - Key or uid of the API key
-   * @returns Promise returning a key
-   */
-  async getKey(keyOrUid: string): Promise<Key> {
-    return await this.httpRequest.get<Key>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/keys#get-one-key} */
+  async getKey(keyOrUid: string): Promise<KeyView> {
+    return await this.httpRequest.get({
       path: `keys/${keyOrUid}`,
     });
   }
 
-  /**
-   * Create one API key
-   *
-   * @param options - Key options
-   * @returns Promise returning a key
-   */
-  async createKey(options: KeyCreation): Promise<Key> {
-    return await this.httpRequest.post<Key>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/keys#create-a-key} */
+  async createKey(createApiKey: CreateApiKey): Promise<KeyView> {
+    return await this.httpRequest.post({
       path: "keys",
-      body: options,
+      body: createApiKey,
     });
   }
 
-  /**
-   * Update one API key
-   *
-   * @param keyOrUid - Key
-   * @param options - Key options
-   * @returns Promise returning a key
-   */
-  async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
-    return await this.httpRequest.patch<Key>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/keys#update-a-key} */
+  async updateKey(
+    keyOrUid: string,
+    patchApiKey: PatchApiKey,
+  ): Promise<KeyView> {
+    return await this.httpRequest.patch({
       path: `keys/${keyOrUid}`,
-      body: options,
+      body: patchApiKey,
     });
   }
 
-  /**
-   * Delete one API key
-   *
-   * @param keyOrUid - Key
-   * @returns
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/keys#delete-a-key} */
   async deleteKey(keyOrUid: string): Promise<void> {
     await this.httpRequest.delete({ path: `keys/${keyOrUid}` });
   }
