@@ -50,6 +50,7 @@ export type KeyView = {
   key: string;
   uid: string;
   actions: Action[];
+  indexes: string[];
   expiresAt: string | null;
   createdAt: string;
   updatedAt: string;

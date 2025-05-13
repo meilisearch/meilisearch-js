@@ -1,258 +1,229 @@
-import { expect, test, describe, beforeEach, afterAll } from "vitest";
-import { MeiliSearch } from "../src/index.js";
-import { ErrorStatusCode } from "../src/types/index.js";
+import { describe, test } from "vitest";
+import type {
+  Action,
+  CreateApiKey,
+  KeyView,
+  ListApiKeys,
+} from "../src/index.js";
 import {
-  clearAllIndexes,
-  config,
+  assert as extAssert,
   getClient,
-  getKey,
-  HOST,
+  objectEntries,
+  objectKeys,
 } from "./utils/meilisearch-test-utils.js";
 
-beforeEach(async () => {
-  await clearAllIndexes(config);
+const customAssert = {
+  isKeyView(value: KeyView) {
+    extAssert.lengthOf(Object.keys(value), 9);
+    const {
+      name,
+      description,
+      key,
+      uid,
+      actions,
+      indexes,
+      expiresAt,
+      createdAt,
+      updatedAt,
+    } = value;
+
+    extAssert(
+      name === null || typeof name === "string",
+      "expected name to be null or string",
+    );
+    extAssert(
+      description === null || typeof description === "string",
+      "expected description to be null or string",
+    );
+
+    extAssert.typeOf(key, "string");
+    extAssert.typeOf(uid, "string");
+
+    for (const action of actions) {
+      extAssert.oneOf(action, possibleActions);
+    }
+
+    for (const index of indexes) {
+      extAssert.typeOf(index, "string");
+    }
+
+    extAssert(
+      expiresAt === null || typeof expiresAt === "string",
+      "expected expiresAt to be null or string",
+    );
+
+    extAssert.typeOf(createdAt, "string");
+    extAssert.typeOf(updatedAt, "string");
+  },
+};
+
+const assert: typeof extAssert & typeof customAssert = Object.assign(
+  extAssert,
+  customAssert,
+);
+
+type TestRecord = {
+  [TKey in keyof CreateApiKey]-?: [
+    name: string | undefined,
+    value: CreateApiKey[TKey],
+    assertion: (a: CreateApiKey[TKey], b: CreateApiKey[TKey]) => void,
+  ][];
+};
+
+type SimplifiedTestRecord = Record<
+  keyof CreateApiKey,
+  [
+    name: string | undefined,
+    value: CreateApiKey[keyof CreateApiKey],
+    assertion: (
+      a: CreateApiKey[keyof CreateApiKey],
+      b: CreateApiKey[keyof CreateApiKey],
+    ) => void,
+  ][]
+>;
+
+const possibleActions = objectKeys<Action>({
+  "*": null,
+  search: null,
+  "documents.*": null,
+  "documents.add": null,
+  "documents.get": null,
+  "documents.delete": null,
+  "indexes.*": null,
+  "indexes.get": null,
+  "indexes.delete": null,
+  "indexes.create": null,
+  "indexes.update": null,
+  "indexes.swap": null,
+  "tasks.*": null,
+  "tasks.get": null,
+  "tasks.delete": null,
+  "tasks.cancel": null,
+  "settings.*": null,
+  "settings.get": null,
+  "settings.update": null,
+  "stats.get": null,
+  "metrics.get": null,
+  "dumps.create": null,
+  "snapshots.create": null,
+  version: null,
+  "keys.get": null,
+  "keys.delete": null,
+  "keys.create": null,
+  "keys.update": null,
+  "experimental.get": null,
+  "experimental.update": null,
+  "network.get": null,
+  "network.update": null,
 });
 
-afterAll(() => {
-  return clearAllIndexes(config);
+const testRecord = {
+  description: [
+    [
+      undefined,
+      "The Skeleton Key is an unbreakable lockpick and Daedric Artifact in The Elder Scrolls IV: Oblivion.",
+      (a, b) => {
+        assert.strictEqual(a, b);
+      },
+    ],
+  ],
+  name: [
+    [
+      undefined,
+      "Skeleton Key",
+      (a, b) => {
+        assert.strictEqual(a, b);
+      },
+    ],
+  ],
+  uid: [
+    [
+      undefined,
+      "bd2cbad1-6c5f-48e3-bb92-bc9961bc011e",
+      (a, b) => {
+        assert.strictEqual(a, b);
+      },
+    ],
+  ],
+  actions: possibleActions.map((action) => [
+    action,
+    [action],
+    (a, b) => {
+      assert.sameMembers(a, b);
+    },
+  ]),
+  indexes: [
+    [
+      undefined,
+      ["indexEins", "indexZwei"],
+      (a, b) => {
+        assert.sameMembers(a, b);
+      },
+    ],
+  ],
+  expiresAt: [
+    [
+      undefined,
+      new Date("9999-12-5").toISOString(),
+      (a, b) => {
+        assert.strictEqual(Date.parse(a!), Date.parse(b!));
+      },
+    ],
+  ],
+} satisfies TestRecord as SimplifiedTestRecord;
+
+// transform names
+for (const testValues of Object.values(testRecord)) {
+  for (const testValue of testValues) {
+    testValue[0] = testValue[0] === undefined ? "" : ` with "${testValue[0]}"`;
+  }
+}
+
+const ms = await getClient("Master");
+
+describe.for(objectEntries(testRecord))("`%s`", ([key, values]) => {
+  test.for(values)(
+    `${ms.createKey.name} method%s`,
+    async ([, value, assertion]) => {
+      const keyView = await ms.createKey({
+        actions: ["*"],
+        indexes: ["*"],
+        expiresAt: null,
+        [key]: value,
+      });
+
+      assert.isKeyView(keyView);
+
+      assertion(keyView[key as keyof typeof keyView], value);
+    },
+  );
 });
 
-describe.each([{ permission: "Master" }, { permission: "Admin" }])(
-  "Test on keys",
-  ({ permission }) => {
-    beforeEach(async () => {
-      const client = await getClient("Master");
-      await clearAllIndexes(config);
+test(`${ms.getKeys.name}, ${ms.getKey.name} and ${ms.deleteKey.name} methods`, async () => {
+  const keyList = await ms.getKeys({
+    offset: 0,
+    limit: 10_000,
+  } satisfies Required<ListApiKeys>);
 
-      const keys = await client.getKeys();
+  for (const { uid, name } of keyList.results) {
+    const keyView = await ms.getKey(uid);
 
-      const customKeys = keys.results.filter(
-        (key) =>
-          key.name !== "Default Search API Key" &&
-          key.name !== "Default Admin API Key",
-      );
+    // avoid deleting default keys that might be used by other tests
+    if (name !== "Default Search API Key" && name !== "Default Admin API Key") {
+      await ms.deleteKey(uid);
+    }
 
-      // Delete all custom keys
-      await Promise.all(customKeys.map((key) => client.deleteKey(key.uid)));
-    });
+    assert.isKeyView(keyView);
+  }
 
-    test(`${permission} key: get keys`, async () => {
-      const client = await getClient(permission);
-      const keys = await client.getKeys();
+  assert.lengthOf(Object.keys(keyList), 4);
+  const { results, offset, limit, total } = keyList;
 
-      const searchKey = keys.results.find(
-        (key) => key.name === "Default Search API Key",
-      );
+  for (const keyView of results) {
+    assert.isKeyView(keyView);
+  }
 
-      expect(searchKey).toBeDefined();
-      expect(searchKey).toHaveProperty(
-        "description",
-        "Use it to search from the frontend",
-      );
-      expect(searchKey).toHaveProperty("key");
-      expect(searchKey).toHaveProperty("actions");
-      expect(searchKey).toHaveProperty("indexes");
-      expect(searchKey).toHaveProperty("expiresAt", null);
-      expect(searchKey).toHaveProperty("createdAt");
-      expect(searchKey?.createdAt).toBeTypeOf("string");
-      expect(searchKey).toHaveProperty("updatedAt");
-      expect(searchKey?.updatedAt).toBeTypeOf("string");
-
-      const adminKey = keys.results.find(
-        (key) => key.name === "Default Admin API Key",
-      );
-
-      expect(adminKey).toBeDefined();
-      expect(adminKey).toHaveProperty(
-        "description",
-        "Use it for anything that is not a search operation. Caution! Do not expose it on a public frontend",
-      );
-      expect(adminKey).toHaveProperty("key");
-      expect(adminKey).toHaveProperty("actions");
-      expect(adminKey).toHaveProperty("indexes");
-      expect(adminKey).toHaveProperty("expiresAt", null);
-      expect(adminKey).toHaveProperty("createdAt");
-      expect(adminKey?.createdAt).toBeTypeOf("string");
-      expect(adminKey).toHaveProperty("updatedAt");
-      expect(adminKey?.updatedAt).toBeTypeOf("string");
-    });
-
-    test(`${permission} key: get keys with pagination`, async () => {
-      const client = await getClient(permission);
-      const keys = await client.getKeys({ limit: 1, offset: 2 });
-
-      expect(keys.limit).toEqual(1);
-      expect(keys.offset).toEqual(2);
-      expect(keys.total).toEqual(2);
-    });
-
-    test(`${permission} key: get on key`, async () => {
-      const client = await getClient(permission);
-      const apiKey = await getKey("Admin");
-
-      const key = await client.getKey(apiKey);
-
-      expect(key).toBeDefined();
-      expect(key).toHaveProperty(
-        "description",
-        "Use it for anything that is not a search operation. Caution! Do not expose it on a public frontend",
-      );
-      expect(key).toHaveProperty("key");
-      expect(key).toHaveProperty("actions");
-      expect(key).toHaveProperty("indexes");
-      expect(key).toHaveProperty("expiresAt", null);
-      expect(key).toHaveProperty("createdAt");
-      expect(key).toHaveProperty("updatedAt");
-    });
-
-    test(`${permission} key: create key with no expiresAt`, async () => {
-      const client = await getClient(permission);
-      const uid = "3db051e0-423d-4b5c-a63a-f82a7043dce6";
-
-      const key = await client.createKey({
-        uid,
-        description: "Indexing Products API key",
-        actions: ["documents.add"],
-        indexes: ["products"],
-        expiresAt: null,
-      });
-
-      expect(key).toBeDefined();
-      expect(key).toHaveProperty("description", "Indexing Products API key");
-      expect(key).toHaveProperty("uid", uid);
-      expect(key).toHaveProperty("expiresAt", null);
-    });
-
-    test(`${permission} key: create key with actions using wildcards to provide rights`, async () => {
-      const client = await getClient(permission);
-      const uid = "3db051e0-423d-4b5c-a63a-f82a7043dce6";
-
-      const key = await client.createKey({
-        uid,
-        description: "Indexing Products API key",
-        actions: ["indexes.*", "tasks.*", "documents.*"],
-        indexes: ["wildcard_keys_permission"],
-        expiresAt: null,
-      });
-
-      const newClient = new MeiliSearch({ host: HOST, apiKey: key.key });
-      await newClient.createIndex("wildcard_keys_permission"); // test index creation
-      const task = await newClient
-        .index("wildcard_keys_permission")
-        .addDocuments([{ id: 1 }])
-        .waitTask(); // test document addition
-
-      expect(key).toBeDefined();
-      expect(task.status).toBe("succeeded");
-      expect(key).toHaveProperty("description", "Indexing Products API key");
-      expect(key).toHaveProperty("uid", uid);
-      expect(key).toHaveProperty("expiresAt", null);
-    });
-
-    test(`${permission} key: create key with an expiresAt`, async () => {
-      const client = await getClient(permission);
-
-      const key = await client.createKey({
-        description: "Indexing Products API key",
-        actions: ["documents.add"],
-        indexes: ["products"],
-        expiresAt: new Date("2050-11-13T00:00:00Z").toISOString(), // Test will fail in 2050
-      });
-
-      expect(key).toBeDefined();
-      expect(key).toHaveProperty("description", "Indexing Products API key");
-      expect(key).toHaveProperty("expiresAt", "2050-11-13T00:00:00Z");
-    });
-
-    test(`${permission} key: update a key`, async () => {
-      const client = await getClient(permission);
-
-      const key = await client.createKey({
-        description: "Indexing Products API key",
-        actions: ["documents.add"],
-        indexes: ["products"],
-        expiresAt: new Date("2050-11-13T00:00:00Z").toISOString(), // Test will fail in 2050
-      });
-
-      const updatedKey = await client.updateKey(key.key, {
-        description: "Indexing Products API key 2",
-        name: "Product admin",
-      });
-
-      expect(updatedKey).toBeDefined();
-      expect(updatedKey).toHaveProperty(
-        "description",
-        "Indexing Products API key 2",
-      );
-      expect(updatedKey).toHaveProperty("name", "Product admin");
-    });
-
-    test(`${permission} key: delete a key`, async () => {
-      const client = await getClient(permission);
-
-      const key = await client.createKey({
-        description: "Indexing Products API key",
-        actions: ["documents.add"],
-        indexes: ["products"],
-        expiresAt: new Date("2050-11-13T00:00:00Z").toISOString(), // Test will fail in 2050
-      });
-
-      const deletedKey = await client.deleteKey(key.key);
-
-      expect(deletedKey).toBeUndefined();
-    });
-  },
-);
-
-describe.each([{ permission: "Search" }])(
-  "Test on keys with search key",
-  ({ permission }) => {
-    test(`${permission} key: get keys denied`, async () => {
-      const client = await getClient(permission);
-      await expect(client.getKeys()).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.INVALID_API_KEY,
-      );
-    });
-
-    test(`${permission} key: create key denied`, async () => {
-      const client = await getClient(permission);
-      await expect(
-        client.createKey({
-          description: "Indexing Products API key",
-          actions: ["documents.add"],
-          indexes: ["products"],
-          expiresAt: null,
-        }),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
-    });
-  },
-);
-
-describe.each([{ permission: "No" }])(
-  "Test on keys with No key",
-  ({ permission }) => {
-    test(`${permission} key: get keys denied`, async () => {
-      const client = await getClient(permission);
-      await expect(client.getKeys()).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-      );
-    });
-
-    test(`${permission} key: create key denied`, async () => {
-      const client = await getClient(permission);
-      await expect(
-        client.createKey({
-          description: "Indexing Products API key",
-          actions: ["documents.add"],
-          indexes: ["products"],
-          expiresAt: null,
-        }),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-      );
-    });
-  },
-);
+  assert.typeOf(offset, "number");
+  assert.typeOf(limit, "number");
+  assert.typeOf(total, "number");
+});
