@@ -2,6 +2,7 @@ name: Tests
 
 env:
   HUSKY: 0
+  NODE_OPTIONS: '--trace-warnings'
 
 on:
   pull_request:
