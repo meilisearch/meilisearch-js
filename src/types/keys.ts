@@ -82,7 +82,4 @@ export type KeyViewList = PaginationView<KeyView>;
  *
  * @see `meilisearch_types::keys::PatchApiKey`
  */
-export type PatchApiKey = {
-  description?: string | null;
-  name?: string | null;
-};
+export type PatchApiKey = Pick<CreateApiKey, "name" | "description">;

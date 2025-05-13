@@ -62,6 +62,8 @@ const assert: typeof extAssert & typeof customAssert = Object.assign(
   customAssert,
 );
 
+const KEY_UID = "bd2cbad1-6c5f-48e3-bb92-bc9961bc011e";
+
 type TestRecord = {
   [TKey in keyof CreateApiKey]-?: [
     name: string | undefined,
@@ -139,7 +141,7 @@ const testRecord = {
   uid: [
     [
       undefined,
-      "bd2cbad1-6c5f-48e3-bb92-bc9961bc011e",
+      KEY_UID,
       (a, b) => {
         assert.strictEqual(a, b);
       },
@@ -191,6 +193,24 @@ describe.for(objectEntries(testRecord))("`%s`", ([key, values]) => {
         expiresAt: null,
         [key]: value,
       });
+
+      assert.isKeyView(keyView);
+
+      assertion(keyView[key as keyof typeof keyView], value);
+    },
+  );
+});
+
+const pickedTestRecord = (() => {
+  const { name, description } = testRecord;
+  return { name, description };
+})();
+
+describe.for(objectEntries(pickedTestRecord))("`%s`", ([key, values]) => {
+  test.for(values)(
+    `${ms.updateKey.name} method%s`,
+    async ([, value, assertion]) => {
+      const keyView = await ms.updateKey(KEY_UID, { [key]: value });
 
       assert.isKeyView(keyView);
 
