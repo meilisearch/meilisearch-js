@@ -434,23 +434,20 @@ test.concurrent(`${federatedMultiSearch.name} method`, async () => {
   assert.deepEqual(facetStats, stats);
 });
 
-// TODO:
-function assertSomething(hits: SearchHit<Film>[]) {
-  for (const { _vectors } of hits) {
-    assert.lengthOf(Object.keys(_vectors), 1);
-    const {
-      default: { embeddings, ...restOfObj },
-    } = _vectors as Record<string, ExplicitVectors>;
+function assertIsVectors(vectors: SearchHit<Film>["_vectors"]) {
+  assert.lengthOf(Object.keys(vectors), 1);
+  const {
+    default: { embeddings, ...restOfObj },
+  } = vectors as Record<string, ExplicitVectors>;
 
-    for (const embedding of embeddings) {
-      assert(Array.isArray(embedding));
-      for (const embeddingElement of embedding) {
-        assert.typeOf(embeddingElement, "number");
-      }
+  for (const embedding of embeddings) {
+    assert(Array.isArray(embedding), "expected embedding to be array");
+    for (const embeddingElement of embedding) {
+      assert.typeOf(embeddingElement, "number");
     }
-
-    assert.deepEqual(restOfObj, { regenerate: false });
   }
+
+  assert.deepEqual(restOfObj, { regenerate: false });
 }
 
 describe.concurrent("embedding related params", () => {
@@ -467,7 +464,10 @@ describe.concurrent("embedding related params", () => {
       const { semanticHitCount, hits } = await searchMethod(params);
 
       assert.typeOf(semanticHitCount, "number");
-      assertSomething(hits);
+
+      for (const hit of hits) {
+        assertIsVectors(hit._vectors);
+      }
     },
   );
 
@@ -477,7 +477,9 @@ describe.concurrent("embedding related params", () => {
       const { retrieveVectors } = params;
       const { hits } = await searchMethod({ retrieveVectors });
 
-      assertSomething(hits);
+      for (const hit of hits) {
+        assertIsVectors(hit._vectors);
+      }
     },
   );
 });
