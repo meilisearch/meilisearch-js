@@ -6,7 +6,7 @@
 
 import type { WaitOptions } from "./task-and-batch.js";
 import type { FilterExpression } from "./search-parameters.js";
-import type { RecordAny } from "./shared.js";
+import type { RecordAny, SafeOmit } from "./shared.js";
 
 /**
  * Shape of allowed record object that can be appended to a
@@ -21,16 +21,16 @@ export type URLSearchParamsRecord = Record<
  * {@link RequestInit} without {@link RequestInit.body} and
  * {@link RequestInit.method} properties.
  */
-export type ExtraRequestInit = Omit<RequestInit, "body" | "method">;
+export type ExtraRequestInit = SafeOmit<RequestInit, "body" | "method">;
 
 /** Same as {@link ExtraRequestInit} but without {@link ExtraRequestInit.signal}. */
-export type BaseRequestInit = Omit<ExtraRequestInit, "signal">;
+export type BaseRequestInit = SafeOmit<ExtraRequestInit, "signal">;
 
 /**
  * Same as {@link BaseRequestInit} but with its headers property forced as a
  * {@link Headers} object.
  */
-export type HttpRequestsRequestInit = Omit<BaseRequestInit, "headers"> & {
+export type HttpRequestsRequestInit = SafeOmit<BaseRequestInit, "headers"> & {
   headers: Headers;
 };
 
@@ -103,7 +103,7 @@ export type MainRequestOptions = {
  * {@link MainRequestOptions} without {@link MainRequestOptions.method}, for
  * method functions.
  */
-export type RequestOptions = Omit<MainRequestOptions, "method">;
+export type RequestOptions = SafeOmit<MainRequestOptions, "method">;
 
 ///
 /// Resources

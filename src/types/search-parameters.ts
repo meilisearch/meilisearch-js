@@ -74,8 +74,6 @@ type FacetAndSearchQuerySegment = {
   hybrid?: HybridQuery | null;
   /** {@link https://www.meilisearch.com/docs/reference/api/search#matching-strategy} */
   matchingStrategy?: MatchingStrategy;
-  // TODO: Could use generic record to type these kinds of settings, but is it worth it?
-  //       https://stackoverflow.com/a/76547796
   /** {@link https://www.meilisearch.com/docs/reference/api/search#customize-attributes-to-search-on-at-search-time} */
   attributesToSearchOn?: string[] | null;
   /** {@link https://www.meilisearch.com/docs/reference/api/search#query-locales} */

@@ -1,7 +1,7 @@
-import type { RecordAny, DeepStringRecord } from "./shared.js";
+import type { RecordAny, DeepStringRecord, SafeOmit } from "./shared.js";
 import type { FieldDistribution, MeiliSearchErrorResponse } from "./types.js";
 
-// TODO: Maybe more links
+// TODO: Look into using SafeOmit more instead of fragmenting types so much.
 
 /** @see `milli::search::new::matches::MatchBounds` */
 export type MatchBounds = { start: number; length: number; indices?: number[] };
@@ -76,7 +76,6 @@ export type FacetStats = {
 type ProcessingTime = { processingTimeMs: number };
 
 type SearchResultCore = {
-  // TODO: this is not present on federated result
   query: string;
   facetDistribution?: Record<string, FieldDistribution>;
   facetStats?: Record<string, FacetStats>;
@@ -107,7 +106,7 @@ export type FederatedFacets = Record<string, ComputedFacets>;
  *
  * @see `meilisearch::search::federated::types::FederatedSearchResult`
  */
-export type FederatedSearchResult = SearchResultCore & {
+export type FederatedSearchResult = SafeOmit<SearchResultCore, "query"> & {
   hits: FederatedSearchHit<Record<string, unknown>>[];
   facetsByIndex: FederatedFacets;
   remoteErrors?: Record<string, MeiliSearchErrorResponse>;

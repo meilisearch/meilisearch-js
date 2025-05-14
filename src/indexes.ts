@@ -55,6 +55,7 @@ import type {
   SearchQueryGet,
   SearchQueryWithRequiredPaginationGet,
   SearchQueryWithOffsetLimitGet,
+  SafeOmit,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -295,7 +296,7 @@ export class Index<T extends RecordAny = RecordAny> {
       : // Else use `GET /documents` method
         await this.httpRequest.get<ResourceResults<D[]>>({
           path: relativeBaseURL,
-          params: params as Omit<typeof params, "filter">,
+          params: params as SafeOmit<NonNullable<typeof params>, "filter">,
         });
   }
 
