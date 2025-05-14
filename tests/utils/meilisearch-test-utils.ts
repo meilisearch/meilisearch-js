@@ -1,6 +1,6 @@
 import { assert as vitestAssert } from "vitest";
 import { MeiliSearch, Index } from "../../src/index.js";
-import type { Config } from "../../src/types/index.js";
+import type { Config, Task } from "../../src/types/index.js";
 
 // testing
 const MASTER_KEY = "masterKey";
@@ -93,6 +93,7 @@ function decode64(buff: string) {
 }
 
 const NOT_RESOLVED = Symbol("<not resolved>");
+const RESOLVED = Symbol("<resolved>");
 
 const source = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -126,6 +127,17 @@ const source = {
       NOT_RESOLVED,
       "expected value to not resolve",
     );
+  },
+  async resolves(promise: Promise<unknown>): Promise<void> {
+    try {
+      await promise;
+    } catch (error) {
+      vitestAssert.fail(error, RESOLVED, "expected value to not reject");
+    }
+  },
+  isTaskSuccessful(task: Task) {
+    vitestAssert.isNull(task.error);
+    vitestAssert.strictEqual(task.status, "succeeded");
   },
 };
 export const assert: typeof vitestAssert & typeof source = Object.assign(
@@ -244,7 +256,12 @@ export type Book = {
   author: string;
 };
 
+function objectKeys<T extends string>(o: { [TKey in T]: null }): T[] {
+  return Object.keys(o) as T[];
+}
+
 export {
+  objectKeys,
   clearAllIndexes,
   config,
   masterClient,

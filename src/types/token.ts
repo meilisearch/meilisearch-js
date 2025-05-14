@@ -1,14 +1,14 @@
-import type { Filter } from "./types.js";
+import type { SearchQuery } from "./search-parameters.js";
 
 /** @see {@link TokenSearchRules} */
-export type TokenIndexRules = { filter?: Filter };
+export type TokenIndexRules = Pick<SearchQuery, "filter">;
 
 /**
  * {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference#search-rules}
  *
  * @remarks
  * Not well documented.
- * @see {@link https://github.com/meilisearch/meilisearch/blob/b21d7aedf9096539041362d438e973a18170f3fc/crates/meilisearch-auth/src/lib.rs#L271-L277 | GitHub source code}
+ * @see `meilisearch_auth::SearchRules`
  */
 export type TokenSearchRules =
   | Record<string, TokenIndexRules | null>

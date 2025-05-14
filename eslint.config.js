@@ -41,6 +41,12 @@ export default tseslint.config([
   {
     files: ["tests/**/*.test.ts"],
     extends: [vitest.configs.recommended],
+    rules: {
+      "vitest/expect-expect": [
+        "error",
+        { assertFunctionNames: ["t.expect", "expect", "assert"] },
+      ],
+    },
   },
   // Disable any style linting, as prettier takes care of that separately
   prettier,

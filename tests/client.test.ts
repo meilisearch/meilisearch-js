@@ -38,8 +38,17 @@ const index2 = {
   uid: "movies_test2",
 };
 
-afterAll(() => {
-  return clearAllIndexes(config);
+beforeAll(async () => {
+  await (
+    await getClient("Master")
+  ).updateExperimentalFeatures({ network: true });
+});
+
+afterAll(async () => {
+  await (
+    await getClient("Master")
+  ).updateExperimentalFeatures({ network: false });
+  await clearAllIndexes(config);
 });
 
 describe.each([

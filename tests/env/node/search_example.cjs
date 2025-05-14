@@ -24,7 +24,8 @@ const addDataset = async () => {
 ;(async () => {
   await addDataset()
   const index = await client.index('movies')
-  const resp = await index.search('Avengers', {
+  const resp = await index.search({
+    q: 'Avengers',
     limit: 1,
     attributesToHighlight: ['title'],
   })

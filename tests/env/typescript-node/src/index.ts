@@ -1,13 +1,6 @@
 import {
   MeiliSearch,
 } from '../../../../src/index.js'
-import type {
-  IndexObject,
-  SearchResponse,
-  Hits,
-  Hit,
-  SearchParams,
-} from '../../../../src/index.js'
 import { generateTenantToken } from '../../../../src/token.js'
 
 const config = {
@@ -31,29 +24,27 @@ const indexUid = "movies"
   await client.deleteIndex(indexUid).waitTask()
   await client.createIndex(indexUid).waitTask()
 
-  const index = client.index(indexUid)
+  const index = client.index<Movie>(indexUid)
   const indexes = await client.getRawIndexes()
-  indexes.results.map((index: IndexObject) => {
+  indexes.results.map((index) => {
     console.log(index.uid)
     // console.log(index.something) -> ERROR
   })
 
-  const searchParams: SearchParams = {
+  const searchParams = {
+    q: 'avenger',
     limit: 5,
     attributesToRetrieve: ['title', 'genre'],
     attributesToHighlight: ['title'],
     // test: true -> ERROR Test does not exist on type SearchParams
   }
-  indexes.results.map((index: IndexObject) => index.uid)
-  const res: SearchResponse<Movie> = await index.search(
-    'avenger',
-    searchParams
-  )
+  indexes.results.map((index) => index.uid)
+  const res = await index.search(searchParams)
 
   // both work
-  const { hits }: { hits: Hits<Movie> } = res
+  const { hits } = res
 
-  hits.map((hit: Hit<Movie>) => {
+  hits.map((hit) => {
     console.log(hit?.genre)
     console.log(hit.title)
     // console.log(hit._formatted.title) -> ERROR, _formatted could be undefined
