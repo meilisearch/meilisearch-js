@@ -53,15 +53,14 @@ export const [
     },
   },
   {
-    name: "federatedMultiSearch" satisfies keyof Pick<
-      MeiliSearch,
-      "federatedMultiSearch"
-    >,
+    name: "federatedMultiSearch" satisfies `federated${Capitalize<
+      keyof Pick<MeiliSearch, "multiSearch">
+    >}`,
     searchMethod: async (searchQuery) => {
       const { offset, limit, facets, ...restOfSearchQuery } =
         searchQuery as SearchQueryWithOffsetLimit;
 
-      const { hits, ...result } = await client.federatedMultiSearch({
+      const { hits, ...result } = await client.multiSearch({
         queries: [{ indexUid: INDEX_UID, ...restOfSearchQuery }],
         federation: {
           offset: offset ?? undefined,

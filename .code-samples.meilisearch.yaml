@@ -807,7 +807,7 @@ distinct_attribute_guide_filterable_1: |-
 distinct_attribute_guide_distinct_parameter_1: |-
   client.index('products').search({ q: 'white shirt', distinct: 'sku' })
 multi_search_federated_1: |-
-  client.federatedMultiSearch({
+  client.multiSearch({
     federation: {},
     queries: [
       {

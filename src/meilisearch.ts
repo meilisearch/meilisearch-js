@@ -217,7 +217,16 @@ export class MeiliSearch {
   /// Multi Search
   ///
 
-  async #multiSearch(
+  /** {@link https://www.meilisearch.com/docs/reference/api/multi_search} */
+  multiSearch(
+    multiSearch: MultiSearch,
+    init?: ExtraRequestInit,
+  ): Promise<SearchResults>;
+  multiSearch(
+    federatedSearch: FederatedSearch,
+    init?: ExtraRequestInit,
+  ): Promise<FederatedSearchResult>;
+  async multiSearch(
     body: MultiSearchOrFederatedSearch,
     init?: ExtraRequestInit,
   ): Promise<SearchResultsOrFederatedSearchResult> {
@@ -227,18 +236,6 @@ export class MeiliSearch {
       extraRequestInit: init,
     });
   }
-
-  /** {@link https://www.meilisearch.com/docs/reference/api/multi_search} */
-  readonly multiSearch = this.#multiSearch.bind(this) as (
-    multiSearch: MultiSearch,
-    init?: ExtraRequestInit,
-  ) => Promise<SearchResults>;
-
-  /** {@link https://www.meilisearch.com/docs/reference/api/multi_search} */
-  readonly federatedMultiSearch = this.#multiSearch.bind(this) as (
-    federatedSearch: FederatedSearch,
-    init?: ExtraRequestInit,
-  ) => Promise<FederatedSearchResult>;
 
   ///
   ///  Network

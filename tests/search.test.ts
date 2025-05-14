@@ -401,11 +401,10 @@ test.concurrent(`${federatedMultiSearch.name} method`, async () => {
     facetsByIndex: { [INDEX_UID]: ["genres", "popularity"] },
   };
 
-  const { hits, facetsByIndex, remoteErrors } =
-    await client.federatedMultiSearch({
-      queries,
-      federation,
-    });
+  const { hits, facetsByIndex, remoteErrors } = await client.multiSearch({
+    queries,
+    federation,
+  });
 
   for (const {
     _federation: { weightedRankingScore, ..._federation },
@@ -425,7 +424,7 @@ test.concurrent(`${federatedMultiSearch.name} method`, async () => {
   // TODO: Maybe could get an error response for this, to validate it against
   assert.deepEqual(remoteErrors, {});
 
-  const { facetDistribution, facetStats } = await client.federatedMultiSearch({
+  const { facetDistribution, facetStats } = await client.multiSearch({
     queries,
     federation: { ...federation, mergeFacets: { maxValuesPerFacet: 100 } },
   });
