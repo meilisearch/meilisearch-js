@@ -3,6 +3,7 @@ name: Meilisearch prototype tests
 
 env:
   HUSKY: 0
+  NODE_OPTIONS: '--trace-warnings'
 
 # Will only run for PRs and pushes to *-beta
 on:
