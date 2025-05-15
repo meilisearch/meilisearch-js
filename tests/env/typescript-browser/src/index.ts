@@ -1,4 +1,4 @@
-import { MeiliSearch, type IndexObject } from '../../../../src/index.js'
+import { MeiliSearch } from '../../../../src/index.js'
 import { generateTenantToken } from '../../../../src/token.js'
 
 const config = {
@@ -14,9 +14,9 @@ function greeter(person: string) {
 }
 
 ;(async () => {
-  const indexes = await client.getRawIndexes()
+  const indexes = await client.getIndexes()
   console.log({ indexes }, 'hello')
-  const uids = indexes.results.map((index: IndexObject) => index.uid)
+  const uids = indexes.results.map((index) => index.uid)
   document.body.innerHTML = `${greeter(
     user
   )} this is the list of all your indexes: \n ${uids.join(', ')}`

@@ -29,7 +29,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex({ uid: index.uid }).waitTask();
 
       await client.index(index.uid).addDocuments(dataset).waitTask();
     });
@@ -79,7 +79,7 @@ describe.each([{ permission: "Search" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex({ uid: index.uid }).waitTask();
     });
 
     test(`${permission} key: try to get sortable attributes and be denied`, async () => {
@@ -110,7 +110,7 @@ describe.each([{ permission: "No" }])(
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex({ uid: index.uid }).waitTask();
     });
 
     test(`${permission} key: try to get sortable attributes and be denied`, async () => {

@@ -1,10 +1,10 @@
 import type { RecordAny } from "./types.js";
 
-export type CursorResults<T> = {
+/** @see `meilisearch::routes::PaginationView` */
+export type PaginationView<T> = {
   results: T[];
+  offset: number;
   limit: number;
-  from: number;
-  next: number;
   total: number;
 };
 

@@ -136,7 +136,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       });
 
       const newClient = new MeiliSearch({ host: HOST, apiKey: key.key });
-      await newClient.createIndex("wildcard_keys_permission"); // test index creation
+      await newClient.createIndex({ uid: "wildcard_keys_permission" }); // test index creation
       const task = await newClient
         .index("wildcard_keys_permission")
         .addDocuments([{ id: 1 }])

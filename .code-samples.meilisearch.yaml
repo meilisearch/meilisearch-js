@@ -24,15 +24,15 @@ date_guide_sort_1: |-
     sort: ['release_timestamp:desc'],
   })
 get_one_index_1: |-
-  client.index('movies').getRawInfo()
+  client.index('movies').getIndex()
 list_all_indexes_1: |-
   client.getIndexes({ limit: 3 })
 create_an_index_1: |-
-  client.createIndex('movies', { primaryKey: 'id' })
+  client.createIndex({ uid: 'movies', primaryKey: 'id' })
 update_an_index_1: |-
-  client.updateIndex('movies', { primaryKey: 'id' })
+  client.index('movies').updateIndex({ primaryKey: 'id' })
 delete_an_index_1: |-
-  client.deleteIndex('movies')
+  client.index('movies').deleteIndex()
 swap_indexes_1: |-
   client.swapIndexes([
     { 'indexes': ['indexA', 'indexB'] },
@@ -402,11 +402,11 @@ add_movies_json_1: |-
   const movies = require('./movies.json')
   client.index('movies').addDocuments(movies).then((res) => console.log(res))
 primary_field_guide_update_document_primary_key: |-
-  client.updateIndex('books', {
+  client.index('books').updateIndex({
     primaryKey: 'title'
   })
 primary_field_guide_create_index_primary_key: |-
-  client.createIndex('books', { primaryKey: 'reference_number' })
+  client.createIndex({ uid: 'books', primaryKey: 'reference_number' })
 primary_field_guide_add_document_primary_key: |-
   client.index('books').addDocuments([
     {
