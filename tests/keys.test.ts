@@ -1,6 +1,5 @@
 import { expect, test, describe, beforeEach, afterAll } from "vitest";
 import { MeiliSearch } from "../src/index.js";
-import { ErrorStatusCode } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -211,7 +210,7 @@ describe.each([{ permission: "Search" }])(
       const client = await getClient(permission);
       await expect(client.getKeys()).rejects.toHaveProperty(
         "cause.code",
-        ErrorStatusCode.INVALID_API_KEY,
+        "invalid_api_key",
       );
     });
 
@@ -224,7 +223,7 @@ describe.each([{ permission: "Search" }])(
           indexes: ["products"],
           expiresAt: null,
         }),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
   },
 );
@@ -236,7 +235,7 @@ describe.each([{ permission: "No" }])(
       const client = await getClient(permission);
       await expect(client.getKeys()).rejects.toHaveProperty(
         "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+        "missing_authorization_header",
       );
     });
 
@@ -249,10 +248,7 @@ describe.each([{ permission: "No" }])(
           indexes: ["products"],
           expiresAt: null,
         }),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-      );
+      ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
     });
   },
 );
