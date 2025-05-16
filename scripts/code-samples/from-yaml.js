@@ -1,3 +1,4 @@
+import { argv } from "node:process";
 import { writeFileSync, mkdirSync } from "node:fs";
 import {
   generatedCodeSamplesDir,
@@ -46,5 +47,12 @@ for (const { sampleName, code } of iterateCodeSamples()) {
   writeFileSync(
     new URL(sampleName + ".ts", generatedCodeSamplesDir),
     header + code + "\n",
+  );
+}
+
+for (const sampleName of argv.slice(3)) {
+  writeFileSync(
+    new URL(sampleName + ".ts", generatedCodeSamplesDir),
+    headerImport + headerClientDeclaration + headerComment,
   );
 }

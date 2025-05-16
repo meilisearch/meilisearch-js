@@ -1,4 +1,5 @@
-import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { readdir } from "node:fs/promises";
+import { readFileSync, writeFileSync } from "node:fs";
 import { parse } from "node:path";
 import {
   codeSamplesPath,
@@ -12,9 +13,23 @@ const codeSampleNamesFromYaml = Array.from(
   (v) => v.sampleName,
 );
 
-const dirEntries = readdirSync(generatedCodeSamplesDir, {
+/** @type {import("node:fs").Dirent[]} */
+const dirEntries = await readdir(generatedCodeSamplesDir, {
   withFileTypes: true,
+}).catch((error) => {
+  if (error?.code !== "ENOENT") {
+    throw error;
+  }
+
+  return [];
 });
+
+if (dirEntries.length === 0) {
+  throw new Error(
+    `there are no code sample files at ${generatedCodeSamplesDir.href}\n` +
+      "tip: first generate them from the YAML file, consult CONTRIBUTING.md on how to use this script",
+  );
+}
 
 function throwError() {
   throw new Error(
@@ -23,7 +38,7 @@ function throwError() {
   );
 }
 
-const serializedCodeSamples = dirEntries
+const manipulatedCodeSamples = dirEntries
   .map((dirEnt) => {
     if (!dirEnt.isFile()) {
       throwError();
@@ -51,15 +66,18 @@ const serializedCodeSamples = dirEntries
       .join("\n")
       .trimEnd();
 
-    return { name, indentedContent };
+    const index = codeSampleNamesFromYaml.indexOf(name);
+
+    return { name, indentedContent, index };
   })
   .filter((v) => v !== null)
-  .sort(({ name: nameA }, { name: nameB }) => {
-    const indexOfA = codeSampleNamesFromYaml.indexOf(nameA);
-    return indexOfA === -1
-      ? 1
-      : indexOfA - codeSampleNamesFromYaml.indexOf(nameB);
-  })
+  .sort(({ index: indexA }, { index: indexB }) => indexA - indexB);
+
+while (manipulatedCodeSamples.at(0)?.index === -1) {
+  manipulatedCodeSamples.push(manipulatedCodeSamples.shift());
+}
+
+const serializedCodeSamples = manipulatedCodeSamples
   .map(({ name, indentedContent }) => name + ": |-\n" + indentedContent)
   .join("\n");
 

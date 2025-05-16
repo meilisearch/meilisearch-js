@@ -1,17 +1,11 @@
 import { argv } from "node:process";
 
-function throwInvalidArgs() {
-  throw new Error("expected `to-yaml` or `from-yaml` as arguments");
-}
-
-if (argv.length !== 3) {
-  throwInvalidArgs();
-}
-
-if (argv[2] === "to-yaml") {
+if (argv[2] === "to-yaml" && argv.length === 3) {
   await import("./code-samples/to-yaml.js");
 } else if (argv[2] === "from-yaml") {
   await import("./code-samples/from-yaml.js");
 } else {
-  throwInvalidArgs();
+  throw new Error(
+    "expected `to-yaml` (+ new code samples names) or `from-yaml` as arguments",
+  );
 }

@@ -47,6 +47,8 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies
         run: yarn --dev
+      - name: Generate code sample files
+        run: yarn generate-code-sample-files
       - name: Run tests
         run: yarn test
       - name: Build project
