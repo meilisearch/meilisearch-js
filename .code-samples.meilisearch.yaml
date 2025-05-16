@@ -487,28 +487,28 @@ primary_field_guide_add_document_primary_key: |-
 getting_started_add_documents: |-
   // With npm:
   // npm install meilisearch
-  
+
   // Or with yarn:
   // yarn add meilisearch
-  
+
   // In your .js file:
   import { MeiliSearch } from "meilisearch";
   import movies from "./movies.json" with { type: "json" };
-  
+
   // With the `require` syntax:
   // const { MeiliSearch } = require("meilisearch");
   // const movies = require("./movies.json");
-  
+
   const client = new MeiliSearch({
     host: "http://localhost:7700",
     apiKey: "aSampleMasterKey",
   });
-  
+
   const task = await client.index("movies").addDocuments(movies).waitTask();
   console.log(task);
 getting_started_search: |-
   const response = await _client.index("movies").search("botman");
-  
+
   console.log(response);
 getting_started_update_ranking_rules: |-
   const _task = await _client
@@ -548,7 +548,7 @@ getting_started_update_displayed_attributes: |-
     .waitTask();
 getting_started_add_meteorites: |-
   import meteorites from "./meteorites.json" with { type: "json" };
-  
+
   const _task = await _client
     .index("meteorites")
     .addDocuments(meteorites)
@@ -810,14 +810,14 @@ security_guide_search_key_1: |-
     host: "http://localhost:7700",
     apiKey: "apiKey",
   });
-  
+
   const _response = await client.index("patient_medical_records").search();
 security_guide_update_key_1: |-
   const client = new MeiliSearch({
     host: "http://localhost:7700",
     apiKey: "masterKey",
   });
-  
+
   const _key = await client.updateKey("74c9c733-3368-4738-bbe5-1d18a5fecb37", {
     description: "Default Search API Key",
   });
@@ -826,7 +826,7 @@ security_guide_create_key_1: |-
     host: "http://localhost:7700",
     apiKey: "masterKey",
   });
-  
+
   await client.createKey({
     description: "Search patient records key",
     actions: ["search"],
@@ -840,13 +840,13 @@ security_guide_delete_key_1: |-
     host: "http://localhost:7700",
     apiKey: "masterKey",
   });
-  
+
   await client.deleteKey("ac5cd97d-5a4b-4226-a868-2d0eb6d197ab");
 authorization_header_1: |-
   const _keys = await _client.getKeys();
 tenant_token_guide_generate_sdk_1: |-
   import { generateTenantToken } from "meilisearch/token";
-  
+
   const _token = await generateTenantToken({
     apiKey: "B5KdX2MY2jV6EXfUs6scSfmC...",
     apiKeyUid: "85c3c2f9-bdd6-41f1-abd8-11fcf80e0f76",
@@ -858,7 +858,7 @@ tenant_token_guide_search_sdk_1: |-
     host: "http://localhost:7700",
     apiKey: "<your token here>",
   });
-  
+
   const _response = await frontEndClient
     .index("patient_medical_records")
     .search("blood test");
@@ -867,7 +867,7 @@ landing_getting_started_1: |-
     host: "http://localhost:7700",
     apiKey: "masterKey",
   });
-  
+
   await client.index("movies").addDocuments([
     { id: 1, title: "Carol" },
     { id: 2, title: "Wonder Woman" },
@@ -876,7 +876,7 @@ landing_getting_started_1: |-
     { id: 5, title: "Moana" },
     { id: 6, title: "Philadelphia" },
   ]);
-  
+
   // be aware this client is using the masterKey, it should not be used in front end
   const search = await client.index("movies").search("philodelphia");
   console.log(search);

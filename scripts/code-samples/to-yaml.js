@@ -62,7 +62,7 @@ const manipulatedCodeSamples = dirEntries
 
     const indentedContent = splitContent
       .slice(indexOfDelimiter === -1 ? 0 : indexOfDelimiter + 1)
-      .map((v) => "  " + v)
+      .map((v) => (v === "" ? v : "  " + v))
       .join("\n")
       .trimEnd();
 
