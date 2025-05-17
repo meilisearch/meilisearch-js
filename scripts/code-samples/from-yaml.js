@@ -24,20 +24,23 @@ try {
   }
 }
 
+// generate JSON files used by samples, so type check passes
 for (const jsonFileToGenerate of jsonFilesToGenerate) {
   writeFileSync(
     new URL(jsonFileToGenerate + ".json", generatedCodeSamplesDir),
-    "[]",
+    "[]\n",
   );
 }
 
 for (const { sampleName, code } of iterateCodeSamples()) {
   let header = "";
 
+  // generate import if there isn't already one
   if (!code.includes('from "meilisearch";\n')) {
     header += headerImport;
   }
 
+  // generate client declaration if there isn't already one
   if (!code.includes("new MeiliSearch(")) {
     header += headerClientDeclaration;
   }
@@ -50,6 +53,7 @@ for (const { sampleName, code } of iterateCodeSamples()) {
   );
 }
 
+// generate additional files from arguments passed
 for (const sampleName of argv.slice(3)) {
   writeFileSync(
     new URL(sampleName + ".ts", generatedCodeSamplesDir),

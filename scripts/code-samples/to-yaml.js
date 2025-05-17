@@ -61,11 +61,14 @@ const manipulatedCodeSamples = dirEntries
     const indexOfDelimiter = splitContent.findIndex((v) => v === delimiter);
 
     const indentedContent = splitContent
+      // get rid of code before delimiter
       .slice(indexOfDelimiter === -1 ? 0 : indexOfDelimiter + 1)
+      // add padding
       .map((v) => (v === "" ? v : "  " + v))
       .join("\n")
       .trimEnd();
 
+    // get position in current code samples YAML file, to be able to order it the same way
     const index = codeSampleNamesFromYaml.indexOf(name);
 
     return { name, indentedContent, index };
@@ -73,6 +76,7 @@ const manipulatedCodeSamples = dirEntries
   .filter((v) => v !== null)
   .sort(({ index: indexA }, { index: indexB }) => indexA - indexB);
 
+// for every new code sample, place them at the end of the file instead of the start
 while (manipulatedCodeSamples.at(0)?.index === -1) {
   manipulatedCodeSamples.push(manipulatedCodeSamples.shift());
 }
