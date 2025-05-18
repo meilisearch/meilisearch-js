@@ -90,7 +90,7 @@ const header =
   "# Every example written here will be automatically fetched by\n" +
   "# the documentation on build.\n" +
   "# You can read more at https://github.com/meilisearch/documentation\n" +
-  '# This file is generated, read more in CONTRIBUTING.md "Tests and Linter" section.' +
+  '# This file is generated, read more in CONTRIBUTING.md "Tests and Linter" section.\n' +
   "---\n";
 
 writeFileSync(codeSamplesPath, header + serializedCodeSamples + "\n");
