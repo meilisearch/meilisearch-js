@@ -11,6 +11,7 @@ const headerClientDeclaration =
   'const _client = new MeiliSearch({ host: "http://127.0.0.1:7700" });\n';
 const headerComment =
   "// Code below this line will be written to code samples YAML file\n" +
+  '// For more information consult CONTRIBUTING.md "Tests and Linter" section\n' +
   delimiter +
   "\n";
 
@@ -32,6 +33,8 @@ for (const jsonFileToGenerate of jsonFilesToGenerate) {
   );
 }
 
+let generatedFileTally = 0;
+
 for (const { sampleName, code } of iterateCodeSamples()) {
   let header = "";
 
@@ -51,6 +54,8 @@ for (const { sampleName, code } of iterateCodeSamples()) {
     new URL(sampleName + ".ts", generatedCodeSamplesDir),
     header + code + "\n",
   );
+
+  generatedFileTally += 1;
 }
 
 // generate additional files from arguments passed
@@ -59,4 +64,8 @@ for (const sampleName of argv.slice(3)) {
     new URL(sampleName + ".ts", generatedCodeSamplesDir),
     headerImport + headerClientDeclaration + headerComment,
   );
+
+  generatedFileTally += 1;
 }
+
+console.log(`generated ${generatedFileTally} code sample file(s)`);

@@ -70,6 +70,20 @@ yarn style:fix
 yarn build
 ```
 
+### Code samples
+
+In this repository code samples are linted and type checked. To achieve this we generate
+TypeScript files from `.code-samples.meilisearch.yaml`, and vice-versa.
+
+```bash
+# Generate files
+yarn generate-code-sample-files
+# Generate YAML file
+yarn generate-code-samples-yaml
+# For maintainers to generate new code samples
+yarn generate-code-sample-files new_sample_one new_sample_two
+```
+
 ## Git Guidelines
 
 ### Git Branches

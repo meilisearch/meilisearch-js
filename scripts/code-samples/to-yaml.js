@@ -86,10 +86,13 @@ const serializedCodeSamples = manipulatedCodeSamples
   .join("\n");
 
 const header =
-  "# This code-samples file is used by the Meilisearch documentation\n" +
+  "# This code-samples file is used by the Meilisearch documentation.\n" +
   "# Every example written here will be automatically fetched by\n" +
-  "# the documentation on build\n" +
+  "# the documentation on build.\n" +
   "# You can read more at https://github.com/meilisearch/documentation\n" +
+  '# This file is generated, read more in CONTRIBUTING.md "Tests and Linter" section.' +
   "---\n";
 
 writeFileSync(codeSamplesPath, header + serializedCodeSamples + "\n");
+
+console.log(`generated ${manipulatedCodeSamples.length} code sample(s)`);

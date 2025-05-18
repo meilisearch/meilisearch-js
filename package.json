@@ -44,7 +44,7 @@
     "build": "vite build && tsc -p tsconfig.build.json && vite --mode production-umd build",
     "postbuild": "node scripts/build.js",
     "test": "vitest run --coverage",
-    "types": "tsc -p tsconfig.json --noEmit",
+    "types": "yarn generate-code-sample-files && tsc -p tsconfig.json --noEmit",
     "types:watch": "yarn types --watch",
     "test:env:browser": "yarn build && node scripts/copy-umd-file.js --to ./tests/env/express/public && yarn --cwd tests/env/express && yarn --cwd tests/env/express test",
     "test:watch": "vitest watch",
@@ -61,8 +61,8 @@
     "fmt:fix": "prettier -w ./**/*.{js,ts}",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "style": "yarn fmt && yarn lint",
-    "style:fix": "yarn fmt:fix && yarn lint:fix",
+    "style": "yarn generate-code-sample-files && prettier --ignore-path=.prettierignore -c generated-code-samples && yarn fmt && yarn lint",
+    "style:fix": "yarn generate-code-sample-files && prettier --ignore-path=.prettierignore -c generated-code-samples && yarn fmt:fix && yarn lint:fix",
     "prepare": "husky"
   },
   "files": [

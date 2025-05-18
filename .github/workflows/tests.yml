@@ -75,13 +75,8 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies
         run: yarn --dev
-      - name: Generate code sample files
-        run: yarn generate-code-sample-files
       - name: Run code style check
         run: yarn style
-      # https://github.com/prettier/prettier/issues/15438
-      - name: Check formatting of code samples
-        run: yarn prettier --ignore-path=.prettierignore -c generated-code-samples
       - name: Run yaml style check
         uses: ibiqlik/action-yamllint@v3
         with:
@@ -98,8 +93,6 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies
         run: yarn --dev
-      - name: Generate code sample files
-        run: yarn generate-code-sample-files
       - name: Build project
         run: yarn build
       - name: Run types check
