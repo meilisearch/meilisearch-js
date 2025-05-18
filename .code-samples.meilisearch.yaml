@@ -1,7 +1,8 @@
-# This code-samples file is used by the Meilisearch documentation
+# This code-samples file is used by the Meilisearch documentation.
 # Every example written here will be automatically fetched by
-# the documentation on build
+# the documentation on build.
 # You can read more at https://github.com/meilisearch/documentation
+# This file is generated, read more in CONTRIBUTING.md "Tests and Linter" section.
 ---
 synonyms_guide_1: |-
   const _task = await _client
@@ -41,7 +42,9 @@ create_an_index_1: |-
     .createIndex("movies", { primaryKey: "id" })
     .waitTask();
 update_an_index_1: |-
-  const _task = _client.updateIndex("movies", { primaryKey: "id" }).waitTask();
+  const _task = await _client
+    .updateIndex("movies", { primaryKey: "id" })
+    .waitTask();
 delete_an_index_1: |-
   const _task = await _client.deleteIndex("movies").waitTask();
 swap_indexes_1: |-
