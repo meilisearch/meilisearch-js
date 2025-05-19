@@ -684,17 +684,13 @@ describe("Documents tests", () => {
       test(`${permission} key: test updateDocumentsByFunction`, async () => {
         const client = await getClient(permission);
         const index = client.index<(typeof dataset)[number]>(indexPk.uid);
-        const adminKey = await getKey("Admin");
 
         await index.setting.updateFilterableAttributes(["id"]).waitTask();
 
-        await fetch(`${HOST}/experimental-features`, {
-          body: JSON.stringify({ editDocumentsByFunction: true }),
-          headers: {
-            Authorization: `Bearer ${adminKey}`,
-            "Content-Type": "application/json",
-          },
-          method: "PATCH",
+        await (
+          await getClient("Master")
+        ).updateExperimentalFeatures({
+          editDocumentsByFunction: true,
         });
 
         await index.addDocuments(dataset).waitTask();
@@ -765,15 +761,11 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
         const client = await getClient(permission);
-        const adminKey = await getKey("Admin");
 
-        await fetch(`${HOST}/experimental-features`, {
-          body: JSON.stringify({ editDocumentsByFunction: true }),
-          headers: {
-            Authorization: `Bearer ${adminKey}`,
-            "Content-Type": "application/json",
-          },
-          method: "PATCH",
+        await (
+          await getClient("Master")
+        ).updateExperimentalFeatures({
+          editDocumentsByFunction: true,
         });
 
         await expect(
@@ -852,15 +844,11 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
         const client = await getClient(permission);
-        const adminKey = await getKey("Admin");
 
-        await fetch(`${HOST}/experimental-features`, {
-          body: JSON.stringify({ editDocumentsByFunction: true }),
-          headers: {
-            Authorization: `Bearer ${adminKey}`,
-            "Content-Type": "application/json",
-          },
-          method: "PATCH",
+        await (
+          await getClient("Master")
+        ).updateExperimentalFeatures({
+          editDocumentsByFunction: true,
         });
 
         await expect(
@@ -966,15 +954,11 @@ describe("Documents tests", () => {
       const route = `indexes/${indexPk.uid}/documents/edit`;
       const client = new MeiliSearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
-      const adminKey = await getKey("Admin");
 
-      await fetch(`${HOST}/experimental-features`, {
-        body: JSON.stringify({ editDocumentsByFunction: true }),
-        headers: {
-          Authorization: `Bearer ${adminKey}`,
-          "Content-Type": "application/json",
-        },
-        method: "PATCH",
+      await (
+        await getClient("Master")
+      ).updateExperimentalFeatures({
+        editDocumentsByFunction: true,
       });
 
       await expect(
