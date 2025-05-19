@@ -37,7 +37,7 @@ function appendRecordToURLSearchParams(
 const AGENT_HEADER_KEY = "X-Meilisearch-Client";
 const CONTENT_TYPE_KEY = "Content-Type";
 const AUTHORIZATION_KEY = "Authorization";
-const PACAKGE_AGENT = `Meilisearch JavaScript (v${PACKAGE_VERSION})`;
+const PACKAGE_AGENT = `Meilisearch JavaScript (v${PACKAGE_VERSION})`;
 
 /**
  * Creates a new Headers object from a {@link HeadersInit} and adds various
@@ -56,10 +56,10 @@ function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
 
   // Creates the custom user agent with information on the package used.
   if (config.clientAgents !== undefined) {
-    const agents = config.clientAgents.concat(PACAKGE_AGENT);
+    const agents = config.clientAgents.concat(PACKAGE_AGENT);
     headers.set(AGENT_HEADER_KEY, agents.join(" ; "));
   } else {
-    headers.set(AGENT_HEADER_KEY, PACAKGE_AGENT);
+    headers.set(AGENT_HEADER_KEY, PACKAGE_AGENT);
   }
 
   return headers;
