@@ -1,7 +1,8 @@
+import { randomUUID } from "node:crypto";
 import { afterAll, test } from "vitest";
 import { assert, getClient } from "./utils/meilisearch-test-utils.js";
 
-const INDEX_UID = "7dfb3954-d408-4fb9-9cb9-acede082f650";
+const INDEX_UID = randomUUID();
 const ms = await getClient("Master");
 const index = ms.index(INDEX_UID);
 
