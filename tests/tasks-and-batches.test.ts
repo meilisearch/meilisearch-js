@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { beforeAll, describe, test, vi } from "vitest";
 import type { TasksFilterQuery } from "../src/types/index.js";
 import { getClient, objectEntries } from "./utils/meilisearch-test-utils.js";
@@ -7,7 +8,7 @@ import {
   possibleStatuses,
 } from "./utils/tasks-and-batches.js";
 
-const INDEX_UID = "536438df-c883-4c65-9e1d-3852b3f82330";
+const INDEX_UID = randomUUID();
 const ms = await getClient("Master");
 const index = ms.index(INDEX_UID);
 
