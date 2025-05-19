@@ -26,7 +26,7 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 4. Review the [Development Workflow](#development-workflow) section that describes the steps to maintain the repository.
 5. Make the changes on your branch.
 6. [Submit the branch as a PR](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) pointing to the `main` branch of the main meilisearch-js repository. A maintainer should comment and/or review your Pull Request within a few days. Although depending on the circumstances, it may take longer.<br>
- We do not enforce a naming convention for the PRs, but **please use something descriptive of your changes**, having in mind that the title of your PR will be automatically added to the next [release changelog](https://github.com/meilisearch/meilisearch-js/releases/).
+   We do not enforce a naming convention for the PRs, but **please use something descriptive of your changes**, having in mind that the title of your PR will be automatically added to the next [release changelog](https://github.com/meilisearch/meilisearch-js/releases/).
 
 ## Development Workflow
 
@@ -128,7 +128,7 @@ Make a PR modifying the following files with the right version:
 [`src/package-version`](/src/package-version.ts)
 
 ```javascript
-export const PACKAGE_VERSION = 'X.X.X'
+export const PACKAGE_VERSION = "X.X.X";
 ```
 
 #### Github publish
@@ -148,18 +148,20 @@ This package is able to create multiple types of betas:
 Here are the steps to release a beta version of this package depending on its type:
 
 1. Create a new branch containing the changes with the correct name format following these rules:
-    - `package beta`: create a branch `beta/xx-xx` with the context of your beta.
-      Example: `beta/refactor`.
-    - Meilisearch `pre-release beta`: create a branch originating from `bump-meilisearch-v*.*.*` named `pre-release-beta/v*.*.*`. <br>
-      Example: `pre-release-beta/v0.30.0`
-    - Meilisearch `prototype beta`: create a branch `prototype-beta/xx-xx`. Where `xxx` has the same name as the docker image containing the prototype.
-        Example: If the [docker image](https://hub.docker.com/r/getmeili/meilisearch/tags) is named: `prototype-multi-search-0`, the branch should be named: `prototype-beta/prototype-multi-search`
+
+   - `package beta`: create a branch `beta/xx-xx` with the context of your beta.
+     Example: `beta/refactor`.
+   - Meilisearch `pre-release beta`: create a branch originating from `bump-meilisearch-v*.*.*` named `pre-release-beta/v*.*.*`. <br>
+     Example: `pre-release-beta/v0.30.0`
+   - Meilisearch `prototype beta`: create a branch `prototype-beta/xx-xx`. Where `xxx` has the same name as the docker image containing the prototype.
+     Example: If the [docker image](https://hub.docker.com/r/getmeili/meilisearch/tags) is named: `prototype-multi-search-0`, the branch should be named: `prototype-beta/prototype-multi-search`
 
 2. [Update the version](#version-update) following the correct format (X are numbers):
-    - package and prototype beta: `X.X.X-***.X`
-      example: `0.2.0-new-feature.0`
-    - pre-release beta: `X.X.X-vX.X.X-pre-release.X`
-      example: `0.2.0-v0.30.0-pre-release.0`
+
+   - package and prototype beta: `X.X.X-***.X`
+     example: `0.2.0-new-feature.0`
+   - pre-release beta: `X.X.X-vX.X.X-pre-release.X`
+     example: `0.2.0-v0.30.0-pre-release.0`
 
 3. Commit and push your code to the newly created branch (step 1).
 
