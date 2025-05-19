@@ -27,6 +27,7 @@ import type {
   IndexViewList,
   ListIndexes,
   IndexCreateRequest,
+  RuntimeTogglableFeatures,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -350,6 +351,27 @@ export class MeiliSearch {
   createSnapshot(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
       path: "snapshots",
+    });
+  }
+
+  ///
+  /// EXPERIMENTAL-FEATURES
+  ///
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/experimental_features#get-all-experimental-features} */
+  async getExperimentalFeatures(): Promise<RuntimeTogglableFeatures> {
+    return await this.httpRequest.get({
+      path: "experimental-features",
+    });
+  }
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/experimental_features#configure-experimental-features} */
+  async updateExperimentalFeatures(
+    runtimeTogglableFeatures: RuntimeTogglableFeatures,
+  ): Promise<RuntimeTogglableFeatures> {
+    return await this.httpRequest.patch({
+      path: "experimental-features",
+      body: runtimeTogglableFeatures,
     });
   }
 }
