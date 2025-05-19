@@ -1,5 +1,4 @@
 import { afterAll, assert, beforeEach, describe, expect, test } from "vitest";
-import { ErrorStatusCode } from "../src/types/index.js";
 import { sleep } from "../src/utils.js";
 import {
   BAD_HOST,
@@ -348,10 +347,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           // @ts-expect-error testing wrong argument type
           { types: ["wrong"] },
         ),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.INVALID_TASK_TYPES,
-      );
+      ).rejects.toHaveProperty("cause.code", "invalid_task_types");
     });
 
     // filters error code: INVALID_TASK_STATUSES_FILTER
@@ -363,10 +359,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           // @ts-expect-error testing wrong argument type
           { statuses: ["wrong"] },
         ),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.INVALID_TASK_STATUSES,
-      );
+      ).rejects.toHaveProperty("cause.code", "invalid_task_statuses");
     });
 
     // filters error code: INVALID_TASK_UIDS_FILTER
@@ -378,7 +371,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           // @ts-expect-error testing wrong argument type
           { uids: ["wrong"] },
         ),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_TASK_UIDS);
+      ).rejects.toHaveProperty("cause.code", "invalid_task_uids");
     });
 
     // filters error code: INVALID_TASK_CANCELED_BY_FILTER
@@ -390,10 +383,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           // @ts-expect-error testing wrong canceledBy type
           { canceledBy: ["wrong"] },
         ),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.INVALID_TASK_CANCELED_BY,
-      );
+      ).rejects.toHaveProperty("cause.code", "invalid_task_canceled_by");
     });
 
     // filters error code: INVALID_TASK_DATE_FILTER
@@ -402,10 +392,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await expect(
         client.tasks.getTasks({ beforeEnqueuedAt: "wrong" }),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.INVALID_TASK_BEFORE_ENQUEUED_AT,
-      );
+      ).rejects.toHaveProperty("cause.code", "invalid_task_before_enqueued_at");
     });
 
     // cancel: uid
@@ -557,7 +544,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await expect(client.tasks.cancelTasks({})).rejects.toHaveProperty(
         "cause.code",
-        ErrorStatusCode.MISSING_TASK_FILTERS,
+        "missing_task_filters",
       );
     });
 
@@ -576,7 +563,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(task.details?.deletedTasks).toBeDefined();
       await expect(
         client.tasks.getTask(addDocuments.taskUid),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.TASK_NOT_FOUND);
+      ).rejects.toHaveProperty("cause.code", "task_not_found");
     });
 
     // delete: indexUid
@@ -593,7 +580,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       assert.strictEqual(deleteTask.type, "taskDeletion");
       await expect(
         client.tasks.getTask(addDocuments.taskUid),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.TASK_NOT_FOUND);
+      ).rejects.toHaveProperty("cause.code", "task_not_found");
     });
 
     // delete: type
@@ -715,7 +702,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await expect(client.tasks.getTask(254500)).rejects.toHaveProperty(
         "cause.code",
-        ErrorStatusCode.TASK_NOT_FOUND,
+        "task_not_found",
       );
     });
   },
@@ -730,7 +717,7 @@ describe.each([{ permission: "Search" }])("Test on tasks", ({ permission }) => {
     const client = await getClient(permission);
     await expect(client.tasks.getTask(0)).rejects.toHaveProperty(
       "cause.code",
-      ErrorStatusCode.INVALID_API_KEY,
+      "invalid_api_key",
     );
   });
 });
@@ -744,7 +731,7 @@ describe.each([{ permission: "No" }])("Test on tasks", ({ permission }) => {
     const client = await getClient(permission);
     await expect(client.tasks.getTask(0)).rejects.toHaveProperty(
       "cause.code",
-      ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+      "missing_authorization_header",
     );
   });
 });

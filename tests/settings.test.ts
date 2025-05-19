@@ -1,5 +1,5 @@
 import { afterAll, beforeEach, describe, expect, test } from "vitest";
-import { ErrorStatusCode, type Settings } from "../src/types/index.js";
+import type { Settings } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -270,19 +270,19 @@ describe.each([{ permission: "Search" }])(
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).getSettings(),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
     test(`${permission} key: try to update settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).updateSettings({}),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
     test(`${permission} key: try to reset settings and be denied`, async () => {
       const client = await getClient(permission);
       await expect(
         client.index(index.uid).resetSettings(),
-      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+      ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
   },
 );
@@ -295,26 +295,20 @@ describe.each([{ permission: "No" }])("Test on settings", ({ permission }) => {
     const client = await getClient(permission);
     await expect(client.index(index.uid).getSettings()).rejects.toHaveProperty(
       "cause.code",
-      ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
+      "missing_authorization_header",
     );
   });
   test(`${permission} key: try to update settings and be denied`, async () => {
     const client = await getClient(permission);
     await expect(
       client.index(index.uid).updateSettings({}),
-    ).rejects.toHaveProperty(
-      "cause.code",
-      ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-    );
+    ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
   });
   test(`${permission} key: try to reset settings and be denied`, async () => {
     const client = await getClient(permission);
     await expect(
       client.index(index.uid).resetSettings(),
-    ).rejects.toHaveProperty(
-      "cause.code",
-      ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-    );
+    ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
   });
 });
 

@@ -1,5 +1,5 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
-import { ErrorStatusCode, type ResourceResults } from "../src/index.js";
+import type { ResourceResults } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -601,20 +601,14 @@ describe("Documents tests", () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexNoPk.uid).getDocument(1),
-        ).rejects.toHaveProperty(
-          "cause.code",
-          ErrorStatusCode.DOCUMENT_NOT_FOUND,
-        );
+        ).rejects.toHaveProperty("cause.code", "document_not_found");
       });
 
       test(`${permission} key: Try to get deleted document from index that has a primary key`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).getDocument(1),
-        ).rejects.toHaveProperty(
-          "cause.code",
-          ErrorStatusCode.DOCUMENT_NOT_FOUND,
-        );
+        ).rejects.toHaveProperty("cause.code", "document_not_found");
       });
 
       test(`${permission} key: Add documents from index with no primary key by giving a primary key as parameter`, async () => {
@@ -717,42 +711,42 @@ describe("Documents tests", () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).addDocuments([]),
-        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", "invalid_api_key");
       });
 
       test(`${permission} key: Try to update documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).updateDocuments([]),
-        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", "invalid_api_key");
       });
 
       test(`${permission} key: Try to get documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).getDocuments<Book>(),
-        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", "invalid_api_key");
       });
 
       test(`${permission} key: Try to delete one document and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).deleteDocument(1),
-        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", "invalid_api_key");
       });
 
       test(`${permission} key: Try to delete some documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).deleteDocuments([1, 2]),
-        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", "invalid_api_key");
       });
 
       test(`${permission} key: Try to delete all documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).deleteAllDocuments(),
-        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", "invalid_api_key");
       });
 
       test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
@@ -766,7 +760,7 @@ describe("Documents tests", () => {
 
         await expect(
           client.index(indexPk.uid).updateDocumentsByFunction({ function: "" }),
-        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INVALID_API_KEY);
+        ).rejects.toHaveProperty("cause.code", "invalid_api_key");
       });
     },
   );
@@ -782,60 +776,42 @@ describe("Documents tests", () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).addDocuments([]),
-        ).rejects.toHaveProperty(
-          "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-        );
+        ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
       });
 
       test(`${permission} key: Try to update documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).updateDocuments([]),
-        ).rejects.toHaveProperty(
-          "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-        );
+        ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
       });
 
       test(`${permission} key: Try to get documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).getDocuments<Book>(),
-        ).rejects.toHaveProperty(
-          "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-        );
+        ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
       });
 
       test(`${permission} key: Try to delete one document and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).deleteDocument(1),
-        ).rejects.toHaveProperty(
-          "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-        );
+        ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
       });
 
       test(`${permission} key: Try to delete some documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).deleteDocuments([1, 2]),
-        ).rejects.toHaveProperty(
-          "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-        );
+        ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
       });
 
       test(`${permission} key: Try to delete all documents and be denied`, async () => {
         const client = await getClient(permission);
         await expect(
           client.index(indexPk.uid).deleteAllDocuments(),
-        ).rejects.toHaveProperty(
-          "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-        );
+        ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
       });
 
       test(`${permission} key: Try updateDocumentsByFunction and be denied`, async () => {
@@ -849,10 +825,7 @@ describe("Documents tests", () => {
 
         await expect(
           client.index(indexPk.uid).updateDocumentsByFunction({ function: "" }),
-        ).rejects.toHaveProperty(
-          "cause.code",
-          ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-        );
+        ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
       });
     },
   );

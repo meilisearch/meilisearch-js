@@ -12,9 +12,9 @@ import type {
   IndexOptions,
   IndexObject,
   Key,
-  Health,
+  HealthResponse,
   Stats,
-  Version,
+  VersionResponse,
   KeyUpdate,
   IndexesQuery,
   IndexesResults,
@@ -30,7 +30,6 @@ import type {
   RecordAny,
   RuntimeTogglableFeatures,
 } from "./types/index.js";
-import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
   getHttpRequestsWithEnqueuedTaskPromise,
@@ -186,10 +185,7 @@ export class MeiliSearch {
       await this.deleteIndex(uid);
       return true;
     } catch (e) {
-      if (
-        (e as MeiliSearchApiError)?.cause?.code ===
-        ErrorStatusCode.INDEX_NOT_FOUND
-      ) {
+      if ((e as MeiliSearchApiError)?.cause?.code === "index_not_found") {
         return false;
       }
 
@@ -377,13 +373,9 @@ export class MeiliSearch {
   /// HEALTH
   ///
 
-  /**
-   * Checks if the server is healthy, otherwise an error will be thrown.
-   *
-   * @returns Promise returning an object with health details
-   */
-  async health(): Promise<Health> {
-    return await this.httpRequest.get<Health>({ path: "health" });
+  /** {@link https://www.meilisearch.com/docs/reference/api/health#get-health} */
+  async health(): Promise<HealthResponse> {
+    return await this.httpRequest.get({ path: "health" });
   }
 
   /**
@@ -404,56 +396,36 @@ export class MeiliSearch {
   /// STATS
   ///
 
-  /**
-   * Get the stats of all the database
-   *
-   * @returns Promise returning object of all the stats
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/stats#get-stats-of-all-indexes} */
   async getStats(): Promise<Stats> {
-    return await this.httpRequest.get<Stats>({ path: "stats" });
+    return await this.httpRequest.get({ path: "stats" });
   }
 
   ///
   /// VERSION
   ///
 
-  /**
-   * Get the version of MeiliSearch
-   *
-   * @returns Promise returning object with version details
-   */
-  async getVersion(): Promise<Version> {
-    return await this.httpRequest.get<Version>({ path: "version" });
+  /** {@link https://www.meilisearch.com/docs/reference/api/version} */
+  async getVersion(): Promise<VersionResponse> {
+    return await this.httpRequest.get({ path: "version" });
   }
 
   ///
   /// DUMPS
   ///
 
-  /**
-   * Creates a dump
-   *
-   * @returns Promise returning object of the enqueued task
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/dump#create-a-dump} */
   createDump(): EnqueuedTaskPromise {
-    return this.#httpRequestsWithTask.post({
-      path: "dumps",
-    });
+    return this.#httpRequestsWithTask.post({ path: "dumps" });
   }
 
   ///
   /// SNAPSHOTS
   ///
 
-  /**
-   * Creates a snapshot
-   *
-   * @returns Promise returning object of the enqueued task
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/snapshots#create-a-snapshot} */
   createSnapshot(): EnqueuedTaskPromise {
-    return this.#httpRequestsWithTask.post({
-      path: "snapshots",
-    });
+    return this.#httpRequestsWithTask.post({ path: "snapshots" });
   }
 
   ///

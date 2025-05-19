@@ -6,7 +6,7 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode, type SearchResponse } from "../src/types/index.js";
+import type { SearchResponse } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -397,7 +397,7 @@ describe.each([
 
     await expect(
       client.index<Movie>(index.uid).search("prince"),
-    ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INDEX_NOT_FOUND);
+    ).rejects.toHaveProperty("cause.code", "index_not_found");
   });
 });
 
@@ -472,10 +472,7 @@ describe.each([{ permission: "No" }])(
       const client = await getClient(permission);
       await expect(
         client.index<Movie>(index.uid).search("prince"),
-      ).rejects.toHaveProperty(
-        "cause.code",
-        ErrorStatusCode.MISSING_AUTHORIZATION_HEADER,
-      );
+      ).rejects.toHaveProperty("cause.code", "missing_authorization_header");
     });
   },
 );
