@@ -6,8 +6,7 @@ import {
   BAD_HOST,
   MeiliSearch,
   getClient,
-  getKey,
-  HOST,
+  masterClient,
 } from "./utils/meilisearch-test-utils.js";
 
 const index = {
@@ -206,16 +205,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     });
 
     test(`${permission} key: Update embedders with composite embedder`, async () => {
-      const adminKey = await getKey("Admin");
-
       // first enable the network endpoint.
-      await fetch(`${HOST}/experimental-features`, {
-        body: JSON.stringify({ compositeEmbedders: true }),
-        headers: {
-          Authorization: `Bearer ${adminKey}`,
-          "Content-Type": "application/json",
-        },
-        method: "PATCH",
+      await masterClient.updateExperimentalFeatures({
+        compositeEmbedders: true,
       });
 
       const client = await getClient(permission);
