@@ -1,6 +1,6 @@
 import { readdir } from "node:fs/promises";
 import { readFileSync, writeFileSync } from "node:fs";
-import { parse } from "node:path";
+import { parse, join } from "node:path";
 import {
   codeSamplesPath,
   generatedCodeSamplesDir,
@@ -53,9 +53,10 @@ const manipulatedCodeSamples = dirEntries
       return null;
     }
 
-    const codeSampleContent = readFileSync(dirEnt.parentPath + dirEnt.name, {
-      encoding: "utf-8",
-    });
+    const codeSampleContent = readFileSync(
+      join(dirEnt.parentPath, dirEnt.name),
+      { encoding: "utf-8" },
+    );
 
     const splitContent = codeSampleContent.split("\n");
     const indexOfDelimiter = splitContent.findIndex((v) => v === delimiter);
