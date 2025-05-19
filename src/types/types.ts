@@ -698,40 +698,6 @@ export type Stats = {
 };
 
 /*
- ** Keys
- */
-
-export type Key = {
-  uid: string;
-  description: string;
-  name: string | null;
-  key: string;
-  actions: string[];
-  indexes: string[];
-  expiresAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export type KeyCreation = {
-  uid?: string;
-  name?: string;
-  description?: string;
-  actions: string[];
-  indexes: string[];
-  expiresAt: Date | null;
-};
-
-export type KeyUpdate = {
-  name?: string;
-  description?: string;
-};
-
-export type KeysQuery = ResourceQuery & {};
-
-export type KeysResults = ResourceResults<Key[]> & {};
-
-/*
  ** version
  */
 export type Version = {
