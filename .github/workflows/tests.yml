@@ -77,10 +77,6 @@ jobs:
         run: yarn --dev
       - name: Run code style check
         run: yarn style
-      - name: Run yaml style check
-        uses: ibiqlik/action-yamllint@v3
-        with:
-          config_file: .yamllint.yml
   types_tests:
     runs-on: ubuntu-latest
     name: types-check

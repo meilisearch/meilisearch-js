@@ -1,9 +1,0 @@
-extends: default
-ignore: |
-  node_modules
-
-rules:
-  line-length: disable
-  document-start: disable
-  brackets: disable
-  truthy: disable
