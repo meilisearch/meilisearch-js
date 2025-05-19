@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { describe, test } from "vitest";
 import type {
   Action,
@@ -62,7 +63,7 @@ const assert: typeof extAssert & typeof customAssert = Object.assign(
   customAssert,
 );
 
-const KEY_UID = "bd2cbad1-6c5f-48e3-bb92-bc9961bc011e";
+const KEY_UID = randomUUID();
 
 type TestRecord = {
   [TKey in keyof CreateApiKey]-?: [
