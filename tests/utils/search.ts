@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { assert, getClient } from "./meilisearch-test-utils.js";
 import type { Film } from "./test-data/films.js";
 import type {
@@ -9,7 +10,7 @@ import type {
   SearchResult,
 } from "../../src/index.js";
 
-export const INDEX_UID = "b568151e-ddb8-455e-85b9-871e8d57c6b7";
+export const INDEX_UID = randomUUID();
 export const client = await getClient("Master");
 export const index = client.index<Film>(INDEX_UID);
 
