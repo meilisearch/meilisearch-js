@@ -234,19 +234,12 @@ describe.each([
   });
 
   test(`${permission} key: Multi index search with federation and remote`, async () => {
-    const adminKey = await getKey("Admin");
+    const masterClient = await getClient("Master");
 
     // first enable the network endpoint.
-    await fetch(`${HOST}/experimental-features`, {
-      body: JSON.stringify({ network: true }),
-      headers: {
-        Authorization: `Bearer ${adminKey}`,
-        "Content-Type": "application/json",
-      },
-      method: "PATCH",
+    await masterClient.updateExperimentalFeatures({
+      network: true,
     });
-
-    const masterClient = await getClient("Master");
 
     const searchKey = await getKey("Search");
 
