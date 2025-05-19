@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { test, describe, afterAll, beforeAll } from "vitest";
 import type {
   EnqueuedTaskPromise,
@@ -15,7 +16,7 @@ import {
   ObjectKeys,
 } from "./utils/meilisearch-test-utils.js";
 
-const INDEX_UID = "e16993ea-0cd2-4a29-9365-b99778a92c74";
+const INDEX_UID = randomUUID();
 const ms = await getClient("Master");
 const index = ms.index(INDEX_UID);
 
