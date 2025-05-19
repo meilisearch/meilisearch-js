@@ -26,9 +26,8 @@ const client = new MeiliSearch(config);
 const indexUid = "movies";
 
 (async () => {
-  await client.deleteIndex(indexUid);
-  const { taskUid } = await client.createIndex(indexUid);
-  await client.waitForTask(taskUid);
+  await client.deleteIndex(indexUid).waitTask();
+  await client.createIndex(indexUid).waitTask();
 
   const index = client.index(indexUid);
   const indexes = await client.getRawIndexes();

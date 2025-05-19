@@ -25,11 +25,7 @@ const { MeiliSearch } = require("../../../dist/cjs/index.cjs");
   // If the index 'movies' does not exist, MeiliSearch creates it when you first add the documents.
   await index.updateFilterableAttributes(["director", "genres", "id"]);
 
-  let response = await index.addDocuments(dataset);
-
-  console.log(response); // => { "updateId": 0 }
-
-  await client.waitForTask(response.taskUid);
+  await index.addDocuments(dataset).waitTask();
 
   const search = await index.search("philoudelphia");
   console.log({ search, hit: search.hits });

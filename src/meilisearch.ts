@@ -15,35 +15,46 @@ import type {
   Health,
   Stats,
   Version,
-  TasksQuery,
-  WaitOptions,
   KeyUpdate,
   IndexesQuery,
   IndexesResults,
   KeysQuery,
   KeysResults,
-  TasksResults,
-  EnqueuedTaskObject,
-  SwapIndexesParams,
-  CancelTasksQuery,
-  DeleteTasksQuery,
+  IndexSwap,
   MultiSearchParams,
   FederatedMultiSearchParams,
-  BatchesResults,
-  BatchesQuery,
   MultiSearchResponseOrSearchResponse,
-} from "./types.js";
-import { ErrorStatusCode } from "./types.js";
+  EnqueuedTaskPromise,
+  ExtraRequestInit,
+  Network,
+  RecordAny,
+  RuntimeTogglableFeatures,
+} from "./types/index.js";
+import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
-import { TaskClient, type Task } from "./task.js";
-import { EnqueuedTask } from "./enqueued-task.js";
-import { type Batch, BatchClient } from "./batch.js";
+import {
+  getHttpRequestsWithEnqueuedTaskPromise,
+  TaskClient,
+  type HttpRequestsWithEnqueuedTaskPromise,
+} from "./task.js";
+import { BatchClient } from "./batch.js";
+import type { MeiliSearchApiError } from "./errors/index.js";
 
 export class MeiliSearch {
   config: Config;
   httpRequest: HttpRequests;
-  tasks: TaskClient;
-  batches: BatchClient;
+
+  readonly #taskClient: TaskClient;
+  get tasks() {
+    return this.#taskClient;
+  }
+
+  readonly #batchClient: BatchClient;
+  get batches() {
+    return this.#batchClient;
+  }
+
+  readonly #httpRequestsWithTask: HttpRequestsWithEnqueuedTaskPromise;
 
   /**
    * Creates new MeiliSearch instance
@@ -53,8 +64,17 @@ export class MeiliSearch {
   constructor(config: Config) {
     this.config = config;
     this.httpRequest = new HttpRequests(config);
-    this.tasks = new TaskClient(config);
-    this.batches = new BatchClient(config);
+
+    this.#taskClient = new TaskClient(
+      this.httpRequest,
+      config.defaultWaitOptions,
+    );
+    this.#batchClient = new BatchClient(this.httpRequest);
+
+    this.#httpRequestsWithTask = getHttpRequestsWithEnqueuedTaskPromise(
+      this.httpRequest,
+      this.tasks,
+    );
   }
 
   /**
@@ -63,9 +83,7 @@ export class MeiliSearch {
    * @param indexUid - The index UID
    * @returns Instance of Index
    */
-  index<T extends Record<string, any> = Record<string, any>>(
-    indexUid: string,
-  ): Index<T> {
+  index<T extends RecordAny = RecordAny>(indexUid: string): Index<T> {
     return new Index<T>(this.config, indexUid);
   }
 
@@ -76,7 +94,7 @@ export class MeiliSearch {
    * @param indexUid - The index UID
    * @returns Promise returning Index instance
    */
-  async getIndex<T extends Record<string, any> = Record<string, any>>(
+  async getIndex<T extends RecordAny = RecordAny>(
     indexUid: string,
   ): Promise<Index<T>> {
     return new Index<T>(this.config, indexUid).fetchInfo();
@@ -100,7 +118,7 @@ export class MeiliSearch {
    * @returns Promise returning array of raw index information
    */
   async getIndexes(
-    parameters: IndexesQuery = {},
+    parameters?: IndexesQuery,
   ): Promise<IndexesResults<Index[]>> {
     const rawIndexes = await this.getRawIndexes(parameters);
     const indexes: Index[] = rawIndexes.results.map(
@@ -116,13 +134,12 @@ export class MeiliSearch {
    * @returns Promise returning array of raw index information
    */
   async getRawIndexes(
-    parameters: IndexesQuery = {},
+    parameters?: IndexesQuery,
   ): Promise<IndexesResults<IndexObject[]>> {
-    const url = `indexes`;
-    return await this.httpRequest.get<IndexesResults<IndexObject[]>>(
-      url,
-      parameters,
-    );
+    return await this.httpRequest.get<IndexesResults<IndexObject[]>>({
+      path: "indexes",
+      params: parameters,
+    });
   }
 
   /**
@@ -132,11 +149,8 @@ export class MeiliSearch {
    * @param options - Index options
    * @returns Promise returning Index instance
    */
-  async createIndex(
-    uid: string,
-    options: IndexOptions = {},
-  ): Promise<EnqueuedTask> {
-    return await Index.create(uid, options, this.config);
+  createIndex(uid: string, options?: IndexOptions): EnqueuedTaskPromise {
+    return Index.create(uid, options, this.config);
   }
 
   /**
@@ -146,11 +160,8 @@ export class MeiliSearch {
    * @param options - Index options to update
    * @returns Promise returning Index instance after updating
    */
-  async updateIndex(
-    uid: string,
-    options: IndexOptions = {},
-  ): Promise<EnqueuedTask> {
-    return await new Index(this.config, uid).update(options);
+  updateIndex(uid: string, options?: IndexOptions): EnqueuedTaskPromise {
+    return new Index(this.config, uid).update(options);
   }
 
   /**
@@ -159,8 +170,8 @@ export class MeiliSearch {
    * @param uid - The index UID
    * @returns Promise which resolves when index is deleted successfully
    */
-  async deleteIndex(uid: string): Promise<EnqueuedTask> {
-    return await new Index(this.config, uid).delete();
+  deleteIndex(uid: string): EnqueuedTaskPromise {
+    return new Index(this.config, uid).delete();
   }
 
   /**
@@ -174,10 +185,14 @@ export class MeiliSearch {
     try {
       await this.deleteIndex(uid);
       return true;
-    } catch (e: any) {
-      if (e.code === ErrorStatusCode.INDEX_NOT_FOUND) {
+    } catch (e) {
+      if (
+        (e as MeiliSearchApiError)?.cause?.code ===
+        ErrorStatusCode.INDEX_NOT_FOUND
+      ) {
         return false;
       }
+
       throw e;
     }
   }
@@ -188,9 +203,11 @@ export class MeiliSearch {
    * @param params - List of indexes tuples to swap.
    * @returns Promise returning object of the enqueued task
    */
-  async swapIndexes(params: SwapIndexesParams): Promise<EnqueuedTask> {
-    const url = "/swap-indexes";
-    return await this.httpRequest.post(url, params);
+  swapIndexes(params: IndexSwap[]): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.post({
+      path: "/swap-indexes",
+      body: params,
+    });
   }
 
   ///
@@ -201,7 +218,8 @@ export class MeiliSearch {
    * Perform multiple search queries.
    *
    * It is possible to make multiple search queries on the same index or on
-   * different ones
+   * different ones. With network feature enabled, you can also search across
+   * remote instances.
    *
    * @example
    *
@@ -212,120 +230,73 @@ export class MeiliSearch {
    *     { indexUid: "books", q: "flower" },
    *   ],
    * });
+   *
+   * // Federated search with remote instance (requires network feature enabled)
+   * client.multiSearch({
+   *   federation: {},
+   *   queries: [
+   *     {
+   *       indexUid: "movies",
+   *       q: "wonder",
+   *       federationOptions: {
+   *         remote: "meilisearch instance name",
+   *       },
+   *     },
+   *     {
+   *       indexUid: "movies",
+   *       q: "wonder",
+   *       federationOptions: {
+   *         remote: "meilisearch instance name",
+   *       },
+   *     },
+   *   ],
+   * });
    * ```
    *
    * @param queries - Search queries
-   * @param config - Additional request configuration options
+   * @param extraRequestInit - Additional request configuration options
    * @returns Promise containing the search responses
+   * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#perform-a-search}
    */
   async multiSearch<
     T1 extends MultiSearchParams | FederatedMultiSearchParams,
-    T2 extends Record<string, unknown> = Record<string, any>,
+    T2 extends RecordAny = RecordAny,
   >(
     queries: T1,
-    config?: Partial<Request>,
+    extraRequestInit?: ExtraRequestInit,
   ): Promise<MultiSearchResponseOrSearchResponse<T1, T2>> {
-    const url = `multi-search`;
-
-    return await this.httpRequest.post(url, queries, undefined, config);
-  }
-
-  ///
-  /// TASKS
-  ///
-
-  /**
-   * Get the list of all client tasks
-   *
-   * @param parameters - Parameters to browse the tasks
-   * @returns Promise returning all tasks
-   */
-  async getTasks(parameters: TasksQuery = {}): Promise<TasksResults> {
-    return await this.tasks.getTasks(parameters);
-  }
-
-  /**
-   * Get one task on the client scope
-   *
-   * @param taskUid - Task identifier
-   * @returns Promise returning a task
-   */
-  async getTask(taskUid: number): Promise<Task> {
-    return await this.tasks.getTask(taskUid);
-  }
-
-  /**
-   * Wait for multiple tasks to be finished.
-   *
-   * @param taskUids - Tasks identifier
-   * @param waitOptions - Options on timeout and interval
-   * @returns Promise returning an array of tasks
-   */
-  async waitForTasks(
-    taskUids: number[],
-    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {},
-  ): Promise<Task[]> {
-    return await this.tasks.waitForTasks(taskUids, {
-      timeOutMs,
-      intervalMs,
+    return await this.httpRequest.post<
+      MultiSearchResponseOrSearchResponse<T1, T2>
+    >({
+      path: "multi-search",
+      body: queries,
+      extraRequestInit,
     });
   }
 
+  ///
+  ///  Network
+  ///
+
   /**
-   * Wait for a task to be finished.
+   * {@link https://www.meilisearch.com/docs/reference/api/network#get-the-network-object}
    *
-   * @param taskUid - Task identifier
-   * @param waitOptions - Options on timeout and interval
-   * @returns Promise returning an array of tasks
+   * @experimental
    */
-  async waitForTask(
-    taskUid: number,
-    { timeOutMs = 5000, intervalMs = 50 }: WaitOptions = {},
-  ): Promise<Task> {
-    return await this.tasks.waitForTask(taskUid, {
-      timeOutMs,
-      intervalMs,
+  async getNetwork(): Promise<Network> {
+    return await this.httpRequest.get({ path: "network" });
+  }
+
+  /**
+   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   *
+   * @experimental
+   */
+  async updateNetwork(network: Partial<Network>): Promise<Network> {
+    return await this.httpRequest.patch({
+      path: "network",
+      body: network,
     });
-  }
-
-  /**
-   * Cancel a list of enqueued or processing tasks.
-   *
-   * @param parameters - Parameters to filter the tasks.
-   * @returns Promise containing an EnqueuedTask
-   */
-  async cancelTasks(parameters: CancelTasksQuery): Promise<EnqueuedTask> {
-    return await this.tasks.cancelTasks(parameters);
-  }
-
-  /**
-   * Delete a list of tasks.
-   *
-   * @param parameters - Parameters to filter the tasks.
-   * @returns Promise containing an EnqueuedTask
-   */
-  async deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask> {
-    return await this.tasks.deleteTasks(parameters);
-  }
-
-  /**
-   * Get all the batches
-   *
-   * @param parameters - Parameters to browse the batches
-   * @returns Promise returning all batches
-   */
-  async getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults> {
-    return await this.batches.getBatches(parameters);
-  }
-
-  /**
-   * Get one batch
-   *
-   * @param uid - Batch identifier
-   * @returns Promise returning a batch
-   */
-  async getBatch(uid: number): Promise<Batch> {
-    return await this.batches.getBatch(uid);
   }
 
   ///
@@ -338,9 +309,11 @@ export class MeiliSearch {
    * @param parameters - Parameters to browse the indexes
    * @returns Promise returning an object with keys
    */
-  async getKeys(parameters: KeysQuery = {}): Promise<KeysResults> {
-    const url = `keys`;
-    const keys = await this.httpRequest.get<KeysResults>(url, parameters);
+  async getKeys(parameters?: KeysQuery): Promise<KeysResults> {
+    const keys = await this.httpRequest.get<KeysResults>({
+      path: "keys",
+      params: parameters,
+    });
 
     keys.results = keys.results.map((key) => ({
       ...key,
@@ -358,8 +331,9 @@ export class MeiliSearch {
    * @returns Promise returning a key
    */
   async getKey(keyOrUid: string): Promise<Key> {
-    const url = `keys/${keyOrUid}`;
-    return await this.httpRequest.get<Key>(url);
+    return await this.httpRequest.get<Key>({
+      path: `keys/${keyOrUid}`,
+    });
   }
 
   /**
@@ -369,8 +343,10 @@ export class MeiliSearch {
    * @returns Promise returning a key
    */
   async createKey(options: KeyCreation): Promise<Key> {
-    const url = `keys`;
-    return await this.httpRequest.post(url, options);
+    return await this.httpRequest.post<Key>({
+      path: "keys",
+      body: options,
+    });
   }
 
   /**
@@ -381,8 +357,10 @@ export class MeiliSearch {
    * @returns Promise returning a key
    */
   async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
-    const url = `keys/${keyOrUid}`;
-    return await this.httpRequest.patch(url, options);
+    return await this.httpRequest.patch<Key>({
+      path: `keys/${keyOrUid}`,
+      body: options,
+    });
   }
 
   /**
@@ -392,8 +370,7 @@ export class MeiliSearch {
    * @returns
    */
   async deleteKey(keyOrUid: string): Promise<void> {
-    const url = `keys/${keyOrUid}`;
-    return await this.httpRequest.delete<any>(url);
+    await this.httpRequest.delete({ path: `keys/${keyOrUid}` });
   }
 
   ///
@@ -406,8 +383,7 @@ export class MeiliSearch {
    * @returns Promise returning an object with health details
    */
   async health(): Promise<Health> {
-    const url = `health`;
-    return await this.httpRequest.get<Health>(url);
+    return await this.httpRequest.get<Health>({ path: "health" });
   }
 
   /**
@@ -417,9 +393,8 @@ export class MeiliSearch {
    */
   async isHealthy(): Promise<boolean> {
     try {
-      const url = `health`;
-      await this.httpRequest.get(url);
-      return true;
+      const { status } = await this.health();
+      return status === "available";
     } catch {
       return false;
     }
@@ -435,8 +410,7 @@ export class MeiliSearch {
    * @returns Promise returning object of all the stats
    */
   async getStats(): Promise<Stats> {
-    const url = `stats`;
-    return await this.httpRequest.get<Stats>(url);
+    return await this.httpRequest.get<Stats>({ path: "stats" });
   }
 
   ///
@@ -449,8 +423,7 @@ export class MeiliSearch {
    * @returns Promise returning object with version details
    */
   async getVersion(): Promise<Version> {
-    const url = `version`;
-    return await this.httpRequest.get<Version>(url);
+    return await this.httpRequest.get<Version>({ path: "version" });
   }
 
   ///
@@ -462,12 +435,10 @@ export class MeiliSearch {
    *
    * @returns Promise returning object of the enqueued task
    */
-  async createDump(): Promise<EnqueuedTask> {
-    const url = `dumps`;
-    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(
-      url,
-    );
-    return new EnqueuedTask(task);
+  createDump(): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.post({
+      path: "dumps",
+    });
   }
 
   ///
@@ -479,12 +450,30 @@ export class MeiliSearch {
    *
    * @returns Promise returning object of the enqueued task
    */
-  async createSnapshot(): Promise<EnqueuedTask> {
-    const url = `snapshots`;
-    const task = await this.httpRequest.post<undefined, EnqueuedTaskObject>(
-      url,
-    );
+  createSnapshot(): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.post({
+      path: "snapshots",
+    });
+  }
 
-    return new EnqueuedTask(task);
+  ///
+  /// EXPERIMENTAL-FEATURES
+  ///
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/experimental_features#get-all-experimental-features} */
+  async getExperimentalFeatures(): Promise<RuntimeTogglableFeatures> {
+    return await this.httpRequest.get({
+      path: "experimental-features",
+    });
+  }
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/experimental_features#configure-experimental-features} */
+  async updateExperimentalFeatures(
+    runtimeTogglableFeatures: RuntimeTogglableFeatures,
+  ): Promise<RuntimeTogglableFeatures> {
+    return await this.httpRequest.patch({
+      path: "experimental-features",
+      body: runtimeTogglableFeatures,
+    });
   }
 }
