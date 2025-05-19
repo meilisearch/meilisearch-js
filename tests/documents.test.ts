@@ -32,9 +32,10 @@ describe("Documents tests", () => {
       beforeEach(async () => {
         await clearAllIndexes(config);
         const client = await getClient("Master");
-        await client.createIndex(indexNoPk.uid).waitTask();
+        await client.createIndex({ uid: indexNoPk.uid }).waitTask();
         await client
-          .createIndex(indexPk.uid, {
+          .createIndex({
+            uid: indexPk.uid,
             primaryKey: indexPk.primaryKey,
           })
           .waitTask();
@@ -410,7 +411,7 @@ describe("Documents tests", () => {
         };
         await client.index(indexNoPk.uid).addDocuments([doc]).waitTask();
 
-        const index = await client.index(indexNoPk.uid).fetchInfo();
+        const index = await client.index(indexNoPk.uid).getIndex();
 
         expect(index).toHaveProperty("primaryKey", "_id");
       });
@@ -423,7 +424,7 @@ describe("Documents tests", () => {
         };
         await client.index(indexNoPk.uid).addDocuments([doc]).waitTask();
 
-        const index = await client.index(indexNoPk.uid).fetchInfo();
+        const index = await client.index(indexNoPk.uid).getIndex();
 
         expect(index).toHaveProperty("primaryKey", "findmeid");
       });
@@ -439,7 +440,7 @@ describe("Documents tests", () => {
           .index(indexNoPk.uid)
           .addDocuments([doc])
           .waitTask();
-        const index = await client.index(indexNoPk.uid).fetchInfo();
+        const index = await client.index(indexNoPk.uid).getIndex();
 
         expect(task.error?.code).toEqual(
           "index_primary_key_multiple_candidates_found",
@@ -457,7 +458,7 @@ describe("Documents tests", () => {
           .index(indexNoPk.uid)
           .addDocuments([doc])
           .waitTask();
-        const index = await client.index(indexNoPk.uid).fetchInfo();
+        const index = await client.index(indexNoPk.uid).getIndex();
 
         expect(task.error?.code).toEqual(
           "index_primary_key_no_candidate_found",
@@ -559,7 +560,7 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Delete some documents should trigger error with a hint on a MeilisearchApiError`, async () => {
         const client = await getClient(permission);
-        await client.createIndex(indexPk.uid).waitTask();
+        await client.createIndex({ uid: indexPk.uid }).waitTask();
 
         await assert.rejects(
           client.index(indexPk.uid).deleteDocuments({ filter: "" }),
@@ -627,14 +628,14 @@ describe("Documents tests", () => {
           },
         ];
         const pkIndex = "update_pk";
-        await client.createIndex(pkIndex).waitTask();
+        await client.createIndex({ uid: pkIndex }).waitTask();
 
         await client
           .index(pkIndex)
           .addDocuments(docs, { primaryKey: "unique" })
           .waitTask();
 
-        const response = await client.index(pkIndex).getRawInfo();
+        const response = await client.index(pkIndex).getIndex();
         expect(response).toHaveProperty("uid", pkIndex);
         expect(response).toHaveProperty("primaryKey", "unique");
       });
@@ -670,7 +671,7 @@ describe("Documents tests", () => {
           ])
           .waitTask();
 
-        const index = await client.index(indexNoPk.uid).getRawInfo();
+        const index = await client.index(indexNoPk.uid).getIndex();
 
         expect(index.uid).toEqual(indexNoPk.uid);
         expect(index.primaryKey).toEqual(null);

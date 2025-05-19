@@ -57,7 +57,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       await clearAllIndexes(config);
       const client = await getClient(permission);
 
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex({ uid: index.uid }).waitTask();
     });
 
     test(`${permission} key: Get default embedders`, async () => {

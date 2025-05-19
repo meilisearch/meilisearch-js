@@ -10,8 +10,8 @@ const client = new MeiliSearch(config)
 const indexUid = 'movies'
 
 const addDataset = async () => {
-  await client.deleteIndex(indexUid)
-  await client.createIndex(indexUid).waitTask()
+  await client.index(indexUid).deleteIndex().waitTask()
+  await client.createIndex({ uid: indexUid }).waitTask()
 
   const index = client.index(indexUid)
 

@@ -126,8 +126,8 @@ describe.each([
   beforeAll(async () => {
     await clearAllIndexes(config);
     const client = await getClient("Master");
-    await client.createIndex(index.uid);
-    await client.createIndex(emptyIndex.uid);
+    await client.createIndex({ uid: index.uid });
+    await client.createIndex({ uid: emptyIndex.uid });
 
     const newFilterableAttributes = ["genre", "title", "id", "author"];
     await client
@@ -285,7 +285,7 @@ describe.each([
     const masterClient = await getClient("Master");
 
     // Setup to have a new "movies" index
-    await masterClient.createIndex("movies");
+    await masterClient.createIndex({ uid: "movies" });
     const newFilterableAttributes = ["title", "id"];
     await masterClient
       .index("movies")
@@ -363,7 +363,7 @@ describe.each([
     const masterClient = await getClient("Master");
 
     // Setup to have a new "movies" index
-    await masterClient.createIndex("movies");
+    await masterClient.createIndex({ uid: "movies" });
     const newFilterableAttributes = ["title", "id"];
     await masterClient
       .index("movies")
@@ -1240,7 +1240,7 @@ describe.each([
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient("Master");
-    await masterClient.index(index.uid).delete().waitTask();
+    await masterClient.index(index.uid).deleteIndex().waitTask();
 
     await expect(
       client.index(index.uid).search("prince", {}),
@@ -1253,7 +1253,7 @@ describe.each([{ permission: "No" }])(
   ({ permission }) => {
     beforeAll(async () => {
       const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
+      await client.createIndex({ uid: index.uid }).waitTask();
     });
 
     test(`${permission} key: Try Basic search and be denied`, async () => {
@@ -1282,7 +1282,7 @@ describe.each([{ permission: "Master" }])(
     beforeEach(async () => {
       await clearAllIndexes(config);
       const client = await getClient("Master");
-      await client.createIndex(index.uid);
+      await client.createIndex({ uid: index.uid });
 
       await client.index(index.uid).addDocuments(datasetWithNests).waitTask();
     });
@@ -1356,7 +1356,7 @@ describe.each([
   beforeAll(async () => {
     const client = await getClient("Master");
     await clearAllIndexes(config);
-    await client.createIndex(index.uid).waitTask();
+    await client.createIndex({ uid: index.uid }).waitTask();
   });
 
   test(`${permission} key: search on index and abort`, async () => {

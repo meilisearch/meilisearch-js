@@ -84,8 +84,8 @@ describe.each([
   beforeAll(async () => {
     await clearAllIndexes(config);
     const client = await getClient("Master");
-    await client.createIndex(index.uid).waitTask();
-    await client.createIndex(emptyIndex.uid).waitTask();
+    await client.createIndex({ uid: index.uid }).waitTask();
+    await client.createIndex({ uid: emptyIndex.uid }).waitTask();
 
     const newFilterableAttributes = ["genre", "title", "id", "author"];
     await client
@@ -546,7 +546,7 @@ describe.each([
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient("Master");
-    await masterClient.index(index.uid).delete().waitTask();
+    await masterClient.index(index.uid).deleteIndex().waitTask();
     await expect(
       client.index(index.uid).searchGet("prince"),
     ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INDEX_NOT_FOUND);

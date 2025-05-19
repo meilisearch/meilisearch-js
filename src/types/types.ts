@@ -4,7 +4,7 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^5.8.2
 
-import type { WaitOptions } from "./task_and_batch.js";
+import type { WaitOptions } from "./task-and-batch.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RecordAny = Record<string, any>;
@@ -129,25 +129,6 @@ export type ResourceResults<T> = Pagination & {
   results: T;
   total: number;
 };
-
-///
-/// Indexes
-///
-
-export type IndexOptions = {
-  primaryKey?: string;
-};
-
-export type IndexObject = {
-  uid: string;
-  primaryKey?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type IndexesQuery = ResourceQuery & {};
-
-export type IndexesResults<T> = ResourceResults<T> & {};
 
 /*
  * SEARCH PARAMETERS
