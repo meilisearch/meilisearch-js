@@ -3,6 +3,7 @@ name: Pre-Release Tests
 
 env:
   HUSKY: 0
+  NODE_OPTIONS: '--trace-warnings'
 
 # Will only run for PRs and pushes to bump-meilisearch-v*
 on:
