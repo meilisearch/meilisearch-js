@@ -199,7 +199,7 @@ Tasks such as document addition always return a unique identifier. You can use t
 
 ```javascript
 // Meilisearch is typo-tolerant:
-const search = await index.search('philoudelphia')
+const search = await index.search({ q: 'philoudelphia' })
 console.log(search)
 ```
 
@@ -227,12 +227,10 @@ Output:
 `meilisearch-js` supports all [search parameters](https://www.meilisearch.com/docs/reference/api/search#search-parameters) described in our main documentation website.
 
 ```javascript
-await index.search(
-  'wonder',
-  {
-    attributesToHighlight: ['*']
-  }
-)
+await index.search({
+  q: 'wonder',
+  attributesToHighlight: ['*']
+})
 ```
 
 ```json
@@ -275,12 +273,10 @@ Note that Meilisearch rebuilds your index whenever you update `filterableAttribu
 After you configured `filterableAttributes`, you can use the [`filter` search parameter](https://www.meilisearch.com/docs/reference/api/search#filter) to refine your search:
 
 ```js
-await index.search(
-  'wonder',
-  {
-    filter: ['id > 1 AND genres = Action']
-  }
-)
+await index.search({
+  q: 'wonder',
+  filter: ['id > 1 AND genres = Action']
+})
 ```
 
 ```json
@@ -305,13 +301,11 @@ await index.search(
 Placeholder search makes it possible to receive hits based on your parameters without having any query (`q`). For example, in a movies database you can run an empty query to receive all results filtered by `genre`.
 
 ```javascript
-await index.search(
-  '',
-  {
-    filter: ['genres = fantasy'],
-    facets: ['genres']
-  }
-)
+await index.search({
+  q: '',
+  filter: ['genres = fantasy'],
+  facets: ['genres']
+})
 ```
 
 ```json
@@ -353,7 +347,7 @@ You can abort a pending search request by providing an [AbortSignal](https://dev
 const controller = new AbortController()
 
 index
-  .search('wonder', {}, {
+  .search({ q: 'wonder' }, {
     signal: controller.signal,
   })
   .then((response) => {
@@ -431,13 +425,13 @@ We welcome all contributions, big and small! If you want to know more about this
 #### [Make a search request](https://www.meilisearch.com/docs/reference/api/search)
 
 ```ts
-client.index<T>('xxx').search(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>
+client.index<T>('xxx').search(options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>
 ```
 
 #### [Make a search request using the GET method (slower than the search method)](https://www.meilisearch.com/docs/reference/api/search#search-in-an-index-with-get-route)
 
 ```ts
-client.index<T>('xxx').searchGet(query: string, options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>
+client.index<T>('xxx').searchGet(options: SearchParams = {}, config?: Partial<Request>): Promise<SearchResponse<T>>
 ```
 
 ### Multi Search

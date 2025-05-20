@@ -4,10 +4,9 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^5.8.2
 
-import type { WaitOptions } from "./task_and_batch.js";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type RecordAny = Record<string, any>;
+import type { WaitOptions } from "./task-and-batch.js";
+import type { FilterExpression } from "./search-parameters.js";
+import type { RecordAny, SafeOmit } from "./shared.js";
 
 /**
  * Shape of allowed record object that can be appended to a
@@ -15,31 +14,23 @@ export type RecordAny = Record<string, any>;
  */
 export type URLSearchParamsRecord = Record<
   string,
-  | string
-  | string[]
-  | (string | string[])[]
-  | number
-  | number[]
-  | boolean
-  | Date
-  | null
-  | undefined
+  string | string[] | number | number[] | boolean | null | undefined
 >;
 
 /**
  * {@link RequestInit} without {@link RequestInit.body} and
  * {@link RequestInit.method} properties.
  */
-export type ExtraRequestInit = Omit<RequestInit, "body" | "method">;
+export type ExtraRequestInit = SafeOmit<RequestInit, "body" | "method">;
 
 /** Same as {@link ExtraRequestInit} but without {@link ExtraRequestInit.signal}. */
-export type BaseRequestInit = Omit<ExtraRequestInit, "signal">;
+export type BaseRequestInit = SafeOmit<ExtraRequestInit, "signal">;
 
 /**
  * Same as {@link BaseRequestInit} but with its headers property forced as a
  * {@link Headers} object.
  */
-export type HttpRequestsRequestInit = Omit<BaseRequestInit, "headers"> & {
+export type HttpRequestsRequestInit = SafeOmit<BaseRequestInit, "headers"> & {
   headers: Headers;
 };
 
@@ -59,8 +50,8 @@ export type Config = {
    */
   apiKey?: string;
   /**
-   * Custom strings that will be concatted to the "X-Meilisearch-Client" header
-   * on each request.
+   * Custom strings that will be concatenated to the "X-Meilisearch-Client"
+   * header on each request.
    */
   clientAgents?: string[];
   /** Base request options that may override the default ones. */
@@ -112,13 +103,13 @@ export type MainRequestOptions = {
  * {@link MainRequestOptions} without {@link MainRequestOptions.method}, for
  * method functions.
  */
-export type RequestOptions = Omit<MainRequestOptions, "method">;
+export type RequestOptions = SafeOmit<MainRequestOptions, "method">;
 
 ///
 /// Resources
 ///
 
-export type Pagination = {
+type Pagination = {
   offset?: number;
   limit?: number;
 };
@@ -150,303 +141,6 @@ export type IndexesQuery = ResourceQuery & {};
 export type IndexesResults<T> = ResourceResults<T> & {};
 
 /*
- * SEARCH PARAMETERS
- */
-
-export const MatchingStrategies = {
-  ALL: "all",
-  LAST: "last",
-  FREQUENCY: "frequency",
-} as const;
-
-export type MatchingStrategies =
-  (typeof MatchingStrategies)[keyof typeof MatchingStrategies];
-
-export type Filter = string | (string | string[])[];
-
-export type Query = {
-  q?: string | null;
-};
-
-export type Highlight = {
-  attributesToHighlight?: string[];
-  highlightPreTag?: string;
-  highlightPostTag?: string;
-};
-
-export type Crop = {
-  attributesToCrop?: string[];
-  cropLength?: number;
-  cropMarker?: string;
-};
-
-// `facetName` becomes mandatory when using `searchForFacetValues`
-export type SearchForFacetValuesParams = Omit<SearchParams, "facetName"> & {
-  facetName: string;
-  /**
-   * If true, the facet search will return the exhaustive count of the facet
-   * values.
-   */
-  exhaustiveFacetCount?: boolean;
-};
-
-export type FacetHit = {
-  value: string;
-  count: number;
-};
-
-export type SearchForFacetValuesResponse = {
-  facetHits: FacetHit[];
-  facetQuery: string | null;
-  processingTimeMs: number;
-};
-
-export type HybridSearch = {
-  embedder: string;
-  semanticRatio?: number;
-};
-
-// https://www.meilisearch.com/docs/reference/api/settings#localized-attributes
-export type Locale = string;
-
-export type SearchParams = Query &
-  Pagination &
-  Highlight &
-  Crop & {
-    filter?: Filter;
-    sort?: string[];
-    facets?: string[];
-    attributesToRetrieve?: string[];
-    showMatchesPosition?: boolean;
-    matchingStrategy?: MatchingStrategies;
-    hitsPerPage?: number;
-    page?: number;
-    facetName?: string;
-    facetQuery?: string;
-    vector?: number[] | null;
-    showRankingScore?: boolean;
-    showRankingScoreDetails?: boolean;
-    rankingScoreThreshold?: number;
-    attributesToSearchOn?: string[] | null;
-    hybrid?: HybridSearch;
-    distinct?: string;
-    retrieveVectors?: boolean;
-    locales?: Locale[];
-  };
-
-// Search parameters for searches made with the GET method
-// Are different than the parameters for the POST method
-export type SearchRequestGET = Pagination &
-  Query &
-  Omit<Highlight, "attributesToHighlight"> &
-  Omit<Crop, "attributesToCrop"> & {
-    filter?: string;
-    sort?: string;
-    facets?: string;
-    attributesToRetrieve?: string;
-    attributesToHighlight?: string;
-    attributesToCrop?: string;
-    showMatchesPosition?: boolean;
-    vector?: string | null;
-    attributesToSearchOn?: string | null;
-    hybridEmbedder?: string;
-    hybridSemanticRatio?: number;
-    rankingScoreThreshold?: number;
-    distinct?: string;
-    retrieveVectors?: boolean;
-    locales?: Locale[];
-  };
-
-export type MergeFacets = {
-  maxValuesPerFacet?: number | null;
-};
-
-export type FederationOptions = { weight: number; remote?: string };
-export type MultiSearchFederation = {
-  limit?: number;
-  offset?: number;
-  facetsByIndex?: Record<string, string[]>;
-  mergeFacets?: MergeFacets | null;
-};
-
-export type MultiSearchQuery = SearchParams & { indexUid: string };
-export type MultiSearchQueryWithFederation = MultiSearchQuery & {
-  federationOptions?: FederationOptions;
-};
-
-export type MultiSearchParams = {
-  queries: MultiSearchQuery[];
-};
-export type FederatedMultiSearchParams = {
-  federation: MultiSearchFederation;
-  queries: MultiSearchQueryWithFederation[];
-};
-
-/**
- * {@link https://www.meilisearch.com/docs/reference/api/network#the-remote-object}
- *
- * @see `meilisearch_types::features::Remote` at {@link https://github.com/meilisearch/meilisearch}
- */
-export type Remote = {
-  url: string;
-  searchApiKey: string | null;
-};
-
-/**
- * {@link https://www.meilisearch.com/docs/reference/api/network#the-network-object}
- *
- * @see `meilisearch_types::features::Network` at {@link https://github.com/meilisearch/meilisearch}
- */
-export type Network = {
-  self: string | null;
-  remotes: Record<string, Remote>;
-};
-
-export type CategoriesDistribution = {
-  [category: string]: number;
-};
-
-export type Facet = string;
-export type FacetDistribution = Record<Facet, CategoriesDistribution>;
-export type MatchesPosition<T> = Partial<
-  Record<keyof T, { start: number; length: number; indices?: number[] }[]>
->;
-
-export type RankingScoreDetails = {
-  words?: {
-    order: number;
-    matchingWords: number;
-    maxMatchingWords: number;
-    score: number;
-  };
-  typo?: {
-    order: number;
-    typoCount: number;
-    maxTypoCount: number;
-    score: number;
-  };
-  proximity?: {
-    order: number;
-    score: number;
-  };
-  attribute?: {
-    order: number;
-    attributes_ranking_order: number;
-    attributes_query_word_order: number;
-    score: number;
-  };
-  exactness?: {
-    order: number;
-    matchType: string;
-    score: number;
-  };
-  [key: string]: RecordAny | undefined;
-};
-
-export type FederationDetails = {
-  indexUid: string;
-  queriesPosition: number;
-  weightedRankingScore: number;
-};
-
-export type Hit<T = RecordAny> = T & {
-  _formatted?: Partial<T>;
-  _matchesPosition?: MatchesPosition<T>;
-  _rankingScore?: number;
-  _rankingScoreDetails?: RankingScoreDetails;
-  _federation?: FederationDetails;
-};
-
-export type Hits<T = RecordAny> = Hit<T>[];
-
-export type FacetStat = { min: number; max: number };
-export type FacetStats = Record<string, FacetStat>;
-
-export type FacetsByIndex = Record<
-  string,
-  {
-    distribution: FacetDistribution;
-    stats: FacetStats;
-  }
->;
-
-export type SearchResponse<
-  T = RecordAny,
-  S extends SearchParams | undefined = undefined,
-> = {
-  hits: Hits<T>;
-  processingTimeMs: number;
-  query: string;
-  facetDistribution?: FacetDistribution;
-  facetStats?: FacetStats;
-  facetsByIndex?: FacetsByIndex;
-} & (undefined extends S
-  ? Partial<FinitePagination & InfinitePagination>
-  : true extends IsFinitePagination<NonNullable<S>>
-    ? FinitePagination
-    : InfinitePagination);
-
-type FinitePagination = {
-  totalHits: number;
-  hitsPerPage: number;
-  page: number;
-  totalPages: number;
-};
-type InfinitePagination = {
-  offset: number;
-  limit: number;
-  estimatedTotalHits: number;
-};
-
-type IsFinitePagination<S extends SearchParams> = Or<
-  HasHitsPerPage<S>,
-  HasPage<S>
->;
-
-type Or<A extends boolean, B extends boolean> = true extends A
-  ? true
-  : true extends B
-    ? true
-    : false;
-
-type HasHitsPerPage<S extends SearchParams> = undefined extends S["hitsPerPage"]
-  ? false
-  : true;
-
-type HasPage<S extends SearchParams> = undefined extends S["page"]
-  ? false
-  : true;
-
-export type MultiSearchResult<T> = SearchResponse<T> & { indexUid: string };
-
-export type MultiSearchResponse<T = RecordAny> = {
-  results: MultiSearchResult<T>[];
-};
-
-export type MultiSearchResponseOrSearchResponse<
-  T1 extends FederatedMultiSearchParams | MultiSearchParams,
-  T2 extends RecordAny = RecordAny,
-> = T1 extends FederatedMultiSearchParams
-  ? SearchResponse<T2>
-  : MultiSearchResponse<T2>;
-
-export type FieldDistribution = {
-  [field: string]: number;
-};
-
-export type SearchSimilarDocumentsParams = {
-  id: string | number;
-  offset?: number;
-  limit?: number;
-  filter?: Filter;
-  embedder?: string;
-  attributesToRetrieve?: string[];
-  showRankingScore?: boolean;
-  showRankingScoreDetails?: boolean;
-  rankingScoreThreshold?: number;
-};
-
-/*
  ** Documents
  */
 
@@ -476,7 +170,7 @@ export type RawDocumentAdditionOptions = DocumentOptions & {
 export type DocumentsQuery<T = RecordAny> = ResourceQuery & {
   ids?: string[] | number[];
   fields?: Fields<T>;
-  filter?: Filter;
+  filter?: FilterExpression;
   limit?: number;
   offset?: number;
   retrieveVectors?: boolean;
@@ -487,7 +181,7 @@ export type DocumentQuery<T = RecordAny> = {
 };
 
 export type DocumentsDeletionQuery = {
-  filter: Filter;
+  filter: FilterExpression;
 };
 
 export type DocumentsIds = string[] | number[];
@@ -625,6 +319,13 @@ export type PaginationSettings = {
 
 export type SearchCutoffMs = number | null;
 
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/settings#locales}
+ *
+ * @see `meilisearch_types::locales::Locale`
+ */
+export type Locale = string;
+
 export type LocalizedAttribute = {
   attributePatterns: string[];
   locales: Locale[];
@@ -665,6 +366,12 @@ export type Settings = {
    */
   prefixSearch?: "indexingTime" | "disabled";
 };
+
+/**
+ * @see `fieldDistribution` at {@link https://www.meilisearch.com/docs/reference/api/stats#stats-object}
+ * @see `milli::FieldDistribution`
+ */
+export type FieldDistribution = Record<string, number>;
 
 /*
  *** HEALTH

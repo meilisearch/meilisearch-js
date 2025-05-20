@@ -27,19 +27,18 @@ const { MeiliSearch } = require('../../../dist/cjs/index.cjs')
 
   await index.addDocuments(dataset).waitTask()
 
-  const search = await index.search('philoudelphia')
+  const search = await index.search({ q: 'philoudelphia' })
   console.log({ search, hit: search.hits })
-  const filteredSearch = await index.search('Wonder', {
+  const filteredSearch = await index.search({
+    q: 'Wonder',
     attributesToHighlight: ['*'],
     filter: 'id >= 1'
   })
   console.log({ filteredSearch, hit: filteredSearch.hits[0] })
-  const facetedSearch = await index.search(
-    '',
-    {
-      filter: ['genres = action'],
-      facets: ['genres']
-    }
-  )
+  const facetedSearch = await index.search({
+    q: '',
+    filter: ['genres = action'],
+    facets: ['genres']
+  })
   console.log(JSON.stringify(facetedSearch))
 })()

@@ -332,7 +332,7 @@ describe.each([{ permission: "Admin" }])(
 
       // search
       await expect(
-        searchClient.index(UID).search("pride"),
+        searchClient.index(UID).search({ q: "pride" }),
       ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 
@@ -350,7 +350,7 @@ describe.each([{ permission: "Admin" }])(
 
       // search
       await expect(
-        searchClient.index(UID).search("pride"),
+        searchClient.index(UID).search({ q: "pride" }),
       ).rejects.toHaveProperty("cause.code", "invalid_api_key");
     });
 

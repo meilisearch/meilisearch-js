@@ -13,39 +13,6 @@ const index = {
   uid: "movies_test",
 };
 
-const datasetSimilarSearch = [
-  {
-    title: "Shazam!",
-    release_year: 2019,
-    id: "287947",
-    _vectors: { manual: [0.8, 0.4, -0.5] },
-  },
-  {
-    title: "Captain Marvel",
-    release_year: 2019,
-    id: "299537",
-    _vectors: { manual: [0.6, 0.8, -0.2] },
-  },
-  {
-    title: "Escape Room",
-    release_year: 2019,
-    id: "522681",
-    _vectors: { manual: [0.1, 0.6, 0.8] },
-  },
-  {
-    title: "How to Train Your Dragon: The Hidden World",
-    release_year: 2019,
-    id: "166428",
-    _vectors: { manual: [0.7, 0.7, -0.4] },
-  },
-  {
-    title: "All Quiet on the Western Front",
-    release_year: 1930,
-    id: "143",
-    _vectors: { manual: [-0.5, 0.3, 0.85] },
-  },
-];
-
 afterAll(() => {
   return clearAllIndexes(config);
 });
@@ -282,90 +249,6 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const response = await client.index(index.uid).getEmbedders();
 
       expect(response).toEqual({});
-    });
-
-    test(`${permission} key: search (POST) with vectors`, async () => {
-      const client = await getClient(permission);
-
-      await client
-        .index(index.uid)
-        .updateEmbedders({
-          default: {
-            source: "userProvided",
-            dimensions: 1,
-          },
-        })
-        .waitTask();
-
-      const response = await client.index(index.uid).search("", {
-        vector: [1],
-        hybrid: {
-          embedder: "default",
-          semanticRatio: 1.0,
-        },
-      });
-
-      expect(response).toHaveProperty("hits");
-      expect(response).toHaveProperty("semanticHitCount");
-      // Those fields are no longer returned by the search response
-      // We want to ensure that they don't appear in it anymore
-      expect(response).not.toHaveProperty("vector");
-      expect(response).not.toHaveProperty("_semanticScore");
-    });
-
-    test(`${permission} key: search (GET) with vectors`, async () => {
-      const client = await getClient(permission);
-
-      await client
-        .index(index.uid)
-        .updateEmbedders({
-          default: {
-            source: "userProvided",
-            dimensions: 1,
-          },
-        })
-        .waitTask();
-
-      const response = await client.index(index.uid).searchGet("", {
-        vector: [1],
-        hybridEmbedder: "default",
-        hybridSemanticRatio: 1.0,
-      });
-
-      expect(response).toHaveProperty("hits");
-      expect(response).toHaveProperty("semanticHitCount");
-      // Those fields are no longer returned by the search response
-      // We want to ensure that they don't appear in it anymore
-      expect(response).not.toHaveProperty("vector");
-      expect(response).not.toHaveProperty("_semanticScore");
-    });
-
-    test(`${permission} key: search for similar documents`, async () => {
-      const client = await getClient(permission);
-
-      const newEmbedder: Embedders = {
-        manual: {
-          source: "userProvided",
-          dimensions: 3,
-        },
-      };
-      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
-
-      await client
-        .index(index.uid)
-        .addDocuments(datasetSimilarSearch)
-        .waitTask();
-
-      const response = await client.index(index.uid).searchSimilarDocuments({
-        embedder: "manual",
-        id: "143",
-      });
-
-      expect(response).toHaveProperty("hits");
-      expect(response.hits.length).toEqual(4);
-      expect(response).toHaveProperty("offset", 0);
-      expect(response).toHaveProperty("limit", 20);
-      expect(response).toHaveProperty("estimatedTotalHits", 4);
     });
   },
 );

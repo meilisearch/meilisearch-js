@@ -22,14 +22,7 @@ function appendRecordToURLSearchParams(
 ): void {
   for (const [key, val] of Object.entries(recordToAppend)) {
     if (val != null) {
-      searchParams.set(
-        key,
-        Array.isArray(val)
-          ? val.join()
-          : val instanceof Date
-            ? val.toISOString()
-            : String(val),
-      );
+      searchParams.set(key, Array.isArray(val) ? val.join() : String(val));
     }
   }
 }

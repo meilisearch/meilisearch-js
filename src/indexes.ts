@@ -5,13 +5,8 @@
  * Copyright: 2019, MeiliSearch
  */
 
-import { MeiliSearchError } from "./errors/index.js";
 import type {
   Config,
-  SearchResponse,
-  SearchParams,
-  Filter,
-  SearchRequestGET,
   IndexObject,
   IndexOptions,
   IndexStats,
@@ -30,26 +25,37 @@ import type {
   TypoTolerance,
   PaginationSettings,
   Faceting,
-  ResourceResults,
   RawDocumentAdditionOptions,
   ContentType,
   DocumentsIds,
   DocumentsDeletionQuery,
-  SearchForFacetValuesParams,
-  SearchForFacetValuesResponse,
   SeparatorTokens,
   NonSeparatorTokens,
   Dictionary,
   ProximityPrecision,
   Embedders,
   SearchCutoffMs,
-  SearchSimilarDocumentsParams,
   LocalizedAttributes,
   UpdateDocumentsByFunctionOptions,
   ExtraRequestInit,
   PrefixSearch,
   RecordAny,
+  SearchQuery,
+  FacetSearchQuery,
+  FacetSearchResult,
+  SimilarQuery,
+  SimilarResult,
   EnqueuedTaskPromise,
+  ResourceResults,
+  SearchQueryWithOffsetLimit,
+  SearchResultWithOffsetLimit,
+  SearchQueryWithRequiredPagination,
+  SearchResultWithPagination,
+  SearchResult,
+  SearchQueryGet,
+  SearchQueryWithRequiredPaginationGet,
+  SearchQueryWithOffsetLimitGet,
+  SafeOmit,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -57,6 +63,7 @@ import {
   TaskClient,
   type HttpRequestsWithEnqueuedTaskPromise,
 } from "./task.js";
+import { stringifyRecordKeyValues } from "./utils.js";
 
 export class Index<T extends RecordAny = RecordAny> {
   uid: string;
@@ -87,103 +94,79 @@ export class Index<T extends RecordAny = RecordAny> {
   /// SEARCH
   ///
 
-  /**
-   * Search for documents into an index
-   *
-   * @param query - Query string
-   * @param options - Search options
-   * @param config - Additional request configuration options
-   * @returns Promise containing the search response
-   */
-  async search<D extends RecordAny = T, S extends SearchParams = SearchParams>(
-    query?: string | null,
-    options?: S,
-    extraRequestInit?: ExtraRequestInit,
-  ): Promise<SearchResponse<D, S>> {
-    return await this.httpRequest.post<SearchResponse<D, S>>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/search} */
+  search(
+    searchQuery?: SearchQueryWithOffsetLimit,
+    init?: ExtraRequestInit,
+  ): Promise<SearchResultWithOffsetLimit<T>>;
+  search(
+    searchQuery?: SearchQueryWithRequiredPagination,
+    init?: ExtraRequestInit,
+  ): Promise<SearchResultWithPagination<T>>;
+  async search(
+    searchQuery: SearchQuery = {},
+    init?: ExtraRequestInit,
+  ): Promise<SearchResult<T>> {
+    return await this.httpRequest.post({
       path: `indexes/${this.uid}/search`,
-      body: { q: query, ...options },
-      extraRequestInit,
+      body: searchQuery,
+      extraRequestInit: init,
     });
   }
 
-  /**
-   * Search for documents into an index using the GET method
-   *
-   * @param query - Query string
-   * @param options - Search options
-   * @param config - Additional request configuration options
-   * @returns Promise containing the search response
-   */
-  async searchGet<
-    D extends RecordAny = T,
-    S extends SearchParams = SearchParams,
-  >(
-    query?: string | null,
-    options?: S,
-    extraRequestInit?: ExtraRequestInit,
-  ): Promise<SearchResponse<D, S>> {
-    // TODO: Make this a type thing instead of a runtime thing
-    const parseFilter = (filter?: Filter): string | undefined => {
-      if (typeof filter === "string") return filter;
-      else if (Array.isArray(filter))
-        throw new MeiliSearchError(
-          "The filter query parameter should be in string format when using searchGet",
-        );
-      else return undefined;
-    };
-
-    const getParams: SearchRequestGET = {
-      q: query,
-      ...options,
-      filter: parseFilter(options?.filter),
-      sort: options?.sort?.join(","),
-      facets: options?.facets?.join(","),
-      attributesToRetrieve: options?.attributesToRetrieve?.join(","),
-      attributesToCrop: options?.attributesToCrop?.join(","),
-      attributesToHighlight: options?.attributesToHighlight?.join(","),
-      vector: options?.vector?.join(","),
-      attributesToSearchOn: options?.attributesToSearchOn?.join(","),
-    };
-
-    return await this.httpRequest.get<SearchResponse<D, S>>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/search#search-in-an-index-with-get} */
+  searchGet(
+    searchQuery?: SearchQueryWithOffsetLimitGet,
+    init?: ExtraRequestInit,
+  ): Promise<SearchResultWithOffsetLimit<T>>;
+  searchGet(
+    searchQuery?: SearchQueryWithRequiredPaginationGet,
+    init?: ExtraRequestInit,
+  ): Promise<SearchResultWithPagination<T>>;
+  async searchGet(
+    searchQuery?: SearchQueryGet,
+    init?: ExtraRequestInit,
+  ): Promise<SearchResult<T>> {
+    return await this.httpRequest.get({
       path: `indexes/${this.uid}/search`,
-      params: getParams,
-      extraRequestInit,
+      params: stringifyRecordKeyValues(searchQuery, ["filter"]),
+      extraRequestInit: init,
     });
   }
 
-  /**
-   * Search for facet values
-   *
-   * @param params - Parameters used to search on the facets
-   * @param config - Additional request configuration options
-   * @returns Promise containing the search response
-   */
+  /** {@link https://www.meilisearch.com/docs/reference/api/facet_search#facet-search} */
   async searchForFacetValues(
-    params: SearchForFacetValuesParams,
-    extraRequestInit?: ExtraRequestInit,
-  ): Promise<SearchForFacetValuesResponse> {
-    return await this.httpRequest.post<SearchForFacetValuesResponse>({
+    facetSearchQuery: FacetSearchQuery,
+    init?: ExtraRequestInit,
+  ): Promise<FacetSearchResult> {
+    return await this.httpRequest.post({
       path: `indexes/${this.uid}/facet-search`,
-      body: params,
-      extraRequestInit,
+      body: facetSearchQuery,
+      extraRequestInit: init,
     });
   }
 
-  /**
-   * Search for similar documents
-   *
-   * @param params - Parameters used to search for similar documents
-   * @returns Promise containing the search response
-   */
-  async searchSimilarDocuments<
-    D extends RecordAny = T,
-    S extends SearchParams = SearchParams,
-  >(params: SearchSimilarDocumentsParams): Promise<SearchResponse<D, S>> {
-    return await this.httpRequest.post<SearchResponse<D, S>>({
+  /** {@link https://www.meilisearch.com/docs/reference/api/similar} */
+  async searchSimilarDocuments(
+    similarQuery: SimilarQuery,
+    init?: ExtraRequestInit,
+  ): Promise<SimilarResult> {
+    return await this.httpRequest.post({
       path: `indexes/${this.uid}/similar`,
-      body: params,
+      body: similarQuery,
+      extraRequestInit: init,
+    });
+  }
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/similar#get-similar-documents-with-get} */
+  async searchSimilarDocumentsGet(
+    similarQuery: SimilarQuery,
+    init?: ExtraRequestInit,
+  ): Promise<SimilarResult> {
+    return await this.httpRequest.get({
+      path: `indexes/${this.uid}/similar`,
+      params: stringifyRecordKeyValues(similarQuery, ["filter"]),
+      extraRequestInit: init,
     });
   }
 
@@ -313,7 +296,7 @@ export class Index<T extends RecordAny = RecordAny> {
       : // Else use `GET /documents` method
         await this.httpRequest.get<ResourceResults<D[]>>({
           path: relativeBaseURL,
-          params,
+          params: params as SafeOmit<NonNullable<typeof params>, "filter">,
         });
   }
 
