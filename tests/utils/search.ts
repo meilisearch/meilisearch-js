@@ -73,6 +73,7 @@ export const [
 
       return {
         ...result,
+        query: searchQuery.q ?? "",
         hits: hits.map(({ _federation, ...hit }) => hit as SearchHit<Film>),
       };
     },
