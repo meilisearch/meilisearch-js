@@ -72,6 +72,17 @@ afterAll(async () => {
   await client.updateNetwork({});
 });
 
+test.concurrent.for([
+  search,
+  searchGet,
+  multiSearch,
+  federatedMultiSearch,
+  searchSimilarDocuments,
+  searchSimilarDocumentsGet,
+])("no search params with $name", async ({ searchMethod }) => {
+  await assert.resolves(searchMethod(undefined));
+});
+
 describe.concurrent("`q` param", () => {
   const params: SearchQuery = { q: "earth" };
 

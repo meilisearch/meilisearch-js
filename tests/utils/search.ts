@@ -25,7 +25,7 @@ export const [
   { name: index.search.name, searchMethod: index.search.bind(index) },
   {
     name: index.searchGet.name,
-    searchMethod: (searchQuery) => {
+    searchMethod: (searchQuery = {}) => {
       const { hybrid, ...rest } = searchQuery;
 
       return index.searchGet(
@@ -58,8 +58,8 @@ export const [
       keyof Pick<MeiliSearch, "multiSearch">
     >}`,
     searchMethod: async (searchQuery) => {
-      const { offset, limit, facets, ...restOfSearchQuery } =
-        searchQuery as SearchQueryWithOffsetLimit;
+      const { offset, limit, facets, ...restOfSearchQuery } = (searchQuery ??
+        {}) as SearchQueryWithOffsetLimit;
 
       const { hits, ...result } = await client.multiSearch({
         queries: [{ indexUid: INDEX_UID, ...restOfSearchQuery }],
@@ -73,7 +73,7 @@ export const [
 
       return {
         ...result,
-        query: searchQuery.q ?? "",
+        query: searchQuery?.q ?? "",
         hits: hits.map(({ _federation, ...hit }) => hit as SearchHit<Film>),
       };
     },
@@ -84,7 +84,7 @@ export const [
       offset,
       limit,
       ...searchQuery
-    }: SearchQueryWithOffsetLimit) => {
+    }: SearchQueryWithOffsetLimit = {}) => {
       const { hits, ...result } = await index.searchSimilarDocuments({
         id: 607,
         embedder: "default",
@@ -106,7 +106,7 @@ export const [
       offset,
       limit,
       ...searchQuery
-    }: SearchQueryWithOffsetLimit) => {
+    }: SearchQueryWithOffsetLimit = {}) => {
       const { hits, ...result } = await index.searchSimilarDocumentsGet({
         id: 607,
         embedder: "default",
@@ -124,7 +124,7 @@ export const [
   },
 ] as const satisfies {
   name: string;
-  searchMethod: (searchQuery: SearchQuery) => Promise<SearchResult<Film>>;
+  searchMethod: (searchQuery?: SearchQuery) => Promise<SearchResult<Film>>;
 }[];
 
 export function assertFacetDistributionAndStatsAreCorrect(
