@@ -14,7 +14,7 @@ export type MatchesPosition = Record<string, MatchBounds[]>;
  *
  * @privateRemarks
  * This could be typed more accurately, but both the source code and
- * documentation is a little confusing.
+ * documentation isn't crystal clear about the shape.
  * @see `milli::score_details::ScoreDetails::to_json_map`
  */
 export type ScoreDetails = RecordAny;

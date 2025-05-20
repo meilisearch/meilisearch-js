@@ -25,12 +25,12 @@ export const [
   { name: index.search.name, searchMethod: index.search.bind(index) },
   {
     name: index.searchGet.name,
-    searchMethod: (searchQuery = {}) => {
-      const { hybrid, ...rest } = searchQuery;
+    searchMethod: (searchQuery) => {
+      const { hybrid, ...rest } = searchQuery ?? {};
 
       return index.searchGet(
         hybrid == null
-          ? rest
+          ? searchQuery
           : {
               ...rest,
               hybridSemanticRatio: hybrid.semanticRatio,
