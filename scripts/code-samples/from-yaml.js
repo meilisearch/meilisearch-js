@@ -8,7 +8,7 @@ import {
 
 const headerImport = 'import { MeiliSearch } from "meilisearch";\n';
 const headerClientDeclaration =
-  'const _client = new MeiliSearch({ host: "http://127.0.0.1:7700" });\n';
+  'const client = new MeiliSearch({ host: "http://127.0.0.1:7700" });\n';
 const headerComment =
   "// Code below this line will be written to code samples YAML file\n" +
   '// For more information consult CONTRIBUTING.md "Tests and Linter" section\n' +
@@ -33,19 +33,28 @@ for (const jsonFileToGenerate of jsonFilesToGenerate) {
   );
 }
 
+const clientVarRegExp = /(?<=const|let ).+(?= = new MeiliSearch\()/;
+
 let generatedFileTally = 0;
 
 for (const { sampleName, code } of iterateCodeSamples()) {
   let header = "";
 
-  // generate import if there isn't already one
-  if (!code.includes('from "meilisearch";\n')) {
-    header += headerImport;
-  }
+  const clientVarMatch = code.match(clientVarRegExp);
+  const clientVarLiteral = clientVarMatch?.[0] ?? "client";
+  const clientVarUsageRegExp = new RegExp(`${clientVarLiteral}\\s*\\.`);
 
-  // generate client declaration if there isn't already one
-  if (!code.includes("new MeiliSearch(")) {
-    header += headerClientDeclaration;
+  // if there is client usage in the code sample
+  if (clientVarUsageRegExp.test(code)) {
+    // generate import if there isn't already one
+    if (!code.includes('from "meilisearch";\n')) {
+      header += headerImport;
+    }
+
+    // generate client declaration if there isn't already one
+    if (clientVarMatch === null) {
+      header += headerClientDeclaration;
+    }
   }
 
   header += headerComment;

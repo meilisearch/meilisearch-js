@@ -5,119 +5,91 @@
 # This file is generated, read more in CONTRIBUTING.md "Tests and Linter" section.
 ---
 synonyms_guide_1: |-
-  const _task = await _client
-    .index("movies")
-    .updateSynonyms({
-      great: ["fantastic"],
-      fantastic: ["great"],
-    })
-    .waitTask();
+  await client.index("movies").updateSynonyms({
+    great: ["fantastic"],
+    fantastic: ["great"],
+  });
 date_guide_index_1: |-
   import games from "./games.json" with { type: "json" };
-  const _task = await _client.index("games").addDocuments(games).waitTask();
+  await client.index("games").addDocuments(games);
 date_guide_filterable_attributes_1: |-
-  const _task = await _client
-    .index("games")
-    .updateFilterableAttributes(["release_timestamp"])
-    .waitTask();
+  await client.index("games").updateFilterableAttributes(["release_timestamp"]);
 date_guide_filter_1: |-
-  const _response = await _client.index("games").search("", {
+  await client.index("games").search("", {
     filter: "release_timestamp >= 1514761200 AND release_timestamp < 1672527600",
   });
 date_guide_sortable_attributes_1: |-
-  const _task = await _client
-    .index("games")
-    .updateSortableAttributes(["release_timestamp"])
-    .waitTask();
+  await client.index("games").updateSortableAttributes(["release_timestamp"]);
 date_guide_sort_1: |-
-  const _response = await _client.index("games").search("", {
+  await client.index("games").search("", {
     sort: ["release_timestamp:desc"],
   });
 get_one_index_1: |-
-  const _index = await _client.index("movies").getRawInfo();
+  await client.index("movies").getRawInfo();
 list_all_indexes_1: |-
-  const _indexes = await _client.getIndexes({ limit: 3 });
+  await client.getIndexes({ limit: 3 });
 create_an_index_1: |-
-  const _task = await _client
-    .createIndex("movies", { primaryKey: "id" })
-    .waitTask();
+  await client.createIndex("movies", { primaryKey: "id" });
 update_an_index_1: |-
-  const _task = await _client
-    .updateIndex("movies", { primaryKey: "id" })
-    .waitTask();
+  await client.updateIndex("movies", { primaryKey: "id" });
 delete_an_index_1: |-
-  const _task = await _client.deleteIndex("movies").waitTask();
+  await client.deleteIndex("movies");
 swap_indexes_1: |-
-  const _task = await _client
-    .swapIndexes([
-      { indexes: ["indexA", "indexB"] },
-      { indexes: ["indexX", "indexY"] },
-    ])
-    .waitTask();
+  await client.swapIndexes([
+    { indexes: ["indexA", "indexB"] },
+    { indexes: ["indexX", "indexY"] },
+  ]);
 get_one_document_1: |-
-  const _documents = await _client
+  await client
     .index("movies")
     .getDocument(25684, { fields: ["id", "title", "poster", "release_date"] });
 get_documents_1: |-
-  const _documents = await _client.index("movies").getDocuments({
+  await client.index("movies").getDocuments({
     limit: 2,
     filter: "genres = action",
   });
 get_documents_post_1: |-
-  const _documents = await _client.index("books").getDocuments({
+  await client.index("books").getDocuments({
     filter:
       "(rating > 3 AND (genres = Adventure OR genres = Fiction)) AND language = English",
     fields: ["title", "genres", "rating", "language"],
     limit: 3,
   });
 add_or_replace_documents_1: |-
-  const _task = await _client
-    .index("movies")
-    .addDocuments([
-      {
-        id: 287947,
-        title: "Shazam",
-        poster:
-          "https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg",
-        overview:
-          "A boy is given the ability to become an adult superhero in times of need with a single magic word.",
-        release_date: "2019-03-23",
-      },
-    ])
-    .waitTask();
+  await client.index("movies").addDocuments([
+    {
+      id: 287947,
+      title: "Shazam",
+      poster: "https://image.tmdb.org/t/p/w1280/xnopI5Xtky18MPhK40cZAGAOVeV.jpg",
+      overview:
+        "A boy is given the ability to become an adult superhero in times of need with a single magic word.",
+      release_date: "2019-03-23",
+    },
+  ]);
 add_or_update_documents_1: |-
-  const _task = await _client
-    .index("movies")
-    .updateDocuments([
-      {
-        id: 287947,
-        title: "Shazam ⚡️",
-        genres: "comedy",
-      },
-    ])
-    .waitTask();
+  await client.index("movies").updateDocuments([
+    {
+      id: 287947,
+      title: "Shazam ⚡️",
+      genres: "comedy",
+    },
+  ]);
 delete_all_documents_1: |-
-  const _task = await _client.index("movies").deleteAllDocuments().waitTask();
+  await client.index("movies").deleteAllDocuments();
 delete_one_document_1: |-
-  const _task = await _client.index("movies").deleteDocument(25684).waitTask();
+  await client.index("movies").deleteDocument(25684);
 delete_documents_by_batch_1: |-
-  const _task = await _client
-    .index("movies")
-    .deleteDocuments([23488, 153738, 437035, 363869])
-    .waitTask();
+  await client.index("movies").deleteDocuments([23488, 153738, 437035, 363869]);
 delete_documents_by_filter_1: |-
-  const _task = await _client
-    .index("movies")
-    .deleteDocuments({
-      filter: "genres = action OR genres = adventure",
-    })
-    .waitTask();
+  await client.index("movies").deleteDocuments({
+    filter: "genres = action OR genres = adventure",
+  });
 search_post_1: |-
-  const _response = await _client.index("movies").search("American ninja");
+  await client.index("movies").search("American ninja");
 search_get_1: |-
-  const _response = await _client.index("movies").searchGet("American ninja");
+  await client.index("movies").searchGet("American ninja");
 multi_search_1: |-
-  const _response = await _client.multiSearch({
+  await client.multiSearch({
     queries: [
       {
         indexUid: "movies",
@@ -136,128 +108,119 @@ multi_search_1: |-
     ],
   });
 get_all_tasks_1: |-
-  const _tasks = await _client.tasks.getTasks();
+  await client.tasks.getTasks();
 get_task_1: |-
-  const _task = await _client.tasks.getTask(1);
+  await client.tasks.getTask(1);
 async_guide_filter_by_date_1: |-
-  const _tasks = await _client.tasks.getTasks({
+  await client.tasks.getTasks({
     afterEnqueuedAt: "2020-10-11T11:49:53.000Z",
   });
 async_guide_multiple_filters_1: |-
-  const _tasks = await _client.tasks.getTasks({
+  await client.tasks.getTasks({
     indexUids: ["movies"],
     types: ["documentAdditionOrUpdate", "documentDeletion"],
     statuses: ["processing"],
   });
 async_guide_filter_by_ids_1: |-
-  const _tasks = await _client.tasks.getTasks({ uids: [5, 10, 13] });
+  await client.tasks.getTasks({ uids: [5, 10, 13] });
 async_guide_filter_by_statuses_1: |-
-  const _tasks = await _client.tasks.getTasks({
+  await client.tasks.getTasks({
     statuses: ["failed", "canceled"],
   });
 async_guide_filter_by_types_1: |-
-  const _tasks = await _client.tasks.getTasks({
+  await client.tasks.getTasks({
     types: ["dumpCreation", "indexSwap"],
   });
 async_guide_filter_by_index_uids_1: |-
-  const _tasks = await _client.tasks.getTasks({ indexUids: ["movies"] });
+  await client.tasks.getTasks({ indexUids: ["movies"] });
 get_all_tasks_paginating_1: |-
-  const _tasks = await _client.tasks.getTasks({ limit: 2, from: 10 });
+  await client.tasks.getTasks({ limit: 2, from: 10 });
 get_all_tasks_paginating_2: |-
-  const _tasks = await _client.tasks.getTasks({ limit: 2, from: 8 });
+  await client.tasks.getTasks({ limit: 2, from: 8 });
 async_guide_canceled_by_1: |-
-  const _tasks = await _client.tasks.getTasks({ canceledBy: [9, 15] });
+  await client.tasks.getTasks({ canceledBy: [9, 15] });
 delete_tasks_1: |-
-  const _task = await _client.tasks.deleteTasks({ uids: [1, 2] }).waitTask();
+  await client.tasks.deleteTasks({ uids: [1, 2] });
 cancel_tasks_1: |-
-  const _task = await _client.tasks.cancelTasks({ uids: [1, 2] }).waitTask();
+  await client.tasks.cancelTasks({ uids: [1, 2] });
 get_one_key_1: |-
-  const _key = await _client.getKey("6062abda-a5aa-4414-ac91-ecd7944c0f8d");
+  await client.getKey("6062abda-a5aa-4414-ac91-ecd7944c0f8d");
 get_all_keys_1: |-
-  const _keys = await _client.getKeys({ limit: 3 });
+  await client.getKeys({ limit: 3 });
 create_a_key_1: |-
-  const _key = await _client.createKey({
+  await client.createKey({
     description: "Add documents: Products API key",
     actions: ["documents.add"],
     indexes: ["products"],
     expiresAt: new Date("2021-11-13T00:00:00Z"),
   });
 update_a_key_1: |-
-  const _key = await _client.updateKey("6062abda-a5aa-4414-ac91-ecd7944c0f8d", {
+  await client.updateKey("6062abda-a5aa-4414-ac91-ecd7944c0f8d", {
     name: "Products/Reviews API key",
     description: "Manage documents: Products/Reviews API key",
   });
 delete_a_key_1: |-
-  await _client.deleteKey("6062abda-a5aa-4414-ac91-ecd7944c0f8d");
+  await client.deleteKey("6062abda-a5aa-4414-ac91-ecd7944c0f8d");
 get_settings_1: |-
-  const _settings = await _client.index("movies").getSettings();
+  await client.index("movies").getSettings();
 update_settings_1: |-
-  const _task = await _client
-    .index("movies")
-    .updateSettings({
-      rankingRules: [
-        "words",
-        "typo",
-        "proximity",
-        "attribute",
-        "sort",
-        "exactness",
-        "release_date:desc",
-        "rank:desc",
-      ],
-      distinctAttribute: "movie_id",
-      searchableAttributes: ["title", "overview", "genres"],
-      displayedAttributes: ["title", "overview", "genres", "release_date"],
-      stopWords: ["the", "a", "an"],
-      sortableAttributes: ["title", "release_date"],
-      synonyms: {
-        wolverine: ["xmen", "logan"],
-        logan: ["wolverine"],
-      },
-      typoTolerance: {
-        minWordSizeForTypos: {
-          oneTypo: 8,
-          twoTypos: 10,
-        },
-        disableOnAttributes: ["title"],
-      },
-      pagination: {
-        maxTotalHits: 5000,
-      },
-      faceting: {
-        maxValuesPerFacet: 200,
-      },
-      searchCutoffMs: 150,
-    })
-    .waitTask();
-reset_settings_1: |-
-  const _task = await _client.index("movies").resetSettings().waitTask();
-get_synonyms_1: |-
-  const _synonyms = await _client.index("movies").getSynonyms();
-update_synonyms_1: |-
-  const _task = await _client
-    .index("movies")
-    .updateSynonyms({
+  await client.index("movies").updateSettings({
+    rankingRules: [
+      "words",
+      "typo",
+      "proximity",
+      "attribute",
+      "sort",
+      "exactness",
+      "release_date:desc",
+      "rank:desc",
+    ],
+    distinctAttribute: "movie_id",
+    searchableAttributes: ["title", "overview", "genres"],
+    displayedAttributes: ["title", "overview", "genres", "release_date"],
+    stopWords: ["the", "a", "an"],
+    sortableAttributes: ["title", "release_date"],
+    synonyms: {
       wolverine: ["xmen", "logan"],
-      logan: ["wolverine", "xmen"],
-      wow: ["world of warcraft"],
-    })
-    .waitTask();
+      logan: ["wolverine"],
+    },
+    typoTolerance: {
+      minWordSizeForTypos: {
+        oneTypo: 8,
+        twoTypos: 10,
+      },
+      disableOnAttributes: ["title"],
+    },
+    pagination: {
+      maxTotalHits: 5000,
+    },
+    faceting: {
+      maxValuesPerFacet: 200,
+    },
+    searchCutoffMs: 150,
+  });
+reset_settings_1: |-
+  await client.index("movies").resetSettings();
+get_synonyms_1: |-
+  await client.index("movies").getSynonyms();
+update_synonyms_1: |-
+  await client.index("movies").updateSynonyms({
+    wolverine: ["xmen", "logan"],
+    logan: ["wolverine", "xmen"],
+    wow: ["world of warcraft"],
+  });
 reset_synonyms_1: |-
-  const _task = await _client.index("movies").resetSynonyms().waitTask();
+  await client.index("movies").resetSynonyms();
 get_stop_words_1: |-
-  const _stopWords = await _client.index("movies").getStopWords();
+  await client.index("movies").getStopWords();
 update_stop_words_1: |-
-  const _task = await _client
-    .index("movies")
-    .updateStopWords(["of", "the", "to"])
-    .waitTask();
+  await client.index("movies").updateStopWords(["of", "the", "to"]);
 reset_stop_words_1: |-
-  const _task = await _client.index("movies").resetStopWords().waitTask();
+  await client.index("movies").resetStopWords();
 get_ranking_rules_1: |-
-  const _rankingRules = await _client.index("movies").getRankingRules();
+  await client.index("movies").getRankingRules();
 update_ranking_rules_1: |-
-  const _task = await _client
+  await client
     .index("movies")
     .updateRankingRules([
       "words",
@@ -268,225 +231,180 @@ update_ranking_rules_1: |-
       "exactness",
       "release_date:asc",
       "rank:desc",
-    ])
-    .waitTask();
+    ]);
 reset_ranking_rules_1: |-
-  const _task = await _client.index("movies").resetRankingRules().waitTask();
+  await client.index("movies").resetRankingRules();
 get_distinct_attribute_1: |-
-  const _distinctAttribute = await _client.index("shoes").getDistinctAttribute();
+  await client.index("shoes").getDistinctAttribute();
 update_distinct_attribute_1: |-
-  const _task = await _client
-    .index("shoes")
-    .updateDistinctAttribute("skuid")
-    .waitTask();
+  await client.index("shoes").updateDistinctAttribute("skuid");
 reset_distinct_attribute_1: |-
-  const _task = await _client.index("shoes").resetDistinctAttribute().waitTask();
+  await client.index("shoes").resetDistinctAttribute();
 get_searchable_attributes_1: |-
-  const _searchableAttributes = await _client
-    .index("movies")
-    .getSearchableAttributes();
+  await client.index("movies").getSearchableAttributes();
 update_searchable_attributes_1: |-
-  const _task = await _client
+  await client
     .index("movies")
-    .updateSearchableAttributes(["title", "overview", "genres"])
-    .waitTask();
+    .updateSearchableAttributes(["title", "overview", "genres"]);
 reset_searchable_attributes_1: |-
-  const _task = await _client
-    .index("movies")
-    .resetSearchableAttributes()
-    .waitTask();
+  await client.index("movies").resetSearchableAttributes();
 get_displayed_attributes_1: |-
-  const _displayedAttributes = await _client
-    .index("movies")
-    .getDisplayedAttributes();
+  await client.index("movies").getDisplayedAttributes();
 update_displayed_attributes_1: |-
-  const _task = await _client
+  await client
     .index("movies")
-    .updateDisplayedAttributes(["title", "overview", "genres", "release_date"])
-    .waitTask();
+    .updateDisplayedAttributes(["title", "overview", "genres", "release_date"]);
 reset_displayed_attributes_1: |-
-  const _task = await _client
-    .index("movies")
-    .resetDisplayedAttributes()
-    .waitTask();
+  await client.index("movies").resetDisplayedAttributes();
 get_typo_tolerance_1: |-
-  const _typoTolerance = await _client.index("books").getTypoTolerance();
+  await client.index("books").getTypoTolerance();
 update_typo_tolerance_1: |-
-  const _task = await _client
-    .index("books")
-    .updateTypoTolerance({
-      minWordSizeForTypos: {
-        oneTypo: 4,
-        twoTypos: 10,
-      },
-      disableOnAttributes: ["title"],
-    })
-    .waitTask();
+  await client.index("books").updateTypoTolerance({
+    minWordSizeForTypos: {
+      oneTypo: 4,
+      twoTypos: 10,
+    },
+    disableOnAttributes: ["title"],
+  });
 reset_typo_tolerance_1: |-
-  const _task = await _client.index("books").resetTypoTolerance().waitTask();
+  await client.index("books").resetTypoTolerance();
 get_index_stats_1: |-
-  const _indexStats = await _client.index("movies").getStats();
+  await client.index("movies").getStats();
 get_indexes_stats_1: |-
-  const _stats = await _client.getStats();
+  await client.getStats();
 get_health_1: |-
-  const _health = _client.health();
+  await client.health();
 get_version_1: |-
-  const _version = await _client.getVersion();
+  await client.getVersion();
 distinct_attribute_guide_1: |-
-  const _task = await _client
-    .index("jackets")
-    .updateDistinctAttribute("product_id")
-    .waitTask();
+  await client.index("jackets").updateDistinctAttribute("product_id");
 field_properties_guide_searchable_1: |-
-  const _task = await _client
+  await client
     .index("movies")
-    .updateSearchableAttributes(["title", "overview", "genres"])
-    .waitTask();
+    .updateSearchableAttributes(["title", "overview", "genres"]);
 field_properties_guide_displayed_1: |-
-  const _task = await _client
+  await client
     .index("movies")
-    .updateDisplayedAttributes(["title", "overview", "genres", "release_date"])
-    .waitTask();
+    .updateDisplayedAttributes(["title", "overview", "genres", "release_date"]);
 filtering_guide_1: |-
-  const _response = await _client.index("movie_ratings").search("Avengers", {
+  await client.index("movie_ratings").search("Avengers", {
     filter: "release_date > 795484800",
   });
 filtering_guide_2: |-
-  const _response = await _client.index("movie_ratings").search("Batman", {
+  await client.index("movie_ratings").search("Batman", {
     filter:
       'release_date > 795484800 AND (director = "Tim Burton" OR director = "Christopher Nolan")',
   });
 filtering_guide_3: |-
-  const _response = await _client
-    .index("movie_ratings")
-    .search("Planet of the Apes", {
-      filter: 'release_date > 1577884550 AND (NOT director = "Tim Burton")',
-    });
+  await client.index("movie_ratings").search("Planet of the Apes", {
+    filter: 'release_date > 1577884550 AND (NOT director = "Tim Burton")',
+  });
 filtering_guide_nested_1: |-
-  const _response = await _client.index("movie_ratings").search("thriller", {
+  await client.index("movie_ratings").search("thriller", {
     filter: "rating.users >= 90",
   });
 search_parameter_guide_query_1: |-
-  const _response = await _client.index("movies").search("shifu");
+  await client.index("movies").search("shifu");
 search_parameter_guide_offset_1: |-
-  const _response = await _client.index("movies").search("shifu", {
+  await client.index("movies").search("shifu", {
     offset: 1,
   });
 search_parameter_guide_limit_1: |-
-  const _response = await _client.index("movies").search("shifu", {
+  await client.index("movies").search("shifu", {
     limit: 2,
   });
 search_parameter_guide_retrieve_1: |-
-  const _response = await _client.index("movies").search("shifu", {
+  await client.index("movies").search("shifu", {
     attributesToRetrieve: ["overview", "title"],
   });
 search_parameter_guide_crop_1: |-
-  const _response = await _client.index("movies").search("shifu", {
+  await client.index("movies").search("shifu", {
     attributesToCrop: ["overview"],
     cropLength: 5,
   });
 search_parameter_guide_crop_marker_1: |-
-  const _response = await _client.index("movies").search("shifu", {
+  await client.index("movies").search("shifu", {
     attributesToCrop: ["overview"],
     cropMarker: "[…]",
   });
 search_parameter_guide_highlight_1: |-
-  const _response = await _client.index("movies").search("winter feast", {
+  await client.index("movies").search("winter feast", {
     attributesToHighlight: ["overview"],
   });
 search_parameter_guide_highlight_tag_1: |-
-  const _response = await _client.index("movies").search("winter feast", {
+  await client.index("movies").search("winter feast", {
     attributesToHighlight: ["overview"],
     highlightPreTag: '<span class="highlight">',
     highlightPostTag: "</span>",
   });
 search_parameter_guide_show_matches_position_1: |-
-  const _response = await _client.index("movies").search("winter feast", {
+  await client.index("movies").search("winter feast", {
     showMatchesPosition: true,
   });
 search_parameter_guide_matching_strategy_1: |-
-  const _response = await _client.index("movies").search("big fat liar", {
+  await client.index("movies").search("big fat liar", {
     matchingStrategy: "last",
   });
 search_parameter_guide_matching_strategy_2: |-
-  const _response = await _client.index("movies").search("big fat liar", {
+  await client.index("movies").search("big fat liar", {
     matchingStrategy: "all",
   });
 search_parameter_guide_hitsperpage_1: |-
-  const _response = await _client.index("movies").search("", {
+  await client.index("movies").search("", {
     hitsPerPage: 15,
   });
 search_parameter_guide_page_1: |-
-  const _response = await _client.index("movies").search("", {
+  await client.index("movies").search("", {
     page: 2,
   });
 search_parameter_guide_show_ranking_score_1: |-
-  const _response = await _client.index("movies").search("dragon", {
+  await client.index("movies").search("dragon", {
     showRankingScore: true,
   });
 search_parameter_guide_attributes_to_search_on_1: |-
-  const _response = await _client.index("movies").search("adventure", {
+  await client.index("movies").search("adventure", {
     attributesToSearchOn: ["overview"],
   });
 typo_tolerance_guide_1: |-
-  const _task = await _client
-    .index("movies")
-    .updateTypoTolerance({
-      enabled: false,
-    })
-    .waitTask();
+  await client.index("movies").updateTypoTolerance({
+    enabled: false,
+  });
 typo_tolerance_guide_2: |-
-  const _task = await _client
-    .index("movies")
-    .updateTypoTolerance({
-      disableOnAttributes: ["title"],
-    })
-    .waitTask();
+  await client.index("movies").updateTypoTolerance({
+    disableOnAttributes: ["title"],
+  });
 typo_tolerance_guide_3: |-
-  const _task = await _client
-    .index("movies")
-    .updateTypoTolerance({
-      disableOnWords: ["shrek"],
-    })
-    .waitTask();
+  await client.index("movies").updateTypoTolerance({
+    disableOnWords: ["shrek"],
+  });
 typo_tolerance_guide_4: |-
-  const _task = await _client
-    .index("movies")
-    .updateTypoTolerance({
-      minWordSizeForTypos: {
-        oneTypo: 4,
-        twoTypos: 10,
-      },
-    })
-    .waitTask();
+  await client.index("movies").updateTypoTolerance({
+    minWordSizeForTypos: {
+      oneTypo: 4,
+      twoTypos: 10,
+    },
+  });
 add_movies_json_1: |-
   import movies from "./movies.json" with { type: "json" };
-  const task = await _client.index("movies").addDocuments(movies).waitTask();
+  const task = await client.index("movies").addDocuments(movies);
   console.log(task);
 primary_field_guide_update_document_primary_key: |-
-  const _task = await _client
-    .updateIndex("books", { primaryKey: "title" })
-    .waitTask();
+  await client.updateIndex("books", { primaryKey: "title" });
 primary_field_guide_create_index_primary_key: |-
-  const _task = await _client
-    .createIndex("books", { primaryKey: "reference_number" })
-    .waitTask();
+  await client.createIndex("books", { primaryKey: "reference_number" });
 primary_field_guide_add_document_primary_key: |-
-  const _task = await _client
-    .index("books")
-    .addDocuments(
-      [
-        {
-          reference_number: 287947,
-          title: "Diary of a Wimpy Kid",
-          author: "Jeff Kinney",
-          genres: ["comedy", "humor"],
-          price: 5.0,
-        },
-      ],
-      { primaryKey: "reference_number" },
-    )
-    .waitTask();
+  await client.index("books").addDocuments(
+    [
+      {
+        reference_number: 287947,
+        title: "Diary of a Wimpy Kid",
+        author: "Jeff Kinney",
+        genres: ["comedy", "humor"],
+        price: 5.0,
+      },
+    ],
+    { primaryKey: "reference_number" },
+  );
 getting_started_add_documents: |-
   // With npm:
   // npm install meilisearch
@@ -507,14 +425,14 @@ getting_started_add_documents: |-
     apiKey: "aSampleMasterKey",
   });
 
-  const task = await client.index("movies").addDocuments(movies).waitTask();
+  const task = await client.index("movies").addDocuments(movies);
   console.log(task);
 getting_started_search: |-
-  const response = await _client.index("movies").search("botman");
+  const response = await client.index("movies").search("botman");
 
   console.log(response);
 getting_started_update_ranking_rules: |-
-  const _task = await _client
+  await client
     .index("movies")
     .updateRankingRules([
       "exactness",
@@ -525,145 +443,103 @@ getting_started_update_ranking_rules: |-
       "sort",
       "release_date:asc",
       "rank:desc",
-    ])
-    .waitTask();
+    ]);
 getting_started_update_searchable_attributes: |-
-  const _task = await _client
-    .index("movies")
-    .updateSearchableAttributes(["title"])
-    .waitTask();
+  await client.index("movies").updateSearchableAttributes(["title"]);
 getting_started_update_stop_words: |-
-  const _task = await _client.index("movies").updateStopWords(["the"]).waitTask();
+  await client.index("movies").updateStopWords(["the"]);
 getting_started_check_task_status: |-
-  const _task = await _client.tasks.getTask(0);
+  await client.tasks.getTask(0);
 getting_started_synonyms: |-
-  const _task = await _client
-    .index("movies")
-    .updateSynonyms({
-      winnie: ["piglet"],
-      piglet: ["winnie"],
-    })
-    .waitTask();
+  await client.index("movies").updateSynonyms({
+    winnie: ["piglet"],
+    piglet: ["winnie"],
+  });
 getting_started_update_displayed_attributes: |-
-  const _task = await _client
+  await client
     .index("movies")
-    .updateDisplayedAttributes(["title", "overview", "poster"])
-    .waitTask();
+    .updateDisplayedAttributes(["title", "overview", "poster"]);
 getting_started_add_meteorites: |-
   import meteorites from "./meteorites.json" with { type: "json" };
 
-  const _task = await _client
-    .index("meteorites")
-    .addDocuments(meteorites)
-    .waitTask();
+  await client.index("meteorites").addDocuments(meteorites);
 getting_started_configure_settings: |-
-  const _task = await _client
-    .index("meteorites")
-    .updateSettings({
-      filterableAttributes: ["mass", "_geo"],
-      sortableAttributes: ["mass", "_geo"],
-    })
-    .waitTask();
+  await client.index("meteorites").updateSettings({
+    filterableAttributes: ["mass", "_geo"],
+    sortableAttributes: ["mass", "_geo"],
+  });
 getting_started_geo_radius: |-
-  const _response = await _client
+  await client
     .index("meteorites")
     .search("", { filter: "_geoRadius(46.9480, 7.4474, 210000)" });
 getting_started_geo_point: |-
-  const _response = await _client
+  await client
     .index("meteorites")
     .search("", { sort: ["_geoPoint(48.8583701, 2.2922926):asc"] });
 getting_started_sorting: |-
-  const _response = await _client.index("meteorites").search("", {
+  await client.index("meteorites").search("", {
     sort: ["mass:asc"],
     filter: "mass < 200",
   });
 getting_started_faceting: |-
-  const _task = await _client
-    .index("movies")
-    .updateFaceting({
-      maxValuesPerFacet: 2,
-      sortFacetValuesBy: {
-        "*": "count",
-      },
-    })
-    .waitTask();
+  await client.index("movies").updateFaceting({
+    maxValuesPerFacet: 2,
+    sortFacetValuesBy: {
+      "*": "count",
+    },
+  });
 getting_started_typo_tolerance: |-
-  const _task = await _client
-    .index("movies")
-    .updateTypoTolerance({
-      minWordSizeForTypos: {
-        oneTypo: 4,
-      },
-    })
-    .waitTask();
+  await client.index("movies").updateTypoTolerance({
+    minWordSizeForTypos: {
+      oneTypo: 4,
+    },
+  });
 getting_started_filtering: |-
-  const _response = await _client
-    .index("meteorites")
-    .search("", { filter: "mass < 200" });
+  await client.index("meteorites").search("", { filter: "mass < 200" });
 getting_started_pagination: |-
-  const _task = await _client
-    .index("movies")
-    .updatePagination({ maxTotalHits: 500 })
-    .waitTask();
+  await client.index("movies").updatePagination({ maxTotalHits: 500 });
 get_filterable_attributes_1: |-
-  const _filterableAttributes = await _client
-    .index("movies")
-    .getFilterableAttributes();
+  await client.index("movies").getFilterableAttributes();
 update_filterable_attributes_1: |-
-  const _task = await _client
-    .index("movies")
-    .updateFilterableAttributes([
-      "genres",
-      {
-        attributePatterns: ["genre"],
-        features: {
-          facetSearch: true,
-          filter: { equality: true, comparison: false },
-        },
+  await client.index("movies").updateFilterableAttributes([
+    "genres",
+    {
+      attributePatterns: ["genre"],
+      features: {
+        facetSearch: true,
+        filter: { equality: true, comparison: false },
       },
-    ])
-    .waitTask();
+    },
+  ]);
 reset_filterable_attributes_1: |-
-  const _task = await _client
-    .index("movies")
-    .resetFilterableAttributes()
-    .waitTask();
+  await client.index("movies").resetFilterableAttributes();
 filtering_update_settings_1: |-
-  const _task = await _client
-    .index("movies")
-    .updateFilterableAttributes(["director", "genres"])
-    .waitTask();
+  await client.index("movies").updateFilterableAttributes(["director", "genres"]);
 faceted_search_walkthrough_filter_1: |-
-  const _response = await _client.index("movies").search("thriller", {
+  await client.index("movies").search("thriller", {
     filter: [
       ["genres = Horror", "genres = Mystery"],
       'director = "Jordan Peele"',
     ],
   });
 faceted_search_update_settings_1: |-
-  const _task = await _client
+  await client
     .index("movie_ratings")
-    .updateFilterableAttributes(["genres", "rating", "language"])
-    .waitTask();
+    .updateFilterableAttributes(["genres", "rating", "language"]);
 faceted_search_1: |-
-  const _response = await _client
+  await client
     .index("books")
     .search("classic", { facets: ["genres", "rating", "language"] });
 post_dump_1: |-
-  const _task = await _client.createDump().waitTask();
+  await client.createDump();
 create_snapshot_1: |-
-  const _task = await _client.createSnapshot().waitTask();
+  await client.createSnapshot();
 phrase_search_1: |-
-  const _response = await _client
-    .index("movies")
-    .search('"african american" horror');
+  await client.index("movies").search('"african american" horror');
 sorting_guide_update_sortable_attributes_1: |-
-  const _task = await _client
-    .index("books")
-    .updateSortableAttributes(["author", "price"])
-    .waitTask();
+  await client.index("books").updateSortableAttributes(["author", "price"]);
 sorting_guide_update_ranking_rules_1: |-
-  const _task = await _client
+  await client
     .index("books")
     .updateRankingRules([
       "words",
@@ -672,140 +548,105 @@ sorting_guide_update_ranking_rules_1: |-
       "proximity",
       "attribute",
       "exactness",
-    ])
-    .waitTask();
+    ]);
 sorting_guide_sort_parameter_1: |-
-  const _response = await _client.index("books").search("science fiction", {
+  await client.index("books").search("science fiction", {
     sort: ["price:asc"],
   });
 sorting_guide_sort_parameter_2: |-
-  const _response = await _client.index("books").search("butler", {
+  await client.index("books").search("butler", {
     sort: ["author:desc"],
   });
 sorting_guide_sort_nested_1: |-
-  const _response = await _client.index("books").search("science fiction", {
+  await client.index("books").search("science fiction", {
     sort: ["rating.users:asc"],
   });
 get_sortable_attributes_1: |-
-  const _sortableAttributes = await _client
-    .index("books")
-    .getSortableAttributes();
+  await client.index("books").getSortableAttributes();
 update_sortable_attributes_1: |-
-  const _task = await _client
-    .index("books")
-    .updateSortableAttributes(["price", "author"])
-    .waitTask();
+  await client.index("books").updateSortableAttributes(["price", "author"]);
 reset_sortable_attributes_1: |-
-  const _task = await _client.index("books").resetSortableAttributes().waitTask();
+  await client.index("books").resetSortableAttributes();
 get_pagination_settings_1: |-
-  const _pagination = await _client.index("books").getPagination();
+  await client.index("books").getPagination();
 update_pagination_settings_1: |-
-  const _task = await _client
+  await client
     .index("books")
-    .updateSettings({ pagination: { maxTotalHits: 100 } })
-    .waitTask();
+    .updateSettings({ pagination: { maxTotalHits: 100 } });
 reset_pagination_settings_1: |-
-  const _task = await _client.index("books").resetPagination().waitTask();
+  await client.index("books").resetPagination();
 get_faceting_settings_1: |-
-  const _faceting = await _client.index("books").getFaceting();
+  await client.index("books").getFaceting();
 update_faceting_settings_1: |-
-  const _task = await _client
-    .index("books")
-    .updateFaceting({
-      maxValuesPerFacet: 2,
-      sortFacetValuesBy: {
-        "*": "alpha",
-        genres: "count",
-      },
-    })
-    .waitTask();
+  await client.index("books").updateFaceting({
+    maxValuesPerFacet: 2,
+    sortFacetValuesBy: {
+      "*": "alpha",
+      genres: "count",
+    },
+  });
 reset_faceting_settings_1: |-
-  const _task = await _client.index("books").resetFaceting().waitTask();
+  await client.index("books").resetFaceting();
 get_dictionary_1: |-
-  const _dictionary = await _client.index("books").getDictionary();
+  await client.index("books").getDictionary();
 update_dictionary_1: |-
-  const _task = await _client
-    .index("books")
-    .updateDictionary(["J. R. R.", "W. E. B."])
-    .waitTask();
+  await client.index("books").updateDictionary(["J. R. R.", "W. E. B."]);
 reset_dictionary_1: |-
-  const _task = await _client.index("books").resetDictionary().waitTask();
+  await client.index("books").resetDictionary();
 search_parameter_guide_sort_1: |-
-  const _response = await _client.index("books").search("science fiction", {
+  await client.index("books").search("science fiction", {
     sort: ["price:asc"],
   });
 get_separator_tokens_1: |-
-  const _separatorTokens = await _client.index("books").getSeparatorTokens();
+  await client.index("books").getSeparatorTokens();
 update_separator_tokens_1: |-
-  const _task = await _client
-    .index("books")
-    .updateSeparatorTokens(["|", "&hellip;"])
-    .waitTask();
+  await client.index("books").updateSeparatorTokens(["|", "&hellip;"]);
 reset_separator_tokens_1: |-
-  const _task = await _client.index("books").resetSeparatorTokens().waitTask();
+  await client.index("books").resetSeparatorTokens();
 get_non_separator_tokens_1: |-
-  const _nonSeparatorTokens = await _client
-    .index("books")
-    .getNonSeparatorTokens();
+  await client.index("books").getNonSeparatorTokens();
 update_non_separator_tokens_1: |-
-  const _task = await _client
-    .index("books")
-    .updateNonSeparatorTokens(["@", "#"])
-    .waitTask();
+  await client.index("books").updateNonSeparatorTokens(["@", "#"]);
 reset_non_separator_tokens_1: |-
-  const _task = await _client.index("books").resetNonSeparatorTokens().waitTask();
+  await client.index("books").resetNonSeparatorTokens();
 get_proximity_precision_settings_1: |-
-  const _proximityPrecision = await _client
-    .index("books")
-    .getProximityPrecision();
+  await client.index("books").getProximityPrecision();
 update_proximity_precision_settings_1: |-
-  const _task = await _client
-    .index("books")
-    .updateProximityPrecision("byAttribute")
-    .waitTask();
+  await client.index("books").updateProximityPrecision("byAttribute");
 reset_proximity_precision_settings_1: |-
-  const _task = await _client.index("books").resetProximityPrecision().waitTask();
+  await client.index("books").resetProximityPrecision();
 get_search_cutoff_1: |-
-  const _searchCutoffMs = await _client.index("movies").getSearchCutoffMs();
+  await client.index("movies").getSearchCutoffMs();
 update_search_cutoff_1: |-
-  const _task = await _client
-    .index("movies")
-    .updateSearchCutoffMs(150)
-    .waitTask();
+  await client.index("movies").updateSearchCutoffMs(150);
 reset_search_cutoff_1: |-
-  const _task = await _client.index("movies").resetSearchCutoffMs().waitTask();
+  await client.index("movies").resetSearchCutoffMs();
 search_parameter_guide_facet_stats_1: |-
-  const _response = await _client
+  await client
     .index("movie_ratings")
     .search("Batman", { facets: ["genres", "rating"] });
 geosearch_guide_filter_settings_1: |-
-  const _task = await _client
-    .index("restaurants")
-    .updateFilterableAttributes(["_geo"])
-    .waitTask();
+  await client.index("restaurants").updateFilterableAttributes(["_geo"]);
 geosearch_guide_filter_usage_1: |-
-  const _response = await _client.index("restaurants").search("", {
+  await client.index("restaurants").search("", {
     filter: ["_geoRadius(45.472735, 9.184019, 2000)"],
   });
 geosearch_guide_filter_usage_2: |-
-  const _response = await _client.index("restaurants").search("", {
+  await client.index("restaurants").search("", {
     filter: ["_geoRadius(45.472735, 9.184019, 2000) AND type = pizza"],
   });
 geosearch_guide_filter_usage_3: |-
-  const _response = await _client.index("restaurants").search("", {
+  await client.index("restaurants").search("", {
     filter: ["_geoBoundingBox([45.494181, 9.214024], [45.449484, 9.179175])"],
   });
 geosearch_guide_sort_settings_1: |-
-  const _task = await _client
-    .index("restaurants")
-    .updateSortableAttributes(["_geo"])
-    .waitTask();
+  await client.index("restaurants").updateSortableAttributes(["_geo"]);
 geosearch_guide_sort_usage_1: |-
-  const _response = await _client.index("restaurants").search("", {
+  await client.index("restaurants").search("", {
     sort: ["_geoPoint(48.8561446, 2.2978204):asc"],
   });
 geosearch_guide_sort_usage_2: |-
-  const _response = await _client.index("restaurants").search("", {
+  await client.index("restaurants").search("", {
     sort: ["_geoPoint(48.8561446, 2.2978204):asc", "rating:desc"],
   });
 security_guide_search_key_1: |-
@@ -814,14 +655,14 @@ security_guide_search_key_1: |-
     apiKey: "apiKey",
   });
 
-  const _response = await client.index("patient_medical_records").search();
+  await client.index("patient_medical_records").search();
 security_guide_update_key_1: |-
   const client = new MeiliSearch({
     host: "http://localhost:7700",
     apiKey: "masterKey",
   });
 
-  const _key = await client.updateKey("74c9c733-3368-4738-bbe5-1d18a5fecb37", {
+  await client.updateKey("74c9c733-3368-4738-bbe5-1d18a5fecb37", {
     description: "Default Search API Key",
   });
 security_guide_create_key_1: |-
@@ -837,7 +678,7 @@ security_guide_create_key_1: |-
     expiresAt: new Date("2023-01-01T00:00:00Z"),
   });
 security_guide_list_keys_1: |-
-  const _keys = await _client.getKeys();
+  await client.getKeys();
 security_guide_delete_key_1: |-
   const client = new MeiliSearch({
     host: "http://localhost:7700",
@@ -846,11 +687,11 @@ security_guide_delete_key_1: |-
 
   await client.deleteKey("ac5cd97d-5a4b-4226-a868-2d0eb6d197ab");
 authorization_header_1: |-
-  const _keys = await _client.getKeys();
+  await client.getKeys();
 tenant_token_guide_generate_sdk_1: |-
   import { generateTenantToken } from "meilisearch/token";
 
-  const _token = await generateTenantToken({
+  await generateTenantToken({
     apiKey: "B5KdX2MY2jV6EXfUs6scSfmC...",
     apiKeyUid: "85c3c2f9-bdd6-41f1-abd8-11fcf80e0f76",
     searchRules: { patient_medical_records: { filter: "user_id = 1" } },
@@ -862,9 +703,7 @@ tenant_token_guide_search_sdk_1: |-
     apiKey: "<your token here>",
   });
 
-  const _response = await frontEndClient
-    .index("patient_medical_records")
-    .search("blood test");
+  await frontEndClient.index("patient_medical_records").search("blood test");
 landing_getting_started_1: |-
   const client = new MeiliSearch({
     host: "http://localhost:7700",
@@ -884,74 +723,68 @@ landing_getting_started_1: |-
   const search = await client.index("movies").search("philodelphia");
   console.log(search);
 facet_search_1: |-
-  const _response = await _client.index("books").searchForFacetValues({
+  await client.index("books").searchForFacetValues({
     facetQuery: "fiction",
     facetName: "genres",
     filter: "rating > 3",
   });
 facet_search_2: |-
-  const _task = await _client
-    .index("books")
-    .updateFaceting({
-      sortFacetValuesBy: {
-        genres: "count",
-      },
-    })
-    .waitTask();
+  await client.index("books").updateFaceting({
+    sortFacetValuesBy: {
+      genres: "count",
+    },
+  });
 facet_search_3: |-
-  const _response = await _client.index("books").searchForFacetValues({
+  await client.index("books").searchForFacetValues({
     facetQuery: "c",
     facetName: "genres",
   });
 search_parameter_guide_show_ranking_score_details_1: |-
-  const _response = await _client
+  await client
     .index("movies")
     .search("dragon", { showRankingScoreDetails: true });
 negative_search_1: |-
-  const _response = await _client.index("movies").search("-escape");
+  await client.index("movies").search("-escape");
 negative_search_2: |-
-  const _response = await _client.index("movies").search('-"escape"');
+  await client.index("movies").search('-"escape"');
 search_parameter_reference_ranking_score_threshold_1: |-
-  const _response = await _client
+  await client
     .index("INDEX_NAME")
     .search("badman", { rankingScoreThreshold: 0.2 });
 search_parameter_reference_retrieve_vectors_1: |-
-  const _response = await _client.index("INDEX_NAME").search("kitchen utensils", {
+  await client.index("INDEX_NAME").search("kitchen utensils", {
     retrieveVectors: true,
     hybrid: {
       embedder: "EMBEDDER_NAME",
     },
   });
 search_parameter_guide_hybrid_1: |-
-  const _response = await _client.index("INDEX_NAME").search("kitchen utensils", {
+  await client.index("INDEX_NAME").search("kitchen utensils", {
     hybrid: {
       semanticRatio: 0.9,
       embedder: "EMBEDDER_NAME",
     },
   });
 get_similar_post_1: |-
-  const _response = await _client
+  await client
     .index("INDEX_NAME")
     .searchSimilarDocuments({ id: "TARGET_DOCUMENT_ID", embedder: "default" });
 search_parameter_guide_matching_strategy_3: |-
-  const _response = await _client.index("movies").search("white shirt", {
+  await client.index("movies").search("white shirt", {
     matchingStrategy: "frequency",
   });
 search_parameter_reference_distinct_1: |-
-  const _response = await _client
+  await client
     .index("INDEX_NAME")
     .search("QUERY TERMS", { distinct: "ATTRIBUTE_A" });
 distinct_attribute_guide_filterable_1: |-
-  const _task = await _client
+  await client
     .index("products")
-    .updateFilterableAttributes(["product_id", "sku", "url"])
-    .waitTask();
+    .updateFilterableAttributes(["product_id", "sku", "url"]);
 distinct_attribute_guide_distinct_parameter_1: |-
-  const _response = await _client
-    .index("products")
-    .search("white shirt", { distinct: "sku" });
+  await client.index("products").search("white shirt", { distinct: "sku" });
 multi_search_federated_1: |-
-  const _response = await _client.multiSearch({
+  await client.multiSearch({
     federation: {},
     queries: [
       {
@@ -965,57 +798,42 @@ multi_search_federated_1: |-
     ],
   });
 search_parameter_reference_locales_1: |-
-  const _response = await _client
+  await client
     .index("INDEX_NAME")
     .search("QUERY TEXT IN JAPANESE", { locales: ["jpn"] });
 get_localized_attribute_settings_1: |-
-  const _localizedAttributes = await _client
-    .index("INDEX_NAME")
-    .getLocalizedAttributes();
+  await client.index("INDEX_NAME").getLocalizedAttributes();
 update_localized_attribute_settings_1: |-
-  const _task = await _client
+  await client
     .index("INDEX_NAME")
     .updateLocalizedAttributes([
       { attributePatterns: ["*_ja"], locales: ["jpn"] },
-    ])
-    .waitTask();
+    ]);
 reset_localized_attribute_settings_1: |-
-  const _task = await _client
-    .index("INDEX_NAME")
-    .resetLocalizedAttributes()
-    .waitTask();
+  await client.index("INDEX_NAME").resetLocalizedAttributes();
 get_facet_search_settings_1: |-
-  const _facetSearch = await _client.index("INDEX_NAME").getFacetSearch();
+  await client.index("INDEX_NAME").getFacetSearch();
 update_facet_search_settings_1: |-
-  const _task = await _client
-    .index("INDEX_NAME")
-    .updateFacetSearch(false)
-    .waitTask();
+  await client.index("INDEX_NAME").updateFacetSearch(false);
 reset_facet_search_settings_1: |-
-  const _task = await _client.index("INDEX_NAME").resetFacetSearch().waitTask();
+  await client.index("INDEX_NAME").resetFacetSearch();
 get_prefix_search_settings_1: |-
-  const _prefixSearch = await _client.index("INDEX_NAME").getPrefixSearch();
+  await client.index("INDEX_NAME").getPrefixSearch();
 update_prefix_search_settings_1: |-
-  const _task = await _client
-    .index("INDEX_NAME")
-    .updatePrefixSearch("disabled")
-    .waitTask();
+  await client.index("INDEX_NAME").updatePrefixSearch("disabled");
 reset_prefix_search_settings_1: |-
-  const _task = await _client.index("INDEX_NAME").resetPrefixSearch().waitTask();
+  await client.index("INDEX_NAME").resetPrefixSearch();
 get_all_batches_1: |-
-  const _batches = await _client.batches.getBatches();
+  await client.batches.getBatches();
 get_batch_1: |-
-  const _batch = await _client.batches.getBatch(123);
+  await client.batches.getBatch(123);
 update_embedders_1: |-
-  const _task = await _client
-    .index("INDEX_NAME")
-    .updateEmbedders({
-      default: {
-        source: "openAi",
-        apiKey: "OPEN_AI_API_KEY",
-        model: "text-embedding-3-small",
-        documentTemplate:
-          "A document titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
-      },
-    })
-    .waitTask();
+  await client.index("INDEX_NAME").updateEmbedders({
+    default: {
+      source: "openAi",
+      apiKey: "OPEN_AI_API_KEY",
+      model: "text-embedding-3-small",
+      documentTemplate:
+        "A document titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}",
+    },
+  });
