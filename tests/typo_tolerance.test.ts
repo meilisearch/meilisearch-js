@@ -13,16 +13,6 @@ const index = {
   uid: "movies_test",
 };
 
-const defaultTypoTolerance = {
-  enabled: true,
-  minWordSizeForTypos: {
-    oneTypo: 5,
-    twoTypos: 9,
-  },
-  disableOnWords: [],
-  disableOnAttributes: [],
-};
-
 afterAll(() => {
   return clearAllIndexes(config);
 });
@@ -39,7 +29,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Get default typo tolerance settings`, async () => {
       const client = await getClient(permission);
       const response = await client.index(index.uid).getTypoTolerance();
-      expect(response).toEqual(defaultTypoTolerance);
+      expect(response).toMatchSnapshot();
     });
 
     test(`${permission} key: Update typo tolerance settings`, async () => {
@@ -52,6 +42,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         },
         disableOnWords: ["title"],
         disableOnAttributes: ["hello"],
+        disableOnNumbers: true,
       };
       await client
         .index(index.uid)
@@ -59,7 +50,6 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         .waitTask();
 
       const response = await client.index(index.uid).getTypoTolerance();
-
       expect(response).toEqual(newTypoTolerance);
     });
 
@@ -69,7 +59,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const response = await client.index(index.uid).getTypoTolerance();
 
-      expect(response).toEqual(defaultTypoTolerance);
+      expect(response).toMatchSnapshot();
     });
 
     test(`${permission} key: Reset typo tolerance settings`, async () => {
@@ -78,7 +68,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const response = await client.index(index.uid).getTypoTolerance();
 
-      expect(response).toEqual(defaultTypoTolerance);
+      expect(response).toMatchSnapshot();
     });
   },
 );

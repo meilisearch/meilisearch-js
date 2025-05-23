@@ -963,7 +963,9 @@ export class Index<T extends RecordAny = RecordAny> {
    *   settings.
    * @returns Promise containing object of the enqueued update
    */
-  updateTypoTolerance(typoTolerance: TypoTolerance): EnqueuedTaskPromise {
+  updateTypoTolerance(
+    typoTolerance: Partial<TypoTolerance> | null,
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/typo-tolerance`,
       body: typoTolerance,
