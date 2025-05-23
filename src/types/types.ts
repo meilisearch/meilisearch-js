@@ -521,14 +521,15 @@ export type RankingRules = string[] | null;
 export type StopWords = string[] | null;
 export type Synonyms = Record<string, string[]> | null;
 export type TypoTolerance = {
-  enabled?: boolean | null;
-  disableOnAttributes?: string[] | null;
-  disableOnWords?: string[] | null;
-  minWordSizeForTypos?: {
-    oneTypo?: number | null;
-    twoTypos?: number | null;
+  enabled: boolean;
+  disableOnAttributes: string[];
+  disableOnNumbers: boolean;
+  disableOnWords: string[];
+  minWordSizeForTypos: {
+    oneTypo: number;
+    twoTypos: number;
   };
-} | null;
+};
 export type SeparatorTokens = string[] | null;
 export type NonSeparatorTokens = string[] | null;
 export type Dictionary = string[] | null;
