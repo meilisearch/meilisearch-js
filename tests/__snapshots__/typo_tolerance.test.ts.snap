@@ -1,0 +1,79 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Tests on typo tolerance > Admin key: Get default typo tolerance settings 1`] = `
+{
+  "disableOnAttributes": [],
+  "disableOnNumbers": false,
+  "disableOnWords": [],
+  "enabled": true,
+  "minWordSizeForTypos": {
+    "oneTypo": 5,
+    "twoTypos": 9,
+  },
+}
+`;
+
+exports[`Tests on typo tolerance > Admin key: Reset typo tolerance settings 1`] = `
+{
+  "disableOnAttributes": [],
+  "disableOnNumbers": false,
+  "disableOnWords": [],
+  "enabled": true,
+  "minWordSizeForTypos": {
+    "oneTypo": 5,
+    "twoTypos": 9,
+  },
+}
+`;
+
+exports[`Tests on typo tolerance > Admin key: Update typo tolerance using null as value 1`] = `
+{
+  "disableOnAttributes": [],
+  "disableOnNumbers": false,
+  "disableOnWords": [],
+  "enabled": true,
+  "minWordSizeForTypos": {
+    "oneTypo": 5,
+    "twoTypos": 9,
+  },
+}
+`;
+
+exports[`Tests on typo tolerance > Master key: Get default typo tolerance settings 1`] = `
+{
+  "disableOnAttributes": [],
+  "disableOnNumbers": false,
+  "disableOnWords": [],
+  "enabled": true,
+  "minWordSizeForTypos": {
+    "oneTypo": 5,
+    "twoTypos": 9,
+  },
+}
+`;
+
+exports[`Tests on typo tolerance > Master key: Reset typo tolerance settings 1`] = `
+{
+  "disableOnAttributes": [],
+  "disableOnNumbers": false,
+  "disableOnWords": [],
+  "enabled": true,
+  "minWordSizeForTypos": {
+    "oneTypo": 5,
+    "twoTypos": 9,
+  },
+}
+`;
+
+exports[`Tests on typo tolerance > Master key: Update typo tolerance using null as value 1`] = `
+{
+  "disableOnAttributes": [],
+  "disableOnNumbers": false,
+  "disableOnWords": [],
+  "enabled": true,
+  "minWordSizeForTypos": {
+    "oneTypo": 5,
+    "twoTypos": 9,
+  },
+}
+`;
