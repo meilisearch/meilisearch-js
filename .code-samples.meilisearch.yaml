@@ -398,6 +398,10 @@ typo_tolerance_guide_4: |-
       twoTypos: 10
     }
   })
+typo_tolerance_guide_5: |-
+  client.index('movies').updateTypoTolerance({
+    disableOnNumbers: true
+  })
 add_movies_json_1: |-
   const movies = require('./movies.json')
   client.index('movies').addDocuments(movies).then((res) => console.log(res))
