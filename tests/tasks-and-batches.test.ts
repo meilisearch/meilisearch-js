@@ -121,10 +121,10 @@ beforeAll(async () => {
 });
 
 test(`${ms.tasks.waitForTask.name} and ${ms.tasks.getTask.name} methods`, async () => {
-  const summarizedTask = await index.addDocuments([{ id: 1 }, { id: 2 }]);
-  assert.isEnqueuedTask(summarizedTask);
+  const enqueuedTask = await index.addDocuments([{ id: 1 }, { id: 2 }]);
+  assert.isEnqueuedTask(enqueuedTask);
 
-  const taskThroughGet = await ms.tasks.getTask(summarizedTask.taskUid);
+  const taskThroughGet = await ms.tasks.getTask(enqueuedTask.taskUid);
   assert.isTask(taskThroughGet);
 
   // test timeout and interval
@@ -132,7 +132,7 @@ test(`${ms.tasks.waitForTask.name} and ${ms.tasks.getTask.name} methods`, async 
 
   const interval = 42;
   const timeout = 61_234;
-  const taskThroughWaitOne = await ms.tasks.waitForTask(summarizedTask, {
+  const taskThroughWaitOne = await ms.tasks.waitForTask(enqueuedTask, {
     interval,
     timeout,
   });
@@ -145,23 +145,23 @@ test(`${ms.tasks.waitForTask.name} and ${ms.tasks.getTask.name} methods`, async 
 
   assert.isTask(taskThroughWaitOne);
 
-  const taskThroughWaitTwo = await ms.tasks.waitForTask(summarizedTask.taskUid);
+  const taskThroughWaitTwo = await ms.tasks.waitForTask(enqueuedTask.taskUid);
   assert.isTask(taskThroughWaitTwo);
 });
 
 // this implicitly also tests `waitForTasksIter` (`waitForTasks` depends on it)
 test(`${ms.tasks.waitForTasks.name} method`, async () => {
-  const summarizedTasks = await Promise.all([
+  const enqueuedTasks = await Promise.all([
     index.addDocuments([{ id: 3 }, { id: 4 }]),
     index.addDocuments([{ id: 5 }, { id: 6 }]),
     index.addDocuments([{ id: 7 }, { id: 8 }]),
   ]);
 
-  for (const summarizedTask of summarizedTasks) {
-    assert.isEnqueuedTask(summarizedTask);
+  for (const enqueuedTask of enqueuedTasks) {
+    assert.isEnqueuedTask(enqueuedTask);
   }
 
-  const tasks = await ms.tasks.waitForTasks(summarizedTasks);
+  const tasks = await ms.tasks.waitForTasks(enqueuedTasks);
 
   for (const task of tasks) {
     assert.isTask(task);
@@ -218,9 +218,9 @@ describe.for(objectEntries(testValuesRecordExceptSome))(
     test.for(testValues)(
       `${ms.tasks.cancelTasks.name} method%s`,
       async ([, value]) => {
-        const summarizedTask = await ms.tasks.cancelTasks({ [key]: value });
-        assert.isEnqueuedTask(summarizedTask);
-        const task = await ms.tasks.waitForTask(summarizedTask);
+        const enqueuedTask = await ms.tasks.cancelTasks({ [key]: value });
+        assert.isEnqueuedTask(enqueuedTask);
+        const task = await ms.tasks.waitForTask(enqueuedTask);
         assert.isTask(task);
 
         assert.isDefined(task.details);
@@ -235,9 +235,9 @@ describe.for(objectEntries(testValuesRecordExceptSome))(
     test.for(testValues)(
       `${ms.tasks.deleteTasks.name} method%s`,
       async ([, value]) => {
-        const summarizedTask = await ms.tasks.deleteTasks({ [key]: value });
-        assert.isEnqueuedTask(summarizedTask);
-        const task = await ms.tasks.waitForTask(summarizedTask);
+        const enqueuedTask = await ms.tasks.deleteTasks({ [key]: value });
+        assert.isEnqueuedTask(enqueuedTask);
+        const task = await ms.tasks.waitForTask(enqueuedTask);
         assert.isTask(task);
 
         assert.isDefined(task.details);

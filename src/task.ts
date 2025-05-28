@@ -45,10 +45,10 @@ function getWaitTaskApplier(
   };
 }
 
-const getTaskUid = (taskUidOrSummarizedTask: TaskUidOrEnqueuedTask): number =>
-  typeof taskUidOrSummarizedTask === "number"
-    ? taskUidOrSummarizedTask
-    : taskUidOrSummarizedTask.taskUid;
+const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask): number =>
+  typeof taskUidOrEnqueuedTask === "number"
+    ? taskUidOrEnqueuedTask
+    : taskUidOrEnqueuedTask.taskUid;
 
 /**
  * Class for handling tasks.
@@ -95,10 +95,10 @@ export class TaskClient {
    * any method that returns an {@link EnqueuedTaskPromise}.
    */
   async waitForTask(
-    taskUidOrSummarizedTask: TaskUidOrEnqueuedTask,
+    taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask,
     options?: WaitOptions,
   ): Promise<Task> {
-    const taskUid = getTaskUid(taskUidOrSummarizedTask);
+    const taskUid = getTaskUid(taskUidOrEnqueuedTask);
     const timeout = options?.timeout ?? this.#defaultTimeout;
     const interval = options?.interval ?? this.#defaultInterval;
 
@@ -137,13 +137,13 @@ export class TaskClient {
    * one task, not for all of the tasks to complete.
    */
   async *waitForTasksIter(
-    taskUidsOrSummarizedTasks:
+    taskUidsOrEnqueuedTasks:
       | Iterable<TaskUidOrEnqueuedTask>
       | AsyncIterable<TaskUidOrEnqueuedTask>,
     options?: WaitOptions,
   ): AsyncGenerator<Task, void, undefined> {
-    for await (const taskUidOrSummarizedTask of taskUidsOrSummarizedTasks) {
-      yield await this.waitForTask(taskUidOrSummarizedTask, options);
+    for await (const taskUidOrEnqueuedTask of taskUidsOrEnqueuedTasks) {
+      yield await this.waitForTask(taskUidOrEnqueuedTask, options);
     }
   }
 

@@ -33,10 +33,10 @@ export const possibleTaskTypes = objectKeys<TaskType>({
 });
 
 const customAssertions = {
-  isEnqueuedTask(summarizedTask: EnqueuedTask) {
-    extAssert.lengthOf(Object.keys(summarizedTask), 5);
+  isEnqueuedTask(enqueuedTask: EnqueuedTask) {
+    extAssert.lengthOf(Object.keys(enqueuedTask), 5);
 
-    const { taskUid, indexUid, status, type, enqueuedAt } = summarizedTask;
+    const { taskUid, indexUid, status, type, enqueuedAt } = enqueuedTask;
 
     extAssert.typeOf(taskUid, "number");
     extAssert(
