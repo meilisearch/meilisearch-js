@@ -531,37 +531,37 @@ client.index('myIndex').deleteAllDocuments(): Promise<Types.EnqueuedTask>
 #### [Get all tasks](https://www.meilisearch.com/docs/reference/api/tasks#get-all-tasks)
 
 ```ts
-client.getTasks(parameters: TasksQuery): Promise<TasksResults>
+client.tasks.getTasks(parameters: TasksQuery): Promise<TasksResults>
 ```
 
 #### [Get one task](https://www.meilisearch.com/docs/reference/api/tasks)
 
 ```ts
-client.getTask(uid: number): Promise<Task>
+client.tasks.getTask(uid: number): Promise<Task>
 ```
 
 #### [Delete tasks](https://www.meilisearch.com/docs/reference/api/tasks#delete-tasks)
 
 ```ts
-client.deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask>
+client.tasks.deleteTasks(parameters: DeleteTasksQuery = {}): Promise<EnqueuedTask>
 ```
 
 #### [Cancel tasks](https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks)
 
 ```ts
-client.cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask>
+client.tasks.cancelTasks(parameters: CancelTasksQuery = {}): Promise<EnqueuedTask>
 ```
 
 #### [Get all tasks of an index](https://www.meilisearch.com/docs/reference/api/tasks#get-all-tasks-by-index)
 
 ```ts
-client.index('myIndex').getTasks(parameters: TasksQuery): Promise<TasksResults>
+client.index('myIndex').tasks.getTasks(parameters: TasksQuery): Promise<TasksResults>
 ```
 
 #### [Get one task of an index](https://www.meilisearch.com/docs/reference/api/tasks)
 
 ```ts
-client.index('myIndex').getTask(uid: number): Promise<Task>
+client.index('myIndex').tasks.getTask(uid: number): Promise<Task>
 ```
 
 #### Wait for one task
@@ -581,13 +581,13 @@ client.tasks.waitForTasks(uids: number[], { timeout?: number, interval?: number 
 #### [Get one batch](https://www.meilisearch.com/docs/reference/api/batches#get-one-batch)
 
 ```ts
-client.getBatch(uid: number): Promise<Batch>
+client.batches.getBatch(uid: number): Promise<Batch>
 ```
 
 #### [Get all batches](https://www.meilisearch.com/docs/reference/api/batchess#get-batches)
 
 ```ts
-client.getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults>
+client.batches.getBatches(parameters: BatchesQuery = {}): Promise<BatchesResults>
 ```
 
 ### Indexes <!-- omit in toc -->

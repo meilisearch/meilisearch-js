@@ -99,35 +99,35 @@ multi_search_1: |-
     },
   ]})
 get_all_tasks_1: |-
-  client.getTasks()
+  client.tasks.getTasks()
 get_task_1: |-
-  client.getTask(1)
+  client.tasks.getTask(1)
 async_guide_filter_by_date_1: |-
-  client.getTasks({ afterEnqueuedAt: '2020-10-11T11:49:53.000Z' })
+  client.tasks.getTasks({ afterEnqueuedAt: '2020-10-11T11:49:53.000Z' })
 async_guide_multiple_filters_1: |-
-  client.getTasks({
+  client.tasks.getTasks({
     indexUids: ['movies'],
     types: ['documentAdditionOrUpdate','documentDeletion'],
     statuses: ['processing']
   })
 async_guide_filter_by_ids_1: |-
-  client.getTasks({ uids: [5, 10, 13] })
+  client.tasks.getTasks({ uids: [5, 10, 13] })
 async_guide_filter_by_statuses_1: |-
-  client.getTasks({ statuses: ['failed', 'canceled'] })
+  client.tasks.getTasks({ statuses: ['failed', 'canceled'] })
 async_guide_filter_by_types_1: |-
-  client.getTasks({ types: ['dumpCreation', 'indexSwap'] })
+  client.tasks.getTasks({ types: ['dumpCreation', 'indexSwap'] })
 async_guide_filter_by_index_uids_1: |-
-  client.getTasks({ indexUids: ['movies'] })
+  client.tasks.getTasks({ indexUids: ['movies'] })
 get_all_tasks_paginating_1: |-
-  client.getTasks({ limit: 2, from: 10 })
+  client.tasks.getTasks({ limit: 2, from: 10 })
 get_all_tasks_paginating_2: |-
-  client.getTasks({ limit: 2, from: 8 })
+  client.tasks.getTasks({ limit: 2, from: 8 })
 async_guide_canceled_by_1: |-
-  client.getTasks({ canceledBy: [9, 15] })
+  client.tasks.getTasks({ canceledBy: [9, 15] })
 delete_tasks_1: |-
-  client.deleteTasks({ uids: [1, 2] })
+  client.tasks.deleteTasks({ uids: [1, 2] })
 cancel_tasks_1: |-
-  client.cancelTasks({ uids: [1, 2] })
+  client.tasks.cancelTasks({ uids: [1, 2] })
 get_one_key_1: |-
   client.getKey('6062abda-a5aa-4414-ac91-ecd7944c0f8d')
 get_all_keys_1: |-
@@ -458,7 +458,7 @@ getting_started_update_searchable_attributes: |-
 getting_started_update_stop_words: |-
   client.index('movies').updateStopWords(['the'])
 getting_started_check_task_status: |-
-  client.getTask(0)
+  client.tasks.getTask(0)
 getting_started_synonyms: |-
   client.index('movies').updateSynonyms({
     winnie: ['piglet'],
@@ -806,9 +806,9 @@ update_prefix_search_settings_1: |-
 reset_prefix_search_settings_1: |-
   client.index('INDEX_NAME').resetPrefixSearch();
 get_all_batches_1: |-
-  client.getBatches();
+  client.batches.getBatches();
 get_batch_1: |-
-  client.getBatch(BATCH_UID);
+  client.batches.getBatch(BATCH_UID);
 # Vector search
 update_embedders_1: |-
   client.index('INDEX_NAME').updateEmbedders({
