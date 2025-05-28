@@ -150,7 +150,7 @@ export type Task = SafeOmit<EnqueuedTask, "taskUid"> & {
 };
 
 /**
- * A {@link Promise} resolving to a {@link EnqueuedTask} with an extra function
+ * A {@link Promise} resolving to an {@link EnqueuedTask} with an extra function
  * that returns a Promise that resolves to a {@link Task}.
  */
 export type EnqueuedTaskPromise = Promise<EnqueuedTask> & {
