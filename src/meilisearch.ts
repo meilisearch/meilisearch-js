@@ -24,7 +24,7 @@ import type {
   MultiSearchParams,
   FederatedMultiSearchParams,
   MultiSearchResponseOrSearchResponse,
-  SummarizedTaskPromise,
+  EnqueuedTaskPromise,
   ExtraRequestInit,
   Network,
   RecordAny,
@@ -33,9 +33,9 @@ import type {
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
-  getHttpRequestsWithSummarizedTaskPromise,
+  getHttpRequestsWithEnqueuedTaskPromise,
   TaskClient,
-  type HttpRequestsWithSummarizedTaskPromise,
+  type HttpRequestsWithEnqueuedTaskPromise,
 } from "./task.js";
 import { BatchClient } from "./batch.js";
 import type { MeiliSearchApiError } from "./errors/index.js";
@@ -54,7 +54,7 @@ export class MeiliSearch {
     return this.#batchClient;
   }
 
-  readonly #httpRequestsWithTask: HttpRequestsWithSummarizedTaskPromise;
+  readonly #httpRequestsWithTask: HttpRequestsWithEnqueuedTaskPromise;
 
   /**
    * Creates new MeiliSearch instance
@@ -71,7 +71,7 @@ export class MeiliSearch {
     );
     this.#batchClient = new BatchClient(this.httpRequest);
 
-    this.#httpRequestsWithTask = getHttpRequestsWithSummarizedTaskPromise(
+    this.#httpRequestsWithTask = getHttpRequestsWithEnqueuedTaskPromise(
       this.httpRequest,
       this.tasks,
     );
@@ -149,7 +149,7 @@ export class MeiliSearch {
    * @param options - Index options
    * @returns Promise returning Index instance
    */
-  createIndex(uid: string, options?: IndexOptions): SummarizedTaskPromise {
+  createIndex(uid: string, options?: IndexOptions): EnqueuedTaskPromise {
     return Index.create(uid, options, this.config);
   }
 
@@ -160,7 +160,7 @@ export class MeiliSearch {
    * @param options - Index options to update
    * @returns Promise returning Index instance after updating
    */
-  updateIndex(uid: string, options?: IndexOptions): SummarizedTaskPromise {
+  updateIndex(uid: string, options?: IndexOptions): EnqueuedTaskPromise {
     return new Index(this.config, uid).update(options);
   }
 
@@ -170,7 +170,7 @@ export class MeiliSearch {
    * @param uid - The index UID
    * @returns Promise which resolves when index is deleted successfully
    */
-  deleteIndex(uid: string): SummarizedTaskPromise {
+  deleteIndex(uid: string): EnqueuedTaskPromise {
     return new Index(this.config, uid).delete();
   }
 
@@ -203,7 +203,7 @@ export class MeiliSearch {
    * @param params - List of indexes tuples to swap.
    * @returns Promise returning object of the enqueued task
    */
-  swapIndexes(params: IndexSwap[]): SummarizedTaskPromise {
+  swapIndexes(params: IndexSwap[]): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
       path: "/swap-indexes",
       body: params,
@@ -435,7 +435,7 @@ export class MeiliSearch {
    *
    * @returns Promise returning object of the enqueued task
    */
-  createDump(): SummarizedTaskPromise {
+  createDump(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
       path: "dumps",
     });
@@ -450,7 +450,7 @@ export class MeiliSearch {
    *
    * @returns Promise returning object of the enqueued task
    */
-  createSnapshot(): SummarizedTaskPromise {
+  createSnapshot(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
       path: "snapshots",
     });

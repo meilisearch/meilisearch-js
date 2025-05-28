@@ -2,10 +2,10 @@ import { assert as vitestAssert } from "vitest";
 import { MeiliSearch, Index } from "../../src/index.js";
 import type {
   Config,
-  Kind,
+  TaskType,
   MeiliSearchErrorResponse,
-  Status,
-  TaskView,
+  TaskStatus,
+  Task,
 } from "../../src/index.js";
 
 // testing
@@ -148,7 +148,7 @@ const source = {
       vitestAssert.typeOf(val, "string");
     }
   },
-  isTask(task: TaskView) {
+  isTask(task: Task) {
     const { length } = Object.keys(task);
     vitestAssert(length >= 11 && length <= 12);
     const {
@@ -170,7 +170,7 @@ const source = {
 
     vitestAssert.oneOf(
       status,
-      objectKeys<Status>({
+      objectKeys<TaskStatus>({
         enqueued: null,
         processing: null,
         succeeded: null,
@@ -181,7 +181,7 @@ const source = {
 
     vitestAssert.oneOf(
       type,
-      objectKeys<Kind>({
+      objectKeys<TaskType>({
         documentAdditionOrUpdate: null,
         documentEdition: null,
         documentDeletion: null,
@@ -217,7 +217,7 @@ const source = {
     vitestAssert(startedAt === null || typeof startedAt === "string");
     vitestAssert(finishedAt === null || typeof finishedAt === "string");
   },
-  isTaskSuccessful(task: TaskView) {
+  isTaskSuccessful(task: Task) {
     this.isTask(task);
     vitestAssert.isNull(task.error);
     vitestAssert.strictEqual(task.status, "succeeded");

@@ -1,14 +1,14 @@
 import { assert as extAssert, objectKeys } from "./meilisearch-test-utils.js";
 import type {
-  AllTasks,
-  BatchView,
-  Kind,
-  Status,
-  SummarizedTaskView,
+  TasksResults,
+  Batch,
+  TaskType,
+  TaskStatus,
+  EnqueuedTask,
 } from "../../src/types/index.js";
 import type { SafeOmit } from "../../src/types/shared.js";
 
-export const possibleStatuses = objectKeys<Status>({
+export const possibleTaskStatuses = objectKeys<TaskStatus>({
   enqueued: null,
   processing: null,
   succeeded: null,
@@ -16,7 +16,7 @@ export const possibleStatuses = objectKeys<Status>({
   canceled: null,
 });
 
-export const possibleKinds = objectKeys<Kind>({
+export const possibleTaskTypes = objectKeys<TaskType>({
   documentAdditionOrUpdate: null,
   documentEdition: null,
   documentDeletion: null,
@@ -33,7 +33,7 @@ export const possibleKinds = objectKeys<Kind>({
 });
 
 const customAssertions = {
-  isSummarizedTask(summarizedTask: SummarizedTaskView) {
+  isEnqueuedTask(summarizedTask: EnqueuedTask) {
     extAssert.lengthOf(Object.keys(summarizedTask), 5);
 
     const { taskUid, indexUid, status, type, enqueuedAt } = summarizedTask;
@@ -43,12 +43,12 @@ const customAssertions = {
       indexUid === null || typeof indexUid === "string",
       `expected ${indexUid} to be null or string`,
     );
-    extAssert.oneOf(status, possibleStatuses);
-    extAssert.oneOf(type, possibleKinds);
+    extAssert.oneOf(status, possibleTaskStatuses);
+    extAssert.oneOf(type, possibleTaskTypes);
     extAssert.typeOf(enqueuedAt, "string");
   },
 
-  isBatch(batch: BatchView) {
+  isBatch(batch: Batch) {
     extAssert.lengthOf(Object.keys(batch), 7);
 
     const { uid, progress, details, stats, duration, startedAt, finishedAt } =
@@ -97,12 +97,12 @@ const customAssertions = {
     extAssert.typeOf(totalNbTasks, "number");
 
     for (const [key, val] of Object.entries(status)) {
-      extAssert.oneOf(key, possibleStatuses);
+      extAssert.oneOf(key, possibleTaskStatuses);
       extAssert.typeOf(val, "number");
     }
 
     for (const [key, val] of Object.entries(types)) {
-      extAssert.oneOf(key, possibleKinds);
+      extAssert.oneOf(key, possibleTaskTypes);
       extAssert.typeOf(val, "number");
     }
 
@@ -144,7 +144,7 @@ const customAssertions = {
     );
   },
 
-  isResult(value: SafeOmit<AllTasks, "results">) {
+  isResult(value: SafeOmit<TasksResults, "results">) {
     extAssert.lengthOf(Object.keys(value), 4);
     extAssert.typeOf(value.total, "number");
     extAssert.typeOf(value.limit, "number");

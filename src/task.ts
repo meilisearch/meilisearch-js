@@ -1,13 +1,13 @@
 import { MeiliSearchTaskTimeOutError } from "./errors/index.js";
 import type {
   WaitOptions,
-  TasksFilterQuery,
-  AllTasks,
-  TaskView,
-  TaskDeletionOrCancelationQuery,
-  SummarizedTaskView,
-  SummarizedTaskPromise,
-  TaskUidOrSummarizedTaskView,
+  TasksOrBatchesQuery,
+  TasksResults,
+  Task,
+  DeleteOrCancelTasksQuery,
+  EnqueuedTask,
+  EnqueuedTaskPromise,
+  TaskUidOrEnqueuedTask,
   ExtraRequestInit,
 } from "./types/index.js";
 import type { HttpRequests } from "./http-requests.js";
@@ -21,35 +21,31 @@ const TIMEOUT_ID = {};
 
 /**
  * @returns A function which defines an extra function property on a
- *   {@link Promise}, which resolves to {@link SummarizedTaskView}, which awaits
- *   it and resolves to a {@link TaskView}.
+ *   {@link Promise}, which resolves to {@link EnqueuedTask}, which awaits it and
+ *   resolves to a {@link Task}.
  */
 function getWaitTaskApplier(
   taskClient: TaskClient,
-): (
-  summarizedTaskPromise: Promise<SummarizedTaskView>,
-) => SummarizedTaskPromise {
+): (enqueuedTaskPromise: Promise<EnqueuedTask>) => EnqueuedTaskPromise {
   return function (
-    summarizedTaskPromise: Promise<SummarizedTaskView>,
-  ): SummarizedTaskPromise {
+    enqueuedTaskPromise: Promise<EnqueuedTask>,
+  ): EnqueuedTaskPromise {
     return Object.defineProperty(
-      summarizedTaskPromise,
-      "waitTask" satisfies keyof Pick<SummarizedTaskPromise, "waitTask">,
+      enqueuedTaskPromise,
+      "waitTask" satisfies keyof Pick<EnqueuedTaskPromise, "waitTask">,
       {
-        async value(waitOptions?: WaitOptions): Promise<TaskView> {
+        async value(waitOptions?: WaitOptions): Promise<Task> {
           return await taskClient.waitForTask(
-            await summarizedTaskPromise,
+            await enqueuedTaskPromise,
             waitOptions,
           );
         },
       },
-    ) as SummarizedTaskPromise;
+    ) as EnqueuedTaskPromise;
   };
 }
 
-const getTaskUid = (
-  taskUidOrSummarizedTask: TaskUidOrSummarizedTaskView,
-): number =>
+const getTaskUid = (taskUidOrSummarizedTask: TaskUidOrEnqueuedTask): number =>
   typeof taskUidOrSummarizedTask === "number"
     ? taskUidOrSummarizedTask
     : taskUidOrSummarizedTask.taskUid;
@@ -77,7 +73,7 @@ export class TaskClient {
     uid: number,
     // TODO: Need to do this for all other methods: https://github.com/meilisearch/meilisearch-js/issues/1476
     extraRequestInit?: ExtraRequestInit,
-  ): Promise<TaskView> {
+  ): Promise<Task> {
     return await this.#httpRequest.get({
       path: `tasks/${uid}`,
       extraRequestInit,
@@ -85,7 +81,7 @@ export class TaskClient {
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-tasks} */
-  async getTasks(params?: TasksFilterQuery): Promise<AllTasks> {
+  async getTasks(params?: TasksOrBatchesQuery): Promise<TasksResults> {
     return await this.#httpRequest.get({ path: "tasks", params });
   }
 
@@ -94,14 +90,14 @@ export class TaskClient {
    * with {@link TaskClient.getTask}.
    *
    * @remarks
-   * If a {@link SummarizedTaskView} needs to be awaited instantly, it is
-   * recommended to instead use {@link SummarizedTaskPromise.waitTask}, which is
-   * available on any method that returns a {@link SummarizedTaskPromise}.
+   * If an {@link EnqueuedTask} needs to be awaited instantly, it is recommended
+   * to instead use {@link EnqueuedTaskPromise.waitTask}, which is available on
+   * any method that returns an {@link EnqueuedTaskPromise}.
    */
   async waitForTask(
-    taskUidOrSummarizedTask: TaskUidOrSummarizedTaskView,
+    taskUidOrSummarizedTask: TaskUidOrEnqueuedTask,
     options?: WaitOptions,
-  ): Promise<TaskView> {
+  ): Promise<Task> {
     const taskUid = getTaskUid(taskUidOrSummarizedTask);
     const timeout = options?.timeout ?? this.#defaultTimeout;
     const interval = options?.interval ?? this.#defaultInterval;
@@ -142,10 +138,10 @@ export class TaskClient {
    */
   async *waitForTasksIter(
     taskUidsOrSummarizedTasks:
-      | Iterable<TaskUidOrSummarizedTaskView>
-      | AsyncIterable<TaskUidOrSummarizedTaskView>,
+      | Iterable<TaskUidOrEnqueuedTask>
+      | AsyncIterable<TaskUidOrEnqueuedTask>,
     options?: WaitOptions,
-  ): AsyncGenerator<TaskView, void, undefined> {
+  ): AsyncGenerator<Task, void, undefined> {
     for await (const taskUidOrSummarizedTask of taskUidsOrSummarizedTasks) {
       yield await this.waitForTask(taskUidOrSummarizedTask, options);
     }
@@ -154,8 +150,8 @@ export class TaskClient {
   /** Wait for multiple enqueued tasks to be processed. */
   async waitForTasks(
     ...params: Parameters<typeof this.waitForTasksIter>
-  ): Promise<TaskView[]> {
-    const tasks: TaskView[] = [];
+  ): Promise<Task[]> {
+    const tasks: Task[] = [];
 
     for await (const task of this.waitForTasksIter(...params)) {
       tasks.push(task);
@@ -165,14 +161,14 @@ export class TaskClient {
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks} */
-  cancelTasks(params: TaskDeletionOrCancelationQuery): SummarizedTaskPromise {
+  cancelTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
     return this.#applyWaitTask(
       this.#httpRequest.post({ path: "tasks/cancel", params }),
     );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#delete-tasks} */
-  deleteTasks(params: TaskDeletionOrCancelationQuery): SummarizedTaskPromise {
+  deleteTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
     return this.#applyWaitTask(
       this.#httpRequest.delete({ path: "tasks", params }),
     );
@@ -183,16 +179,16 @@ type PickedHttpRequestMethods = Pick<
   HttpRequests,
   "post" | "put" | "patch" | "delete"
 >;
-export type HttpRequestsWithSummarizedTaskPromise = {
+export type HttpRequestsWithEnqueuedTaskPromise = {
   [TKey in keyof PickedHttpRequestMethods]: (
     ...params: Parameters<PickedHttpRequestMethods[TKey]>
-  ) => SummarizedTaskPromise;
+  ) => EnqueuedTaskPromise;
 };
 
-export function getHttpRequestsWithSummarizedTaskPromise(
+export function getHttpRequestsWithEnqueuedTaskPromise(
   httpRequest: HttpRequests,
   taskClient: TaskClient,
-): HttpRequestsWithSummarizedTaskPromise {
+): HttpRequestsWithEnqueuedTaskPromise {
   const applyWaitTask = getWaitTaskApplier(taskClient);
 
   return {

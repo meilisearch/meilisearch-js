@@ -7,7 +7,7 @@ import type {
 } from "./shared.js";
 import type { MeiliSearchErrorResponse } from "./types.js";
 
-/** Options for awaiting {@link SummarizedTaskView}. */
+/** Options for awaiting an {@link EnqueuedTask}. */
 export type WaitOptions = {
   /**
    * Milliseconds until timeout error will be thrown for each awaited task. A
@@ -30,7 +30,7 @@ export type WaitOptions = {
  *
  * @see `meilisearch_types::tasks::Status`
  */
-export type Status = PascalToCamelCase<
+export type TaskStatus = PascalToCamelCase<
   "Enqueued" | "Processing" | "Succeeded" | "Failed" | "Canceled"
 >;
 
@@ -39,7 +39,7 @@ export type Status = PascalToCamelCase<
  *
  * @see `meilisearch_types::tasks::Kind`
  */
-export type Kind = PascalToCamelCase<
+export type TaskType = PascalToCamelCase<
   | "DocumentAdditionOrUpdate"
   | "DocumentEdition"
   | "DocumentDeletion"
@@ -60,15 +60,15 @@ export type Kind = PascalToCamelCase<
  *
  * @see `meilisearch::routes::tasks::TasksFilterQuery`
  */
-export type TasksFilterQuery = Partial<{
+export type TasksOrBatchesQuery = Partial<{
   limit: number;
   from: number | null;
   reverse: boolean | null;
   batchUids: OptionStarOrList<number[]>;
   uids: OptionStarOrList<number[]>;
   canceledBy: OptionStarOrList<number[]>;
-  types: OptionStarOrList<Kind[]>;
-  statuses: OptionStarOrList<Status[]>;
+  types: OptionStarOrList<TaskType[]>;
+  statuses: OptionStarOrList<TaskStatus[]>;
   indexUids: OptionStarOrList<string[]>;
   afterEnqueuedAt: OptionStarOr<string>;
   beforeEnqueuedAt: OptionStarOr<string>;
@@ -84,8 +84,8 @@ export type TasksFilterQuery = Partial<{
  *
  * @see `meilisearch::routes::tasks::TaskDeletionOrCancelationQuery`
  */
-export type TaskDeletionOrCancelationQuery = SafeOmit<
-  TasksFilterQuery,
+export type DeleteOrCancelTasksQuery = SafeOmit<
+  TasksOrBatchesQuery,
   "limit" | "from" | "reverse"
 >;
 
@@ -94,18 +94,16 @@ export type TaskDeletionOrCancelationQuery = SafeOmit<
  *
  * @see `meilisearch::routes::SummarizedTaskView`
  */
-export type SummarizedTaskView = {
+export type EnqueuedTask = {
   taskUid: number;
   indexUid: string | null;
-  status: Status;
-  type: Kind;
+  status: TaskStatus;
+  type: TaskType;
   enqueuedAt: string;
 };
 
-/** Either a number or a {@link SummarizedTaskView}. */
-export type TaskUidOrSummarizedTaskView =
-  | SummarizedTaskView["taskUid"]
-  | SummarizedTaskView;
+/** Either a number or an {@link EnqueuedTask}. */
+export type TaskUidOrEnqueuedTask = EnqueuedTask["taskUid"] | EnqueuedTask;
 
 /** {@link https://www.meilisearch.com/docs/reference/api/tasks#indexswap} */
 export type IndexSwap = { indexes: [string, string] };
@@ -115,7 +113,7 @@ export type IndexSwap = { indexes: [string, string] };
  *
  * @see `meilisearch_types::task_view::DetailsView`
  */
-export type DetailsView = Settings &
+export type TaskDetails = Settings &
   Partial<{
     receivedDocuments: number;
     indexedDocuments: number;
@@ -140,11 +138,11 @@ export type DetailsView = Settings &
  *
  * @see `meilisearch_types::task_view::TaskView`
  */
-export type TaskView = SafeOmit<SummarizedTaskView, "taskUid"> & {
+export type Task = SafeOmit<EnqueuedTask, "taskUid"> & {
   uid: number;
   batchUid: number | null;
   canceledBy: number | null;
-  details?: DetailsView;
+  details?: TaskDetails;
   error: MeiliSearchErrorResponse | null;
   duration: string | null;
   startedAt: string | null;
@@ -152,15 +150,15 @@ export type TaskView = SafeOmit<SummarizedTaskView, "taskUid"> & {
 };
 
 /**
- * A {@link Promise} resolving to a {@link SummarizedTaskView} with an extra
- * function that returns a Promise that resolves to a {@link TaskView}.
+ * A {@link Promise} resolving to a {@link EnqueuedTask} with an extra function
+ * that returns a Promise that resolves to a {@link Task}.
  */
-export type SummarizedTaskPromise = Promise<SummarizedTaskView> & {
+export type EnqueuedTaskPromise = Promise<EnqueuedTask> & {
   /**
-   * Function that, through polling, awaits the {@link SummarizedTaskView}
-   * resolved by {@link SummarizedTaskPromise}.
+   * Function that, through polling, awaits the {@link EnqueuedTask} resolved by
+   * {@link EnqueuedTaskPromise}.
    */
-  waitTask: (waitOptions?: WaitOptions) => Promise<TaskView>;
+  waitTask: (waitOptions?: WaitOptions) => Promise<Task>;
 };
 
 type Results<T> = {
@@ -176,14 +174,14 @@ type Results<T> = {
  *
  * @see `meilisearch::routes::tasks::AllTasks`
  */
-export type AllTasks = Results<TaskView>;
+export type TasksResults = Results<Task>;
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/batches#steps}
  *
  * @see `milli::progress::ProgressStepView`
  */
-type ProgressStepView = {
+export type BatchProgressStep = {
   currentStep: string;
   finished: number;
   total: number;
@@ -194,16 +192,16 @@ type ProgressStepView = {
  *
  * @see `milli::progress::ProgressView`
  */
-type ProgressView = {
-  steps: ProgressStepView[];
+export type BatchProgress = {
+  steps: BatchProgressStep[];
   percentage: number;
 };
 
 /** {@link https://www.meilisearch.com/docs/reference/api/batches#stats} */
 type BatchStats = {
   totalNbTasks: number;
-  status: Record<Status, number>;
-  types: Record<Kind, number>;
+  status: Record<TaskStatus, number>;
+  types: Record<TaskType, number>;
   indexUids: Record<string, number>;
   /** {@link https://www.meilisearch.com/docs/reference/api/batches#progresstrace} */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -221,10 +219,10 @@ type BatchStats = {
  *
  * @see `meilisearch_types::batch_view::BatchView`
  */
-export type BatchView = {
+export type Batch = {
   uid: number;
-  progress: ProgressView | null;
-  details: DetailsView;
+  progress: BatchProgress | null;
+  details: TaskDetails;
   stats: BatchStats;
   duration: string | null;
   startedAt: string;
@@ -237,4 +235,4 @@ export type BatchView = {
  *
  * @see `meilisearch::routes::batches::AllBatches`
  */
-export type AllBatches = Results<BatchView>;
+export type BatchesResults = Results<Batch>;

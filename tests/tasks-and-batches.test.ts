@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { beforeAll, describe, test, vi } from "vitest";
-import type { TasksFilterQuery } from "../src/types/index.js";
+import type { TasksOrBatchesQuery } from "../src/types/index.js";
 import { getClient, objectEntries } from "./utils/meilisearch-test-utils.js";
 import {
   assert,
-  possibleKinds,
-  possibleStatuses,
+  possibleTaskTypes,
+  possibleTaskStatuses,
 } from "./utils/tasks-and-batches.js";
 
 const INDEX_UID = randomUUID();
@@ -15,15 +15,18 @@ const index = ms.index(INDEX_UID);
 const NOW_ISO_STRING = new Date().toISOString();
 
 type TestValues = {
-  [TKey in keyof TasksFilterQuery]-?: [
+  [TKey in keyof TasksOrBatchesQuery]-?: [
     name: string | undefined,
-    value: TasksFilterQuery[TKey],
+    value: TasksOrBatchesQuery[TKey],
   ][];
 };
 
 type SimplifiedTestValues = Record<
-  keyof TasksFilterQuery,
-  [name: string | undefined, value: TasksFilterQuery[keyof TasksFilterQuery]][]
+  keyof TasksOrBatchesQuery,
+  [
+    name: string | undefined,
+    value: TasksOrBatchesQuery[keyof TasksOrBatchesQuery],
+  ][]
 >;
 
 const testValuesRecord = {
@@ -49,12 +52,12 @@ const testValuesRecord = {
   ],
 
   types: [
-    ["all possible values", possibleKinds],
+    ["all possible values", possibleTaskTypes],
     ["*", ["*"]],
   ],
 
   statuses: [
-    ["all possible values", possibleStatuses],
+    ["all possible values", possibleTaskStatuses],
     ["*", ["*"]],
   ],
 
@@ -119,7 +122,7 @@ beforeAll(async () => {
 
 test(`${ms.tasks.waitForTask.name} and ${ms.tasks.getTask.name} methods`, async () => {
   const summarizedTask = await index.addDocuments([{ id: 1 }, { id: 2 }]);
-  assert.isSummarizedTask(summarizedTask);
+  assert.isEnqueuedTask(summarizedTask);
 
   const taskThroughGet = await ms.tasks.getTask(summarizedTask.taskUid);
   assert.isTask(taskThroughGet);
@@ -155,7 +158,7 @@ test(`${ms.tasks.waitForTasks.name} method`, async () => {
   ]);
 
   for (const summarizedTask of summarizedTasks) {
-    assert.isSummarizedTask(summarizedTask);
+    assert.isEnqueuedTask(summarizedTask);
   }
 
   const tasks = await ms.tasks.waitForTasks(summarizedTasks);
@@ -173,9 +176,9 @@ test(`${ms.batches.getBatch.name} method`, async () => {
   ]);
 
   // this is the only way to get batch uids at the moment of writing this
-  const allBatches = await ms.batches.getBatches();
+  const { results } = await ms.batches.getBatches();
 
-  for (const { uid } of allBatches.results) {
+  for (const { uid } of results) {
     const batch = await ms.batches.getBatch(uid);
     assert.isBatch(batch);
   }
@@ -216,7 +219,7 @@ describe.for(objectEntries(testValuesRecordExceptSome))(
       `${ms.tasks.cancelTasks.name} method%s`,
       async ([, value]) => {
         const summarizedTask = await ms.tasks.cancelTasks({ [key]: value });
-        assert.isSummarizedTask(summarizedTask);
+        assert.isEnqueuedTask(summarizedTask);
         const task = await ms.tasks.waitForTask(summarizedTask);
         assert.isTask(task);
 
@@ -233,7 +236,7 @@ describe.for(objectEntries(testValuesRecordExceptSome))(
       `${ms.tasks.deleteTasks.name} method%s`,
       async ([, value]) => {
         const summarizedTask = await ms.tasks.deleteTasks({ [key]: value });
-        assert.isSummarizedTask(summarizedTask);
+        assert.isEnqueuedTask(summarizedTask);
         const task = await ms.tasks.waitForTask(summarizedTask);
         assert.isTask(task);
 

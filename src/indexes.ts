@@ -49,13 +49,13 @@ import type {
   ExtraRequestInit,
   PrefixSearch,
   RecordAny,
-  SummarizedTaskPromise,
+  EnqueuedTaskPromise,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
-  getHttpRequestsWithSummarizedTaskPromise,
+  getHttpRequestsWithEnqueuedTaskPromise,
   TaskClient,
-  type HttpRequestsWithSummarizedTaskPromise,
+  type HttpRequestsWithEnqueuedTaskPromise,
 } from "./task.js";
 
 export class Index<T extends RecordAny = RecordAny> {
@@ -65,7 +65,7 @@ export class Index<T extends RecordAny = RecordAny> {
   updatedAt: Date | undefined;
   httpRequest: HttpRequests;
   tasks: TaskClient;
-  readonly #httpRequestsWithTask: HttpRequestsWithSummarizedTaskPromise;
+  readonly #httpRequestsWithTask: HttpRequestsWithEnqueuedTaskPromise;
 
   /**
    * @param config - Request configuration options
@@ -77,7 +77,7 @@ export class Index<T extends RecordAny = RecordAny> {
     this.primaryKey = primaryKey;
     this.httpRequest = new HttpRequests(config);
     this.tasks = new TaskClient(this.httpRequest, config.defaultWaitOptions);
-    this.#httpRequestsWithTask = getHttpRequestsWithSummarizedTaskPromise(
+    this.#httpRequestsWithTask = getHttpRequestsWithEnqueuedTaskPromise(
       this.httpRequest,
       this.tasks,
     );
@@ -238,9 +238,9 @@ export class Index<T extends RecordAny = RecordAny> {
     uid: string,
     options: IndexOptions = {},
     config: Config,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     const httpRequests = new HttpRequests(config);
-    return getHttpRequestsWithSummarizedTaskPromise(
+    return getHttpRequestsWithEnqueuedTaskPromise(
       httpRequests,
       new TaskClient(httpRequests),
     ).post({
@@ -255,7 +255,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param data - Data to update
    * @returns Promise to the current Index object with updated information
    */
-  update(data?: IndexOptions): SummarizedTaskPromise {
+  update(data?: IndexOptions): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}`,
       body: data,
@@ -267,7 +267,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise which resolves when index is deleted successfully
    */
-  delete(): SummarizedTaskPromise {
+  delete(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}`,
     });
@@ -345,10 +345,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param options - Options on document addition
    * @returns Promise containing an EnqueuedTask
    */
-  addDocuments(
-    documents: T[],
-    options?: DocumentOptions,
-  ): SummarizedTaskPromise {
+  addDocuments(documents: T[], options?: DocumentOptions): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
       path: `indexes/${this.uid}/documents`,
       params: options,
@@ -370,7 +367,7 @@ export class Index<T extends RecordAny = RecordAny> {
     documents: string,
     contentType: ContentType,
     queryParams?: RawDocumentAdditionOptions,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
       path: `indexes/${this.uid}/documents`,
       body: documents,
@@ -391,8 +388,8 @@ export class Index<T extends RecordAny = RecordAny> {
     documents: T[],
     batchSize = 1000,
     options?: DocumentOptions,
-  ): SummarizedTaskPromise[] {
-    const updates: SummarizedTaskPromise[] = [];
+  ): EnqueuedTaskPromise[] {
+    const updates: EnqueuedTaskPromise[] = [];
 
     for (let i = 0; i < documents.length; i += batchSize) {
       updates.push(
@@ -413,7 +410,7 @@ export class Index<T extends RecordAny = RecordAny> {
   updateDocuments(
     documents: Partial<T>[],
     options?: DocumentOptions,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/documents`,
       params: options,
@@ -433,8 +430,8 @@ export class Index<T extends RecordAny = RecordAny> {
     documents: Partial<T>[],
     batchSize = 1000,
     options?: DocumentOptions,
-  ): SummarizedTaskPromise[] {
-    const updates: SummarizedTaskPromise[] = [];
+  ): EnqueuedTaskPromise[] {
+    const updates: EnqueuedTaskPromise[] = [];
 
     for (let i = 0; i < documents.length; i += batchSize) {
       updates.push(
@@ -459,7 +456,7 @@ export class Index<T extends RecordAny = RecordAny> {
     documents: string,
     contentType: ContentType,
     queryParams?: RawDocumentAdditionOptions,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/documents`,
       body: documents,
@@ -474,7 +471,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param documentId - Id of Document to delete
    * @returns Promise containing an EnqueuedTask
    */
-  deleteDocument(documentId: string | number): SummarizedTaskPromise {
+  deleteDocument(documentId: string | number): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/documents/${documentId}`,
     });
@@ -493,7 +490,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   deleteDocuments(
     params: DocumentsDeletionQuery | DocumentsIds,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     // If params is of type DocumentsDeletionQuery
     const isDocumentsDeletionQuery =
       !Array.isArray(params) && typeof params === "object";
@@ -512,7 +509,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  deleteAllDocuments(): SummarizedTaskPromise {
+  deleteAllDocuments(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/documents`,
     });
@@ -532,7 +529,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   updateDocumentsByFunction(
     options: UpdateDocumentsByFunctionOptions,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
       path: `indexes/${this.uid}/documents/edit`,
       body: options,
@@ -560,7 +557,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param settings - Object containing parameters with their updated values
    * @returns Promise containing an EnqueuedTask
    */
-  updateSettings(settings: Settings): SummarizedTaskPromise {
+  updateSettings(settings: Settings): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings`,
       body: settings,
@@ -572,7 +569,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetSettings(): SummarizedTaskPromise {
+  resetSettings(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings`,
     });
@@ -599,7 +596,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param pagination - Pagination object
    * @returns Promise containing an EnqueuedTask
    */
-  updatePagination(pagination: PaginationSettings): SummarizedTaskPromise {
+  updatePagination(pagination: PaginationSettings): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/pagination`,
       body: pagination,
@@ -611,7 +608,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetPagination(): SummarizedTaskPromise {
+  resetPagination(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/pagination`,
     });
@@ -638,7 +635,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param synonyms - Mapping of synonyms with their associated words
    * @returns Promise containing an EnqueuedTask
    */
-  updateSynonyms(synonyms: Synonyms): SummarizedTaskPromise {
+  updateSynonyms(synonyms: Synonyms): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/synonyms`,
       body: synonyms,
@@ -650,7 +647,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetSynonyms(): SummarizedTaskPromise {
+  resetSynonyms(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/synonyms`,
     });
@@ -677,7 +674,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param stopWords - Array of strings that contains the stop-words.
    * @returns Promise containing an EnqueuedTask
    */
-  updateStopWords(stopWords: StopWords): SummarizedTaskPromise {
+  updateStopWords(stopWords: StopWords): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/stop-words`,
       body: stopWords,
@@ -689,7 +686,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetStopWords(): SummarizedTaskPromise {
+  resetStopWords(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/stop-words`,
     });
@@ -717,7 +714,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *   importance.
    * @returns Promise containing an EnqueuedTask
    */
-  updateRankingRules(rankingRules: RankingRules): SummarizedTaskPromise {
+  updateRankingRules(rankingRules: RankingRules): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/ranking-rules`,
       body: rankingRules,
@@ -729,7 +726,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetRankingRules(): SummarizedTaskPromise {
+  resetRankingRules(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/ranking-rules`,
     });
@@ -758,7 +755,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   updateDistinctAttribute(
     distinctAttribute: DistinctAttribute,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/distinct-attribute`,
       body: distinctAttribute,
@@ -770,7 +767,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetDistinctAttribute(): SummarizedTaskPromise {
+  resetDistinctAttribute(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/distinct-attribute`,
     });
@@ -800,7 +797,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   updateFilterableAttributes(
     filterableAttributes: FilterableAttributes,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/filterable-attributes`,
       body: filterableAttributes,
@@ -812,7 +809,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetFilterableAttributes(): SummarizedTaskPromise {
+  resetFilterableAttributes(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/filterable-attributes`,
     });
@@ -842,7 +839,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   updateSortableAttributes(
     sortableAttributes: SortableAttributes,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/sortable-attributes`,
       body: sortableAttributes,
@@ -854,7 +851,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetSortableAttributes(): SummarizedTaskPromise {
+  resetSortableAttributes(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/sortable-attributes`,
     });
@@ -884,7 +881,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   updateSearchableAttributes(
     searchableAttributes: SearchableAttributes,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/searchable-attributes`,
       body: searchableAttributes,
@@ -896,7 +893,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetSearchableAttributes(): SummarizedTaskPromise {
+  resetSearchableAttributes(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/searchable-attributes`,
     });
@@ -926,7 +923,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   updateDisplayedAttributes(
     displayedAttributes: DisplayedAttributes,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/displayed-attributes`,
       body: displayedAttributes,
@@ -938,7 +935,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetDisplayedAttributes(): SummarizedTaskPromise {
+  resetDisplayedAttributes(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/displayed-attributes`,
     });
@@ -966,7 +963,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *   settings.
    * @returns Promise containing object of the enqueued update
    */
-  updateTypoTolerance(typoTolerance: TypoTolerance): SummarizedTaskPromise {
+  updateTypoTolerance(typoTolerance: TypoTolerance): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/typo-tolerance`,
       body: typoTolerance,
@@ -978,7 +975,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing object of the enqueued update
    */
-  resetTypoTolerance(): SummarizedTaskPromise {
+  resetTypoTolerance(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/typo-tolerance`,
     });
@@ -1005,7 +1002,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param faceting - Faceting index settings object
    * @returns Promise containing an EnqueuedTask
    */
-  updateFaceting(faceting: Faceting): SummarizedTaskPromise {
+  updateFaceting(faceting: Faceting): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/faceting`,
       body: faceting,
@@ -1017,7 +1014,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetFaceting(): SummarizedTaskPromise {
+  resetFaceting(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/faceting`,
     });
@@ -1044,9 +1041,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param separatorTokens - Array that contains separator tokens.
    * @returns Promise containing an EnqueuedTask or null
    */
-  updateSeparatorTokens(
-    separatorTokens: SeparatorTokens,
-  ): SummarizedTaskPromise {
+  updateSeparatorTokens(separatorTokens: SeparatorTokens): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/separator-tokens`,
       body: separatorTokens,
@@ -1058,7 +1053,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetSeparatorTokens(): SummarizedTaskPromise {
+  resetSeparatorTokens(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/separator-tokens`,
     });
@@ -1087,7 +1082,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   updateNonSeparatorTokens(
     nonSeparatorTokens: NonSeparatorTokens,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/non-separator-tokens`,
       body: nonSeparatorTokens,
@@ -1099,7 +1094,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetNonSeparatorTokens(): SummarizedTaskPromise {
+  resetNonSeparatorTokens(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/non-separator-tokens`,
     });
@@ -1126,7 +1121,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param dictionary - Array that contains the new dictionary settings.
    * @returns Promise containing an EnqueuedTask or null
    */
-  updateDictionary(dictionary: Dictionary): SummarizedTaskPromise {
+  updateDictionary(dictionary: Dictionary): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/dictionary`,
       body: dictionary,
@@ -1138,7 +1133,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetDictionary(): SummarizedTaskPromise {
+  resetDictionary(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/dictionary`,
     });
@@ -1168,7 +1163,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   updateProximityPrecision(
     proximityPrecision: ProximityPrecision,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/proximity-precision`,
       body: proximityPrecision,
@@ -1180,7 +1175,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetProximityPrecision(): SummarizedTaskPromise {
+  resetProximityPrecision(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/proximity-precision`,
     });
@@ -1207,7 +1202,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param embedders - Object that contains the new embedders settings.
    * @returns Promise containing an EnqueuedTask or null
    */
-  updateEmbedders(embedders: Embedders): SummarizedTaskPromise {
+  updateEmbedders(embedders: Embedders): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/embedders`,
       body: embedders,
@@ -1219,7 +1214,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetEmbedders(): SummarizedTaskPromise {
+  resetEmbedders(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/embedders`,
     });
@@ -1246,7 +1241,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param searchCutoffMs - Object containing SearchCutoffMsSettings
    * @returns Promise containing an EnqueuedTask
    */
-  updateSearchCutoffMs(searchCutoffMs: SearchCutoffMs): SummarizedTaskPromise {
+  updateSearchCutoffMs(searchCutoffMs: SearchCutoffMs): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/search-cutoff-ms`,
       body: searchCutoffMs,
@@ -1258,7 +1253,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetSearchCutoffMs(): SummarizedTaskPromise {
+  resetSearchCutoffMs(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/search-cutoff-ms`,
     });
@@ -1287,7 +1282,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   updateLocalizedAttributes(
     localizedAttributes: LocalizedAttributes,
-  ): SummarizedTaskPromise {
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/localized-attributes`,
       body: localizedAttributes,
@@ -1299,7 +1294,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetLocalizedAttributes(): SummarizedTaskPromise {
+  resetLocalizedAttributes(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/localized-attributes`,
     });
@@ -1326,7 +1321,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param facetSearch - Boolean value
    * @returns Promise containing an EnqueuedTask
    */
-  updateFacetSearch(facetSearch: boolean): SummarizedTaskPromise {
+  updateFacetSearch(facetSearch: boolean): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/facet-search`,
       body: facetSearch,
@@ -1338,7 +1333,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetFacetSearch(): SummarizedTaskPromise {
+  resetFacetSearch(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/facet-search`,
     });
@@ -1365,7 +1360,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @param prefixSearch - PrefixSearch value
    * @returns Promise containing an EnqueuedTask
    */
-  updatePrefixSearch(prefixSearch: PrefixSearch): SummarizedTaskPromise {
+  updatePrefixSearch(prefixSearch: PrefixSearch): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.put({
       path: `indexes/${this.uid}/settings/prefix-search`,
       body: prefixSearch,
@@ -1377,7 +1372,7 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  resetPrefixSearch(): SummarizedTaskPromise {
+  resetPrefixSearch(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/prefix-search`,
     });
