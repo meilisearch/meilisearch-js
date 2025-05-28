@@ -1,4 +1,4 @@
-import type { Settings } from "./types.js";
+import type { RecordAny, Settings } from "./types.js";
 import type {
   PascalToCamelCase,
   SafeOmit,
@@ -204,14 +204,11 @@ type BatchStats = {
   types: Record<TaskType, number>;
   indexUids: Record<string, number>;
   /** {@link https://www.meilisearch.com/docs/reference/api/batches#progresstrace} */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  progressTrace?: Record<string, any>;
+  progressTrace?: RecordAny;
   /** {@link https://www.meilisearch.com/docs/reference/api/batches#writechannelcongestion} */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  writeChannelCongestion?: Record<string, any>;
+  writeChannelCongestion?: RecordAny;
   /** {@link https://www.meilisearch.com/docs/reference/api/batches#internaldatabasesizes} */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  internalDatabaseSizes?: Record<string, any>;
+  internalDatabaseSizes?: RecordAny;
 };
 
 /**
