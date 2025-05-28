@@ -134,10 +134,9 @@ const customAssertions = {
       duration === null || typeof duration === "string",
       "expected duration to be null or string",
     );
-    extAssert(
-      startedAt === null || typeof startedAt === "string",
-      "expected startedAt to be null or string",
-    );
+
+    extAssert.typeOf(startedAt, "string");
+
     extAssert(
       finishedAt === null || typeof finishedAt === "string",
       "expected finishedAt to be null or string",
