@@ -72,8 +72,9 @@ yarn build
 
 ### Code samples
 
-In this repository code samples are linted and type checked. To achieve this we
-generate TypeScript files from `.code-samples.meilisearch.yaml`, and vice-versa.
+In this repository, code samples are linted and type-checked. To achieve this,
+we generate TypeScript files from `.code-samples.meilisearch.yaml` and vice
+versa.
 
 > [!WARNING]
 >
