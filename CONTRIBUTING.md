@@ -81,11 +81,11 @@ versa.
 > Each of these commands overwrite their target files, so use them carefully.
 
 ```bash
-# Generate files
+# Generate all the code sample files from YAML file
 yarn generate-code-sample-files
-# Generate YAML file
+# Generate YAML file from all the code sample files
 yarn generate-code-samples-yaml
-# For maintainers to generate new code samples
+# Generate all + new code sample files from YAML file
 yarn generate-code-sample-files new_sample_one new_sample_two
 ```
 
