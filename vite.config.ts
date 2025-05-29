@@ -16,8 +16,8 @@ export default defineConfig(({ mode }) => {
       minify: !isCJSBuild,
       sourcemap: true,
       // UMD build should target the lowest level ES,
-      // while CJS the lowest Node.js LTS compatible version
-      target: isCJSBuild ? "es2022" : "es6",
+      // while CJS the lowest Node.js LTS/Maintenance compatible version (https://node.green/#ES2023)
+      target: isCJSBuild ? "es2023" : "es6",
       lib: {
         // leave out token export from UMD build
         entry: isCJSBuild ? [indexInput, tokenInput] : indexInput,
@@ -34,12 +34,8 @@ export default defineConfig(({ mode }) => {
           }
         },
       },
-      rollupOptions: isCJSBuild
-        ? {
-            // make sure external imports that should not be bundled are listed here for CJS build
-            external: ["node:crypto"],
-          }
-        : // the following code enables Vite in UMD mode to extend the global object with all of
+      rollupOptions: !isCJSBuild
+        ? // the following code enables Vite in UMD mode to extend the global object with all of
           // the exports, and not just a property of it ( https://github.com/vitejs/vite/issues/11624 )
           // TODO: Remove this in the future ( https://github.com/meilisearch/meilisearch-js/issues/1806 )
           {
@@ -52,7 +48,8 @@ export default defineConfig(({ mode }) => {
                            }
                        })();`,
             },
-          },
+          }
+        : undefined,
     },
     test: {
       include: ["tests/**/*.test.ts"],

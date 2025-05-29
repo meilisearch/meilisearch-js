@@ -34,7 +34,7 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 
 To run this project, you will need:
 
-- Node >= v18 and Node <= 22
+- Node >= v20 and Node <= 22
 - Yarn v1.x
 
 ### Setup
