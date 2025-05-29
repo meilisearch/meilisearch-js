@@ -78,8 +78,10 @@ const manipulatedCodeSamples = dirEntries
   .sort(({ index: indexA }, { index: indexB }) => indexA - indexB);
 
 // for every new code sample, place them at the end of the file instead of the start
-while (manipulatedCodeSamples.at(0)?.index === -1) {
-  manipulatedCodeSamples.push(manipulatedCodeSamples.shift());
+if (manipulatedCodeSamples.some((v) => v.index !== -1)) {
+  while (manipulatedCodeSamples.at(0)?.index === -1) {
+    manipulatedCodeSamples.push(manipulatedCodeSamples.shift());
+  }
 }
 
 const serializedCodeSamples = manipulatedCodeSamples
