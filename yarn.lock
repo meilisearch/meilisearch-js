@@ -654,7 +654,7 @@
     semver "^7.6.0"
     ts-api-utils "^2.1.0"
 
-"@typescript-eslint/utils@8.33.0", "@typescript-eslint/utils@^8.29.0":
+"@typescript-eslint/utils@8.33.0", "@typescript-eslint/utils@^8.24.0", "@typescript-eslint/utils@^8.29.0":
   version "8.33.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/utils/-/utils-8.33.0.tgz#574ad5edee371077b9e28ca6fb804f2440f447c1"
   integrity sha512-lPFuQaLA9aSNa7D5u2EpRiqdAUhzShwGg/nhpBlc4GR6kcTABttCuyjFs8BcEZ8VWrjCBof/bePhP3Q3fS+Yrw==
@@ -690,10 +690,12 @@
     test-exclude "^7.0.1"
     tinyrainbow "^2.0.0"
 
-"@vitest/eslint-plugin@^1.1.38":
-  version "1.1.38"
-  resolved "https://registry.yarnpkg.com/@vitest/eslint-plugin/-/eslint-plugin-1.1.38.tgz#c4b128f5d67892dac5f9bd06b9e3284dc37c1a8f"
-  integrity sha512-KcOTZyVz8RiM5HyriiDVrP1CyBGuhRxle+lBsmSs6NTJEO/8dKVAq+f5vQzHj1/Kc7bYXSDO6yBe62Zx0t5iaw==
+"@vitest/eslint-plugin@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@vitest/eslint-plugin/-/eslint-plugin-1.2.1.tgz#99136de056721e37d1b02832dbe88a78b2620b70"
+  integrity sha512-JQr1jdVcrsoS7Sdzn83h9sq4DvREf9Q/onTZbJCqTVlv/76qb+TZrLv/9VhjnjSMHweQH5FdpMDeCR6aDe2fgw==
+  dependencies:
+    "@typescript-eslint/utils" "^8.24.0"
 
 "@vitest/expect@3.1.1":
   version "3.1.1"
