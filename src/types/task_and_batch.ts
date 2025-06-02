@@ -1,8 +1,13 @@
-import type { Settings } from "./types.js";
-import type { CursorResults } from "./shared.js";
+import type { RecordAny, Settings } from "./types.js";
+import type {
+  PascalToCamelCase,
+  SafeOmit,
+  OptionStarOr,
+  OptionStarOrList,
+} from "./shared.js";
 import type { MeiliSearchErrorResponse } from "./types.js";
 
-/** Options for awaiting {@link EnqueuedTask}. */
+/** Options for awaiting an {@link EnqueuedTask}. */
 export type WaitOptions = {
   /**
    * Milliseconds until timeout error will be thrown for each awaited task. A
@@ -20,59 +25,66 @@ export type WaitOptions = {
   interval?: number;
 };
 
-/** {@link https://www.meilisearch.com/docs/reference/api/tasks#status} */
-export type TaskStatus =
-  | "enqueued"
-  | "processing"
-  | "succeeded"
-  | "failed"
-  | "canceled";
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/tasks#status}
+ *
+ * @see `meilisearch_types::tasks::Status`
+ */
+export type TaskStatus = PascalToCamelCase<
+  "Enqueued" | "Processing" | "Succeeded" | "Failed" | "Canceled"
+>;
 
-/** {@link https://www.meilisearch.com/docs/reference/api/tasks#type} */
-export type TaskType =
-  | "documentAdditionOrUpdate"
-  | "documentEdition"
-  | "documentDeletion"
-  | "settingsUpdate"
-  | "indexCreation"
-  | "indexDeletion"
-  | "indexUpdate"
-  | "indexSwap"
-  | "taskCancelation"
-  | "taskDeletion"
-  | "dumpCreation"
-  | "snapshotCreation";
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/tasks#type}
+ *
+ * @see `meilisearch_types::tasks::Kind`
+ */
+export type TaskType = PascalToCamelCase<
+  | "DocumentAdditionOrUpdate"
+  | "DocumentEdition"
+  | "DocumentDeletion"
+  | "SettingsUpdate"
+  | "IndexCreation"
+  | "IndexDeletion"
+  | "IndexUpdate"
+  | "IndexSwap"
+  | "TaskCancelation"
+  | "TaskDeletion"
+  | "DumpCreation"
+  | "SnapshotCreation"
+  | "UpgradeDatabase"
+>;
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/tasks#query-parameters}
  *
- * @see `meilisearch::routes::tasks::TasksFilterQuery` at {@link https://github.com/meilisearch/meilisearch}
+ * @see `meilisearch::routes::tasks::TasksFilterQuery`
  */
-export type TasksOrBatchesQuery = {
-  limit?: number;
-  from?: number;
-  reverse?: boolean;
-  batchUids?: number[];
-  uids?: number[];
-  canceledBy?: number[];
-  types?: TaskType[];
-  statuses?: TaskStatus[];
-  indexUids?: string[];
-  afterEnqueuedAt?: string;
-  beforeEnqueuedAt?: string;
-  afterStartedAt?: string;
-  beforeStartedAt?: string;
-  afterFinishedAt?: string;
-  beforeFinishedAt?: string;
-};
+export type TasksOrBatchesQuery = Partial<{
+  limit: number;
+  from: number | null;
+  reverse: boolean | null;
+  batchUids: OptionStarOrList<number[]>;
+  uids: OptionStarOrList<number[]>;
+  canceledBy: OptionStarOrList<number[]>;
+  types: OptionStarOrList<TaskType[]>;
+  statuses: OptionStarOrList<TaskStatus[]>;
+  indexUids: OptionStarOrList<string[]>;
+  afterEnqueuedAt: OptionStarOr<string>;
+  beforeEnqueuedAt: OptionStarOr<string>;
+  afterStartedAt: OptionStarOr<string>;
+  beforeStartedAt: OptionStarOr<string>;
+  afterFinishedAt: OptionStarOr<string>;
+  beforeFinishedAt: OptionStarOr<string>;
+}>;
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/tasks#query-parameters-1}
  * {@link https://www.meilisearch.com/docs/reference/api/tasks#query-parameters-2}
  *
- * @see `meilisearch::routes::tasks::TaskDeletionOrCancelationQuery` at {@link https://github.com/meilisearch/meilisearch}
+ * @see `meilisearch::routes::tasks::TaskDeletionOrCancelationQuery`
  */
-export type DeleteOrCancelTasksQuery = Omit<
+export type DeleteOrCancelTasksQuery = SafeOmit<
   TasksOrBatchesQuery,
   "limit" | "from" | "reverse"
 >;
@@ -80,7 +92,7 @@ export type DeleteOrCancelTasksQuery = Omit<
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/tasks#summarized-task-object}
  *
- * @see `meilisearch::routes::SummarizedTaskView` at {@link https://github.com/meilisearch/meilisearch}
+ * @see `meilisearch::routes::SummarizedTaskView`
  */
 export type EnqueuedTask = {
   taskUid: number;
@@ -96,30 +108,37 @@ export type TaskUidOrEnqueuedTask = EnqueuedTask["taskUid"] | EnqueuedTask;
 /** {@link https://www.meilisearch.com/docs/reference/api/tasks#indexswap} */
 export type IndexSwap = { indexes: [string, string] };
 
-/** {@link https://www.meilisearch.com/docs/reference/api/tasks#details} */
-export type TaskDetails = Settings & {
-  receivedDocuments?: number;
-  indexedDocuments?: number;
-  editedDocuments?: number;
-  primaryKey?: string;
-  providedIds?: number;
-  deletedDocuments?: number;
-  matchedTasks?: number;
-  canceledTasks?: number;
-  deletedTasks?: number;
-  originalFilter?: string | null;
-  dumpUid?: string | null;
-  context?: Record<string, unknown> | null;
-  function?: string;
-  swaps?: IndexSwap[];
-};
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/tasks#details}
+ *
+ * @see `meilisearch_types::task_view::DetailsView`
+ */
+export type TaskDetails = Settings &
+  Partial<{
+    receivedDocuments: number;
+    indexedDocuments: number;
+    editedDocuments: number;
+    primaryKey: string;
+    providedIds: number;
+    deletedDocuments: number;
+    matchedTasks: number;
+    canceledTasks: number;
+    deletedTasks: number;
+    originalFilter: string | null;
+    dumpUid: string | null;
+    context: Record<string, unknown> | null;
+    function: string;
+    swaps: IndexSwap[];
+    upgradeFrom: string;
+    upgradeTo: string;
+  }>;
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/tasks#task-object}
  *
- * @see `meilisearch_types::task_view::TaskView` at {@link https://github.com/meilisearch/meilisearch}
+ * @see `meilisearch_types::task_view::TaskView`
  */
-export type Task = Omit<EnqueuedTask, "taskUid"> & {
+export type Task = SafeOmit<EnqueuedTask, "taskUid"> & {
   uid: number;
   batchUid: number | null;
   canceledBy: number | null;
@@ -142,22 +161,38 @@ export type EnqueuedTaskPromise = Promise<EnqueuedTask> & {
   waitTask: (waitOptions?: WaitOptions) => Promise<Task>;
 };
 
+type Results<T> = {
+  results: T[];
+  total: number;
+  limit: number;
+  from: number | null;
+  next: number | null;
+};
+
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/tasks#response}
  *
- * @see `meilisearch::routes::tasks::AllTasks` at {@link https://github.com/meilisearch/meilisearch}
+ * @see `meilisearch::routes::tasks::AllTasks`
  */
-export type TasksResults = CursorResults<Task>;
+export type TasksResults = Results<Task>;
 
-/** {@link https://www.meilisearch.com/docs/reference/api/batches#steps} */
-type BatchProgressStep = {
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/batches#steps}
+ *
+ * @see `milli::progress::ProgressStepView`
+ */
+export type BatchProgressStep = {
   currentStep: string;
   finished: number;
   total: number;
 };
 
-/** {@link https://www.meilisearch.com/docs/reference/api/batches#progress} */
-type BatchProgress = {
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/batches#progress}
+ *
+ * @see `milli::progress::ProgressView`
+ */
+export type BatchProgress = {
   steps: BatchProgressStep[];
   percentage: number;
 };
@@ -168,15 +203,18 @@ type BatchStats = {
   status: Record<TaskStatus, number>;
   types: Record<TaskType, number>;
   indexUids: Record<string, number>;
-  progressTrace: Record<string, number>;
-  // Do not type this field because the keys can change in a breaking way
-  internalDatabaseSizes?: Record<string, number>;
+  /** {@link https://www.meilisearch.com/docs/reference/api/batches#progresstrace} */
+  progressTrace?: RecordAny;
+  /** {@link https://www.meilisearch.com/docs/reference/api/batches#writechannelcongestion} */
+  writeChannelCongestion?: RecordAny;
+  /** {@link https://www.meilisearch.com/docs/reference/api/batches#internaldatabasesizes} */
+  internalDatabaseSizes?: RecordAny;
 };
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/batches#batch-object}
  *
- * @see `meilisearch_types::batch_view::BatchView` at {@link https://github.com/meilisearch/meilisearch}
+ * @see `meilisearch_types::batch_view::BatchView`
  */
 export type Batch = {
   uid: number;
@@ -186,11 +224,12 @@ export type Batch = {
   duration: string | null;
   startedAt: string;
   finishedAt: string | null;
+  // batcherStoppedBecause: unknown;
 };
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/batches#response}
  *
- * @see `meilisearch::routes::batches::AllBatches` at {@link https://github.com/meilisearch/meilisearch}
+ * @see `meilisearch::routes::batches::AllBatches`
  */
-export type BatchesResults = CursorResults<Batch>;
+export type BatchesResults = Results<Batch>;

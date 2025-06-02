@@ -12,12 +12,11 @@ import type {
 } from "./types/index.js";
 import type { HttpRequests } from "./http-requests.js";
 
-// TODO: Convert to Symbol("timeout id") when Node.js 18 is dropped
 /**
  * Used to identify whether an error is a timeout error in
  * {@link TaskClient.waitForTask}.
  */
-const TIMEOUT_ID = {};
+const TIMEOUT_ID = Symbol("<task timeout>");
 
 /**
  * @returns A function which defines an extra function property on a
@@ -74,24 +73,20 @@ export class TaskClient {
     // TODO: Need to do this for all other methods: https://github.com/meilisearch/meilisearch-js/issues/1476
     extraRequestInit?: ExtraRequestInit,
   ): Promise<Task> {
-    const task = await this.#httpRequest.get<Task>({
+    return await this.#httpRequest.get({
       path: `tasks/${uid}`,
       extraRequestInit,
     });
-    return task;
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-tasks} */
   async getTasks(params?: TasksOrBatchesQuery): Promise<TasksResults> {
-    const tasks = await this.#httpRequest.get<TasksResults>({
-      path: "tasks",
-      params,
-    });
-    return tasks;
+    return await this.#httpRequest.get({ path: "tasks", params });
   }
 
   /**
-   * Wait for an enqueued task to be processed.
+   * Wait for an enqueued task to be processed. This is done through polling
+   * with {@link TaskClient.getTask}.
    *
    * @remarks
    * If an {@link EnqueuedTask} needs to be awaited instantly, it is recommended
@@ -167,20 +162,14 @@ export class TaskClient {
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks} */
   cancelTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
     return this.#applyWaitTask(
-      this.#httpRequest.post({
-        path: "tasks/cancel",
-        params,
-      }),
+      this.#httpRequest.post({ path: "tasks/cancel", params }),
     );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#delete-tasks} */
   deleteTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
     return this.#applyWaitTask(
-      this.#httpRequest.delete({
-        path: "tasks",
-        params,
-      }),
+      this.#httpRequest.delete({ path: "tasks", params }),
     );
   }
 }
