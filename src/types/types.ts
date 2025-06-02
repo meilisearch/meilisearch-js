@@ -76,6 +76,7 @@ export type Config = {
   httpClient?: (...args: Parameters<typeof fetch>) => Promise<unknown>;
   /** Timeout in milliseconds for each HTTP request. */
   timeout?: number;
+  /** Customizable default options for awaiting tasks. */
   defaultWaitOptions?: WaitOptions;
 };
 
