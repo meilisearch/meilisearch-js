@@ -524,6 +524,7 @@ export type Synonyms = Record<string, string[]> | null;
 export type TypoTolerance = {
   enabled?: boolean | null;
   disableOnAttributes?: string[] | null;
+  disableOnNumbers?: boolean | null;
   disableOnWords?: string[] | null;
   minWordSizeForTypos?: {
     oneTypo?: number | null;
