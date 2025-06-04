@@ -1,6 +1,6 @@
 services:
   package:
-    image: node:18
+    image: node:22
     tty: true
     stdin_open: true
     working_dir: /home/package
