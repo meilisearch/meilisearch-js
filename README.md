@@ -40,9 +40,9 @@
 
 ## 📖 Documentation
 
-Read the [Meilisearch Documentation](https://www.meilisearch.com/docs/?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) to learn how to use Meilisearch with guides, tutorials, and the API reference.
+Consult the [Meilisearch Documentation](https://www.meilisearch.com/docs/?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) for guides, tutorials, and API reference materials on using Meilisearch.
 
-Check out the [client library documentation](https://meilisearch.github.io/meilisearch-js/modules.html?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) for exhaustive information about the `meilisearch-js` package.
+For detailed information about the `meilisearch-js` package, visit the [client library documentation](https://meilisearch.github.io/meilisearch-js/modules.html?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
 
 ## 🔧 Installation
 
