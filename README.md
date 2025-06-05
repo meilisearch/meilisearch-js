@@ -7,11 +7,11 @@
 <h4 align="center">
   <a href="https://github.com/meilisearch/meilisearch">Meilisearch</a> |
   <a href="https://www.meilisearch.com/cloud?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js">Meilisearch Cloud</a> |
-  <a href="https://www.meilisearch.com/docs">Documentation</a> |
-  <a href="https://discord.meilisearch.com">Discord</a> |
-  <a href="https://roadmap.meilisearch.com/tabs/1-under-consideration">Roadmap</a> |
-  <a href="https://www.meilisearch.com">Website</a> |
-  <a href="https://www.meilisearch.com/docs/faq">FAQ</a>
+  <a href="https://www.meilisearch.com/docs?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js">Documentation</a> |
+  <a href="https://dub.sh/meili-discord?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js">Discord</a> |
+  <a href="https://roadmap.meilisearch.com/tabs/1-under-consideration?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js">Roadmap</a> |
+  <a href="https://www.meilisearch.com?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js">Website</a> |
+  <a href="https://www.meilisearch.com/docs/faq?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js">FAQ</a>
 </h4>
 
 <p align="center">
@@ -40,11 +40,9 @@
 
 ## 📖 Documentation
 
-- [client library documentation](https://meilisearch.github.io/meilisearch-js/modules.html)
-  ─ information on each exported item of this package
-- [main documentation website](https://www.meilisearch.com/docs/) ─ general
-  information on how to use Meilisearch—such as our API reference, tutorials,
-  guides, and in-depth articles
+Consult the [Meilisearch Documentation](https://www.meilisearch.com/docs/?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) for guides, tutorials, and API reference materials on using Meilisearch.
+
+For detailed information about the `meilisearch-js` package, visit the [client library documentation](https://meilisearch.github.io/meilisearch-js/modules.html?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
 
 ## 🔧 Installation
 
