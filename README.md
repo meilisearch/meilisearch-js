@@ -101,9 +101,9 @@ After installing `meilisearch-js`, you must import it into your application. The
 Usage in an ES module environment:
 
 ```js
-import { MeiliSearch } from "meilisearch";
+import { Meilisearch } from "meilisearch";
 
-const client = new MeiliSearch({
+const client = new Meilisearch({
   host: "http://127.0.0.1:7700",
   apiKey: "masterKey",
 });
@@ -119,7 +119,7 @@ tag:
 ```html
 <script src="https://www.unpkg.com/meilisearch/dist/umd/index.min.js"></script>
 <script>
-    const client = new meilisearch.MeiliSearch(/* ... */);
+    const client = new meilisearch.Meilisearch(/* ... */);
     // ...
 </script>
 ```
@@ -133,9 +133,9 @@ to read their documentation.
 Usage in a back-end node.js or another environment supporting CommonJS modules:
 
 ```js
-const { MeiliSearch } = require("meilisearch");
+const { Meilisearch } = require("meilisearch");
 
-const client = new MeiliSearch({
+const client = new Meilisearch({
   host: "http://127.0.0.1:7700",
   apiKey: "masterKey",
 });
@@ -150,9 +150,9 @@ To use `meilisearch-js` with React Native, you must also install [react-native-u
 Usage in a Deno environment:
 
 ```js
-import { MeiliSearch } from "npm:meilisearch";
+import { Meilisearch } from "npm:meilisearch";
 
-const client = new MeiliSearch({
+const client = new Meilisearch({
   host: "http://127.0.0.1:7700",
   apiKey: "masterKey",
 });
@@ -165,12 +165,12 @@ Take a look at the [playground](./playgrounds/javascript/src/meilisearch.ts) for
 ### Add documents <!-- omit in toc -->
 
 ```js
-const { MeiliSearch } = require('meilisearch')
+const { Meilisearch } = require('meilisearch')
 // Or if you are in a ES environment
-import { MeiliSearch } from 'meilisearch'
+import { Meilisearch } from 'meilisearch'
 
 ;(async () => {
-  const client = new MeiliSearch({
+  const client = new Meilisearch({
     host: 'http://127.0.0.1:7700',
     apiKey: 'masterKey',
   })
@@ -374,7 +374,7 @@ controller.abort()
 You can provide a custom request configuration. for example, with custom headers.
 
 ```ts
-const client: MeiliSearch = new MeiliSearch({
+const client: Meilisearch = new Meilisearch({
   host: 'http://localhost:3000/api/meilisearch/proxy',
   requestConfig: {
     headers: {
@@ -391,7 +391,7 @@ const client: MeiliSearch = new MeiliSearch({
 You can use your own HTTP client, for example, with [`axios`](https://github.com/axios/axios).
 
 ```ts
-const client: MeiliSearch = new MeiliSearch({
+const client: Meilisearch = new Meilisearch({
   host: 'http://localhost:3000/api/meilisearch/proxy',
   httpClient: async (url, opts) => {
     const response = await $axios.request({
