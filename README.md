@@ -412,12 +412,12 @@ This package guarantees compatibility with [version v1.x of Meilisearch](https:/
 
 The following sections in our main documentation website may interest you:
 
-- **Manipulate documents**: see the [API references](https://www.meilisearch.com/docs/reference/api/documents) or read more about [documents](https://www.meilisearch.com/docs/learn/core_concepts/documents).
-- **Search**: see the [API references](https://www.meilisearch.com/docs/reference/api/search) or follow our guide on [search parameters](https://www.meilisearch.com/docs/reference/api/search#search-parameters).
-- **Manage the indexes**: see the [API references](https://www.meilisearch.com/docs/reference/api/indexes) or read more about [indexes](https://www.meilisearch.com/docs/learn/core_concepts/indexes).
-- **Configure the index settings**: see the [API references](https://www.meilisearch.com/docs/reference/api/settings) or follow our guide on [settings parameters](https://www.meilisearch.com/docs/reference/api/settings#settings_parameters).
+- **Managing documents**: see the [API reference](https://www.meilisearch.com/docs/reference/api/documents?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or read more about [documents](https://www.meilisearch.com/docs/learn/core_concepts/documents).
+- **Searching**: see the [API reference](https://www.meilisearch.com/docs/reference/api/search?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or follow our guide on [search parameters](https://www.meilisearch.com/docs/reference/api/search?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js#search-parameters).
+- **Managing indexes**: see the [API reference](https://www.meilisearch.com/docs/reference/api/indexes?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or read more about [indexes](https://www.meilisearch.com/docs/learn/core_concepts/indexes?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
+- **Configuring indexes**: see the [API reference](https://www.meilisearch.com/docs/reference/api/settings?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or follow our guide on [settings parameters](https://www.meilisearch.com/docs/reference/api/settings?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js#settings_parameters).
 
-This repository also contains [more examples](./examples).
+Check out the [playgrounds](./playgrounds/) for examples of implementation.
 
 ## ⚙️ Contributing
 
