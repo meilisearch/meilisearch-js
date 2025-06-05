@@ -78,6 +78,7 @@ export type Config = {
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout#reasons_for_delays_longer_than_specified}
    */
   timeout?: number;
+  /** Customizable default options for awaiting tasks. */
   defaultWaitOptions?: WaitOptions;
 };
 
