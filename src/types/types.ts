@@ -503,7 +503,7 @@ export type UpdateDocumentsByFunctionOptions = {
  ** Settings
  */
 
-type GranularFilterableAttribute = {
+export type GranularFilterableAttribute = {
   attributePatterns: string[];
   features: {
     facetSearch: boolean;
