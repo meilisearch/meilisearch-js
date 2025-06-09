@@ -49,7 +49,7 @@ const customAssertions = {
   },
 
   isBatch(batch: Batch) {
-    extAssert.lengthOf(Object.keys(batch), 7);
+    extAssert.lengthOf(Object.keys(batch), 8);
 
     const { uid, progress, details, stats, duration, startedAt, finishedAt } =
       batch;
