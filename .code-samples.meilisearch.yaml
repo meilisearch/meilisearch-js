@@ -384,6 +384,10 @@ typo_tolerance_guide_4: |-
       twoTypos: 10,
     },
   });
+typo_tolerance_guide_5: |-
+  await client.index("movies").updateTypoTolerance({
+    disableOnNumbers: true,
+  });
 add_movies_json_1: |-
   import movies from "./movies.json" with { type: "json" };
   const task = await client.index("movies").addDocuments(movies);
