@@ -8,6 +8,12 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "resolveJsonModule": true,
     "strict": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    // For testing purposes
+    // TODO: Should use this for tests as well perhaps, resolve.alias
+    "paths": {
+      "meilisearch": ["./src/index.ts"],
+      "meilisearch/token": ["./src/token.ts"]
+    }
   }
 }
