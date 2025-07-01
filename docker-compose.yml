@@ -14,7 +14,7 @@ services:
       - ./:/home/package
 
   meilisearch:
-    image: getmeili/meilisearch:v1.15.0
+    image: getmeili/meilisearch
     ports:
       - "7700:7700"
     environment:
