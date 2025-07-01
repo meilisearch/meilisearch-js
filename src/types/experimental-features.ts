@@ -11,4 +11,5 @@ export type RuntimeTogglableFeatures = {
   network?: boolean | null;
   getTaskDocumentsRoute?: boolean | null;
   compositeEmbedders?: boolean | null;
+  chatCompletions?: boolean | null;
 };
