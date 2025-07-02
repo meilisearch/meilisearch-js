@@ -228,10 +228,17 @@ export class HttpRequests {
 
     let response: Response;
     let responseBody: string;
+
     try {
       if (this.#customRequestFn !== undefined) {
-        // When using a custom HTTP client, the response should already be handled and ready to be returned
-        return (await this.#customRequestFn(url, init)) as T;
+        // when using custom HTTP client, response is handled differently
+        const resp = await this.#customRequestFn(url, init);
+
+        if (!resp.success) {
+          throw new MeiliSearchApiError(resp.value, resp.details);
+        }
+
+        return resp.value as T;
       }
 
       response = await fetch(url, init);
@@ -254,8 +261,10 @@ export class HttpRequests {
 
     if (!response.ok) {
       throw new MeiliSearchApiError(
+        parsedResponse === undefined
+          ? `${response.status}: ${response.statusText}`
+          : (parsedResponse as MeiliSearchErrorResponse),
         response,
-        parsedResponse as MeiliSearchErrorResponse | undefined,
       );
     }
 

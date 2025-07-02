@@ -43,6 +43,20 @@ export type HttpRequestsRequestInit = Omit<BaseRequestInit, "headers"> & {
   headers: Headers;
 };
 
+/**
+ * An object in which `success` boolean indicates whether the response was
+ * successful (status 200-299), `value` is the parsed response body or a string
+ * describing the error in case there is no response body and `details` is any
+ * details about the error on failure.
+ */
+export type CustomHttpClientResult =
+  | { success: true; value: unknown }
+  | {
+      success: false;
+      value: MeiliSearchErrorResponse | string;
+      details: unknown;
+    };
+
 /** Main configuration object for the meilisearch client. */
 export type Config = {
   /**
@@ -59,21 +73,28 @@ export type Config = {
    */
   apiKey?: string;
   /**
-   * Custom strings that will be concatted to the "X-Meilisearch-Client" header
-   * on each request.
+   * Custom strings that will be concatenated to the "X-Meilisearch-Client"
+   * header on each request.
    */
   clientAgents?: string[];
   /** Base request options that may override the default ones. */
   requestInit?: BaseRequestInit;
   /**
-   * Custom function that can be provided in place of {@link fetch}.
+   * Custom function that can be provided to make requests to Meilisearch.
    *
-   * @remarks
-   * API response errors will have to be handled manually with this as well.
-   * @deprecated This will be removed in a future version. See
-   *   {@link https://github.com/meilisearch/meilisearch-js/issues/1824 | issue}.
+   * Expects a {@link CustomHttpClientResult}, an object in which `success`
+   * boolean indicates whether the response was successful (status 200-299),
+   * `value` is the parsed response body or a string describing the error in
+   * case there is no response body and `details` is any details about the error
+   * on failure.
+   *
+   * By default
+   * {@link https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API | fetch}
+   * is used.
    */
-  httpClient?: (...args: Parameters<typeof fetch>) => Promise<unknown>;
+  httpClient?: (
+    ...args: Parameters<typeof fetch>
+  ) => Promise<CustomHttpClientResult>;
   /** Timeout in milliseconds for each HTTP request. */
   timeout?: number;
   /** Customizable default options for awaiting tasks. */

@@ -269,9 +269,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = new MeiliSearch({
         ...config,
         apiKey: key,
-        async httpClient(...params: Parameters<typeof fetch>) {
+        async httpClient(...params) {
           const result = await fetch(...params);
-          return result.json() as Promise<unknown>;
+          return { success: true, value: result.json() as Promise<unknown> };
         },
       });
       const health = await client.isHealthy();
