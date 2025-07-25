@@ -13,6 +13,7 @@ afterAll(async () => {
     network: false,
     getTaskDocumentsRoute: false,
     compositeEmbedders: false,
+    chatCompletions: false,
   } satisfies { [TKey in keyof RuntimeTogglableFeatures]-?: false });
 });
 
@@ -25,6 +26,7 @@ test(`${ms.updateExperimentalFeatures.name} and ${ms.getExperimentalFeatures.nam
     network: true,
     getTaskDocumentsRoute: true,
     compositeEmbedders: true,
+    chatCompletions: true,
   };
 
   const updateFeatures = await ms.updateExperimentalFeatures(features);
