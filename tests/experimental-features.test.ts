@@ -6,27 +6,29 @@ const ms = await getClient("Master");
 
 afterAll(async () => {
   await ms.updateExperimentalFeatures({
-    metrics: false,
-    logsRoute: false,
-    editDocumentsByFunction: false,
-    containsFilter: false,
-    network: false,
-    getTaskDocumentsRoute: false,
-    compositeEmbedders: false,
     chatCompletions: false,
+    compositeEmbedders: false,
+    containsFilter: false,
+    editDocumentsByFunction: false,
+    getTaskDocumentsRoute: false,
+    logsRoute: false,
+    metrics: false,
+    multimodal: false,
+    network: false,
   } satisfies { [TKey in keyof RuntimeTogglableFeatures]-?: false });
 });
 
 test(`${ms.updateExperimentalFeatures.name} and ${ms.getExperimentalFeatures.name} methods`, async () => {
   const features: { [TKey in keyof RuntimeTogglableFeatures]-?: true } = {
-    metrics: true,
-    logsRoute: true,
-    editDocumentsByFunction: true,
-    containsFilter: true,
-    network: true,
-    getTaskDocumentsRoute: true,
-    compositeEmbedders: true,
     chatCompletions: true,
+    compositeEmbedders: true,
+    containsFilter: true,
+    editDocumentsByFunction: true,
+    getTaskDocumentsRoute: true,
+    logsRoute: true,
+    metrics: true,
+    multimodal: true,
+    network: true,
   };
 
   const updateFeatures = await ms.updateExperimentalFeatures(features);
