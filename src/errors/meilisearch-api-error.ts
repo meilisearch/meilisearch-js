@@ -4,17 +4,22 @@ import { MeiliSearchError } from "./meilisearch-error.js";
 export class MeiliSearchApiError extends MeiliSearchError {
   override name = "MeiliSearchApiError";
   override cause?: MeiliSearchErrorResponse;
-  readonly response: Response;
+  readonly details: unknown;
 
-  constructor(response: Response, responseBody?: MeiliSearchErrorResponse) {
+  constructor(
+    responseBodyOrMessage: MeiliSearchErrorResponse | string,
+    details: unknown,
+  ) {
     super(
-      responseBody?.message ?? `${response.status}: ${response.statusText}`,
+      typeof responseBodyOrMessage === "string"
+        ? responseBodyOrMessage
+        : responseBodyOrMessage.message,
     );
 
-    this.response = response;
+    this.details = details;
 
-    if (responseBody !== undefined) {
-      this.cause = responseBody;
+    if (typeof responseBodyOrMessage !== "string") {
+      this.cause = responseBodyOrMessage;
     }
   }
 }
