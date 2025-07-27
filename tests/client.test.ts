@@ -8,8 +8,18 @@ import {
   type MockInstance,
   beforeAll,
 } from "vitest";
-import type { Health, Version, Stats, IndexSwap } from "../src/index.js";
-import { ErrorStatusCode, MeiliSearchRequestError } from "../src/index.js";
+import type {
+  Health,
+  Version,
+  Stats,
+  IndexSwap,
+  MeiliSearchErrorResponse,
+} from "../src/index.js";
+import {
+  ErrorStatusCode,
+  MeiliSearchApiError,
+  MeiliSearchRequestError,
+} from "../src/index.js";
 import { PACKAGE_VERSION } from "../src/package-version.js";
 import {
   clearAllIndexes,
@@ -271,6 +281,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         apiKey: key,
         async httpClient(...params) {
           const result = await fetch(...params);
+
+          if (!result.ok) {
+            throw new Error("expected custom HTTP client to not fail");
+          }
+
           return { success: true, value: result.json() as Promise<unknown> };
         },
       });
@@ -290,6 +305,37 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const { results: documents } = await index.getDocuments();
       expect(documents.length).toBe(1);
+    });
+
+    test(`${permission} key: Create client with custom http client that fails`, async () => {
+      const key = await getKey(permission);
+      const client = new MeiliSearch({
+        ...config,
+        apiKey: key,
+        async httpClient(...params) {
+          const response = await fetch(...params);
+
+          if (response.ok) {
+            throw new Error("expected custom HTTP client to fail");
+          }
+
+          const text = await response.text();
+
+          const value =
+            text === ""
+              ? "(no response body)"
+              : (JSON.parse(text) as MeiliSearchErrorResponse);
+
+          return { success: false, value, details: response };
+        },
+      });
+
+      const error = await assert.rejects(
+        client.multiSearch({ queries: [{ indexUid: crypto.randomUUID() }] }),
+        MeiliSearchRequestError,
+      );
+
+      assert.instanceOf(error.cause, MeiliSearchApiError);
     });
 
     describe("Header tests", () => {
