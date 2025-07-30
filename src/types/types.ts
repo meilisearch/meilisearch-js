@@ -587,6 +587,18 @@ export type RestEmbedder = {
   headers?: Record<string, string>;
   documentTemplateMaxBytes?: number;
   binaryQuantized?: boolean;
+  indexingFragments?: Record<
+    string,
+    {
+      value: RecordAny;
+    }
+  >;
+  searchFragments?: Record<
+    string,
+    {
+      value: RecordAny;
+    }
+  >;
 };
 
 export type OllamaEmbedder = {
