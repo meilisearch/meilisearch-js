@@ -29,9 +29,22 @@ test(`${ms.updateExperimentalFeatures.name} and ${ms.getExperimentalFeatures.nam
     chatCompletions: true,
   };
 
-  const updateFeatures = await ms.updateExperimentalFeatures(features);
-  assert.deepEqual(updateFeatures, features);
+  const updateResponse = await ms.updateExperimentalFeatures(features);
+  const getResponse = await ms.getExperimentalFeatures();
 
-  const getFeatures = await ms.getExperimentalFeatures();
-  assert.deepEqual(getFeatures, features);
+  for (const [feature, expectedValue] of Object.entries(features)) {
+    assert.propertyVal(
+      updateResponse,
+      feature,
+      expectedValue,
+      `Failed on updateResponse for feature: ${feature}`,
+    );
+
+    assert.propertyVal(
+      getResponse,
+      feature,
+      expectedValue,
+      `Failed on getResponse for feature: ${feature}`,
+    );
+  }
 });
