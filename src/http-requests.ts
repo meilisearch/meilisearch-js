@@ -286,4 +286,85 @@ export class HttpRequests {
   delete<T = unknown>(options: RequestOptions): Promise<T> {
     return this.#request<T>({ ...options, method: "DELETE" });
   }
+
+  /** Request with POST that returns a stream. */
+  postStream(options: RequestOptions): Promise<ReadableStream<Uint8Array>> {
+    return this.#requestStream({ ...options, method: "POST" });
+  }
+
+  /**
+   * Sends a request that returns a ReadableStream for streaming responses.
+   *
+   * @returns A promise containing the response stream
+   */
+  async #requestStream({
+    path,
+    method,
+    params,
+    contentType,
+    body,
+    extraRequestInit,
+  }: MainRequestOptions): Promise<ReadableStream<Uint8Array>> {
+    const url = new URL(path, this.#url);
+    if (params !== undefined) {
+      appendRecordToURLSearchParams(url.searchParams, params);
+    }
+
+    const init: RequestInit = {
+      method,
+      body:
+        contentType === undefined || typeof body !== "string"
+          ? JSON.stringify(body)
+          : body,
+      ...extraRequestInit,
+      ...this.#requestInit,
+      headers: this.#getHeaders(extraRequestInit?.headers, contentType),
+    };
+
+    const startTimeout =
+      this.#requestTimeout !== undefined
+        ? getTimeoutFn(init, this.#requestTimeout)
+        : null;
+
+    const stopTimeout = startTimeout?.();
+
+    let response: Response;
+    try {
+      if (this.#customRequestFn !== undefined) {
+        // Custom HTTP clients should return the stream directly
+        return (await this.#customRequestFn(
+          url,
+          init,
+        )) as ReadableStream<Uint8Array>;
+      }
+
+      response = await fetch(url, init);
+    } catch (error) {
+      throw new MeiliSearchRequestError(
+        url.toString(),
+        Object.is(error, TIMEOUT_ID)
+          ? new MeiliSearchRequestTimeOutError(this.#requestTimeout!, init)
+          : error,
+      );
+    } finally {
+      stopTimeout?.();
+    }
+
+    if (!response.ok) {
+      // For error responses, we still need to read the body to get error details
+      const responseBody = await response.text();
+      const parsedResponse =
+        responseBody === ""
+          ? undefined
+          : (JSON.parse(responseBody) as MeiliSearchErrorResponse);
+
+      throw new MeiliSearchApiError(response, parsedResponse);
+    }
+
+    if (!response.body) {
+      throw new Error("Response body is null");
+    }
+
+    return response.body;
+  }
 }

@@ -1,5 +1,5 @@
 import { beforeAll, expect, test } from "vitest";
-import { getClient } from "./utils/meilisearch-test-utils.js";
+import { getClient, dataset } from "./utils/meilisearch-test-utils.js";
 import type { WorkspaceSettings } from "../src/types/types.js";
 
 beforeAll(async () => {
@@ -7,6 +7,12 @@ beforeAll(async () => {
   await client.updateExperimentalFeatures({
     chatCompletions: true,
   });
+  await client
+    .createIndex("movies", {
+      primaryKey: "id",
+    })
+    .waitTask();
+  await client.index("movies").addDocuments(dataset).waitTask();
 });
 
 const WORKSPACE_SETTINGS = {
@@ -44,4 +50,36 @@ test("it can get workspace settings", async () => {
   await client.updateWorkspaceSettings("myWorkspace", WORKSPACE_SETTINGS);
   const response = await client.getWorkspaceSettings("myWorkspace");
   expect(response).toMatchObject(WORKSPACE_SETTINGS_WITHOUT_API_KEY);
+});
+
+test("it can create a chat completion (streaming)", async () => {
+  const client = await getClient("Chat");
+  const stream = await client.createChatCompletion("myWorkspace", {
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "user",
+        content: "Hello, how are you?",
+      },
+    ],
+    stream: true,
+  });
+
+  expect(stream).toBeInstanceOf(ReadableStream);
+
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
+  try {
+    let receivedData = "";
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value);
+      receivedData += chunk;
+    }
+    expect(receivedData.length).toBeGreaterThan(0);
+  } finally {
+    reader.releaseLock();
+  }
 });

@@ -30,6 +30,7 @@ import type {
   RecordAny,
   RuntimeTogglableFeatures,
   WorkspaceSettings,
+  ChatCompletion,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -317,6 +318,19 @@ export class MeiliSearch {
     return await this.httpRequest.patch({
       path: `chats/${workspace}/settings`,
       body: settings,
+    });
+  }
+
+  async createChatCompletion(
+    workspace: string,
+    completion: ChatCompletion,
+  ): Promise<ReadableStream<Uint8Array>> {
+    if (!completion.stream) {
+      throw new Error("The SDK only support streaming");
+    }
+    return await this.httpRequest.postStream({
+      path: `chats/${workspace}/chat/completions`,
+      body: completion,
     });
   }
 
