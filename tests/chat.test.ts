@@ -1,6 +1,6 @@
 import { beforeAll, expect, test } from "vitest";
 import { getClient, dataset } from "./utils/meilisearch-test-utils.js";
-import type { WorkspaceSettings } from "../src/types/types.js";
+import type { ChatWorkspaceSettings } from "../src/types/types.js";
 
 beforeAll(async () => {
   const client = await getClient("Admin");
@@ -27,7 +27,7 @@ const WORKSPACE_SETTINGS = {
     system:
       "You are a helpful assistant that answers questions based on the provided context.",
   },
-} satisfies WorkspaceSettings;
+} satisfies ChatWorkspaceSettings;
 
 const WORKSPACE_SETTINGS_WITHOUT_API_KEY = {
   ...WORKSPACE_SETTINGS,
@@ -38,30 +38,27 @@ const WORKSPACE_SETTINGS_WITHOUT_API_KEY = {
 test("it can update workspace settings", async () => {
   const client = await getClient("Admin");
 
-  const response = await client.updateWorkspaceSettings(
-    "myWorkspace",
-    WORKSPACE_SETTINGS,
-  );
+  const response = await client.chat("myWorkspace").update(WORKSPACE_SETTINGS);
   expect(response).toMatchObject(WORKSPACE_SETTINGS_WITHOUT_API_KEY);
 });
 
 test("it can get workspace settings", async () => {
   const client = await getClient("Admin");
-  await client.updateWorkspaceSettings("myWorkspace", WORKSPACE_SETTINGS);
-  const response = await client.getWorkspaceSettings("myWorkspace");
+  await client.chat("myWorkspace").update(WORKSPACE_SETTINGS);
+  const response = await client.chat("myWorkspace").get();
   expect(response).toMatchObject(WORKSPACE_SETTINGS_WITHOUT_API_KEY);
 });
 
 test("it can list workspaces", async () => {
   const client = await getClient("Admin");
-  await client.updateWorkspaceSettings("myWorkspace", WORKSPACE_SETTINGS);
-  const response = await client.listWorkspaces();
+  await client.chat("myWorkspace").update(WORKSPACE_SETTINGS);
+  const response = await client.getChatWorkspaces();
   expect(response.results).toEqual([{ uid: "myWorkspace" }]);
 });
 
 test("it can create a chat completion (streaming)", async () => {
   const client = await getClient("Chat");
-  const stream = await client.createChatCompletion("myWorkspace", {
+  const stream = await client.chat("myWorkspace").streamCompletion({
     model: "gpt-4o-mini",
     messages: [
       {
