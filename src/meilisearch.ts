@@ -29,8 +29,6 @@ import type {
   Network,
   RecordAny,
   RuntimeTogglableFeatures,
-  WorkspaceSettings,
-  ChatCompletion,
   ResourceResults,
   Webhook,
   ResultsWrapper,
@@ -45,6 +43,7 @@ import {
   type HttpRequestsWithEnqueuedTaskPromise,
 } from "./task.js";
 import { BatchClient } from "./batch.js";
+import { ChatWorkspace } from "./chat-workspace.js";
 import type { MeiliSearchApiError } from "./errors/index.js";
 
 export class MeiliSearch {
@@ -282,6 +281,31 @@ export class MeiliSearch {
   }
 
   ///
+  /// CHATS
+  ///
+
+  /**
+   * Get a chat workspace instance
+   *
+   * @param workspace - The chat workspace UID
+   * @returns Instance of ChatWorkspace
+   */
+  chat(workspace: string): ChatWorkspace {
+    return new ChatWorkspace(this.httpRequest, workspace);
+  }
+
+  /**
+   * Get all chat workspaces
+   *
+   * @returns Promise returning an array of chat workspaces UIDs
+   */
+  async getChatWorkspaces(): Promise<ResourceResults<{ uid: string }[]>> {
+    return await this.httpRequest.get({
+      path: "chats",
+    });
+  }
+
+  ///
   /// WEBHOOKS
   ///
 
@@ -363,45 +387,6 @@ export class MeiliSearch {
     return await this.httpRequest.patch({
       path: "network",
       body: network,
-    });
-  }
-
-  ///
-  /// CHATS
-  ///
-
-  async getWorkspaceSettings(workspace: string): Promise<WorkspaceSettings> {
-    return await this.httpRequest.get({
-      path: `chats/${workspace}/settings`,
-    });
-  }
-
-  async updateWorkspaceSettings(
-    workspace: string,
-    settings: Partial<WorkspaceSettings>,
-  ): Promise<WorkspaceSettings> {
-    return await this.httpRequest.patch({
-      path: `chats/${workspace}/settings`,
-      body: settings,
-    });
-  }
-
-  async listWorkspaces(): Promise<ResourceResults<{ uid: string }[]>> {
-    return await this.httpRequest.get({
-      path: "chats",
-    });
-  }
-
-  async createChatCompletion(
-    workspace: string,
-    completion: ChatCompletion,
-  ): Promise<ReadableStream<Uint8Array>> {
-    if (!completion.stream) {
-      throw new Error("The SDK only support streaming");
-    }
-    return await this.httpRequest.postStream({
-      path: `chats/${workspace}/chat/completions`,
-      body: completion,
     });
   }
 

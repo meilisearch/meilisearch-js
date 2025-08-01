@@ -708,7 +708,7 @@ export type Stats = {
  */
 
 /** @see https://www.meilisearch.com/docs/reference/api/chats#settings-parameters */
-export type WorkspaceSettings = {
+export type ChatWorkspaceSettings = {
   source: "openAi" | "azureOpenAi" | "mistral" | "gemini" | "vLlm";
   orgId?: string;
   projectId?: string;
@@ -721,7 +721,7 @@ export type WorkspaceSettings = {
   };
 };
 
-export type ChatCompletion = {
+export type ChatCompletionRequest = {
   model: string;
   messages: {
     role: "user" | "assistant" | "system";
