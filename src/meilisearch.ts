@@ -31,6 +31,7 @@ import type {
   RuntimeTogglableFeatures,
   WorkspaceSettings,
   ChatCompletion,
+  ResourceResults,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -313,11 +314,17 @@ export class MeiliSearch {
 
   async updateWorkspaceSettings(
     workspace: string,
-    settings: WorkspaceSettings,
+    settings: Partial<WorkspaceSettings>,
   ): Promise<WorkspaceSettings> {
     return await this.httpRequest.patch({
       path: `chats/${workspace}/settings`,
       body: settings,
+    });
+  }
+
+  async listWorkspaces(): Promise<ResourceResults<{ uid: string }[]>> {
+    return await this.httpRequest.get({
+      path: "chats",
     });
   }
 
