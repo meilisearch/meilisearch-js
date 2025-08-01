@@ -190,19 +190,21 @@ export class HttpRequests {
   }
 
   /**
-   * Sends a request with {@link fetch} or a custom HTTP client, combining
-   * parameters and class properties.
+   * Prepares common request parameters and executes the request.
    *
-   * @returns A promise containing the response
+   * @returns Object containing the prepared URL, RequestInit, and stop timeout
+   *   function
    */
-  async #request<T = unknown>({
-    path,
-    method,
-    params,
-    contentType,
-    body,
-    extraRequestInit,
-  }: MainRequestOptions): Promise<T> {
+  async #prepareAndExecuteRequest(options: MainRequestOptions): Promise<{
+    url: URL;
+    init: RequestInit;
+    response?: Response;
+    stopTimeout: (() => void) | null;
+    customResult?: unknown;
+  }> {
+    const { path, method, params, contentType, body, extraRequestInit } =
+      options;
+
     const url = new URL(path, this.#url);
     if (params !== undefined) {
       appendRecordToURLSearchParams(url.searchParams, params);
@@ -224,42 +226,106 @@ export class HttpRequests {
         ? getTimeoutFn(init, this.#requestTimeout)
         : null;
 
-    const stopTimeout = startTimeout?.();
+    const stopTimeout = startTimeout?.() || null;
 
-    let response: Response;
-    let responseBody: string;
     try {
       if (this.#customRequestFn !== undefined) {
-        // When using a custom HTTP client, the response should already be handled and ready to be returned
-        return (await this.#customRequestFn(url, init)) as T;
+        const customResult = await this.#customRequestFn(url, init);
+        return { url, init, stopTimeout, customResult };
       }
 
-      response = await fetch(url, init);
-      responseBody = await response.text();
+      const response = await fetch(url, init);
+      return { url, init, response, stopTimeout };
     } catch (error) {
+      stopTimeout?.();
       throw new MeiliSearchRequestError(
         url.toString(),
         Object.is(error, TIMEOUT_ID)
           ? new MeiliSearchRequestTimeOutError(this.#requestTimeout!, init)
           : error,
       );
+    }
+  }
+
+  /** Validates that a custom HTTP client result is of the expected type. */
+  #validateCustomClientResult<T>(
+    result: unknown,
+    expectedType: "json" | "stream",
+    url: string,
+  ): T {
+    if (expectedType === "stream") {
+      if (!(result instanceof ReadableStream)) {
+        throw new MeiliSearchError(
+          `Custom HTTP client must return a ReadableStream for streaming requests. Got ${typeof result} instead. URL: ${url}`,
+        );
+      }
+    }
+    return result as T;
+  }
+
+  /**
+   * Handles API error responses by reading the response body and throwing
+   * appropriate errors.
+   */
+  async #handleApiError(response: Response, url: string): Promise<never> {
+    try {
+      const responseBody = await response.text();
+      const parsedResponse =
+        responseBody === ""
+          ? undefined
+          : (JSON.parse(responseBody) as MeiliSearchErrorResponse);
+
+      throw new MeiliSearchApiError(response, parsedResponse);
+    } catch (error) {
+      if (error instanceof MeiliSearchApiError) {
+        throw error;
+      }
+      throw new MeiliSearchError(
+        `Failed to parse error response from ${url}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+  }
+
+  /**
+   * Sends a request with {@link fetch} or a custom HTTP client, combining
+   * parameters and class properties.
+   *
+   * @returns A promise containing the response
+   */
+  async #request<T = unknown>(options: MainRequestOptions): Promise<T> {
+    const { url, response, stopTimeout, customResult } =
+      await this.#prepareAndExecuteRequest(options);
+
+    try {
+      if (customResult !== undefined) {
+        // When using a custom HTTP client, the response should already be handled and ready to be returned
+        return this.#validateCustomClientResult<T>(
+          customResult,
+          "json",
+          url.toString(),
+        );
+      }
+
+      if (!response) {
+        throw new MeiliSearchError(
+          `No response received from ${url.toString()}`,
+        );
+      }
+
+      if (!response.ok) {
+        await this.#handleApiError(response, url.toString());
+      }
+
+      const responseBody = await response.text();
+      const parsedResponse =
+        responseBody === ""
+          ? undefined
+          : (JSON.parse(responseBody) as T | MeiliSearchErrorResponse);
+
+      return parsedResponse as T;
     } finally {
       stopTimeout?.();
     }
-
-    const parsedResponse =
-      responseBody === ""
-        ? undefined
-        : (JSON.parse(responseBody) as T | MeiliSearchErrorResponse);
-
-    if (!response.ok) {
-      throw new MeiliSearchApiError(
-        response,
-        parsedResponse as MeiliSearchErrorResponse | undefined,
-      );
-    }
-
-    return parsedResponse as T;
   }
 
   /** Request with GET. */
@@ -297,74 +363,42 @@ export class HttpRequests {
    *
    * @returns A promise containing the response stream
    */
-  async #requestStream({
-    path,
-    method,
-    params,
-    contentType,
-    body,
-    extraRequestInit,
-  }: MainRequestOptions): Promise<ReadableStream<Uint8Array>> {
-    const url = new URL(path, this.#url);
-    if (params !== undefined) {
-      appendRecordToURLSearchParams(url.searchParams, params);
-    }
+  async #requestStream(
+    options: MainRequestOptions,
+  ): Promise<ReadableStream<Uint8Array>> {
+    const { url, response, stopTimeout, customResult } =
+      await this.#prepareAndExecuteRequest(options);
 
-    const init: RequestInit = {
-      method,
-      body:
-        contentType === undefined || typeof body !== "string"
-          ? JSON.stringify(body)
-          : body,
-      ...extraRequestInit,
-      ...this.#requestInit,
-      headers: this.#getHeaders(extraRequestInit?.headers, contentType),
-    };
-
-    const startTimeout =
-      this.#requestTimeout !== undefined
-        ? getTimeoutFn(init, this.#requestTimeout)
-        : null;
-
-    const stopTimeout = startTimeout?.();
-
-    let response: Response;
     try {
-      if (this.#customRequestFn !== undefined) {
+      if (customResult !== undefined) {
         // Custom HTTP clients should return the stream directly
-        return (await this.#customRequestFn(
-          url,
-          init,
-        )) as ReadableStream<Uint8Array>;
+        return this.#validateCustomClientResult<ReadableStream<Uint8Array>>(
+          customResult,
+          "stream",
+          url.toString(),
+        );
       }
 
-      response = await fetch(url, init);
-    } catch (error) {
-      throw new MeiliSearchRequestError(
-        url.toString(),
-        Object.is(error, TIMEOUT_ID)
-          ? new MeiliSearchRequestTimeOutError(this.#requestTimeout!, init)
-          : error,
-      );
+      if (!response) {
+        throw new MeiliSearchError(
+          `No response received from ${url.toString()}`,
+        );
+      }
+
+      if (!response.ok) {
+        await this.#handleApiError(response, url.toString());
+      }
+
+      if (!response.body) {
+        throw new MeiliSearchError(
+          `Response body is not available for streaming from ${url.toString()}. ` +
+            `This may indicate a server error or unsupported streaming endpoint.`,
+        );
+      }
+
+      return response.body;
     } finally {
       stopTimeout?.();
     }
-
-    if (!response.ok) {
-      // For error responses, we still need to read the body to get error details
-      const responseBody = await response.text();
-      const parsedResponse =
-        responseBody === ""
-          ? undefined
-          : (JSON.parse(responseBody) as MeiliSearchErrorResponse);
-
-      throw new MeiliSearchApiError(response, parsedResponse);
-    }
-
-    if (!response.body) {
-      throw new Error("Response body is null");
-    }
-
-    return response.body;
   }
 }
