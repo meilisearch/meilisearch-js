@@ -190,19 +190,18 @@ export class HttpRequests {
   }
 
   /**
-   * Sends a request with {@link fetch} or a custom HTTP client, combining
-   * parameters and class properties.
+   * Prepares common request parameters (URL and RequestInit).
    *
-   * @returns A promise containing the response
+   * @returns Object containing the prepared URL and RequestInit
    */
-  async #request<T = unknown>({
+  #prepareRequest({
     path,
     method,
     params,
     contentType,
     body,
     extraRequestInit,
-  }: MainRequestOptions): Promise<T> {
+  }: MainRequestOptions): { url: URL; init: RequestInit } {
     const url = new URL(path, this.#url);
     if (params !== undefined) {
       appendRecordToURLSearchParams(url.searchParams, params);
@@ -218,6 +217,18 @@ export class HttpRequests {
       ...this.#requestInit,
       headers: this.#getHeaders(extraRequestInit?.headers, contentType),
     };
+
+    return { url, init };
+  }
+
+  /**
+   * Sends a request with {@link fetch} or a custom HTTP client, combining
+   * parameters and class properties.
+   *
+   * @returns A promise containing the response
+   */
+  async #request<T = unknown>(options: MainRequestOptions): Promise<T> {
+    const { url, init } = this.#prepareRequest(options);
 
     const startTimeout =
       this.#requestTimeout !== undefined
@@ -285,5 +296,71 @@ export class HttpRequests {
   /** Request with DELETE. */
   delete<T = unknown>(options: RequestOptions): Promise<T> {
     return this.#request<T>({ ...options, method: "DELETE" });
+  }
+
+  /** Request with POST that returns a stream. */
+  postStream(options: RequestOptions): Promise<ReadableStream<Uint8Array>> {
+    return this.#requestStream({ ...options, method: "POST" });
+  }
+
+  /**
+   * Sends a request that returns a ReadableStream for streaming responses.
+   *
+   * @returns A promise containing the response stream
+   */
+  async #requestStream(
+    options: MainRequestOptions,
+  ): Promise<ReadableStream<Uint8Array>> {
+    const { url, init } = this.#prepareRequest(options);
+
+    const startTimeout =
+      this.#requestTimeout !== undefined
+        ? getTimeoutFn(init, this.#requestTimeout)
+        : null;
+
+    const stopTimeout = startTimeout?.();
+
+    let response: Response;
+    try {
+      if (this.#customRequestFn !== undefined) {
+        const result = await this.#customRequestFn(url, init);
+        if (!(result instanceof ReadableStream)) {
+          throw new MeiliSearchError(
+            "Custom HTTP client must return a ReadableStream for streaming requests",
+          );
+        }
+        return result as ReadableStream<Uint8Array>;
+      }
+
+      response = await fetch(url, init);
+    } catch (error) {
+      throw new MeiliSearchRequestError(
+        url.toString(),
+        Object.is(error, TIMEOUT_ID)
+          ? new MeiliSearchRequestTimeOutError(this.#requestTimeout!, init)
+          : error,
+      );
+    } finally {
+      stopTimeout?.();
+    }
+
+    if (!response.ok) {
+      // For error responses, we still need to read the body to get error details
+      const responseBody = await response.text();
+      const parsedResponse =
+        responseBody === ""
+          ? undefined
+          : (JSON.parse(responseBody) as MeiliSearchErrorResponse);
+
+      throw new MeiliSearchApiError(response, parsedResponse);
+    }
+
+    if (!response.body) {
+      throw new MeiliSearchError(
+        "Response body is null - server did not return a readable stream",
+      );
+    }
+
+    return response.body;
   }
 }
