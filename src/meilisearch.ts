@@ -29,6 +29,7 @@ import type {
   Network,
   RecordAny,
   RuntimeTogglableFeatures,
+  WorkspaceSettings,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -296,6 +297,26 @@ export class MeiliSearch {
     return await this.httpRequest.patch({
       path: "network",
       body: network,
+    });
+  }
+
+  ///
+  /// CHATS
+  ///
+
+  async getWorkspaceSettings(workspace: string): Promise<WorkspaceSettings> {
+    return await this.httpRequest.get({
+      path: `chats/${workspace}/settings`,
+    });
+  }
+
+  async updateWorkspaceSettings(
+    workspace: string,
+    settings: WorkspaceSettings,
+  ): Promise<WorkspaceSettings> {
+    return await this.httpRequest.patch({
+      path: `chats/${workspace}/settings`,
+      body: settings,
     });
   }
 

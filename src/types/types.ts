@@ -700,6 +700,24 @@ export type Stats = {
 };
 
 /*
+ ** CHATS
+ */
+
+/** @see https://www.meilisearch.com/docs/reference/api/chats#settings-parameters */
+export type WorkspaceSettings = {
+  source: "openAi" | "azureOpenAi" | "mistral" | "gemini" | "vLlm";
+  orgId?: string;
+  projectId?: string;
+  apiVersion?: string;
+  deploymentId?: string;
+  baseUrl?: string;
+  apiKey: string;
+  prompts: {
+    system: string;
+  };
+};
+
+/*
  ** Keys
  */
 
