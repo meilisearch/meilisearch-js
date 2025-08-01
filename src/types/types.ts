@@ -721,6 +721,15 @@ export type WorkspaceSettings = {
   };
 };
 
+export type ChatCompletion = {
+  model: string;
+  messages: {
+    role: "user" | "assistant" | "system";
+    content: string;
+  }[];
+  stream: boolean;
+};
+
 /*
  ** Keys
  */
