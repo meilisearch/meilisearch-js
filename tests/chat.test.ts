@@ -52,6 +52,13 @@ test("it can get workspace settings", async () => {
   expect(response).toMatchObject(WORKSPACE_SETTINGS_WITHOUT_API_KEY);
 });
 
+test("it can list workspaces", async () => {
+  const client = await getClient("Admin");
+  await client.updateWorkspaceSettings("myWorkspace", WORKSPACE_SETTINGS);
+  const response = await client.listWorkspaces();
+  expect(response.results).toEqual([{ uid: "myWorkspace" }]);
+});
+
 test("it can create a chat completion (streaming)", async () => {
   const client = await getClient("Chat");
   const stream = await client.createChatCompletion("myWorkspace", {
