@@ -4,12 +4,13 @@
  * @see `meilisearch::routes::features::RuntimeTogglableFeatures`
  */
 export type RuntimeTogglableFeatures = {
-  metrics?: boolean | null;
-  logsRoute?: boolean | null;
-  editDocumentsByFunction?: boolean | null;
-  containsFilter?: boolean | null;
-  network?: boolean | null;
-  getTaskDocumentsRoute?: boolean | null;
-  compositeEmbedders?: boolean | null;
   chatCompletions?: boolean | null;
+  compositeEmbedders?: boolean | null;
+  containsFilter?: boolean | null;
+  editDocumentsByFunction?: boolean | null;
+  getTaskDocumentsRoute?: boolean | null;
+  logsRoute?: boolean | null;
+  metrics?: boolean | null;
+  multimodal?: boolean | null;
+  network?: boolean | null;
 };
