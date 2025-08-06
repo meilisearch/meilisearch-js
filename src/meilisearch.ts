@@ -31,7 +31,7 @@ import type {
   RuntimeTogglableFeatures,
   Webhook,
   ResultsWrapper,
-  WebhookCreation,
+  WebhookPayload,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -281,24 +281,45 @@ export class MeiliSearch {
   /// WEBHOOKS
   ///
 
-  async listWebhooks(): Promise<ResultsWrapper<Webhook[]>> {
+  /**
+   * Get all webhooks
+   *
+   * @returns Promise returning an object with webhooks
+   */
+  async getWebhooks(): Promise<ResultsWrapper<Webhook[]>> {
     return await this.httpRequest.get({ path: "webhooks" });
   }
 
-  async createWebhook(webhook: WebhookCreation): Promise<Webhook> {
+  /**
+   * Create a webhook
+   *
+   * @param webhook - Webhook to create
+   * @returns Promise returning the created webhook
+   */
+  async createWebhook(webhook: WebhookPayload): Promise<Webhook> {
     return await this.httpRequest.post({ path: "webhooks", body: webhook });
   }
 
-  async updateWebhook(
-    uuid: string,
-    webhook: WebhookCreation,
-  ): Promise<Webhook> {
+  /**
+   * Update a webhook
+   *
+   * @param uuid - Webhook UUID
+   * @param webhook - Webhook to update
+   * @returns Promise returning the updated webhook
+   */
+  async updateWebhook(uuid: string, webhook: WebhookPayload): Promise<Webhook> {
     return await this.httpRequest.patch({
       path: `webhooks/${uuid}`,
       body: webhook,
     });
   }
 
+  /**
+   * Delete a webhook
+   *
+   * @param uuid - Webhook UUID
+   * @returns Promise returning void
+   */
   async deleteWebhook(uuid: string): Promise<void> {
     await this.httpRequest.delete({ path: `webhooks/${uuid}` });
   }
