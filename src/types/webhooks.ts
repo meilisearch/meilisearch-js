@@ -5,4 +5,4 @@ export type Webhook = {
   isEditable: boolean;
 };
 
-export type WebhookCreation = Omit<Webhook, "uuid" | "isEditable">;
+export type WebhookPayload = Omit<Webhook, "uuid" | "isEditable">;

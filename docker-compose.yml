@@ -14,8 +14,7 @@ services:
       - ./:/home/package
 
   meilisearch:
-    # TODO: the prototype tag needs to be removed before merging on `main`
-    image: getmeili/meilisearch:prototype-webhooks-0
+    image: getmeili/meilisearch
     ports:
       - "7700:7700"
     environment:
