@@ -29,6 +29,9 @@ import type {
   Network,
   RecordAny,
   RuntimeTogglableFeatures,
+  Webhook,
+  ResultsWrapper,
+  WebhookCreation,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -272,6 +275,32 @@ export class MeiliSearch {
       body: queries,
       extraRequestInit,
     });
+  }
+
+  ///
+  /// WEBHOOKS
+  ///
+
+  async listWebhooks(): Promise<ResultsWrapper<Webhook[]>> {
+    return await this.httpRequest.get({ path: "webhooks" });
+  }
+
+  async createWebhook(webhook: WebhookCreation): Promise<Webhook> {
+    return await this.httpRequest.post({ path: "webhooks", body: webhook });
+  }
+
+  async updateWebhook(
+    uuid: string,
+    webhook: WebhookCreation,
+  ): Promise<Webhook> {
+    return await this.httpRequest.patch({
+      path: `webhooks/${uuid}`,
+      body: webhook,
+    });
+  }
+
+  async deleteWebhook(uuid: string): Promise<void> {
+    await this.httpRequest.delete({ path: `webhooks/${uuid}` });
   }
 
   ///
