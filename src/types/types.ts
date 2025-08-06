@@ -131,6 +131,10 @@ export type ResourceResults<T> = Pagination & {
   total: number;
 };
 
+export type ResultsWrapper<T> = {
+  results: T;
+};
+
 ///
 /// Indexes
 ///
