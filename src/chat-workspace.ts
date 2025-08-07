@@ -33,6 +33,12 @@ export class ChatWorkspace {
     });
   }
 
+  async delete(): Promise<void> {
+    await this.#httpRequest.delete({
+      path: `chats/${this.#workspace}/settings`,
+    });
+  }
+
   async streamCompletion(
     completion: ChatCompletionRequest,
   ): Promise<ReadableStream<Uint8Array>> {
