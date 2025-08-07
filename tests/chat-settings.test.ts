@@ -1,5 +1,5 @@
 import {
-  afterAll,
+  beforeAll,
   expect,
   test,
   describe,
@@ -22,8 +22,10 @@ const index = {
   uid: "chat_settings_test",
 };
 
-afterAll(() => {
-  return clearAllIndexes(config);
+beforeAll(async () => {
+  await clearAllIndexes(config);
+  const client = await getClient("Master");
+  await client.updateExperimentalFeatures({ chatCompletions: true });
 });
 
 describe.each([{ permission: "Master" }, { permission: "Admin" }])(
