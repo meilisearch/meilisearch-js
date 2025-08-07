@@ -726,6 +726,20 @@ export type ChatCompletionRequest = {
   stream: boolean;
 };
 
+export type ChatSettings = {
+  description: string;
+  documentTemplate: string;
+  documentTemplateMaxBytes: number;
+  searchParameters: SearchParams;
+};
+
+export type ChatSettingsPayload = {
+  description?: string;
+  documentTemplate?: string;
+  documentTemplateMaxBytes?: number;
+  searchParameters?: Partial<SearchParams>;
+};
+
 /*
  ** Keys
  */
