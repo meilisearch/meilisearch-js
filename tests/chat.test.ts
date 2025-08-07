@@ -56,6 +56,14 @@ test("it can list workspaces", async () => {
   expect(response.results).toEqual([{ uid: "myWorkspace" }]);
 });
 
+test("it can delete a workspace settings", async () => {
+  const client = await getClient("Admin");
+  await client.chat("myWorkspace").update(WORKSPACE_SETTINGS);
+  await client.chat("myWorkspace").delete();
+  const response = await client.getChatWorkspaces();
+  expect(response.results).toEqual([{ uid: "myWorkspace" }]);
+});
+
 test("it can create a chat completion (streaming)", async () => {
   const client = await getClient("Chat");
   const stream = await client.chat("myWorkspace").streamCompletion({
