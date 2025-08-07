@@ -32,7 +32,7 @@ const WORKSPACE_SETTINGS = {
 const WORKSPACE_SETTINGS_WITHOUT_API_KEY = {
   ...WORKSPACE_SETTINGS,
   // Meilisearch will hide the api key in the response
-  apiKey: "XXX...",
+  apiKey: "sk-XXXXX...",
 };
 
 test("it can update workspace settings", async () => {
