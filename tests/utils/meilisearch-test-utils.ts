@@ -44,6 +44,11 @@ async function getKey(permission: string): Promise<string> {
     return key || "";
   }
 
+  if (permission === "Chat") {
+    const key = keys.find((key) => key.name === "Default Chat API Key")?.key;
+    return key || "";
+  }
+
   if (permission === "Admin") {
     const key = keys.find((key) => key.name === "Default Admin API Key")?.key;
     return key || "";

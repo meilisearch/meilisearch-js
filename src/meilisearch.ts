@@ -29,6 +29,7 @@ import type {
   Network,
   RecordAny,
   RuntimeTogglableFeatures,
+  ResourceResults,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -38,6 +39,7 @@ import {
   type HttpRequestsWithEnqueuedTaskPromise,
 } from "./task.js";
 import { BatchClient } from "./batch.js";
+import { ChatWorkspace } from "./chat-workspace.js";
 import type { MeiliSearchApiError } from "./errors/index.js";
 
 export class MeiliSearch {
@@ -271,6 +273,31 @@ export class MeiliSearch {
       path: "multi-search",
       body: queries,
       extraRequestInit,
+    });
+  }
+
+  ///
+  /// CHATS
+  ///
+
+  /**
+   * Get a chat workspace instance
+   *
+   * @param workspace - The chat workspace UID
+   * @returns Instance of ChatWorkspace
+   */
+  chat(workspace: string): ChatWorkspace {
+    return new ChatWorkspace(this.httpRequest, workspace);
+  }
+
+  /**
+   * Get all chat workspaces
+   *
+   * @returns Promise returning an array of chat workspaces UIDs
+   */
+  async getChatWorkspaces(): Promise<ResourceResults<{ uid: string }[]>> {
+    return await this.httpRequest.get({
+      path: "chats",
     });
   }
 
