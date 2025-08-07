@@ -59,7 +59,7 @@ test("it can list workspaces", async () => {
 test("it can delete a workspace settings", async () => {
   const client = await getClient("Admin");
   await client.chat("myWorkspace").update(WORKSPACE_SETTINGS);
-  await client.chat("myWorkspace").delete();
+  await client.chat("myWorkspace").reset();
   const response = await client.getChatWorkspaces();
   expect(response.results).toEqual([{ uid: "myWorkspace" }]);
 });
