@@ -67,7 +67,7 @@ export class ChatWorkspace {
     completion: ChatCompletionRequest,
   ): Promise<ReadableStream<Uint8Array>> {
     if (!completion.stream) {
-      throw new Error("The SDK only support streaming");
+      throw new Error("The SDK only supports streaming");
     }
     return await this.#httpRequest.postStream({
       path: `chats/${this.#workspace}/chat/completions`,
