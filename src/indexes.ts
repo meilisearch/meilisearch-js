@@ -50,6 +50,8 @@ import type {
   PrefixSearch,
   RecordAny,
   EnqueuedTaskPromise,
+  ChatSettings,
+  ChatSettingsPayload,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -1375,6 +1377,34 @@ export class Index<T extends RecordAny = RecordAny> {
   resetPrefixSearch(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/prefix-search`,
+    });
+  }
+
+  ///
+  /// CHAT SETTINGS
+  ///
+
+  /**
+   * Get the index's chat settings.
+   *
+   * @returns Promise containing a ChatSettings object
+   */
+  async getChat(): Promise<ChatSettings> {
+    return await this.httpRequest.get<ChatSettings>({
+      path: `indexes/${this.uid}/settings/chat`,
+    });
+  }
+
+  /**
+   * Update the index's chat settings.
+   *
+   * @param chatSettings - ChatSettings object
+   * @returns Promise containing an EnqueuedTask
+   */
+  updateChat(chatSettings: ChatSettingsPayload): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.put({
+      path: `indexes/${this.uid}/settings/chat`,
+      body: chatSettings,
     });
   }
 }
