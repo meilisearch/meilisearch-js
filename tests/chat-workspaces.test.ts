@@ -22,7 +22,7 @@ const WORKSPACE_SETTINGS = {
   apiVersion: "some-api-version",
   deploymentId: "some-deployment-id",
   baseUrl: "https://baseurl.com",
-  apiKey: "sk-abc...",
+  apiKey: "sk-test-placeholder-api-key",
   prompts: {
     system:
       "You are a helpful assistant that answers questions based on the provided context.",
@@ -83,13 +83,22 @@ test("it can create a chat completion (streaming)", async () => {
   const decoder = new TextDecoder();
   try {
     let receivedData = "";
-    while (true) {
+    let chunkCount = 0;
+    const maxChunks = 1000; // Safety limit to prevent infinite loops
+
+    while (chunkCount < maxChunks) {
       const { done, value } = await reader.read();
       if (done) break;
 
       const chunk = decoder.decode(value);
       receivedData += chunk;
+      chunkCount++;
     }
+
+    if (chunkCount >= maxChunks) {
+      throw new Error(`Test exceeded maximum chunk limit of ${maxChunks}`);
+    }
+
     expect(receivedData.length).toBeGreaterThan(0);
   } finally {
     reader.releaseLock();
