@@ -37,6 +37,14 @@ describe("webhooks", () => {
     expect(response).toHaveProperty("isEditable", true);
   });
 
+  it("can fetch a webhook", async () => {
+    const createdWebhook = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
+    const response = await adminClient.getWebhook(createdWebhook.uuid);
+    expect(response).toHaveProperty("uuid", createdWebhook.uuid);
+    expect(response).toHaveProperty("url", WEBHOOK_PAYLOAD.url);
+    expect(response).toHaveProperty("headers", WEBHOOK_PAYLOAD.headers);
+  });
+
   it("can update a webhook", async () => {
     const updatedWebhook = {
       ...WEBHOOK_PAYLOAD,

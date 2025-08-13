@@ -291,6 +291,16 @@ export class MeiliSearch {
   }
 
   /**
+   * Get a webhook
+   *
+   * @param uuid - Webhook UUID
+   * @returns Promise returning the webhook
+   */
+  async getWebhook(uuid: string): Promise<Webhook> {
+    return await this.httpRequest.get({ path: `webhooks/${uuid}` });
+  }
+
+  /**
    * Create a webhook
    *
    * @param webhook - Webhook to create
