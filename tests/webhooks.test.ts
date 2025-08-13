@@ -15,7 +15,9 @@ beforeAll(async () => {
 afterAll(async () => {
   const response = await adminClient.getWebhooks();
   for (const webhook of response.results) {
-    await adminClient.deleteWebhook(webhook.uuid);
+    if (webhook.isEditable) {
+      await adminClient.deleteWebhook(webhook.uuid);
+    }
   }
 });
 
