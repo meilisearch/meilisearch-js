@@ -15,6 +15,13 @@ afterAll(async () => {
   }
 });
 
+const WEBHOOK_PAYLOAD = {
+  url: "https://example.com",
+  headers: {
+    authorization: "TOKEN",
+  },
+} satisfies WebhookPayload;
+
 describe("webhooks", () => {
   it("can list webhooks", async () => {
     const response = await adminClient.getWebhooks();
@@ -23,35 +30,23 @@ describe("webhooks", () => {
   });
 
   it("can create a webhook", async () => {
-    const webhook = {
-      url: "https://example.com",
-      headers: {
-        authorization: "TOKEN",
-      },
-    } satisfies WebhookPayload;
-    const response = await adminClient.createWebhook(webhook);
+    const response = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
     expect(response).toHaveProperty("uuid");
-    expect(response).toHaveProperty("url", webhook.url);
-    expect(response).toHaveProperty("headers", webhook.headers);
+    expect(response).toHaveProperty("url", WEBHOOK_PAYLOAD.url);
+    expect(response).toHaveProperty("headers", WEBHOOK_PAYLOAD.headers);
     expect(response).toHaveProperty("isEditable", true);
   });
 
   it("can update a webhook", async () => {
-    const webhook = {
-      url: "https://example.com",
-      headers: {
-        authorization: "TOKEN",
-      },
-    } satisfies WebhookPayload;
     const updatedWebhook = {
-      ...webhook,
+      ...WEBHOOK_PAYLOAD,
       url: "https://example.com/updated",
       headers: {
         authorization: "UPDATED TOKEN",
       },
     } satisfies WebhookPayload;
 
-    const createdWebhook = await adminClient.createWebhook(webhook);
+    const createdWebhook = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
     const response = await adminClient.updateWebhook(
       createdWebhook.uuid,
       updatedWebhook,
@@ -61,15 +56,26 @@ describe("webhooks", () => {
     expect(response).toHaveProperty("headers", updatedWebhook.headers);
   });
 
-  it("can delete a webhook", async () => {
-    const webhook = {
-      url: "https://example.com",
+  it("can update a webhook without updating the URL", async () => {
+    const updatedWebhook = {
+      ...WEBHOOK_PAYLOAD,
       headers: {
-        authorization: "TOKEN",
+        authorization: "UPDATED TOKEN",
       },
     } satisfies WebhookPayload;
 
-    const createdWebhook = await adminClient.createWebhook(webhook);
+    const createdWebhook = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
+    const response = await adminClient.updateWebhook(
+      createdWebhook.uuid,
+      updatedWebhook,
+    );
+
+    expect(response).toHaveProperty("url", WEBHOOK_PAYLOAD.url);
+    expect(response).toHaveProperty("headers", updatedWebhook.headers);
+  });
+
+  it("can delete a webhook", async () => {
+    const createdWebhook = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
     const deleteResponse = await adminClient.deleteWebhook(createdWebhook.uuid);
     expect(deleteResponse).toBeUndefined();
 
