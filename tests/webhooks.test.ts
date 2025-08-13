@@ -1,6 +1,10 @@
 import { expect, it, describe, beforeAll, afterAll } from "vitest";
 import { getClient } from "./utils/meilisearch-test-utils.js";
-import { Meilisearch, type WebhookPayload } from "../src/index.js";
+import {
+  Meilisearch,
+  type WebhookCreatePayload,
+  type WebhookUpdatePayload,
+} from "../src/index.js";
 
 let adminClient: Meilisearch;
 
@@ -20,7 +24,7 @@ const WEBHOOK_PAYLOAD = {
   headers: {
     authorization: "TOKEN",
   },
-} satisfies WebhookPayload;
+} satisfies WebhookCreatePayload;
 
 describe("webhooks", () => {
   it("can list webhooks", async () => {
@@ -52,7 +56,7 @@ describe("webhooks", () => {
       headers: {
         authorization: "UPDATED TOKEN",
       },
-    } satisfies WebhookPayload;
+    } satisfies WebhookUpdatePayload;
 
     const createdWebhook = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
     const response = await adminClient.updateWebhook(
@@ -70,7 +74,7 @@ describe("webhooks", () => {
       headers: {
         authorization: "UPDATED TOKEN",
       },
-    } satisfies WebhookPayload;
+    } satisfies WebhookUpdatePayload;
 
     const createdWebhook = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
     const response = await adminClient.updateWebhook(

@@ -31,7 +31,8 @@ import type {
   RuntimeTogglableFeatures,
   Webhook,
   ResultsWrapper,
-  WebhookPayload,
+  WebhookCreatePayload,
+  WebhookUpdatePayload,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -306,7 +307,7 @@ export class MeiliSearch {
    * @param webhook - Webhook to create
    * @returns Promise returning the created webhook
    */
-  async createWebhook(webhook: WebhookPayload): Promise<Webhook> {
+  async createWebhook(webhook: WebhookCreatePayload): Promise<Webhook> {
     return await this.httpRequest.post({ path: "webhooks", body: webhook });
   }
 
@@ -317,7 +318,10 @@ export class MeiliSearch {
    * @param webhook - Webhook to update
    * @returns Promise returning the updated webhook
    */
-  async updateWebhook(uuid: string, webhook: WebhookPayload): Promise<Webhook> {
+  async updateWebhook(
+    uuid: string,
+    webhook: WebhookUpdatePayload,
+  ): Promise<Webhook> {
     return await this.httpRequest.patch({
       path: `webhooks/${uuid}`,
       body: webhook,
