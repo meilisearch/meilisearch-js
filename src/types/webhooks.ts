@@ -12,7 +12,14 @@ export type Webhook = {
   isEditable: boolean;
 };
 
-export type WebhookPayload = {
+export type WebhookCreatePayload = {
+  /** The URL Meilisearch should notify whenever it completes a task */
+  url: string;
+  /** An object with HTTP headers and their values */
+  headers?: Record<string, string>;
+};
+
+export type WebhookUpdatePayload = {
   /** The URL Meilisearch should notify whenever it completes a task */
   url?: string;
   /** An object with HTTP headers and their values */
