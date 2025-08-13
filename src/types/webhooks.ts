@@ -1,5 +1,3 @@
-import type { SafeOmit } from "./shared.js";
-
 export type Webhook = {
   uuid: string;
   url: string;
@@ -7,9 +5,7 @@ export type Webhook = {
   isEditable: boolean;
 };
 
-export type WebhookPayload = SafeOmit<
-  Webhook,
-  "uuid" | "isEditable" | "url"
-> & {
+export type WebhookPayload = {
   url?: string;
+  headers?: Record<string, string>;
 };
