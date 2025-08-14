@@ -1402,7 +1402,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * @returns Promise containing an EnqueuedTask
    */
   updateChat(chatSettings: ChatSettingsPayload): EnqueuedTaskPromise {
-    return this.#httpRequestsWithTask.put({
+    return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/chat`,
       body: chatSettings,
     });
