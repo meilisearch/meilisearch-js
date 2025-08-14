@@ -1398,7 +1398,7 @@ export class Index<T extends RecordAny = RecordAny> {
   /**
    * Update the index's chat settings.
    *
-   * @param chatSettings - ChatSettings object
+   * @param chatSettings - ChatSettingsPayload object
    * @returns Promise containing an EnqueuedTask
    */
   updateChat(chatSettings: ChatSettingsPayload): EnqueuedTaskPromise {
