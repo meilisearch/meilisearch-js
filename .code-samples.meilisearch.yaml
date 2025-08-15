@@ -823,3 +823,23 @@ update_embedders_1: |-
       documentTemplate: 'A document titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}'
     }
   });
+webhooks_get_1: |-
+  client.getWebhooks()
+webhooks_get_single_1: |-
+  client.getWebhook(WEBHOOK_UUID)
+webhooks_post_1: |-
+  client.createWebhook({
+    url: 'WEBHOOK_TARGET_URL',
+    headers: {
+      authorization: 'SECURITY_KEY',
+      referer: 'https://example.com'
+    }
+  })
+webhooks_patch_1: |-
+  client.updateWebhook(WEBHOOK_UUID, {
+    headers: {
+      referer: null
+    }
+  })
+webhooks_delete_1: |-
+  client.deleteWebhook(WEBHOOK_UUID)

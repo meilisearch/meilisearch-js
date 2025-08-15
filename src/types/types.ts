@@ -131,6 +131,10 @@ export type ResourceResults<T> = Pagination & {
   total: number;
 };
 
+export type ResultsWrapper<T> = {
+  results: T;
+};
+
 ///
 /// Indexes
 ///
@@ -697,6 +701,47 @@ export type Stats = {
   indexes: {
     [index: string]: IndexStats;
   };
+};
+
+/*
+ ** CHATS
+ */
+
+/** @see https://www.meilisearch.com/docs/reference/api/chats#settings-parameters */
+export type ChatWorkspaceSettings = {
+  source: "openAi" | "azureOpenAi" | "mistral" | "gemini" | "vLlm";
+  orgId?: string;
+  projectId?: string;
+  apiVersion?: string;
+  deploymentId?: string;
+  baseUrl?: string;
+  apiKey: string;
+  prompts: {
+    system: string;
+  };
+};
+
+export type ChatCompletionRequest = {
+  model: string;
+  messages: {
+    role: "user" | "assistant" | "system";
+    content: string;
+  }[];
+  stream: boolean;
+};
+
+export type ChatSettings = {
+  description: string;
+  documentTemplate: string;
+  documentTemplateMaxBytes: number;
+  searchParameters: SearchParams;
+};
+
+export type ChatSettingsPayload = {
+  description?: string;
+  documentTemplate?: string;
+  documentTemplateMaxBytes?: number;
+  searchParameters?: Partial<SearchParams>;
 };
 
 /*
