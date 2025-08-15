@@ -237,6 +237,7 @@ export type SearchParams = Query &
     distinct?: string;
     retrieveVectors?: boolean;
     locales?: Locale[];
+    media?: Record<string, string>;
   };
 
 // Search parameters for searches made with the GET method
