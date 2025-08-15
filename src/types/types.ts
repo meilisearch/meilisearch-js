@@ -237,6 +237,7 @@ export type SearchParams = Query &
     distinct?: string;
     retrieveVectors?: boolean;
     locales?: Locale[];
+    media?: Record<string, string>;
   };
 
 // Search parameters for searches made with the GET method
@@ -587,6 +588,18 @@ export type RestEmbedder = {
   headers?: Record<string, string>;
   documentTemplateMaxBytes?: number;
   binaryQuantized?: boolean;
+  indexingFragments?: Record<
+    string,
+    {
+      value: RecordAny;
+    }
+  >;
+  searchFragments?: Record<
+    string,
+    {
+      value: RecordAny;
+    }
+  >;
 };
 
 export type OllamaEmbedder = {
