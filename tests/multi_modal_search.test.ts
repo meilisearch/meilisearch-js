@@ -4,18 +4,19 @@ import type { Embedder } from "../src/types/types.js";
 import movies from "./fixtures/movies.json" assert { type: "json" };
 import type { Meilisearch } from "../src/index.js";
 
+const VOYAGE_API_KEY = import.meta.env.VITE_VOYAGE_API_KEY as string;
+
 const INDEX_UID = "multi-modal-search-test";
 const EMBEDDER_NAME = "multimodal";
 const EMBEDDER_CONFIG = {
   source: "rest",
   url: "https://api.voyageai.com/v1/multimodalembeddings",
-  apiKey: import.meta.env.VITE_VOYAGE_API_KEY as string,
+  apiKey: VOYAGE_API_KEY,
   dimensions: 1024,
   indexingFragments: {
     text: {
       value: {
-        // this part sticks to the voyage API
-        // this fragment is only meant at indexing time
+        // The shape of the data here depends on the model used
         content: [
           {
             type: "text",
@@ -24,42 +25,29 @@ const EMBEDDER_CONFIG = {
         ],
       },
     },
-    // we also send the poster
-    // poster: {
-    //   value: {
-    //     content: [
-    //       {
-    //         type: "image_url",
-    //         image_url: "{{doc.poster}}",
-    //       },
-    //     ],
-    //   },
-    // },
+    poster: {
+      value: {
+        // The shape of the data here depends on the model used
+        content: [
+          {
+            type: "image_url",
+            image_url: "{{doc.poster}}",
+          },
+        ],
+      },
+    },
   },
   searchFragments: {
-    // we allow sending a poster at search time
-    // poster: {
-    //   value: {
-    //     content: [
-    //       {
-    //         type: "image_url",
-    //         image_url: "{{media.poster}}",
-    //       },
-    //     ],
-    //   },
-    // },
-    // we also allow inline image data at search time only
-    // image: {
-    //   value: {
-    //     content: [
-    //       {
-    //         type: "image_base64",
-    //         image_base64:
-    //           "data:{{media.image.mime}};base64,{{media.image.data}}",
-    //       },
-    //     ],
-    //   },
-    // },
+    poster: {
+      value: {
+        content: [
+          {
+            type: "image_url",
+            image_url: "{{media.poster}}",
+          },
+        ],
+      },
+    },
     text: {
       value: {
         content: [
@@ -87,38 +75,53 @@ const EMBEDDER_CONFIG = {
   },
 } satisfies Embedder;
 
-beforeAll(async () => {
-  const client = await getClient("Admin");
-  await client.updateExperimentalFeatures({
-    multimodal: true,
-  });
-  await client.deleteIndex(INDEX_UID).waitTask();
-  await client.createIndex(INDEX_UID).waitTask();
-  await client.index(INDEX_UID).updateSettings({
-    searchableAttributes: ["title", "overview"],
-    embedders: {
-      [EMBEDDER_NAME]: EMBEDDER_CONFIG,
-    },
-  });
-  await client.index(INDEX_UID).addDocuments(movies);
-});
-
-describe("Multi-modal search", () => {
+describe.skipIf(!VOYAGE_API_KEY)("Multi-modal search", () => {
   let searchClient: Meilisearch;
 
   beforeAll(async () => {
+    const client = await getClient("Admin");
+    await client.updateExperimentalFeatures({
+      multimodal: true,
+    });
+    await client.createIndex(INDEX_UID).waitTask();
+    await client.index(INDEX_UID).updateSettings({
+      searchableAttributes: ["title", "overview"],
+      embedders: {
+        [EMBEDDER_NAME]: EMBEDDER_CONFIG,
+      },
+    });
+    await client.index(INDEX_UID).addDocuments(movies).waitTask();
     searchClient = await getClient("Search");
   });
 
-  test("should search for a text", async () => {
-    const results = await searchClient.index(INDEX_UID).search("", {
-      q: "A movie with lightsabers in space",
+  test("should work with text query", async () => {
+    const response = await searchClient
+      .index(INDEX_UID)
+      .search("A movie with lightsabers in space", {
+        hybrid: {
+          embedder: EMBEDDER_NAME,
+          semanticRatio: 1,
+        },
+      });
+    expect(response.hits[0].title).toBe("Star Wars");
+  });
+
+  test("should work with image query", async () => {
+    const theFifthElementPoster = movies[3].poster;
+
+    const response = await searchClient.index(INDEX_UID).search(null, {
+      media: {
+        poster: theFifthElementPoster,
+      },
       hybrid: {
         embedder: EMBEDDER_NAME,
-        semanticRatio: 0.5,
+        semanticRatio: 1,
       },
     });
-    console.log(results);
-    expect(results.hits.length).toBe(1);
+    expect(response.hits[0].title).toBe("The Fifth Element");
+  });
+
+  test.todo("should work with text and image query", async () => {
+    // TODO: implement this test
   });
 });
