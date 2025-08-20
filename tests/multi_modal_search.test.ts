@@ -14,28 +14,42 @@ const EMBEDDER_CONFIG = {
   apiKey: VOYAGE_API_KEY,
   dimensions: 1024,
   indexingFragments: {
-    text: {
+    textAndPoster: {
       value: {
-        // The shape of the data here depends on the model used
         content: [
           {
             type: "text",
-            text: "A movie titled {{doc.title}} whose description starts with {{doc.overview|truncatewords:20}}.",
+            text: "{{q}}",
           },
-        ],
-      },
-    },
-    poster: {
-      value: {
-        // The shape of the data here depends on the model used
-        content: [
           {
             type: "image_url",
-            image_url: "{{doc.poster}}",
+            image_url: "{{media.poster}}",
           },
         ],
       },
     },
+    // text: {
+    //   value: {
+    //     // The shape of the data here depends on the model used
+    //     content: [
+    //       {
+    //         type: "text",
+    //         text: "A movie titled {{doc.title}} whose description starts with {{doc.overview|truncatewords:20}}.",
+    //       },
+    //     ],
+    //   },
+    // },
+    // poster: {
+    //   value: {
+    //     // The shape of the data here depends on the model used
+    //     content: [
+    //       {
+    //         type: "image_url",
+    //         image_url: "{{doc.poster}}",
+    //       },
+    //     ],
+    //   },
+    // },
   },
   searchFragments: {
     // poster: {
