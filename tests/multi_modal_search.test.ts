@@ -38,23 +38,37 @@ const EMBEDDER_CONFIG = {
     },
   },
   searchFragments: {
-    poster: {
-      value: {
-        content: [
-          {
-            type: "image_url",
-            image_url: "{{media.poster}}",
-          },
-        ],
-      },
-    },
-    text: {
+    // poster: {
+    //   value: {
+    //     content: [
+    //       {
+    //         type: "image_url",
+    //         image_url: "{{media.poster}}",
+    //       },
+    //     ],
+    //   },
+    // },
+    // text: {
+    //   value: {
+    //     content: [
+    //       {
+    //         type: "text",
+    //         // uses the `q` field from search queries
+    //         text: "{{q}}",
+    //       },
+    //     ],
+    //   },
+    // },
+    textAndPoster: {
       value: {
         content: [
           {
             type: "text",
-            // uses the `q` field from search queries
             text: "{{q}}",
+          },
+          {
+            type: "image_url",
+            image_url: "{{media.poster}}",
           },
         ],
       },
@@ -121,7 +135,19 @@ describe.skipIf(!VOYAGE_API_KEY)("Multi-modal search", () => {
     expect(response.hits[0].title).toBe("The Fifth Element");
   });
 
-  test.todo("should work with text and image query", async () => {
-    // TODO: implement this test
+  test("should work with text and image query", async () => {
+    const spaceImageUrl =
+      "https://science.nasa.gov/wp-content/uploads/2023/06/webb-flickr-52259221868-30e1c78f0c-4k-jpg.webp";
+    const response = await searchClient.index(INDEX_UID).search(null, {
+      q: "A futuristic movie",
+      media: {
+        poster: spaceImageUrl,
+      },
+      hybrid: {
+        embedder: EMBEDDER_NAME,
+        semanticRatio: 1,
+      },
+    });
+    expect(response.hits[0].title).toBe("Star Wars");
   });
 });
