@@ -106,7 +106,10 @@ export type EnqueuedTask = {
 export type TaskUidOrEnqueuedTask = EnqueuedTask["taskUid"] | EnqueuedTask;
 
 /** {@link https://www.meilisearch.com/docs/reference/api/tasks#indexswap} */
-export type IndexSwap = { indexes: [string, string] };
+export type IndexSwap = {
+  indexes: [string, string];
+  rename: boolean;
+};
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/tasks#details}
