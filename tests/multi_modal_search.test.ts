@@ -3,8 +3,17 @@ import { getClient } from "./utils/meilisearch-test-utils.js";
 import type { Embedder } from "../src/types/types.js";
 import movies from "./fixtures/movies.json" assert { type: "json" };
 import type { Meilisearch } from "../src/index.js";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 const VOYAGE_API_KEY = import.meta.env.VITE_VOYAGE_API_KEY as string;
+
+// Helper function to load image file and return base64 string
+function loadImageAsBase64(fileName: string): string {
+  const imagePath = join(__dirname, "fixtures", fileName);
+  const imageBuffer = readFileSync(imagePath);
+  return imageBuffer.toString("base64");
+}
 
 const INDEX_UID = "multi-modal-search-test";
 const EMBEDDER_NAME = "multimodal";
@@ -15,74 +24,75 @@ const EMBEDDER_CONFIG = {
   dimensions: 1024,
   indexingFragments: {
     textAndPoster: {
+      // the shape of the data here depends on the model used
       value: {
         content: [
           {
             type: "text",
-            text: "{{q}}",
+            text: "A movie titled {{doc.title}} whose description starts with {{doc.overview|truncatewords:20}}.",
           },
           {
             type: "image_url",
-            image_url: "{{media.poster}}",
+            image_url: "{{doc.poster}}",
           },
         ],
       },
     },
-    // text: {
-    //   value: {
-    //     // The shape of the data here depends on the model used
-    //     content: [
-    //       {
-    //         type: "text",
-    //         text: "A movie titled {{doc.title}} whose description starts with {{doc.overview|truncatewords:20}}.",
-    //       },
-    //     ],
-    //   },
-    // },
-    // poster: {
-    //   value: {
-    //     // The shape of the data here depends on the model used
-    //     content: [
-    //       {
-    //         type: "image_url",
-    //         image_url: "{{doc.poster}}",
-    //       },
-    //     ],
-    //   },
-    // },
+    text: {
+      value: {
+        // The shape of the data here depends on the model used
+        content: [
+          {
+            type: "text",
+            text: "A movie titled {{doc.title}} whose description starts with {{doc.overview|truncatewords:20}}.",
+          },
+        ],
+      },
+    },
+    poster: {
+      value: {
+        // The shape of the data here depends on the model used
+        content: [
+          {
+            type: "image_url",
+            image_url: "{{doc.poster}}",
+          },
+        ],
+      },
+    },
   },
   searchFragments: {
-    // poster: {
-    //   value: {
-    //     content: [
-    //       {
-    //         type: "image_url",
-    //         image_url: "{{media.poster}}",
-    //       },
-    //     ],
-    //   },
-    // },
-    // text: {
-    //   value: {
-    //     content: [
-    //       {
-    //         type: "text",
-    //         // uses the `q` field from search queries
-    //         text: "{{q}}",
-    //       },
-    //     ],
-    //   },
-    // },
     textAndPoster: {
       value: {
         content: [
           {
             type: "text",
-            text: "{{q}}",
+            text: "{{media.textAndPoster.text}}",
           },
           {
+            type: "image_base64",
+            image_base64:
+              "data:{{media.textAndPoster.image.mime}};base64,{{media.textAndPoster.image.data}}",
+          },
+        ],
+      },
+    },
+    text: {
+      value: {
+        content: [
+          {
+            type: "text",
+            text: "{{media.text.text}}",
+          },
+        ],
+      },
+    },
+    poster: {
+      value: {
+        content: [
+          {
             type: "image_url",
-            image_url: "{{media.poster}}",
+            image_url: "{{media.poster.poster}}",
           },
         ],
       },
@@ -123,14 +133,18 @@ describe.skipIf(!VOYAGE_API_KEY)("Multi-modal search", () => {
   });
 
   test("should work with text query", async () => {
-    const response = await searchClient
-      .index(INDEX_UID)
-      .search("A movie with lightsabers in space", {
-        hybrid: {
-          embedder: EMBEDDER_NAME,
-          semanticRatio: 1,
+    const query = "A movie with lightsabers in space";
+    const response = await searchClient.index(INDEX_UID).search(query, {
+      media: {
+        text: {
+          text: query,
         },
-      });
+      },
+      hybrid: {
+        embedder: EMBEDDER_NAME,
+        semanticRatio: 1,
+      },
+    });
     expect(response.hits[0].title).toBe("Star Wars");
   });
 
@@ -139,7 +153,9 @@ describe.skipIf(!VOYAGE_API_KEY)("Multi-modal search", () => {
 
     const response = await searchClient.index(INDEX_UID).search(null, {
       media: {
-        poster: theFifthElementPoster,
+        poster: {
+          poster: theFifthElementPoster,
+        },
       },
       hybrid: {
         embedder: EMBEDDER_NAME,
@@ -150,12 +166,19 @@ describe.skipIf(!VOYAGE_API_KEY)("Multi-modal search", () => {
   });
 
   test("should work with text and image query", async () => {
-    const spaceImageUrl =
-      "https://science.nasa.gov/wp-content/uploads/2023/06/webb-flickr-52259221868-30e1c78f0c-4k-jpg.webp";
+    const query = "a futuristic movie";
+    const masterYodaBase64 = loadImageAsBase64("master-yoda.jpeg");
+
     const response = await searchClient.index(INDEX_UID).search(null, {
-      q: "A futuristic movie",
+      q: query,
       media: {
-        poster: spaceImageUrl,
+        textAndPoster: {
+          text: query,
+          image: {
+            mime: "image/jpeg",
+            data: masterYodaBase64,
+          },
+        },
       },
       hybrid: {
         embedder: EMBEDDER_NAME,
