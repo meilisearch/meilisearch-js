@@ -3,14 +3,19 @@ import { getClient } from "./utils/meilisearch-test-utils.js";
 import type { Embedder } from "../src/types/types.js";
 import movies from "./fixtures/movies.json" assert { type: "json" };
 import type { Meilisearch } from "../src/index.js";
-import { readFileSync } from "fs";
-import { join } from "path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { readFileSync } from "node:fs";
 
 const VOYAGE_API_KEY = import.meta.env.VITE_VOYAGE_API_KEY as string;
 
 // Helper function to load image file and return base64 string
 function loadImageAsBase64(fileName: string): string {
-  const imagePath = join(__dirname, "fixtures", fileName);
+  const imagePath = join(
+    dirname(fileURLToPath(import.meta.url)),
+    "fixtures",
+    fileName,
+  );
   const imageBuffer = readFileSync(imagePath);
   return imageBuffer.toString("base64");
 }
