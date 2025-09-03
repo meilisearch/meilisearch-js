@@ -127,6 +127,8 @@ describe.skipIf(!VOYAGE_API_KEY)("Multi-modal search", () => {
     await client.updateExperimentalFeatures({
       multimodal: true,
     });
+    // Delete the index if it already exists
+    await client.index(INDEX_UID).delete().waitTask();
     await client.createIndex(INDEX_UID).waitTask();
     await client.index(INDEX_UID).updateSettings({
       searchableAttributes: ["title", "overview"],
