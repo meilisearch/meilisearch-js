@@ -99,11 +99,12 @@ const EMBEDDER_CONFIG = {
     },
   },
   request: {
+    // This request object matches the Voyage API request object
     inputs: ["{{fragment}}", "{{..}}"],
     model: "voyage-multimodal-3",
   },
   response: {
-    // Maps how Voyage API returns the embedding
+    // This response object matches the Voyage API response object
     data: [
       {
         embedding: "{{embedding}}",
