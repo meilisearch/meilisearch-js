@@ -211,6 +211,28 @@ export type HybridSearch = {
   semanticRatio?: number;
 };
 
+/**
+ * Search request media binary data with explicit MIME
+ *
+ * @example
+ *
+ * ```typescript
+ * const media: MediaBinary = {
+ *   mime: "image/jpeg",
+ *   data: "base64-encoded-data",
+ * };
+ * ```
+ */
+export type MediaBinary = {
+  /** MIME type of the file */
+  mime: string;
+  /** Base64-encoded data of the file */
+  data: string;
+};
+
+/** Search request media payload with named search fragments */
+export type MediaPayload = Record<string, Record<string, string | MediaBinary>>;
+
 // https://www.meilisearch.com/docs/reference/api/settings#localized-attributes
 export type Locale = string;
 
@@ -237,10 +259,7 @@ export type SearchParams = Query &
     distinct?: string;
     retrieveVectors?: boolean;
     locales?: Locale[];
-    media?: Record<
-      string,
-      Record<string, string | { mime: string; data: string }>
-    >;
+    media?: MediaPayload;
   };
 
 // Search parameters for searches made with the GET method
@@ -579,6 +598,32 @@ export type UserProvidedEmbedder = {
   binaryQuantized?: boolean;
 };
 
+/**
+ * Indexing or search fragments
+ *
+ * @example
+ *
+ * ```typescript
+ * const fragments: EmbedderFragments = {
+ *   textAndPoster: {
+ *     value: {
+ *       content: [
+ *         {
+ *           type: "text",
+ *           text: "A movie titled {{doc.title}} whose description starts with {{doc.overview|truncatewords:20}}.",
+ *         },
+ *         {
+ *           type: "image_url",
+ *           image_url: "{{doc.poster}}",
+ *         },
+ *       ],
+ *     },
+ *   },
+ * };
+ * ```
+ */
+export type EmbedderFragments = Record<string, { value: RecordAny }>;
+
 export type RestEmbedder = {
   source: "rest";
   url: string;
@@ -591,18 +636,8 @@ export type RestEmbedder = {
   headers?: Record<string, string>;
   documentTemplateMaxBytes?: number;
   binaryQuantized?: boolean;
-  indexingFragments?: Record<
-    string,
-    {
-      value: RecordAny;
-    }
-  >;
-  searchFragments?: Record<
-    string,
-    {
-      value: RecordAny;
-    }
-  >;
+  indexingFragments?: EmbedderFragments;
+  searchFragments?: EmbedderFragments;
 };
 
 export type OllamaEmbedder = {
