@@ -57,6 +57,7 @@ export default defineConfig(({ mode }) => {
       fileParallelism: false,
       testTimeout: 100_000, // 100 seconds
       coverage: { include: ["src/**/*.ts"] },
+      // Allow loading env variables from `.env.test`
       env: loadEnv("test", process.cwd()),
     },
   };
