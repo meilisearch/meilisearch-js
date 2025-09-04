@@ -2,10 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "declaration": true,
+    "emitDeclarationOnly": true,
     "declarationMap": true,
-    "declarationDir": "./dist/types",
-    "sourceMap": true,
-    "outDir": "./dist/esm"
+    "declarationDir": "./dist/types"
   },
   "include": ["src/**/*.ts"]
 }
