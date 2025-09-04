@@ -10,7 +10,7 @@ import {
 } from "vitest";
 import type { Health, Version, Stats, IndexSwap } from "../src/index.js";
 import { ErrorStatusCode, MeiliSearchRequestError } from "../src/index.js";
-import { PACKAGE_VERSION } from "../src/package-version.js";
+import pkg from "../package.json" with { type: "json" };
 import {
   clearAllIndexes,
   getKey,
@@ -320,7 +320,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         assert.instanceOf(requestInit.headers, Headers);
         assert.strictEqual(
           requestInit.headers.get("X-Meilisearch-Client"),
-          `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
+          `Meilisearch JavaScript (v${pkg.version})`,
         );
       });
 
@@ -341,7 +341,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         assert.instanceOf(requestInit.headers, Headers);
         assert.strictEqual(
           requestInit.headers.get("X-Meilisearch-Client"),
-          `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
+          `Meilisearch JavaScript (v${pkg.version})`,
         );
       });
 
@@ -362,7 +362,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         assert.instanceOf(requestInit.headers, Headers);
         assert.strictEqual(
           requestInit.headers.get("X-Meilisearch-Client"),
-          `random plugin 1 ; random plugin 2 ; Meilisearch JavaScript (v${PACKAGE_VERSION})`,
+          `random plugin 1 ; random plugin 2 ; Meilisearch JavaScript (v${pkg.version})`,
         );
       });
     });

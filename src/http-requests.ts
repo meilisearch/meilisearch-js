@@ -6,7 +6,7 @@ import type {
   URLSearchParamsRecord,
   MeiliSearchErrorResponse,
 } from "./types/index.js";
-import { PACKAGE_VERSION } from "./package-version.js";
+import pkg from "../package.json" with { type: "json" };
 import {
   MeiliSearchError,
   MeiliSearchApiError,
@@ -42,7 +42,7 @@ function appendRecordToURLSearchParams(
  */
 function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
   const agentHeader = "X-Meilisearch-Client";
-  const packageAgent = `Meilisearch JavaScript (v${PACKAGE_VERSION})`;
+  const packageAgent = `Meilisearch JavaScript (v${pkg.version})`;
   const contentType = "Content-Type";
   const authorization = "Authorization";
 

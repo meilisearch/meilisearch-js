@@ -6,35 +6,37 @@ const tokenInput = "src/token.ts";
 const globalVarName = pkg.name;
 
 export default defineConfig(({ mode }) => {
-  const isCJSBuild = mode === "production";
+  const isNotUMDBuild = mode === "production";
 
   return {
     build: {
       // for UMD build we do not want to empty directory, so previous builds stay intact
-      emptyOutDir: isCJSBuild,
+      emptyOutDir: isNotUMDBuild,
       // don't minify CJS build, Node.js doesn't benefit from it
-      minify: !isCJSBuild,
+      minify: !isNotUMDBuild,
       sourcemap: true,
       // UMD build should target the lowest level ES,
       // while CJS the lowest Node.js LTS/Maintenance compatible version (https://node.green/#ES2023)
-      target: isCJSBuild ? "es2023" : "es6",
+      target: isNotUMDBuild ? "es2023" : "es6",
       lib: {
         // leave out token export from UMD build
-        entry: isCJSBuild ? [indexInput, tokenInput] : indexInput,
-        name: isCJSBuild ? undefined : globalVarName,
-        formats: isCJSBuild ? ["cjs"] : ["umd"],
+        entry: isNotUMDBuild ? [indexInput, tokenInput] : indexInput,
+        name: isNotUMDBuild ? undefined : globalVarName,
+        formats: isNotUMDBuild ? ["cjs", "es"] : ["umd"],
         fileName: (format, entryName) => {
           switch (format) {
             case "umd":
               return `umd/${entryName}.min.js`;
             case "cjs":
               return `cjs/${entryName}.cjs`;
+            case "es":
+              return `esm/${entryName}.js`;
             default:
               throw new Error(`unsupported format ${format}`);
           }
         },
       },
-      rollupOptions: !isCJSBuild
+      rollupOptions: !isNotUMDBuild
         ? // the following code enables Vite in UMD mode to extend the global object with all of
           // the exports, and not just a property of it ( https://github.com/vitejs/vite/issues/11624 )
           // TODO: Remove this in the future ( https://github.com/meilisearch/meilisearch-js/issues/1806 )
