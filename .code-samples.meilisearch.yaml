@@ -843,3 +843,18 @@ webhooks_patch_1: |-
   })
 webhooks_delete_1: |-
   client.deleteWebhook(WEBHOOK_UUID)
+search_parameter_reference_media_1: |-
+  client.index('INDEX_NAME').search('a futuristic movie', {
+    hybrid: {
+      embedder: 'EMBEDDER_NAME'
+    },
+    media: {
+      textAndPoster: {
+        text: 'a futuristic movie',
+        image: {
+          mime: 'image/jpeg',
+          data: 'base64EncodedImageData'
+        }
+      }
+    }
+  })

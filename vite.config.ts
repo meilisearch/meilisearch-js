@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import pkg from "./package.json" with { type: "json" };
 
 const indexInput = "src/index.ts";
@@ -57,6 +57,8 @@ export default defineConfig(({ mode }) => {
       fileParallelism: false,
       testTimeout: 100_000, // 100 seconds
       coverage: { include: ["src/**/*.ts"] },
+      // Allow loading env variables from `.env.test`
+      env: loadEnv("test", process.cwd()),
     },
   };
 });
