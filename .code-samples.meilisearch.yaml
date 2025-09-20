@@ -31,6 +31,8 @@ create_an_index_1: |-
   client.createIndex('movies', { primaryKey: 'id' })
 update_an_index_1: |-
   client.updateIndex('movies', { primaryKey: 'id' })
+rename_an_index_1: |-
+  client.updateIndex('INDEX_A', { indexUid: 'INDEX_B' })
 delete_an_index_1: |-
   client.deleteIndex('movies')
 swap_indexes_1: |-
