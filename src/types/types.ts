@@ -141,6 +141,7 @@ export type ResultsWrapper<T> = {
 
 export type IndexOptions = {
   primaryKey?: string;
+  indexUid?: string;
 };
 
 export type IndexObject = {
@@ -388,6 +389,7 @@ export type SearchResponse<
   facetDistribution?: FacetDistribution;
   facetStats?: FacetStats;
   facetsByIndex?: FacetsByIndex;
+  queryVector?: number[];
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
