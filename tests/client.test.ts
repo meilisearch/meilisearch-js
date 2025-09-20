@@ -597,7 +597,22 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
         const resolvedTask = await client.swapIndexes(swaps).waitTask();
 
-        // Verify the swap task completed with expected details
+        // Verify the old indexes no longer exist
+        await expect(client.getIndex(originalUid1)).rejects.toHaveProperty(
+          "cause.code",
+          ErrorStatusCode.INDEX_NOT_FOUND,
+        );
+        await expect(client.getIndex(originalUid2)).rejects.toHaveProperty(
+          "cause.code",
+          ErrorStatusCode.INDEX_NOT_FOUND,
+        );
+
+        // Verify the new indexes exist with swapped content
+        const docIndex1 = await client.index(originalUid1).getDocument(1);
+        const docIndex2 = await client.index(originalUid2).getDocument(1);
+
+        expect(docIndex1.title).toEqual("index_2");
+        expect(docIndex2.title).toEqual("index_1");
         expect(resolvedTask.type).toEqual("indexSwap");
         expect(resolvedTask.details?.swaps).toEqual(swaps);
       });

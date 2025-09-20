@@ -300,17 +300,19 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       await client.createIndex(originalUid).waitTask();
       await client
         .updateIndex(originalUid, {
-          uid: newUid,
+          indexUid: newUid,
         })
         .waitTask();
 
+      // Verify the old index no longer exists
       await expect(client.getIndex(originalUid)).rejects.toHaveProperty(
         "cause.code",
         ErrorStatusCode.INDEX_NOT_FOUND,
       );
 
-      const renamed = await client.getIndex(newUid);
-      expect(renamed).toHaveProperty("uid", newUid);
+      // Verify the new index exists
+      const index = await client.getIndex(newUid);
+      expect(index).toHaveProperty("uid", newUid);
     });
 
     test(`${permission} key: delete index`, async () => {
