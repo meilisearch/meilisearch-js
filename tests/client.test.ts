@@ -576,6 +576,46 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           ErrorStatusCode.INVALID_SWAP_DUPLICATE_INDEX_FOUND,
         );
       });
+
+      test(`${permission} key: Swap two indexes with rename`, async () => {
+        const client = await getClient(permission);
+        const originalUid1 = index.uid;
+        const originalUid2 = index2.uid;
+
+        await client
+          .index(originalUid1)
+          .addDocuments([{ id: 1, title: "index_1" }])
+          .waitTask();
+        await client
+          .index(originalUid2)
+          .addDocuments([{ id: 1, title: "index_2" }])
+          .waitTask();
+
+        const swaps: IndexSwap[] = [
+          { indexes: [originalUid1, originalUid2], rename: true },
+        ];
+
+        const resolvedTask = await client.swapIndexes(swaps).waitTask();
+
+        // Verify the old indexes no longer exist
+        await expect(client.getIndex(originalUid1)).rejects.toHaveProperty(
+          "cause.code",
+          ErrorStatusCode.INDEX_NOT_FOUND,
+        );
+        await expect(client.getIndex(originalUid2)).rejects.toHaveProperty(
+          "cause.code",
+          ErrorStatusCode.INDEX_NOT_FOUND,
+        );
+
+        // Verify the new indexes exist with swapped content
+        const docIndex1 = await client.index(originalUid1).getDocument(1);
+        const docIndex2 = await client.index(originalUid2).getDocument(1);
+
+        expect(docIndex1.title).toEqual("index_2");
+        expect(docIndex2.title).toEqual("index_1");
+        expect(resolvedTask.type).toEqual("indexSwap");
+        expect(resolvedTask.details?.swaps).toEqual(swaps);
+      });
     });
 
     describe("Test on base routes", () => {
