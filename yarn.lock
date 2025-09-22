@@ -689,10 +689,10 @@
     test-exclude "^7.0.1"
     tinyrainbow "^2.0.0"
 
-"@vitest/eslint-plugin@^1.3.5":
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/@vitest/eslint-plugin/-/eslint-plugin-1.3.5.tgz#51a46d1b9a5654399a7f3e6b0b67713dea6f07f6"
-  integrity sha512-vdQL1s+Yb9i7xXFur0qRpECwkafrp+L84EXppg3Xs+Iu+5M8smkh5I2rD5opD7cEaSBE3UEebB3xbDANqALpKA==
+"@vitest/eslint-plugin@^1.3.12":
+  version "1.3.12"
+  resolved "https://registry.yarnpkg.com/@vitest/eslint-plugin/-/eslint-plugin-1.3.12.tgz#e52bf2e67f3c31ad492b592d7b09f33b36ecafbe"
+  integrity sha512-cSEyUYGj8j8SLqKrzN7BlfsJ3wG67eRT25819PXuyoSBogLXiyagdKx4MHWHV1zv+EEuyMXsEKkBEKzXpxyBrg==
   dependencies:
     "@typescript-eslint/scope-manager" "^8.41.0"
     "@typescript-eslint/utils" "^8.24.1"
