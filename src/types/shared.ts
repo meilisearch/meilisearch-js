@@ -8,6 +8,7 @@ export type CursorResults<T> = {
   total: number;
 };
 
+/** Deeply map every property of a record to itself excluding null. */
 export type NonNullableDeepRecordValues<T> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [P in keyof T]: T[P] extends any[]

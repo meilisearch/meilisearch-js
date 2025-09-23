@@ -1,4 +1,7 @@
-import type { PascalToCamelCase } from "./shared.js";
+import type {
+  PascalToCamelCase,
+  NonNullableDeepRecordValues,
+} from "./shared.js";
 import type { RecordAny, SearchParams } from "./types.js";
 
 /** @see `milli::filterable_attributes_rules::FilterFeatures` */
@@ -21,11 +24,6 @@ export type FilterableAttributesPatterns = {
 
 /** @see `milli::filterable_attributes_rules::FilterableAttributesRule` */
 export type FilterableAttributesRule = string | FilterableAttributesPatterns;
-
-/** Deeply map every property of a record to itself excluding null. */
-type NonNullableDeepRecordValues<T> = {
-  [TKey in keyof T]: Exclude<NonNullableDeepRecordValues<T[TKey]>, null>;
-};
 
 /** Map properties of a record to be optional and nullable. */
 type PartialAndNullable<T> = { [P in keyof T]?: T[P] | null };

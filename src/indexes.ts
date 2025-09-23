@@ -91,7 +91,7 @@ export class Index<T extends RecordAny = RecordAny> {
         facetSearch: "put",
         prefixSearch: "put",
         chat: "patch",
-        vectorStore: "put",
+        vectorStore: "patch",
       },
     );
   }

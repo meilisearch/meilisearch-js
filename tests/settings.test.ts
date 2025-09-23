@@ -9,6 +9,7 @@ import type {
   RankingRuleView,
   EmbedderSource,
   UpdatableSettings,
+  VectorStoreBackend,
 } from "../src/index.js";
 import {
   assert,
@@ -487,20 +488,18 @@ const mappedSettings = {
     ],
   ],
 
-  vectorStore: [],
-  // TODO: For some reason this gives back 405 Not Allowed
-  // vectorStore: objectKeys<VectorStoreBackend>({
-  //   stable: null,
-  //   experimental: null,
-  // }).map((v) => [
-  //   v,
-  //   {
-  //     input: v,
-  //     assertion: (input, output) => {
-  //       assert.strictEqual(input, output);
-  //     },
-  //   },
-  // ]),
+  vectorStore: objectKeys<VectorStoreBackend>({
+    stable: null,
+    experimental: null,
+  }).map((v) => [
+    v,
+    {
+      input: v,
+      assertion: (input, output) => {
+        assert.strictEqual(input, output);
+      },
+    },
+  ]),
 } satisfies MappedSettings as Record<
   string,
   [
