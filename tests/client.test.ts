@@ -10,7 +10,7 @@ import {
 } from "vitest";
 import type { Health, Version, Stats, IndexSwap } from "../src/index.js";
 import { ErrorStatusCode, MeiliSearchRequestError } from "../src/index.js";
-import { PACKAGE_VERSION } from "../src/package-version.js";
+import pkg from "../package.json" with { type: "json" };
 import {
   clearAllIndexes,
   getKey,
@@ -320,7 +320,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         assert.instanceOf(requestInit.headers, Headers);
         assert.strictEqual(
           requestInit.headers.get("X-Meilisearch-Client"),
-          `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
+          `Meilisearch JavaScript (v${pkg.version})`,
         );
       });
 
@@ -341,7 +341,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         assert.instanceOf(requestInit.headers, Headers);
         assert.strictEqual(
           requestInit.headers.get("X-Meilisearch-Client"),
-          `Meilisearch JavaScript (v${PACKAGE_VERSION})`,
+          `Meilisearch JavaScript (v${pkg.version})`,
         );
       });
 
@@ -362,7 +362,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         assert.instanceOf(requestInit.headers, Headers);
         assert.strictEqual(
           requestInit.headers.get("X-Meilisearch-Client"),
-          `random plugin 1 ; random plugin 2 ; Meilisearch JavaScript (v${PACKAGE_VERSION})`,
+          `random plugin 1 ; random plugin 2 ; Meilisearch JavaScript (v${pkg.version})`,
         );
       });
     });
@@ -519,7 +519,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           .index(index2.uid)
           .addDocuments([{ id: 1, title: "index_2" }])
           .waitTask();
-        const swaps: IndexSwap[] = [{ indexes: [index.uid, index2.uid] }];
+        const swaps: IndexSwap[] = [
+          { indexes: [index.uid, index2.uid], rename: false },
+        ];
 
         const resolvedTask = await client.swapIndexes(swaps).waitTask();
         const docIndex1 = await client.index(index.uid).getDocument(1);
@@ -528,7 +530,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         expect(docIndex1.title).toEqual("index_2");
         expect(docIndex2.title).toEqual("index_1");
         expect(resolvedTask.type).toEqual("indexSwap");
-        expect(resolvedTask.details!.swaps).toEqual(swaps);
+        expect(resolvedTask.details?.swaps).toEqual(swaps);
       });
 
       test(`${permission} key: Swap two indexes with one that does not exist`, async () => {
@@ -540,7 +542,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
           .waitTask();
 
         const swaps: IndexSwap[] = [
-          { indexes: ["does_not_exist", index2.uid] },
+          { indexes: ["does_not_exist", index2.uid], rename: false },
         ];
 
         const resolvedTask = await client.swapIndexes(swaps).waitTask();
@@ -549,14 +551,15 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         expect(resolvedTask.error?.code).toEqual(
           ErrorStatusCode.INDEX_NOT_FOUND,
         );
-        expect(resolvedTask.details!.swaps).toEqual(swaps);
+        expect(resolvedTask.details?.swaps).toEqual(swaps);
       });
 
-      // Should be fixed by rc1
       test(`${permission} key: Swap two one index with itself`, async () => {
         const client = await getClient(permission);
 
-        const swaps: IndexSwap[] = [{ indexes: [index.uid, index.uid] }];
+        const swaps: IndexSwap[] = [
+          { indexes: [index.uid, index.uid], rename: false },
+        ];
 
         await expect(client.swapIndexes(swaps)).rejects.toHaveProperty(
           "cause.code",
@@ -873,6 +876,13 @@ describe.each([{ permission: "Master" }])(
   "Test network methods",
   ({ permission }) => {
     const instanceName = "instance_1";
+
+    beforeAll(async () => {
+      const adminClient = await getClient("Admin");
+      await adminClient.updateExperimentalFeatures({
+        network: true,
+      });
+    });
 
     test(`${permission} key: Update and get network settings`, async () => {
       const client = await getClient(permission);

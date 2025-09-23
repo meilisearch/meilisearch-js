@@ -99,35 +99,35 @@ multi_search_1: |-
     },
   ]})
 get_all_tasks_1: |-
-  client.getTasks()
+  client.tasks.getTasks()
 get_task_1: |-
-  client.getTask(1)
+  client.tasks.getTask(1)
 async_guide_filter_by_date_1: |-
-  client.getTasks({ afterEnqueuedAt: '2020-10-11T11:49:53.000Z' })
+  client.tasks.getTasks({ afterEnqueuedAt: '2020-10-11T11:49:53.000Z' })
 async_guide_multiple_filters_1: |-
-  client.getTasks({
+  client.tasks.getTasks({
     indexUids: ['movies'],
     types: ['documentAdditionOrUpdate','documentDeletion'],
     statuses: ['processing']
   })
 async_guide_filter_by_ids_1: |-
-  client.getTasks({ uids: [5, 10, 13] })
+  client.tasks.getTasks({ uids: [5, 10, 13] })
 async_guide_filter_by_statuses_1: |-
-  client.getTasks({ statuses: ['failed', 'canceled'] })
+  client.tasks.getTasks({ statuses: ['failed', 'canceled'] })
 async_guide_filter_by_types_1: |-
-  client.getTasks({ types: ['dumpCreation', 'indexSwap'] })
+  client.tasks.getTasks({ types: ['dumpCreation', 'indexSwap'] })
 async_guide_filter_by_index_uids_1: |-
-  client.getTasks({ indexUids: ['movies'] })
+  client.tasks.getTasks({ indexUids: ['movies'] })
 get_all_tasks_paginating_1: |-
-  client.getTasks({ limit: 2, from: 10 })
+  client.tasks.getTasks({ limit: 2, from: 10 })
 get_all_tasks_paginating_2: |-
-  client.getTasks({ limit: 2, from: 8 })
+  client.tasks.getTasks({ limit: 2, from: 8 })
 async_guide_canceled_by_1: |-
-  client.getTasks({ canceledBy: [9, 15] })
+  client.tasks.getTasks({ canceledBy: [9, 15] })
 delete_tasks_1: |-
-  client.deleteTasks({ uids: [1, 2] })
+  client.tasks.deleteTasks({ uids: [1, 2] })
 cancel_tasks_1: |-
-  client.cancelTasks({ uids: [1, 2] })
+  client.tasks.cancelTasks({ uids: [1, 2] })
 get_one_key_1: |-
   client.getKey('6062abda-a5aa-4414-ac91-ecd7944c0f8d')
 get_all_keys_1: |-
@@ -398,6 +398,10 @@ typo_tolerance_guide_4: |-
       twoTypos: 10
     }
   })
+typo_tolerance_guide_5: |-
+  client.index('movies').updateTypoTolerance({
+    disableOnNumbers: true
+  })
 add_movies_json_1: |-
   const movies = require('./movies.json')
   client.index('movies').addDocuments(movies).then((res) => console.log(res))
@@ -458,7 +462,7 @@ getting_started_update_searchable_attributes: |-
 getting_started_update_stop_words: |-
   client.index('movies').setting.updateStopWords(['the'])
 getting_started_check_task_status: |-
-  client.getTask(0)
+  client.tasks.getTask(0)
 getting_started_synonyms: |-
   client.index('movies').setting.updateSynonyms({
     winnie: ['piglet'],
@@ -806,9 +810,9 @@ update_prefix_search_settings_1: |-
 reset_prefix_search_settings_1: |-
   client.index('INDEX_NAME').setting.resetPrefixSearch();
 get_all_batches_1: |-
-  client.getBatches();
+  client.batches.getBatches();
 get_batch_1: |-
-  client.getBatch(BATCH_UID);
+  client.batches.getBatch(BATCH_UID);
 # Vector search
 update_embedders_1: |-
   client.index('INDEX_NAME').setting.updateEmbedders({
@@ -819,3 +823,38 @@ update_embedders_1: |-
       documentTemplate: 'A document titled '{{doc.title}}' whose description starts with {{doc.overview|truncatewords: 20}}'
     }
   });
+webhooks_get_1: |-
+  client.getWebhooks()
+webhooks_get_single_1: |-
+  client.getWebhook(WEBHOOK_UUID)
+webhooks_post_1: |-
+  client.createWebhook({
+    url: 'WEBHOOK_TARGET_URL',
+    headers: {
+      authorization: 'SECURITY_KEY',
+      referer: 'https://example.com'
+    }
+  })
+webhooks_patch_1: |-
+  client.updateWebhook(WEBHOOK_UUID, {
+    headers: {
+      referer: null
+    }
+  })
+webhooks_delete_1: |-
+  client.deleteWebhook(WEBHOOK_UUID)
+search_parameter_reference_media_1: |-
+  client.index('INDEX_NAME').search('a futuristic movie', {
+    hybrid: {
+      embedder: 'EMBEDDER_NAME'
+    },
+    media: {
+      textAndPoster: {
+        text: 'a futuristic movie',
+        image: {
+          mime: 'image/jpeg',
+          data: 'base64EncodedImageData'
+        }
+      }
+    }
+  })

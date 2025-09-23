@@ -76,6 +76,7 @@ export type Config = {
   httpClient?: (...args: Parameters<typeof fetch>) => Promise<unknown>;
   /** Timeout in milliseconds for each HTTP request. */
   timeout?: number;
+  /** Customizable default options for awaiting tasks. */
   defaultWaitOptions?: WaitOptions;
 };
 
@@ -128,6 +129,10 @@ export type ResourceQuery = Pagination & {};
 export type ResourceResults<T> = Pagination & {
   results: T;
   total: number;
+};
+
+export type ResultsWrapper<T> = {
+  results: T;
 };
 
 ///
@@ -206,6 +211,28 @@ export type HybridSearch = {
   semanticRatio?: number;
 };
 
+/**
+ * Search request media binary data with explicit MIME
+ *
+ * @example
+ *
+ * ```typescript
+ * const media: MediaBinary = {
+ *   mime: "image/jpeg",
+ *   data: "base64-encoded-data",
+ * };
+ * ```
+ */
+export type MediaBinary = {
+  /** MIME type of the file */
+  mime: string;
+  /** Base64-encoded data of the file */
+  data: string;
+};
+
+/** Search request media payload with named search fragments */
+export type MediaPayload = Record<string, Record<string, string | MediaBinary>>;
+
 // https://www.meilisearch.com/docs/reference/api/settings#localized-attributes
 export type Locale = string;
 
@@ -232,6 +259,7 @@ export type SearchParams = Query &
     distinct?: string;
     retrieveVectors?: boolean;
     locales?: Locale[];
+    media?: MediaPayload;
   };
 
 // Search parameters for searches made with the GET method
@@ -527,6 +555,47 @@ export type Stats = {
   indexes: {
     [index: string]: IndexStats;
   };
+};
+
+/*
+ ** CHATS
+ */
+
+/** @see https://www.meilisearch.com/docs/reference/api/chats#settings-parameters */
+export type ChatWorkspaceSettings = {
+  source: "openAi" | "azureOpenAi" | "mistral" | "gemini" | "vLlm";
+  orgId?: string;
+  projectId?: string;
+  apiVersion?: string;
+  deploymentId?: string;
+  baseUrl?: string;
+  apiKey: string;
+  prompts: {
+    system: string;
+  };
+};
+
+export type ChatCompletionRequest = {
+  model: string;
+  messages: {
+    role: "user" | "assistant" | "system";
+    content: string;
+  }[];
+  stream: boolean;
+};
+
+export type ChatSettings = {
+  description: string;
+  documentTemplate: string;
+  documentTemplateMaxBytes: number;
+  searchParameters: SearchParams;
+};
+
+export type ChatSettingsPayload = {
+  description?: string;
+  documentTemplate?: string;
+  documentTemplateMaxBytes?: number;
+  searchParameters?: Partial<SearchParams>;
 };
 
 /*

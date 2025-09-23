@@ -19,20 +19,11 @@ export class BatchClient {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/batches#get-one-batch} */
   async getBatch(uid: number): Promise<Batch> {
-    const batch = await this.#httpRequest.get<Batch>({
-      path: `batches/${uid}`,
-    });
-    return batch;
+    return await this.#httpRequest.get({ path: `batches/${uid}` });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/batches#get-batches} */
-  async getBatches(
-    batchesQuery?: TasksOrBatchesQuery,
-  ): Promise<BatchesResults> {
-    const batches = await this.#httpRequest.get<BatchesResults>({
-      path: "batches",
-      params: batchesQuery,
-    });
-    return batches;
+  async getBatches(params?: TasksOrBatchesQuery): Promise<BatchesResults> {
+    return await this.#httpRequest.get({ path: "batches", params });
   }
 }

@@ -14,14 +14,11 @@ import type {
   DocumentsDeletionQuery,
   DocumentsIds,
   DocumentsQuery,
-  EnqueuedTaskPromise,
-  ExtraRequestInit,
   Filter,
   IndexObject,
   IndexOptions,
   IndexStats,
   RawDocumentAdditionOptions,
-  RecordAny,
   ResourceResults,
   SearchForFacetValuesParams,
   SearchForFacetValuesResponse,
@@ -32,6 +29,9 @@ import type {
   Settings,
   UpdatableSettings,
   UpdateDocumentsByFunctionOptions,
+  ExtraRequestInit,
+  RecordAny,
+  EnqueuedTaskPromise,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -90,6 +90,8 @@ export class Index<T extends RecordAny = RecordAny> {
         searchCutoffMs: "put",
         facetSearch: "put",
         prefixSearch: "put",
+        chat: "patch",
+        vectorStore: "put",
       },
     );
   }

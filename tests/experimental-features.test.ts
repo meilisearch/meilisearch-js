@@ -6,30 +6,47 @@ const ms = await getClient("Master");
 
 afterAll(async () => {
   await ms.updateExperimentalFeatures({
-    metrics: false,
-    logsRoute: false,
-    editDocumentsByFunction: false,
-    containsFilter: false,
-    network: false,
-    getTaskDocumentsRoute: false,
+    chatCompletions: false,
     compositeEmbedders: false,
+    containsFilter: false,
+    editDocumentsByFunction: false,
+    getTaskDocumentsRoute: false,
+    logsRoute: false,
+    metrics: false,
+    multimodal: false,
+    network: false,
   } satisfies { [TKey in keyof RuntimeTogglableFeatures]-?: false });
 });
 
 test(`${ms.updateExperimentalFeatures.name} and ${ms.getExperimentalFeatures.name} methods`, async () => {
   const features: { [TKey in keyof RuntimeTogglableFeatures]-?: true } = {
-    metrics: true,
-    logsRoute: true,
-    editDocumentsByFunction: true,
-    containsFilter: true,
-    network: true,
-    getTaskDocumentsRoute: true,
+    chatCompletions: true,
     compositeEmbedders: true,
+    containsFilter: true,
+    editDocumentsByFunction: true,
+    getTaskDocumentsRoute: true,
+    logsRoute: true,
+    metrics: true,
+    multimodal: true,
+    network: true,
   };
 
-  const updateFeatures = await ms.updateExperimentalFeatures(features);
-  assert.deepEqual(updateFeatures, features);
+  const updateResponse = await ms.updateExperimentalFeatures(features);
+  const getResponse = await ms.getExperimentalFeatures();
 
-  const getFeatures = await ms.getExperimentalFeatures();
-  assert.deepEqual(getFeatures, features);
+  for (const [feature, expectedValue] of Object.entries(features)) {
+    assert.propertyVal(
+      updateResponse,
+      feature,
+      expectedValue,
+      `Failed on updateResponse for feature: ${feature}`,
+    );
+
+    assert.propertyVal(
+      getResponse,
+      feature,
+      expectedValue,
+      `Failed on getResponse for feature: ${feature}`,
+    );
+  }
 });

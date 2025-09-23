@@ -1,4 +1,5 @@
 import type { PascalToCamelCase } from "./shared.js";
+import type { RecordAny, SearchParams } from "./types.js";
 
 /** @see `milli::filterable_attributes_rules::FilterFeatures` */
 export type FilterFeatures = {
@@ -58,6 +59,7 @@ export type TypoSettings = PartialAndNullable<{
   minWordSizeForTypos: MinWordSizeTyposSetting;
   disableOnWords: string[];
   disableOnAttributes: string[];
+  disableOnNumbers: boolean;
 }>;
 
 /**
@@ -109,6 +111,32 @@ export type OverridePooling = PascalToCamelCase<
   "UseModel" | "ForceCls" | "ForceMean"
 >;
 
+/**
+ * Indexing or search fragments
+ *
+ * @example
+ *
+ * ```typescript
+ * const fragments: EmbedderFragments = {
+ *   textAndPoster: {
+ *     value: {
+ *       content: [
+ *         {
+ *           type: "text",
+ *           text: "A movie titled {{doc.title}} whose description starts with {{doc.overview|truncatewords:20}}.",
+ *         },
+ *         {
+ *           type: "image_url",
+ *           image_url: "{{doc.poster}}",
+ *         },
+ *       ],
+ *     },
+ *   },
+ * };
+ * ```
+ */
+export type EmbedderFragments = Record<string, { value: RecordAny }>;
+
 /** @see `milli::vector::settings::SubEmbeddingSettings` */
 export type SubEmbeddingSettings = PartialAndNullable<{
   source: EmbedderSource;
@@ -120,6 +148,8 @@ export type SubEmbeddingSettings = PartialAndNullable<{
   documentTemplate: string;
   documentTemplateMaxBytes: number;
   url: string;
+  indexingFragments: EmbedderFragments;
+  searchFragments: EmbedderFragments;
   request: unknown;
   response: unknown;
   headers: Record<string, string>;
@@ -166,6 +196,18 @@ export type RankingRuleView =
     >
   | `${string}:${"asc" | "desc"}`;
 
+/** @see `milli::update::chat::ChatSettings` */
+export type ChatSettings = PartialAndNullable<{
+  description: string;
+  documentTemplate: string;
+  documentTemplateMaxBytes: number;
+  /** @see `milli::update::chat::ChatSearchParams` */
+  searchParameters: SearchParams;
+}>;
+
+/** @see `milli::vector::store::VectorStoreBackend` */
+export type VectorStoreBackend = "stable" | "experimental";
+
 /** A version of {@link Settings} that can be used to update the settings. */
 export type UpdatableSettings = PartialAndNullable<{
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#displayed-attributes} */
@@ -208,6 +250,10 @@ export type UpdatableSettings = PartialAndNullable<{
   facetSearch: boolean;
   /** {@link https://www.meilisearch.com/docs/reference/api/settings#prefix-search} */
   prefixSearch: PrefixSearchSettings;
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#chat} */
+  chat: ChatSettings;
+  /** {@link https://www.meilisearch.com/docs/reference/api/settings#vector-store} */
+  vectorStore: VectorStoreBackend;
 }>;
 
 /**

@@ -9,11 +9,12 @@ import type {
   RankingRuleView,
   EmbedderSource,
   UpdatableSettings,
+  VectorStoreBackend,
 } from "../src/index.js";
 import {
   assert,
   getClient,
-  ObjectKeys,
+  objectKeys,
 } from "./utils/meilisearch-test-utils.js";
 
 const INDEX_UID = randomUUID();
@@ -105,7 +106,7 @@ const mappedSettings = {
     [
       undefined,
       {
-        input: ObjectKeys<RankingRuleView>({
+        input: objectKeys<RankingRuleView>({
           words: null,
           typo: null,
           proximity: null,
@@ -207,7 +208,7 @@ const mappedSettings = {
     ],
   ],
 
-  proximityPrecision: ObjectKeys<ProximityPrecisionView>({
+  proximityPrecision: objectKeys<ProximityPrecisionView>({
     byWord: null,
     byAttribute: null,
   }).map((v) => [
@@ -227,6 +228,7 @@ const mappedSettings = {
         input: {
           enabled: true,
           minWordSizeForTypos: { oneTypo: 2, twoTypos: 3 },
+          disableOnNumbers: true,
           disableOnWords: ["mot-un", "mot-deux"],
           disableOnAttributes: ["attributUn", "attributDeux"],
         },
@@ -256,7 +258,7 @@ const mappedSettings = {
     ],
   ],
 
-  faceting: ObjectKeys<FacetValuesSort>({
+  faceting: objectKeys<FacetValuesSort>({
     alpha: null,
     count: null,
   }).map((v) => [
@@ -289,7 +291,7 @@ const mappedSettings = {
     ],
   ],
 
-  embedders: ObjectKeys<EmbedderSource>({
+  embedders: objectKeys<EmbedderSource>({
     openAi: null,
     huggingFace: null,
     ollama: null,
@@ -385,9 +387,6 @@ const mappedSettings = {
                     documentTemplateMaxBytes: 500,
                   },
                 };
-              default:
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                assert.fail(`untested embedder source ${source}`);
             }
           })(),
         },
@@ -449,9 +448,49 @@ const mappedSettings = {
     ],
   ],
 
-  prefixSearch: ObjectKeys<PrefixSearchSettings>({
+  prefixSearch: objectKeys<PrefixSearchSettings>({
     indexingTime: null,
     disabled: null,
+  }).map((v) => [
+    v,
+    {
+      input: v,
+      assertion: (input, output) => {
+        assert.strictEqual(input, output);
+      },
+    },
+  ]),
+
+  chat: [
+    [
+      undefined,
+      {
+        input: {
+          description:
+            "A comprehensive movie database containing titles, overviews, genres, and release dates to help users find movies",
+          documentTemplate:
+            "Title: {{ title }}\nDescription: {{ overview }}\nGenres: {{ genres }}\nRelease Date: {{ release_date }}\n",
+          documentTemplateMaxBytes: 500,
+          searchParameters: {
+            hybrid: { embedder: "default", semanticRatio: 0.5 },
+            limit: 20,
+            sort: ["release_date:desc"],
+            distinct: "title",
+            matchingStrategy: "last",
+            attributesToSearchOn: ["title", "overview"],
+            rankingScoreThreshold: 0.5,
+          },
+        },
+        assertion: (input, output) => {
+          assert.deepEqual(input, output);
+        },
+      },
+    ],
+  ],
+
+  vectorStore: objectKeys<VectorStoreBackend>({
+    stable: null,
+    experimental: null,
   }).map((v) => [
     v,
     {
@@ -470,7 +509,11 @@ const mappedSettings = {
 >;
 
 beforeAll(async () => {
-  await ms.updateExperimentalFeatures({ compositeEmbedders: true });
+  await ms.updateExperimentalFeatures({
+    compositeEmbedders: true,
+    chatCompletions: true,
+    vectorStoreSetting: true,
+  });
   const task = await ms.createIndex(INDEX_UID).waitTask();
   assert.isTaskSuccessful(task);
 });
@@ -478,7 +521,11 @@ beforeAll(async () => {
 afterAll(async () => {
   const task = await index.delete().waitTask();
   assert.isTaskSuccessful(task);
-  await ms.updateExperimentalFeatures({ compositeEmbedders: false });
+  await ms.updateExperimentalFeatures({
+    compositeEmbedders: false,
+    chatCompletions: false,
+    vectorStoreSetting: false,
+  });
 });
 
 describe.for(Object.entries(mappedSettings))("%s", ([key, mappedSetting]) => {
@@ -581,6 +628,8 @@ test(`${index.resetSettings.name} method`, async () => {
     stopWords: null,
     synonyms: null,
     typoTolerance: null,
+    chat: null,
+    vectorStore: null,
   } satisfies Required<UpdatableSettings>);
   assert.strictEqual(task.type, "settingsUpdate");
 });
