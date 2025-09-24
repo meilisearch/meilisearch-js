@@ -39,7 +39,7 @@ jobs:
     needs: meilisearch-version
     services:
       meilisearch:
-        image: getmeili/meilisearch:${{ needs.meilisearch-version.outputs.version }}
+        image: getmeili/meilisearch:v${{ needs.meilisearch-version.outputs.version }}
         env:
           MEILI_MASTER_KEY: 'masterKey'
           MEILI_NO_ANALYTICS: 'true'
