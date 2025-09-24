@@ -141,7 +141,7 @@ export type ResultsWrapper<T> = {
 
 export type IndexOptions = {
   primaryKey?: string;
-  indexUid?: string;
+  uid?: string;
 };
 
 export type IndexObject = {
