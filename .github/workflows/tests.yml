@@ -18,7 +18,7 @@ jobs:
       version: ${{ steps.get-version-step.outputs.meilisearch_version }}
     steps:
       - uses: actions/checkout@v5
-      - name: Grep docker beta version of Meilisearch
+      - name: Get required version of meilisearch
         id: get-version-step
         run: |
           MEILISEARCH_VERSION=$(node -p "require('./package.json').meilisearchTargetVersion")

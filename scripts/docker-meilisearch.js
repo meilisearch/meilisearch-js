@@ -1,10 +1,12 @@
-import { spawn } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import { argv } from "node:process";
 import pkg from "../package.json" with { type: "json" };
 
 const { meilisearchTargetVersion } = pkg;
 
-spawn(
+// TODO: On Windows this isn't always terminated properly, resulting
+//       in the docker container not stopping, but this is not a big issue.
+spawnSync(
   "docker",
   [
     // https://docs.docker.com/reference/cli/docker/container/run
