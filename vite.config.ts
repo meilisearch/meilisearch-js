@@ -54,6 +54,7 @@ export default defineConfig(({ mode }) => {
         : undefined,
     },
     test: {
+      setupFiles: "tests/setup.ts",
       include: ["tests/**/*.test.ts"],
       exclude: ["tests/env/**"],
       fileParallelism: false,

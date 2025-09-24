@@ -1,13 +1,12 @@
-import { test, describe, beforeEach, vi } from "vitest";
+import { test, describe, vi, beforeAll } from "vitest";
 import { MeiliSearch, assert } from "./utils/meilisearch-test-utils.js";
 import { MeiliSearchRequestError } from "../src/index.js";
 
 const mockedFetch = vi.fn();
-globalThis.fetch = mockedFetch;
 
 describe("Test on updates", () => {
-  beforeEach(() => {
-    mockedFetch.mockReset();
+  beforeAll(() => {
+    globalThis.fetch = mockedFetch;
   });
 
   test(`Throw MeilisearchRequestError when thrown error is not MeiliSearchApiError`, async () => {

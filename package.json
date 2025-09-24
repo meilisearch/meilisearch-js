@@ -1,6 +1,7 @@
 {
   "name": "meilisearch",
   "version": "0.53.0",
+  "meilisearchTargetVersion": "1.18.0",
   "description": "The Meilisearch JS client for Node.js and the browser.",
   "keywords": [
     "meilisearch",
@@ -61,7 +62,8 @@
     "lint:fix": "eslint --fix",
     "style": "yarn fmt && yarn lint",
     "style:fix": "yarn fmt:fix && yarn lint:fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "docker": "node scripts/docker-meilisearch.js"
   },
   "files": [
     "src",

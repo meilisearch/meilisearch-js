@@ -34,17 +34,24 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 
 To run this project, you will need:
 
-- Node >= v20 and Node <= 22
-- Yarn v1.x
+- [Node.js v20 or newer](https://nodejs.org/en/download)
+- [Docker](https://www.docker.com/products/docker-desktop/)
 
 ### Setup
 
-You can set up your local environment natively or using `docker`, check out the [`docker-compose.yml`](/docker-compose.yml).
-
-Example of running all the checks with docker:
+To enable [corepack](https://github.com/nodejs/corepack) for
+[Yarn](https://classic.yarnpkg.com/en/) to work:
 
 ```bash
-docker-compose run --rm package bash -c "yarn install && yarn test && yarn lint"
+corepack enable
+```
+
+To run Meilisearch for testing:
+
+```bash
+yarn docker
+# or if you wish to run it in the background in detached mode
+yarn docker -d
 ```
 
 To install dependencies:
