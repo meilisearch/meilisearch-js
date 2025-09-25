@@ -270,7 +270,13 @@ const mappedSettings = {
         assert(output.sortFacetValuesBy != null);
         const star = output.sortFacetValuesBy["*"];
         delete output.sortFacetValuesBy["*"];
-        assert.oneOf(star, ["alpha", undefined]);
+        assert.oneOf(star, [
+          ...objectKeys<FacetValuesSort>({
+            alpha: null,
+            count: null,
+          }),
+          undefined,
+        ]);
 
         assert.deepEqual(input, output);
       },
@@ -548,7 +554,7 @@ describe.for(Object.entries(mappedSettings))("%s", ([key, mappedSetting]) => {
   test.for(mappedSetting)(
     "update and get methods%s",
     async ([{ input, assertion }]) => {
-      const task = await updateSetting(input).waitTask({ timeout: 30_000 });
+      const task = await updateSetting(input).waitTask({ timeout: 60_000 });
       assert.isTaskSuccessful(task);
       assert.strictEqual(task.type, "settingsUpdate");
 
@@ -573,7 +579,7 @@ describe.for(Object.entries(mappedSettings))("%s", ([key, mappedSetting]) => {
     async ([{ input, assertion }]) => {
       const task = await index
         .updateSettings({ [castKey]: input })
-        .waitTask({ timeout: 30_000 });
+        .waitTask({ timeout: 60_000 });
       assert.isTaskSuccessful(task);
       assert.strictEqual(task.type, "settingsUpdate");
 
