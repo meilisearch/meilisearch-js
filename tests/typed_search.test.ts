@@ -6,7 +6,7 @@ import {
   expect,
   test,
 } from "vitest";
-import { ErrorStatusCode, type SearchResponse } from "../src/types/index.js";
+import { ErrorStatusCode, type SearchResponse } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -118,8 +118,8 @@ describe.each([
 
     const newFilterableAttributes = ["genre", "title"];
     await client
-      .index<Movie>(index.uid)
-      .updateFilterableAttributes(newFilterableAttributes)
+      .index(index.uid)
+      .settings.updateFilterableAttributes(newFilterableAttributes)
       .waitTask();
 
     await client.index<Movie>(index.uid).addDocuments(dataset).waitTask();

@@ -15,6 +15,7 @@ afterAll(async () => {
     metrics: false,
     multimodal: false,
     network: false,
+    vectorStoreSetting: false,
   } satisfies { [TKey in keyof RuntimeTogglableFeatures]-?: false });
 });
 
@@ -29,6 +30,7 @@ test(`${ms.updateExperimentalFeatures.name} and ${ms.getExperimentalFeatures.nam
     metrics: true,
     multimodal: true,
     network: true,
+    vectorStoreSetting: true,
   };
 
   const updateResponse = await ms.updateExperimentalFeatures(features);

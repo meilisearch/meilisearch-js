@@ -1,5 +1,5 @@
 import { expect, test, describe, afterAll, beforeAll } from "vitest";
-import { ErrorStatusCode } from "../src/types/index.js";
+import { ErrorStatusCode } from "../src/index.js";
 import {
   clearAllIndexes,
   config,
