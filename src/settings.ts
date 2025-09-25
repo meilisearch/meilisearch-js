@@ -1,27 +1,23 @@
 import type { HttpRequests } from "./http-requests.js";
 import type { HttpRequestsWithEnqueuedTaskPromise } from "./task.js";
-import type {
-  EnqueuedTaskPromise,
-  SingleUpdatableSettings,
-  RecordAny,
-} from "./types/index.js";
+import type { EnqueuedTaskPromise, Setting, RecordAny } from "./types/index.js";
 
 /** Each setting property mapped to their REST method required for updates. */
 type MakeSettingsRecord = {
-  [TKey in keyof SingleUpdatableSettings]: "put" | "patch";
+  [TKey in keyof Setting]: "put" | "patch";
 };
 
 /** Each setting property mapped to its get, update and reset functions. */
 export type SettingFns = {
-  [TKey in keyof SingleUpdatableSettings as `get${Capitalize<TKey>}`]: () => Promise<
-    SingleUpdatableSettings[TKey]
+  [TKey in keyof Setting as `get${Capitalize<TKey>}`]: () => Promise<
+    Setting[TKey]
   >;
 } & {
-  [TKey in keyof SingleUpdatableSettings as `update${Capitalize<TKey>}`]: (
-    body: SingleUpdatableSettings[TKey],
+  [TKey in keyof Setting as `update${Capitalize<TKey>}`]: (
+    body: Setting[TKey],
   ) => EnqueuedTaskPromise;
 } & {
-  [TKey in keyof SingleUpdatableSettings as `reset${Capitalize<TKey>}`]: () => EnqueuedTaskPromise;
+  [TKey in keyof Setting as `reset${Capitalize<TKey>}`]: () => EnqueuedTaskPromise;
 };
 
 function capitalize(str: string): string {
@@ -32,7 +28,13 @@ function camelToKebabCase(str: string): string {
   return str.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 }
 
-/** Returns an object containing all the setting functions. */
+/**
+ * Returns an object containing all the setting functions.
+ *
+ * @remarks
+ * This is similar to how it's done in the Meilisearch source code via
+ * `meilisearch::routes::indexes::settings::make_setting_routes`.
+ */
 export function makeSettingFns(
   httpRequest: HttpRequests,
   httpRequestsWithTask: HttpRequestsWithEnqueuedTaskPromise,
@@ -46,13 +48,13 @@ export function makeSettingFns(
     const path = `${basePath}/${camelToKebabCase(name)}`;
 
     settingFns[`get${uppercaseName}`] = async function (): Promise<
-      SingleUpdatableSettings[keyof typeof opts]
+      Setting[keyof typeof opts]
     > {
       return await httpRequest.get({ path });
     };
 
     settingFns[`update${uppercaseName}`] = function (
-      body: SingleUpdatableSettings[keyof typeof opts],
+      body: Setting[keyof typeof opts],
     ): EnqueuedTaskPromise {
       return httpRequestsWithTask[method]({ path, body });
     };

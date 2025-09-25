@@ -3,13 +3,15 @@ import { test, describe, afterAll, beforeAll } from "vitest";
 import type {
   EnqueuedTaskPromise,
   FacetValuesSort,
-  SingleUpdatableSettings,
+  Setting,
   PrefixSearchSettings,
   ProximityPrecisionView,
   RankingRuleView,
   EmbedderSource,
   UpdatableSettings,
   VectorStoreBackend,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  Task,
 } from "../src/index.js";
 import {
   assert,
@@ -21,25 +23,33 @@ const INDEX_UID = randomUUID();
 const ms = await getClient("Master");
 const index = ms.index(INDEX_UID);
 
-type InputAndAssertion<T extends keyof SingleUpdatableSettings> = {
-  input: SingleUpdatableSettings[T];
-  assertion: (
-    input: SingleUpdatableSettings[T],
-    output: SingleUpdatableSettings[T],
-  ) => void;
+type InputAndAssertion<T extends keyof Setting> = {
+  input: Setting[T];
+  assertion: (input: Setting[T], output: Setting[T]) => void;
 };
 
 type MappedSettings = {
-  [TKey in keyof SingleUpdatableSettings]: [
-    text: string | undefined,
+  [TKey in keyof Setting]: [
     inputAndAssertion: InputAndAssertion<TKey>,
+    text?: string | undefined,
   ][];
 };
 
+/**
+ * Each setting mapped to an array of {@link InputAndAssertion}, which will have
+ * the following happen:
+ *
+ * 1. Feeds {@link InputAndAssertion.input} to `update` method and then feeds this
+ *    input and the resulting {@link Task.details} setting value as output to
+ *    {@link InputAndAssertion.assertion} to do any necessary assertions on the
+ *    two values.
+ * 2. Calls the setting `get` method and feeds it as output to the aforementioned
+ *    assertion method together with the input for the same reason.
+ * 3. Does the same things with the global consolidated settings method.
+ */
 const mappedSettings = {
   displayedAttributes: [
     [
-      undefined,
       {
         input: ["augustus", "nero"],
         assertion: (input, output) => {
@@ -53,7 +63,6 @@ const mappedSettings = {
 
   searchableAttributes: [
     [
-      undefined,
       {
         input: ["charlemagne", "ferdinand"],
         assertion: (input, output) => {
@@ -67,7 +76,6 @@ const mappedSettings = {
 
   filterableAttributes: [
     [
-      undefined,
       {
         input: [
           "modèleZéro",
@@ -90,7 +98,6 @@ const mappedSettings = {
 
   sortableAttributes: [
     [
-      undefined,
       {
         input: ["madsMikkelsen", "nikolajCosterWaldau"],
         assertion: (input, output) => {
@@ -104,7 +111,6 @@ const mappedSettings = {
 
   rankingRules: [
     [
-      undefined,
       {
         input: objectKeys<RankingRuleView>({
           words: null,
@@ -127,7 +133,6 @@ const mappedSettings = {
 
   stopWords: [
     [
-      undefined,
       {
         input: ["hideakiAnno", "hayaoMiyazaki"],
         assertion: (input, output) => {
@@ -141,7 +146,6 @@ const mappedSettings = {
 
   nonSeparatorTokens: [
     [
-      undefined,
       {
         input: ["nile", "amazonRiver"],
         assertion: (input, output) => {
@@ -155,7 +159,6 @@ const mappedSettings = {
 
   separatorTokens: [
     [
-      undefined,
       {
         input: ["once", "doce"],
         assertion: (input, output) => {
@@ -169,7 +172,6 @@ const mappedSettings = {
 
   dictionary: [
     [
-      undefined,
       {
         input: ["mountEverest", "k2"],
         assertion: (input, output) => {
@@ -183,7 +185,6 @@ const mappedSettings = {
 
   synonyms: [
     [
-      undefined,
       {
         input: {
           language: ["speech", "tongue", "lingo"],
@@ -198,7 +199,6 @@ const mappedSettings = {
 
   distinctAttribute: [
     [
-      undefined,
       {
         input: "benjaminFranklin",
         assertion: (input, output) => {
@@ -212,18 +212,17 @@ const mappedSettings = {
     byWord: null,
     byAttribute: null,
   }).map((v) => [
-    v,
     {
       input: v,
       assertion: (input, output) => {
         assert.strictEqual(input, output);
       },
     },
+    v,
   ]),
 
   typoTolerance: [
     [
-      undefined,
       {
         input: {
           enabled: true,
@@ -262,7 +261,6 @@ const mappedSettings = {
     alpha: null,
     count: null,
   }).map((v) => [
-    `${v} facet value sort`,
     {
       input: { maxValuesPerFacet: 42, sortFacetValuesBy: { random_field: v } },
       assertion: (input, output) => {
@@ -277,11 +275,11 @@ const mappedSettings = {
         assert.deepEqual(input, output);
       },
     },
+    `${v} facet value sort`,
   ]),
 
   pagination: [
     [
-      undefined,
       {
         input: { maxTotalHits: 42 },
         assertion: (input, output) => {
@@ -300,7 +298,6 @@ const mappedSettings = {
     composite: null,
   }).map((source) => {
     return [
-      source,
       {
         input: {
           [source]: (() => {
@@ -409,12 +406,12 @@ const mappedSettings = {
           assert(typeof inputApiKey === typeof outputApiKey);
         },
       },
+      source,
     ];
   }),
 
   searchCutoffMs: [
     [
-      undefined,
       {
         input: 100,
         assertion: (input, output) => {
@@ -426,7 +423,6 @@ const mappedSettings = {
 
   localizedAttributes: [
     [
-      undefined,
       {
         input: [{ attributePatterns: ["title"], locales: ["eng"] }],
         assertion: (input, output) => {
@@ -438,7 +434,6 @@ const mappedSettings = {
 
   facetSearch: [
     [
-      undefined,
       {
         input: true,
         assertion: (input, output) => {
@@ -452,18 +447,17 @@ const mappedSettings = {
     indexingTime: null,
     disabled: null,
   }).map((v) => [
-    v,
     {
       input: v,
       assertion: (input, output) => {
         assert.strictEqual(input, output);
       },
     },
+    v,
   ]),
 
   chat: [
     [
-      undefined,
       {
         input: {
           description:
@@ -492,19 +486,19 @@ const mappedSettings = {
     stable: null,
     experimental: null,
   }).map((v) => [
-    v,
     {
       input: v,
       assertion: (input, output) => {
         assert.strictEqual(input, output);
       },
     },
+    v,
   ]),
 } satisfies MappedSettings as Record<
   string,
   [
-    text: string | undefined,
-    inputAndAssertion: InputAndAssertion<keyof SingleUpdatableSettings>,
+    inputAndAssertion: InputAndAssertion<keyof Setting>,
+    text?: string | undefined,
   ][]
 >;
 
@@ -536,26 +530,24 @@ describe.for(Object.entries(mappedSettings))("%s", ([key, mappedSetting]) => {
   // Union of functions results in intersection of their parameters
   // https://github.com/microsoft/TypeScript/issues/30581
 
-  const getSetting = index.setting[`get${capitalizedKey}`].bind(
-    index,
-  ) as () => Promise<SingleUpdatableSettings[keyof SingleUpdatableSettings]>;
+  const getSetting = index.settings[`get${capitalizedKey}`] as () => Promise<
+    Setting[keyof Setting]
+  >;
 
-  const updateSetting = index.setting[`update${capitalizedKey}`].bind(
-    index,
-  ) as (
-    v: SingleUpdatableSettings[keyof SingleUpdatableSettings],
+  const updateSetting = index.settings[`update${capitalizedKey}`] as (
+    v: Setting[keyof Setting],
   ) => EnqueuedTaskPromise;
 
-  const resetSetting = index.setting[`reset${capitalizedKey}`].bind(index);
+  const resetSetting = index.settings[`reset${capitalizedKey}`];
 
   mappedSetting = mappedSetting.map(([a, b]) => [
-    a === undefined ? "" : ` with ${a}`,
-    b,
+    a,
+    b === undefined ? "" : ` with ${b}`,
   ]);
 
   test.for(mappedSetting)(
-    "single update and get methods%s",
-    async ([, { input, assertion }]) => {
+    "update and get methods%s",
+    async ([{ input, assertion }]) => {
       const task = await updateSetting(input).waitTask({ timeout: 30_000 });
       assert.isTaskSuccessful(task);
       assert.strictEqual(task.type, "settingsUpdate");
@@ -569,7 +561,7 @@ describe.for(Object.entries(mappedSettings))("%s", ([key, mappedSetting]) => {
     },
   );
 
-  test("single reset method", async () => {
+  test("reset method", async () => {
     const task = await resetSetting().waitTask();
     assert.includeDeepMembers([null, ["*"]], [task.details?.[castKey]]);
     assert.isTaskSuccessful(task);
@@ -578,7 +570,7 @@ describe.for(Object.entries(mappedSettings))("%s", ([key, mappedSetting]) => {
 
   test.for(mappedSetting)(
     `${index.updateSettings.name} and ${index.getSettings.name} methods%s`,
-    async ([, { input, assertion }]) => {
+    async ([{ input, assertion }]) => {
       const task = await index
         .updateSettings({ [castKey]: input })
         .waitTask({ timeout: 30_000 });

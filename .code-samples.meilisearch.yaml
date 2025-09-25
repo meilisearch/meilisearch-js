@@ -4,7 +4,7 @@
 # You can read more on https://github.com/meilisearch/documentation/tree/master/.vuepress/code-samples
 ---
 synonyms_guide_1: |-
-  client.index('movies').setting.updateSynonyms({
+  client.index('movies').settings.updateSynonyms({
     'great': ['fantastic'],
     'fantastic': ['great']
   })
@@ -12,13 +12,13 @@ date_guide_index_1: |-
   const games = require('./games.json')
   client.index('games').addDocuments(games).then((res) => console.log(res))
 date_guide_filterable_attributes_1: |-
-  client.index('games').setting.updateFilterableAttributes(['release_timestamp'])
+  client.index('games').settings.updateFilterableAttributes(['release_timestamp'])
 date_guide_filter_1: |-
   client.index('games').search('', {
     filter: 'release_timestamp >= 1514761200 AND release_timestamp < 1672527600'
   })
 date_guide_sortable_attributes_1: |-
-  client.index('games').setting.updateSortableAttributes(['release_timestamp'])
+  client.index('games').settings.updateSortableAttributes(['release_timestamp'])
 date_guide_sort_1: |-
   client.index('games').search('', {
     sort: ['release_timestamp:desc'],
@@ -205,25 +205,25 @@ update_settings_1: |-
 reset_settings_1: |-
   client.index('movies').resetSettings()
 get_synonyms_1: |-
-  client.index('movies').setting.getSynonyms()
+  client.index('movies').settings.getSynonyms()
 update_synonyms_1: |-
-  client.index('movies').setting.updateSynonyms({
+  client.index('movies').settings.updateSynonyms({
     wolverine: ['xmen', 'logan'],
     logan: ['wolverine', 'xmen'],
     wow: ['world of warcraft']
   })
 reset_synonyms_1: |-
-  client.index('movies').setting.resetSynonyms()
+  client.index('movies').settings.resetSynonyms()
 get_stop_words_1: |-
-  client.index('movies').setting.getStopWords()
+  client.index('movies').settings.getStopWords()
 update_stop_words_1: |-
-  client.index('movies').setting.updateStopWords(['of', 'the', 'to'])
+  client.index('movies').settings.updateStopWords(['of', 'the', 'to'])
 reset_stop_words_1: |-
-  client.index('movies').setting.resetStopWords()
+  client.index('movies').settings.resetStopWords()
 get_ranking_rules_1: |-
-  client.index('movies').setting.getRankingRules()
+  client.index('movies').settings.getRankingRules()
 update_ranking_rules_1: |-
-  client.index('movies').setting.updateRankingRules([
+  client.index('movies').settings.updateRankingRules([
       'words',
       'typo',
       'proximity',
@@ -234,38 +234,38 @@ update_ranking_rules_1: |-
       'rank:desc'
   ])
 reset_ranking_rules_1: |-
-  client.index('movies').setting.resetRankingRules()
+  client.index('movies').settings.resetRankingRules()
 get_distinct_attribute_1: |-
-  client.index('shoes').setting.getDistinctAttribute()
+  client.index('shoes').settings.getDistinctAttribute()
 update_distinct_attribute_1: |-
-  client.index('shoes').setting.updateDistinctAttribute('skuid')
+  client.index('shoes').settings.updateDistinctAttribute('skuid')
 reset_distinct_attribute_1: |-
-  client.index('shoes').setting.resetDistinctAttribute()
+  client.index('shoes').settings.resetDistinctAttribute()
 get_searchable_attributes_1: |-
-  client.index('movies').setting.getSearchableAttributes()
+  client.index('movies').settings.getSearchableAttributes()
 update_searchable_attributes_1: |-
-  client.index('movies').setting.updateSearchableAttributes([
+  client.index('movies').settings.updateSearchableAttributes([
     'title',
     'overview',
     'genres'
   ])
 reset_searchable_attributes_1: |-
-  client.index('movies').setting.resetSearchableAttributes()
+  client.index('movies').settings.resetSearchableAttributes()
 get_displayed_attributes_1: |-
-  client.index('movies').setting.getDisplayedAttributes()
+  client.index('movies').settings.getDisplayedAttributes()
 update_displayed_attributes_1: |-
-  client.index('movies').setting.updateDisplayedAttributes([
+  client.index('movies').settings.updateDisplayedAttributes([
     'title',
     'overview',
     'genres',
     'release_date'
   ])
 reset_displayed_attributes_1: |-
-  client.index('movies').setting.resetDisplayedAttributes()
+  client.index('movies').settings.resetDisplayedAttributes()
 get_typo_tolerance_1: |-
-  client.index('books').setting.getTypoTolerance()
+  client.index('books').settings.getTypoTolerance()
 update_typo_tolerance_1: |-
-  client.index('books').setting.updateTypoTolerance({
+  client.index('books').settings.updateTypoTolerance({
     minWordSizeForTypos: {
         oneTypo: 4,
         twoTypos: 10
@@ -275,7 +275,7 @@ update_typo_tolerance_1: |-
     ]
   })
 reset_typo_tolerance_1: |-
-  client.index('books').setting.resetTypoTolerance()
+  client.index('books').settings.resetTypoTolerance()
 get_index_stats_1: |-
   client.index('movies').getStats()
 get_indexes_stats_1: |-
@@ -285,16 +285,16 @@ get_health_1: |-
 get_version_1: |-
   client.getVersion()
 distinct_attribute_guide_1: |-
-  client.index('jackets').setting.updateDistinctAttribute('product_id')
+  client.index('jackets').settings.updateDistinctAttribute('product_id')
 field_properties_guide_searchable_1: |-
-  client.index('movies').setting.updateSearchableAttributes([
+  client.index('movies').settings.updateSearchableAttributes([
       'title',
       'overview',
       'genres',
     ]
   )
 field_properties_guide_displayed_1: |-
-  client.index('movies').setting.updateDisplayedAttributes([
+  client.index('movies').settings.updateDisplayedAttributes([
       'title',
       'overview',
       'genres',
@@ -380,26 +380,26 @@ search_parameter_guide_attributes_to_search_on_1: |-
     attributesToSearchOn: ['overview']
   })
 typo_tolerance_guide_1: |-
-  client.index('movies').setting.updateTypoTolerance({
+  client.index('movies').settings.updateTypoTolerance({
     enabled: false
   })
 typo_tolerance_guide_2: |-
-  client.index('movies').setting.updateTypoTolerance({
+  client.index('movies').settings.updateTypoTolerance({
     disableOnAttributes: ['title']
   })
 typo_tolerance_guide_3: |-
-  client.index('movies').setting.updateTypoTolerance({
+  client.index('movies').settings.updateTypoTolerance({
     disableOnWords: ['shrek']
   })
 typo_tolerance_guide_4: |-
-  client.index('movies').setting.updateTypoTolerance({
+  client.index('movies').settings.updateTypoTolerance({
     minWordSizeForTypos: {
       oneTypo: 4,
       twoTypos: 10
     }
   })
 typo_tolerance_guide_5: |-
-  client.index('movies').updateTypoTolerance({
+  client.index('movies').settings.updateTypoTolerance({
     disableOnNumbers: true
   })
 add_movies_json_1: |-
@@ -445,7 +445,7 @@ getting_started_add_documents: |-
 getting_started_search: |-
   client.index('movies').search('botman').then((res) => console.log(res))
 getting_started_update_ranking_rules: |-
-  client.index('movies').setting.updateRankingRules([
+  client.index('movies').settings.updateRankingRules([
     'exactness',
     'words',
     'typo',
@@ -456,20 +456,20 @@ getting_started_update_ranking_rules: |-
     'rank:desc'
   ])
 getting_started_update_searchable_attributes: |-
-  client.index('movies').setting.updateSearchableAttributes([
+  client.index('movies').settings.updateSearchableAttributes([
     'title'
   ])
 getting_started_update_stop_words: |-
-  client.index('movies').setting.updateStopWords(['the'])
+  client.index('movies').settings.updateStopWords(['the'])
 getting_started_check_task_status: |-
   client.tasks.getTask(0)
 getting_started_synonyms: |-
-  client.index('movies').setting.updateSynonyms({
+  client.index('movies').settings.updateSynonyms({
     winnie: ['piglet'],
     piglet: ['winnie']
   })
 getting_started_update_displayed_attributes: |-
-  client.index('movies').setting.updateDisplayedAttributes([
+  client.index('movies').settings.updateDisplayedAttributes([
     'title',
     'overview',
     'poster'
@@ -493,14 +493,14 @@ getting_started_sorting: |-
     filter: 'mass < 200'
   })
 getting_started_faceting: |-
-  client.index('movies').setting.updateFaceting({
+  client.index('movies').settings.updateFaceting({
     maxValuesPerFacet: 2,
     sortFacetValuesBy: {
       '*': 'count'
     }
   })
 getting_started_typo_tolerance: |-
-  client.index('movies').setting.updateTypoTolerance({
+  client.index('movies').settings.updateTypoTolerance({
     minWordSizeForTypos: {
         oneTypo: 4
     }
@@ -508,12 +508,12 @@ getting_started_typo_tolerance: |-
 getting_started_filtering: |-
   client.index('meteorites').search('', { filter: 'mass < 200' })
 getting_started_pagination: |-
-  client.index('movies').setting.updatePagination({ maxTotalHits: 500 })
+  client.index('movies').settings.updatePagination({ maxTotalHits: 500 })
 get_filterable_attributes_1: |-
-  client.index('movies').setting.getFilterableAttributes()
+  client.index('movies').settings.getFilterableAttributes()
 update_filterable_attributes_1: |-
   client.index('movies')
-    .setting.updateFilterableAttributes([
+    .settings.updateFilterableAttributes([
       "genres",
       {
         attributePatterns: ["genre"],
@@ -524,10 +524,10 @@ update_filterable_attributes_1: |-
       }
     ])
 reset_filterable_attributes_1: |-
-  client.index('movies').setting.resetFilterableAttributes()
+  client.index('movies').settings.resetFilterableAttributes()
 filtering_update_settings_1: |-
   client.index('movies')
-    .setting.updateFilterableAttributes([
+    .settings.updateFilterableAttributes([
       'director',
       'genres'
     ])
@@ -537,7 +537,7 @@ faceted_search_walkthrough_filter_1: |-
       filter: [['genres = Horror', 'genres = Mystery'], 'director = "Jordan Peele"']
     })
 faceted_search_update_settings_1: |-
-  client.index('movie_ratings').setting.updateFilterableAttributes(['genres', 'rating', 'language'])
+  client.index('movie_ratings').settings.updateFilterableAttributes(['genres', 'rating', 'language'])
 faceted_search_1: |-
   client.index('books').search('classic', { facets: ['genres', 'rating', 'language'] })
 post_dump_1: |-
@@ -548,12 +548,12 @@ phrase_search_1: |-
   client.index('movies')
     .search('"african american" horror')
 sorting_guide_update_sortable_attributes_1: |-
-  client.index('books').setting.updateSortableAttributes([
+  client.index('books').settings.updateSortableAttributes([
       'author',
       'price'
     ])
 sorting_guide_update_ranking_rules_1: |-
-  client.index('books').setting.updateRankingRules([
+  client.index('books').settings.updateRankingRules([
     'words',
     'sort',
     'typo',
@@ -574,25 +574,25 @@ sorting_guide_sort_nested_1: |-
     'sort': ['rating.users:asc'],
   })
 get_sortable_attributes_1: |-
-  client.index('books').setting.getSortableAttributes()
+  client.index('books').settings.getSortableAttributes()
 update_sortable_attributes_1: |-
   client.index('books')
-    .setting.updateSortableAttributes([
+    .settings.updateSortableAttributes([
       'price',
       'author'
     ])
 reset_sortable_attributes_1: |-
-  client.index('books').setting.resetSortableAttributes()
+  client.index('books').settings.resetSortableAttributes()
 get_pagination_settings_1: |-
-  client.index('books').setting.getPagination()
+  client.index('books').settings.getPagination()
 update_pagination_settings_1: |-
   client.index('books').updateSettings({ pagination: { maxTotalHits: 100 }})
 reset_pagination_settings_1: |-
-  client.index('books').setting.resetPagination()
+  client.index('books').settings.resetPagination()
 get_faceting_settings_1: |-
-  client.index('books').setting.getFaceting()
+  client.index('books').settings.getFaceting()
 update_faceting_settings_1: |-
-  client.index('books').setting.updateFaceting({
+  client.index('books').settings.updateFaceting({
     maxValuesPerFacet: 2
     sortFacetValuesBy: {
       '*': 'alpha',
@@ -600,46 +600,46 @@ update_faceting_settings_1: |-
     }
   })
 reset_faceting_settings_1: |-
-  client.index('books').setting.resetFaceting()
+  client.index('books').settings.resetFaceting()
 get_dictionary_1: |-
-  client.index('books').setting.getDictionary()
+  client.index('books').settings.getDictionary()
 update_dictionary_1: |-
-  client.index('books').setting.updateDictionary(['J. R. R.', 'W. E. B.'])
+  client.index('books').settings.updateDictionary(['J. R. R.', 'W. E. B.'])
 reset_dictionary_1: |-
-  client.index('books').setting.resetDictionary()
+  client.index('books').settings.resetDictionary()
 search_parameter_guide_sort_1: |-
   client.index('books').search('science fiction', {
     sort: ['price:asc'],
   })
 get_separator_tokens_1: |-
-  client.index('books').setting.getSeparatorTokens()
+  client.index('books').settings.getSeparatorTokens()
 update_separator_tokens_1: |-
-  client.index('books').setting.updateSeparatorTokens(['|', '&hellip;'])
+  client.index('books').settings.updateSeparatorTokens(['|', '&hellip;'])
 reset_separator_tokens_1: |-
-  client.index('books').setting.resetSeparatorTokens()
+  client.index('books').settings.resetSeparatorTokens()
 get_non_separator_tokens_1: |-
-  client.index('books').setting.getNonSeparatorTokens()
+  client.index('books').settings.getNonSeparatorTokens()
 update_non_separator_tokens_1: |-
-  client.index('books').setting.updateNonSeparatorTokens(['@', '#'])
+  client.index('books').settings.updateNonSeparatorTokens(['@', '#'])
 reset_non_separator_tokens_1: |-
-  client.index('books').setting.resetNonSeparatorTokens()
+  client.index('books').settings.resetNonSeparatorTokens()
 get_proximity_precision_settings_1: |-
-  client.index('books').setting.getProximityPrecision()
+  client.index('books').settings.getProximityPrecision()
 update_proximity_precision_settings_1: |-
-  client.index('books').setting.updateProximityPrecision('byAttribute')
+  client.index('books').settings.updateProximityPrecision('byAttribute')
 reset_proximity_precision_settings_1: |-
-  client.index('books').setting.resetProximityPrecision()
+  client.index('books').settings.resetProximityPrecision()
 get_search_cutoff_1: |-
-  client.index('movies').setting.getSearchCutoffMs()
+  client.index('movies').settings.getSearchCutoffMs()
 update_search_cutoff_1: |-
-  client.index('movies').setting.updateSearchCutoffMs(150)
+  client.index('movies').settings.updateSearchCutoffMs(150)
 reset_search_cutoff_1: |-
-  client.index('movies').setting.resetSearchCutoffMs()
+  client.index('movies').settings.resetSearchCutoffMs()
 search_parameter_guide_facet_stats_1: |-
   client.index('movie_ratings').search('Batman', { facets: ['genres', 'rating'] })
 geosearch_guide_filter_settings_1: |-
   client.index('restaurants')
-  .setting.updateFilterableAttributes([
+  .settings.updateFilterableAttributes([
     '_geo'
   ])
 geosearch_guide_filter_usage_1: |-
@@ -655,7 +655,7 @@ geosearch_guide_filter_usage_3: |-
     filter: ['_geoBoundingBox([45.494181, 9.214024], [45.449484, 9.179175])'],
   })
 geosearch_guide_sort_settings_1: |-
-  client.index('restaurants').setting.updateSortableAttributes([
+  client.index('restaurants').settings.updateSortableAttributes([
     '_geo'
   ])
 geosearch_guide_sort_usage_1: |-
@@ -729,7 +729,7 @@ facet_search_1: |-
     filter: 'rating > 3'
   })
 facet_search_2: |-
-  client.index('books').setting.updateFaceting({
+  client.index('books').settings.updateFaceting({
     sortFacetValuesBy: {
       genres: 'count'
     }
@@ -770,7 +770,7 @@ search_parameter_guide_matching_strategy_3: |-
 search_parameter_reference_distinct_1: |-
   client.index('INDEX_NAME').search('QUERY TERMS', { distinct: 'ATTRIBUTE_A' })
 distinct_attribute_guide_filterable_1: |-
-  client.index('products').setting.updateFilterableAttributes(['product_id', 'sku', 'url'])
+  client.index('products').settings.updateFilterableAttributes(['product_id', 'sku', 'url'])
 distinct_attribute_guide_distinct_parameter_1: |-
   client.index('products').search('white shirt', { distinct: 'sku' })
 multi_search_federated_1: |-
@@ -790,32 +790,32 @@ multi_search_federated_1: |-
 search_parameter_reference_locales_1: |-
   client.index('INDEX_NAME').search('QUERY TEXT IN JAPANESE', { locales: ['jpn'] })
 get_localized_attribute_settings_1: |-
-  client.index('INDEX_NAME').setting.getLocalizedAttributes()
+  client.index('INDEX_NAME').settings.getLocalizedAttributes()
 update_localized_attribute_settings_1: |-
-  client.index('INDEX_NAME').setting.updateLocalizedAttributes([
+  client.index('INDEX_NAME').settings.updateLocalizedAttributes([
     { attributePatterns: ['*_ja'], locales: ['jpn'] },
   ])
 reset_localized_attribute_settings_1: |-
-  client.index('INDEX_NAME').setting.resetLocalizedAttributes()
+  client.index('INDEX_NAME').settings.resetLocalizedAttributes()
 get_facet_search_settings_1: |-
-  client.index('INDEX_NAME').setting.getFacetSearch();
+  client.index('INDEX_NAME').settings.getFacetSearch();
 update_facet_search_settings_1: |-
-  client.index('INDEX_NAME').setting.updateFacetSearch(false);
+  client.index('INDEX_NAME').settings.updateFacetSearch(false);
 reset_facet_search_settings_1: |-
-  client.index('INDEX_NAME').setting.resetFacetSearch();
+  client.index('INDEX_NAME').settings.resetFacetSearch();
 get_prefix_search_settings_1: |-
-  client.index('INDEX_NAME').setting.getPrefixSearch();
+  client.index('INDEX_NAME').settings.getPrefixSearch();
 update_prefix_search_settings_1: |-
-  client.index('INDEX_NAME').setting.updatePrefixSearch('disabled');
+  client.index('INDEX_NAME').settings.updatePrefixSearch('disabled');
 reset_prefix_search_settings_1: |-
-  client.index('INDEX_NAME').setting.resetPrefixSearch();
+  client.index('INDEX_NAME').settings.resetPrefixSearch();
 get_all_batches_1: |-
   client.batches.getBatches();
 get_batch_1: |-
   client.batches.getBatch(BATCH_UID);
 # Vector search
 update_embedders_1: |-
-  client.index('INDEX_NAME').setting.updateEmbedders({
+  client.index('INDEX_NAME').settings.updateEmbedders({
     default: {
       source: 'openAi',
       apiKey: 'OPEN_AI_API_KEY',

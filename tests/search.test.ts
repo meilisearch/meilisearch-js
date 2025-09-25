@@ -1214,7 +1214,7 @@ describe.each([
 
     await masterClient
       .index(index.uid)
-      .setting.updateLocalizedAttributes([
+      .settings.updateLocalizedAttributes([
         { attributePatterns: ["title", "comment"], locales: ["fra", "eng"] },
       ])
       .waitTask();

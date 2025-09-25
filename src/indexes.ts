@@ -65,7 +65,7 @@ export class Index<T extends RecordAny = RecordAny> {
       this.tasks,
     );
 
-    this.#setting = makeSettingFns(
+    this.#settings = makeSettingFns(
       this.httpRequest,
       this.#httpRequestsWithTask,
       `indexes/${uid}/settings`,
@@ -573,14 +573,14 @@ export class Index<T extends RecordAny = RecordAny> {
     });
   }
 
-  readonly #setting: SettingFns;
+  readonly #settings: SettingFns;
 
   /**
    * Contains the get, update and reset functions for every individual setting.
    *
    * @see {@link https://www.meilisearch.com/docs/reference/api/settings}
    */
-  get setting() {
-    return this.#setting;
+  get settings() {
+    return this.#settings;
   }
 }

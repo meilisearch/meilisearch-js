@@ -8,6 +8,9 @@ export type CursorResults<T> = {
   total: number;
 };
 
+/** Map properties of a record to be optional and nullable. */
+export type PartialAndNullable<T> = { [P in keyof T]?: T[P] | null };
+
 /** Deeply map every property of a record to itself excluding null. */
 export type NonNullableDeepRecordValues<T> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

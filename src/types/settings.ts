@@ -1,6 +1,7 @@
 import type {
   PascalToCamelCase,
   NonNullableDeepRecordValues,
+  PartialAndNullable,
 } from "./shared.js";
 import type { RecordAny, SearchParams } from "./types.js";
 
@@ -24,9 +25,6 @@ export type FilterableAttributesPatterns = {
 
 /** @see `milli::filterable_attributes_rules::FilterableAttributesRule` */
 export type FilterableAttributesRule = string | FilterableAttributesPatterns;
-
-/** Map properties of a record to be optional and nullable. */
-type PartialAndNullable<T> = { [P in keyof T]?: T[P] | null };
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/settings#proximity-precision}
@@ -258,7 +256,7 @@ export type UpdatableSettings = PartialAndNullable<{
  * A version of {@link UpdatableSettings}, the first layer of properties of which
  * is used to update or get individual settings.
  */
-export type SingleUpdatableSettings = Required<UpdatableSettings>;
+export type Setting = Required<UpdatableSettings>;
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/settings#body}

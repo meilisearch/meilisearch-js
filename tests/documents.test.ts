@@ -142,7 +142,7 @@ describe("Documents tests", () => {
 
         await client
           .index(indexPk.uid)
-          .setting.updateFilterableAttributes(["id"])
+          .settings.updateFilterableAttributes(["id"])
           .waitTask();
 
         await client.index(indexPk.uid).addDocuments(dataset).waitTask();
@@ -493,7 +493,7 @@ describe("Documents tests", () => {
         const client = await getClient(permission);
         await client
           .index(indexPk.uid)
-          .setting.updateFilterableAttributes(["id"]);
+          .settings.updateFilterableAttributes(["id"]);
         await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const resolvedTask = await client
@@ -511,7 +511,7 @@ describe("Documents tests", () => {
         const client = await getClient(permission);
         await client
           .index(indexPk.uid)
-          .setting.updateFilterableAttributes(["id"]);
+          .settings.updateFilterableAttributes(["id"]);
         await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const resolvedTask = await client
@@ -685,7 +685,7 @@ describe("Documents tests", () => {
         const client = await getClient(permission);
         const index = client.index<(typeof dataset)[number]>(indexPk.uid);
 
-        await index.setting.updateFilterableAttributes(["id"]).waitTask();
+        await index.settings.updateFilterableAttributes(["id"]).waitTask();
 
         await (
           await getClient("Master")

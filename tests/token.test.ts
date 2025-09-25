@@ -299,7 +299,7 @@ describe.each([{ permission: "Admin" }])(
       const masterClient = await getClient("master");
       await masterClient
         .index(UID)
-        .setting.updateFilterableAttributes(["id"])
+        .settings.updateFilterableAttributes(["id"])
         .waitTask();
       const client = await getClient(permission);
       const apiKey = await getKey(permission);
