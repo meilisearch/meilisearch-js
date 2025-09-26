@@ -24,7 +24,7 @@ services:
   export-meilisearch:
     image: getmeili/meilisearch
     ports:
-      - "7701:7700"
+      - "7702:7700"
     environment:
       - MEILI_MASTER_KEY=masterKey
       - MEILI_NO_ANALYTICS=true

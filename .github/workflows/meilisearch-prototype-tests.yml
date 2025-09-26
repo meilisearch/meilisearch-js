@@ -50,7 +50,7 @@ jobs:
           MEILI_MASTER_KEY: 'masterKey'
           MEILI_NO_ANALYTICS: 'true'
         ports:
-          - '7701:7700'
+          - '7702:7700'
     strategy:
       matrix:
         node: ['20', '22']

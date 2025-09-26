@@ -24,7 +24,7 @@ afterAll(async () => {
 test(`${ms.export.name} method`, async () => {
   const task = await ms
     .export({
-      url: "http://127.0.0.1:7701",
+      url: "http://127.0.0.1:7702",
       apiKey: "masterKey",
       payloadSize: "50MiB",
       indexes: {
