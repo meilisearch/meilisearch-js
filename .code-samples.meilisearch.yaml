@@ -858,3 +858,15 @@ search_parameter_reference_media_1: |-
       }
     }
   })
+export_post_1: |-
+  client.export({
+    url: 'http://localhost:7711',
+    apiKey: null,
+    payloadSize: '123 MiB',
+    indexes: {
+      '*': {
+        filter: null,
+        overrideSettings: true
+      }
+    }
+  })

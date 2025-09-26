@@ -41,6 +41,13 @@ jobs:
           MEILI_NO_ANALYTICS: 'true'
         ports:
           - '7700:7700'
+      export-meilisearch:
+        image: getmeili/meilisearch:${{ needs.meilisearch-version.outputs.version }}
+        env:
+          MEILI_MASTER_KEY: 'masterKey'
+          MEILI_NO_ANALYTICS: 'true'
+        ports:
+          - '7702:7700'
     strategy:
       matrix:
         node: ['20', '22']

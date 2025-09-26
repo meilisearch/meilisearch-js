@@ -29,6 +29,7 @@ export const possibleTaskTypes = objectKeys<TaskType>({
   taskDeletion: null,
   dumpCreation: null,
   snapshotCreation: null,
+  export: null,
   upgradeDatabase: null,
 });
 

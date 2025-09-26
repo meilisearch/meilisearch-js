@@ -34,6 +34,7 @@ import type {
   ResultsWrapper,
   WebhookCreatePayload,
   WebhookUpdatePayload,
+  ExportOptions,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -545,6 +546,15 @@ export class MeiliSearch {
     return this.#httpRequestsWithTask.post({
       path: "snapshots",
     });
+  }
+
+  ///
+  /// EXPORT
+  ///
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/export} */
+  export(options: ExportOptions): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.post({ path: "export", body: options });
   }
 
   ///
