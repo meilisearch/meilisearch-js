@@ -199,6 +199,7 @@ const source = {
         taskDeletion: null,
         dumpCreation: null,
         snapshotCreation: null,
+        export: null,
         upgradeDatabase: null,
       }),
     );
