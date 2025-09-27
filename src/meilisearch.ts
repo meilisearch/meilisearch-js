@@ -34,6 +34,7 @@ import type {
   ResultsWrapper,
   WebhookCreatePayload,
   WebhookUpdatePayload,
+  UpdatableNetwork,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -383,11 +384,8 @@ export class MeiliSearch {
    *
    * @experimental
    */
-  async updateNetwork(network: Partial<Network>): Promise<Network> {
-    return await this.httpRequest.patch({
-      path: "network",
-      body: network,
-    });
+  async updateNetwork(options: UpdatableNetwork): Promise<Network> {
+    return await this.httpRequest.patch({ path: "network", body: options });
   }
 
   ///
