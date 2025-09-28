@@ -258,6 +258,78 @@ describe("Documents tests", () => {
         expect(documentsGet.results[0]).not.toHaveProperty("_vectors");
       });
 
+      test(`${permission} key: Get documents with sorting by single field`, async () => {
+        const client = await getClient(permission);
+
+        await client
+          .index(indexPk.uid)
+          .updateSortableAttributes(["id"])
+          .waitTask();
+
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          sort: ["id:asc"],
+        });
+
+        expect(documents.results.length).toEqual(dataset.length);
+        // Verify documents are sorted by id in ascending order
+        const ids = documents.results.map((doc) => doc.id);
+        const sortedIds = [...ids].sort((a, b) => a - b);
+        expect(ids).toEqual(sortedIds);
+      });
+
+      test(`${permission} key: Get documents with sorting by multiple fields`, async () => {
+        const client = await getClient(permission);
+
+        await client
+          .index(indexPk.uid)
+          .updateSortableAttributes(["id", "title"])
+          .waitTask();
+
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          sort: ["id:desc", "title:asc"],
+        });
+
+        expect(documents.results.length).toEqual(dataset.length);
+        // Verify documents are sorted by id in descending order, then by title ascending
+        const ids = documents.results.map((doc) => doc.id);
+        const sortedIds = [...ids].sort((a, b) => b - a);
+        expect(ids).toEqual(sortedIds);
+      });
+
+      test(`${permission} key: Get documents with empty sort array`, async () => {
+        const client = await getClient(permission);
+
+        await client
+          .index(indexPk.uid)
+          .updateSortableAttributes(["id"])
+          .waitTask();
+
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          sort: [],
+        });
+
+        expect(documents.results.length).toEqual(dataset.length);
+        // Should return documents in default order (no specific sorting)
+      });
+
+      test(`${permission} key: Get documents with sorting should trigger error for non-sortable attribute`, async () => {
+        const client = await getClient(permission);
+
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+
+        await assert.rejects(
+          client.index(indexPk.uid).getDocuments({ sort: ["title:asc"] }),
+          Error,
+          /Attribute `title` is not sortable/,
+        );
+      });
+
       test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
         const client = await getClient(permission);
         await client.index(indexNoPk.uid).addDocuments(dataset).waitTask();

@@ -31,8 +31,6 @@ create_an_index_1: |-
   client.createIndex('movies', { primaryKey: 'id' })
 update_an_index_1: |-
   client.updateIndex('movies', { primaryKey: 'id' })
-rename_an_index_1: |-
-  client.updateIndex('INDEX_A', { indexUid: 'INDEX_B' })
 delete_an_index_1: |-
   client.deleteIndex('movies')
 swap_indexes_1: |-
@@ -54,6 +52,14 @@ get_documents_post_1: |-
     filter: '(rating > 3 AND (genres = Adventure OR genres = Fiction)) AND language = English',
     fields: ['title', 'genres', 'rating', 'language'],
     limit: 3
+  })
+get_documents_sort_1: |-
+  client.index('movies').getDocuments({
+    sort: ['release_date:desc']
+  })
+get_documents_sort_multiple_1: |-
+  client.index('movies').getDocuments({
+    sort: ['rating:desc', 'release_date:asc']
   })
 add_or_replace_documents_1: |-
   client.index('movies').addDocuments([{
