@@ -287,17 +287,28 @@ describe("Documents tests", () => {
           .updateSortableAttributes(["id", "title"])
           .waitTask();
 
-        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+        const customDocs: Book[] = [
+          { id: 1, title: "Orders", genre: ["Drama"], author: "Author A" },
+          { id: 2, title: "Orders", genre: ["Drama"], author: "Author B" },
+          { id: 3, title: "Payments", genre: ["Drama"], author: "Author C" },
+        ];
+
+        await client.index(indexPk.uid).addDocuments(customDocs).waitTask();
 
         const documents = await client.index(indexPk.uid).getDocuments<Book>({
-          sort: ["id:desc", "title:asc"],
+          sort: ["title:asc", "id:desc"],
         });
 
-        expect(documents.results.length).toEqual(dataset.length);
-        // Verify documents are sorted by id in descending order, then by title ascending
-        const ids = documents.results.map((doc) => doc.id);
-        const sortedIds = [...ids].sort((a, b) => b - a);
-        expect(ids).toEqual(sortedIds);
+        expect(documents.results.length).toEqual(customDocs.length);
+        const results = documents.results.map((doc) => ({
+          title: doc.title,
+          id: doc.id,
+        }));
+        expect(results).toEqual([
+          { title: "Orders", id: 2 },
+          { title: "Orders", id: 1 },
+          { title: "Payments", id: 3 },
+        ]);
       });
 
       test(`${permission} key: Get documents with empty sort array`, async () => {
