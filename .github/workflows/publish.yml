@@ -9,6 +9,9 @@ env:
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -26,11 +29,11 @@ jobs:
         run: yarn build
       - name: Publish with latest tag
         if: '!github.event.release.prerelease'
-        run: npm publish .
+        run: npm publish --provenance --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish with beta tag
         if: 'github.event.release.prerelease'
-        run: npm publish . --tag beta
+        run: npm publish --provenance --access public --tag beta
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
