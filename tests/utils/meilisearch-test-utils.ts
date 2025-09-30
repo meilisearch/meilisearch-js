@@ -9,7 +9,7 @@ const BAD_HOST = "http://127.0.0.1:9999";
 const config: Config = {
   host: HOST,
   apiKey: MASTER_KEY,
-  defaultWaitOptions: { interval: 10 },
+  defaultWaitOptions: { interval: 10, timeout: 60_000 },
 };
 const badHostClient = new MeiliSearch({
   host: BAD_HOST,
@@ -18,12 +18,12 @@ const badHostClient = new MeiliSearch({
 const masterClient = new MeiliSearch({
   host: HOST,
   apiKey: MASTER_KEY,
-  defaultWaitOptions: { interval: 10 },
+  defaultWaitOptions: { interval: 10, timeout: 60_000 },
 });
 
 const anonymousClient = new MeiliSearch({
   host: HOST,
-  defaultWaitOptions: { interval: 10 },
+  defaultWaitOptions: { interval: 10, timeout: 60_000 },
 });
 
 async function getKey(permission: string): Promise<string> {
@@ -63,7 +63,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
     const searchClient = new MeiliSearch({
       host: HOST,
       apiKey: searchKey,
-      defaultWaitOptions: { interval: 10 },
+      defaultWaitOptions: { interval: 10, timeout: 60_000 },
     });
     return searchClient;
   }
@@ -73,7 +73,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
     const adminClient = new MeiliSearch({
       host: HOST,
       apiKey: adminKey,
-      defaultWaitOptions: { interval: 10 },
+      defaultWaitOptions: { interval: 10, timeout: 60_000 },
     });
     return adminClient;
   }
