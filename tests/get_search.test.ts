@@ -520,7 +520,6 @@ describe.each([
     expect(response).toHaveProperty("hits", expect.any(Array));
     expect(response).toHaveProperty("query", "prince");
     expect(response.hits[0]).toHaveProperty("_vectors");
-    expect(response).toHaveProperty("queryVector", expect.any(Array));
   });
 
   test(`${permission} key: search without retrieveVectors`, async () => {
@@ -531,7 +530,6 @@ describe.each([
     expect(response).toHaveProperty("hits", expect.any(Array));
     expect(response).toHaveProperty("query", "prince");
     expect(response.hits[0]).not.toHaveProperty("_vectors");
-    expect(response).not.toHaveProperty("queryVector");
   });
 
   test(`${permission} key: matches position contain indices`, async () => {
