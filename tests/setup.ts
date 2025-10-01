@@ -7,6 +7,8 @@ const CONTAINER_NAME = "meilisearch";
 const TIMEOUT = 15_000;
 const TIMEOUT_ID = Symbol();
 
+const ms = new MeiliSearch({ host: "http://127.0.0.1:7700" });
+
 function removeIfExistsMeilisearchDockerService(): void {
   spawnSync(
     "docker",
@@ -14,7 +16,7 @@ function removeIfExistsMeilisearchDockerService(): void {
     // https://docs.docker.com/reference/cli/docker/container/rm/
     ["container", "rm", "-f", CONTAINER_NAME],
 
-    // TODO: prefix
+    // TODO: prefix output
     { stdio: "inherit" },
   );
 }
@@ -49,14 +51,13 @@ function startMeilisearchDockerService(meilisearchVersion: string): void {
       `getmeili/meilisearch:v${meilisearchVersion}`,
     ],
 
-    // TODO: prefix
+    // TODO: prefix output
     { stdio: "inherit" },
   );
 }
 
 /** Poll Meilisearch until its reachable. */
 async function waitForMeiliSearch(): Promise<void> {
-  const ms = new MeiliSearch({ host: "http://127.0.0.1:7700" });
   let lastError;
 
   const ac = new AbortController();
@@ -85,20 +86,46 @@ async function waitForMeiliSearch(): Promise<void> {
   }
 }
 
-// TODO
 /**
- * Description.
+ * In case there is a connection, return Meilisearch version, and
+ * `null`otherwise.
+ */
+async function checkConnectionAndVersion(): Promise<string | null> {
+  try {
+    const { pkgVersion } = await ms.getVersion();
+    return pkgVersion;
+  } catch {
+    return null;
+  }
+}
+
+// TODO: could use docker image save/load and https://github.com/actions/cache?tab=readme-ov-file
+//       instead of github workflows services
+
+/**
+ * If there is no connection to Meilisearch, create a docker service of it, and
+ * wait for connection.
  *
  * {@link https://vitest.dev/config/#globalsetup}
  */
 export default async function () {
   const { meilisearchTargetVersion } = pkg;
 
+  const meilisearchVersion = await checkConnectionAndVersion();
+
+  if (
+    meilisearchVersion !== null &&
+    meilisearchVersion !== meilisearchTargetVersion
+  ) {
+    throw new Error(
+      "Meilisearch is reachable but it is the wrong version " +
+        `(expected ${meilisearchTargetVersion}, got ${meilisearchVersion})`,
+    );
+  }
+
   try {
     removeIfExistsMeilisearchDockerService();
-
     startMeilisearchDockerService(meilisearchTargetVersion);
-
     await waitForMeiliSearch();
 
     return removeIfExistsMeilisearchDockerService;
