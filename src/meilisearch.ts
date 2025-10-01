@@ -473,8 +473,14 @@ export class MeiliSearch {
    *
    * @returns Promise returning an object with health details
    */
-  async health(): Promise<Health> {
-    return await this.httpRequest.get<Health>({ path: "health" });
+  async health(
+    // TODO: Need to do this for all other methods: https://github.com/meilisearch/meilisearch-js/issues/1476
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<Health> {
+    return await this.httpRequest.get<Health>({
+      path: "health",
+      extraRequestInit,
+    });
   }
 
   /**

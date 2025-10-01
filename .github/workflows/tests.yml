@@ -12,6 +12,17 @@ on:
       - main
 
 jobs:
+  meilisearch-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version-step.outputs.meilisearch_version }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Get required version of meilisearch
+        id: get-version-step
+        run: |
+          MEILISEARCH_VERSION=$(node -p "require('./package.json').meilisearchTargetVersion")
+          echo "meilisearch_version=$MEILISEARCH_VERSION" >> $GITHUB_OUTPUT
   integration_tests:
     # Will not run if the event is a PR to bump-meilisearch-v* (so a pre-release PR)
     # Will not run if the event is a PR to pre-release-beta/*
@@ -25,9 +36,10 @@ jobs:
       !startsWith(github.base_ref, 'prototype-beta/') &&
       !startsWith(github.head_ref, 'pre-release-beta/')
     runs-on: ubuntu-latest
+    needs: meilisearch-version
     services:
       meilisearch:
-        image: getmeili/meilisearch:latest
+        image: getmeili/meilisearch:v${{ needs.meilisearch-version.outputs.version }}
         env:
           MEILI_MASTER_KEY: 'masterKey'
           MEILI_NO_ANALYTICS: 'true'
