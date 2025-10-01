@@ -112,15 +112,15 @@ export default async function () {
   const { meilisearchTargetVersion } = pkg;
 
   const meilisearchVersion = await checkConnectionAndVersion();
+  if (meilisearchVersion !== null) {
+    if (meilisearchVersion !== meilisearchTargetVersion) {
+      throw new Error(
+        "Meilisearch is reachable but it is the wrong version " +
+          `(expected ${meilisearchTargetVersion}, got ${meilisearchVersion})`,
+      );
+    }
 
-  if (
-    meilisearchVersion !== null &&
-    meilisearchVersion !== meilisearchTargetVersion
-  ) {
-    throw new Error(
-      "Meilisearch is reachable but it is the wrong version " +
-        `(expected ${meilisearchTargetVersion}, got ${meilisearchVersion})`,
-    );
+    return;
   }
 
   try {
