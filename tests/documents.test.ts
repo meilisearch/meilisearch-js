@@ -258,6 +258,89 @@ describe("Documents tests", () => {
         expect(documentsGet.results[0]).not.toHaveProperty("_vectors");
       });
 
+      test(`${permission} key: Get documents with sorting by single field`, async () => {
+        const client = await getClient(permission);
+
+        await client
+          .index(indexPk.uid)
+          .updateSortableAttributes(["id"])
+          .waitTask();
+
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          sort: ["id:asc"],
+        });
+
+        expect(documents.results.length).toEqual(dataset.length);
+        // Verify documents are sorted by id in ascending order
+        const ids = documents.results.map((doc) => doc.id);
+        const sortedIds = [...ids].sort((a, b) => a - b);
+        expect(ids).toEqual(sortedIds);
+      });
+
+      test(`${permission} key: Get documents with sorting by multiple fields`, async () => {
+        const client = await getClient(permission);
+
+        await client
+          .index(indexPk.uid)
+          .updateSortableAttributes(["id", "title"])
+          .waitTask();
+
+        const customDocs: Book[] = [
+          { id: 1, title: "Orders", genre: ["Drama"], author: "Author A" },
+          { id: 2, title: "Orders", genre: ["Drama"], author: "Author B" },
+          { id: 3, title: "Payments", genre: ["Drama"], author: "Author C" },
+        ];
+
+        await client.index(indexPk.uid).addDocuments(customDocs).waitTask();
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          sort: ["title:asc", "id:desc"],
+        });
+
+        expect(documents.results.length).toEqual(customDocs.length);
+        const results = documents.results.map((doc) => ({
+          title: doc.title,
+          id: doc.id,
+        }));
+        expect(results).toEqual([
+          { title: "Orders", id: 2 },
+          { title: "Orders", id: 1 },
+          { title: "Payments", id: 3 },
+        ]);
+      });
+
+      test(`${permission} key: Get documents with empty sort array`, async () => {
+        const client = await getClient(permission);
+
+        await client
+          .index(indexPk.uid)
+          .updateSortableAttributes(["id"])
+          .waitTask();
+
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          sort: [],
+        });
+
+        expect(documents.results.length).toEqual(dataset.length);
+        // Should return documents in default order (no specific sorting)
+      });
+
+      test(`${permission} key: Get documents with sorting should trigger error for non-sortable attribute`, async () => {
+        const client = await getClient(permission);
+
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+
+        await assert.rejects(
+          client.index(indexPk.uid).getDocuments({ sort: ["title:asc"] }),
+          Error,
+          /Attribute `title` is not sortable/,
+        );
+      });
+
       test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
         const client = await getClient(permission);
         await client.index(indexNoPk.uid).addDocuments(dataset).waitTask();

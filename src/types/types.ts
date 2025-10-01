@@ -141,6 +141,7 @@ export type ResultsWrapper<T> = {
 
 export type IndexOptions = {
   primaryKey?: string;
+  uid?: string;
 };
 
 export type IndexObject = {
@@ -408,6 +409,7 @@ export type SearchResponse<
   facetDistribution?: FacetDistribution;
   facetStats?: FacetStats;
   facetsByIndex?: FacetsByIndex;
+  queryVector?: number[];
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
@@ -508,6 +510,12 @@ export type DocumentsQuery<T = RecordAny> = ResourceQuery & {
   limit?: number;
   offset?: number;
   retrieveVectors?: boolean;
+  /**
+   * Array of strings containing the attributes to sort on. Each string should
+   * be in the format "attribute:direction" where direction is either "asc" or
+   * "desc". Example: ["price:asc", "rating:desc"]
+   */
+  sort?: string[];
 };
 
 export type DocumentQuery<T = RecordAny> = {
