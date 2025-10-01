@@ -7,7 +7,10 @@ const CONTAINER_NAME = "meilisearch";
 const TIMEOUT = 15_000;
 const TIMEOUT_ID = Symbol();
 
-const ms = new MeiliSearch({ host: "http://127.0.0.1:7700" });
+const ms = new MeiliSearch({
+  host: "http://127.0.0.1:7700",
+  apiKey: "masterKey",
+});
 
 function removeIfExistsMeilisearchDockerService(): void {
   spawnSync(
@@ -48,6 +51,7 @@ function startMeilisearchDockerService(meilisearchVersion: string): void {
       "-e",
       "MEILI_NO_ANALYTICS=true",
 
+      // https://hub.docker.com/r/getmeili/meilisearch
       `getmeili/meilisearch:v${meilisearchVersion}`,
     ],
 
