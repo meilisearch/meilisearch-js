@@ -52,6 +52,7 @@ export type TaskType = PascalToCamelCase<
   | "TaskDeletion"
   | "DumpCreation"
   | "SnapshotCreation"
+  | "Export"
   | "UpgradeDatabase"
 >;
 

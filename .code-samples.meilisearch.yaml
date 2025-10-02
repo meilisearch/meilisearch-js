@@ -858,3 +858,12 @@ search_parameter_reference_media_1: |-
       }
     }
   })
+export_post_1: |-
+  client.export({
+    url: 'TARGET_INSTANCE_URL',
+    indexes: {
+      '*': {
+        overrideSettings: true
+      }
+    }
+  })
