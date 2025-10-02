@@ -155,7 +155,7 @@ const source = {
   },
   isTask(task: Task) {
     const { length } = Object.keys(task);
-    vitestAssert(length >= 11 && length <= 12);
+    vitestAssert(length >= 11 && length <= 13);
     const {
       indexUid,
       status,

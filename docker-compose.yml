@@ -20,11 +20,17 @@ services:
     environment:
       - MEILI_MASTER_KEY=masterKey
       - MEILI_NO_ANALYTICS=true
+    networks:
+      - ms-network
 
   export-meilisearch:
     image: getmeili/meilisearch
-    ports:
-      - "7702:7700"
     environment:
       - MEILI_MASTER_KEY=masterKey
       - MEILI_NO_ANALYTICS=true
+    networks:
+      - ms-network
+
+networks:
+  ms-network:
+    driver: bridge

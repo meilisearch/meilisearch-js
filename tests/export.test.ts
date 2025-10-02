@@ -9,11 +9,13 @@ beforeAll(async () => {
   const task = await ms.createIndex(INDEX_UID).waitTask();
   assert.isTaskSuccessful(task);
 
-  const task2 = await ms
-    .index(INDEX_UID)
-    .addDocuments([{ id: 0, beep: "boop" }])
-    .waitTask();
+  const idx = ms.index(INDEX_UID);
+
+  const task2 = await idx.updateFilterableAttributes(["beep"]).waitTask();
   assert.isTaskSuccessful(task2);
+
+  const task3 = await idx.addDocuments([{ id: 0, beep: "boop" }]).waitTask();
+  assert.isTaskSuccessful(task3);
 });
 
 afterAll(async () => {
@@ -24,7 +26,7 @@ afterAll(async () => {
 test(`${ms.export.name} method`, async () => {
   const task = await ms
     .export({
-      url: "http://127.0.0.1:7702",
+      url: "http://export-meilisearch:7700",
       apiKey: "masterKey",
       payloadSize: "50MiB",
       indexes: {

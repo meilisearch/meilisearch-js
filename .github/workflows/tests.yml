@@ -38,8 +38,6 @@ jobs:
         env:
           MEILI_MASTER_KEY: 'masterKey'
           MEILI_NO_ANALYTICS: 'true'
-        ports:
-          - '7702:7700'
     strategy:
       fail-fast: false
       matrix:
