@@ -1,4 +1,5 @@
-import type { RecordAny, Settings } from "./types.js";
+import type { UpdatableSettings } from "./settings.js";
+import type { RecordAny } from "./types.js";
 import type {
   PascalToCamelCase,
   SafeOmit,
@@ -106,17 +107,14 @@ export type EnqueuedTask = {
 export type TaskUidOrEnqueuedTask = EnqueuedTask["taskUid"] | EnqueuedTask;
 
 /** {@link https://www.meilisearch.com/docs/reference/api/tasks#indexswap} */
-export type IndexSwap = {
-  indexes: [string, string];
-  rename: boolean;
-};
+export type IndexSwap = { indexes: [string, string]; rename: boolean };
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/tasks#details}
  *
  * @see `meilisearch_types::task_view::DetailsView`
  */
-export type TaskDetails = Settings &
+export type TaskDetails = UpdatableSettings &
   Partial<{
     receivedDocuments: number;
     indexedDocuments: number;

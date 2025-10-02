@@ -344,6 +344,11 @@ export type Book = {
   author: string;
 };
 
+/**
+ * This function is meant to transform a union of types into a tuple of the same
+ * types. This is not possible otherwise in a safe manner.
+ * {@link https://stackoverflow.com/questions/55127004/how-to-transform-union-type-to-tuple-type}
+ */
 function objectKeys<T extends string>(o: { [TKey in T]: null }): T[] {
   return Object.keys(o) as T[];
 }

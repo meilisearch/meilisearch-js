@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { getClient } from "./utils/meilisearch-test-utils.js";
-import type { Embedder } from "../src/types/types.js";
+import type { EmbeddingSettings } from "../src/types/settings.js";
 import movies from "./fixtures/movies.json" assert { type: "json" };
 import type { Meilisearch } from "../src/index.js";
 import { dirname, join } from "node:path";
@@ -117,7 +117,7 @@ const EMBEDDER_CONFIG = {
       "{{..}}",
     ],
   },
-} satisfies Embedder;
+} satisfies EmbeddingSettings;
 
 describe.skipIf(!VOYAGE_API_KEY)("Multi-modal search", () => {
   let searchClient: Meilisearch;

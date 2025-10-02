@@ -7,11 +7,11 @@ import {
   beforeAll,
   vi,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types/index.js";
+import { ErrorStatusCode, MatchingStrategies } from "../src/index.js";
 import type {
   FederatedMultiSearchParams,
   MultiSearchParams,
-} from "../src/types/index.js";
+} from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -1214,7 +1214,7 @@ describe.each([
 
     await masterClient
       .index(index.uid)
-      .updateLocalizedAttributes([
+      .settings.updateLocalizedAttributes([
         { attributePatterns: ["title", "comment"], locales: ["fra", "eng"] },
       ])
       .waitTask();
@@ -1422,6 +1422,7 @@ describe.each([
   });
 
   test(`${permission} key: search should be aborted when reaching timeout`, async () => {
+    // TODO: AssertionError: expected value to not resolve
     const key = await getKey(permission);
     const client = new MeiliSearch({
       ...config,

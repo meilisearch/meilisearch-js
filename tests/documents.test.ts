@@ -142,7 +142,7 @@ describe("Documents tests", () => {
 
         await client
           .index(indexPk.uid)
-          .updateFilterableAttributes(["id"])
+          .settings.updateFilterableAttributes(["id"])
           .waitTask();
 
         await client.index(indexPk.uid).addDocuments(dataset).waitTask();
@@ -491,7 +491,9 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Delete some documents with string filters`, async () => {
         const client = await getClient(permission);
-        await client.index(indexPk.uid).updateFilterableAttributes(["id"]);
+        await client
+          .index(indexPk.uid)
+          .settings.updateFilterableAttributes(["id"]);
         await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const resolvedTask = await client
@@ -507,7 +509,9 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Delete some documents with array filters`, async () => {
         const client = await getClient(permission);
-        await client.index(indexPk.uid).updateFilterableAttributes(["id"]);
+        await client
+          .index(indexPk.uid)
+          .settings.updateFilterableAttributes(["id"]);
         await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
         const resolvedTask = await client
@@ -681,7 +685,7 @@ describe("Documents tests", () => {
         const client = await getClient(permission);
         const index = client.index<(typeof dataset)[number]>(indexPk.uid);
 
-        await index.updateFilterableAttributes(["id"]).waitTask();
+        await index.settings.updateFilterableAttributes(["id"]).waitTask();
 
         await (
           await getClient("Master")
