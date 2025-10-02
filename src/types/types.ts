@@ -4,7 +4,7 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^5.8.2
 
-import type { WaitOptions } from "./task_and_batch.js";
+import type { WaitOptions } from "./task-and-batch.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RecordAny = Record<string, any>;
@@ -308,26 +308,6 @@ export type MultiSearchParams = {
 export type FederatedMultiSearchParams = {
   federation: MultiSearchFederation;
   queries: MultiSearchQueryWithFederation[];
-};
-
-/**
- * {@link https://www.meilisearch.com/docs/reference/api/network#the-remote-object}
- *
- * @see `meilisearch_types::features::Remote` at {@link https://github.com/meilisearch/meilisearch}
- */
-export type Remote = {
-  url: string;
-  searchApiKey: string | null;
-};
-
-/**
- * {@link https://www.meilisearch.com/docs/reference/api/network#the-network-object}
- *
- * @see `meilisearch_types::features::Network` at {@link https://github.com/meilisearch/meilisearch}
- */
-export type Network = {
-  self: string | null;
-  remotes: Record<string, Remote>;
 };
 
 export type CategoriesDistribution = {
@@ -841,12 +821,6 @@ export type Version = {
 /*
  ** ERROR HANDLER
  */
-
-export interface FetchError extends Error {
-  type: string;
-  errno: string;
-  code: string;
-}
 
 export type MeiliSearchErrorResponse = {
   message: string;

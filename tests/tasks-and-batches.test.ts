@@ -1,12 +1,15 @@
 import { randomUUID } from "node:crypto";
 import { beforeAll, describe, test, vi } from "vitest";
 import type { TasksOrBatchesQuery } from "../src/types/index.js";
-import { getClient, objectEntries } from "./utils/meilisearch-test-utils.js";
 import {
+  getClient,
+  objectEntries,
   assert,
-  possibleTaskTypes,
+} from "./utils/meilisearch-test-utils.js";
+import {
   possibleTaskStatuses,
-} from "./utils/tasks-and-batches.js";
+  possibleTaskTypes,
+} from "./utils/assertions/tasks-and-batches.js";
 
 const INDEX_UID = randomUUID();
 const ms = await getClient("Master");
@@ -188,11 +191,11 @@ describe.for(objectEntries(testValuesRecord))("%s", ([key, testValues]) => {
   test.for(testValues)(
     `${ms.tasks.getTasks.name} method%s`,
     async ([, value]) => {
-      const { results, ...r } = await ms.tasks.getTasks({ [key]: value });
+      const tasksResults = await ms.tasks.getTasks({ [key]: value });
 
-      assert.isResult(r);
+      assert.isTasksOrBatchesResults(tasksResults);
 
-      for (const task of results) {
+      for (const task of tasksResults.results) {
         assert.isTask(task);
       }
     },
@@ -201,11 +204,11 @@ describe.for(objectEntries(testValuesRecord))("%s", ([key, testValues]) => {
   test.for(testValues)(
     `${ms.batches.getBatches.name} method%s`,
     async ([, value]) => {
-      const { results, ...r } = await ms.batches.getBatches({ [key]: value });
+      const batchesResults = await ms.batches.getBatches({ [key]: value });
 
-      assert.isResult(r);
+      assert.isTasksOrBatchesResults(batchesResults);
 
-      for (const batch of results) {
+      for (const batch of batchesResults.results) {
         assert.isBatch(batch);
       }
     },
