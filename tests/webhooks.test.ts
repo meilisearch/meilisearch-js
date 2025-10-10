@@ -73,11 +73,12 @@ afterAll(async () => {
 const WEBHOOK_PAYLOAD = {
   // TODO: what about linux?
   // https://docs.docker.com/desktop/features/networking/#i-want-to-connect-from-a-container-to-a-service-on-the-host
-  url: `http://host.docker.internal:${SERVER_PORT}`,
+  url: `http://172.17.0.1:${SERVER_PORT}`,
   headers: { authorization: "TOKEN" },
 } satisfies WebhookCreatePayload;
 
 it("webhook works", async () => {
+  console.log("test");
   await client.createWebhook(WEBHOOK_PAYLOAD);
   const INDEX_NAME = "idx_webhook_test";
   const task = await client.createIndex(INDEX_NAME).waitTask();
