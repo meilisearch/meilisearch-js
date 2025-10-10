@@ -4,6 +4,7 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^5.8.2
 
+import type { WebhookTaskClient } from "../task/webhook-task.js";
 import type { WaitOptions } from "./task_and_batch.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -78,6 +79,7 @@ export type Config = {
   timeout?: number;
   /** Customizable default options for awaiting tasks. */
   defaultWaitOptions?: WaitOptions;
+  webhookTaskClient?: WebhookTaskClient;
 };
 
 /** Main options of a request. */

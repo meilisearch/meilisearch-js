@@ -1,3 +1,5 @@
+import type { Task } from "./task_and_batch.js";
+
 export type Webhook = {
   /** A v4 uuid Meilisearch automatically generates when you create a new webhook */
   uuid: string;
@@ -24,4 +26,9 @@ export type WebhookUpdatePayload = {
   url?: string;
   /** An object with HTTP headers and their values */
   headers?: Record<string, string>;
+};
+
+export type WebhookTaskClientOptions = {
+  timeout?: number;
+  timeoutCallback?: (task: Task) => void;
 };

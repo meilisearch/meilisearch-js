@@ -41,8 +41,8 @@ import {
   getHttpRequestsWithEnqueuedTaskPromise,
   TaskClient,
   type HttpRequestsWithEnqueuedTaskPromise,
-} from "./task.js";
-import { BatchClient } from "./batch.js";
+} from "./task/task.js";
+import { BatchClient } from "./task/batch.js";
 import { ChatWorkspace } from "./chat-workspace.js";
 import type { MeiliSearchApiError } from "./errors/index.js";
 
@@ -73,6 +73,7 @@ export class MeiliSearch {
 
     this.#taskClient = new TaskClient(
       this.httpRequest,
+      config.webhookTaskClient,
       config.defaultWaitOptions,
     );
     this.#batchClient = new BatchClient(this.httpRequest);

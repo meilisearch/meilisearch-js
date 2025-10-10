@@ -58,7 +58,7 @@ import {
   getHttpRequestsWithEnqueuedTaskPromise,
   TaskClient,
   type HttpRequestsWithEnqueuedTaskPromise,
-} from "./task.js";
+} from "./task/task.js";
 
 export class Index<T extends RecordAny = RecordAny> {
   uid: string;
@@ -78,7 +78,11 @@ export class Index<T extends RecordAny = RecordAny> {
     this.uid = uid;
     this.primaryKey = primaryKey;
     this.httpRequest = new HttpRequests(config);
-    this.tasks = new TaskClient(this.httpRequest, config.defaultWaitOptions);
+    this.tasks = new TaskClient(
+      this.httpRequest,
+      config.webhookTaskClient,
+      config.defaultWaitOptions,
+    );
     this.#httpRequestsWithTask = getHttpRequestsWithEnqueuedTaskPromise(
       this.httpRequest,
       this.tasks,
@@ -244,7 +248,11 @@ export class Index<T extends RecordAny = RecordAny> {
     const httpRequests = new HttpRequests(config);
     return getHttpRequestsWithEnqueuedTaskPromise(
       httpRequests,
-      new TaskClient(httpRequests),
+      new TaskClient(
+        httpRequests,
+        config.webhookTaskClient,
+        config.defaultWaitOptions,
+      ),
     ).post({
       path: "indexes",
       body: { ...options, uid },

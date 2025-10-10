@@ -1,4 +1,5 @@
-import { MeiliSearchTaskTimeOutError } from "./errors/index.js";
+import { MeiliSearchTaskTimeOutError } from "../errors/index.js";
+import type { WebhookTaskClient } from "./webhook-task.js";
 import type {
   WaitOptions,
   TasksOrBatchesQuery,
@@ -9,14 +10,14 @@ import type {
   EnqueuedTaskPromise,
   TaskUidOrEnqueuedTask,
   ExtraRequestInit,
-} from "./types/index.js";
-import type { HttpRequests } from "./http-requests.js";
+} from "../types/index.js";
+import type { HttpRequests } from "../http-requests.js";
 
 /**
  * Used to identify whether an error is a timeout error in
  * {@link TaskClient.waitForTask}.
  */
-const TIMEOUT_ID = Symbol("<task timeout>");
+export const TIMEOUT_ID = Symbol("<task timeout>");
 
 /**
  * @returns A function which defines an extra function property on a
@@ -58,31 +59,11 @@ export class TaskClient {
   readonly #httpRequest: HttpRequests;
   readonly #defaultTimeout: number;
   readonly #defaultInterval: number;
-  readonly #applyWaitTask: ReturnType<typeof getWaitTaskApplier>;
-
-  constructor(httpRequest: HttpRequests, defaultWaitOptions?: WaitOptions) {
-    this.#httpRequest = httpRequest;
-    this.#defaultTimeout = defaultWaitOptions?.timeout ?? 5_000;
-    this.#defaultInterval = defaultWaitOptions?.interval ?? 50;
-    this.#applyWaitTask = getWaitTaskApplier(this);
-  }
-
-  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-one-task} */
-  async getTask(
-    uid: number,
-    // TODO: Need to do this for all other methods: https://github.com/meilisearch/meilisearch-js/issues/1476
-    extraRequestInit?: ExtraRequestInit,
-  ): Promise<Task> {
-    return await this.#httpRequest.get({
-      path: `tasks/${uid}`,
-      extraRequestInit,
-    });
-  }
-
-  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-tasks} */
-  async getTasks(params?: TasksOrBatchesQuery): Promise<TasksResults> {
-    return await this.#httpRequest.get({ path: "tasks", params });
-  }
+  readonly #applyWaitTask = getWaitTaskApplier(this);
+  readonly waitForTask: (
+    taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask,
+    options?: WaitOptions,
+  ) => Promise<Task>;
 
   /**
    * Wait for an enqueued task to be processed. This is done through polling
@@ -93,7 +74,7 @@ export class TaskClient {
    * to instead use {@link EnqueuedTaskPromise.waitTask}, which is available on
    * any method that returns an {@link EnqueuedTaskPromise}.
    */
-  async waitForTask(
+  async #waitForTask(
     taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask,
     options?: WaitOptions,
   ): Promise<Task> {
@@ -126,6 +107,46 @@ export class TaskClient {
         ? new MeiliSearchTaskTimeOutError(taskUid, timeout)
         : error;
     }
+  }
+
+  constructor(
+    httpRequest: HttpRequests,
+    webhookTaskClient?: WebhookTaskClient,
+    options?: WaitOptions,
+  ) {
+    this.#httpRequest = httpRequest;
+
+    // TODO: Timeout error is only caught for private method
+    this.waitForTask =
+      webhookTaskClient !== undefined
+        ? (taskUidOrEnqueuedTask, options) => {
+            const taskUid = getTaskUid(taskUidOrEnqueuedTask);
+            return webhookTaskClient.waitForTask(
+              taskUid,
+              options?.timeout ?? this.#defaultTimeout,
+            );
+          }
+        : this.#waitForTask.bind(this);
+
+    this.#defaultTimeout = options?.timeout ?? 5_000;
+    this.#defaultInterval = options?.interval ?? 50;
+  }
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-one-task} */
+  async getTask(
+    uid: number,
+    // TODO: Need to do this for all other methods: https://github.com/meilisearch/meilisearch-js/issues/1476
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<Task> {
+    return await this.#httpRequest.get({
+      path: `tasks/${uid}`,
+      extraRequestInit,
+    });
+  }
+
+  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-tasks} */
+  async getTasks(params?: TasksOrBatchesQuery): Promise<TasksResults> {
+    return await this.#httpRequest.get({ path: "tasks", params });
   }
 
   /**

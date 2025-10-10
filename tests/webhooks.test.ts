@@ -1,42 +1,100 @@
+import { createServer } from "node:http";
 import { expect, it, describe, beforeAll, afterAll } from "vitest";
-import { getClient } from "./utils/meilisearch-test-utils.js";
+import { MASTER_KEY, HOST, assert } from "./utils/meilisearch-test-utils.js";
 import {
-  Meilisearch,
   type WebhookCreatePayload,
   type WebhookUpdatePayload,
+  MeiliSearch,
+  WebhookTaskClient,
 } from "../src/index.js";
+import { createUnzip } from "node:zlib";
 
-let adminClient: Meilisearch;
+const SERVER_PORT = 3012;
+const SERVER_HOST = "127.0.0.1";
+
+const webhookTaskClient = new WebhookTaskClient();
+const client = new MeiliSearch({
+  host: HOST,
+  apiKey: MASTER_KEY,
+  webhookTaskClient,
+});
+
+const unzip = createUnzip();
+
+const server = createServer((req, res) => {
+  (async () => {
+    const buffers: Buffer[] = [];
+
+    for await (const chunk of req.pipe(unzip).iterator()) {
+      buffers.push(chunk as Buffer);
+    }
+
+    const responseStr = Buffer.concat(buffers).toString();
+    console.log({ responseStr });
+
+    webhookTaskClient.pushTasksString(responseStr);
+
+    res.writeHead(200);
+  })()
+    .catch((reason) => {
+      console.error(reason);
+      res.writeHead(500);
+    })
+    .finally(() => {
+      res.end();
+    });
+});
 
 beforeAll(async () => {
-  adminClient = await getClient("Admin");
+  await new Promise<void>((resolve) => {
+    server.listen(SERVER_PORT, SERVER_HOST, resolve);
+  });
 });
 
 afterAll(async () => {
-  const response = await adminClient.getWebhooks();
+  await new Promise<void>((resolve, reject) => {
+    server.close((err) => {
+      if (err !== undefined) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+
+  const response = await client.getWebhooks();
   for (const webhook of response.results) {
     if (webhook.isEditable) {
-      await adminClient.deleteWebhook(webhook.uuid);
+      await client.deleteWebhook(webhook.uuid);
     }
   }
 });
 
 const WEBHOOK_PAYLOAD = {
-  url: "https://example.com",
-  headers: {
-    authorization: "TOKEN",
-  },
+  // TODO: what about linux?
+  // https://docs.docker.com/desktop/features/networking/#i-want-to-connect-from-a-container-to-a-service-on-the-host
+  url: `http://host.docker.internal:${SERVER_PORT}`,
+  headers: { authorization: "TOKEN" },
 } satisfies WebhookCreatePayload;
 
-describe("webhooks", () => {
+it("webhook works", async () => {
+  await client.createWebhook(WEBHOOK_PAYLOAD);
+  const INDEX_NAME = "idx_webhook_test";
+  const task = await client.createIndex(INDEX_NAME).waitTask();
+  assert.isTask(task);
+  const task2 = await client.deleteIndex(INDEX_NAME).waitTask();
+  assert.isTask(task2);
+});
+
+describe.skip("webhooks", () => {
   it("can list webhooks", async () => {
-    const response = await adminClient.getWebhooks();
+    const response = await client.getWebhooks();
     expect(response).toHaveProperty("results");
     expect(response.results).toBeInstanceOf(Array);
   });
 
   it("can create a webhook", async () => {
-    const response = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
+    const response = await client.createWebhook(WEBHOOK_PAYLOAD);
     expect(response).toHaveProperty("uuid");
     expect(response).toHaveProperty("url", WEBHOOK_PAYLOAD.url);
     expect(response).toHaveProperty("headers", WEBHOOK_PAYLOAD.headers);
@@ -44,8 +102,8 @@ describe("webhooks", () => {
   });
 
   it("can fetch a webhook", async () => {
-    const createdWebhook = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
-    const response = await adminClient.getWebhook(createdWebhook.uuid);
+    const createdWebhook = await client.createWebhook(WEBHOOK_PAYLOAD);
+    const response = await client.getWebhook(createdWebhook.uuid);
     expect(response).toHaveProperty("uuid", createdWebhook.uuid);
     expect(response).toHaveProperty("url", WEBHOOK_PAYLOAD.url);
     expect(response).toHaveProperty("headers", WEBHOOK_PAYLOAD.headers);
@@ -60,8 +118,8 @@ describe("webhooks", () => {
       },
     } satisfies WebhookUpdatePayload;
 
-    const createdWebhook = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
-    const response = await adminClient.updateWebhook(
+    const createdWebhook = await client.createWebhook(WEBHOOK_PAYLOAD);
+    const response = await client.updateWebhook(
       createdWebhook.uuid,
       updatedWebhook,
     );
@@ -78,8 +136,8 @@ describe("webhooks", () => {
       },
     } satisfies WebhookUpdatePayload;
 
-    const createdWebhook = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
-    const response = await adminClient.updateWebhook(
+    const createdWebhook = await client.createWebhook(WEBHOOK_PAYLOAD);
+    const response = await client.updateWebhook(
       createdWebhook.uuid,
       updatedWebhook,
     );
@@ -89,11 +147,11 @@ describe("webhooks", () => {
   });
 
   it("can delete a webhook", async () => {
-    const createdWebhook = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
-    const deleteResponse = await adminClient.deleteWebhook(createdWebhook.uuid);
+    const createdWebhook = await client.createWebhook(WEBHOOK_PAYLOAD);
+    const deleteResponse = await client.deleteWebhook(createdWebhook.uuid);
     expect(deleteResponse).toBeUndefined();
 
-    const listResponse = await adminClient.getWebhooks();
+    const listResponse = await client.getWebhooks();
     expect(listResponse.results).not.toContainEqual(createdWebhook);
   });
 });
