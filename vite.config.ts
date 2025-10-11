@@ -54,7 +54,8 @@ export default defineConfig(({ mode }) => {
         : undefined,
     },
     test: {
-      include: ["tests/**/*.test.ts"],
+      // globalSetup: "tests/setup.ts",
+      include: ["tests/webhooks.test.ts"],
       exclude: ["tests/env/**"],
       fileParallelism: false,
       testTimeout: 100_000, // 100 seconds

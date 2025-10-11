@@ -2,8 +2,8 @@ import type {
   Batch,
   BatchesResults,
   TasksOrBatchesQuery,
-} from "./types/index.js";
-import type { HttpRequests } from "./http-requests.js";
+} from "../types/index.js";
+import type { HttpRequests } from "../http-requests.js";
 
 /**
  * Class for handling batches.

@@ -41,8 +41,8 @@ import {
   getHttpRequestsWithEnqueuedTaskPromise,
   TaskClient,
   type HttpRequestsWithEnqueuedTaskPromise,
-} from "./task.js";
-import { BatchClient } from "./batch.js";
+} from "./task/task.js";
+import { BatchClient } from "./task/batch.js";
 import { ChatWorkspace } from "./chat-workspace.js";
 import type { MeiliSearchApiError } from "./errors/index.js";
 
@@ -73,6 +73,7 @@ export class MeiliSearch {
 
     this.#taskClient = new TaskClient(
       this.httpRequest,
+      config.webhookTaskClient,
       config.defaultWaitOptions,
     );
     this.#batchClient = new BatchClient(this.httpRequest);
@@ -473,8 +474,14 @@ export class MeiliSearch {
    *
    * @returns Promise returning an object with health details
    */
-  async health(): Promise<Health> {
-    return await this.httpRequest.get<Health>({ path: "health" });
+  async health(
+    // TODO: Need to do this for all other methods: https://github.com/meilisearch/meilisearch-js/issues/1476
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<Health> {
+    return await this.httpRequest.get<Health>({
+      path: "health",
+      extraRequestInit,
+    });
   }
 
   /**
