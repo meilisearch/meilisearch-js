@@ -70,7 +70,7 @@ afterAll(async () => {
 const WEBHOOK_PAYLOAD = {
   // TODO: https://dev.to/abiwinanda/github-action-adding-post-steps-in-composite-actions-5ak3
   // https://docs.docker.com/desktop/features/networking/#i-want-to-connect-from-a-container-to-a-service-on-the-host
-  url: `http://host.docker.internal:${SERVER_PORT}`,
+  url: `http://172.17.0.1:${SERVER_PORT}`,
   headers: { authorization: "TOKEN" },
 } satisfies WebhookCreatePayload;
 
