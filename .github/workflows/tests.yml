@@ -33,8 +33,7 @@ jobs:
           MEILI_NO_ANALYTICS: 'true'
         ports:
           - '7700:7700'
-        options: >
-          --add-host host.docker.internal=host-gateway
+        options: "--add-host host.docker.internal=host-gateway"
     strategy:
       fail-fast: false
       matrix:
