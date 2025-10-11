@@ -8,7 +8,6 @@ import {
   WebhookTaskClient,
 } from "../src/index.js";
 import { createUnzip } from "node:zlib";
-import { platform } from "node:process";
 
 const SERVER_PORT = 3012;
 const SERVER_HOST = "127.0.0.1";
@@ -20,18 +19,15 @@ const client = new MeiliSearch({
   webhookTaskClient,
 });
 
-const unzip = createUnzip();
-
 const server = createServer((req, res) => {
   (async () => {
     const buffers: Buffer[] = [];
 
-    for await (const chunk of req.pipe(unzip).iterator()) {
+    for await (const chunk of req.pipe(createUnzip()).iterator()) {
       buffers.push(chunk as Buffer);
     }
 
     const responseStr = Buffer.concat(buffers).toString();
-    console.log({ responseStr });
 
     webhookTaskClient.pushTasksString(responseStr);
 
@@ -73,9 +69,8 @@ afterAll(async () => {
 
 const WEBHOOK_PAYLOAD = {
   // TODO: https://dev.to/abiwinanda/github-action-adding-post-steps-in-composite-actions-5ak3
-  // TODO: what about linux?
   // https://docs.docker.com/desktop/features/networking/#i-want-to-connect-from-a-container-to-a-service-on-the-host
-  url: `http://${platform === "linux" ? "127.0.0.1" : "host.docker.internal"}:${SERVER_PORT}`,
+  url: `http://host.docker.internal:${SERVER_PORT}`,
   headers: { authorization: "TOKEN" },
 } satisfies WebhookCreatePayload;
 

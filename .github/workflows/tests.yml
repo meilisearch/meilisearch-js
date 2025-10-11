@@ -25,6 +25,16 @@ jobs:
       !startsWith(github.base_ref, 'prototype-beta/') &&
       !startsWith(github.head_ref, 'pre-release-beta/')
     runs-on: ubuntu-latest
+    services:
+      meilisearch:
+        image: getmeili/meilisearch:latest
+        env:
+          MEILI_MASTER_KEY: 'masterKey'
+          MEILI_NO_ANALYTICS: 'true'
+        ports:
+          - '7700:7700'
+        options: >
+          --add-host host.docker.internal=host-gateway
     strategy:
       fail-fast: false
       matrix:

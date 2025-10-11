@@ -12,6 +12,9 @@ const ms = new MeiliSearch({
   apiKey: "masterKey",
 });
 
+// TODO: Logs before cleanup script? Worry that it might pollute node logs, so probably should write them to a file
+// and then log it in another step
+
 function removeIfExistsMeilisearchDockerService(): void {
   spawnSync(
     "docker",
