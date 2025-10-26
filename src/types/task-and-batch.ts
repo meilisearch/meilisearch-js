@@ -136,6 +136,18 @@ export type TaskDetails = Settings &
     upgradeTo: string;
   }>;
 
+/** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
+type Origin = { remoteName: string; taskUid: number };
+
+/** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
+type NetworkOrigin = { origin: Origin };
+
+/** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
+type RemoteTask = { taskUid?: number; error: MeiliSearchErrorResponse | null };
+
+/** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
+type NetworkRemoteTasks = { remoteTasks: Record<string, RemoteTask> };
+
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/tasks#task-object}
  *
@@ -150,6 +162,8 @@ export type Task = SafeOmit<EnqueuedTask, "taskUid"> & {
   duration: string | null;
   startedAt: string | null;
   finishedAt: string | null;
+  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
+  network?: NetworkOrigin | NetworkRemoteTasks;
 };
 
 /**

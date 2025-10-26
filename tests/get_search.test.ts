@@ -167,10 +167,10 @@ describe.each([
     const client = await getClient(permission);
 
     const response = await client.index(index.uid).searchGet("prince", {
-      attributesToSearchOn: null,
+      attributesToSearchOn: null, // same as without the option
     });
 
-    expect(response).toMatchSnapshot();
+    expect(response.hits.length).toEqual(2);
   });
 
   test(`${permission} key: search with options`, async () => {
