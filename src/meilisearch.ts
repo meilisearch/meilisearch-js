@@ -212,7 +212,7 @@ export class MeiliSearch {
    */
   swapIndexes(params: IndexSwap[]): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
-      path: "/swap-indexes",
+      path: "swap-indexes",
       body: params,
     });
   }
