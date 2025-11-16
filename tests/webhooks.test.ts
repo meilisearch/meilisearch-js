@@ -8,6 +8,18 @@ import {
 
 let adminClient: Meilisearch;
 
+const DEFAULT_TOKEN = "TOKEN";
+const EXPECTED_DEFAULT_TOKEN = "XXX...";
+const UPDATED_TOKEN = "UPDATED TOKEN";
+const EXPECTED_UPDATED_TOKEN = "UPXXXX...";
+
+const WEBHOOK_PAYLOAD = {
+  url: "https://example.com",
+  headers: {
+    authorization: DEFAULT_TOKEN,
+  },
+} satisfies WebhookCreatePayload;
+
 beforeAll(async () => {
   adminClient = await getClient("Admin");
 });
@@ -21,13 +33,6 @@ afterAll(async () => {
   }
 });
 
-const WEBHOOK_PAYLOAD = {
-  url: "https://example.com",
-  headers: {
-    authorization: "TOKEN",
-  },
-} satisfies WebhookCreatePayload;
-
 describe("webhooks", () => {
   it("can list webhooks", async () => {
     const response = await adminClient.getWebhooks();
@@ -39,7 +44,7 @@ describe("webhooks", () => {
     const response = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
     expect(response).toHaveProperty("uuid");
     expect(response).toHaveProperty("url", WEBHOOK_PAYLOAD.url);
-    expect(response).toHaveProperty("headers", WEBHOOK_PAYLOAD.headers);
+    expect(response.headers?.authorization).toEqual(EXPECTED_DEFAULT_TOKEN);
     expect(response).toHaveProperty("isEditable", true);
   });
 
@@ -48,7 +53,7 @@ describe("webhooks", () => {
     const response = await adminClient.getWebhook(createdWebhook.uuid);
     expect(response).toHaveProperty("uuid", createdWebhook.uuid);
     expect(response).toHaveProperty("url", WEBHOOK_PAYLOAD.url);
-    expect(response).toHaveProperty("headers", WEBHOOK_PAYLOAD.headers);
+    expect(response.headers?.authorization).toEqual(EXPECTED_DEFAULT_TOKEN);
   });
 
   it("can update a webhook", async () => {
@@ -56,7 +61,7 @@ describe("webhooks", () => {
       ...WEBHOOK_PAYLOAD,
       url: "https://example.com/updated",
       headers: {
-        authorization: "UPDATED TOKEN",
+        authorization: UPDATED_TOKEN,
       },
     } satisfies WebhookUpdatePayload;
 
@@ -67,25 +72,25 @@ describe("webhooks", () => {
     );
 
     expect(response).toHaveProperty("url", updatedWebhook.url);
-    expect(response).toHaveProperty("headers", updatedWebhook.headers);
+    expect(response.headers?.authorization).toEqual(EXPECTED_UPDATED_TOKEN);
   });
 
   it("can update a webhook without updating the URL", async () => {
-    const updatedWebhook = {
+    const updatedWebhookPayload = {
       ...WEBHOOK_PAYLOAD,
       headers: {
-        authorization: "UPDATED TOKEN",
+        authorization: UPDATED_TOKEN,
       },
     } satisfies WebhookUpdatePayload;
 
     const createdWebhook = await adminClient.createWebhook(WEBHOOK_PAYLOAD);
     const response = await adminClient.updateWebhook(
       createdWebhook.uuid,
-      updatedWebhook,
+      updatedWebhookPayload,
     );
 
     expect(response).toHaveProperty("url", WEBHOOK_PAYLOAD.url);
-    expect(response).toHaveProperty("headers", updatedWebhook.headers);
+    expect(response.headers?.authorization).toEqual(EXPECTED_UPDATED_TOKEN);
   });
 
   it("can delete a webhook", async () => {
