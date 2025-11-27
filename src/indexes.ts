@@ -298,24 +298,35 @@ export class Index<T extends RecordAny = RecordAny> {
    * Get documents of an index.
    *
    * @param params - Parameters to browse the documents. Parameters can contain
-   *   the `filter` field only available in Meilisearch v1.2 and newer
+   *   the `filter` field only available in Meilisearch v1.2 and newer, and the
+   *   `sort` field available in Meilisearch v1.16 and newer
    * @returns Promise containing the returned documents
    */
   async getDocuments<D extends RecordAny = T>(
     params?: DocumentsQuery<D>,
   ): Promise<ResourceResults<D[]>> {
     const relativeBaseURL = `indexes/${this.uid}/documents`;
+    // Create a shallow copy so we can safely normalize parameters
+    const normalizedParams = params ? { ...params } : undefined;
+    // Omit empty sort arrays to avoid server-side validation errors
+    if (
+      normalizedParams &&
+      Array.isArray(normalizedParams.sort) &&
+      normalizedParams.sort.length === 0
+    ) {
+      delete (normalizedParams as { sort?: string[] }).sort;
+    }
 
-    return params?.filter !== undefined
+    return normalizedParams?.filter !== undefined
       ? // In case `filter` is provided, use `POST /documents/fetch`
         await this.httpRequest.post<ResourceResults<D[]>>({
           path: `${relativeBaseURL}/fetch`,
-          body: params,
+          body: normalizedParams,
         })
       : // Else use `GET /documents` method
         await this.httpRequest.get<ResourceResults<D[]>>({
           path: relativeBaseURL,
-          params,
+          params: normalizedParams,
         });
   }
 

@@ -542,7 +542,6 @@ describe.each([
     });
   });
 
-  // This test deletes the index, so following tests may fail if they need an existing index
   test(`${permission} key: Try to search on deleted index and fail`, async () => {
     const client = await getClient(permission);
     const masterClient = await getClient("Master");
