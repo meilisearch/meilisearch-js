@@ -1368,12 +1368,10 @@ describe.each([
 
     controller.abort();
 
-    searchPromise.catch((error) => {
-      expect(error).toHaveProperty(
-        "cause.message",
-        "This operation was aborted",
-      );
-    });
+    await expect(searchPromise).rejects.toHaveProperty(
+      "cause.message",
+      "This operation was aborted",
+    );
   });
 
   test(`${permission} key: search on index multiple times, and abort only one request`, async () => {
