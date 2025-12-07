@@ -1,24 +1,29 @@
 version: 2
 updates:
-  - package-ecosystem: 'github-actions'
-    directory: '/'
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: 'monthly'
+      interval: "monthly"
     labels:
-      - 'dependencies'
-    rebase-strategy: disabled
+      - "dependencies"
 
   - package-ecosystem: npm
-    directory: '/'
-
+    directory: "/"
     schedule:
-      interval: 'monthly'
-      time: '04:00'
-    open-pull-requests-limit: 10
+      interval: "monthly"
     labels:
       - dependencies
     versioning-strategy: increase
-    rebase-strategy: disabled
     groups:
-      production-dependencies:
-        dependency-type: "production"
+      eslint:
+        patterns:
+          - "*eslint*"
+          - "globals"
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/coverage-v8"
+      prettier:
+        patterns:
+          - "prettier"
+          - "prettier-plugin-jsdoc"
