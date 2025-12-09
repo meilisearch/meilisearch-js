@@ -427,8 +427,8 @@ getting_started_add_documents: |-
   // With npm:
   // npm install meilisearch
 
-  // Or with yarn:
-  // yarn add meilisearch
+  // Or with pnpm:
+  // pnpm add meilisearch
 
   // In your .js file:
   // With the `require` syntax:

@@ -1,0 +1,15 @@
+packages:
+  - tests/env/*
+  - playgrounds/*
+
+minimumReleaseAge: 1440
+
+# https://github.com/vitejs/vite/issues/20822#issuecomment-3324137302
+# Might be fixed later on, needs more research
+minimumReleaseAgeExclude:
+  - "@types/node"
+
+onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - esbuild
+  - puppeteer
