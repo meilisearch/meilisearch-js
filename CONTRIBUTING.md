@@ -34,8 +34,8 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 
 To run this project, you will need:
 
-- Node >= v20 and Node <= 22
-- Yarn v1.x
+- [Node.js LTS](https://nodejs.org/en/about/previous-releases)
+- [pnpm](https://pnpm.io/installation#using-corepack)
 
 ### Setup
 
@@ -44,13 +44,13 @@ You can set up your local environment natively or using `docker`, check out the 
 Example of running all the checks with docker:
 
 ```bash
-docker-compose run --rm package bash -c "yarn install && yarn test && yarn lint"
+docker-compose run --rm package bash -c "pnpm install && pnpm test && pnpm lint"
 ```
 
 To install dependencies:
 
 ```bash
-yarn --dev
+pnpm install
 ```
 
 ### Tests and Linter
@@ -61,13 +61,13 @@ Each PR should pass the tests and the linter to be accepted.
 # Tests
 curl -L https://install.meilisearch.com | sh # download Meilisearch
 ./meilisearch --master-key=masterKey --no-analytics # run Meilisearch
-yarn test
+pnpm test
 # Linter
-yarn style
+pnpm style
 # Linter with fixing
-yarn style:fix
+pnpm style:fix
 # Build the project
-yarn build
+pnpm build
 ```
 
 ## Git Guidelines
