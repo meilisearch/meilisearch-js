@@ -1,0 +1,21 @@
+name: "Set up Node.js and install dependencies"
+description: "Install pnpm, configure Node.js, and install dependencies with pnpm"
+inputs:
+  node-version:
+    default: "lts/*"
+  registry-url:
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+    - name: Set up Node.js ${{ inputs.node-version }}
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: ${{ inputs.registry-url }}
+        cache: "pnpm"
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install
