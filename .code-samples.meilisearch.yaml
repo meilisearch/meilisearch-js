@@ -53,6 +53,14 @@ get_documents_post_1: |-
     fields: ['title', 'genres', 'rating', 'language'],
     limit: 3
   })
+get_documents_sort_1: |-
+  client.index('movies').getDocuments({
+    sort: ['release_date:desc']
+  })
+get_documents_sort_multiple_1: |-
+  client.index('movies').getDocuments({
+    sort: ['rating:desc', 'release_date:asc']
+  })
 add_or_replace_documents_1: |-
   client.index('movies').addDocuments([{
       id: 287947,
