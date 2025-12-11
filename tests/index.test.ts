@@ -292,6 +292,27 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(index).toHaveProperty("primaryKey", "newPrimaryKey");
     });
 
+    test(`${permission} key: rename index using update method`, async () => {
+      const client = await getClient(permission);
+      const originalUid = indexNoPk.uid;
+      const newUid = "renamed_index";
+
+      await client.createIndex(originalUid).waitTask();
+      await client
+        .updateIndex(originalUid, {
+          uid: newUid,
+        })
+        .waitTask();
+
+      await expect(client.getIndex(originalUid)).rejects.toHaveProperty(
+        "cause.code",
+        ErrorStatusCode.INDEX_NOT_FOUND,
+      );
+
+      const renamed = await client.getIndex(newUid);
+      expect(renamed).toHaveProperty("uid", newUid);
+    });
+
     test(`${permission} key: delete index`, async () => {
       const client = await getClient(permission);
       await client.createIndex(indexNoPk.uid).waitTask();
