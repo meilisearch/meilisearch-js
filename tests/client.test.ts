@@ -70,7 +70,7 @@ describe.each([
   });
 
   /* TODO: Properly type fetchSpy.mock.lastCall to avoid eslint-disable */
-  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
+
   describe("Header tests", () => {
     let fetchSpy: MockInstance<typeof fetch>;
 
@@ -155,7 +155,6 @@ describe.each([
       );
     });
   });
-  /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 
   test(`${permission} key: No double slash when on host with domain and path and trailing slash`, async () => {
     const key = await getKey(permission);
@@ -304,7 +303,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     });
 
     /* TODO: Properly type fetchSpy.mock.lastCall to avoid eslint-disable */
-    /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
+
     describe("Header tests", () => {
       let fetchSpy: MockInstance<typeof fetch>;
 
@@ -379,7 +378,6 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         );
       });
     });
-    /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 
     describe("Test on indexes methods", () => {
       test(`${permission} key: create with no primary key`, async () => {
@@ -923,7 +921,7 @@ describe.each([{ permission: "Master" }])(
       assert.strictEqual(response.self, instanceName);
       assert.strictEqual(response.leader, instanceName);
       assert.isDefined(response.remotes);
-      assert.isDefined(response.remotes![instanceName]);
+      assert.isDefined(response.remotes[instanceName]);
     });
 
     test(`${permission} key: Add a remote to the network`, async () => {
@@ -946,9 +944,9 @@ describe.each([{ permission: "Master" }])(
       const response = await client.getNetwork();
 
       assert.isDefined(response.remotes);
-      assert.isDefined(response.remotes![secondInstance]);
+      assert.isDefined(response.remotes[secondInstance]);
       assert.strictEqual(
-        response.remotes![secondInstance]!.url,
+        response.remotes[secondInstance]!.url,
         "http://instance-2:7700",
       );
     });
@@ -968,7 +966,7 @@ describe.each([{ permission: "Master" }])(
       const response = await client.getNetwork();
 
       assert.isDefined(response.remotes);
-      assert.isNull(response.remotes![secondInstance]);
+      assert.isNull(response.remotes[secondInstance]);
     });
   },
 );
