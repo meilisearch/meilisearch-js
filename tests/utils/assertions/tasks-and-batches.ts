@@ -33,6 +33,7 @@ export const possibleTaskTypes = objectKeys<TaskType>({
   dumpCreation: null,
   snapshotCreation: null,
   upgradeDatabase: null,
+  networkTopologyChange: null,
 });
 
 export const tasksAndBatchesAssertions = {

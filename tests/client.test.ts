@@ -13,7 +13,9 @@ import type {
   Version,
   Stats,
   IndexSwap,
-  UpdatableNetwork,
+  InitializeNetworkOptions,
+  AddRemoteOptions,
+  RemoveRemoteOptions,
 } from "../src/index.js";
 import { ErrorStatusCode, MeiliSearchRequestError } from "../src/index.js";
 import pkg from "../package.json" with { type: "json" };
@@ -67,6 +69,8 @@ describe.each([
     expect(health).toBe(true);
   });
 
+  /* TODO: Properly type fetchSpy.mock.lastCall to avoid eslint-disable */
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
   describe("Header tests", () => {
     let fetchSpy: MockInstance<typeof fetch>;
 
@@ -151,6 +155,7 @@ describe.each([
       );
     });
   });
+  /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 
   test(`${permission} key: No double slash when on host with domain and path and trailing slash`, async () => {
     const key = await getKey(permission);
@@ -298,6 +303,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(documents.length).toBe(1);
     });
 
+    /* TODO: Properly type fetchSpy.mock.lastCall to avoid eslint-disable */
+    /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
     describe("Header tests", () => {
       let fetchSpy: MockInstance<typeof fetch>;
 
@@ -372,6 +379,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         );
       });
     });
+    /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 
     describe("Test on indexes methods", () => {
       test(`${permission} key: create with no primary key`, async () => {
@@ -882,6 +890,7 @@ describe.each([{ permission: "Master" }])(
   "Test network methods",
   ({ permission }) => {
     const instanceName = "instance_1";
+    const secondInstance = "instance_2";
 
     beforeAll(async () => {
       const adminClient = await getClient("Admin");
@@ -890,10 +899,10 @@ describe.each([{ permission: "Master" }])(
       });
     });
 
-    test(`${permission} key: Update and get network settings`, async () => {
+    test(`${permission} key: Initialize network and get network settings`, async () => {
       const client = await getClient(permission);
 
-      const options: UpdatableNetwork = {
+      const options: InitializeNetworkOptions = {
         self: instanceName,
         remotes: {
           [instanceName]: {
@@ -902,13 +911,64 @@ describe.each([{ permission: "Master" }])(
             writeApiKey: "write-key-1",
           },
         },
-        sharding: true,
       };
 
-      await client.updateNetwork(options);
+      const task = await client.initializeNetwork(options).waitTask();
+
+      assert.strictEqual(task.type, "networkTopologyChange");
+      assert.strictEqual(task.status, "succeeded");
+
       const response = await client.getNetwork();
 
-      assert.deepEqual(response, options);
+      assert.strictEqual(response.self, instanceName);
+      assert.strictEqual(response.leader, instanceName);
+      assert.isDefined(response.remotes);
+      assert.isDefined(response.remotes![instanceName]);
+    });
+
+    test(`${permission} key: Add a remote to the network`, async () => {
+      const client = await getClient(permission);
+
+      const options: AddRemoteOptions = {
+        name: secondInstance,
+        remote: {
+          url: "http://instance-2:7700",
+          searchApiKey: "search-key-2",
+          writeApiKey: "write-key-2",
+        },
+      };
+
+      const task = await client.addRemote(options).waitTask();
+
+      assert.strictEqual(task.type, "networkTopologyChange");
+      assert.strictEqual(task.status, "succeeded");
+
+      const response = await client.getNetwork();
+
+      assert.isDefined(response.remotes);
+      assert.isDefined(response.remotes![secondInstance]);
+      assert.strictEqual(
+        response.remotes![secondInstance]!.url,
+        "http://instance-2:7700",
+      );
+    });
+
+    test(`${permission} key: Remove a remote from the network`, async () => {
+      const client = await getClient(permission);
+
+      const options: RemoveRemoteOptions = {
+        name: secondInstance,
+      };
+
+      const task = await client.removeRemote(options).waitTask();
+
+      assert.strictEqual(task.type, "networkTopologyChange");
+      assert.strictEqual(task.status, "succeeded");
+
+      const response = await client.getNetwork();
+
+      assert.isDefined(response.remotes);
+      assert.isNull(response.remotes![secondInstance]);
     });
   },
 );

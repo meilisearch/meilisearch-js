@@ -1,5 +1,3 @@
-import type { DeepPartial } from "./shared.js";
-
 /** {@link https://www.meilisearch.com/docs/reference/api/network#the-remote-object} */
 export type Remote = {
   url: string;
@@ -10,8 +8,24 @@ export type Remote = {
 /** {@link https://www.meilisearch.com/docs/reference/api/network#the-network-object} */
 export type Network = {
   self?: string | null;
-  remotes?: Record<string, Remote>;
-  sharding?: boolean;
+  leader?: string | null;
+  version?: string | null;
+  remotes?: Record<string, Remote | null>;
 };
 
-export type UpdatableNetwork = DeepPartial<Network>;
+/** Options for initializing a network with sharding enabled. */
+export type InitializeNetworkOptions = {
+  self: string;
+  remotes: Record<string, Remote>;
+};
+
+/** Options for adding a remote to an existing network. */
+export type AddRemoteOptions = {
+  name: string;
+  remote: Remote;
+};
+
+/** Options for removing a remote from an existing network. */
+export type RemoveRemoteOptions = {
+  name: string;
+};
