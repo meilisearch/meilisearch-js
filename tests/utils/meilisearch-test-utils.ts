@@ -3,7 +3,8 @@ import { type Config, MeiliSearch, Index } from "../../src/index.js";
 // testing
 const MASTER_KEY = "masterKey";
 const HOST = process.env.MEILISEARCH_URL || "http://127.0.0.1:7700";
-const BAD_HOST = "http://127.0.0.1:7701";
+const HOST2 = process.env.MEILISEARCH_URL_2 || "http://127.0.0.1:7701";
+const BAD_HOST = "http://127.0.0.1:9999";
 
 const config: Config = {
   host: HOST,
@@ -216,6 +217,7 @@ export {
   anonymousClient,
   BAD_HOST,
   HOST,
+  HOST2,
   MASTER_KEY,
   MeiliSearch,
   Index,
