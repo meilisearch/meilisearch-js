@@ -24,7 +24,7 @@ afterAll(async () => {
 });
 
 /* TODO: Properly type fetchSpy.mock.lastCall to avoid eslint-disable */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 test(`Client handles host URL with domain and path, and adds trailing slash`, async () => {
   const customHost = `${config.host}/api`;
   const client = new MeiliSearch({ host: customHost });
@@ -39,4 +39,3 @@ test(`Client handles host URL with domain and path, and adds trailing slash`, as
   assert.instanceOf(input, URL);
   assert.strictEqual(input.href, `${customHost}/health`);
 });
-/* eslint-enable @typescript-eslint/no-unsafe-member-access */
