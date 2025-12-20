@@ -188,7 +188,7 @@ test(`${ms.batches.getBatch.name} method`, async () => {
 });
 
 /* TODO: Properly type describe.for/test.for to avoid eslint-disable */
-/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment */
+
 describe.for(objectEntries(testValuesRecord))("%s", ([key, testValues]) => {
   test.for(testValues)(
     `${ms.tasks.getTasks.name} method%s`,
@@ -255,4 +255,3 @@ describe.for(objectEntries(testValuesRecordExceptSome))(
     );
   },
 );
-/* eslint-enable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment */
