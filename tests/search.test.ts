@@ -245,10 +245,12 @@ describe.each([
 
     // set the remote name and instances
     const instanceName = "instance_1";
-    await masterClient.updateNetwork({
-      self: instanceName,
-      remotes: { [instanceName]: { url: HOST, searchApiKey: searchKey } },
-    });
+    await masterClient
+      .initializeNetwork({
+        self: instanceName,
+        remotes: { [instanceName]: { url: HOST, searchApiKey: searchKey } },
+      })
+      .waitTask();
 
     const searchClient = await getClient(permission);
 
