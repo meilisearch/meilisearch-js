@@ -921,15 +921,16 @@ describe.each([{ permission: "Master" }])(
 
     test(`${permission} key: Initialize network and get network settings`, async () => {
       const client = await getClient(permission);
-      const masterKey = await getKey("Master");
+      const adminKey = await getKey("Admin");
+      const searchKey = await getKey("Search");
 
       const options: InitializeNetworkOptions = {
         self: instanceName,
         remotes: {
           [instanceName]: {
             url: HOST,
-            searchApiKey: masterKey,
-            writeApiKey: masterKey,
+            searchApiKey: searchKey,
+            writeApiKey: adminKey,
           },
         },
       };
