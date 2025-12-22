@@ -59,8 +59,6 @@ Each PR should pass the tests and the linter to be accepted.
 
 ```bash
 # Tests
-curl -L https://install.meilisearch.com | sh # download Meilisearch
-./meilisearch --master-key=masterKey --no-analytics # run Meilisearch
 pnpm test
 # Linter
 pnpm style
@@ -147,7 +145,7 @@ Here are the steps to release a beta version of this package depending on its ty
     - Meilisearch `pre-release beta`: create a branch originating from `bump-meilisearch-v*.*.*` named `pre-release-beta/v*.*.*`. <br>
       Example: `pre-release-beta/v0.30.0`
     - Meilisearch `prototype beta`: create a branch `prototype-beta/xx-xx`. Where `xxx` has the same name as the docker image containing the prototype.
-        Example: If the [docker image](https://hub.docker.com/r/getmeili/meilisearch/tags) is named: `prototype-multi-search-0`, the branch should be named: `prototype-beta/prototype-multi-search`
+        Example: If the [docker image](https://hub.docker.com/r/getmeili/meilisearch-enterprise/tags) is named: `prototype-multi-search-0`, the branch should be named: `prototype-beta/prototype-multi-search`
 
 2. [Update the version](#version-update) following the correct format (X are numbers):
     - package and prototype beta: `X.X.X-***.X`
