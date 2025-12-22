@@ -187,6 +187,8 @@ test(`${ms.batches.getBatch.name} method`, async () => {
   }
 });
 
+/* TODO: Properly type describe.for/test.for to avoid eslint-disable */
+
 describe.for(objectEntries(testValuesRecord))("%s", ([key, testValues]) => {
   test.for(testValues)(
     `${ms.tasks.getTasks.name} method%s`,

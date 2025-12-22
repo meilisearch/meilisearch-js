@@ -34,7 +34,9 @@ import type {
   ResultsWrapper,
   WebhookCreatePayload,
   WebhookUpdatePayload,
-  UpdatableNetwork,
+  InitializeNetworkOptions,
+  AddRemoteOptions,
+  RemoveRemoteOptions,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -371,6 +373,8 @@ export class MeiliSearch {
   ///
 
   /**
+   * Get the current network configuration.
+   *
    * {@link https://www.meilisearch.com/docs/reference/api/network#get-the-network-object}
    *
    * @experimental
@@ -380,12 +384,64 @@ export class MeiliSearch {
   }
 
   /**
+   * Initialize a network with sharding enabled. This sets up the current
+   * instance as the leader and configures the initial set of remotes.
+   *
    * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
    *
+   * @param options - Network initialization options
+   * @returns Promise returning the enqueued task
    * @experimental
    */
-  async updateNetwork(options: UpdatableNetwork): Promise<Network> {
-    return await this.httpRequest.patch({ path: "network", body: options });
+  initializeNetwork(options: InitializeNetworkOptions): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.patch({
+      path: "network",
+      body: {
+        self: options.self,
+        leader: options.self,
+        remotes: options.remotes,
+      },
+    });
+  }
+
+  /**
+   * Add a remote to the network. Must be called on the leader instance.
+   *
+   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   *
+   * @param options - Options containing the remote name and configuration
+   * @returns Promise returning the enqueued task
+   * @experimental
+   */
+  addRemote(options: AddRemoteOptions): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.patch({
+      path: "network",
+      body: {
+        remotes: {
+          [options.name]: options.remote,
+        },
+      },
+    });
+  }
+
+  /**
+   * Remove a remote from the network. Must be called on the leader instance.
+   *
+   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   *
+   * @param options - Options containing the remote name to remove
+   * @returns Promise returning the enqueued task
+   * @experimental
+   */
+  removeRemote(options: RemoveRemoteOptions): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.patch({
+      path: "network",
+      body: {
+        remotes: {
+          [options.name]: null,
+        },
+      },
+    });
   }
 
   ///

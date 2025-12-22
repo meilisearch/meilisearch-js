@@ -13,7 +13,7 @@ import type {
   Version,
   Stats,
   IndexSwap,
-  UpdatableNetwork,
+  InitializeNetworkOptions,
 } from "../src/index.js";
 import { ErrorStatusCode, MeiliSearchRequestError } from "../src/index.js";
 import pkg from "../package.json" with { type: "json" };
@@ -66,6 +66,8 @@ describe.each([
     const health = await client.isHealthy();
     expect(health).toBe(true);
   });
+
+  /* TODO: Properly type fetchSpy.mock.lastCall to avoid eslint-disable */
 
   describe("Header tests", () => {
     let fetchSpy: MockInstance<typeof fetch>;
@@ -297,6 +299,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const { results: documents } = await index.getDocuments();
       expect(documents.length).toBe(1);
     });
+
+    /* TODO: Properly type fetchSpy.mock.lastCall to avoid eslint-disable */
 
     describe("Header tests", () => {
       let fetchSpy: MockInstance<typeof fetch>;
@@ -890,25 +894,34 @@ describe.each([{ permission: "Master" }])(
       });
     });
 
-    test(`${permission} key: Update and get network settings`, async () => {
+    test(`${permission} key: Initialize network and get network settings`, async () => {
       const client = await getClient(permission);
+      const adminKey = await getKey("Admin");
+      const searchKey = await getKey("Search");
 
-      const options: UpdatableNetwork = {
+      const options: InitializeNetworkOptions = {
         self: instanceName,
         remotes: {
           [instanceName]: {
-            url: "http://instance-1:7700",
-            searchApiKey: "search-key-1",
-            writeApiKey: "write-key-1",
+            url: HOST,
+            searchApiKey: searchKey,
+            writeApiKey: adminKey,
           },
         },
-        sharding: true,
       };
 
-      await client.updateNetwork(options);
+      const task = await client.initializeNetwork(options).waitTask();
+
+      assert.strictEqual(task.type, "networkTopologyChange");
+      assert.strictEqual(task.status, "succeeded");
+
       const response = await client.getNetwork();
 
-      assert.deepEqual(response, options);
+      assert.strictEqual(response.self, instanceName);
+      assert.strictEqual(response.leader, instanceName);
+      assert.isDefined(response.remotes);
+      assert.isDefined(response.remotes[instanceName]);
+      assert.strictEqual(response.remotes[instanceName]!.url, HOST);
     });
   },
 );

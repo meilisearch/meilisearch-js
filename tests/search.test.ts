@@ -242,15 +242,24 @@ describe.each([
     });
 
     const searchKey = await getKey("Search");
+    const adminKey = await getKey("Admin");
 
     // set the remote name and instances
     const instanceName = "instance_1";
-    await masterClient.updateNetwork({
-      self: instanceName,
-      remotes: { [instanceName]: { url: HOST, searchApiKey: searchKey } },
-    });
+    await masterClient
+      .initializeNetwork({
+        self: instanceName,
+        remotes: {
+          [instanceName]: {
+            url: HOST,
+            searchApiKey: searchKey,
+            writeApiKey: adminKey,
+          },
+        },
+      })
+      .waitTask();
 
-    const searchClient = await getClient(permission);
+    const searchClient = await getClient("Search");
 
     const response = await searchClient.multiSearch<
       FederatedMultiSearchParams,
