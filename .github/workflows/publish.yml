@@ -28,10 +28,6 @@ jobs:
       - name: Publish with latest tag
         if: !github.event.release.prerelease
         run: pnpm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish with beta tag
         if: github.event.release.prerelease
         run: pnpm publish --provenance --access public --tag beta
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
