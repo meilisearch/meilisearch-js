@@ -45,21 +45,15 @@ get_one_document_1: |-
 get_documents_1: |-
   client.index('movies').getDocuments({
     limit: 2,
-    filter: 'genres = action'
+    filter: 'genres = action',
+    sort: ['release_date:desc']
   })
 get_documents_post_1: |-
   client.index('books').getDocuments({
     filter: '(rating > 3 AND (genres = Adventure OR genres = Fiction)) AND language = English',
     fields: ['title', 'genres', 'rating', 'language'],
-    limit: 3
-  })
-get_documents_sort_1: |-
-  client.index('movies').getDocuments({
+    limit: 3,
     sort: ['release_date:desc']
-  })
-get_documents_sort_multiple_1: |-
-  client.index('movies').getDocuments({
-    sort: ['rating:desc', 'release_date:asc']
   })
 add_or_replace_documents_1: |-
   client.index('movies').addDocuments([{
