@@ -577,28 +577,33 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         );
       });
 
-      test(`${permission} key: Swap two indexes with rename`, async () => {
+      test(`${permission} key: Rename an index using index swap`, async () => {
         const client = await getClient(permission);
-        const originalUid1 = index.uid;
-        const originalUid2 = index2.uid;
+        const originalIndexId = index.uid;
+        const newIndexId = "renamed_index_after_swap";
 
         await client
-          .index(originalUid1)
-          .addDocuments([{ id: 1, title: "index_1" }])
-          .waitTask();
-        await client
-          .index(originalUid2)
-          .addDocuments([{ id: 1, title: "index_2" }])
+          .index(originalIndexId)
+          .addDocuments([{ id: 1, title: "document_in_original_index" }])
           .waitTask();
 
         const swaps: IndexSwap[] = [
-          { indexes: [originalUid1, originalUid2], rename: true },
+          { indexes: [originalIndexId, newIndexId], rename: true },
         ];
 
+        // Assert task was successfull
         const resolvedTask = await client.swapIndexes(swaps).waitTask();
+        expect(resolvedTask.status).toEqual("succeeded");
 
-        expect(resolvedTask.type).toEqual("indexSwap");
-        expect(resolvedTask.details?.swaps).toEqual(swaps);
+        // Assert original index was deleted
+        await expect(
+          client.index(originalIndexId).getDocuments(),
+        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.INDEX_NOT_FOUND);
+        // Assert new index was created
+        const newIndexDocuments = await client.index(newIndexId).getDocuments();
+        expect(newIndexDocuments.results[0].title).toEqual(
+          "document_in_original_index",
+        );
       });
     });
 
