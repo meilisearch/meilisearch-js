@@ -43,7 +43,7 @@
     "build:docs": "typedoc",
     "build": "vite build && tsc -p tsconfig.build.json && vite --mode production-umd build",
     "postbuild": "node scripts/build.js",
-    "test": "vitest run --coverage --hook-timeout=120000 --test-timeout=120000",
+    "test": "vitest run --coverage",
     "types": "tsc -p tsconfig.json --noEmit",
     "types:watch": "pnpm types --watch",
     "test:env:browser": "pnpm build && node scripts/copy-umd-file.js --to ./tests/env/express/public && pnpm -C tests/env/express test",
