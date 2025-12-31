@@ -26,7 +26,7 @@ jobs:
       - name: Build meilisearch-js
         run: pnpm build
       - name: Publish with latest tag
-        if: !github.event.release.prerelease
+        if: github.event.release.prerelease == false
         run: pnpm publish --provenance --access public
       - name: Publish with beta tag
         if: github.event.release.prerelease
