@@ -16,7 +16,7 @@
   "author": "Charlotte Vermandel",
   "license": "ISC",
   "devDependencies": {
-    "@webpack-cli/serve": "^1.6.1",
+    "@webpack-cli/serve": "^3.0.1",
     "ts-loader": "^7.0.5",
     "webpack": "^4.43.0",
     "webpack-cli": "^4.9.2",
