@@ -11,6 +11,6 @@
     "nitropack": "latest"
   },
   "devDependencies": {
-    "jest": "29.5.0"
+    "jest": "30.2.0"
   }
 }
