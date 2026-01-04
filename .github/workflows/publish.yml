@@ -23,7 +23,6 @@ jobs:
         with:
           registry-url: https://registry.npmjs.org/
 
-      # This will cause pnpm git checks to fail
       - name: Build meilisearch-js
         run: pnpm build
       - name: Publish with latest tag
