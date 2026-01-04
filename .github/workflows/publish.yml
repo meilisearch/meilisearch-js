@@ -27,7 +27,7 @@ jobs:
         run: pnpm build
       - name: Publish with latest tag
         if: github.event.release.prerelease == false
-        run: pnpm publish --provenance --access public
+        run: pnpm publish --no-git-checks --provenance --access public
       - name: Publish with beta tag
         if: github.event.release.prerelease
-        run: pnpm publish --provenance --access public --tag beta
+        run: pnpm publish --no-git-checks --provenance --access public --tag beta
