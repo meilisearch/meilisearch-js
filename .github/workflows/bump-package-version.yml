@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       new_version:
-        description: "The new version (major.minor.patch)"
+        description: "The new version (semver)"
         required: true
 
 env:
