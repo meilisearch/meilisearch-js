@@ -22,7 +22,7 @@ jobs:
           ref: main
       - name: Update package.json file
         run: |
-          sed -i -E 's/("version":[[:space:]]*")([^"]+)(")/\1'"$NEW_VERSION"'\3/' package.json
+          pnpm version ${{ env.NEW_VERSION }} --no-git-tag-version
       - name: Commit and push the changes to the ${{ env.NEW_BRANCH }} branch
         uses: EndBug/add-and-commit@v9
         with:
