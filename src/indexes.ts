@@ -52,6 +52,8 @@ import type {
   EnqueuedTaskPromise,
   ChatSettings,
   ChatSettingsPayload,
+  FieldsQuery,
+  FieldsResults,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -1416,6 +1418,30 @@ export class Index<T extends RecordAny = RecordAny> {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/chat`,
       body: chatSettings,
+    });
+  }
+
+  ///
+  /// FIELDS
+  ///
+
+  /**
+   * Retrieve fields from an index with optional filtering and pagination. This
+   * endpoint allows you to query fields based on their properties (searchable,
+   * filterable, displayed, sortable, distinct, rankingRule, and localized).
+   *
+   * @param params - Query parameters including pagination and filter options
+   * @param extraRequestInit - Additional request configuration options
+   * @returns Promise containing the fields results with pagination info
+   */
+  async getFields(
+    params?: FieldsQuery,
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<FieldsResults> {
+    return await this.httpRequest.post<FieldsResults>({
+      path: `indexes/${this.uid}/fields`,
+      body: params,
+      extraRequestInit,
     });
   }
 }
