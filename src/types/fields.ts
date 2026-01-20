@@ -67,10 +67,5 @@ export type FieldsQuery = {
   filter?: FieldsFilter;
 };
 
-/** Results wrapper for field listing operations. */
-export type FieldsResults = {
-  results: IndexField[];
-  offset: number;
-  limit: number;
-  total: number;
-};
+/** Array of fields returned by the fields endpoint. */
+export type FieldsResults = IndexField[];
