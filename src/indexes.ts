@@ -1440,7 +1440,7 @@ export class Index<T extends RecordAny = RecordAny> {
   ): Promise<FieldsResults> {
     return await this.httpRequest.post<FieldsResults>({
       path: `indexes/${this.uid}/fields`,
-      body: params,
+      body: params || {},
       extraRequestInit,
     });
   }
