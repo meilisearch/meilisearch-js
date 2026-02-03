@@ -31,6 +31,7 @@ jobs:
         env:
           MEILI_MASTER_KEY: "masterKey"
           MEILI_NO_ANALYTICS: "true"
+          MEILI_EXPERIMENTAL_ALLOWED_IP_NETWORKS: "any"
         ports:
           - "7700:7700"
     strategy:
