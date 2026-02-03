@@ -1,4 +1,4 @@
-import type { Locale } from "./types.js";
+import type { Locale, ResourceQuery, ResourceResults } from "./types.js";
 
 type IndexFieldToggle = {
   enabled: boolean;
@@ -61,11 +61,9 @@ export type FieldsFilter = {
 };
 
 /** Query parameters for retrieving fields from an index. */
-export type FieldsQuery = {
-  offset?: number;
-  limit?: number;
+export type FieldsQuery = ResourceQuery & {
   filter?: FieldsFilter;
 };
 
-/** Array of fields returned by the fields endpoint. */
-export type FieldsResults = IndexField[];
+/** Paginated fields response (results, offset, limit, total). */
+export type FieldsResults = ResourceResults<IndexField[]>;

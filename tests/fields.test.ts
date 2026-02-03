@@ -72,11 +72,14 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         limit: 10,
       });
 
-      expect(Array.isArray(fields)).toBe(true);
-      expect(fields.length).toBeGreaterThan(0);
+      expect(Array.isArray(fields.results)).toBe(true);
+      expect(fields.results.length).toBeGreaterThan(0);
+      expect(fields.offset).toBe(0);
+      expect(fields.limit).toBe(10);
+      expect(typeof fields.total).toBe("number");
 
       const byName = Object.fromEntries(
-        fields.map((field) => [field.name, field]),
+        fields.results.map((field) => [field.name, field]),
       );
 
       const title = byName.title;
@@ -109,17 +112,23 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         limit: 1,
       });
 
-      // Pagination returns correct array sizes
-      expect(page1.length).toBe(1);
-      expect(page2.length).toBe(1);
+      // Pagination returns correct array sizes and metadata
+      expect(page1.results.length).toBe(1);
+      expect(page2.results.length).toBe(1);
+      expect(page1.offset).toBe(0);
+      expect(page2.offset).toBe(1);
+      expect(page1.limit).toBe(1);
+      expect(page2.limit).toBe(1);
+      expect(page1.total).toBe(all.total);
+      expect(page2.total).toBe(all.total);
 
       // Fields in pages are from the full set
-      const allNames = new Set(all.map((field) => field.name));
-      expect(allNames.has(page1[0].name)).toBe(true);
-      expect(allNames.has(page2[0].name)).toBe(true);
+      const allNames = new Set(all.results.map((field) => field.name));
+      expect(allNames.has(page1.results[0].name)).toBe(true);
+      expect(allNames.has(page2.results[0].name)).toBe(true);
 
       // Different offsets return different fields
-      expect(page1[0].name).not.toBe(page2[0].name);
+      expect(page1.results[0].name).not.toBe(page2.results[0].name);
     });
 
     test(`${permission} key: Get fields with filter - displayed`, async () => {
@@ -130,11 +139,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         },
       });
 
-      expect(Array.isArray(fields)).toBe(true);
-      expect(fields.length).toBeGreaterThan(0);
+      expect(Array.isArray(fields.results)).toBe(true);
+      expect(fields.results.length).toBeGreaterThan(0);
 
       // Verify all returned fields have displayed enabled
-      for (const field of fields) {
+      for (const field of fields.results) {
         expect(field.displayed?.enabled).toBe(true);
       }
     });
@@ -147,11 +156,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         },
       });
 
-      expect(Array.isArray(fields)).toBe(true);
-      expect(fields.length).toBeGreaterThan(0);
+      expect(Array.isArray(fields.results)).toBe(true);
+      expect(fields.results.length).toBeGreaterThan(0);
 
       // Verify all returned fields have searchable enabled
-      for (const field of fields) {
+      for (const field of fields.results) {
         expect(field.searchable?.enabled).toBe(true);
       }
     });
@@ -164,9 +173,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         },
       });
 
-      expect(Array.isArray(fields)).toBe(true);
+      expect(Array.isArray(fields.results)).toBe(true);
 
-      const names = fields.map((field) => field.name);
+      const names = fields.results.map((field) => field.name);
       // attributePatterns filters by name pattern
       expect(names).toEqual(["title"]);
     });
@@ -182,11 +191,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         },
       });
 
-      expect(Array.isArray(fields)).toBe(true);
-      expect(fields.length).toBeLessThanOrEqual(5);
+      expect(Array.isArray(fields.results)).toBe(true);
+      expect(fields.results.length).toBeLessThanOrEqual(5);
 
       // Verify all returned fields match the combined filters
-      for (const field of fields) {
+      for (const field of fields.results) {
         expect(field.displayed?.enabled).toBe(true);
         expect(field.searchable?.enabled).toBe(true);
       }
@@ -196,9 +205,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
       const fields = await client.index(index.uid).getFields();
 
-      expect(Array.isArray(fields)).toBe(true);
+      expect(Array.isArray(fields.results)).toBe(true);
 
-      const names = fields.map((field) => field.name);
+      const names = fields.results.map((field) => field.name);
       expect(names).toEqual(expect.arrayContaining(["title", "genre", "id"]));
     });
 
@@ -209,7 +218,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       });
 
       const byName = Object.fromEntries(
-        fields.map((field) => [field.name, field]),
+        fields.results.map((field) => [field.name, field]),
       );
 
       const titleField = byName.title;
