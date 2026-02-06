@@ -285,7 +285,7 @@ export type SearchRequestGET = Pagination &
     distinct?: string;
     retrieveVectors?: boolean;
     locales?: Locale[];
-    showPeformanceDetails?: boolean;
+    showPerformanceDetails?: boolean;
   };
 
 export type MergeFacets = {
