@@ -510,6 +510,15 @@ describe.each([
     expect(response.hits.length).toEqual(7);
   });
 
+  test(`${permission} key: search with showPerformanceDetails`, async () => {
+    const client = await getClient(permission);
+    const response = await client
+      .index(index.uid)
+      .searchGet("", { showPerformanceDetails: true });
+
+    expect(response).toHaveProperty("performanceDetails");
+  });
+
   test(`${permission} key: search with retrieveVectors to true`, async () => {
     const client = await getClient(permission);
 

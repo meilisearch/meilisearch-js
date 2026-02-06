@@ -190,6 +190,28 @@ describe.each([
     expect(response.results[0].hits[0].title).toEqual("Le Petit Prince");
   });
 
+  test(`${permission} key: Multi index search with showPerformanceDetails`, async () => {
+    const client = await getClient(permission);
+
+    type MyIndex = {
+      id: 1;
+    };
+
+    const response = await client.multiSearch<
+      MultiSearchParams,
+      MyIndex & Books
+    >({
+      queries: [
+        { indexUid: index.uid, q: "prince", showPerformanceDetails: true },
+      ],
+    });
+
+    expect(response.results[0].hits.length).toEqual(2);
+    expect(response.results[0].hits[0].id).toEqual(456);
+    expect(response.results[0].hits[0].title).toEqual("Le Petit Prince");
+    expect(response.results[0]).toHaveProperty("performanceDetails");
+  });
+
   test(`${permission} key: Multi index search with federation`, async () => {
     const client = await getClient(permission);
 
@@ -434,6 +456,24 @@ describe.each([
         max: 2,
       },
     });
+  });
+
+  test(`${permission} key: Multi search with showPerformanceDetails`, async () => {
+    const client = await getClient(permission);
+
+    const response = await client.multiSearch<
+      FederatedMultiSearchParams,
+      Books | { id: number; asd: string }
+    >({
+      federation: { showPerformanceDetails: true },
+      queries: [
+        { indexUid: index.uid, q: "456" },
+        { indexUid: index.uid, q: "1344" },
+      ],
+    });
+
+    expect(response).toHaveProperty("hits");
+    expect(response).toHaveProperty("performanceDetails");
   });
 
   test(`${permission} key: Basic search`, async () => {
@@ -696,6 +736,19 @@ describe.each([
     expect(response).toHaveProperty("processingTimeMs", expect.any(Number));
     expect(response).toHaveProperty("query", "prince");
     expect(response.hits.length).toEqual(1);
+  });
+
+  test(`${permission} key: search with showPerformanceDetails`, async () => {
+    const client = await getClient(permission);
+
+    const response = await client.index(index.uid).search("prince", {
+      showPerformanceDetails: true,
+    });
+
+    expect(response).toHaveProperty("hits");
+    expect(Array.isArray(response.hits)).toBe(true);
+    expect(response).toHaveProperty("query", "prince");
+    expect(response).toHaveProperty("performanceDetails");
   });
 
   test(`${permission} key: search with limit and offset`, async () => {

@@ -261,6 +261,7 @@ export type SearchParams = Query &
     retrieveVectors?: boolean;
     locales?: Locale[];
     media?: MediaPayload;
+    showPerformanceDetails?: boolean;
   };
 
 // Search parameters for searches made with the GET method
@@ -296,6 +297,7 @@ export type MultiSearchFederation = {
   offset?: number;
   facetsByIndex?: Record<string, string[]>;
   mergeFacets?: MergeFacets | null;
+  showPerformanceDetails?: boolean;
 };
 
 export type MultiSearchQuery = SearchParams & { indexUid: string };
@@ -390,6 +392,7 @@ export type SearchResponse<
   facetStats?: FacetStats;
   facetsByIndex?: FacetsByIndex;
   queryVector?: number[];
+  performanceDetails?: RecordAny;
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
@@ -454,6 +457,7 @@ export type SearchSimilarDocumentsParams = {
   showRankingScore?: boolean;
   showRankingScoreDetails?: boolean;
   rankingScoreThreshold?: number;
+  showPerformanceDetails?: boolean;
 };
 
 /*
