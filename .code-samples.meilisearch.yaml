@@ -104,28 +104,18 @@ get_all_tasks_1: |-
   client.tasks.getTasks()
 get_task_1: |-
   client.tasks.getTask(1)
-async_guide_filter_by_date_1: |-
-  client.tasks.getTasks({ afterEnqueuedAt: '2020-10-11T11:49:53.000Z' })
 async_guide_multiple_filters_1: |-
   client.tasks.getTasks({
     indexUids: ['movies'],
     types: ['documentAdditionOrUpdate','documentDeletion'],
     statuses: ['processing']
   })
-async_guide_filter_by_ids_1: |-
-  client.tasks.getTasks({ uids: [5, 10, 13] })
 async_guide_filter_by_statuses_1: |-
   client.tasks.getTasks({ statuses: ['failed', 'canceled'] })
-async_guide_filter_by_types_1: |-
-  client.tasks.getTasks({ types: ['dumpCreation', 'indexSwap'] })
-async_guide_filter_by_index_uids_1: |-
-  client.tasks.getTasks({ indexUids: ['movies'] })
 get_all_tasks_paginating_1: |-
   client.tasks.getTasks({ limit: 2, from: 10 })
 get_all_tasks_paginating_2: |-
   client.tasks.getTasks({ limit: 2, from: 8 })
-async_guide_canceled_by_1: |-
-  client.tasks.getTasks({ canceledBy: [9, 15] })
 delete_tasks_1: |-
   client.tasks.deleteTasks({ uids: [1, 2] })
 cancel_tasks_1: |-
@@ -400,10 +390,6 @@ typo_tolerance_guide_4: |-
       twoTypos: 10
     }
   })
-typo_tolerance_guide_5: |-
-  client.index('movies').updateTypoTolerance({
-    disableOnNumbers: true
-  })
 add_movies_json_1: |-
   const movies = require('./movies.json')
   client.index('movies').addDocuments(movies).then((res) => console.log(res))
@@ -446,71 +432,8 @@ getting_started_add_documents: |-
     .then((res) => console.log(res))
 getting_started_search: |-
   client.index('movies').search('botman').then((res) => console.log(res))
-getting_started_update_ranking_rules: |-
-  client.index('movies').updateRankingRules([
-    'exactness',
-    'words',
-    'typo',
-    'proximity',
-    'attribute',
-    'sort',
-    'release_date:asc',
-    'rank:desc'
-  ])
-getting_started_update_searchable_attributes: |-
-  client.index('movies').updateSearchableAttributes([
-    'title'
-  ])
-getting_started_update_stop_words: |-
-  client.index('movies').updateStopWords(['the'])
 getting_started_check_task_status: |-
   client.tasks.getTask(0)
-getting_started_synonyms: |-
-  client.index('movies').updateSynonyms({
-    winnie: ['piglet'],
-    piglet: ['winnie']
-  })
-getting_started_update_displayed_attributes: |-
-  client.index('movies').updateDisplayedAttributes([
-    'title',
-    'overview',
-    'poster'
-  ])
-getting_started_add_meteorites: |-
-  const meteorites = require('./meteorites.json')
-
-  client.index('meteorites').addDocuments(meteorites)
-getting_started_configure_settings: |-
-  client.index('meteorites').updateSettings({
-    filterableAttributes: ['mass', '_geo'],
-    sortableAttributes: ['mass', '_geo']
-  })
-getting_started_geo_radius: |-
-  client.index('meteorites').search('', { filter: '_geoRadius(46.9480, 7.4474, 210000)' })
-getting_started_geo_point: |-
-  client.index('meteorites').search('', { sort: ['_geoPoint(48.8583701, 2.2922926):asc'] })
-getting_started_sorting: |-
-  client.index('meteorites').search('', {
-    sort: ['mass:asc'],
-    filter: 'mass < 200'
-  })
-getting_started_faceting: |-
-  client.index('movies').updateFaceting({
-    maxValuesPerFacet: 2,
-    sortFacetValuesBy: {
-      '*': 'count'
-    }
-  })
-getting_started_typo_tolerance: |-
-  client.index('movies').updateTypoTolerance({
-    minWordSizeForTypos: {
-        oneTypo: 4
-    }
-  })
-getting_started_filtering: |-
-  client.index('meteorites').search('', { filter: 'mass < 200' })
-getting_started_pagination: |-
-  client.index('movies').updatePagination({ maxTotalHits: 500 })
 get_filterable_attributes_1: |-
   client.index('movies').getFilterableAttributes()
 update_filterable_attributes_1: |-
@@ -668,62 +591,9 @@ geosearch_guide_sort_usage_2: |-
   client.index('restaurants').search('', {
     sort: ['_geoPoint(48.8561446, 2.2978204):asc', 'rating:desc'],
   })
-security_guide_search_key_1: |-
-  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'apiKey' })
-  client.index('patient_medical_records').search()
-security_guide_update_key_1: |-
-  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
-  client.updateKey('74c9c733-3368-4738-bbe5-1d18a5fecb37', {
-    description: 'Default Search API Key'
-  })
-security_guide_create_key_1: |-
-  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
-  client.createKey({
-    description: 'Search patient records key',
-    actions: ['search'],
-    indexes: ['patient_medical_records'],
-    expiresAt: '2023-01-01T00:00:00Z'
-  })
-security_guide_list_keys_1: |-
-  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
-  client.getKeys()
-security_guide_delete_key_1: |-
-  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
-  client.deleteKey('ac5cd97d-5a4b-4226-a868-2d0eb6d197ab')
 authorization_header_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
   client.getKeys()
-tenant_token_guide_generate_sdk_1: |-
-  import { generateTenantToken } from 'meilisearch/token'
-
-  const searchRules = {
-    patient_medical_records: {
-      filter: 'user_id = 1'
-    }
-  }
-  const apiKey = 'B5KdX2MY2jV6EXfUs6scSfmC...'
-  const apiKeyUid = '85c3c2f9-bdd6-41f1-abd8-11fcf80e0f76'
-  const expiresAt = new Date('2025-12-20') // optional
-
-  const token = await generateTenantToken({ apiKey, apiKeyUid, searchRules, expiresAt })
-tenant_token_guide_search_sdk_1: |-
-  const frontEndClient = new MeiliSearch({ host: 'http://localhost:7700', apiKey: token })
-  frontEndClient.index('patient_medical_records').search('blood test')
-landing_getting_started_1: |-
-  const client = new MeiliSearch('http://localhost:7700', 'masterKey')
-
-  await client.index('movies').addDocuments([
-    { 'id': 1, 'title': 'Carol' },
-    { 'id': 2, 'title': 'Wonder Woman' },
-    { 'id': 3, 'title': 'Life of Pi' },
-    { 'id': 4, 'title': 'Mad Max: Fury Road' },
-    { 'id': 5, 'title': 'Moana' },
-    { 'id': 6, 'title': 'Philadelphia'}
-  ])
-
-  // be aware this client is using the masterKey, it should not be used in front end
-  const search = await index.search('philodelphia')
-  console.log(search)
 facet_search_1: |-
   client.index('books').searchForFacetValues({
     facetQuery: 'fiction',
@@ -845,18 +715,3 @@ webhooks_patch_1: |-
   })
 webhooks_delete_1: |-
   client.deleteWebhook(WEBHOOK_UUID)
-search_parameter_reference_media_1: |-
-  client.index('INDEX_NAME').search('a futuristic movie', {
-    hybrid: {
-      embedder: 'EMBEDDER_NAME'
-    },
-    media: {
-      textAndPoster: {
-        text: 'a futuristic movie',
-        image: {
-          mime: 'image/jpeg',
-          data: 'base64EncodedImageData'
-        }
-      }
-    }
-  })
