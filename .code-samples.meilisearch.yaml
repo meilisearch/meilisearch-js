@@ -591,6 +591,22 @@ geosearch_guide_sort_usage_2: |-
   client.index('restaurants').search('', {
     sort: ['_geoPoint(48.8561446, 2.2978204):asc', 'rating:desc'],
   })
+tenant_token_guide_generate_sdk_1: |-
+  import { generateTenantToken } from 'meilisearch/token'
+
+  const searchRules = {
+    patient_medical_records: {
+      filter: 'user_id = 1'
+    }
+  }
+  const apiKey = 'B5KdX2MY2jV6EXfUs6scSfmC...'
+  const apiKeyUid = '85c3c2f9-bdd6-41f1-abd8-11fcf80e0f76'
+  const expiresAt = new Date('2025-12-20') // optional
+
+  const token = await generateTenantToken({ apiKey, apiKeyUid, searchRules, expiresAt })
+tenant_token_guide_search_sdk_1: |-
+  const frontEndClient = new MeiliSearch({ host: 'http://localhost:7700', apiKey: token })
+  frontEndClient.index('patient_medical_records').search('blood test')
 authorization_header_1: |-
   const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
   client.getKeys()
