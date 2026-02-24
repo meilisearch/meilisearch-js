@@ -643,7 +643,8 @@ describe.each([
       "words",
       "typo",
       "proximity",
-      "attribute",
+      "attributeRank",
+      "wordPosition",
       "exactness",
     ]);
   });
