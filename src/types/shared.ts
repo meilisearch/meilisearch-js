@@ -17,5 +17,5 @@ export type PascalToCamelCase<S extends string> = Uncapitalize<S>;
 export type SafeOmit<T, K extends keyof T> = Omit<T, K>;
 
 export type OptionStarOr<T> = "*" | T | null;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line no-explicit-any
 export type OptionStarOrList<T extends any[]> = ["*"] | T | null;

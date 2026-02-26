@@ -67,8 +67,6 @@ describe.each([
     expect(health).toBe(true);
   });
 
-  /* TODO: Properly type fetchSpy.mock.lastCall to avoid eslint-disable */
-
   describe("Header tests", () => {
     let fetchSpy: MockInstance<typeof fetch>;
 
@@ -299,8 +297,6 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const { results: documents } = await index.getDocuments();
       expect(documents.length).toBe(1);
     });
-
-    /* TODO: Properly type fetchSpy.mock.lastCall to avoid eslint-disable */
 
     describe("Header tests", () => {
       let fetchSpy: MockInstance<typeof fetch>;

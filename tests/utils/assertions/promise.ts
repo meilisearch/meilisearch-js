@@ -4,7 +4,7 @@ const NOT_RESOLVED = Symbol("<not resolved>");
 const RESOLVED = Symbol("<resolved>");
 
 export const promiseAssertions = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line no-explicit-any
   async rejects<T extends { new (...args: any[]): any }>(
     promise: Promise<unknown>,
     errorConstructor: T,
@@ -26,7 +26,7 @@ export const promiseAssertions = {
         }
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      // oxlint-disable-next-line no-unsafe-return
       return error as InstanceType<T>;
     }
 

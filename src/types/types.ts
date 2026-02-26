@@ -6,7 +6,7 @@
 
 import type { WaitOptions } from "./task-and-batch.js";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line no-explicit-any
 export type RecordAny = Record<string, any>;
 
 /**

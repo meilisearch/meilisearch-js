@@ -1528,7 +1528,7 @@ describe.each([
       (_: unknown, requestInit?: RequestInit) =>
         new Promise((_, reject) =>
           requestInit?.signal?.addEventListener("abort", () =>
-            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+            // oxlint-disable-next-line prefer-promise-reject-errors
             reject(requestInit.signal?.reason),
           ),
         ),

@@ -23,8 +23,6 @@ afterAll(async () => {
   await clearAllIndexes(config);
 });
 
-/* TODO: Properly type fetchSpy.mock.lastCall to avoid eslint-disable */
-
 test(`Client handles host URL with domain and path, and adds trailing slash`, async () => {
   const customHost = `${config.host}/api`;
   const client = new MeiliSearch({ host: customHost });

@@ -14,5 +14,5 @@ const customAssert: typeof assert & typeof source = Object.assign(
   source,
 );
 
-// needs to be named assert to satisfy Vitest ESLint plugin in tests
+// needs to be named assert to satisfy Vitest OXLint plugin in tests
 export { customAssert as assert };
