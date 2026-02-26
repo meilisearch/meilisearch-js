@@ -425,7 +425,7 @@ getting_started_add_documents: |-
   import movies from './movies.json'
 
   const client = new MeiliSearch({
-    host: 'http://localhost:7700',
+    host: 'MEILISEARCH_URL',
     apiKey: 'aSampleMasterKey'
   })
   client.index('movies').addDocuments(movies)
@@ -605,10 +605,10 @@ tenant_token_guide_generate_sdk_1: |-
 
   const token = await generateTenantToken({ apiKey, apiKeyUid, searchRules, expiresAt })
 tenant_token_guide_search_sdk_1: |-
-  const frontEndClient = new MeiliSearch({ host: 'http://localhost:7700', apiKey: token })
+  const frontEndClient = new MeiliSearch({ host: 'MEILISEARCH_URL', apiKey: token })
   frontEndClient.index('patient_medical_records').search('blood test')
 authorization_header_1: |-
-  const client = new MeiliSearch({ host: 'http://localhost:7700', apiKey: 'masterKey' })
+  const client = new MeiliSearch({ host: 'MEILISEARCH_URL', apiKey: 'masterKey' })
   client.getKeys()
 facet_search_1: |-
   client.index('books').searchForFacetValues({
