@@ -531,6 +531,17 @@ export class Index<T extends RecordAny = RecordAny> {
   }
 
   /**
+   * Compact the index database to reclaim space and improve read performance.
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  compact(): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.post({
+      path: `indexes/${this.uid}/compact`,
+    });
+  }
+
+  /**
    * This is an EXPERIMENTAL feature, which may break without a major version.
    * It's available after Meilisearch v1.10.
    *
