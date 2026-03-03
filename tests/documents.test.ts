@@ -743,6 +743,64 @@ describe("Documents tests", () => {
         expect(response).toHaveProperty("primaryKey", "unique");
       });
 
+      test(`${permission} key: Add documents with skipCreation:true does not create new documents`, async () => {
+        const client = await getClient(permission);
+
+        // Pre-populate the index with one document
+        await client
+          .index(indexPk.uid)
+          .addDocuments([{ id: 1, title: "Existing doc" }])
+          .waitTask();
+
+        // Try to add a mix of existing and new documents with skipCreation:true
+        await client
+          .index(indexPk.uid)
+          .addDocuments(
+            [
+              { id: 1, title: "Updated existing doc" }, // exists → should be updated
+              { id: 999, title: "New doc" }, // new → should be skipped
+            ],
+            { skipCreation: true },
+          )
+          .waitTask();
+
+        const existingDoc = await client.index(indexPk.uid).getDocument(1);
+        expect(existingDoc).toHaveProperty("title", "Updated existing doc");
+
+        await expect(
+          client.index(indexPk.uid).getDocument(999),
+        ).rejects.toHaveProperty("code", ErrorStatusCode.DOCUMENT_NOT_FOUND);
+      });
+
+      test(`${permission} key: Update documents with skipCreation:true does not create new documents`, async () => {
+        const client = await getClient(permission);
+
+        // Pre-populate the index with one document
+        await client
+          .index(indexPk.uid)
+          .addDocuments([{ id: 1, title: "Existing doc" }])
+          .waitTask();
+
+        // Try to update a mix of existing and new documents with skipCreation:true
+        await client
+          .index(indexPk.uid)
+          .updateDocuments(
+            [
+              { id: 1, title: "Updated existing doc" }, // exists → should be updated
+              { id: 999, title: "New doc" }, // new → should be skipped
+            ],
+            { skipCreation: true },
+          )
+          .waitTask();
+
+        const existingDoc = await client.index(indexPk.uid).getDocument(1);
+        expect(existingDoc).toHaveProperty("title", "Updated existing doc");
+
+        await expect(
+          client.index(indexPk.uid).getDocument(999),
+        ).rejects.toHaveProperty("code", ErrorStatusCode.DOCUMENT_NOT_FOUND);
+      });
+
       test(`${permission} key: Add a document without a primary key and check response in task status`, async () => {
         const client = await getClient(permission);
         const docs = [
