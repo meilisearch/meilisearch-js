@@ -217,17 +217,35 @@ export type BatchProgress = {
 
 /** {@link https://www.meilisearch.com/docs/reference/api/batches#stats} */
 type BatchStats = {
+type BatchStats = {
+  totalNbTasks: number;
   totalNbTasks: number;
   status: Record<TaskStatus, number>;
+  status: Record<TaskStatus, number>;
+  types: Record<TaskType, number>;
   types: Record<TaskType, number>;
   indexUids: Record<string, number>;
+  indexUids: Record<string, number>;
+  /** {@link https://www.meilisearch.com/docs/reference/api/batches#progresstrace} */
   /** {@link https://www.meilisearch.com/docs/reference/api/batches#progresstrace} */
   progressTrace?: RecordAny;
+  progressTrace?: RecordAny;
+  /** {@link https://www.meilisearch.com/docs/reference/api/batches#writechannelcongestion} */
   /** {@link https://www.meilisearch.com/docs/reference/api/batches#writechannelcongestion} */
   writeChannelCongestion?: RecordAny;
+  writeChannelCongestion?: RecordAny;
+  /** {@link https://www.meilisearch.com/docs/reference/api/batches#internaldatabasesizes} */
   /** {@link https://www.meilisearch.com/docs/reference/api/batches#internaldatabasesizes} */
   internalDatabaseSizes?: RecordAny;
+  internalDatabaseSizes?: RecordAny;
 };
+
+/**
+ * {@link https://www.meilisearch.com/docs/reference/api/batches#batchstrategy}
+ *
+ * @see `meilisearch_types::batch_view::BatchStrategy`
+ */
+export type BatchStrategy = "auto" | "manual";
 
 /**
  * {@link https://www.meilisearch.com/docs/reference/api/batches#batch-object}
@@ -242,6 +260,7 @@ export type Batch = {
   duration: string | null;
   startedAt: string;
   finishedAt: string | null;
+  batchStrategy: BatchStrategy;
   // batcherStoppedBecause: unknown;
 };
 
