@@ -469,7 +469,18 @@ type Fields<T = RecordAny> =
   | Extract<keyof T, string>[]
   | Extract<keyof T, string>;
 
-export type DocumentOptions = {
+/** Options for task enqueue that apply to all document write operations. */
+export type TaskEnqueueOptions = {
+  /**
+   * Arbitrary string attached to the enqueued task. Available on the task
+   * object via the `customMetadata` field.
+   *
+   * @see {@link https://www.meilisearch.com/docs/reference/api/tasks#custommetadata}
+   */
+  customMetadata?: string;
+};
+
+export type DocumentOptions = TaskEnqueueOptions & {
   primaryKey?: string;
 };
 
