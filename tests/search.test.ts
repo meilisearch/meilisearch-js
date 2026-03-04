@@ -278,6 +278,11 @@ describe.each([
             writeApiKey: adminKey,
           },
         },
+        shards: {
+          default: {
+            remotes: [instanceName],
+          },
+        },
       })
       .waitTask();
 
