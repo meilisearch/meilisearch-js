@@ -163,6 +163,12 @@ export type Task = SafeOmit<EnqueuedTask, "taskUid"> & {
   duration: string | null;
   startedAt: string | null;
   finishedAt: string | null;
+  /**
+   * Arbitrary metadata attached to the task at enqueue time.
+   *
+   * @see {@link https://www.meilisearch.com/docs/reference/api/tasks#custommetadata}
+   */
+  customMetadata?: string;
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
   network?: NetworkOrigin | NetworkRemoteTasks;
 };
