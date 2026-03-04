@@ -680,6 +680,27 @@ describe("Documents tests", () => {
         expect(documents.results.length).toEqual(0);
       });
 
+      test(`${permission} key: Add documents with customMetadata and verify it is attached to the task`, async () => {
+        const client = await getClient(permission);
+        const task = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset, { customMetadata: "test-metadata" })
+          .waitTask();
+
+        expect(task.customMetadata).toEqual("test-metadata");
+      });
+
+      test(`${permission} key: Delete all documents with customMetadata and verify it is attached to the task`, async () => {
+        const client = await getClient(permission);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+        const task = await client
+          .index(indexPk.uid)
+          .deleteAllDocuments({ customMetadata: "delete-all-metadata" })
+          .waitTask();
+
+        expect(task.customMetadata).toEqual("delete-all-metadata");
+      });
+
       test(`${permission} key: Try to get deleted document from index that has NO primary key`, async () => {
         const client = await getClient(permission);
         await expect(

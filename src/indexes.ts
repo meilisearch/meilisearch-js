@@ -46,6 +46,7 @@ import type {
   SearchSimilarDocumentsParams,
   LocalizedAttributes,
   UpdateDocumentsByFunctionOptions,
+  TaskEnqueueOptions,
   ExtraRequestInit,
   PrefixSearch,
   RecordAny,
@@ -484,11 +485,16 @@ export class Index<T extends RecordAny = RecordAny> {
    * Delete one document
    *
    * @param documentId - Id of Document to delete
+   * @param options - Task enqueue options (e.g. customMetadata)
    * @returns Promise containing an EnqueuedTask
    */
-  deleteDocument(documentId: string | number): EnqueuedTaskPromise {
+  deleteDocument(
+    documentId: string | number,
+    options?: TaskEnqueueOptions,
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/documents/${documentId}`,
+      params: options,
     });
   }
 
@@ -505,6 +511,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   deleteDocuments(
     params: DocumentsDeletionQuery | DocumentsIds,
+    options?: TaskEnqueueOptions,
   ): EnqueuedTaskPromise {
     // If params is of type DocumentsDeletionQuery
     const isDocumentsDeletionQuery =
@@ -516,6 +523,7 @@ export class Index<T extends RecordAny = RecordAny> {
     return this.#httpRequestsWithTask.post({
       path: `indexes/${this.uid}/${endpoint}`,
       body: params,
+      params: options,
     });
   }
 
@@ -524,9 +532,10 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  deleteAllDocuments(): EnqueuedTaskPromise {
+  deleteAllDocuments(options?: TaskEnqueueOptions): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/documents`,
+      params: options,
     });
   }
 
@@ -544,10 +553,12 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   updateDocumentsByFunction(
     options: UpdateDocumentsByFunctionOptions,
+    taskOptions?: TaskEnqueueOptions,
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
       path: `indexes/${this.uid}/documents/edit`,
       body: options,
+      params: taskOptions,
     });
   }
 
