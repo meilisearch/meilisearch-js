@@ -16,6 +16,7 @@ import type {
   InitializeNetworkOptions,
 } from "../src/index.js";
 import { ErrorStatusCode, MeiliSearchRequestError } from "../src/index.js";
+import { HttpRequests } from "../src/http-requests.js";
 import pkg from "../package.json" with { type: "json" };
 import {
   clearAllIndexes,
@@ -919,6 +920,30 @@ describe.each([{ permission: "Master" }])(
       });
     });
 
+    test(`${permission} key: initializeNetwork requires shards when leader is set`, async () => {
+      const client = await getClient(permission);
+      const adminKey = await getKey("Admin");
+      const searchKey = await getKey("Search");
+
+      const options = {
+        self: instanceName,
+        remotes: {
+          [instanceName]: {
+            url: HOST,
+            searchApiKey: searchKey,
+            writeApiKey: adminKey,
+          },
+        },
+        shards: {} as InitializeNetworkOptions["shards"],
+      } satisfies InitializeNetworkOptions & {
+        shards: InitializeNetworkOptions["shards"];
+      };
+
+      assert.throws(() => {
+        void client.initializeNetwork(options);
+      }, /at least one shard/);
+    });
+
     test(`${permission} key: Initialize network and get network settings`, async () => {
       const client = await getClient(permission);
       const adminKey = await getKey("Admin");
@@ -931,6 +956,11 @@ describe.each([{ permission: "Master" }])(
             url: HOST,
             searchApiKey: searchKey,
             writeApiKey: adminKey,
+          },
+        },
+        shards: {
+          default: {
+            remotes: [instanceName],
           },
         },
       };
@@ -947,6 +977,182 @@ describe.each([{ permission: "Master" }])(
       assert.isDefined(response.remotes);
       assert.isDefined(response.remotes[instanceName]);
       assert.strictEqual(response.remotes[instanceName]!.url, HOST);
+    });
+
+    test(`${permission} key: getNetwork returns shards`, async () => {
+      const client = await getClient(permission);
+      const adminKey = await getKey("Admin");
+      const searchKey = await getKey("Search");
+
+      const options: InitializeNetworkOptions = {
+        self: instanceName,
+        remotes: {
+          [instanceName]: {
+            url: HOST,
+            searchApiKey: searchKey,
+            writeApiKey: adminKey,
+          },
+        },
+        shards: {
+          default: {
+            remotes: [instanceName],
+          },
+        },
+      };
+
+      const task = await client.initializeNetwork(options).waitTask();
+
+      assert.strictEqual(task.type, "networkTopologyChange");
+      assert.strictEqual(task.status, "succeeded");
+
+      const response = await client.getNetwork();
+
+      assert.isDefined(response.shards);
+      assert.isDefined(response.shards.default);
+      assert.deepStrictEqual(response.shards.default.remotes, [instanceName]);
+    });
+
+    test(`${permission} key: addRemote adds a remote to the network`, async () => {
+      const client = await getClient(permission);
+      const adminKey = await getKey("Admin");
+      const searchKey = await getKey("Search");
+      const remoteName = "remote_1";
+      const patchSpy = vi
+        .spyOn(HttpRequests.prototype, "patch")
+        .mockResolvedValue({
+          taskUid: 1,
+          indexUid: null,
+          status: "enqueued",
+          type: "networkTopologyChange",
+          enqueuedAt: new Date().toISOString(),
+        });
+
+      try {
+        const task = await client.addRemote({
+          name: remoteName,
+          remote: {
+            url: HOST,
+            searchApiKey: searchKey,
+            writeApiKey: adminKey,
+          },
+        });
+
+        expect(patchSpy).toHaveBeenCalledWith({
+          path: "network",
+          body: {
+            remotes: {
+              [remoteName]: {
+                url: HOST,
+                searchApiKey: searchKey,
+                writeApiKey: adminKey,
+              },
+            },
+          },
+        });
+
+        assert.strictEqual(task.taskUid, 1);
+      } finally {
+        patchSpy.mockRestore();
+      }
+    });
+
+    test(`${permission} key: removeRemote removes a remote from the network`, async () => {
+      const client = await getClient(permission);
+      const remoteName = "remote_2";
+      const patchSpy = vi
+        .spyOn(HttpRequests.prototype, "patch")
+        .mockResolvedValue({
+          taskUid: 2,
+          indexUid: null,
+          status: "enqueued",
+          type: "networkTopologyChange",
+          enqueuedAt: new Date().toISOString(),
+        });
+
+      try {
+        const task = await client.removeRemote({
+          name: remoteName,
+        });
+
+        expect(patchSpy).toHaveBeenCalledWith({
+          path: "network",
+          body: {
+            remotes: {
+              [remoteName]: null,
+            },
+          },
+        });
+
+        assert.strictEqual(task.taskUid, 2);
+      } finally {
+        patchSpy.mockRestore();
+      }
+    });
+
+    test(`${permission} key: addRemotesToShard patches shard remotes`, async () => {
+      const client = await getClient(permission);
+      const patchSpy = vi
+        .spyOn(HttpRequests.prototype, "patch")
+        .mockResolvedValue({
+          taskUid: 3,
+          indexUid: null,
+          status: "enqueued",
+          type: "networkTopologyChange",
+          enqueuedAt: new Date().toISOString(),
+        });
+
+      try {
+        const task = await client.addRemotesToShard("default", ["remote_1"]);
+
+        expect(patchSpy).toHaveBeenCalledWith({
+          path: "network",
+          body: {
+            shards: {
+              default: {
+                addRemotes: ["remote_1"],
+              },
+            },
+          },
+        });
+
+        assert.strictEqual(task.taskUid, 3);
+      } finally {
+        patchSpy.mockRestore();
+      }
+    });
+
+    test(`${permission} key: removeRemotesFromShard patches shard remotes`, async () => {
+      const client = await getClient(permission);
+      const patchSpy = vi
+        .spyOn(HttpRequests.prototype, "patch")
+        .mockResolvedValue({
+          taskUid: 4,
+          indexUid: null,
+          status: "enqueued",
+          type: "networkTopologyChange",
+          enqueuedAt: new Date().toISOString(),
+        });
+
+      try {
+        const task = await client.removeRemotesFromShard("default", [
+          "remote_1",
+        ]);
+
+        expect(patchSpy).toHaveBeenCalledWith({
+          path: "network",
+          body: {
+            shards: {
+              default: {
+                removeRemotes: ["remote_1"],
+              },
+            },
+          },
+        });
+
+        assert.strictEqual(task.taskUid, 4);
+      } finally {
+        patchSpy.mockRestore();
+      }
     });
   },
 );
