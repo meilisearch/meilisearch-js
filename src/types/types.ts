@@ -482,7 +482,11 @@ export type TaskEnqueueOptions = {
 
 export type DocumentOptions = TaskEnqueueOptions & {
   primaryKey?: string;
-  /** Skip document creation when the document does not already exist in the index. When `true`, only existing documents will be updated. @see https://www.meilisearch.com/docs/reference/api/documents#add-or-replace-documents */
+  /**
+   * Skip document creation when the document does not already exist in the
+   * index. When `true`, only existing documents will be updated. @see
+   * https://www.meilisearch.com/docs/reference/api/documents#add-or-replace-documents
+   */
   skipCreation?: boolean;
 };
 
