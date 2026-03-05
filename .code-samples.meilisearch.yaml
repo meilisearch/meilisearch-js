@@ -38,6 +38,8 @@ swap_indexes_1: |-
     { 'indexes': ['indexA', 'indexB'] },
     { 'indexes': ['indexX', 'indexY'] }
   ])
+rename_an_index_1: |-
+  client.updateIndex('movies', { uid: 'films' })
 get_one_document_1: |-
   client
       .index('movies')
@@ -613,3 +615,16 @@ webhooks_patch_1: |-
   })
 webhooks_delete_1: |-
   client.deleteWebhook(WEBHOOK_UUID)
+get_network_1: |-
+  client.getNetwork()
+update_network_1: |-
+  client.initializeNetwork({
+    self: 'https://instance1.meilisearch.com',
+    remotes: {
+      instance2: {
+        url: 'https://instance2.meilisearch.com',
+        searchApiKey: 'SEARCH_API_KEY',
+        writeApiKey: 'WRITE_API_KEY'
+      }
+    }
+  })
