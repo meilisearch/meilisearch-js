@@ -55,8 +55,16 @@ export const tasksAndBatchesAssertions = {
   isBatch(batch: Batch) {
     assert.lengthOf(Object.keys(batch), 8);
 
-    const { uid, progress, details, stats, duration, startedAt, finishedAt } =
-      batch;
+    const {
+      uid,
+      progress,
+      details,
+      stats,
+      duration,
+      startedAt,
+      finishedAt,
+      batchStrategy,
+    } = batch;
 
     assert.typeOf(uid, "number");
     assert(
@@ -145,6 +153,8 @@ export const tasksAndBatchesAssertions = {
       finishedAt === null || typeof finishedAt === "string",
       "expected finishedAt to be null or string",
     );
+
+    assert.typeOf(batchStrategy, "string");
   },
 
   isTasksOrBatchesResults(value: TasksResults | BatchesResults) {

@@ -242,7 +242,8 @@ export type Batch = {
   duration: string | null;
   startedAt: string;
   finishedAt: string | null;
-  // batcherStoppedBecause: unknown;
+  /** Explains why the batch was finalized and stopped accepting more tasks. */
+  batchStrategy: string;
 };
 
 /**
