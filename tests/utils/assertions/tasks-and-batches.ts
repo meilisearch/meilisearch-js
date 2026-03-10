@@ -53,7 +53,11 @@ export const tasksAndBatchesAssertions = {
   },
 
   isBatch(batch: Batch) {
-    assert.lengthOf(Object.keys(batch), 8);
+    const keyCount = Object.keys(batch).length;
+    assert(
+      keyCount === 7 || keyCount === 8,
+      `expected batch to have 7 or 8 keys, got ${keyCount}`,
+    );
 
     const {
       uid,
@@ -154,7 +158,10 @@ export const tasksAndBatchesAssertions = {
       "expected finishedAt to be null or string",
     );
 
-    assert.typeOf(batchStrategy, "string");
+    assert(
+      batchStrategy === undefined || typeof batchStrategy === "string",
+      "expected batchStrategy to be undefined or string",
+    );
   },
 
   isTasksOrBatchesResults(value: TasksResults | BatchesResults) {

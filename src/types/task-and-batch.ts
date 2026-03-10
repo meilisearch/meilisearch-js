@@ -243,7 +243,7 @@ export type Batch = {
   startedAt: string;
   finishedAt: string | null;
   /** Explains why the batch was finalized and stopped accepting more tasks. */
-  batchStrategy: string;
+  batchStrategy?: string;
 };
 
 /**
