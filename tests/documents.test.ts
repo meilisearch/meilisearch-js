@@ -748,7 +748,10 @@ describe("Documents tests", () => {
 
         await expect(
           client.index(indexPk.uid).getDocument(999),
-        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.DOCUMENT_NOT_FOUND);
+        ).rejects.toHaveProperty(
+          "cause.code",
+          ErrorStatusCode.DOCUMENT_NOT_FOUND,
+        );
       });
 
       test(`${permission} key: Update documents with skipCreation:true does not create new documents`, async () => {
@@ -777,7 +780,10 @@ describe("Documents tests", () => {
 
         await expect(
           client.index(indexPk.uid).getDocument(999),
-        ).rejects.toHaveProperty("cause.code", ErrorStatusCode.DOCUMENT_NOT_FOUND);
+        ).rejects.toHaveProperty(
+          "cause.code",
+          ErrorStatusCode.DOCUMENT_NOT_FOUND,
+        );
       });
 
       test(`${permission} key: Add a document without a primary key and check response in task status`, async () => {
