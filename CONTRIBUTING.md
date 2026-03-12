@@ -20,6 +20,7 @@ We accept the use of AI-powered tools (GitHub Copilot, ChatGPT, Claude, Cursor, 
 ⚠️ However, transparency is required: if you use AI assistance, please mention it in your PR description. This helps maintainers during code review and ensure the quality of contributions.
 
 What we expect:
+
 - **Disclose AI usage**: A simple note like "Used GitHub Copilot for autocompletion" or "Generated initial test structure with ChatGPT" is sufficient.
 - **Specify the scope**: Indicate which parts of your contribution involved AI assistance.
 - **Review AI-generated content**: Ensure you understand and have verified any AI-generated code before submitting.
@@ -38,7 +39,7 @@ What we expect:
 4. Review the [Development Workflow](#development-workflow) section that describes the steps to maintain the repository.
 5. Make your changes on your branch. If you use AI tools during your work, remember to disclose it in your PR description (see [Coding with AI](#coding-with-ai)).
 6. [Submit the branch as a PR](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) pointing to the `main` branch of the main meilisearch-js repository. A maintainer should comment and/or review your Pull Request within a few days. Although depending on the circumstances, it may take longer.<br>
- We do not enforce a naming convention for the PRs, but **please use something descriptive of your changes**, having in mind that the title of your PR will be automatically added to the next [release changelog](https://github.com/meilisearch/meilisearch-js/releases/).
+   We do not enforce a naming convention for the PRs, but **please use something descriptive of your changes**, having in mind that the title of your PR will be automatically added to the next [release changelog](https://github.com/meilisearch/meilisearch-js/releases/).
 
 ## Development Workflow
 
@@ -152,18 +153,18 @@ This package is able to create multiple types of betas:
 Here are the steps to release a beta version of this package depending on its type:
 
 1. Create a new branch containing the changes with the correct name format following these rules:
-    - `package beta`: create a branch `beta/xx-xx` with the context of your beta.
-      Example: `beta/refactor`.
-    - Meilisearch `pre-release beta`: create a branch originating from `bump-meilisearch-v*.*.*` named `pre-release-beta/v*.*.*`. <br>
-      Example: `pre-release-beta/v0.30.0`
-    - Meilisearch `prototype beta`: create a branch `prototype-beta/xx-xx`. Where `xxx` has the same name as the docker image containing the prototype.
-        Example: If the [docker image](https://hub.docker.com/r/getmeili/meilisearch-enterprise/tags) is named: `prototype-multi-search-0`, the branch should be named: `prototype-beta/prototype-multi-search`
+   - `package beta`: create a branch `beta/xx-xx` with the context of your beta.
+     Example: `beta/refactor`.
+   - Meilisearch `pre-release beta`: create a branch originating from `bump-meilisearch-v*.*.*` named `pre-release-beta/v*.*.*`. <br>
+     Example: `pre-release-beta/v0.30.0`
+   - Meilisearch `prototype beta`: create a branch `prototype-beta/xx-xx`. Where `xxx` has the same name as the docker image containing the prototype.
+     Example: If the [docker image](https://hub.docker.com/r/getmeili/meilisearch-enterprise/tags) is named: `prototype-multi-search-0`, the branch should be named: `prototype-beta/prototype-multi-search`
 
 2. [Update the version](#version-update) following the correct format (X are numbers):
-    - package and prototype beta: `X.X.X-***.X`
-      example: `0.2.0-new-feature.0`
-    - pre-release beta: `X.X.X-vX.X.X-pre-release.X`
-      example: `0.2.0-v0.30.0-pre-release.0`
+   - package and prototype beta: `X.X.X-***.X`
+     example: `0.2.0-new-feature.0`
+   - pre-release beta: `X.X.X-vX.X.X-pre-release.X`
+     example: `0.2.0-v0.30.0-pre-release.0`
 
 3. Commit and push your code to the newly created branch (step 1).
 
