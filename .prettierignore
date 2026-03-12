@@ -1,5 +1,2 @@
-node_modules
-dist
-/tests/env
-/coverage
-*.md
+/tests/env/browser/meilisearch.umd.js
+/pnpm-lock.yaml
