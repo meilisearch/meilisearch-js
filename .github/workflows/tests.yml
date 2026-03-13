@@ -45,18 +45,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Run tests
-        run: pnpm test
-      - name: Build project
-        run: pnpm build
-      - name: Run ESM env
-        run: pnpm test:env:esm
-      - name: Run Node.js env
-        run: pnpm test:env:nodejs
-      - name: Run node typescript env
-        run: pnpm test:env:node-ts
-      - name: Run Browser env
-        run: pnpm test:env:browser
+      - name: Run tests with coverage
+        run: pnpm test --coverage
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         env:
