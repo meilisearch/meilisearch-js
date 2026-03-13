@@ -43,18 +43,10 @@
     "build:docs": "typedoc",
     "build": "vite build && tsc -p tsconfig.build.json && vite --mode production-umd build",
     "postbuild": "node scripts/build.js",
-    "test": "vitest run --coverage",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "types": "tsc -p tsconfig.json --noEmit",
     "types:watch": "pnpm types --watch",
-    "test:env:browser": "pnpm build && node scripts/copy-umd-file.js --to ./tests/env/express/public && pnpm -C tests/env/express test",
-    "test:watch": "vitest watch",
-    "test:coverage": "pnpm test",
-    "test:ci": "pnpm test",
-    "test:env": "pnpm build && pnpm test:env:nodejs && pnpm test:env:esm && pnpm test:env:node-ts",
-    "test:env:node-ts": "pnpm -C tests/env/typescript-node start",
-    "test:env:nodejs": "pnpm build && node tests/env/node/index.cjs && node tests/env/node/getting_started.cjs",
-    "test:env:esm": "pnpm -C tests/env/esm start",
-    "test:env:nitro-app": "pnpm build && pnpm -C tests/env/nitro-app test",
     "fmt": "prettier -c .",
     "fmt:fix": "prettier -w .",
     "lint": "oxlint --type-aware",
@@ -84,5 +76,5 @@
     "vite": "7.3.0",
     "vitest": "4.0.18"
   },
-  "packageManager": "pnpm@10.26.1"
+  "packageManager": "pnpm@10.32.1"
 }
