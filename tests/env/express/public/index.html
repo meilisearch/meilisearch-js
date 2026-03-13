@@ -1,53 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
 
-<head>
-  <meta charset='utf-8'>
-  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-  <title>Page Title</title>
-  <meta name='viewport' content='width=device-width, initial-scale=1'>
-</head>
-
-<body>
-  Index name:
-  <div id="content"></div>
-</body>
-
+  <body>
+    Index name:
+    <div id="content"></div>
+  </body>
 </html>
 <script src="./index.min.js"></script>
 <script>
   (async () => {
-    let content = ''
-    let searchDiv = undefined
+    let content = "";
+    let searchDiv = undefined;
     const client = new meilisearch.MeiliSearch({
-      host: 'http://127.0.0.1:7700',
-      apiKey: 'masterKey',
-    })
-    const UID = "testIndex"
+      host: "http://127.0.0.1:7700",
+      apiKey: "masterKey",
+    });
+    const UID = "testIndex";
 
     try {
-      await client.createIndex(UID).waitTask()
+      await client.createIndex(UID).waitTask();
 
-      await client.index(UID).addDocuments([{ id: 1, title: "wonder woman" }]).waitTask()
+      await client
+        .index(UID)
+        .addDocuments([{ id: 1, title: "wonder woman" }])
+        .waitTask();
 
-      const index = await client.index(UID).getRawInfo()
+      const index = await client.index(UID).getRawInfo();
 
       // Create dynamic element to wait on with puppeteer
       const indexDiv = document.createElement("div");
       indexDiv.setAttribute("id", "indexes");
-      indexDiv.innerHTML = index.uid
+      indexDiv.innerHTML = index.uid;
       document.body.insertBefore(indexDiv, document.querySelector("#content"));
 
       searchDiv = document.createElement("div");
       searchDiv.setAttribute("id", "search");
-      const search = await client.index(UID).search()
-      content = JSON.stringify(search)
+      const search = await client.index(UID).search();
+      content = JSON.stringify(search);
     } catch (e) {
       console.error(e);
-      content = e.message
+      content = e.message;
     }
-    searchDiv.innerHTML = content
+    searchDiv.innerHTML = content;
     document.body.insertBefore(searchDiv, document.querySelector("#content"));
-    await client.index(UID).delete().waitTask()
-  })()
+    await client.index(UID).delete().waitTask();
+  })();
 </script>
