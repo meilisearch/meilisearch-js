@@ -585,28 +585,6 @@ get_all_batches_1: |-
   client.batches.getBatches();
 get_batch_1: |-
   client.batches.getBatch(BATCH_UID);
-# Network
-update_network_1: |-
-  client.initializeNetwork({
-    self: 'leader-1',
-    remotes: {
-      'leader-1': {
-        url: 'http://127.0.0.1:7700',
-        searchApiKey: 'searchKey',
-        writeApiKey: 'masterKey',
-      },
-      'remote-paris': {
-        url: 'http://192.168.1.11:7700',
-        searchApiKey: 'searchKeyRemote',
-        writeApiKey: 'masterKey',
-      },
-    },
-    shards: {
-      movies: {
-        remotes: ['leader-1', 'remote-paris'],
-      },
-    },
-  });
 # Vector search
 update_embedders_1: |-
   client.index('INDEX_NAME').updateEmbedders({
