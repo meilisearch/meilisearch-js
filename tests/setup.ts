@@ -6,11 +6,12 @@ const { meilisearchTargetVersion } = pkg;
 
 const POLL_INTERVAL = 250;
 const CONTAINER_NAME = `meilisearch-enterprise-${meilisearchTargetVersion}-test`;
+const PORT = 7700;
 const TIMEOUT = 15_000;
 const TIMEOUT_ID = Symbol();
 
 const ms = new MeiliSearch({
-  host: "http://127.0.0.1:7700",
+  host: `http://127.0.0.1:${PORT}`,
   apiKey: "masterKey",
 });
 
@@ -45,7 +46,7 @@ function startMeilisearchDockerService(meilisearchVersion: string): void {
 
       // https://docs.docker.com/reference/cli/docker/container/run/#publish
       "-p",
-      "7700:7700",
+      `7700:${PORT}`,
 
       // https://docs.docker.com/reference/cli/docker/container/run/#env
       "-e",
