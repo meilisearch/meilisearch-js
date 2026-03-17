@@ -1,27 +1,22 @@
-import { parseArgs } from "node:util";
 import spawn from "nano-spawn";
 import { MeiliSearch } from "../src/index.js";
 import pkg from "../package.json" with { type: "json" };
 
-const {
-  values: { port, masterKey },
-} = parseArgs({
-  options: {
-    port: { short: "p", type: "string", default: "7700" },
-    masterKey: { short: "k", type: "string", default: "masterKey" },
-  },
-});
+// TODO: Use this in the future https://nodejs.org/api/esm.html#importmetamain
+const isNotTestingEnvironment = import.meta?.env?.MODE !== "test";
 
 const { meilisearchTargetVersion } = pkg;
 
-const POLL_INTERVAL = 250;
+const PORT = "7700";
+const MASTER_KEY = "masterKey";
 const CONTAINER_NAME = "meilisearch-enterprise-test";
+const POLL_INTERVAL = 250;
 const TIMEOUT = 15_000;
 const TIMEOUT_ID = Symbol();
 
-const host = `http://127.0.0.1:${port}`;
+const host = `http://127.0.0.1:${PORT}`;
 
-const ms = new MeiliSearch({ host, apiKey: masterKey });
+const client = new MeiliSearch({ host, apiKey: MASTER_KEY });
 
 function dockerEnv(env: Record<string, string>) {
   return Object.entries(env).flatMap(([key, val]) => ["-e", `${key}=${val}`]);
@@ -57,11 +52,11 @@ async function startMeilisearchDockerContainer(meilisearchVersion: string) {
 
       // https://docs.docker.com/reference/cli/docker/container/run/#publish
       "-p",
-      `7700:${port}`,
+      `7700:${PORT}`,
 
       // https://docs.docker.com/reference/cli/docker/container/run/#env
       ...dockerEnv({
-        MEILI_MASTER_KEY: masterKey,
+        MEILI_MASTER_KEY: MASTER_KEY,
         MEILI_NO_ANALYTICS: "true",
         MEILI_EXPERIMENTAL_ALLOWED_IP_NETWORKS: "any",
       }),
@@ -84,7 +79,7 @@ async function waitForMeiliSearch() {
 
   for (;;) {
     try {
-      await ms.health({ signal: ac.signal });
+      await client.health({ signal: ac.signal });
 
       clearTimeout(toId);
 
@@ -110,7 +105,7 @@ async function waitForMeiliSearch() {
  */
 async function checkConnectionAndVersion() {
   try {
-    const { pkgVersion } = await ms.getVersion();
+    const { pkgVersion } = await client.getVersion();
     return pkgVersion;
   } catch {
     return null;
@@ -159,6 +154,6 @@ export default async function setupMeilisearch() {
 }
 
 // if it is not called within tests, run directly
-if (import.meta?.env?.MODE !== "test") {
+if (isNotTestingEnvironment) {
   await setupMeilisearch();
 }
