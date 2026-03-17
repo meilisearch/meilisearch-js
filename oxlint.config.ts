@@ -1,8 +1,6 @@
 import { defineConfig } from "oxlint";
 
 export default defineConfig({
-  ignorePatterns: ["dist/", "tests/env/", "coverage/", "playgrounds/", "docs/"],
-
   env: { browser: true },
 
   // default rules
