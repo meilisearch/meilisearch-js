@@ -54,7 +54,7 @@ export default defineConfig(({ mode }) => {
         : undefined,
     },
     test: {
-      globalSetup: "tests/setup.ts",
+      globalSetup: "scripts/setup-meilisearch.ts",
       include: ["tests/**/*.test.ts"],
       fileParallelism: false,
       testTimeout: 100_000, // 100 seconds

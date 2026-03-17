@@ -1,34 +1,45 @@
-import { spawnSync } from "node:child_process";
+import { parseArgs } from "node:util";
+import spawn from "nano-spawn";
 import { MeiliSearch } from "../src/index.js";
 import pkg from "../package.json" with { type: "json" };
+
+const {
+  values: { port, masterKey },
+} = parseArgs({
+  options: {
+    port: { short: "p", type: "string", default: "7700" },
+    masterKey: { short: "k", type: "string", default: "masterKey" },
+  },
+});
 
 const { meilisearchTargetVersion } = pkg;
 
 const POLL_INTERVAL = 250;
-const CONTAINER_NAME = `meilisearch-enterprise-${meilisearchTargetVersion}-test`;
-const PORT = 7700;
+const CONTAINER_NAME = "meilisearch-enterprise-test";
 const TIMEOUT = 15_000;
 const TIMEOUT_ID = Symbol();
 
-const ms = new MeiliSearch({
-  host: `http://127.0.0.1:${PORT}`,
-  apiKey: "masterKey",
-});
+const host = `http://127.0.0.1:${port}`;
 
-function removeIfExistsMeilisearchDockerService(): void {
-  spawnSync(
+const ms = new MeiliSearch({ host, apiKey: masterKey });
+
+function dockerEnv(env: Record<string, string>) {
+  return Object.entries(env).flatMap(([key, val]) => ["-e", `${key}=${val}`]);
+}
+
+async function removeMeilisearchDockerContainer() {
+  await spawn(
     "docker",
 
     // https://docs.docker.com/reference/cli/docker/container/rm/
     ["container", "rm", "-f", CONTAINER_NAME],
 
-    // TODO: prefix output
-    { stdio: "inherit" },
+    { stdout: "inherit" },
   );
 }
 
-function startMeilisearchDockerService(meilisearchVersion: string): void {
-  spawnSync(
+async function startMeilisearchDockerContainer(meilisearchVersion: string) {
+  await spawn(
     "docker",
     [
       // https://docs.docker.com/reference/cli/docker/container/run
@@ -46,27 +57,25 @@ function startMeilisearchDockerService(meilisearchVersion: string): void {
 
       // https://docs.docker.com/reference/cli/docker/container/run/#publish
       "-p",
-      `7700:${PORT}`,
+      `7700:${port}`,
 
       // https://docs.docker.com/reference/cli/docker/container/run/#env
-      "-e",
-      "MEILI_MASTER_KEY=masterKey",
-      "-e",
-      "MEILI_NO_ANALYTICS=true",
-      "-e",
-      "MEILI_EXPERIMENTAL_ALLOWED_IP_NETWORKS=any",
+      ...dockerEnv({
+        MEILI_MASTER_KEY: masterKey,
+        MEILI_NO_ANALYTICS: "true",
+        MEILI_EXPERIMENTAL_ALLOWED_IP_NETWORKS: "any",
+      }),
 
       // https://hub.docker.com/r/getmeili/meilisearch
       `getmeili/meilisearch-enterprise:v${meilisearchVersion}`,
     ],
 
-    // TODO: prefix output
-    { stdio: "inherit" },
+    { stdout: "inherit" },
   );
 }
 
 /** Poll Meilisearch until its reachable. */
-async function waitForMeiliSearch(): Promise<void> {
+async function waitForMeiliSearch() {
   let lastError;
 
   const ac = new AbortController();
@@ -91,7 +100,7 @@ async function waitForMeiliSearch(): Promise<void> {
       lastError = error;
     }
 
-    await new Promise<void>((resolve) => setTimeout(resolve, POLL_INTERVAL));
+    await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
   }
 }
 
@@ -99,7 +108,7 @@ async function waitForMeiliSearch(): Promise<void> {
  * In case there is a connection, return Meilisearch version, and `null`
  * otherwise.
  */
-async function checkConnectionAndVersion(): Promise<string | null> {
+async function checkConnectionAndVersion() {
   try {
     const { pkgVersion } = await ms.getVersion();
     return pkgVersion;
@@ -115,21 +124,41 @@ async function checkConnectionAndVersion(): Promise<string | null> {
  *
  * @see {@link https://vitest.dev/config/globalsetup}
  */
-export default async function () {
+export default async function setupMeilisearch() {
   const meilisearchVersion = await checkConnectionAndVersion();
-  if (meilisearchVersion === meilisearchTargetVersion) {
+
+  if (meilisearchVersion !== null) {
+    console.log(
+      `meilisearch ${meilisearchVersion} client connection detected!`,
+    );
+
+    if (meilisearchVersion !== meilisearchTargetVersion) {
+      throw new Error(
+        `meilisearch client target version mismatch, expected ${meilisearchTargetVersion}` +
+          '\nmake sure "package.json" "meilisearchTargetVersion" is set up correctly,' +
+          ` and that the correct docker container is running on ${host}, or none at all` +
+          " to let the script set it up",
+        { cause: { meilisearchVersion, meilisearchTargetVersion } },
+      );
+    }
+
     return;
   }
 
   try {
-    removeIfExistsMeilisearchDockerService();
-    startMeilisearchDockerService(meilisearchTargetVersion);
+    await removeMeilisearchDockerContainer();
+    await startMeilisearchDockerContainer(meilisearchTargetVersion);
     await waitForMeiliSearch();
 
-    return removeIfExistsMeilisearchDockerService;
+    return removeMeilisearchDockerContainer;
   } catch (error) {
-    removeIfExistsMeilisearchDockerService();
+    await removeMeilisearchDockerContainer();
 
     throw error;
   }
+}
+
+// if it is not called within tests, run directly
+if (import.meta?.env?.MODE !== "test") {
+  await setupMeilisearch();
 }

@@ -54,7 +54,8 @@
     "lint:fix": "oxlint --type-aware --fix",
     "style": "pnpm fmt && pnpm lint",
     "style:fix": "pnpm fmt:fix && pnpm lint:fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "docker": "tsx scripts/setup-meilisearch.ts"
   },
   "files": [
     "src",
@@ -68,10 +69,12 @@
     "globals": "^16.5.0",
     "husky": "^9.1.7",
     "lint-staged": "16.2.7",
+    "nano-spawn": "2.0.0",
     "oxlint": "1.50.0",
     "oxlint-tsgolint": "0.14.2",
     "prettier": "^3.8.1",
     "prettier-plugin-jsdoc": "^1.8.0",
+    "tsx": "4.21.0",
     "typedoc": "^0.28.14",
     "typescript": "^5.9.3",
     "vite": "7.3.0",
