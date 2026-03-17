@@ -56,7 +56,6 @@ export default defineConfig(({ mode }) => {
     test: {
       globalSetup: "tests/setup.ts",
       include: ["tests/**/*.test.ts"],
-      exclude: ["tests/env/**"],
       fileParallelism: false,
       testTimeout: 100_000, // 100 seconds
       coverage: { include: ["src/**/*.ts"] },

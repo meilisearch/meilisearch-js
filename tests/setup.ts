@@ -1,9 +1,11 @@
 import { spawnSync } from "node:child_process";
-import { MeiliSearch } from "../src/meilisearch.js";
+import { MeiliSearch } from "../src/index.js";
 import pkg from "../package.json" with { type: "json" };
 
+const { meilisearchTargetVersion } = pkg;
+
 const POLL_INTERVAL = 250;
-const CONTAINER_NAME = "meilisearch";
+const CONTAINER_NAME = `meilisearch-enterprise-${meilisearchTargetVersion}-test`;
 const TIMEOUT = 15_000;
 const TIMEOUT_ID = Symbol();
 
@@ -52,7 +54,7 @@ function startMeilisearchDockerService(meilisearchVersion: string): void {
       "MEILI_NO_ANALYTICS=true",
 
       // https://hub.docker.com/r/getmeili/meilisearch
-      `getmeili/meilisearch:v${meilisearchVersion}`,
+      `getmeili/meilisearch-enterprise:v${meilisearchVersion}`,
     ],
 
     // TODO: prefix output
@@ -91,8 +93,8 @@ async function waitForMeiliSearch(): Promise<void> {
 }
 
 /**
- * In case there is a connection, return Meilisearch version, and
- * `null`otherwise.
+ * In case there is a connection, return Meilisearch version, and `null`
+ * otherwise.
  */
 async function checkConnectionAndVersion(): Promise<string | null> {
   try {
@@ -103,27 +105,16 @@ async function checkConnectionAndVersion(): Promise<string | null> {
   }
 }
 
-// TODO: could use docker image save/load and https://github.com/actions/cache?tab=readme-ov-file
-//       instead of github workflows services
-
 /**
- * If there is no connection to Meilisearch, create a docker service of it, and
- * wait for connection.
+ * If there is no connection to Meilisearch with the appropriate version, create
+ * a docker service of it, and wait for connection. Otherwise try and (re)create
+ * it.
  *
- * {@link https://vitest.dev/config/#globalsetup}
+ * @see {@link https://vitest.dev/config/globalsetup}
  */
 export default async function () {
-  const { meilisearchTargetVersion } = pkg;
-
   const meilisearchVersion = await checkConnectionAndVersion();
-  if (meilisearchVersion !== null) {
-    if (meilisearchVersion !== meilisearchTargetVersion) {
-      throw new Error(
-        "Meilisearch is reachable but it is the wrong version " +
-          `(expected ${meilisearchTargetVersion}, got ${meilisearchVersion})`,
-      );
-    }
-
+  if (meilisearchVersion === meilisearchTargetVersion) {
     return;
   }
 

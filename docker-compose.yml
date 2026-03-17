@@ -1,0 +1,9 @@
+services:
+  meilisearch:
+    image: getmeili/meilisearch-enterprise:v1.37.0
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=masterKey
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_EXPERIMENTAL_ALLOWED_IP_NETWORKS=any

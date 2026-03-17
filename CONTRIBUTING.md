@@ -4,6 +4,7 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 
 <!-- MarkdownTOC autolink="true" style="ordered" indent="   " -->
 
+- [Coding with AI](#coding-with-ai)
 - [Assumptions](#assumptions)
 - [How to Contribute](#how-to-contribute)
 - [Development Workflow](#development-workflow)
@@ -11,6 +12,18 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 - [Release Process (for internal team only)](#release-process-for-the-internal-team-only)
 
 <!-- /MarkdownTOC -->
+
+## Coding with AI
+
+We accept the use of AI-powered tools (GitHub Copilot, ChatGPT, Claude, Cursor, etc.) for contributions, whether for code, tests, or documentation.
+
+⚠️ However, transparency is required: if you use AI assistance, please mention it in your PR description. This helps maintainers during code review and ensure the quality of contributions.
+
+What we expect:
+
+- **Disclose AI usage**: A simple note like "Used GitHub Copilot for autocompletion" or "Generated initial test structure with ChatGPT" is sufficient.
+- **Specify the scope**: Indicate which parts of your contribution involved AI assistance.
+- **Review AI-generated content**: Ensure you understand and have verified any AI-generated code before submitting.
 
 ## Assumptions
 
@@ -24,9 +37,9 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 2. Once done, [fork the meilisearch-js repository](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) in your own GitHub account. Ask a maintainer if you want your issue to be checked before making a PR.
 3. [Create a new Git branch](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-and-deleting-branches-within-your-repository).
 4. Review the [Development Workflow](#development-workflow) section that describes the steps to maintain the repository.
-5. Make the changes on your branch.
+5. Make your changes on your branch. If you use AI tools during your work, remember to disclose it in your PR description (see [Coding with AI](#coding-with-ai)).
 6. [Submit the branch as a PR](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) pointing to the `main` branch of the main meilisearch-js repository. A maintainer should comment and/or review your Pull Request within a few days. Although depending on the circumstances, it may take longer.<br>
- We do not enforce a naming convention for the PRs, but **please use something descriptive of your changes**, having in mind that the title of your PR will be automatically added to the next [release changelog](https://github.com/meilisearch/meilisearch-js/releases/).
+   We do not enforce a naming convention for the PRs, but **please use something descriptive of your changes**, having in mind that the title of your PR will be automatically added to the next [release changelog](https://github.com/meilisearch/meilisearch-js/releases/).
 
 ## Development Workflow
 
@@ -34,30 +47,20 @@ First of all, thank you for contributing to Meilisearch! The goal of this docume
 
 To run this project, you will need:
 
-- [Node.js v20 or newer](https://nodejs.org/en/download)
-- [Docker](https://www.docker.com/products/docker-desktop/)
+- [Node.js LTS](https://nodejs.org/en/about/previous-releases)
+- [pnpm](https://pnpm.io/installation#using-corepack)
 
 ### Setup
 
-To enable [corepack](https://github.com/nodejs/corepack) for
-[Yarn](https://classic.yarnpkg.com/en/) to work:
-
+<!-- TODO: What? -->
 ```bash
-corepack enable
-```
-
-To run Meilisearch for testing:
-
-```bash
-yarn docker
-# or if you wish to run it in the background in detached mode
-yarn docker -d
+docker-compose run --rm package bash -c "pnpm install && pnpm test && pnpm lint"
 ```
 
 To install dependencies:
 
 ```bash
-yarn --dev
+pnpm install
 ```
 
 ### Tests and Linter
@@ -66,15 +69,13 @@ Each PR should pass the tests and the linter to be accepted.
 
 ```bash
 # Tests
-curl -L https://install.meilisearch.com | sh # download Meilisearch
-./meilisearch --master-key=masterKey --no-analytics # run Meilisearch
-yarn test
+pnpm test
 # Linter
-yarn style
+pnpm style
 # Linter with fixing
-yarn style:fix
+pnpm style:fix
 # Build the project
-yarn build
+pnpm build
 ```
 
 ## Git Guidelines
@@ -149,18 +150,18 @@ This package is able to create multiple types of betas:
 Here are the steps to release a beta version of this package depending on its type:
 
 1. Create a new branch containing the changes with the correct name format following these rules:
-    - `package beta`: create a branch `beta/xx-xx` with the context of your beta.
-      Example: `beta/refactor`.
-    - Meilisearch `pre-release beta`: create a branch originating from `bump-meilisearch-v*.*.*` named `pre-release-beta/v*.*.*`. <br>
-      Example: `pre-release-beta/v0.30.0`
-    - Meilisearch `prototype beta`: create a branch `prototype-beta/xx-xx`. Where `xxx` has the same name as the docker image containing the prototype.
-        Example: If the [docker image](https://hub.docker.com/r/getmeili/meilisearch/tags) is named: `prototype-multi-search-0`, the branch should be named: `prototype-beta/prototype-multi-search`
+   - `package beta`: create a branch `beta/xx-xx` with the context of your beta.
+     Example: `beta/refactor`.
+   - Meilisearch `pre-release beta`: create a branch originating from `bump-meilisearch-v*.*.*` named `pre-release-beta/v*.*.*`. <br>
+     Example: `pre-release-beta/v0.30.0`
+   - Meilisearch `prototype beta`: create a branch `prototype-beta/xx-xx`. Where `xxx` has the same name as the docker image containing the prototype.
+     Example: If the [docker image](https://hub.docker.com/r/getmeili/meilisearch-enterprise/tags) is named: `prototype-multi-search-0`, the branch should be named: `prototype-beta/prototype-multi-search`
 
 2. [Update the version](#version-update) following the correct format (X are numbers):
-    - package and prototype beta: `X.X.X-***.X`
-      example: `0.2.0-new-feature.0`
-    - pre-release beta: `X.X.X-vX.X.X-pre-release.X`
-      example: `0.2.0-v0.30.0-pre-release.0`
+   - package and prototype beta: `X.X.X-***.X`
+     example: `0.2.0-new-feature.0`
+   - pre-release beta: `X.X.X-vX.X.X-pre-release.X`
+     example: `0.2.0-v0.30.0-pre-release.0`
 
 3. Commit and push your code to the newly created branch (step 1).
 

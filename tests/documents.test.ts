@@ -258,6 +258,89 @@ describe("Documents tests", () => {
         expect(documentsGet.results[0]).not.toHaveProperty("_vectors");
       });
 
+      test(`${permission} key: Get documents with sorting by single field`, async () => {
+        const client = await getClient(permission);
+
+        await client
+          .index(indexPk.uid)
+          .updateSortableAttributes(["id"])
+          .waitTask();
+
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          sort: ["id:asc"],
+        });
+
+        expect(documents.results.length).toEqual(dataset.length);
+        // Verify documents are sorted by id in ascending order
+        const ids = documents.results.map((doc) => doc.id);
+        const sortedIds = [...ids].sort((a, b) => a - b);
+        expect(ids).toEqual(sortedIds);
+      });
+
+      test(`${permission} key: Get documents with sorting by multiple fields`, async () => {
+        const client = await getClient(permission);
+
+        await client
+          .index(indexPk.uid)
+          .updateSortableAttributes(["id", "title"])
+          .waitTask();
+
+        const customDocs: Book[] = [
+          { id: 1, title: "Orders", genre: ["Drama"], author: "Author A" },
+          { id: 2, title: "Orders", genre: ["Drama"], author: "Author B" },
+          { id: 3, title: "Payments", genre: ["Drama"], author: "Author C" },
+        ];
+
+        await client.index(indexPk.uid).addDocuments(customDocs).waitTask();
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          sort: ["title:asc", "id:desc"],
+        });
+
+        expect(documents.results.length).toEqual(customDocs.length);
+        const results = documents.results.map((doc) => ({
+          title: doc.title,
+          id: doc.id,
+        }));
+        expect(results).toEqual([
+          { title: "Orders", id: 2 },
+          { title: "Orders", id: 1 },
+          { title: "Payments", id: 3 },
+        ]);
+      });
+
+      test(`${permission} key: Get documents with empty sort array`, async () => {
+        const client = await getClient(permission);
+
+        await client
+          .index(indexPk.uid)
+          .updateSortableAttributes(["id"])
+          .waitTask();
+
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+
+        const documents = await client.index(indexPk.uid).getDocuments<Book>({
+          sort: [],
+        });
+
+        expect(documents.results.length).toEqual(dataset.length);
+        // Should return documents in default order (no specific sorting)
+      });
+
+      test(`${permission} key: Get documents with sorting should trigger error for non-sortable attribute`, async () => {
+        const client = await getClient(permission);
+
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+
+        await assert.rejects(
+          client.index(indexPk.uid).getDocuments({ sort: ["title:asc"] }),
+          Error,
+          /Attribute `title` is not sortable/,
+        );
+      });
+
       test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
         const client = await getClient(permission);
         await client.index(indexNoPk.uid).addDocuments(dataset).waitTask();
@@ -597,6 +680,27 @@ describe("Documents tests", () => {
         expect(documents.results.length).toEqual(0);
       });
 
+      test(`${permission} key: Add documents with customMetadata and verify it is attached to the task`, async () => {
+        const client = await getClient(permission);
+        const task = await client
+          .index(indexPk.uid)
+          .addDocuments(dataset, { customMetadata: "test-metadata" })
+          .waitTask();
+
+        expect(task.customMetadata).toEqual("test-metadata");
+      });
+
+      test(`${permission} key: Delete all documents with customMetadata and verify it is attached to the task`, async () => {
+        const client = await getClient(permission);
+        await client.index(indexPk.uid).addDocuments(dataset).waitTask();
+        const task = await client
+          .index(indexPk.uid)
+          .deleteAllDocuments({ customMetadata: "delete-all-metadata" })
+          .waitTask();
+
+        expect(task.customMetadata).toEqual("delete-all-metadata");
+      });
+
       test(`${permission} key: Try to get deleted document from index that has NO primary key`, async () => {
         const client = await getClient(permission);
         await expect(
@@ -637,6 +741,70 @@ describe("Documents tests", () => {
         const response = await client.index(pkIndex).getRawInfo();
         expect(response).toHaveProperty("uid", pkIndex);
         expect(response).toHaveProperty("primaryKey", "unique");
+      });
+
+      test(`${permission} key: Add documents with skipCreation:true does not create new documents`, async () => {
+        const client = await getClient(permission);
+
+        // Pre-populate the index with one document
+        await client
+          .index(indexPk.uid)
+          .addDocuments([{ id: 1, title: "Existing doc" }])
+          .waitTask();
+
+        // Try to add a mix of existing and new documents with skipCreation:true
+        await client
+          .index(indexPk.uid)
+          .addDocuments(
+            [
+              { id: 1, title: "Updated existing doc" }, // exists → should be updated
+              { id: 999, title: "New doc" }, // new → should be skipped
+            ],
+            { skipCreation: true },
+          )
+          .waitTask();
+
+        const existingDoc = await client.index(indexPk.uid).getDocument(1);
+        expect(existingDoc).toHaveProperty("title", "Updated existing doc");
+
+        await expect(
+          client.index(indexPk.uid).getDocument(999),
+        ).rejects.toHaveProperty(
+          "cause.code",
+          ErrorStatusCode.DOCUMENT_NOT_FOUND,
+        );
+      });
+
+      test(`${permission} key: Update documents with skipCreation:true does not create new documents`, async () => {
+        const client = await getClient(permission);
+
+        // Pre-populate the index with one document
+        await client
+          .index(indexPk.uid)
+          .addDocuments([{ id: 1, title: "Existing doc" }])
+          .waitTask();
+
+        // Try to update a mix of existing and new documents with skipCreation:true
+        await client
+          .index(indexPk.uid)
+          .updateDocuments(
+            [
+              { id: 1, title: "Updated existing doc" }, // exists → should be updated
+              { id: 999, title: "New doc" }, // new → should be skipped
+            ],
+            { skipCreation: true },
+          )
+          .waitTask();
+
+        const existingDoc = await client.index(indexPk.uid).getDocument(1);
+        expect(existingDoc).toHaveProperty("title", "Updated existing doc");
+
+        await expect(
+          client.index(indexPk.uid).getDocument(999),
+        ).rejects.toHaveProperty(
+          "cause.code",
+          ErrorStatusCode.DOCUMENT_NOT_FOUND,
+        );
       });
 
       test(`${permission} key: Add a document without a primary key and check response in task status`, async () => {

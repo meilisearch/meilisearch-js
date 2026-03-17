@@ -190,6 +190,28 @@ describe.each([
     expect(response.results[0].hits[0].title).toEqual("Le Petit Prince");
   });
 
+  test(`${permission} key: Multi index search with showPerformanceDetails`, async () => {
+    const client = await getClient(permission);
+
+    type MyIndex = {
+      id: 1;
+    };
+
+    const response = await client.multiSearch<
+      MultiSearchParams,
+      MyIndex & Books
+    >({
+      queries: [
+        { indexUid: index.uid, q: "prince", showPerformanceDetails: true },
+      ],
+    });
+
+    expect(response.results[0].hits.length).toEqual(2);
+    expect(response.results[0].hits[0].id).toEqual(456);
+    expect(response.results[0].hits[0].title).toEqual("Le Petit Prince");
+    expect(response.results[0]).toHaveProperty("performanceDetails");
+  });
+
   test(`${permission} key: Multi index search with federation`, async () => {
     const client = await getClient(permission);
 
@@ -242,15 +264,29 @@ describe.each([
     });
 
     const searchKey = await getKey("Search");
+    const adminKey = await getKey("Admin");
 
     // set the remote name and instances
     const instanceName = "instance_1";
-    await masterClient.updateNetwork({
-      self: instanceName,
-      remotes: { [instanceName]: { url: HOST, searchApiKey: searchKey } },
-    });
+    await masterClient
+      .initializeNetwork({
+        self: instanceName,
+        remotes: {
+          [instanceName]: {
+            url: HOST,
+            searchApiKey: searchKey,
+            writeApiKey: adminKey,
+          },
+        },
+        shards: {
+          default: {
+            remotes: [instanceName],
+          },
+        },
+      })
+      .waitTask();
 
-    const searchClient = await getClient(permission);
+    const searchClient = await getClient("Search");
 
     const response = await searchClient.multiSearch<
       FederatedMultiSearchParams,
@@ -427,6 +463,24 @@ describe.each([
     });
   });
 
+  test(`${permission} key: Multi search with showPerformanceDetails`, async () => {
+    const client = await getClient(permission);
+
+    const response = await client.multiSearch<
+      FederatedMultiSearchParams,
+      Books | { id: number; asd: string }
+    >({
+      federation: { showPerformanceDetails: true },
+      queries: [
+        { indexUid: index.uid, q: "456" },
+        { indexUid: index.uid, q: "1344" },
+      ],
+    });
+
+    expect(response).toHaveProperty("hits");
+    expect(response).toHaveProperty("performanceDetails");
+  });
+
   test(`${permission} key: Basic search`, async () => {
     const client = await getClient(permission);
     const response = await client.index(index.uid).search("prince", {});
@@ -594,7 +648,8 @@ describe.each([
       "words",
       "typo",
       "proximity",
-      "attribute",
+      "attributeRank",
+      "wordPosition",
       "exactness",
     ]);
   });
@@ -652,10 +707,10 @@ describe.each([
     const client = await getClient(permission);
 
     const response = await client.index(index.uid).search("prince", {
-      attributesToSearchOn: null,
+      attributesToSearchOn: null, // same as without the option
     });
 
-    expect(response).toMatchSnapshot();
+    expect(response.hits.length).toEqual(2);
   });
 
   test(`${permission} key: search with array options`, async () => {
@@ -687,6 +742,19 @@ describe.each([
     expect(response).toHaveProperty("processingTimeMs", expect.any(Number));
     expect(response).toHaveProperty("query", "prince");
     expect(response.hits.length).toEqual(1);
+  });
+
+  test(`${permission} key: search with showPerformanceDetails`, async () => {
+    const client = await getClient(permission);
+
+    const response = await client.index(index.uid).search("prince", {
+      showPerformanceDetails: true,
+    });
+
+    expect(response).toHaveProperty("hits");
+    expect(Array.isArray(response.hits)).toBe(true);
+    expect(response).toHaveProperty("query", "prince");
+    expect(response).toHaveProperty("performanceDetails");
   });
 
   test(`${permission} key: search with limit and offset`, async () => {
@@ -1368,12 +1436,10 @@ describe.each([
 
     controller.abort();
 
-    searchPromise.catch((error) => {
-      expect(error).toHaveProperty(
-        "cause.message",
-        "This operation was aborted",
-      );
-    });
+    await expect(searchPromise).rejects.toHaveProperty(
+      "cause.message",
+      "This operation was aborted",
+    );
   });
 
   test(`${permission} key: search on index multiple times, and abort only one request`, async () => {
@@ -1467,7 +1533,7 @@ describe.each([
       (_: unknown, requestInit?: RequestInit) =>
         new Promise((_, reject) =>
           requestInit?.signal?.addEventListener("abort", () =>
-            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+            // oxlint-disable-next-line prefer-promise-reject-errors
             reject(requestInit.signal?.reason),
           ),
         ),

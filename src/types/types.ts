@@ -4,9 +4,9 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^5.8.2
 
-import type { WaitOptions } from "./task_and_batch.js";
+import type { WaitOptions } from "./task-and-batch.js";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line no-explicit-any
 export type RecordAny = Record<string, any>;
 
 /**
@@ -141,6 +141,7 @@ export type ResultsWrapper<T> = {
 
 export type IndexOptions = {
   primaryKey?: string;
+  uid?: string;
 };
 
 export type IndexObject = {
@@ -260,6 +261,7 @@ export type SearchParams = Query &
     retrieveVectors?: boolean;
     locales?: Locale[];
     media?: MediaPayload;
+    showPerformanceDetails?: boolean;
   };
 
 // Search parameters for searches made with the GET method
@@ -283,6 +285,7 @@ export type SearchRequestGET = Pagination &
     distinct?: string;
     retrieveVectors?: boolean;
     locales?: Locale[];
+    showPerformanceDetails?: boolean;
   };
 
 export type MergeFacets = {
@@ -295,6 +298,7 @@ export type MultiSearchFederation = {
   offset?: number;
   facetsByIndex?: Record<string, string[]>;
   mergeFacets?: MergeFacets | null;
+  showPerformanceDetails?: boolean;
 };
 
 export type MultiSearchQuery = SearchParams & { indexUid: string };
@@ -308,26 +312,6 @@ export type MultiSearchParams = {
 export type FederatedMultiSearchParams = {
   federation: MultiSearchFederation;
   queries: MultiSearchQueryWithFederation[];
-};
-
-/**
- * {@link https://www.meilisearch.com/docs/reference/api/network#the-remote-object}
- *
- * @see `meilisearch_types::features::Remote` at {@link https://github.com/meilisearch/meilisearch}
- */
-export type Remote = {
-  url: string;
-  searchApiKey: string | null;
-};
-
-/**
- * {@link https://www.meilisearch.com/docs/reference/api/network#the-network-object}
- *
- * @see `meilisearch_types::features::Network` at {@link https://github.com/meilisearch/meilisearch}
- */
-export type Network = {
-  self: string | null;
-  remotes: Record<string, Remote>;
 };
 
 export type CategoriesDistribution = {
@@ -408,6 +392,8 @@ export type SearchResponse<
   facetDistribution?: FacetDistribution;
   facetStats?: FacetStats;
   facetsByIndex?: FacetsByIndex;
+  queryVector?: number[];
+  performanceDetails?: RecordAny;
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
@@ -472,6 +458,7 @@ export type SearchSimilarDocumentsParams = {
   showRankingScore?: boolean;
   showRankingScoreDetails?: boolean;
   rankingScoreThreshold?: number;
+  showPerformanceDetails?: boolean;
 };
 
 /*
@@ -482,8 +469,25 @@ type Fields<T = RecordAny> =
   | Extract<keyof T, string>[]
   | Extract<keyof T, string>;
 
-export type DocumentOptions = {
+/** Options for task enqueue that apply to all document write operations. */
+export type TaskEnqueueOptions = {
+  /**
+   * Arbitrary string attached to the enqueued task. Available on the task
+   * object via the `customMetadata` field.
+   *
+   * @see {@link https://www.meilisearch.com/docs/reference/api/async-task-management/get-task#response-custom-metadata-one-of-0}
+   */
+  customMetadata?: string;
+};
+
+export type DocumentOptions = TaskEnqueueOptions & {
   primaryKey?: string;
+  /**
+   * Skip document creation when the document does not already exist in the
+   * index. When `true`, only existing documents will be updated. @see
+   * https://www.meilisearch.com/docs/reference/api/documents/add-or-replace-documents
+   */
+  skipCreation?: boolean;
 };
 
 export const ContentTypeEnum: Readonly<Record<string, ContentType>> = {
@@ -508,6 +512,12 @@ export type DocumentsQuery<T = RecordAny> = ResourceQuery & {
   limit?: number;
   offset?: number;
   retrieveVectors?: boolean;
+  /**
+   * Array of strings containing the attributes to sort on. Each string should
+   * be in the format "attribute:direction" where direction is either "asc" or
+   * "desc". Example: ["price:asc", "rating:desc"]
+   */
+  sort?: string[];
 };
 
 export type DocumentQuery<T = RecordAny> = {
@@ -841,12 +851,6 @@ export type Version = {
 /*
  ** ERROR HANDLER
  */
-
-export interface FetchError extends Error {
-  type: string;
-  errno: string;
-  code: string;
-}
 
 export type MeiliSearchErrorResponse = {
   message: string;

@@ -1,12 +1,13 @@
 :root {
-  --font-family-code: "JetBrains Mono", Menlo, Consolas, Monaco, Liberation Mono,
-    Lucida Console, monospace;
-  --font-family-system: Inter, Roboto, "Helvetica Neue", "Arial Nova",
-    "Nimbus Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol";
-  --shadow-overlay: 0px 10px 15px rgba(32, 37, 46, 0.15),
-    0px 3px 5px rgba(23, 26, 33, 0.21);
+  --font-family-code:
+    "JetBrains Mono", Menlo, Consolas, Monaco, Liberation Mono, Lucida Console,
+    monospace;
+  --font-family-system:
+    Inter, Roboto, "Helvetica Neue", "Arial Nova", "Nimbus Sans", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --shadow-overlay:
+    0px 10px 15px rgba(32, 37, 46, 0.15), 0px 3px 5px rgba(23, 26, 33, 0.21);
 }
 
 body {
@@ -63,7 +64,8 @@ body {
     #1c0040 1000px,
     #0e0021
   );
-  --color-background-secondary: linear-gradient(
+  --color-background-secondary:
+    linear-gradient(
       150.53deg,
       rgba(255, 92, 178, 0.25) -2px,
       rgba(107, 86, 220, 0.073) 300px,
@@ -84,7 +86,8 @@ body {
   --color-text-aside: rgb(255, 92, 178);
   --color-link: rgb(255, 92, 178);
   --color-separator: transparent;
-  --color-background-search-results: linear-gradient(
+  --color-background-search-results:
+    linear-gradient(
       150.53deg,
       rgba(255, 92, 178, 0.25) -0.45%,
       rgba(107, 86, 220, 0.073) 13.45%,

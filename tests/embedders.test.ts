@@ -367,6 +367,33 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(response).toHaveProperty("limit", 20);
       expect(response).toHaveProperty("estimatedTotalHits", 4);
     });
+
+    test(`${permission} key: search for similar documents with showPerformanceDetails`, async () => {
+      const client = await getClient(permission);
+
+      const newEmbedder: Embedders = {
+        manual: {
+          source: "userProvided",
+          dimensions: 3,
+        },
+      };
+      await client.index(index.uid).updateEmbedders(newEmbedder).waitTask();
+
+      await client
+        .index(index.uid)
+        .addDocuments(datasetSimilarSearch)
+        .waitTask();
+
+      const response = await client.index(index.uid).searchSimilarDocuments({
+        embedder: "manual",
+        id: "143",
+        showPerformanceDetails: true,
+      });
+
+      expect(response).toHaveProperty("hits");
+      expect(response.hits.length).toEqual(4);
+      expect(response).toHaveProperty("performanceDetails");
+    });
   },
 );
 

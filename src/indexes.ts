@@ -46,12 +46,15 @@ import type {
   SearchSimilarDocumentsParams,
   LocalizedAttributes,
   UpdateDocumentsByFunctionOptions,
+  TaskEnqueueOptions,
   ExtraRequestInit,
   PrefixSearch,
   RecordAny,
   EnqueuedTaskPromise,
   ChatSettings,
   ChatSettingsPayload,
+  FieldsQuery,
+  FieldsResults,
 } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
 import {
@@ -298,24 +301,35 @@ export class Index<T extends RecordAny = RecordAny> {
    * Get documents of an index.
    *
    * @param params - Parameters to browse the documents. Parameters can contain
-   *   the `filter` field only available in Meilisearch v1.2 and newer
+   *   the `filter` field only available in Meilisearch v1.2 and newer, and the
+   *   `sort` field available in Meilisearch v1.16 and newer
    * @returns Promise containing the returned documents
    */
   async getDocuments<D extends RecordAny = T>(
     params?: DocumentsQuery<D>,
   ): Promise<ResourceResults<D[]>> {
     const relativeBaseURL = `indexes/${this.uid}/documents`;
+    // Create a shallow copy so we can safely normalize parameters
+    const normalizedParams = params ? { ...params } : undefined;
+    // Omit empty sort arrays to avoid server-side validation errors
+    if (
+      normalizedParams &&
+      Array.isArray(normalizedParams.sort) &&
+      normalizedParams.sort.length === 0
+    ) {
+      delete (normalizedParams as { sort?: string[] }).sort;
+    }
 
-    return params?.filter !== undefined
+    return normalizedParams?.filter !== undefined
       ? // In case `filter` is provided, use `POST /documents/fetch`
         await this.httpRequest.post<ResourceResults<D[]>>({
           path: `${relativeBaseURL}/fetch`,
-          body: params,
+          body: normalizedParams,
         })
       : // Else use `GET /documents` method
         await this.httpRequest.get<ResourceResults<D[]>>({
           path: relativeBaseURL,
-          params,
+          params: normalizedParams,
         });
   }
 
@@ -471,11 +485,16 @@ export class Index<T extends RecordAny = RecordAny> {
    * Delete one document
    *
    * @param documentId - Id of Document to delete
+   * @param options - Task enqueue options (e.g. customMetadata)
    * @returns Promise containing an EnqueuedTask
    */
-  deleteDocument(documentId: string | number): EnqueuedTaskPromise {
+  deleteDocument(
+    documentId: string | number,
+    options?: TaskEnqueueOptions,
+  ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/documents/${documentId}`,
+      params: options,
     });
   }
 
@@ -492,6 +511,7 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   deleteDocuments(
     params: DocumentsDeletionQuery | DocumentsIds,
+    options?: TaskEnqueueOptions,
   ): EnqueuedTaskPromise {
     // If params is of type DocumentsDeletionQuery
     const isDocumentsDeletionQuery =
@@ -503,6 +523,7 @@ export class Index<T extends RecordAny = RecordAny> {
     return this.#httpRequestsWithTask.post({
       path: `indexes/${this.uid}/${endpoint}`,
       body: params,
+      params: options,
     });
   }
 
@@ -511,9 +532,10 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing an EnqueuedTask
    */
-  deleteAllDocuments(): EnqueuedTaskPromise {
+  deleteAllDocuments(options?: TaskEnqueueOptions): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/documents`,
+      params: options,
     });
   }
 
@@ -531,10 +553,12 @@ export class Index<T extends RecordAny = RecordAny> {
    */
   updateDocumentsByFunction(
     options: UpdateDocumentsByFunctionOptions,
+    taskOptions?: TaskEnqueueOptions,
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
       path: `indexes/${this.uid}/documents/edit`,
       body: options,
+      params: taskOptions,
     });
   }
 
@@ -1405,6 +1429,30 @@ export class Index<T extends RecordAny = RecordAny> {
     return this.#httpRequestsWithTask.patch({
       path: `indexes/${this.uid}/settings/chat`,
       body: chatSettings,
+    });
+  }
+
+  ///
+  /// FIELDS
+  ///
+
+  /**
+   * Retrieve fields from an index with optional filtering and pagination. This
+   * endpoint allows you to query fields based on their properties (searchable,
+   * filterable, displayed, sortable, distinct, rankingRule, and localized).
+   *
+   * @param params - Query parameters including pagination and filter options
+   * @param extraRequestInit - Additional request configuration options
+   * @returns Promise containing the fields results with pagination info
+   */
+  async getFields(
+    params?: FieldsQuery,
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<FieldsResults> {
+    return await this.httpRequest.post<FieldsResults>({
+      path: `indexes/${this.uid}/fields`,
+      body: params || {},
+      extraRequestInit,
     });
   }
 }

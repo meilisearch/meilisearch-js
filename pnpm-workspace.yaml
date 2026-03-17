@@ -1,0 +1,13 @@
+packages:
+  - tests/env/*
+  - playgrounds/*
+
+minimumReleaseAge: 1440
+
+onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - esbuild
+  - puppeteer
+
+ignoredBuiltDependencies:
+  - unrs-resolver

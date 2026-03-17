@@ -30,10 +30,16 @@ import type {
   RecordAny,
   RuntimeTogglableFeatures,
   ResourceResults,
+  Remote,
   Webhook,
   ResultsWrapper,
   WebhookCreatePayload,
   WebhookUpdatePayload,
+  InitializeNetworkOptions,
+  AddRemoteOptions,
+  RemoveRemoteOptions,
+  UpdateNetworkOptions,
+  ShardInitialization,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -211,7 +217,7 @@ export class MeiliSearch {
    */
   swapIndexes(params: IndexSwap[]): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
-      path: "/swap-indexes",
+      path: "swap-indexes",
       body: params,
     });
   }
@@ -369,7 +375,55 @@ export class MeiliSearch {
   ///  Network
   ///
 
+  #patchNetwork(body: UpdateNetworkOptions): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.patch({
+      path: "network",
+      body,
+    });
+  }
+
+  #validateInitializationShards(
+    remotes: Record<string, Remote>,
+    shards: Record<string, ShardInitialization>,
+  ): Record<string, { remotes: string[] }> {
+    const shardEntries = Object.entries(shards);
+
+    if (shardEntries.length === 0) {
+      throw new TypeError(
+        "initializeNetwork requires at least one shard when leader is set.",
+      );
+    }
+
+    const validated: Record<string, { remotes: string[] }> = {};
+
+    for (const [shardName, shard] of shardEntries) {
+      if (!Array.isArray(shard.remotes) || shard.remotes.length === 0) {
+        throw new TypeError(
+          `Shard "${shardName}" must have at least one remote.`,
+        );
+      }
+
+      const missingRemotes = shard.remotes.filter(
+        (remoteName) => remotes[remoteName] === undefined,
+      );
+
+      if (missingRemotes.length > 0) {
+        throw new TypeError(
+          `Shard "${shardName}" references unknown remotes: ${missingRemotes.join(
+            ", ",
+          )}`,
+        );
+      }
+
+      validated[shardName] = { remotes: [...shard.remotes] };
+    }
+
+    return validated;
+  }
+
   /**
+   * Get the current network configuration.
+   *
    * {@link https://www.meilisearch.com/docs/reference/api/network#get-the-network-object}
    *
    * @experimental
@@ -379,14 +433,99 @@ export class MeiliSearch {
   }
 
   /**
+   * Initialize a network with sharding enabled. This sets up the current
+   * instance as the leader and configures the initial set of remotes.
+   *
    * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
    *
+   * @param options - Network initialization options
+   * @returns Promise returning the enqueued task
    * @experimental
    */
-  async updateNetwork(network: Partial<Network>): Promise<Network> {
-    return await this.httpRequest.patch({
-      path: "network",
-      body: network,
+  initializeNetwork(options: InitializeNetworkOptions): EnqueuedTaskPromise {
+    const shards = this.#validateInitializationShards(
+      options.remotes,
+      options.shards,
+    );
+
+    return this.#patchNetwork({
+      self: options.self,
+      leader: options.self,
+      remotes: options.remotes,
+      shards,
+    });
+  }
+
+  /**
+   * Add a remote to the network. Must be called on the leader instance.
+   *
+   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   *
+   * @param options - Options containing the remote name and configuration
+   * @returns Promise returning the enqueued task
+   * @experimental
+   */
+  addRemote(options: AddRemoteOptions): EnqueuedTaskPromise {
+    return this.#patchNetwork({
+      remotes: {
+        [options.name]: options.remote,
+      },
+    });
+  }
+
+  /**
+   * Remove a remote from the network. Must be called on the leader instance.
+   *
+   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   *
+   * @param options - Options containing the remote name to remove
+   * @returns Promise returning the enqueued task
+   * @experimental
+   */
+  removeRemote(options: RemoveRemoteOptions): EnqueuedTaskPromise {
+    return this.#patchNetwork({
+      remotes: {
+        [options.name]: null,
+      },
+    });
+  }
+
+  /**
+   * Add remotes to a shard. Must be called on the leader instance.
+   *
+   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   *
+   * @param shardName - Name of the shard to update
+   * @param remotes - Remotes to add
+   * @returns Promise returning the enqueued task
+   * @experimental
+   */
+  addRemotesToShard(shardName: string, remotes: string[]): EnqueuedTaskPromise {
+    return this.#patchNetwork({
+      shards: {
+        [shardName]: { addRemotes: remotes },
+      },
+    });
+  }
+
+  /**
+   * Remove remotes from a shard. Must be called on the leader instance.
+   *
+   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   *
+   * @param shardName - Name of the shard to update
+   * @param remotes - Remotes to remove
+   * @returns Promise returning the enqueued task
+   * @experimental
+   */
+  removeRemotesFromShard(
+    shardName: string,
+    remotes: string[],
+  ): EnqueuedTaskPromise {
+    return this.#patchNetwork({
+      shards: {
+        [shardName]: { removeRemotes: remotes },
+      },
     });
   }
 

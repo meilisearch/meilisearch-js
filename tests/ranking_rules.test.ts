@@ -13,12 +13,13 @@ const index = {
   uid: "movies_test",
 };
 
-const defaultRankingRules = [
+const DEFAULT_RANKING_RULES = [
   "words",
   "typo",
   "proximity",
-  "attribute",
+  "attributeRank",
   "sort",
+  "wordPosition",
   "exactness",
 ];
 
@@ -38,7 +39,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
     test(`${permission} key: Get default ranking rules`, async () => {
       const client = await getClient(permission);
       const response = await client.index(index.uid).getRankingRules();
-      expect(response).toEqual(defaultRankingRules);
+      expect(response).toEqual(DEFAULT_RANKING_RULES);
     });
 
     test(`${permission} key: Update ranking rules`, async () => {
@@ -60,7 +61,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const response = await client.index(index.uid).getRankingRules();
 
-      expect(response).toEqual(defaultRankingRules);
+      expect(response).toEqual(DEFAULT_RANKING_RULES);
     });
 
     test(`${permission} key: Reset ranking rules`, async () => {
@@ -69,7 +70,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const response = await client.index(index.uid).getRankingRules();
 
-      expect(response).toEqual(defaultRankingRules);
+      expect(response).toEqual(DEFAULT_RANKING_RULES);
     });
   },
 );
