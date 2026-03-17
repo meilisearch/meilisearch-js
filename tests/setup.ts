@@ -53,6 +53,8 @@ function startMeilisearchDockerService(meilisearchVersion: string): void {
       "MEILI_MASTER_KEY=masterKey",
       "-e",
       "MEILI_NO_ANALYTICS=true",
+      "-e",
+      "MEILI_EXPERIMENTAL_ALLOWED_IP_NETWORKS=any",
 
       // https://hub.docker.com/r/getmeili/meilisearch
       `getmeili/meilisearch-enterprise:v${meilisearchVersion}`,
