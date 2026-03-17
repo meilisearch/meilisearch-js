@@ -474,7 +474,7 @@ export type DocumentOptions = {
   /**
    * Skip document creation when the document does not already exist in the
    * index. When `true`, only existing documents will be updated. @see
-   * https://www.meilisearch.com/docs/reference/api/documents#add-or-replace-documents
+   * https://www.meilisearch.com/docs/reference/api/documents/add-or-replace-documents
    */
   skipCreation?: boolean;
 };
