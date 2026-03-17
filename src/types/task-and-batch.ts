@@ -166,7 +166,7 @@ export type Task = SafeOmit<EnqueuedTask, "taskUid"> & {
   /**
    * Arbitrary metadata attached to the task at enqueue time.
    *
-   * @see {@link https://www.meilisearch.com/docs/reference/api/tasks#custommetadata}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/async-task-management/get-task#response-custom-metadata-one-of-0}
    */
   customMetadata?: string;
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */

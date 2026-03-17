@@ -475,7 +475,7 @@ export type TaskEnqueueOptions = {
    * Arbitrary string attached to the enqueued task. Available on the task
    * object via the `customMetadata` field.
    *
-   * @see {@link https://www.meilisearch.com/docs/reference/api/tasks#custommetadata}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/async-task-management/get-task#response-custom-metadata-one-of-0}
    */
   customMetadata?: string;
 };
