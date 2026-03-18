@@ -2,6 +2,8 @@ import spawn from "nano-spawn";
 import { MeiliSearch } from "../src/index.js";
 import pkg from "../package.json" with { type: "json" };
 
+// TODO: More and Better logging?
+
 // TODO: Use this in the future https://nodejs.org/api/esm.html#importmetamain
 const isNotTestingEnvironment = import.meta?.env?.MODE !== "test";
 

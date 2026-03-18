@@ -52,12 +52,6 @@ To run this project, you will need:
 
 ### Setup
 
-<!-- TODO: What? -->
-
-```bash
-docker-compose run --rm package bash -c "pnpm install && pnpm test && pnpm lint"
-```
-
 To install dependencies:
 
 ```bash
