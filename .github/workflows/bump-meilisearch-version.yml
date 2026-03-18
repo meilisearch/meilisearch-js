@@ -1,0 +1,75 @@
+name: Bump Meilisearch version
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: meilisearch-version-bot
+
+jobs:
+  bump-meilisearch:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.MEILI_BOT_GH_PAT }}
+      MEILISEARCH_REPO: meilisearch/meilisearch
+      MEILISEARCH_DOCKER_IMAGE: getmeili/meilisearch-enterprise
+      BASE_BRANCH: main
+      BRANCH_PREFIX: bump-meilisearch-v
+      SHOULD_UPDATE: "false"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ env.BASE_BRANCH }}
+          fetch-depth: 0
+
+      - name: Detect and prepare Meilisearch version bump
+        id: bump
+        run: bash .github/scripts/bump-meilisearch-version.sh
+
+      - name: Commit and push changes
+        if: steps.bump.outputs.should_update == 'true'
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "Bump Meilisearch to ${{ steps.bump.outputs.target_tag }}"
+          new_branch: ${{ steps.bump.outputs.new_branch }}
+          add: |
+            docker-compose.yml
+            .github/workflows/tests.yml
+
+      - name: Create PR
+        if: steps.bump.outputs.should_update == 'true'
+        env:
+          TARGET_TAG: ${{ steps.bump.outputs.target_tag }}
+          NEW_BRANCH: ${{ steps.bump.outputs.new_branch }}
+          LATEST_TAG: ${{ steps.bump.outputs.latest_tag }}
+        run: |
+          OPEN_COUNT=$(gh pr list --state open --head "$NEW_BRANCH" --base "$BASE_BRANCH" --json number --jq 'length')
+          if [ "$OPEN_COUNT" -gt 0 ]; then
+            echo "PR already exists for branch $NEW_BRANCH"
+            exit 0
+          fi
+
+          gh pr create \
+            --title "Bump Meilisearch to $TARGET_TAG" \
+            --body "$(cat <<EOF
+          _This PR is auto-generated._
+
+          Tracks \`$MEILISEARCH_REPO\` stable releases and updates pinned image tags to floating minor \`$TARGET_TAG\`.
+          Patch releases are intentionally not PR'd; Docker resolves to the latest patch for this minor.
+
+          - Upstream latest stable tag detected: \`$LATEST_TAG\`
+          - Updated files:
+            - \`.github/workflows/tests.yml\`
+            - \`docker-compose.yml\`
+
+          [Release notes](https://github.com/meilisearch/meilisearch/releases/tag/$LATEST_TAG)
+          EOF
+          )" \
+            --base "$BASE_BRANCH" \
+            --head "$NEW_BRANCH"
