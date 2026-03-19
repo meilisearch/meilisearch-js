@@ -1,9 +1,9 @@
-import { env } from "node:process";
+import { inject } from "vitest";
 import { type Config, MeiliSearch, Index } from "#src/index";
 
 // testing
-const MASTER_KEY = env.MASTER_KEY!;
-const HOST = `http://127.0.0.1:${env.PORT}`;
+const MASTER_KEY = inject("MASTER_KEY");
+const HOST = `http://127.0.0.1:${inject("PORT")}`;
 const BAD_HOST = "http://127.0.0.1:9999";
 
 const config: Config = {

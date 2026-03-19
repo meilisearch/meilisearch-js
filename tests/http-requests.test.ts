@@ -1,9 +1,9 @@
-import { env } from "node:process";
 import {
   afterAll,
   beforeEach,
   describe,
   expect,
+  inject,
   test,
   vi,
   type MockInstance,
@@ -15,6 +15,8 @@ import {
   MeiliSearchRequestError,
   MeiliSearchApiError,
 } from "#src/index";
+
+const PORT = inject("PORT");
 
 describe("HttpRequests", () => {
   let fetchSpy: MockInstance<typeof fetch>;
@@ -33,7 +35,7 @@ describe("HttpRequests", () => {
       .fn()
       .mockResolvedValue({ data: "not a stream" });
     const config: Config = {
-      host: `http://localhost:${env.PORT}`,
+      host: `http://localhost:${PORT}`,
       httpClient: customHttpClient,
     };
     const httpRequests = new HttpRequests(config);
@@ -47,7 +49,7 @@ describe("HttpRequests", () => {
     const mockStream = new ReadableStream();
     const customHttpClient = vi.fn().mockResolvedValue(mockStream);
     const config: Config = {
-      host: `http://localhost:${env.PORT}`,
+      host: `http://localhost:${PORT}`,
       httpClient: customHttpClient,
     };
     const httpRequests = new HttpRequests(config);
@@ -64,7 +66,7 @@ describe("HttpRequests", () => {
       }),
     );
 
-    const config: Config = { host: `http://localhost:${env.PORT}` };
+    const config: Config = { host: `http://localhost:${PORT}` };
     const httpRequests = new HttpRequests(config);
 
     await expect(
@@ -80,7 +82,7 @@ describe("HttpRequests", () => {
       }),
     );
 
-    const config: Config = { host: `http://localhost:${env.PORT}` };
+    const config: Config = { host: `http://localhost:${PORT}` };
     const httpRequests = new HttpRequests(config);
 
     await expect(
@@ -96,7 +98,7 @@ describe("HttpRequests", () => {
       }),
     );
 
-    const config: Config = { host: `http://localhost:${env.PORT}` };
+    const config: Config = { host: `http://localhost:${PORT}` };
     const httpRequests = new HttpRequests(config);
 
     await expect(

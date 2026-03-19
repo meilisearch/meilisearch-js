@@ -1,5 +1,4 @@
-import { cwd } from "node:process";
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig } from "vite";
 import pkg from "./package.json" with { type: "json" };
 
 const indexInput = "src/index.ts";
@@ -55,13 +54,11 @@ export default defineConfig(({ mode }) => {
         : undefined,
     },
     test: {
-      // globalSetup: "scripts/setup-meilisearch.ts",
+      globalSetup: "tests/setup/index.ts",
       include: ["tests/**/*.test.ts"],
       fileParallelism: false,
       testTimeout: 100_000, // 100 seconds
       coverage: { include: ["src/**/*.ts"] },
-      // https://vitest.dev/guide/features.html#environment-variables
-      env: loadEnv(mode, cwd(), ""),
     },
   };
 });
