@@ -1,6 +1,6 @@
 import { afterAll, test } from "vitest";
 import { assert, getClient } from "./utils/meilisearch-test-utils.js";
-import type { RuntimeTogglableFeatures } from "../src/index.js";
+import type { RuntimeTogglableFeatures } from "#src/index";
 
 const ms = await getClient("Master");
 

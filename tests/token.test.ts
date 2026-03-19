@@ -18,13 +18,13 @@ import {
   assert,
 } from "./utils/meilisearch-test-utils.js";
 import { createHmac } from "node:crypto";
-import { generateTenantToken } from "../src/token.js";
+import { generateTenantToken } from "#src/token";
 import {
   MeiliSearch,
   MeiliSearchApiError,
   type TenantTokenHeader,
   type TokenClaims,
-} from "../src/index.js";
+} from "#src/index";
 
 const HASH_ALGORITHM = "HS256";
 const TOKEN_TYP = "JWT";

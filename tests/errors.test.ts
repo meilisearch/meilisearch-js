@@ -1,6 +1,6 @@
 import { test, describe, vi, beforeAll } from "vitest";
 import { MeiliSearch, assert } from "./utils/meilisearch-test-utils.js";
-import { MeiliSearchRequestError } from "../src/index.js";
+import { MeiliSearchRequestError } from "#src/index";
 
 const mockedFetch = vi.fn();
 

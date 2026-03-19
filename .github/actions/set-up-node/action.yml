@@ -18,4 +18,6 @@ runs:
         cache: "pnpm"
     - name: Install dependencies
       shell: bash
-      run: pnpm install --frozen-lockfile
+      run: |
+        cp .env.example .env
+        pnpm install --frozen-lockfile

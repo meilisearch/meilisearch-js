@@ -1,8 +1,8 @@
 import { Index, Meilisearch } from "../../../src/index.js";
 
 const client = new Meilisearch({
-  host: "http://127.0.0.1:7700",
-  apiKey: "masterKey",
+  host: `http://127.0.0.1:${__PORT__}`,
+  apiKey: __MASTER_KEY__,
 });
 const indexUid = "movies";
 const index = client.index<{ id: number; title: string; genres: string[] }>(

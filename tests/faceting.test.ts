@@ -6,7 +6,7 @@ import {
   afterAll,
   beforeAll,
 } from "vitest";
-import { ErrorStatusCode, type Faceting } from "../src/index.js";
+import { ErrorStatusCode, type Faceting } from "#src/index";
 import {
   clearAllIndexes,
   config,

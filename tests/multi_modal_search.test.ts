@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { getClient } from "./utils/meilisearch-test-utils.js";
-import type { Embedder } from "../src/types/types.js";
+import type { Embedder } from "#src/index";
 import movies from "./fixtures/movies.json" assert { type: "json" };
-import type { Meilisearch } from "../src/index.js";
+import type { Meilisearch } from "#src/index";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";

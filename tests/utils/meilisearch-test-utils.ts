@@ -1,9 +1,9 @@
-import { type Config, MeiliSearch, Index } from "../../src/index.js";
+import { env } from "node:process";
+import { type Config, MeiliSearch, Index } from "#src/index";
 
 // testing
-const MASTER_KEY = "masterKey";
-const HOST = process.env.MEILISEARCH_URL || "http://127.0.0.1:7700";
-const HOST2 = process.env.MEILISEARCH_URL_2 || "http://127.0.0.1:7701";
+const MASTER_KEY = env.MASTER_KEY!;
+const HOST = `http://127.0.0.1:${env.PORT}`;
 const BAD_HOST = "http://127.0.0.1:9999";
 
 const config: Config = {
@@ -11,18 +11,9 @@ const config: Config = {
   apiKey: MASTER_KEY,
   defaultWaitOptions: { interval: 10 },
 };
-const badHostClient = new MeiliSearch({
-  host: BAD_HOST,
-  apiKey: MASTER_KEY,
-});
 const masterClient = new MeiliSearch({
   host: HOST,
   apiKey: MASTER_KEY,
-  defaultWaitOptions: { interval: 10 },
-});
-
-const anonymousClient = new MeiliSearch({
-  host: HOST,
   defaultWaitOptions: { interval: 10 },
 });
 
@@ -213,12 +204,8 @@ export {
   clearAllIndexes,
   config,
   masterClient,
-  badHostClient,
-  anonymousClient,
   BAD_HOST,
   HOST,
-  HOST2,
-  MASTER_KEY,
   MeiliSearch,
   Index,
   getClient,

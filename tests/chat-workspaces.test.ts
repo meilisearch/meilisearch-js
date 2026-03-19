@@ -1,6 +1,6 @@
 import { beforeAll, expect, test } from "vitest";
 import { getClient, dataset } from "./utils/meilisearch-test-utils.js";
-import type { ChatWorkspaceSettings } from "../src/types/types.js";
+import type { ChatWorkspaceSettings } from "#src/index";
 
 beforeAll(async () => {
   const client = await getClient("Admin");

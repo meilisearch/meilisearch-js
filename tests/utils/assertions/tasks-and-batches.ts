@@ -6,7 +6,7 @@ import type {
   EnqueuedTask,
   BatchesResults,
   Task,
-} from "../../../src/types/index.js";
+} from "#src/index";
 import { assert } from "vitest";
 import { objectKeys } from "../object.js";
 import { errorAssertions } from "./error.js";

@@ -1,5 +1,5 @@
 import { assert } from "vitest";
-import type { MeiliSearchErrorResponse } from "../../../src/index.js";
+import type { MeiliSearchErrorResponse } from "#src/index";
 
 export const errorAssertions = {
   isErrorResponse(error: MeiliSearchErrorResponse) {

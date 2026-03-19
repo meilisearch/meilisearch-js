@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { beforeAll, describe, test, vi } from "vitest";
-import type { TasksOrBatchesQuery } from "../src/types/index.js";
+import type { TasksOrBatchesQuery } from "#src/index";
 import {
   getClient,
   objectEntries,
