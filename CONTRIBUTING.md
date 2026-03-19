@@ -45,10 +45,11 @@ What we expect:
 
 ### Requirements
 
-To run this project, you will need:
+To run and test this project, you will need:
 
 - [Node.js LTS](https://nodejs.org/en/about/previous-releases)
 - [pnpm](https://pnpm.io/installation#using-corepack)
+- [Docker](https://www.docker.com/)
 
 ### Setup
 
@@ -56,6 +57,15 @@ To install dependencies:
 
 ```bash
 pnpm install
+```
+
+Set up environment variables and Meilisearch client docker service:
+
+```bash
+# Create the configuration file based on .env.example
+cp .env.example .env
+# Start the Meilisearch client docker service
+docker compose up -d
 ```
 
 ### Tests and Linter
