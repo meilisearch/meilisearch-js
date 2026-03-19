@@ -20,7 +20,6 @@ jobs:
   integration_tests:
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request' || startsWith(github.base_ref, 'bump-meilisearch-v') || startsWith(github.base_ref, 'pre-release-beta')
-    needs: ["meilisearch-version"]
     strategy:
       matrix:
         node-version: ["20", "22"]
