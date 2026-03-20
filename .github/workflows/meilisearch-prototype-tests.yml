@@ -47,7 +47,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Set up Meilisearch
-        run: TARGET_VERSION=${{ needs.meilisearch-version.outputs.version }} docker compose up -d
+        run: TARGET_VERSION=${{ needs.meilisearch-version.outputs.version }} docker compose --env-file .conf up -d
 
       - name: Run tests
         run: pnpm test

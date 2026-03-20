@@ -1,7 +1,7 @@
 import { env, loadEnvFile } from "node:process";
 import { defineConfig } from "vite";
 
-loadEnvFile("../../.env");
+loadEnvFile(new URL("../../.conf", import.meta.url));
 const { PORT, MASTER_KEY } = env;
 
 export default defineConfig({

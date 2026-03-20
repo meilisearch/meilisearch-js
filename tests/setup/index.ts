@@ -2,7 +2,7 @@ import { env, loadEnvFile } from "node:process";
 import { Meilisearch } from "#src/index";
 import type { TestProject } from "vitest/node";
 
-loadEnvFile();
+loadEnvFile(new URL("../../.conf", import.meta.url));
 
 const POLL_INTERVAL = 250;
 const TIMEOUT = 6_000;
