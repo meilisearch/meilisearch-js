@@ -546,7 +546,7 @@ export class Index<T extends RecordAny = RecordAny> {
    * More info about the feature:
    * https://github.com/orgs/meilisearch/discussions/762 More info about
    * experimental features in general:
-   * https://www.meilisearch.com/docs/reference/api/experimental-features
+   * https://www.meilisearch.com/docs/reference/api/experimental-features/list-experimental-features
    *
    * @param options - Object containing the function string and related options
    * @returns Promise containing an EnqueuedTask

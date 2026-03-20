@@ -268,7 +268,7 @@ export class MeiliSearch {
    * @param queries - Search queries
    * @param extraRequestInit - Additional request configuration options
    * @returns Promise containing the search responses
-   * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#perform-a-search}
+   * @see {@link https://www.meilisearch.com/docs/learn/multi_search/implement_sharding#perform-a-search
    */
   async multiSearch<
     T1 extends MultiSearchParams | FederatedMultiSearchParams,
@@ -424,7 +424,7 @@ export class MeiliSearch {
   /**
    * Get the current network configuration.
    *
-   * {@link https://www.meilisearch.com/docs/reference/api/network#get-the-network-object}
+   * {@link https://www.meilisearch.com/docs/reference/api/experimental-features/network-control#get-the-network-object
    *
    * @experimental
    */
@@ -436,7 +436,7 @@ export class MeiliSearch {
    * Initialize a network with sharding enabled. This sets up the current
    * instance as the leader and configures the initial set of remotes.
    *
-   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   * {@link https://www.meilisearch.com/docs/reference/api/experimental-features/network-control#update-the-network-object
    *
    * @param options - Network initialization options
    * @returns Promise returning the enqueued task
@@ -459,7 +459,7 @@ export class MeiliSearch {
   /**
    * Add a remote to the network. Must be called on the leader instance.
    *
-   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   * {@link https://www.meilisearch.com/docs/reference/api/experimental-features/network-control#update-the-network-object
    *
    * @param options - Options containing the remote name and configuration
    * @returns Promise returning the enqueued task
@@ -476,7 +476,7 @@ export class MeiliSearch {
   /**
    * Remove a remote from the network. Must be called on the leader instance.
    *
-   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   * {@link https://www.meilisearch.com/docs/reference/api/experimental-features/network-control#update-the-network-object
    *
    * @param options - Options containing the remote name to remove
    * @returns Promise returning the enqueued task
@@ -493,7 +493,7 @@ export class MeiliSearch {
   /**
    * Add remotes to a shard. Must be called on the leader instance.
    *
-   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   * {@link https://www.meilisearch.com/docs/reference/api/experimental-features/network-control#update-the-network-object
    *
    * @param shardName - Name of the shard to update
    * @param remotes - Remotes to add
@@ -511,7 +511,7 @@ export class MeiliSearch {
   /**
    * Remove remotes from a shard. Must be called on the leader instance.
    *
-   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   * {@link https://www.meilisearch.com/docs/reference/api/experimental-features/network-control#update-the-network-object
    *
    * @param shardName - Name of the shard to update
    * @param remotes - Remotes to remove
@@ -690,14 +690,14 @@ export class MeiliSearch {
   /// EXPERIMENTAL-FEATURES
   ///
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/experimental_features#get-all-experimental-features} */
+  /** {@link https://www.meilisearch.com/docs/reference/api/experimental-features/list-experimental-features#get-all-experimental-features */
   async getExperimentalFeatures(): Promise<RuntimeTogglableFeatures> {
     return await this.httpRequest.get({
       path: "experimental-features",
     });
   }
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/experimental_features#configure-experimental-features} */
+  /** {@link https://www.meilisearch.com/docs/reference/api/experimental-features/list-experimental-features#configure-experimental-features */
   async updateExperimentalFeatures(
     runtimeTogglableFeatures: RuntimeTogglableFeatures,
   ): Promise<RuntimeTogglableFeatures> {

@@ -11,7 +11,7 @@
   <a href="https://dub.sh/meili-discord?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js">Discord</a> |
   <a href="https://roadmap.meilisearch.com/tabs/1-under-consideration?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js">Roadmap</a> |
   <a href="https://www.meilisearch.com?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js">Website</a> |
-  <a href="https://www.meilisearch.com/docs/faq?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js">FAQ</a>
+  <a href="https://www.meilisearch.com/docs/learn/resources/faq?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js">FAQ</a>
 </h4>
 
 <p align="center">
@@ -195,7 +195,7 @@ import { Meilisearch } from "meilisearch";
 })();
 ```
 
-Tasks such as document addition always return a unique identifier. You can use this identifier `taskUid` to check the status (`enqueued`, `canceled`, `processing`, `succeeded` or `failed`) of a [task](https://www.meilisearch.com/docs/reference/api/tasks).
+Tasks such as document addition always return a unique identifier. You can use this identifier `taskUid` to check the status (`enqueued`, `canceled`, `processing`, `succeeded` or `failed`) of a [task](https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks).
 
 ### Basic search <!-- omit in toc -->
 
@@ -226,7 +226,7 @@ Output:
 
 ### Using search parameters <!-- omit in toc -->
 
-`meilisearch-js` supports all [search parameters](https://www.meilisearch.com/docs/reference/api/search#search-parameters) described in our main documentation website.
+`meilisearch-js` supports all [search parameters](https://www.meilisearch.com/docs/reference/api/search/search-with-post#search-parameters) described in our main documentation website.
 
 ```javascript
 await index.search("wonder", {
@@ -258,7 +258,7 @@ await index.search("wonder", {
 
 ### Custom search with filters <!-- omit in toc -->
 
-To enable filtering, you must first add your attributes to the [`filterableAttributes` index setting](https://www.meilisearch.com/docs/reference/api/settings#filterable-attributes).
+To enable filtering, you must first add your attributes to the [`filterableAttributes` index setting](https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#filterable-attributes).
 
 ```js
 await index.updateFilterableAttributes(["id", "genres"]);
@@ -266,9 +266,9 @@ await index.updateFilterableAttributes(["id", "genres"]);
 
 You only need to perform this operation once per index.
 
-Note that Meilisearch rebuilds your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take considerable time. You can track the process using the [tasks API](https://www.meilisearch.com/docs/reference/api/tasks)).
+Note that Meilisearch rebuilds your index whenever you update `filterableAttributes`. Depending on the size of your dataset, this might take considerable time. You can track the process using the [tasks API](https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks)).
 
-After you configured `filterableAttributes`, you can use the [`filter` search parameter](https://www.meilisearch.com/docs/reference/api/search#filter) to refine your search:
+After you configured `filterableAttributes`, you can use the [`filter` search parameter](https://www.meilisearch.com/docs/reference/api/search/search-with-post#filter) to refine your search:
 
 ```js
 await index.search("wonder", {
@@ -333,7 +333,7 @@ await index.search("", {
 }
 ```
 
-Note that to enable faceted search on your dataset you need to add `genres` to the `filterableAttributes` index setting. For more information on filtering and faceting, [consult our documentation settings](https://www.meilisearch.com/docs/learn/fine_tuning_results/faceted_search).
+Note that to enable faceted search on your dataset you need to add `genres` to the `filterableAttributes` index setting. For more information on filtering and faceting, [consult our documentation settings](https://www.meilisearch.com/docs/learn/filtering_and_sorting/search_with_facet_filters).
 
 #### Abortable search <!-- omit in toc -->
 
@@ -407,10 +407,10 @@ This package guarantees compatibility with [version v1.x of Meilisearch](https:/
 
 The following sections in our main documentation website may interest you:
 
-- **Managing documents**: see the [API reference](https://www.meilisearch.com/docs/reference/api/documents?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or read more about [documents](https://www.meilisearch.com/docs/learn/core_concepts/documents).
-- **Searching**: see the [API reference](https://www.meilisearch.com/docs/reference/api/search?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or follow our guide on [search parameters](https://www.meilisearch.com/docs/reference/api/search?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js#search-parameters).
-- **Managing indexes**: see the [API reference](https://www.meilisearch.com/docs/reference/api/indexes?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or read more about [indexes](https://www.meilisearch.com/docs/learn/core_concepts/indexes?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
-- **Configuring indexes**: see the [API reference](https://www.meilisearch.com/docs/reference/api/settings?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or follow our guide on [settings parameters](https://www.meilisearch.com/docs/reference/api/settings?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js#settings_parameters).
+- **Managing documents**: see the [API reference](https://www.meilisearch.com/docs/reference/api/documents/list-documents-with-get?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or read more about [documents](https://www.meilisearch.com/docs/learn/getting_started/documents).
+- **Searching**: see the [API reference](https://www.meilisearch.com/docs/reference/api/search/search-with-post?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or follow our guide on [search parameters](https://www.meilisearch.com/docs/reference/api/search/search-with-post?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js#search-parameters).
+- **Managing indexes**: see the [API reference](https://www.meilisearch.com/docs/reference/api/indexes/list-all-indexes?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or read more about [indexes](https://www.meilisearch.com/docs/learn/getting_started/indexes?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
+- **Configuring indexes**: see the [API reference](https://www.meilisearch.com/docs/reference/api/settings/list-all-settings?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) or follow our guide on [settings parameters](https://www.meilisearch.com/docs/reference/api/settings/list-all-settings?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js#settings_parameters).
 
 Check out the [playgrounds](./playgrounds/) for examples of implementation.
 

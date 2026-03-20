@@ -4,7 +4,7 @@ import type { Filter } from "./types.js";
 export type TokenIndexRules = { filter?: Filter };
 
 /**
- * {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference#search-rules}
+ * {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference#search-rules
  *
  * @remarks
  * Not well documented.
@@ -21,7 +21,7 @@ export type TenantTokenGeneratorOptions = {
   /**
    * The uid of the api key used as issuer of the token.
    *
-   * @see {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference#api-key-uid}
+   * @see {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference#api-key-uid
    */
   apiKeyUid: string;
   /**
@@ -34,7 +34,7 @@ export type TenantTokenGeneratorOptions = {
    * {@link https://en.wikipedia.org/wiki/Unix_time | UNIX timestamp} or
    * {@link Date} object at which the token expires.
    *
-   * @see {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference#expiry-date}
+   * @see {@link https://www.meilisearch.com/docs/learn/security/tenant_token_reference#expiry-date
    */
   expiresAt?: number | Date;
   /**
@@ -42,7 +42,7 @@ export type TenantTokenGeneratorOptions = {
    * are HS256, HS384, HS512. (HS[number] means HMAC using SHA-[number])
    *
    * @defaultValue `"HS256"`
-   * @see {@link https://www.meilisearch.com/docs/learn/security/generate_tenant_token_scratch#prepare-token-header}
+   * @see {@link https://www.meilisearch.com/docs/learn/security/generate_tenant_token_scratch#prepare-token-header
    */
   algorithm?: `HS${256 | 384 | 512}`;
   /**
