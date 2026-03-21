@@ -4,7 +4,7 @@ import {
   Meilisearch,
   type WebhookCreatePayload,
   type WebhookUpdatePayload,
-} from "../src/index.js";
+} from "#src/index";
 
 let adminClient: Meilisearch;
 

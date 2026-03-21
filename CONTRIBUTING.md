@@ -45,25 +45,26 @@ What we expect:
 
 ### Requirements
 
-To run this project, you will need:
+To run and test this project, you will need:
 
 - [Node.js LTS](https://nodejs.org/en/about/previous-releases)
 - [pnpm](https://pnpm.io/installation#using-corepack)
+- [Docker](https://www.docker.com/)
 
 ### Setup
-
-You can set up your local environment natively or using `docker`, check out the [`docker-compose.yml`](/docker-compose.yml).
-
-Example of running all the checks with docker:
-
-```bash
-docker-compose run --rm package bash -c "pnpm install && pnpm test && pnpm lint"
-```
 
 To install dependencies:
 
 ```bash
 pnpm install
+```
+
+Set up environment variables and Meilisearch client docker service:
+
+```bash
+# Start the Meilisearch client docker service
+# with the appropriate configuration file
+docker compose --env-file .conf up -d
 ```
 
 ### Tests and Linter
@@ -108,6 +109,13 @@ Some notes on GitHub PRs:
 - The branch related to the PR must be **up-to-date with `main`** before merging. Fortunately, this project uses [GitHub Merge Queues](https://github.blog/news-insights/product-news/github-merge-queue-is-generally-available/) to automatically enforce this requirement without the PR author having to rebase manually.
 - All PRs must be reviewed and approved by at least one maintainer.
 - The PR title should be accurate and descriptive of the changes. The title of the PR will be indeed automatically added to the next [release changelogs](https://github.com/meilisearch/meilisearch-js/releases/).
+
+### Developing features for a newer Meilisearch client target version
+
+Change `TARGET_VERSION` in [`/.conf`](/.conf) to the desired newer Meilisearch version.
+
+> [!IMPORTANT]
+> The first PR for such changes should implement all the features that break the tests first.
 
 ## Release Process (for the internal team only)
 

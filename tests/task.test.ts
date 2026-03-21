@@ -1,6 +1,6 @@
 import { afterAll, assert, beforeEach, describe, expect, test } from "vitest";
-import { ErrorStatusCode } from "../src/types/index.js";
-import { sleep } from "../src/utils.js";
+import { ErrorStatusCode } from "#src/index";
+import { sleep } from "#src/utils";
 import {
   BAD_HOST,
   clearAllIndexes,

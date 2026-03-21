@@ -1,23 +1,9 @@
 services:
-  package:
-    image: node:22
-    tty: true
-    stdin_open: true
-    working_dir: /home/package
-    environment:
-      - MEILISEARCH_URL=http://meilisearch:7700
-    depends_on:
-      - meilisearch
-    links:
-      - meilisearch
-    volumes:
-      - ./:/home/package
-
   meilisearch:
-    image: getmeili/meilisearch-enterprise:v1.37.0
+    image: getmeili/meilisearch-enterprise:v${TARGET_VERSION}
     ports:
-      - "7700:7700"
+      - "${PORT}:7700"
     environment:
-      - MEILI_MASTER_KEY=masterKey
+      - MEILI_MASTER_KEY=${MASTER_KEY}
       - MEILI_NO_ANALYTICS=true
       - MEILI_EXPERIMENTAL_ALLOWED_IP_NETWORKS=any

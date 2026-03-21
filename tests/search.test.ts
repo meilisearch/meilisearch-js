@@ -7,11 +7,8 @@ import {
   beforeAll,
   vi,
 } from "vitest";
-import { ErrorStatusCode, MatchingStrategies } from "../src/types/index.js";
-import type {
-  FederatedMultiSearchParams,
-  MultiSearchParams,
-} from "../src/types/index.js";
+import { ErrorStatusCode, MatchingStrategies } from "#src/index";
+import type { FederatedMultiSearchParams, MultiSearchParams } from "#src/index";
 import {
   clearAllIndexes,
   config,
@@ -23,7 +20,7 @@ import {
   HOST,
   assert,
 } from "./utils/meilisearch-test-utils.js";
-import { MeiliSearchRequestError } from "../src/index.js";
+import { MeiliSearchRequestError } from "#src/index";
 
 const index = {
   uid: "books",

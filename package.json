@@ -33,13 +33,16 @@
       "default": "./dist/cjs/token.cjs"
     }
   },
+  "imports": {
+    "#src/*": "./src/*.ts"
+  },
   "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/meilisearch/meilisearch-js.git"
   },
   "scripts": {
-    "playground:javascript": "vite serve playgrounds/javascript --open",
+    "playground:javascript": "pnpm -F=meilisearch-js-playground dev",
     "build:docs": "typedoc",
     "build": "vite build && tsc -p tsconfig.build.json && vite --mode production-umd build",
     "postbuild": "node scripts/build.js",

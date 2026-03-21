@@ -3,17 +3,20 @@ import {
   beforeEach,
   describe,
   expect,
+  inject,
   test,
   vi,
   type MockInstance,
 } from "vitest";
-import { HttpRequests } from "../src/http-requests.js";
-import type { Config } from "../src/types/index.js";
+import { HttpRequests } from "#src/http-requests";
+import type { Config } from "#src/index";
 import {
   MeiliSearchError,
   MeiliSearchRequestError,
   MeiliSearchApiError,
-} from "../src/errors/index.js";
+} from "#src/index";
+
+const PORT = inject("PORT");
 
 describe("HttpRequests", () => {
   let fetchSpy: MockInstance<typeof fetch>;
@@ -32,7 +35,7 @@ describe("HttpRequests", () => {
       .fn()
       .mockResolvedValue({ data: "not a stream" });
     const config: Config = {
-      host: "http://localhost:7700",
+      host: `http://localhost:${PORT}`,
       httpClient: customHttpClient,
     };
     const httpRequests = new HttpRequests(config);
@@ -46,7 +49,7 @@ describe("HttpRequests", () => {
     const mockStream = new ReadableStream();
     const customHttpClient = vi.fn().mockResolvedValue(mockStream);
     const config: Config = {
-      host: "http://localhost:7700",
+      host: `http://localhost:${PORT}`,
       httpClient: customHttpClient,
     };
     const httpRequests = new HttpRequests(config);
@@ -63,7 +66,7 @@ describe("HttpRequests", () => {
       }),
     );
 
-    const config: Config = { host: "http://localhost:7700" };
+    const config: Config = { host: `http://localhost:${PORT}` };
     const httpRequests = new HttpRequests(config);
 
     await expect(
@@ -79,7 +82,7 @@ describe("HttpRequests", () => {
       }),
     );
 
-    const config: Config = { host: "http://localhost:7700" };
+    const config: Config = { host: `http://localhost:${PORT}` };
     const httpRequests = new HttpRequests(config);
 
     await expect(
@@ -95,7 +98,7 @@ describe("HttpRequests", () => {
       }),
     );
 
-    const config: Config = { host: "http://localhost:7700" };
+    const config: Config = { host: `http://localhost:${PORT}` };
     const httpRequests = new HttpRequests(config);
 
     await expect(

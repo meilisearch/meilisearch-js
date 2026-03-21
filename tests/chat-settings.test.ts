@@ -10,7 +10,7 @@ import {
   ErrorStatusCode,
   type ChatSettings,
   type SearchParams,
-} from "../src/types/index.js";
+} from "#src/index";
 import {
   clearAllIndexes,
   config,

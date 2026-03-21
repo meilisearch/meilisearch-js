@@ -14,9 +14,9 @@ import type {
   Stats,
   IndexSwap,
   InitializeNetworkOptions,
-} from "../src/index.js";
-import { ErrorStatusCode, MeiliSearchRequestError } from "../src/index.js";
-import { HttpRequests } from "../src/http-requests.js";
+} from "#src/index";
+import { ErrorStatusCode, MeiliSearchRequestError } from "#src/index";
+import { HttpRequests } from "#src/http-requests";
 import pkg from "../package.json" with { type: "json" };
 import {
   clearAllIndexes,
