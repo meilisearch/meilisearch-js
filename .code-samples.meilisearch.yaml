@@ -534,7 +534,7 @@ tenant_token_guide_search_sdk_1: |-
   const frontEndClient = new MeiliSearch({ host: 'MEILISEARCH_URL', apiKey: token })
   frontEndClient.index('patient_medical_records').search('blood test')
 authorization_header_1: |-
-  const client = new MeiliSearch({ host: 'MEILISEARCH_URL', apiKey: 'masterKey' })
+  const client = new MeiliSearch({ host: 'MEILISEARCH_URL', apiKey: 'MEILISEARCH_KEY' })
   client.getKeys()
 facet_search_1: |-
   client.index('books').searchForFacetValues({
