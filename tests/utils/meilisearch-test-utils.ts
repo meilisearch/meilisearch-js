@@ -1,23 +1,23 @@
 import { type Config, MeiliSearch, Index } from "../../src/index.js";
 
 // testing
-const MEILISEARCH_KEY = "masterKey";
+const MASTER_KEY = "masterKey";
 const HOST = process.env.MEILISEARCH_URL || "http://127.0.0.1:7700";
 const HOST2 = process.env.MEILISEARCH_URL_2 || "http://127.0.0.1:7701";
 const BAD_HOST = "http://127.0.0.1:9999";
 
 const config: Config = {
   host: HOST,
-  apiKey: MEILISEARCH_KEY,
+  apiKey: MASTER_KEY,
   defaultWaitOptions: { interval: 10 },
 };
 const badHostClient = new MeiliSearch({
   host: BAD_HOST,
-  apiKey: MEILISEARCH_KEY,
+  apiKey: MASTER_KEY,
 });
 const masterClient = new MeiliSearch({
   host: HOST,
-  apiKey: MEILISEARCH_KEY,
+  apiKey: MASTER_KEY,
   defaultWaitOptions: { interval: 10 },
 });
 
@@ -46,7 +46,7 @@ async function getKey(permission: string): Promise<string> {
     const key = keys.find((key) => key.name === "Default Admin API Key")?.key;
     return key || "";
   }
-  return MEILISEARCH_KEY;
+  return MASTER_KEY;
 }
 
 async function getClient(permission: string): Promise<MeiliSearch> {
@@ -218,7 +218,7 @@ export {
   BAD_HOST,
   HOST,
   HOST2,
-  MEILISEARCH_KEY,
+  MASTER_KEY,
   MeiliSearch,
   Index,
   getClient,
