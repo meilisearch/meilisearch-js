@@ -3,6 +3,12 @@ import { Meilisearch } from "#src/index";
 import type { TestProject } from "vitest/node";
 
 loadEnvFile(new URL("../../.conf", import.meta.url));
+const { MASTER_KEY, PORT } = env;
+if (MASTER_KEY === undefined || PORT === undefined) {
+  throw new Error("MASTER_KEY and/or PORT environment variables missing", {
+    cause: { MASTER_KEY, PORT },
+  });
+}
 
 const POLL_INTERVAL = 250;
 const TIMEOUT = 6_000;
