@@ -45,7 +45,7 @@
     "postbuild": "node scripts/build.js",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "types": "tsc -p tsconfig.json --noEmit",
+    "types": "tsc",
     "types:watch": "pnpm types --watch",
     "fmt": "prettier -c .",
     "fmt:fix": "prettier -w .",
@@ -61,7 +61,7 @@
     "CONTRIBUTING.md"
   ],
   "devDependencies": {
-    "@types/node": "24.10.13",
+    "@types/node": "24.12.0",
     "@vitest/coverage-v8": "4.0.18",
     "eslint-plugin-tsdoc": "0.5.0",
     "globals": "^16.5.0",
@@ -72,7 +72,7 @@
     "prettier": "^3.8.1",
     "prettier-plugin-jsdoc": "^1.8.0",
     "typedoc": "^0.28.14",
-    "typescript": "^5.9.3",
+    "typescript": "6.0.2",
     "vite": "7.3.0",
     "vitest": "4.0.18"
   },
