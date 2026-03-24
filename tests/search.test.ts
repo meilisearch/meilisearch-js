@@ -481,6 +481,19 @@ describe.each([
     expect(response).toHaveProperty("performanceDetails");
   });
 
+  test(`${permission} key: Multi index search with federation and distinct`, async () => {
+    const client = await getClient(permission);
+    const response = await client.multiSearch<
+      FederatedMultiSearchParams,
+      Books | { id: number; asd: string }
+    >({
+      federation: { distinct: "genre" },
+      queries: [{ indexUid: index.uid, q: "" }],
+    });
+
+    expect(response).toHaveProperty("hits");
+  });
+
   test(`${permission} key: Basic search`, async () => {
     const client = await getClient(permission);
     const response = await client.index(index.uid).search("prince", {});

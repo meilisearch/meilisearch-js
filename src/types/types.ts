@@ -299,6 +299,7 @@ export type MultiSearchFederation = {
   facetsByIndex?: Record<string, string[]>;
   mergeFacets?: MergeFacets | null;
   showPerformanceDetails?: boolean;
+  distinct?: string;
 };
 
 export type MultiSearchQuery = SearchParams & { indexUid: string };
