@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
+    "noEmit": true,
     // We don't want to check node_modules
     "skipLibCheck": true,
-    "module": "node18",
+    "module": "node20",
     // Node.js 20 at https://node.green/#ES2023
     "target": "es2023",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "lib": ["ESNext", "DOM"],
+    "types": ["node"],
     "resolveJsonModule": true,
-    "strict": true,
     "verbatimModuleSyntax": true
   }
 }
