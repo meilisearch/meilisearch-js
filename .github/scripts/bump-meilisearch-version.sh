@@ -75,10 +75,10 @@ if [[ "${OPEN_COUNT}" -gt 0 ]]; then
   exit 0
 fi
 
-sed -i.bak -E "s|(${MEILISEARCH_DOCKER_IMAGE}:)(latest|v[0-9]+\.[0-9]+(\.[0-9]+)?)|\1${TARGET_TAG}|g" "${DOCKER_COMPOSE_FILE}"
+sed -i.bak -E "s#(${MEILISEARCH_DOCKER_IMAGE}:)(latest|v[0-9]+\.[0-9]+(\.[0-9]+)?)#\\1${TARGET_TAG}#g" "${DOCKER_COMPOSE_FILE}"
 rm "${DOCKER_COMPOSE_FILE}.bak"
 
-sed -i.bak -E "s|(${MEILISEARCH_DOCKER_IMAGE}:)(latest|v[0-9]+\.[0-9]+(\.[0-9]+)?)|\1${TARGET_TAG}|g" "${TESTS_WORKFLOW_FILE}"
+sed -i.bak -E "s#(${MEILISEARCH_DOCKER_IMAGE}:)(latest|v[0-9]+\.[0-9]+(\.[0-9]+)?)#\\1${TARGET_TAG}#g" "${TESTS_WORKFLOW_FILE}"
 rm "${TESTS_WORKFLOW_FILE}.bak"
 
 grep "${MEILISEARCH_DOCKER_IMAGE}:${TARGET_TAG}" "${DOCKER_COMPOSE_FILE}" >/dev/null
