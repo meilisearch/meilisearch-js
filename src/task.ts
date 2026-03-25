@@ -84,6 +84,17 @@ export class TaskClient {
     return await this.#httpRequest.get({ path: "tasks", params });
   }
 
+  /** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/get-tasks-documents} */
+  async getTaskDocumentsStream(
+    uid: number,
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<ReadableStream<Uint8Array>> {
+    return await this.#httpRequest.getStream({
+      path: `tasks/${uid}/documents`,
+      extraRequestInit,
+    });
+  }
+
   /**
    * Wait for an enqueued task to be processed. This is done through polling
    * with {@link TaskClient.getTask}.
@@ -104,7 +115,11 @@ export class TaskClient {
     const ac = timeout > 0 ? new AbortController() : null;
 
     const toId =
-      ac !== null ? setTimeout(() => ac.abort(TIMEOUT_ID), timeout) : undefined;
+      ac !== null
+        ? setTimeout(() => {
+            ac.abort(TIMEOUT_ID);
+          }, timeout)
+        : undefined;
 
     try {
       for (;;) {
