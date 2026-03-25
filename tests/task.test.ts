@@ -31,6 +31,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
+      await client.updateExperimentalFeatures({
+        getTaskDocumentsRoute: true,
+      });
       await client.createIndex(index.uid).waitTask();
     });
 
@@ -70,6 +73,29 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(task.startedAt).toBeDefined();
       expect(task.startedAt).toBeTypeOf("string");
       expect(task.error).toBeNull();
+    });
+
+    test(`${permission} key: Get task documents stream`, async () => {
+      const client = await getClient(permission);
+      const enqueuedTask = await client.index(index.uid).addDocuments(dataset);
+
+      const stream = await client.tasks.getTaskDocumentsStream(
+        enqueuedTask.taskUid,
+      );
+      const rawDocuments = await new Response(stream).text();
+      const lines = rawDocuments
+        .trim()
+        .split(/\r?\n/)
+        .flatMap((line) => line.split(/(?<=})\s*(?=\{)/));
+      const documents = lines.map(
+        (line): { id: number | string } =>
+          JSON.parse(line) as {
+            id: number | string;
+          },
+      );
+
+      expect(documents.length).toBeGreaterThan(0);
+      expect(documents[0]).toHaveProperty("id");
     });
 
     // get tasks
@@ -718,6 +744,14 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         ErrorStatusCode.TASK_NOT_FOUND,
       );
     });
+
+    test(`${permission} key: Try to get task documents for task that does not exist`, async () => {
+      const client = await getClient(permission);
+
+      await expect(
+        client.tasks.getTaskDocumentsStream(254500),
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.TASK_NOT_FOUND);
+    });
   },
 );
 
@@ -773,6 +807,17 @@ describe.each([
     await expect(
       client.tasks.getTasks({ indexUids: ["movies_test"] }),
     ).rejects.toHaveProperty(
+      "message",
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
+
+  test(`on getTaskDocumentsStream route`, async () => {
+    const route = `tasks/1/documents`;
+    const client = new MeiliSearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
+
+    await expect(client.tasks.getTaskDocumentsStream(1)).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
