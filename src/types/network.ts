@@ -1,11 +1,11 @@
-/** {@link https://www.meilisearch.com/docs/reference/api/network#the-remote-object} */
+/** {@link https://www.meilisearch.com/docs/reference/api/experimental-features/network-control#the-remote-object */
 export type Remote = {
   url: string;
   searchApiKey?: string | null;
   writeApiKey?: string | null;
 };
 
-/** {@link https://www.meilisearch.com/docs/reference/api/network#the-network-object} */
+/** {@link https://www.meilisearch.com/docs/reference/api/experimental-features/network-control#the-network-object */
 export type Network = {
   self?: string | null;
   leader?: string | null;

@@ -52,7 +52,7 @@ const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask): number =>
 /**
  * Class for handling tasks.
  *
- * @see {@link https://www.meilisearch.com/docs/reference/api/tasks}
+ * @see {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks
  */
 export class TaskClient {
   readonly #httpRequest: HttpRequests;
@@ -67,7 +67,7 @@ export class TaskClient {
     this.#applyWaitTask = getWaitTaskApplier(this);
   }
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-one-task} */
+  /** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#get-one-task */
   async getTask(
     uid: number,
     // TODO: Need to do this for all other methods: https://github.com/meilisearch/meilisearch-js/issues/1476
@@ -79,7 +79,7 @@ export class TaskClient {
     });
   }
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-tasks} */
+  /** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#get-tasks */
   async getTasks(params?: TasksOrBatchesQuery): Promise<TasksResults> {
     return await this.#httpRequest.get({ path: "tasks", params });
   }
@@ -159,14 +159,14 @@ export class TaskClient {
     return tasks;
   }
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks} */
+  /** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#cancel-tasks */
   cancelTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
     return this.#applyWaitTask(
       this.#httpRequest.post({ path: "tasks/cancel", params }),
     );
   }
 
-  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#delete-tasks} */
+  /** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#delete-tasks */
   deleteTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
     return this.#applyWaitTask(
       this.#httpRequest.delete({ path: "tasks", params }),

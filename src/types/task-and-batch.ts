@@ -26,7 +26,7 @@ export type WaitOptions = {
 };
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#status}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#status
  *
  * @see `meilisearch_types::tasks::Status`
  */
@@ -35,7 +35,7 @@ export type TaskStatus = PascalToCamelCase<
 >;
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#type}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#type
  *
  * @see `meilisearch_types::tasks::Kind`
  */
@@ -57,7 +57,7 @@ export type TaskType = PascalToCamelCase<
 >;
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#query-parameters}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#query-parameters
  *
  * @see `meilisearch::routes::tasks::TasksFilterQuery`
  */
@@ -80,8 +80,8 @@ export type TasksOrBatchesQuery = Partial<{
 }>;
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#query-parameters-1}
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#query-parameters-2}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#query-parameters-1
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#query-parameters-2
  *
  * @see `meilisearch::routes::tasks::TaskDeletionOrCancelationQuery`
  */
@@ -91,7 +91,7 @@ export type DeleteOrCancelTasksQuery = SafeOmit<
 >;
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#summarized-task-object}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#summarized-task-object
  *
  * @see `meilisearch::routes::SummarizedTaskView`
  */
@@ -106,14 +106,14 @@ export type EnqueuedTask = {
 /** Either a number or an {@link EnqueuedTask}. */
 export type TaskUidOrEnqueuedTask = EnqueuedTask["taskUid"] | EnqueuedTask;
 
-/** {@link https://www.meilisearch.com/docs/reference/api/tasks#indexswap} */
+/** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#indexswap */
 export type IndexSwap = {
   indexes: [string, string];
   rename: boolean;
 };
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#details}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#details
  *
  * @see `meilisearch_types::task_view::DetailsView`
  */
@@ -137,20 +137,20 @@ export type TaskDetails = Settings &
     upgradeTo: string;
   }>;
 
-/** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
+/** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#network */
 type Origin = { remoteName: string; taskUid: number };
 
-/** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
+/** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#network */
 type NetworkOrigin = { origin: Origin };
 
-/** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
+/** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#network */
 type RemoteTask = { taskUid?: number; error: MeiliSearchErrorResponse | null };
 
-/** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
+/** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#network */
 type NetworkRemoteTasks = { remoteTasks: Record<string, RemoteTask> };
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#task-object}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#task-object
  *
  * @see `meilisearch_types::task_view::TaskView`
  */
@@ -166,10 +166,10 @@ export type Task = SafeOmit<EnqueuedTask, "taskUid"> & {
   /**
    * Arbitrary metadata attached to the task at enqueue time.
    *
-   * @see {@link https://www.meilisearch.com/docs/reference/api/async-task-management/get-task#response-custom-metadata-one-of-0}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/async-task-management/get-task#response-custom-metadata-one-of-0
    */
   customMetadata?: string;
-  /** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
+  /** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#network */
   network?: NetworkOrigin | NetworkRemoteTasks;
 };
 
@@ -194,14 +194,14 @@ type Results<T> = {
 };
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/tasks#response}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-tasks#response
  *
  * @see `meilisearch::routes::tasks::AllTasks`
  */
 export type TasksResults = Results<Task>;
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/batches#steps}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#steps
  *
  * @see `milli::progress::ProgressStepView`
  */
@@ -212,7 +212,7 @@ export type BatchProgressStep = {
 };
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/batches#progress}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#progress
  *
  * @see `milli::progress::ProgressView`
  */
@@ -221,22 +221,22 @@ export type BatchProgress = {
   percentage: number;
 };
 
-/** {@link https://www.meilisearch.com/docs/reference/api/batches#stats} */
+/** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#stats */
 type BatchStats = {
   totalNbTasks: number;
   status: Record<TaskStatus, number>;
   types: Record<TaskType, number>;
   indexUids: Record<string, number>;
-  /** {@link https://www.meilisearch.com/docs/reference/api/batches#progresstrace} */
+  /** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#progresstrace */
   progressTrace?: RecordAny;
-  /** {@link https://www.meilisearch.com/docs/reference/api/batches#writechannelcongestion} */
+  /** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#writechannelcongestion */
   writeChannelCongestion?: RecordAny;
-  /** {@link https://www.meilisearch.com/docs/reference/api/batches#internaldatabasesizes} */
+  /** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#internaldatabasesizes */
   internalDatabaseSizes?: RecordAny;
 };
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/batches#batch-object}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#batch-object
  *
  * @see `meilisearch_types::batch_view::BatchView`
  */
@@ -253,7 +253,7 @@ export type Batch = {
 };
 
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/batches#response}
+ * {@link https://www.meilisearch.com/docs/reference/api/async-task-management/list-batches#response
  *
  * @see `meilisearch::routes::batches::AllBatches`
  */

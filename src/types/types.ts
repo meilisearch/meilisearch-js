@@ -55,7 +55,7 @@ export type Config = {
   /**
    * API key for interacting with a meilisearch instance.
    *
-   * @see {@link https://www.meilisearch.com/docs/learn/security/basic_security}
+   * @see {@link https://www.meilisearch.com/docs/learn/security/basic_security
    */
   apiKey?: string;
   /**
@@ -234,7 +234,7 @@ export type MediaBinary = {
 /** Search request media payload with named search fragments */
 export type MediaPayload = Record<string, Record<string, string | MediaBinary>>;
 
-// https://www.meilisearch.com/docs/reference/api/settings#localized-attributes
+// https://www.meilisearch.com/docs/reference/api/settings/list-all-settings#localized-attributes
 export type Locale = string;
 
 export type SearchParams = Query &
@@ -476,7 +476,7 @@ export type TaskEnqueueOptions = {
    * Arbitrary string attached to the enqueued task. Available on the task
    * object via the `customMetadata` field.
    *
-   * @see {@link https://www.meilisearch.com/docs/reference/api/async-task-management/get-task#response-custom-metadata-one-of-0}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/async-task-management/get-task#response-custom-metadata-one-of-0
    */
   customMetadata?: string;
 };
@@ -769,7 +769,7 @@ export type Stats = {
  ** CHATS
  */
 
-/** @see https://www.meilisearch.com/docs/reference/api/chats#settings-parameters */
+/** @see https://www.meilisearch.com/docs/reference/api/chats/list-chat-workspaces#settings-parameters */
 export type ChatWorkspaceSettings = {
   source: "openAi" | "azureOpenAi" | "mistral" | "gemini" | "vLlm";
   orgId?: string;

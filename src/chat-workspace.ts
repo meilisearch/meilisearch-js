@@ -7,7 +7,7 @@ import type {
 /**
  * Class for handling chat workspaces.
  *
- * @see {@link https://www.meilisearch.com/docs/reference/api/chats}
+ * @see {@link https://www.meilisearch.com/docs/reference/api/chats/list-chat-workspaces
  */
 export class ChatWorkspace {
   readonly #httpRequest: HttpRequests;
@@ -22,7 +22,7 @@ export class ChatWorkspace {
    * Get the settings of a chat workspace.
    *
    * @experimental
-   * @see {@link https://www.meilisearch.com/docs/reference/api/chats#get-chat-workspace-settings}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/chats/list-chat-workspaces#get-chat-workspace-settings
    */
   async get(): Promise<ChatWorkspaceSettings> {
     return await this.#httpRequest.get({
@@ -34,7 +34,7 @@ export class ChatWorkspace {
    * Update the settings of a chat workspace.
    *
    * @experimental
-   * @see {@link https://www.meilisearch.com/docs/reference/api/chats#update-chat-workspace-settings}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/chats/list-chat-workspaces#update-chat-workspace-settings
    */
   async update(
     settings: Partial<ChatWorkspaceSettings>,
@@ -49,7 +49,7 @@ export class ChatWorkspace {
    * Reset the settings of a chat workspace.
    *
    * @experimental
-   * @see {@link https://www.meilisearch.com/docs/reference/api/chats#reset-chat-workspace-settings}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/chats/list-chat-workspaces#reset-chat-workspace-settings
    */
   async reset(): Promise<void> {
     await this.#httpRequest.delete({
@@ -61,7 +61,7 @@ export class ChatWorkspace {
    * Create a chat completion using an OpenAI-compatible interface.
    *
    * @experimental
-   * @see {@link https://www.meilisearch.com/docs/reference/api/chats#chat-completions}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/chats/list-chat-workspaces#chat-completions
    */
   async streamCompletion(
     completion: ChatCompletionRequest,

@@ -1,5 +1,5 @@
 /**
- * {@link https://www.meilisearch.com/docs/reference/api/experimental_features#experimental-features-object}
+ * {@link https://www.meilisearch.com/docs/reference/api/experimental-features/list-experimental-features#experimental-features-object
  *
  * @see `meilisearch::routes::features::RuntimeTogglableFeatures`
  */
