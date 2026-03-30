@@ -14,7 +14,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -181,7 +181,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getLocalizedAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/localized-attributes`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).getLocalizedAttributes(),
@@ -193,7 +193,7 @@ describe.each([
 
   test(`updateLocalizedAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/localized-attributes`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateLocalizedAttributes(null),
@@ -205,7 +205,7 @@ describe.each([
 
   test(`resetLocalizedAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/localized-attributes`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetLocalizedAttributes(),

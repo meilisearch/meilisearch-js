@@ -1,4 +1,4 @@
-import { MeiliSearchTaskTimeOutError } from "./errors/index.js";
+import { MeilisearchTaskTimeOutError } from "./errors/index.js";
 import type {
   WaitOptions,
   TasksOrBatchesQuery,
@@ -123,7 +123,7 @@ export class TaskClient {
       }
     } catch (error) {
       throw Object.is((error as Error).cause, TIMEOUT_ID)
-        ? new MeiliSearchTaskTimeOutError(taskUid, timeout)
+        ? new MeilisearchTaskTimeOutError(taskUid, timeout)
         : error;
     }
   }

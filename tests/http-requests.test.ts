@@ -10,9 +10,9 @@ import {
 import { HttpRequests } from "../src/http-requests.js";
 import type { Config } from "../src/types/index.js";
 import {
-  MeiliSearchError,
-  MeiliSearchRequestError,
-  MeiliSearchApiError,
+  MeilisearchError,
+  MeilisearchRequestError,
+  MeilisearchApiError,
 } from "../src/errors/index.js";
 
 describe("HttpRequests", () => {
@@ -39,7 +39,7 @@ describe("HttpRequests", () => {
 
     await expect(
       httpRequests.postStream({ path: "chat", body: {} }),
-    ).rejects.toThrow(MeiliSearchRequestError);
+    ).rejects.toThrow(MeilisearchRequestError);
   });
 
   test("should return stream from custom http client", async () => {
@@ -68,7 +68,7 @@ describe("HttpRequests", () => {
 
     await expect(
       httpRequests.postStream({ path: "chat", body: {} }),
-    ).rejects.toThrow(MeiliSearchApiError);
+    ).rejects.toThrow(MeilisearchApiError);
   });
 
   test("should handle stream error response with empty body", async () => {
@@ -84,7 +84,7 @@ describe("HttpRequests", () => {
 
     await expect(
       httpRequests.postStream({ path: "chat", body: {} }),
-    ).rejects.toThrow(MeiliSearchApiError);
+    ).rejects.toThrow(MeilisearchApiError);
   });
 
   test("should handle null response body for stream", async () => {
@@ -100,7 +100,7 @@ describe("HttpRequests", () => {
 
     await expect(
       httpRequests.postStream({ path: "chat", body: {} }),
-    ).rejects.toThrow(MeiliSearchError);
+    ).rejects.toThrow(MeilisearchError);
     await expect(
       httpRequests.postStream({ path: "chat", body: {} }),
     ).rejects.toThrow(

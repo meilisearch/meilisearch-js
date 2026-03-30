@@ -1,4 +1,4 @@
-import { type Config, MeiliSearch, Index } from "../../src/index.js";
+import { type Config, Meilisearch, Index } from "../../src/index.js";
 
 // testing
 const MASTER_KEY = "masterKey";
@@ -11,17 +11,17 @@ const config: Config = {
   apiKey: MASTER_KEY,
   defaultWaitOptions: { interval: 10 },
 };
-const badHostClient = new MeiliSearch({
+const badHostClient = new Meilisearch({
   host: BAD_HOST,
   apiKey: MASTER_KEY,
 });
-const masterClient = new MeiliSearch({
+const masterClient = new Meilisearch({
   host: HOST,
   apiKey: MASTER_KEY,
   defaultWaitOptions: { interval: 10 },
 });
 
-const anonymousClient = new MeiliSearch({
+const anonymousClient = new Meilisearch({
   host: HOST,
   defaultWaitOptions: { interval: 10 },
 });
@@ -49,9 +49,9 @@ async function getKey(permission: string): Promise<string> {
   return MASTER_KEY;
 }
 
-async function getClient(permission: string): Promise<MeiliSearch> {
+async function getClient(permission: string): Promise<Meilisearch> {
   if (permission === "No") {
-    const anonymousClient = new MeiliSearch({
+    const anonymousClient = new Meilisearch({
       host: HOST,
       defaultWaitOptions: { interval: 10 },
     });
@@ -60,7 +60,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
 
   if (permission === "Search") {
     const searchKey = await getKey(permission);
-    const searchClient = new MeiliSearch({
+    const searchClient = new Meilisearch({
       host: HOST,
       apiKey: searchKey,
       defaultWaitOptions: { interval: 10 },
@@ -70,7 +70,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
 
   if (permission === "Admin") {
     const adminKey = await getKey(permission);
-    const adminClient = new MeiliSearch({
+    const adminClient = new Meilisearch({
       host: HOST,
       apiKey: adminKey,
       defaultWaitOptions: { interval: 10 },
@@ -82,7 +82,7 @@ async function getClient(permission: string): Promise<MeiliSearch> {
 }
 
 const clearAllIndexes = async (config: Config): Promise<void> => {
-  const client = new MeiliSearch(config);
+  const client = new Meilisearch(config);
   const { results } = await client.getRawIndexes();
 
   await Promise.all(
@@ -219,7 +219,7 @@ export {
   HOST,
   HOST2,
   MASTER_KEY,
-  MeiliSearch,
+  Meilisearch,
   Index,
   getClient,
   getKey,

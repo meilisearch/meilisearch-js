@@ -1,8 +1,8 @@
-import { MeiliSearchError } from "./meilisearch-error.js";
+import { MeilisearchError } from "./meilisearch-error.js";
 
 /** Error thrown when a waiting for a task times out. */
-export class MeiliSearchTaskTimeOutError extends MeiliSearchError {
-  override name = "MeiliSearchTaskTimeOutError";
+export class MeilisearchTaskTimeOutError extends MeilisearchError {
+  override name = "MeilisearchTaskTimeOutError";
   override cause: { taskUid: number; timeout: number };
 
   constructor(taskUid: number, timeout: number) {

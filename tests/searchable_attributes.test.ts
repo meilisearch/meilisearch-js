@@ -11,7 +11,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -151,7 +151,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getSearchableAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/searchable-attributes`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).getSearchableAttributes(),
@@ -163,7 +163,7 @@ describe.each([
 
   test(`updateSearchableAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/searchable-attributes`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateSearchableAttributes([]),
@@ -175,7 +175,7 @@ describe.each([
 
   test(`resetSearchableAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/searchable-attributes`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetSearchableAttributes(),

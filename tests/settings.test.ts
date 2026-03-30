@@ -4,7 +4,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -325,7 +325,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getSettings route`, async () => {
     const route = `indexes/${index.uid}/settings`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).getSettings()).rejects.toHaveProperty(
       "message",
@@ -335,7 +335,7 @@ describe.each([
 
   test(`updateSettings route`, async () => {
     const route = `indexes/${index.uid}/settings`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateSettings({}),
@@ -347,7 +347,7 @@ describe.each([
 
   test(`resetSettings route`, async () => {
     const route = `indexes/${index.uid}/settings`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetSettings(),

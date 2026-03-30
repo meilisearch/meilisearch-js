@@ -3,7 +3,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -75,7 +75,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getSeparatorTokens route`, async () => {
     const route = `indexes/${index.uid}/settings/separator-tokens`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).getSeparatorTokens(),
@@ -87,7 +87,7 @@ describe.each([
 
   test(`updateSeparatorTokens route`, async () => {
     const route = `indexes/${index.uid}/settings/separator-tokens`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateSeparatorTokens([]),
@@ -99,7 +99,7 @@ describe.each([
 
   test(`resetSeparatorTokens route`, async () => {
     const route = `indexes/${index.uid}/settings/separator-tokens`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetSeparatorTokens(),

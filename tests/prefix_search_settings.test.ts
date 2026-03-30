@@ -4,7 +4,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -133,7 +133,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getPrefixSearch route`, async () => {
     const route = `indexes/${index.uid}/settings/prefix-search`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).getPrefixSearch(),
@@ -145,7 +145,7 @@ describe.each([
 
   test(`updatePrefixSearch route`, async () => {
     const route = `indexes/${index.uid}/settings/prefix-search`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updatePrefixSearch("disabled"),
@@ -157,7 +157,7 @@ describe.each([
 
   test(`resetPrefixSearch route`, async () => {
     const route = `indexes/${index.uid}/settings/prefix-search`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetPrefixSearch(),

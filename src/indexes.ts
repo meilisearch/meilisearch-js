@@ -1,11 +1,11 @@
 /*
- * Bundle: MeiliSearch / Indexes
- * Project: MeiliSearch - Javascript API
+ * Bundle: Meilisearch / Indexes
+ * Project: Meilisearch - Javascript API
  * Author: Quentin de Quelen <quentin@meilisearch.com>
- * Copyright: 2019, MeiliSearch
+ * Copyright: 2019, Meilisearch
  */
 
-import { MeiliSearchError } from "./errors/index.js";
+import { MeilisearchError } from "./errors/index.js";
 import type {
   Config,
   SearchResponse,
@@ -132,7 +132,7 @@ export class Index<T extends RecordAny = RecordAny> {
     const parseFilter = (filter?: Filter): string | undefined => {
       if (typeof filter === "string") return filter;
       else if (Array.isArray(filter))
-        throw new MeiliSearchError(
+        throw new MeilisearchError(
           "The filter query parameter should be in string format when using searchGet",
         );
       else return undefined;

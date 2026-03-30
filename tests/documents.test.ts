@@ -4,7 +4,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
   type Book,
@@ -156,7 +156,7 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Get documents should trigger error with a MeilisearchRequestError`, async () => {
         const apiKey = await getKey(permission);
-        const client = new MeiliSearch({ host: `${HOST}/indexes`, apiKey });
+        const client = new Meilisearch({ host: `${HOST}/indexes`, apiKey });
 
         await assert.rejects(
           client.index(indexPk.uid).getDocuments({ filter: "" }),
@@ -167,7 +167,7 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Get documents should trigger error with a hint on a MeilisearchApiError`, async () => {
         const apiKey = await getKey(permission);
-        const client = new MeiliSearch({ host: `${HOST}`, apiKey });
+        const client = new Meilisearch({ host: `${HOST}`, apiKey });
 
         await assert.rejects(
           client.index(indexPk.uid).getDocuments({ filter: "id = 1" }),
@@ -653,7 +653,7 @@ describe("Documents tests", () => {
 
       test(`${permission} key: Delete some documents should trigger error with a hint on a MeilisearchRequestError`, async () => {
         const apiKey = await getKey(permission);
-        const client = new MeiliSearch({ host: `${HOST}/indexes`, apiKey });
+        const client = new Meilisearch({ host: `${HOST}/indexes`, apiKey });
 
         await assert.rejects(
           client.index(indexPk.uid).deleteDocuments({ filter: "id = 1" }),
@@ -1032,7 +1032,7 @@ describe("Documents tests", () => {
   ])("Tests on url construction", ({ host, trailing }) => {
     test(`getDocument route`, async () => {
       const route = `indexes/${indexPk.uid}/documents/1`;
-      const client = new MeiliSearch({ host });
+      const client = new Meilisearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
       await expect(
         client.index(indexPk.uid).getDocument(1),
@@ -1044,7 +1044,7 @@ describe("Documents tests", () => {
 
     test(`getDocuments route`, async () => {
       const route = `indexes/${indexPk.uid}/documents`;
-      const client = new MeiliSearch({ host });
+      const client = new Meilisearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
       await expect(
         client.index(indexPk.uid).getDocuments<Book>(),
@@ -1056,7 +1056,7 @@ describe("Documents tests", () => {
 
     test(`addDocuments route`, async () => {
       const route = `indexes/${indexPk.uid}/documents`;
-      const client = new MeiliSearch({ host });
+      const client = new Meilisearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
       await expect(
         client.index(indexPk.uid).addDocuments([]),
@@ -1068,7 +1068,7 @@ describe("Documents tests", () => {
 
     test(`updateDocuments route`, async () => {
       const route = `indexes/${indexPk.uid}/documents`;
-      const client = new MeiliSearch({ host });
+      const client = new Meilisearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
       await expect(
         client.index(indexPk.uid).updateDocuments([]),
@@ -1080,7 +1080,7 @@ describe("Documents tests", () => {
 
     test(`deleteDocument route`, async () => {
       const route = `indexes/${indexPk.uid}/documents/1`;
-      const client = new MeiliSearch({ host });
+      const client = new Meilisearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
       await expect(
         client.index(indexPk.uid).deleteDocument("1"),
@@ -1092,7 +1092,7 @@ describe("Documents tests", () => {
 
     test(`deleteDocuments route`, async () => {
       const route = `indexes/${indexPk.uid}/documents/delete-batch`;
-      const client = new MeiliSearch({ host });
+      const client = new Meilisearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
       await expect(
         client.index(indexPk.uid).deleteDocuments([]),
@@ -1104,7 +1104,7 @@ describe("Documents tests", () => {
 
     test(`deleteAllDocuments route`, async () => {
       const route = `indexes/${indexPk.uid}/documents`;
-      const client = new MeiliSearch({ host });
+      const client = new Meilisearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
       await expect(
         client.index(indexPk.uid).deleteAllDocuments(),
@@ -1116,7 +1116,7 @@ describe("Documents tests", () => {
 
     test(`updateDocumentsByFunction route`, async () => {
       const route = `indexes/${indexPk.uid}/documents/edit`;
-      const client = new MeiliSearch({ host });
+      const client = new Meilisearch({ host });
       const strippedHost = trailing ? host.slice(0, -1) : host;
 
       await (

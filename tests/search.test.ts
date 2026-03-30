@@ -16,14 +16,14 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   datasetWithNests,
   getKey,
   HOST,
   assert,
 } from "./utils/meilisearch-test-utils.js";
-import { MeiliSearchRequestError } from "../src/index.js";
+import { MeilisearchRequestError } from "../src/index.js";
 
 const index = {
   uid: "books",
@@ -1502,7 +1502,7 @@ describe.each([
 
   test(`${permission} key: search should be aborted when reaching timeout`, async () => {
     const key = await getKey(permission);
-    const client = new MeiliSearch({
+    const client = new Meilisearch({
       ...config,
       apiKey: key,
       timeout: 1,
@@ -1510,7 +1510,7 @@ describe.each([
 
     const error = await assert.rejects(
       client.health(),
-      MeiliSearchRequestError,
+      MeilisearchRequestError,
     );
 
     assert.strictEqual(
@@ -1521,7 +1521,7 @@ describe.each([
 
   test(`${permission} key: search should be aborted on abort signal`, async () => {
     const key = await getKey(permission);
-    const client = new MeiliSearch({
+    const client = new Meilisearch({
       ...config,
       apiKey: key,
       timeout: 1_000,
@@ -1536,7 +1536,7 @@ describe.each([
         { queries: [{ indexUid: "doesn't matter" }] },
         { signal: ac.signal },
       ),
-      MeiliSearchRequestError,
+      MeilisearchRequestError,
     );
     assert.strictEqual(error.cause, someErrorObj);
 
@@ -1560,7 +1560,7 @@ describe.each([
         { signal: ac.signal },
       );
       setTimeout(() => ac.abort(someErrorObj), 1);
-      const error = await assert.rejects(promise, MeiliSearchRequestError);
+      const error = await assert.rejects(promise, MeilisearchRequestError);
       assert.strictEqual(error.cause, someErrorObj);
     } finally {
       vi.unstubAllGlobals();
@@ -1575,7 +1575,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`get search route`, async () => {
     const route = `indexes/${index.uid}/search`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).search()).rejects.toHaveProperty(
       "message",
@@ -1585,7 +1585,7 @@ describe.each([
 
   test(`post search route`, async () => {
     const route = `indexes/${index.uid}/search`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).search()).rejects.toHaveProperty(
       "message",

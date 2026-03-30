@@ -3,7 +3,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -69,7 +69,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getDictionary route`, async () => {
     const route = `indexes/${index.uid}/settings/dictionary`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).getDictionary(),
@@ -81,7 +81,7 @@ describe.each([
 
   test(`updateDictionary route`, async () => {
     const route = `indexes/${index.uid}/settings/dictionary`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateDictionary([]),
@@ -93,7 +93,7 @@ describe.each([
 
   test(`resetDictionary route`, async () => {
     const route = `indexes/${index.uid}/settings/dictionary`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetDictionary(),

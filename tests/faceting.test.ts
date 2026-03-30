@@ -11,7 +11,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -157,7 +157,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getFaceting route`, async () => {
     const route = `indexes/${index.uid}/settings/faceting`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).getFaceting()).rejects.toHaveProperty(
       "message",
@@ -167,7 +167,7 @@ describe.each([
 
   test(`updateFaceting route`, async () => {
     const route = `indexes/${index.uid}/settings/faceting`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateFaceting({ maxValuesPerFacet: undefined }),
@@ -179,7 +179,7 @@ describe.each([
 
   test(`resetFaceting route`, async () => {
     const route = `indexes/${index.uid}/settings/faceting`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetFaceting(),

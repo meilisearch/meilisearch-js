@@ -64,7 +64,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await expect(
         client.index(index.uid).addDocuments(dataset).waitTask({ timeout: 1 }),
-      ).rejects.toHaveProperty("name", "MeiliSearchTaskTimeOutError");
+      ).rejects.toHaveProperty("name", "MeilisearchTaskTimeOutError");
     });
 
     // Index Wait for task
@@ -129,7 +129,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await expect(
         client.tasks.waitForTasks([task1, task2], { timeout: 1 }),
-      ).rejects.toHaveProperty("name", "MeiliSearchTaskTimeOutError");
+      ).rejects.toHaveProperty("name", "MeilisearchTaskTimeOutError");
     });
 
     test(`${permission} key: Tests to wait for task that doesn't exist`, async () => {
@@ -137,7 +137,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       await expect(
         client.tasks.waitForTask(424242424242),
-      ).rejects.toHaveProperty("name", "MeiliSearchApiError");
+      ).rejects.toHaveProperty("name", "MeilisearchApiError");
     });
   },
 );

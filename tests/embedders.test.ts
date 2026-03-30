@@ -4,7 +4,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   masterClient,
 } from "./utils/meilisearch-test-utils.js";
@@ -404,7 +404,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getEmbedders route`, async () => {
     const route = `indexes/${index.uid}/settings/embedders`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).getEmbedders()).rejects.toHaveProperty(
       "message",
@@ -414,7 +414,7 @@ describe.each([
 
   test(`updateEmbedders route`, async () => {
     const route = `indexes/${index.uid}/settings/embedders`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateEmbedders({}),
@@ -426,7 +426,7 @@ describe.each([
 
   test(`resetEmbedders route`, async () => {
     const route = `indexes/${index.uid}/settings/embedders`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetEmbedders(),

@@ -1,8 +1,8 @@
 /*
- * Bundle: MeiliSearch
- * Project: MeiliSearch - Javascript API
+ * Bundle: Meilisearch
+ * Project: Meilisearch - Javascript API
  * Author: Quentin de Quelen <quentin@meilisearch.com>
- * Copyright: 2019, MeiliSearch
+ * Copyright: 2019, Meilisearch
  */
 
 import { Index } from "./indexes.js";
@@ -50,9 +50,9 @@ import {
 } from "./task.js";
 import { BatchClient } from "./batch.js";
 import { ChatWorkspace } from "./chat-workspace.js";
-import type { MeiliSearchApiError } from "./errors/index.js";
+import type { MeilisearchApiError } from "./errors/index.js";
 
-export class MeiliSearch {
+export class Meilisearch {
   config: Config;
   httpRequest: HttpRequests;
 
@@ -69,7 +69,7 @@ export class MeiliSearch {
   readonly #httpRequestsWithTask: HttpRequestsWithEnqueuedTaskPromise;
 
   /**
-   * Creates new MeiliSearch instance
+   * Creates new Meilisearch instance
    *
    * @param config - Configuration object
    */
@@ -100,7 +100,7 @@ export class MeiliSearch {
   }
 
   /**
-   * Gather information about an index by calling MeiliSearch and return an
+   * Gather information about an index by calling Meilisearch and return an
    * Index instance with the gathered information
    *
    * @param indexUid - The index UID
@@ -113,7 +113,7 @@ export class MeiliSearch {
   }
 
   /**
-   * Gather information about an index by calling MeiliSearch and return the raw
+   * Gather information about an index by calling Meilisearch and return the raw
    * JSON response
    *
    * @param indexUid - The index UID
@@ -199,7 +199,7 @@ export class MeiliSearch {
       return true;
     } catch (e) {
       if (
-        (e as MeiliSearchApiError)?.cause?.code ===
+        (e as MeilisearchApiError)?.cause?.code ===
         ErrorStatusCode.INDEX_NOT_FOUND
       ) {
         return false;
@@ -648,7 +648,7 @@ export class MeiliSearch {
   ///
 
   /**
-   * Get the version of MeiliSearch
+   * Get the version of Meilisearch
    *
    * @returns Promise returning object with version details
    */

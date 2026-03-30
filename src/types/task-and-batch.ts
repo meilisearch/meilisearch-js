@@ -5,7 +5,7 @@ import type {
   OptionStarOr,
   OptionStarOrList,
 } from "./shared.js";
-import type { MeiliSearchErrorResponse } from "./types.js";
+import type { MeilisearchErrorResponse } from "./types.js";
 
 /** Options for awaiting an {@link EnqueuedTask}. */
 export type WaitOptions = {
@@ -144,7 +144,7 @@ type Origin = { remoteName: string; taskUid: number };
 type NetworkOrigin = { origin: Origin };
 
 /** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
-type RemoteTask = { taskUid?: number; error: MeiliSearchErrorResponse | null };
+type RemoteTask = { taskUid?: number; error: MeilisearchErrorResponse | null };
 
 /** {@link https://www.meilisearch.com/docs/reference/api/tasks#network} */
 type NetworkRemoteTasks = { remoteTasks: Record<string, RemoteTask> };
@@ -159,7 +159,7 @@ export type Task = SafeOmit<EnqueuedTask, "taskUid"> & {
   batchUid: number | null;
   canceledBy: number | null;
   details?: TaskDetails;
-  error: MeiliSearchErrorResponse | null;
+  error: MeilisearchErrorResponse | null;
   duration: string | null;
   startedAt: string | null;
   finishedAt: string | null;

@@ -11,7 +11,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -174,7 +174,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getSearchCutoffMs route`, async () => {
     const route = `indexes/${index.uid}/settings/search-cutoff-ms`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).getSearchCutoffMs(),
@@ -186,7 +186,7 @@ describe.each([
 
   test(`updateSearchCutoffMs route`, async () => {
     const route = `indexes/${index.uid}/settings/search-cutoff-ms`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateSearchCutoffMs(null),
@@ -198,7 +198,7 @@ describe.each([
 
   test(`resetSearchCutoffMs route`, async () => {
     const route = `indexes/${index.uid}/settings/search-cutoff-ms`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetSearchCutoffMs(),

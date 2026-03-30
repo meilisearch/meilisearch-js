@@ -1,7 +1,7 @@
-import { MeiliSearchError } from "./meilisearch-error.js";
+import { MeilisearchError } from "./meilisearch-error.js";
 
-export class MeiliSearchRequestError extends MeiliSearchError {
-  override name = "MeiliSearchRequestError";
+export class MeilisearchRequestError extends MeilisearchError {
+  override name = "MeilisearchRequestError";
 
   constructor(url: string, cause: unknown) {
     super(`Request to ${url} has failed`, { cause });

@@ -1,4 +1,4 @@
-import { Index, Meilisearch } from "../../../src/index.js";
+import { Index, Meilisearch } from "meilisearch";
 
 const client = new Meilisearch({
   host: "http://127.0.0.1:7700",

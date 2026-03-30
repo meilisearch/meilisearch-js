@@ -9,7 +9,7 @@ import {
 import {
   clearAllIndexes,
   config,
-  MeiliSearch,
+  Meilisearch,
 } from "./utils/meilisearch-test-utils.js";
 
 let fetchSpy: MockInstance<typeof fetch>;
@@ -25,7 +25,7 @@ afterAll(async () => {
 
 test(`Client handles host URL with domain and path, and adds trailing slash`, async () => {
   const customHost = `${config.host}/api`;
-  const client = new MeiliSearch({ host: customHost });
+  const client = new Meilisearch({ host: customHost });
 
   assert.strictEqual(client.config.host, customHost);
 

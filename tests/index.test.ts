@@ -4,7 +4,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
 } from "./utils/meilisearch-test-utils.js";
 
@@ -507,7 +507,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getStats route`, async () => {
     const route = `indexes/${indexPk.uid}/stats`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(indexPk.uid).getStats()).rejects.toHaveProperty(
       "message",
@@ -517,7 +517,7 @@ describe.each([
 
   test(`getRawInfo route`, async () => {
     const route = `indexes/${indexPk.uid}`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       "message",
@@ -525,13 +525,13 @@ describe.each([
     );
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       "name",
-      "MeiliSearchRequestError",
+      "MeilisearchRequestError",
     );
   });
 
   test(`getRawIndex route`, async () => {
     const route = `indexes/${indexPk.uid}`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getRawIndex(indexPk.uid)).rejects.toHaveProperty(
       "message",
@@ -539,13 +539,13 @@ describe.each([
     );
     await expect(client.getRawIndex(indexPk.uid)).rejects.toHaveProperty(
       "name",
-      "MeiliSearchRequestError",
+      "MeilisearchRequestError",
     );
   });
 
   test(`updateIndex route`, async () => {
     const route = `indexes/${indexPk.uid}`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       "message",
@@ -555,7 +555,7 @@ describe.each([
 
   test(`delete index route`, async () => {
     const route = `indexes/${indexPk.uid}`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(indexPk.uid).getRawInfo()).rejects.toHaveProperty(
       "message",

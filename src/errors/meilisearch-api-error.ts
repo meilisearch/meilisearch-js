@@ -1,12 +1,12 @@
-import type { MeiliSearchErrorResponse } from "../types/index.js";
-import { MeiliSearchError } from "./meilisearch-error.js";
+import type { MeilisearchErrorResponse } from "../types/index.js";
+import { MeilisearchError } from "./meilisearch-error.js";
 
-export class MeiliSearchApiError extends MeiliSearchError {
-  override name = "MeiliSearchApiError";
-  override cause?: MeiliSearchErrorResponse;
+export class MeilisearchApiError extends MeilisearchError {
+  override name = "MeilisearchApiError";
+  override cause?: MeilisearchErrorResponse;
   readonly response: Response;
 
-  constructor(response: Response, responseBody?: MeiliSearchErrorResponse) {
+  constructor(response: Response, responseBody?: MeilisearchErrorResponse) {
     super(
       responseBody?.message ?? `${response.status}: ${response.statusText}`,
     );
