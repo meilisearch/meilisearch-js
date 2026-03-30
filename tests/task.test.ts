@@ -7,7 +7,7 @@ import {
   config,
   dataset,
   getClient,
-  MeiliSearch,
+  Meilisearch,
 } from "./utils/meilisearch-test-utils.js";
 
 const index = {
@@ -756,7 +756,7 @@ describe.each([
 ])("Tests on task url construction", ({ host, trailing }) => {
   test(`on getTask route`, async () => {
     const route = `tasks/1`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
 
     await expect(client.tasks.getTask(1)).rejects.toHaveProperty(
@@ -767,7 +767,7 @@ describe.each([
 
   test(`on getTasks route`, async () => {
     const route = `tasks?indexUids=movies_test`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
 
     await expect(

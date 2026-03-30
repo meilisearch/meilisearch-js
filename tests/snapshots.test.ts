@@ -3,7 +3,7 @@ import { ErrorStatusCode } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
-  MeiliSearch,
+  Meilisearch,
   BAD_HOST,
   getClient,
 } from "./utils/meilisearch-test-utils.js";
@@ -57,7 +57,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`createSnapshot route`, async () => {
     const route = `snapshots`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
 
     await expect(client.createSnapshot()).rejects.toHaveProperty(

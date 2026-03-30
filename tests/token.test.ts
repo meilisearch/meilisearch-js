@@ -20,8 +20,8 @@ import {
 import { createHmac } from "node:crypto";
 import { generateTenantToken } from "../src/token.js";
 import {
-  MeiliSearch,
-  MeiliSearchApiError,
+  Meilisearch,
+  MeilisearchApiError,
   type TenantTokenHeader,
   type TokenClaims,
 } from "../src/index.js";
@@ -206,7 +206,7 @@ describe.each([{ permission: "Admin" }])(
         apiKeyUid: uid,
       });
 
-      const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
+      const searchClient = new Meilisearch({ host: HOST, apiKey: token });
 
       // search
       await expect(
@@ -227,7 +227,7 @@ describe.each([{ permission: "Admin" }])(
         apiKeyUid: uid,
       });
 
-      const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
+      const searchClient = new Meilisearch({ host: HOST, apiKey: token });
 
       // search
       await expect(searchClient.index(UID).search()).resolves.toBeDefined();
@@ -245,7 +245,7 @@ describe.each([{ permission: "Admin" }])(
       });
 
       const [_, payload] = token.split(".");
-      const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
+      const searchClient = new Meilisearch({ host: HOST, apiKey: token });
 
       expect((JSON.parse(decode64(payload)) as TokenClaims).exp).toEqual(
         Math.floor(date.getTime() / 1000),
@@ -267,11 +267,11 @@ describe.each([{ permission: "Admin" }])(
         expiresAt: date,
       });
 
-      const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
+      const searchClient = new Meilisearch({ host: HOST, apiKey: token });
 
       await assert.rejects(
         searchClient.index(UID).search(),
-        MeiliSearchApiError,
+        MeilisearchApiError,
         /^Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
       );
     });
@@ -286,7 +286,7 @@ describe.each([{ permission: "Admin" }])(
         searchRules: { [UID]: null },
       });
 
-      const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
+      const searchClient = new Meilisearch({ host: HOST, apiKey: token });
 
       // search
       await expect(
@@ -310,7 +310,7 @@ describe.each([{ permission: "Admin" }])(
         searchRules: { [UID]: { filter: "id = 2" } },
       });
 
-      const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
+      const searchClient = new Meilisearch({ host: HOST, apiKey: token });
 
       // search
       await expect(
@@ -328,7 +328,7 @@ describe.each([{ permission: "Admin" }])(
         searchRules: [],
       });
 
-      const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
+      const searchClient = new Meilisearch({ host: HOST, apiKey: token });
 
       // search
       await expect(
@@ -346,7 +346,7 @@ describe.each([{ permission: "Admin" }])(
         searchRules: { misc: null },
       });
 
-      const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
+      const searchClient = new Meilisearch({ host: HOST, apiKey: token });
 
       // search
       await expect(
@@ -369,11 +369,11 @@ describe.each([{ permission: "Admin" }])(
         expiresAt: date,
       });
 
-      const searchClient = new MeiliSearch({ host: HOST, apiKey: token });
+      const searchClient = new Meilisearch({ host: HOST, apiKey: token });
 
       await assert.rejects(
         searchClient.index(UID).search(),
-        MeiliSearchApiError,
+        MeilisearchApiError,
         /^Tenant token expired\. Was valid up to `\d+` and we're now `\d+`\.$/,
       );
     });

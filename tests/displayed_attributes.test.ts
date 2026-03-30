@@ -4,7 +4,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -148,7 +148,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getDisplayedAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/displayed-attributes`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).getDisplayedAttributes(),
@@ -160,7 +160,7 @@ describe.each([
 
   test(`updateDisplayedAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/displayed-attributes`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateDisplayedAttributes([]),
@@ -172,7 +172,7 @@ describe.each([
 
   test(`resetDisplayedAttributes route`, async () => {
     const route = `indexes/${index.uid}/settings/displayed-attributes`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetDisplayedAttributes(),

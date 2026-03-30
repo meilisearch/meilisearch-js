@@ -4,7 +4,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
 } from "./utils/meilisearch-test-utils.js";
 
@@ -301,7 +301,7 @@ describe.each([
 ])("Tests on url construction for fields endpoint", ({ host, trailing }) => {
   test(`getFields route construction`, async () => {
     const route = `indexes/${index.uid}/fields`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).getFields()).rejects.toHaveProperty(
       "message",

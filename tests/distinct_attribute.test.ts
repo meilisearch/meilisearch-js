@@ -4,7 +4,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -142,7 +142,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getDistinctAttribute route`, async () => {
     const route = `indexes/${index.uid}/settings/distinct-attribute`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).getDistinctAttribute(),
@@ -154,7 +154,7 @@ describe.each([
 
   test(`updateDistinctAttribute route`, async () => {
     const route = `indexes/${index.uid}/settings/distinct-attribute`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateDistinctAttribute("a"),
@@ -166,7 +166,7 @@ describe.each([
 
   test(`resetDistinctAttribute route`, async () => {
     const route = `indexes/${index.uid}/settings/distinct-attribute`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetDistinctAttribute(),

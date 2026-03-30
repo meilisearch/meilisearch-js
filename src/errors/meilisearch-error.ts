@@ -1,3 +1,3 @@
-export class MeiliSearchError extends Error {
-  override name = "MeiliSearchError";
+export class MeilisearchError extends Error {
+  override name = "MeilisearchError";
 }

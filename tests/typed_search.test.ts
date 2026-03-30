@@ -11,7 +11,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   datasetWithNests,
 } from "./utils/meilisearch-test-utils.js";
@@ -487,7 +487,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`get search route`, async () => {
     const route = `indexes/${index.uid}/search`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index<Movie>(index.uid).search(),
@@ -499,7 +499,7 @@ describe.each([
 
   test(`post search route`, async () => {
     const route = `indexes/${index.uid}/search`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index<Movie>(index.uid).search(),

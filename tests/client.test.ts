@@ -15,7 +15,7 @@ import type {
   IndexSwap,
   InitializeNetworkOptions,
 } from "../src/index.js";
-import { ErrorStatusCode, MeiliSearchRequestError } from "../src/index.js";
+import { ErrorStatusCode, MeilisearchRequestError } from "../src/index.js";
 import { HttpRequests } from "../src/http-requests.js";
 import pkg from "../package.json" with { type: "json" };
 import {
@@ -23,7 +23,7 @@ import {
   getKey,
   getClient,
   config,
-  MeiliSearch,
+  Meilisearch,
   BAD_HOST,
   HOST,
   assert,
@@ -60,7 +60,7 @@ describe.each([
 
   test(`${permission} key: Create client with api key`, async () => {
     const key = await getKey(permission);
-    const client = new MeiliSearch({
+    const client = new Meilisearch({
       ...config,
       apiKey: key,
     });
@@ -79,7 +79,7 @@ describe.each([
 
     test(`${permission} key: Create client with custom headers (object)`, async () => {
       const key = await getKey(permission);
-      const client = new MeiliSearch({
+      const client = new Meilisearch({
         ...config,
         apiKey: key,
         requestInit: {
@@ -108,7 +108,7 @@ describe.each([
 
     test(`${permission} key: Create client with custom headers (array)`, async () => {
       const key = await getKey(permission);
-      const client = new MeiliSearch({
+      const client = new Meilisearch({
         ...config,
         apiKey: key,
         requestInit: {
@@ -133,7 +133,7 @@ describe.each([
       const key = await getKey(permission);
       const headers = new Headers();
       headers.set("Hello-There!", "General Kenobi");
-      const client = new MeiliSearch({
+      const client = new Meilisearch({
         ...config,
         apiKey: key,
         requestInit: { headers },
@@ -156,14 +156,14 @@ describe.each([
   test(`${permission} key: No double slash when on host with domain and path and trailing slash`, async () => {
     const key = await getKey(permission);
     const customHost = `${BAD_HOST}/api/`;
-    const client = new MeiliSearch({
+    const client = new Meilisearch({
       host: customHost,
       apiKey: key,
     });
 
     await assert.rejects(
       client.health(),
-      MeiliSearchRequestError,
+      MeilisearchRequestError,
       `Request to ${BAD_HOST}/api/health has failed`,
     );
   });
@@ -171,14 +171,14 @@ describe.each([
   test(`${permission} key: No double slash when on host with domain and path and no trailing slash`, async () => {
     const key = await getKey(permission);
     const customHost = `${BAD_HOST}/api`;
-    const client = new MeiliSearch({
+    const client = new Meilisearch({
       host: customHost,
       apiKey: key,
     });
 
     await assert.rejects(
       client.health(),
-      MeiliSearchRequestError,
+      MeilisearchRequestError,
       `Request to ${BAD_HOST}/api/health has failed`,
     );
   });
@@ -186,14 +186,14 @@ describe.each([
   test(`${permission} key: host with double slash should keep double slash`, async () => {
     const key = await getKey(permission);
     const customHost = `${BAD_HOST}//`;
-    const client = new MeiliSearch({
+    const client = new Meilisearch({
       host: customHost,
       apiKey: key,
     });
 
     await assert.rejects(
       client.health(),
-      MeiliSearchRequestError,
+      MeilisearchRequestError,
       `Request to ${BAD_HOST}//health has failed`,
     );
   });
@@ -201,40 +201,40 @@ describe.each([
   test(`${permission} key: host with one slash should not double slash`, async () => {
     const key = await getKey(permission);
     const customHost = `${BAD_HOST}/`;
-    const client = new MeiliSearch({
+    const client = new Meilisearch({
       host: customHost,
       apiKey: key,
     });
 
     await assert.rejects(
       client.health(),
-      MeiliSearchRequestError,
+      MeilisearchRequestError,
       `Request to ${BAD_HOST}/health has failed`,
     );
   });
 
   test(`${permission} key: bad host raise CommunicationError`, async () => {
-    const client = new MeiliSearch({ host: "http://localhost:9345" });
-    await assert.rejects(client.health(), MeiliSearchRequestError);
+    const client = new Meilisearch({ host: "http://localhost:9345" });
+    await assert.rejects(client.health(), MeilisearchRequestError);
   });
 
   test(`${permission} key: host without HTTP should not throw Invalid URL Error`, () => {
     const strippedHost = HOST.replace("http://", "");
     expect(() => {
-      new MeiliSearch({ host: strippedHost });
+      new Meilisearch({ host: strippedHost });
     }).not.toThrow("The provided host is not valid.");
   });
 
   test(`${permission} key: host without HTTP and port should not throw Invalid URL Error`, () => {
     const strippedHost = HOST.replace("http://", "").replace(":7700", "");
     expect(() => {
-      new MeiliSearch({ host: strippedHost });
+      new Meilisearch({ host: strippedHost });
     }).not.toThrow("The provided host is not valid.");
   });
 
   test(`${permission} key: Empty string host should throw an error`, () => {
     expect(() => {
-      new MeiliSearch({ host: "" });
+      new Meilisearch({ host: "" });
     }).toThrow("The provided host is not valid");
   });
 });
@@ -248,7 +248,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Create client with custom headers`, async () => {
       const key = await getKey(permission);
-      const client = new MeiliSearch({
+      const client = new Meilisearch({
         ...config,
         apiKey: key,
         requestInit: {
@@ -273,7 +273,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
     test(`${permission} key: Create client with custom http client`, async () => {
       const key = await getKey(permission);
-      const client = new MeiliSearch({
+      const client = new Meilisearch({
         ...config,
         apiKey: key,
         async httpClient(...params: Parameters<typeof fetch>) {
@@ -310,7 +310,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       test(`${permission} key: Create client with no custom client agents`, async () => {
         const key = await getKey(permission);
-        const client = new MeiliSearch({
+        const client = new Meilisearch({
           ...config,
           apiKey: key,
           requestInit: {
@@ -333,7 +333,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       test(`${permission} key: Create client with empty custom client agents`, async () => {
         const key = await getKey(permission);
-        const client = new MeiliSearch({
+        const client = new Meilisearch({
           ...config,
           apiKey: key,
           clientAgents: [],
@@ -354,7 +354,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       test(`${permission} key: Create client with custom client agents`, async () => {
         const key = await getKey(permission);
-        const client = new MeiliSearch({
+        const client = new Meilisearch({
           ...config,
           apiKey: key,
           clientAgents: ["random plugin 1", "random plugin 2"],
@@ -621,7 +621,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       });
 
       test(`${permission} key: is healthy return false on bad host`, async () => {
-        const client = new MeiliSearch({ host: "http://localhost:9345" });
+        const client = new Meilisearch({ host: "http://localhost:9345" });
         const response: boolean = await client.isHealthy();
         expect(response).toBe(false);
       });
@@ -819,7 +819,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getIndex route`, async () => {
     const route = `indexes/${indexPk.uid}`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getIndex(indexPk.uid)).rejects.toHaveProperty(
       "message",
@@ -829,7 +829,7 @@ describe.each([
 
   test(`createIndex route`, async () => {
     const route = `indexes`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.createIndex(indexPk.uid)).rejects.toHaveProperty(
       "message",
@@ -839,7 +839,7 @@ describe.each([
 
   test(`updateIndex route`, async () => {
     const route = `indexes/${indexPk.uid}`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.updateIndex(indexPk.uid)).rejects.toHaveProperty(
       "message",
@@ -849,7 +849,7 @@ describe.each([
 
   test(`deleteIndex route`, async () => {
     const route = `indexes/${indexPk.uid}`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.deleteIndex(indexPk.uid)).rejects.toHaveProperty(
       "message",
@@ -859,7 +859,7 @@ describe.each([
 
   test(`get indexes route`, async () => {
     const route = `indexes`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getIndexes()).rejects.toHaveProperty(
       "message",
@@ -869,7 +869,7 @@ describe.each([
 
   test(`getKeys route`, async () => {
     const route = `keys`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getKeys()).rejects.toHaveProperty(
       "message",
@@ -879,7 +879,7 @@ describe.each([
 
   test(`health route`, async () => {
     const route = `health`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.health()).rejects.toHaveProperty(
       "message",
@@ -889,7 +889,7 @@ describe.each([
 
   test(`stats route`, async () => {
     const route = `stats`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getStats()).rejects.toHaveProperty(
       "message",
@@ -899,7 +899,7 @@ describe.each([
 
   test(`version route`, async () => {
     const route = `version`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.getVersion()).rejects.toHaveProperty(
       "message",

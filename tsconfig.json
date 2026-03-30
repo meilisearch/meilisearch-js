@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    // We don't want to check node_modules
     "skipLibCheck": true,
-    "module": "node18",
-    // Node.js 20 at https://node.green/#ES2023
+    "module": "node20",
     "target": "es2023",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "resolveJsonModule": true,

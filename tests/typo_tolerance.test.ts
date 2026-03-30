@@ -4,7 +4,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -149,7 +149,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`get typo tolerance route`, async () => {
     const route = `indexes/${index.uid}/settings/typo-tolerance`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).getTypoTolerance(),
@@ -161,7 +161,7 @@ describe.each([
 
   test(`update typo tolerance route`, async () => {
     const route = `indexes/${index.uid}/settings/typo-tolerance`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateTypoTolerance({}),
@@ -173,7 +173,7 @@ describe.each([
 
   test(`reset typo tolerance route`, async () => {
     const route = `indexes/${index.uid}/settings/typo-tolerance`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetTypoTolerance(),

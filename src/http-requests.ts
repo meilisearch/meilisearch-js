@@ -4,14 +4,14 @@ import type {
   RequestOptions,
   MainRequestOptions,
   URLSearchParamsRecord,
-  MeiliSearchErrorResponse,
+  MeilisearchErrorResponse,
 } from "./types/index.js";
 import pkg from "../package.json" with { type: "json" };
 import {
-  MeiliSearchError,
-  MeiliSearchApiError,
-  MeiliSearchRequestError,
-  MeiliSearchRequestTimeOutError,
+  MeilisearchError,
+  MeilisearchApiError,
+  MeilisearchRequestError,
+  MeilisearchRequestTimeOutError,
 } from "./errors/index.js";
 import { addProtocolIfNotPresent, addTrailingSlash } from "./utils.js";
 
@@ -148,7 +148,7 @@ export class HttpRequests {
     try {
       this.#url = new URL(host);
     } catch (error) {
-      throw new MeiliSearchError("The provided host is not valid", {
+      throw new MeilisearchError("The provided host is not valid", {
         cause: error,
       });
     }
@@ -248,10 +248,10 @@ export class HttpRequests {
       response = await fetch(url, init);
       responseBody = await response.text();
     } catch (error) {
-      throw new MeiliSearchRequestError(
+      throw new MeilisearchRequestError(
         url.toString(),
         Object.is(error, TIMEOUT_ID)
-          ? new MeiliSearchRequestTimeOutError(this.#requestTimeout!, init)
+          ? new MeilisearchRequestTimeOutError(this.#requestTimeout!, init)
           : error,
       );
     } finally {
@@ -261,12 +261,12 @@ export class HttpRequests {
     const parsedResponse =
       responseBody === ""
         ? undefined
-        : (JSON.parse(responseBody) as T | MeiliSearchErrorResponse);
+        : (JSON.parse(responseBody) as T | MeilisearchErrorResponse);
 
     if (!response.ok) {
-      throw new MeiliSearchApiError(
+      throw new MeilisearchApiError(
         response,
-        parsedResponse as MeiliSearchErrorResponse | undefined,
+        parsedResponse as MeilisearchErrorResponse | undefined,
       );
     }
 
@@ -325,7 +325,7 @@ export class HttpRequests {
       if (this.#customRequestFn !== undefined) {
         const result = await this.#customRequestFn(url, init);
         if (!(result instanceof ReadableStream)) {
-          throw new MeiliSearchError(
+          throw new MeilisearchError(
             "Custom HTTP client must return a ReadableStream for streaming requests",
           );
         }
@@ -334,10 +334,10 @@ export class HttpRequests {
 
       response = await fetch(url, init);
     } catch (error) {
-      throw new MeiliSearchRequestError(
+      throw new MeilisearchRequestError(
         url.toString(),
         Object.is(error, TIMEOUT_ID)
-          ? new MeiliSearchRequestTimeOutError(this.#requestTimeout!, init)
+          ? new MeilisearchRequestTimeOutError(this.#requestTimeout!, init)
           : error,
       );
     } finally {
@@ -350,13 +350,13 @@ export class HttpRequests {
       const parsedResponse =
         responseBody === ""
           ? undefined
-          : (JSON.parse(responseBody) as MeiliSearchErrorResponse);
+          : (JSON.parse(responseBody) as MeilisearchErrorResponse);
 
-      throw new MeiliSearchApiError(response, parsedResponse);
+      throw new MeilisearchApiError(response, parsedResponse);
     }
 
     if (!response.body) {
-      throw new MeiliSearchError(
+      throw new MeilisearchError(
         "Response body is null - server did not return a readable stream",
       );
     }

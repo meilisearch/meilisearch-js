@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { getClient } from "./utils/meilisearch-test-utils.js";
 import type { Embedder } from "../src/types/types.js";
-import movies from "./fixtures/movies.json" assert { type: "json" };
+import movies from "./fixtures/movies.json" with { type: "json" };
 import type { Meilisearch } from "../src/index.js";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";

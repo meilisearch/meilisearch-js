@@ -4,7 +4,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -133,7 +133,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getFacetSearch route`, async () => {
     const route = `indexes/${index.uid}/settings/facet-search`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).getFacetSearch(),
@@ -145,7 +145,7 @@ describe.each([
 
   test(`updateFacetSearch route`, async () => {
     const route = `indexes/${index.uid}/settings/facet-search`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateFacetSearch(false),
@@ -157,7 +157,7 @@ describe.each([
 
   test(`resetFacetSearch route`, async () => {
     const route = `indexes/${index.uid}/settings/facet-search`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetFacetSearch(),

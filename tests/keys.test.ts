@@ -1,5 +1,5 @@
 import { expect, test, describe, beforeEach, afterAll } from "vitest";
-import { MeiliSearch } from "../src/index.js";
+import { Meilisearch } from "../src/index.js";
 import { ErrorStatusCode } from "../src/types/index.js";
 import {
   clearAllIndexes,
@@ -135,7 +135,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         expiresAt: null,
       });
 
-      const newClient = new MeiliSearch({ host: HOST, apiKey: key.key });
+      const newClient = new Meilisearch({ host: HOST, apiKey: key.key });
       await newClient.createIndex("wildcard_keys_permission"); // test index creation
       const task = await newClient
         .index("wildcard_keys_permission")

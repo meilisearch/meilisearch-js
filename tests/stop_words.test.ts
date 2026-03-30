@@ -4,7 +4,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -139,7 +139,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getStopWords route`, async () => {
     const route = `indexes/${index.uid}/settings/stop-words`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(client.index(index.uid).getStopWords()).rejects.toHaveProperty(
       "message",
@@ -149,7 +149,7 @@ describe.each([
 
   test(`updateStopWords route`, async () => {
     const route = `indexes/${index.uid}/settings/stop-words`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updateStopWords([]),
@@ -161,7 +161,7 @@ describe.each([
 
   test(`resetStopWords route`, async () => {
     const route = `indexes/${index.uid}/settings/stop-words`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetStopWords(),

@@ -853,7 +853,7 @@ export type Version = {
  ** ERROR HANDLER
  */
 
-export type MeiliSearchErrorResponse = {
+export type MeilisearchErrorResponse = {
   message: string;
   // https://www.meilisearch.com/docs/reference/errors/error_codes
   code: string;

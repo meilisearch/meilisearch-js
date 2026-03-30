@@ -11,7 +11,7 @@ import {
   clearAllIndexes,
   config,
   BAD_HOST,
-  MeiliSearch,
+  Meilisearch,
   getClient,
   dataset,
 } from "./utils/meilisearch-test-utils.js";
@@ -157,7 +157,7 @@ describe.each([
 ])("Tests on url construction", ({ host, trailing }) => {
   test(`getPagination route`, async () => {
     const route = `indexes/${index.uid}/settings/pagination`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).getPagination(),
@@ -169,7 +169,7 @@ describe.each([
 
   test(`updatePagination route`, async () => {
     const route = `indexes/${index.uid}/settings/pagination`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).updatePagination({ maxTotalHits: null }),
@@ -181,7 +181,7 @@ describe.each([
 
   test(`resetPagination route`, async () => {
     const route = `indexes/${index.uid}/settings/pagination`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
     await expect(
       client.index(index.uid).resetPagination(),
