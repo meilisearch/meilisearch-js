@@ -38,8 +38,6 @@ swap_indexes_1: |-
     { 'indexes': ['indexA', 'indexB'] },
     { 'indexes': ['indexX', 'indexY'] }
   ])
-rename_an_index_1: |-
-  client.updateIndex('movies', { uid: 'films' })
 get_one_document_1: |-
   client
       .index('movies')
@@ -280,13 +278,6 @@ get_version_1: |-
   client.getVersion()
 distinct_attribute_guide_1: |-
   client.index('jackets').updateDistinctAttribute('product_id')
-field_properties_guide_searchable_1: |-
-  client.index('movies').updateSearchableAttributes([
-      'title',
-      'overview',
-      'genres',
-    ]
-  )
 field_properties_guide_displayed_1: |-
   client.index('movies').updateDisplayedAttributes([
       'title',
@@ -553,8 +544,6 @@ facet_search_3: |-
     facetQuery: 'c',
     facetName: 'genres'
   })
-search_parameter_guide_show_ranking_score_details_1: |-
-  client.index('movies').search('dragon', { showRankingScoreDetails: true })
 get_similar_post_1: |-
   client.index('INDEX_NAME').searchSimilarDocuments({ id: 'TARGET_DOCUMENT_ID', embedder: 'default' })
 distinct_attribute_guide_filterable_1: |-
