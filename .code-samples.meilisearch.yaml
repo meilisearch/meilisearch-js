@@ -617,3 +617,16 @@ update_network_1: |-
       }
     }
   })
+list_dynamic_search_rules_1: |-
+  client.getDynamicSearchRules()
+get_dynamic_search_rule_1: |-
+  client.getDynamicSearchRule('RULE_UID')
+patch_dynamic_search_rule_1: |-
+  client.updateDynamicSearchRule('RULE_UID', {
+    actions: [{
+      selector: { indexUid: 'movies', id: '299537' },
+      action: { type: 'pin', position: 0 }
+    }]
+  })
+delete_dynamic_search_rule_1: |-
+  client.deleteDynamicSearchRule('RULE_UID')
