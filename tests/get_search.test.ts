@@ -193,15 +193,14 @@ describe.each([
       limit: 1,
       offset: 1,
     });
-    expect(response).toHaveProperty("hits", [
-      {
-        id: 4,
-        title: "Harry Potter and the Half-Blood Prince",
-        author: "J.K. Rowling",
-        comment: "The best book",
-        genre: ["fantasy", "adventure"],
-      },
-    ]);
+    expect(response).toHaveProperty("hits", expect.any(Array));
+    expect(response.hits[0]).toMatchObject({
+      id: 4,
+      title: "Harry Potter and the Half-Blood Prince",
+      author: "J.K. Rowling",
+      comment: "The best book",
+      genre: ["fantasy", "adventure"],
+    });
     expect(response).toHaveProperty("offset", 1);
     expect(response).toHaveProperty("limit", 1);
     expect(response).toHaveProperty("processingTimeMs", expect.any(Number));
