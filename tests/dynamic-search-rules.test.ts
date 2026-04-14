@@ -1,12 +1,12 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { getClient } from "./utils/meilisearch-test-utils.js";
-import { Meilisearch } from "../src/index.js";
+import { Meilisearch, type DynamicSearchRuleUpdate } from "../src/index.js";
 
 let adminClient: Meilisearch;
 let masterClient: Meilisearch;
 
 const DYNAMIC_SEARCH_RULE_UID = "movie-rule";
-const DYNAMIC_SEARCH_RULE_PATCH = {
+const DYNAMIC_SEARCH_RULE_PATCH: DynamicSearchRuleUpdate = {
   actions: [
     {
       selector: {
@@ -19,7 +19,7 @@ const DYNAMIC_SEARCH_RULE_PATCH = {
       },
     },
   ],
-} as const;
+};
 
 beforeAll(async () => {
   adminClient = await getClient("Admin");
