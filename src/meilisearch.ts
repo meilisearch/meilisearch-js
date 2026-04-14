@@ -30,6 +30,9 @@ import type {
   RecordAny,
   RuntimeTogglableFeatures,
   ResourceResults,
+  DynamicSearchRule,
+  DynamicSearchRuleUpdate,
+  DynamicSearchRulesQuery,
   Remote,
   Webhook,
   ResultsWrapper,
@@ -309,6 +312,64 @@ export class Meilisearch {
     return await this.httpRequest.get({
       path: "chats",
     });
+  }
+
+  ///
+  /// DYNAMIC SEARCH RULES
+  ///
+
+  /**
+   * Get all dynamic search rules
+   *
+   * @param parameters - Parameters to browse dynamic search rules
+   * @returns Promise returning an object with dynamic search rules
+   */
+  async getDynamicSearchRules(
+    parameters?: DynamicSearchRulesQuery,
+  ): Promise<ResourceResults<DynamicSearchRule[]>> {
+    return await this.httpRequest.post({
+      path: "dynamic-search-rules",
+      body: parameters ?? {},
+    });
+  }
+
+  /**
+   * Get a dynamic search rule
+   *
+   * @param uid - Dynamic search rule UID
+   * @returns Promise returning the dynamic search rule
+   */
+  async getDynamicSearchRule(uid: string): Promise<DynamicSearchRule> {
+    return await this.httpRequest.get({
+      path: `dynamic-search-rules/${uid}`,
+    });
+  }
+
+  /**
+   * Update a dynamic search rule
+   *
+   * @param uid - Dynamic search rule UID
+   * @param rule - Dynamic search rule to update
+   * @returns Promise returning the updated dynamic search rule
+   */
+  async updateDynamicSearchRule(
+    uid: string,
+    rule: DynamicSearchRuleUpdate,
+  ): Promise<DynamicSearchRule> {
+    return await this.httpRequest.patch({
+      path: `dynamic-search-rules/${uid}`,
+      body: rule,
+    });
+  }
+
+  /**
+   * Delete a dynamic search rule
+   *
+   * @param uid - Dynamic search rule UID
+   * @returns Promise returning void
+   */
+  async deleteDynamicSearchRule(uid: string): Promise<void> {
+    await this.httpRequest.delete({ path: `dynamic-search-rules/${uid}` });
   }
 
   ///

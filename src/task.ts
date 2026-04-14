@@ -104,9 +104,7 @@ export class TaskClient {
     const ac = timeout > 0 ? new AbortController() : null;
 
     const toId =
-      ac !== null
-        ? setTimeout(() => void ac.abort(TIMEOUT_ID), timeout)
-        : undefined;
+      ac !== null ? setTimeout(() => ac.abort(TIMEOUT_ID), timeout) : undefined;
 
     try {
       for (;;) {
