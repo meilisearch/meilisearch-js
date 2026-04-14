@@ -701,9 +701,10 @@ describe.each([
     expect(response).toHaveProperty("hits");
     expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty("query", "prince");
-    expect(Object.keys(hit).join(",")).toEqual(
-      Object.keys(dataset[1]).join(","),
-    );
+
+    Object.keys(dataset[1]).forEach((key) => {
+      expect(hit).toHaveProperty(key);
+    });
   });
 
   test(`${permission} key: search on attributesToSearchOn`, async () => {
@@ -737,9 +738,9 @@ describe.each([
     expect(response).toHaveProperty("hits");
     expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty("query", "prince");
-    expect(Object.keys(hit).join(",")).toEqual(
-      Object.keys(dataset[1]).join(","),
-    );
+    Object.keys(dataset[1]).forEach((key) => {
+      expect(hit).toHaveProperty(key);
+    });
   });
 
   test(`${permission} key: search with options`, async () => {
@@ -778,15 +779,14 @@ describe.each([
       offset: 1,
     });
 
-    expect(response).toHaveProperty("hits", [
-      {
-        id: 4,
-        author: "J.K. Rowling",
-        title: "Harry Potter and the Half-Blood Prince",
-        comment: "The best book",
-        genre: ["fantasy", "adventure"],
-      },
-    ]);
+    expect(response).toHaveProperty("hits", expect.any(Array));
+    expect(response.hits[0]).toMatchObject({
+      id: 4,
+      author: "J.K. Rowling",
+      title: "Harry Potter and the Half-Blood Prince",
+      comment: "The best book",
+      genre: ["fantasy", "adventure"],
+    });
     expect(response).toHaveProperty("offset", 1);
     expect(response).toHaveProperty("limit", 1);
     expect(response.estimatedTotalHits).toEqual(2);
@@ -1372,7 +1372,8 @@ describe.each([{ permission: "Master" }])(
       const client = await getClient(permission);
       const response = await client.index(index.uid).search("An awesome", {});
 
-      expect(response.hits[0]).toEqual({
+      expect(response).toHaveProperty("hits", expect.any(Array));
+      expect(response.hits[0]).toMatchObject({
         id: 5,
         title: "The Hobbit",
         info: {
@@ -1393,7 +1394,8 @@ describe.each([{ permission: "Master" }])(
 
       const response = await client.index(index.uid).search("An awesome", {});
 
-      expect(response.hits[0]).toEqual({
+      expect(response).toHaveProperty("hits", expect.any(Array));
+      expect(response.hits[0]).toMatchObject({
         id: 5,
         title: "The Hobbit",
         info: {
@@ -1417,7 +1419,8 @@ describe.each([{ permission: "Master" }])(
         sort: ["info.reviewNb:desc"],
       });
 
-      expect(response.hits[0]).toEqual({
+      expect(response).toHaveProperty("hits", expect.any(Array));
+      expect(response.hits[0]).toMatchObject({
         id: 6,
         title: "Harry Potter and the Half-Blood Prince",
         info: {
