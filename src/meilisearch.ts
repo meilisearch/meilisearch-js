@@ -30,9 +30,9 @@ import type {
   RecordAny,
   RuntimeTogglableFeatures,
   ResourceResults,
-  DynamicSearchRule,
-  DynamicSearchRuleUpdate,
-  DynamicSearchRulesQuery,
+  SearchRule,
+  SearchRuleUpdatePayload,
+  SearchRuleListPayload,
   Remote,
   Webhook,
   ResultsWrapper,
@@ -325,8 +325,8 @@ export class Meilisearch {
    * @returns Promise returning an object with dynamic search rules
    */
   async getDynamicSearchRules(
-    parameters?: DynamicSearchRulesQuery,
-  ): Promise<ResourceResults<DynamicSearchRule[]>> {
+    parameters?: SearchRuleListPayload,
+  ): Promise<ResourceResults<SearchRule[]>> {
     return await this.httpRequest.post({
       path: "dynamic-search-rules",
       body: parameters ?? {},
@@ -339,7 +339,7 @@ export class Meilisearch {
    * @param uid - Dynamic search rule UID
    * @returns Promise returning the dynamic search rule
    */
-  async getDynamicSearchRule(uid: string): Promise<DynamicSearchRule> {
+  async getDynamicSearchRule(uid: string): Promise<SearchRule> {
     return await this.httpRequest.get({
       path: `dynamic-search-rules/${uid}`,
     });
@@ -354,8 +354,8 @@ export class Meilisearch {
    */
   async updateDynamicSearchRule(
     uid: string,
-    rule: DynamicSearchRuleUpdate,
-  ): Promise<DynamicSearchRule> {
+    rule: SearchRuleUpdatePayload,
+  ): Promise<SearchRule> {
     return await this.httpRequest.patch({
       path: `dynamic-search-rules/${uid}`,
       body: rule,
