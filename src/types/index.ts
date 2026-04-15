@@ -1,5 +1,5 @@
 export * from "./experimental-features.js";
-export * from "./dynamic-search-rules.js";
+export * from "./search-rules.js";
 export * from "./fields.js";
 export * from "./network.js";
 export * from "./task-and-batch.js";
