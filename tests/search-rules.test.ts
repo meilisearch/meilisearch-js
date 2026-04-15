@@ -24,10 +24,9 @@ const SEARCH_RULE_PATCH: SearchRuleUpdatePayload = {
 beforeAll(async () => {
   adminClient = await getClient("Admin");
   masterClient = await getClient("Master");
-  const dynamicSearchRulesFeature = {
+  await masterClient.updateExperimentalFeatures({
     dynamicSearchRules: true,
-  } as unknown as Parameters<Meilisearch["updateExperimentalFeatures"]>[0];
-  await masterClient.updateExperimentalFeatures(dynamicSearchRulesFeature);
+  });
 });
 
 afterAll(async () => {
