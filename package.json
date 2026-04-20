@@ -17,14 +17,21 @@
   ],
   "license": "MIT",
   "type": "module",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": "./src/index.ts",
     "./*": "./src/*.ts"
   },
   "publishConfig": {
     "exports": {
-      ".": "./dist/index.js",
-      "./token": "./dist/token.js",
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./token": {
+        "types": "./dist/token.d.ts",
+        "default": "./dist/token.js"
+      },
       "./package.json": "./package.json"
     }
   },
