@@ -278,6 +278,11 @@ export class HttpRequests {
     return this.#request<T>(options);
   }
 
+  /** Request with GET that returns a stream. */
+  getStream(options: RequestOptions): Promise<ReadableStream<Uint8Array>> {
+    return this.#requestStream(options);
+  }
+
   /** Request with POST. */
   post<T = unknown>(options: RequestOptions): Promise<T> {
     return this.#request<T>({ ...options, method: "POST" });

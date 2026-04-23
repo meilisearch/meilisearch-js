@@ -104,6 +104,8 @@ get_all_tasks_1: |-
   client.tasks.getTasks()
 get_task_1: |-
   client.tasks.getTask(1)
+get_task_documents_1: |-
+  client.tasks.getTaskDocumentsStream(1)
 async_guide_multiple_filters_1: |-
   client.tasks.getTasks({
     indexUids: ['movies'],
