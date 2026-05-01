@@ -70,7 +70,7 @@
     "prettier-plugin-jsdoc": "^1.8.0",
     "typedoc": "^0.28.18",
     "typescript": "5.9.3",
-    "vite": "8.0.5",
+    "vite": "8.0.10",
     "vitest": "4.1.2"
   },
   "packageManager": "pnpm@10.32.1"
