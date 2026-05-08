@@ -24,7 +24,7 @@ jobs:
         run: |
           npm version ${{ env.NEW_VERSION }} --no-git-tag-version
       - name: Commit and push the changes to the ${{ env.NEW_BRANCH }} branch
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v10
         with:
           message: "Update version for the next release (v${{ env.NEW_VERSION }}) in package.json"
           new_branch: ${{ env.NEW_BRANCH }}

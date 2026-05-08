@@ -34,7 +34,7 @@ jobs:
 
       - name: Commit and push changes
         if: steps.bump.outputs.should_update == 'true'
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v10
         with:
           message: "Bump Meilisearch to ${{ steps.bump.outputs.target_tag }}"
           new_branch: ${{ steps.bump.outputs.new_branch }}
