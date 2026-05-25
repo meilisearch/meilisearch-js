@@ -75,24 +75,13 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(task.error).toBeNull();
     });
 
-    test(`${permission} key: Get task documents stream`, async () => {
+    test(`${permission} key: Get task documents`, async () => {
       const client = await getClient(permission);
       const enqueuedTask = await client.index(index.uid).addDocuments(dataset);
 
-      const stream = await client.tasks.getTaskDocumentsStream(
-        enqueuedTask.taskUid,
-      );
-      const rawDocuments = await new Response(stream).text();
-      const lines = rawDocuments
-        .trim()
-        .split(/\r?\n/)
-        .flatMap((line) => line.split(/(?<=})\s*(?=\{)/));
-      const documents = lines.map(
-        (line): { id: number | string } =>
-          JSON.parse(line) as {
-            id: number | string;
-          },
-      );
+      const documents = await client.tasks.getTaskDocuments<{
+        id: number | string;
+      }>(enqueuedTask.taskUid);
 
       expect(documents.length).toBeGreaterThan(0);
       expect(documents[0]).toHaveProperty("id");
@@ -749,7 +738,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const client = await getClient(permission);
 
       await expect(
-        client.tasks.getTaskDocumentsStream(254500),
+        client.tasks.getTaskDocuments(254500),
       ).rejects.toHaveProperty("cause.code", ErrorStatusCode.TASK_NOT_FOUND);
     });
   },
@@ -812,12 +801,12 @@ describe.each([
     );
   });
 
-  test(`on getTaskDocumentsStream route`, async () => {
+  test(`on getTaskDocuments route`, async () => {
     const route = `tasks/1/documents`;
-    const client = new MeiliSearch({ host });
+    const client = new Meilisearch({ host });
     const strippedHost = trailing ? host.slice(0, -1) : host;
 
-    await expect(client.tasks.getTaskDocumentsStream(1)).rejects.toHaveProperty(
+    await expect(client.tasks.getTaskDocuments(1)).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
