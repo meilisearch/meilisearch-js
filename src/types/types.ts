@@ -746,19 +746,29 @@ export type Health = {
  *** STATS
  */
 
+/** @see https://www.meilisearch.com/docs/reference/api/stats */
+export type StatsParams = {
+  /** When true, index stat objects include an `internalDatabaseSizes` map of internal DB names to their sizes. */
+  showInternalDatabaseSizes?: boolean;
+  /** When `"human"`, all size fields are returned as human-readable strings (e.g. `"2.3 MiB"`); defaults to `"raw"` (numeric bytes). */
+  sizeFormat?: "raw" | "human";
+};
+
 export type IndexStats = {
   numberOfDocuments: number;
   isIndexing: boolean;
   fieldDistribution: FieldDistribution;
   numberOfEmbeddedDocuments: number;
   numberOfEmbeddings: number;
-  rawDocumentDbSize: number;
-  avgDocumentSize: number;
+  rawDocumentDbSize: number | string;
+  avgDocumentSize: number | string;
+  /** Present only when `showInternalDatabaseSizes` is `true`. Keys are subject to change. */
+  internalDatabaseSizes?: Record<string, number | string>;
 };
 
 export type Stats = {
-  databaseSize: number;
-  usedDatabaseSize: number;
+  databaseSize: number | string;
+  usedDatabaseSize: number | string;
   lastUpdate: string;
   indexes: {
     [index: string]: IndexStats;
