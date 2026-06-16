@@ -31,6 +31,9 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
   ({ permission }) => {
     beforeEach(async () => {
       const client = await getClient("Master");
+      await client.updateExperimentalFeatures({
+        getTaskDocumentsRoute: true,
+      });
       await client.createIndex(index.uid).waitTask();
     });
 
@@ -70,6 +73,18 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(task.startedAt).toBeDefined();
       expect(task.startedAt).toBeTypeOf("string");
       expect(task.error).toBeNull();
+    });
+
+    test(`${permission} key: Get task documents`, async () => {
+      const client = await getClient(permission);
+      const enqueuedTask = await client.index(index.uid).addDocuments(dataset);
+
+      const documents = await client.tasks.getTaskDocuments<{
+        id: number | string;
+      }>(enqueuedTask.taskUid);
+
+      expect(documents.length).toBeGreaterThan(0);
+      expect(documents[0]).toHaveProperty("id");
     });
 
     // get tasks
@@ -718,6 +733,14 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         ErrorStatusCode.TASK_NOT_FOUND,
       );
     });
+
+    test(`${permission} key: Try to get task documents for task that does not exist`, async () => {
+      const client = await getClient(permission);
+
+      await expect(
+        client.tasks.getTaskDocuments(254500),
+      ).rejects.toHaveProperty("cause.code", ErrorStatusCode.TASK_NOT_FOUND);
+    });
   },
 );
 
@@ -773,6 +796,17 @@ describe.each([
     await expect(
       client.tasks.getTasks({ indexUids: ["movies_test"] }),
     ).rejects.toHaveProperty(
+      "message",
+      `Request to ${strippedHost}/${route} has failed`,
+    );
+  });
+
+  test(`on getTaskDocuments route`, async () => {
+    const route = `tasks/1/documents`;
+    const client = new Meilisearch({ host });
+    const strippedHost = trailing ? host.slice(0, -1) : host;
+
+    await expect(client.tasks.getTaskDocuments(1)).rejects.toHaveProperty(
       "message",
       `Request to ${strippedHost}/${route} has failed`,
     );

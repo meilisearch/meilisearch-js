@@ -7,6 +7,7 @@ export type RuntimeTogglableFeatures = {
   chatCompletions?: boolean | null;
   compositeEmbedders?: boolean | null;
   containsFilter?: boolean | null;
+  dynamicSearchRules?: boolean | null;
   editDocumentsByFunction?: boolean | null;
   getTaskDocumentsRoute?: boolean | null;
   logsRoute?: boolean | null;

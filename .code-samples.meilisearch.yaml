@@ -104,6 +104,8 @@ get_all_tasks_1: |-
   client.tasks.getTasks()
 get_task_1: |-
   client.tasks.getTask(1)
+get_task_documents_1: |-
+  client.tasks.getTaskDocuments(1)
 async_guide_multiple_filters_1: |-
   client.tasks.getTasks({
     indexUids: ['movies'],
@@ -617,3 +619,16 @@ update_network_1: |-
       }
     }
   })
+list_dynamic_search_rules_1: |-
+  client.getDynamicSearchRules()
+get_dynamic_search_rule_1: |-
+  client.getDynamicSearchRule('RULE_UID')
+patch_dynamic_search_rule_1: |-
+  client.updateDynamicSearchRule('RULE_UID', {
+    actions: [{
+      selector: { indexUid: 'movies', id: '299537' },
+      action: { type: 'pin', position: 0 }
+    }]
+  })
+delete_dynamic_search_rule_1: |-
+  client.deleteDynamicSearchRule('RULE_UID')

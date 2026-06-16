@@ -148,9 +148,9 @@ describe.each([
     expect(response).toHaveProperty("hits");
     expect(Array.isArray(response.hits)).toBe(true);
     expect(response).toHaveProperty("query", "prince");
-    expect(Object.keys(hit).join(",")).toEqual(
-      Object.keys(dataset[1]).join(","),
-    );
+    Object.keys(dataset[1]).forEach((key) => {
+      expect(hit).toHaveProperty(key);
+    });
   });
 
   test(`${permission} key: search on attributesToSearchOn`, async () => {

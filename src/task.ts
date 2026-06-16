@@ -9,8 +9,10 @@ import type {
   EnqueuedTaskPromise,
   TaskUidOrEnqueuedTask,
   ExtraRequestInit,
+  RecordAny,
 } from "./types/index.js";
 import type { HttpRequests } from "./http-requests.js";
+import { parseTaskDocuments, readStreamAsText } from "./utils.js";
 
 /**
  * Used to identify whether an error is a timeout error in
@@ -84,6 +86,20 @@ export class TaskClient {
     return await this.#httpRequest.get({ path: "tasks", params });
   }
 
+  /** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/get-tasks-documents} */
+  async getTaskDocuments<D extends RecordAny = RecordAny>(
+    uid: number,
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<D[]> {
+    const stream = await this.#httpRequest.getStream({
+      path: `tasks/${uid}/documents`,
+      extraRequestInit,
+    });
+
+    const rawDocuments = await readStreamAsText(stream);
+    return parseTaskDocuments<D>(rawDocuments);
+  }
+
   /**
    * Wait for an enqueued task to be processed. This is done through polling
    * with {@link TaskClient.getTask}.
@@ -105,7 +121,9 @@ export class TaskClient {
 
     const toId =
       ac !== null
-        ? setTimeout(() => void ac.abort(TIMEOUT_ID), timeout)
+        ? setTimeout(() => {
+            ac.abort(TIMEOUT_ID);
+          }, timeout)
         : undefined;
 
     try {
