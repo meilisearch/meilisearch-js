@@ -212,6 +212,10 @@ export type HybridSearch = {
   semanticRatio?: number;
 };
 
+export type Personalize = {
+  userContext: string;
+};
+
 /**
  * Search request media binary data with explicit MIME
  *
@@ -262,6 +266,13 @@ export type SearchParams = Query &
     locales?: Locale[];
     media?: MediaPayload;
     showPerformanceDetails?: boolean;
+    /**
+     * Personalize search results for a given user context.
+     *
+     * @experimental Requires Meilisearch >= v1.47 with the personalization
+     *   feature enabled.
+     */
+    personalize?: Personalize;
   };
 
 // Search parameters for searches made with the GET method
