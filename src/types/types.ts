@@ -269,8 +269,8 @@ export type SearchParams = Query &
     /**
      * Personalize search results for a given user context.
      *
-     * @experimental Requires Meilisearch >= v1.47 with the personalization
-     *   feature enabled.
+     * Experimental; requires Meilisearch v1.47 or later with the
+     * personalization feature enabled.
      */
     personalize?: Personalize;
   };
