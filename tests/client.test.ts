@@ -1156,3 +1156,29 @@ describe.each([{ permission: "Master" }])(
     });
   },
 );
+
+describe("search request body", () => {
+  test("forwards personalize in the search request body", async () => {
+    const client = new Meilisearch(config);
+    const postSpy = vi
+      .spyOn(HttpRequests.prototype, "post")
+      .mockResolvedValue({ hits: [], query: "prince" });
+
+    try {
+      await client.index("books").search("prince", {
+        personalize: { userContext: "user-123" },
+      });
+
+      expect(postSpy).toHaveBeenCalledWith({
+        path: "indexes/books/search",
+        body: {
+          q: "prince",
+          personalize: { userContext: "user-123" },
+        },
+        extraRequestInit: undefined,
+      });
+    } finally {
+      postSpy.mockRestore();
+    }
+  });
+});
