@@ -711,6 +711,13 @@ export type LocalizedAttribute = {
 
 export type LocalizedAttributes = LocalizedAttribute[] | null;
 
+export type ForeignKey = {
+  foreignIndexUid: string;
+  fieldName: string;
+};
+
+export type ForeignKeys = ForeignKey[] | null;
+
 export type PrefixSearch = "indexingTime" | "disabled";
 
 export type Settings = {
@@ -732,6 +739,7 @@ export type Settings = {
   embedders?: Embedders;
   searchCutoffMs?: SearchCutoffMs;
   localizedAttributes?: LocalizedAttributes;
+  foreignKeys?: ForeignKeys;
 
   /**
    * Enable facet searching on all the filters of an index (requires Meilisearch
