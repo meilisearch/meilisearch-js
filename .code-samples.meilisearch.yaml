@@ -632,3 +632,14 @@ patch_dynamic_search_rule_1: |-
   })
 delete_dynamic_search_rule_1: |-
   client.deleteDynamicSearchRule('RULE_UID')
+post_render_template_1: |-
+  client.renderTemplate({
+    template: {
+      kind: 'inlineDocumentTemplate',
+      inline: 'An inline document template rendered on {{doc.id}}'
+    },
+    input: {
+      kind: 'inlineDocument',
+      inline: { id: 'this document' }
+    }
+  })

@@ -43,6 +43,8 @@ import type {
   RemoveRemoteOptions,
   UpdateNetworkOptions,
   ShardInitialization,
+  RenderTemplateParams,
+  RenderTemplateResponse,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -744,6 +746,31 @@ export class Meilisearch {
   createSnapshot(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.post({
       path: "snapshots",
+    });
+  }
+
+  ///
+  /// RENDER TEMPLATE
+  ///
+
+  /**
+   * Render a template by injecting the given input.
+   *
+   * This is an experimental feature. Enable the `renderRoute` experimental
+   * feature via {@link Meilisearch.updateExperimentalFeatures} before calling
+   * it.
+   *
+   * @param params - Template/fragment to render and the input to inject
+   * @returns Promise returning the unrendered template and the rendered result
+   * @experimental
+   * @see {@link https://www.meilisearch.com/docs/reference/api/template/render-documents-with-post}
+   */
+  async renderTemplate(
+    params: RenderTemplateParams,
+  ): Promise<RenderTemplateResponse> {
+    return await this.httpRequest.post<RenderTemplateResponse>({
+      path: "render-template",
+      body: params,
     });
   }
 

@@ -818,6 +818,43 @@ export type ChatSettingsPayload = {
 };
 
 /*
+ ** RENDER TEMPLATE
+ */
+
+/**
+ * Template/fragment or input to render. The `kind` field discriminates the
+ * source; the remaining fields depend on that kind.
+ *
+ * @see {@link https://www.meilisearch.com/docs/reference/api/template/render-documents-with-post}
+ */
+export type RenderTemplateSource = { kind: string } & RecordAny;
+
+/** @see {@link https://www.meilisearch.com/docs/reference/api/template/render-documents-with-post} */
+export type RenderTemplateParams = {
+  /** Template/fragment to fetch for rendering. */
+  template: RenderTemplateSource;
+  /**
+   * Input injected into the template to render the final string/JSON object. If
+   * `null` or missing, the template is not rendered.
+   */
+  input?: RenderTemplateSource | null;
+};
+
+/** @see {@link https://www.meilisearch.com/docs/reference/api/template/render-documents-with-post} */
+export type RenderTemplateResponse = {
+  /**
+   * Unrendered template or fragment, fetched in index or echoed back from the
+   * inline template in the request.
+   */
+  template: unknown;
+  /**
+   * Result of rendering the template by injecting the `input`. `null` if
+   * `input` was `null` or missing in the request.
+   */
+  rendered?: unknown;
+};
+
+/*
  ** Keys
  */
 
