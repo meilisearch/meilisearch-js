@@ -14,4 +14,5 @@ export type RuntimeTogglableFeatures = {
   metrics?: boolean | null;
   multimodal?: boolean | null;
   network?: boolean | null;
+  renderRoute?: boolean | null;
 };
