@@ -42,7 +42,7 @@
 
 Consult the [Meilisearch Documentation](https://www.meilisearch.com/docs/?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js) for guides, tutorials, and API reference materials on using Meilisearch.
 
-For detailed information about the `meilisearch-js` package, visit the [client library documentation](https://meilisearch.github.io/meilisearch-js/?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
+For detailed information about the `meilisearch` package, visit the [client library documentation](https://meilisearch.github.io/meilisearch-js/?utm_campaign=oss&utm_source=github&utm_medium=meilisearch-js).
 
 ## 🔧 Installation
 
