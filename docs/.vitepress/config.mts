@@ -10,7 +10,7 @@ export default defineConfig({
     nav: [
       { text: "Guide", link: "/" },
       { text: "API", link: "/api/" },
-      { text: "GitHub", link: "https://github.com/meilisearch/meilisearch-js" },
+      { text: "Documentation", link: "https://www.meilisearch.com/docs" },
     ],
     sidebar: [
       { text: "Guide", items: [{ text: "Introduction", link: "/" }] },
@@ -18,6 +18,8 @@ export default defineConfig({
     ],
     socialLinks: [
       { icon: "github", link: "https://github.com/meilisearch/meilisearch-js" },
+      { icon: "discord", link: "https://discord.gg/meilisearch" },
+      { icon: "twitter", link: "https://twitter.com/meilisearch" },
     ],
   },
 });
