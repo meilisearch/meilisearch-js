@@ -823,11 +823,22 @@ export type ChatSettingsPayload = {
 
 /**
  * Template/fragment or input to render. The `kind` field discriminates the
- * source; the remaining fields depend on that kind.
+ * source; the remaining fields depend on that kind (kept open via `RecordAny`
+ * since this route is experimental and its payload shape may change).
  *
  * @see {@link https://www.meilisearch.com/docs/reference/api/template/render-documents-with-post}
  */
-export type RenderTemplateSource = { kind: string } & RecordAny;
+export type RenderTemplateSource = {
+  kind:
+    | "documentTemplate"
+    | "indexDocument"
+    | "inlineDocumentTemplate"
+    | "inlineDocument"
+    | "inlineFragment"
+    | "searchFragment"
+    | "inlineSearch"
+    | "chatDocumentTemplate";
+} & RecordAny;
 
 /** @see {@link https://www.meilisearch.com/docs/reference/api/template/render-documents-with-post} */
 export type RenderTemplateParams = {
