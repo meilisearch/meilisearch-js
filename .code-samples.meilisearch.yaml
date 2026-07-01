@@ -439,6 +439,21 @@ update_pagination_settings_1: |-
   client.index('books').updateSettings({ pagination: { maxTotalHits: 100 }})
 reset_pagination_settings_1: |-
   client.index('books').resetPagination()
+get_foreign_keys_setting_1: |-
+  client.index('books').getForeignKeys()
+update_foreign_keys_setting_1: |-
+  client.index('books').updateForeignKeys([
+    {
+      foreignIndexUid: 'authors',
+      fieldName: 'author'
+    },
+    {
+      foreignIndexUid: 'authors',
+      fieldName: 'related_authors'
+    }
+  ])
+reset_foreign_keys_setting_1: |-
+  client.index('books').resetForeignKeys()
 get_faceting_settings_1: |-
   client.index('books').getFaceting()
 update_faceting_settings_1: |-

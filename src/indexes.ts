@@ -45,6 +45,8 @@ import type {
   SearchCutoffMs,
   SearchSimilarDocumentsParams,
   LocalizedAttributes,
+  ForeignKey,
+  ForeignKeys,
   UpdateDocumentsByFunctionOptions,
   TaskEnqueueOptions,
   ExtraRequestInit,
@@ -1323,6 +1325,45 @@ export class Index<T extends RecordAny = RecordAny> {
   resetLocalizedAttributes(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.uid}/settings/localized-attributes`,
+    });
+  }
+
+  ///
+  /// FOREIGN KEYS SETTINGS
+  ///
+
+  /**
+   * Get the foreign keys settings.
+   *
+   * @returns Promise containing an array of foreign key settings
+   */
+  async getForeignKeys(): Promise<ForeignKey[]> {
+    return await this.httpRequest.get<ForeignKey[]>({
+      path: `indexes/${this.uid}/settings/foreign-keys`,
+    });
+  }
+
+  /**
+   * Update the foreign keys settings.
+   *
+   * @param foreignKeys - Foreign keys array
+   * @returns Promise containing an EnqueuedTask
+   */
+  updateForeignKeys(foreignKeys: ForeignKeys): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.put({
+      path: `indexes/${this.uid}/settings/foreign-keys`,
+      body: foreignKeys,
+    });
+  }
+
+  /**
+   * Reset the foreign keys settings.
+   *
+   * @returns Promise containing an EnqueuedTask
+   */
+  resetForeignKeys(): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.delete({
+      path: `indexes/${this.uid}/settings/foreign-keys`,
     });
   }
 

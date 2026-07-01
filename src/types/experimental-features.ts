@@ -9,6 +9,7 @@ export type RuntimeTogglableFeatures = {
   containsFilter?: boolean | null;
   dynamicSearchRules?: boolean | null;
   editDocumentsByFunction?: boolean | null;
+  foreignKeys?: boolean | null;
   getTaskDocumentsRoute?: boolean | null;
   logsRoute?: boolean | null;
   metrics?: boolean | null;
