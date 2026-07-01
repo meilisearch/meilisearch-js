@@ -5,21 +5,19 @@ env:
   HUSKY: 0
   NODE_OPTIONS: "--trace-warnings"
 
-# Will only run for PRs and pushes to bump-meilisearch-v*
+# Will only run for PRs and pushes to pre-release-**
 on:
   pull_request:
     branches:
-      - "bump-meilisearch-v**"
-      - "pre-release-beta/**"
+      - "pre-release-**"
   push:
     branches:
-      - "bump-meilisearch-v**"
-      - "pre-release-beta/**"
+      - "pre-release-**"
 
 jobs:
   meilisearch-version:
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || startsWith(github.base_ref, 'bump-meilisearch-v') || startsWith(github.base_ref, 'pre-release-beta')
+    if: github.event_name != 'pull_request' || startsWith(github.base_ref, 'pre-release-')
     outputs:
       version: ${{ steps.grep-step.outputs.meilisearch_version }}
     steps:
@@ -31,7 +29,7 @@ jobs:
           echo "meilisearch_version=$MEILISEARCH_VERSION" >> $GITHUB_OUTPUT
   integration_tests:
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || startsWith(github.base_ref, 'bump-meilisearch-v') || startsWith(github.base_ref, 'pre-release-beta')
+    if: github.event_name != 'pull_request' || startsWith(github.base_ref, 'pre-release-')
     needs: ["meilisearch-version"]
     services:
       meilisearch:
