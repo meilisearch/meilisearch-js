@@ -43,7 +43,10 @@
   },
   "scripts": {
     "playground:javascript": "vite serve playgrounds/javascript --open",
-    "build:docs": "typedoc",
+    "docs:api": "typedoc",
+    "docs:dev": "pnpm docs:api && vitepress dev docs",
+    "docs:build": "pnpm docs:api && vitepress build docs",
+    "build:docs": "pnpm docs:build",
     "build": "vite build && tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest watch",
@@ -69,8 +72,11 @@
     "prettier": "^3.8.4",
     "prettier-plugin-jsdoc": "^1.8.1",
     "typedoc": "^0.28.18",
+    "typedoc-plugin-markdown": "^4.12.0",
+    "typedoc-vitepress-theme": "^1.1.3",
     "typescript": "5.9.3",
     "vite": "8.0.16",
+    "vitepress": "^1.6.4",
     "vitest": "4.1.2"
   },
   "packageManager": "pnpm@10.32.1"

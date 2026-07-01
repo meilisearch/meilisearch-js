@@ -1,8 +1,16 @@
 {
   "name": "Meilisearch JS",
-  "entryPoints": ["./src"],
-  "out": "./docs",
-  "customCss": "./typedoc/style.css",
+  "entryPoints": ["./src/index.ts", "./src/token.ts"],
+  "readme": "none",
+  "out": "./docs/api",
+  "docsRoot": "./docs",
+  "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+  "sidebar": {
+    "autoConfiguration": true,
+    "format": "vitepress",
+    "pretty": true,
+    "collapsed": false
+  },
   "groupOrder": [
     "References",
     "Modules",
@@ -26,6 +34,5 @@
   "navigationLinks": {
     "Docs": "https://www.meilisearch.com/docs",
     "GitHub": "https://github.com/meilisearch/meilisearch-js"
-  },
-  "githubPages": true
+  }
 }

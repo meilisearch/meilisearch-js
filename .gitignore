@@ -40,6 +40,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+.pnpm-store/
 
 # TypeScript v1 declaration files
 typings/
@@ -65,8 +66,10 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
-# Generated Docs
-docs/
+# Generated docs assets
+docs/api/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
 
 # Yarn Integrity file
 .yarn-integrity
