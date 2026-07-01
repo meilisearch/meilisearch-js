@@ -20,7 +20,7 @@ jobs:
     outputs:
       version: ${{ steps.grep-step.outputs.meilisearch_version }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Grep docker beta version of Meilisearch
         id: grep-step
         run: |
@@ -50,7 +50,7 @@ jobs:
         node-version: ["20", "22", "24"]
     name: integration-tests (Node.js ${{ matrix.node-version }})
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/set-up-node
         with:
           node-version: ${{ matrix.node-version }}
