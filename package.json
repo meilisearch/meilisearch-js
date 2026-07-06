@@ -69,7 +69,7 @@
     "lint-staged": "16.4.0",
     "oxlint": "1.50.0",
     "oxlint-tsgolint": "0.14.2",
-    "prettier": "^3.8.4",
+    "prettier": "^3.9.4",
     "prettier-plugin-jsdoc": "^1.8.1",
     "typedoc": "^0.28.18",
     "typedoc-plugin-markdown": "^4.12.0",
