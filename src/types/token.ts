@@ -11,8 +11,7 @@ export type TokenIndexRules = { filter?: Filter };
  * @see {@link https://github.com/meilisearch/meilisearch/blob/b21d7aedf9096539041362d438e973a18170f3fc/crates/meilisearch-auth/src/lib.rs#L271-L277 | GitHub source code}
  */
 export type TokenSearchRules =
-  | Record<string, TokenIndexRules | null>
-  | string[];
+  Record<string, TokenIndexRules | null> | string[];
 
 /** Options object for tenant token generation. */
 export type TenantTokenGeneratorOptions = {

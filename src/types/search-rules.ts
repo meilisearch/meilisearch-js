@@ -37,8 +37,7 @@ export type SearchRuleTimeCondition = {
 };
 
 export type SearchRuleCondition =
-  | SearchRuleQueryCondition
-  | SearchRuleTimeCondition;
+  SearchRuleQueryCondition | SearchRuleTimeCondition;
 
 /** Dynamic search rule object */
 export type SearchRule = {

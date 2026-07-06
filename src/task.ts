@@ -155,8 +155,7 @@ export class TaskClient {
    */
   async *waitForTasksIter(
     taskUidsOrEnqueuedTasks:
-      | Iterable<TaskUidOrEnqueuedTask>
-      | AsyncIterable<TaskUidOrEnqueuedTask>,
+      Iterable<TaskUidOrEnqueuedTask> | AsyncIterable<TaskUidOrEnqueuedTask>,
     options?: WaitOptions,
   ): AsyncGenerator<Task, void, undefined> {
     for await (const taskUidOrEnqueuedTask of taskUidsOrEnqueuedTasks) {

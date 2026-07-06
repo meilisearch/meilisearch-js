@@ -478,8 +478,7 @@ export type SearchSimilarDocumentsParams = {
  */
 
 type Fields<T = RecordAny> =
-  | Extract<keyof T, string>[]
-  | Extract<keyof T, string>;
+  Extract<keyof T, string>[] | Extract<keyof T, string>;
 
 /** Options for task enqueue that apply to all document write operations. */
 export type TaskEnqueueOptions = {
@@ -509,9 +508,7 @@ export const ContentTypeEnum: Readonly<Record<string, ContentType>> = {
 };
 
 export type ContentType =
-  | "text/csv"
-  | "application/x-ndjson"
-  | "application/json";
+  "text/csv" | "application/x-ndjson" | "application/json";
 
 export type RawDocumentAdditionOptions = DocumentOptions & {
   csvDelimiter?: string;
@@ -561,8 +558,7 @@ export type GranularFilterableAttribute = {
 };
 
 export type FilterableAttributes =
-  | (string | GranularFilterableAttribute)[]
-  | null;
+  (string | GranularFilterableAttribute)[] | null;
 export type DistinctAttribute = string | null;
 export type SearchableAttributes = string[] | null;
 export type SortableAttributes = string[] | null;
