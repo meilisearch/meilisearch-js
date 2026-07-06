@@ -1,26 +1,30 @@
 name-template: "v$RESOLVED_VERSION 🌻"
 tag-template: "v$RESOLVED_VERSION"
-exclude-labels:
-  - "skip-changelog"
-version-resolver:
-  minor:
-    labels:
-      - "breaking-change"
-  default: patch
 categories:
   - title: "⚠️ Breaking changes"
-    label: "breaking-change"
+    semver-increment: minor
+    when:
+      label: "breaking-change"
   - title: "🚀 Enhancements"
-    label: "enhancement"
+    when:
+      label: "enhancement"
   - title: "🐛 Bug Fixes"
-    label: "bug"
+    when:
+      label: "bug"
   - title: "🔒 Security"
-    label: "security"
+    when:
+      label: "security"
   - title: "⚙️ Maintenance/misc"
-    label:
-      - "dependencies"
-      - "maintenance"
-      - "documentation"
+    when:
+      labels:
+        - "dependencies"
+        - "maintenance"
+        - "documentation"
+  - type: "pre-exclude"
+    when:
+      label: "skip-changelog"
+  - type: "version-resolver"
+    semver-increment: patch
 template: |
   $CHANGES
 
