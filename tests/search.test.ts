@@ -14,6 +14,7 @@ import type {
 } from "../src/types/index.js";
 import {
   clearAllIndexes,
+  clearNetworkTopology,
   config,
   BAD_HOST,
   Meilisearch,
@@ -1597,6 +1598,7 @@ describe.each([
   });
 });
 
-afterAll(() => {
-  return clearAllIndexes(config);
+afterAll(async () => {
+  await clearNetworkTopology();
+  await clearAllIndexes(config);
 });

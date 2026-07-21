@@ -635,11 +635,19 @@ update_network_1: |-
     }
   })
 list_dynamic_search_rules_1: |-
-  client.getDynamicSearchRules()
+  client.getDynamicSearchRules({
+    filter: { query: 'invoice' }
+  })
 get_dynamic_search_rule_1: |-
   client.getDynamicSearchRule('RULE_UID')
 patch_dynamic_search_rule_1: |-
   client.updateDynamicSearchRule('RULE_UID', {
+    description: 'Promote billing help for invoice searches',
+    precedence: 1,
+    active: true,
+    conditions: {
+      query: { words: 'invoice' }
+    },
     actions: [{
       selector: { indexUid: 'movies', id: '299537' },
       action: { type: 'pin', position: 0 }
@@ -647,6 +655,8 @@ patch_dynamic_search_rule_1: |-
   })
 delete_dynamic_search_rule_1: |-
   client.deleteDynamicSearchRule('RULE_UID')
+delete_all_dynamic_search_rules_1: |-
+  client.deleteAllDynamicSearchRules()
 post_render_template_1: |-
   client.renderTemplate({
     template: {
