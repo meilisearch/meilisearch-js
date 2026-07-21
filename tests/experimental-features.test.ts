@@ -1,10 +1,15 @@
 import { afterAll, test } from "vitest";
-import { assert, getClient } from "./utils/meilisearch-test-utils.js";
+import {
+  assert,
+  clearNetworkTopology,
+  getClient,
+} from "./utils/meilisearch-test-utils.js";
 import type { RuntimeTogglableFeatures } from "../src/index.js";
 
 const ms = await getClient("Master");
 
 afterAll(async () => {
+  await clearNetworkTopology(ms);
   await ms.updateExperimentalFeatures({
     chatCompletions: false,
     compositeEmbedders: false,

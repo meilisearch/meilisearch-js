@@ -352,13 +352,13 @@ export class Meilisearch {
    *
    * @param uid - Dynamic search rule UID
    * @param rule - Dynamic search rule to update
-   * @returns Promise returning the updated dynamic search rule
+   * @returns Promise returning an enqueued task
    */
-  async updateDynamicSearchRule(
+  updateDynamicSearchRule(
     uid: string,
     rule: SearchRuleUpdatePayload,
-  ): Promise<SearchRule> {
-    return await this.httpRequest.patch({
+  ): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.patch({
       path: `dynamic-search-rules/${uid}`,
       body: rule,
     });
@@ -368,10 +368,23 @@ export class Meilisearch {
    * Delete a dynamic search rule
    *
    * @param uid - Dynamic search rule UID
-   * @returns Promise returning void
+   * @returns Promise returning an enqueued task
    */
-  async deleteDynamicSearchRule(uid: string): Promise<void> {
-    await this.httpRequest.delete({ path: `dynamic-search-rules/${uid}` });
+  deleteDynamicSearchRule(uid: string): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.delete({
+      path: `dynamic-search-rules/${uid}`,
+    });
+  }
+
+  /**
+   * Delete all dynamic search rules
+   *
+   * @returns Promise returning an enqueued task
+   */
+  deleteAllDynamicSearchRules(): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.delete({
+      path: "dynamic-search-rules",
+    });
   }
 
   ///

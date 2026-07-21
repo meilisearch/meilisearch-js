@@ -1,5 +1,5 @@
 export type SearchRuleListFilterPayload = {
-  attributePatterns?: string[] | null;
+  query?: string | null;
   active?: boolean | null;
 };
 
@@ -11,7 +11,7 @@ export type SearchRuleListPayload = {
 
 export type SearchRuleSelector = {
   indexUid?: string | null;
-  id?: string | null;
+  id: string;
 };
 
 export type SearchRulePinAction = {
@@ -25,35 +25,36 @@ export type SearchRuleAction = {
 };
 
 export type SearchRuleQueryCondition = {
-  scope: "query";
   isEmpty?: boolean | null;
-  contains?: string | null;
+  words?: string | null;
 };
 
 export type SearchRuleTimeCondition = {
-  scope: "time";
   start?: string | null;
   end?: string | null;
 };
 
-export type SearchRuleCondition =
-  SearchRuleQueryCondition | SearchRuleTimeCondition;
+/** Conditions that must match before the dynamic search rule applies. */
+export type SearchRuleConditions = {
+  query?: SearchRuleQueryCondition | null;
+  time?: SearchRuleTimeCondition | null;
+};
 
 /** Dynamic search rule object */
 export type SearchRule = {
   uid: string;
   description?: string | null;
-  priority?: number | null;
+  precedence?: number | null;
   active?: boolean;
-  conditions?: SearchRuleCondition[];
+  conditions?: SearchRuleConditions;
   actions: SearchRuleAction[];
 };
 
 /** Partial update payload for a dynamic search rule */
 export type SearchRuleUpdatePayload = {
   description?: string | null;
-  priority?: number | null;
+  precedence?: number | null;
   active?: boolean | null;
-  conditions?: SearchRuleCondition[] | null;
+  conditions?: SearchRuleConditions | null;
   actions?: SearchRuleAction[] | null;
 };

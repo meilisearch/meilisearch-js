@@ -20,6 +20,7 @@ import { HttpRequests } from "../src/http-requests.js";
 import pkg from "../package.json" with { type: "json" };
 import {
   clearAllIndexes,
+  clearNetworkTopology,
   getKey,
   getClient,
   config,
@@ -918,6 +919,10 @@ describe.each([{ permission: "Master" }])(
       await adminClient.updateExperimentalFeatures({
         network: true,
       });
+    });
+
+    afterAll(async () => {
+      await clearNetworkTopology();
     });
 
     test(`${permission} key: initializeNetwork requires shards when leader is set`, async () => {

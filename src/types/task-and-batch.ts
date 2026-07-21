@@ -54,6 +54,8 @@ export type TaskType = PascalToCamelCase<
   | "SnapshotCreation"
   | "UpgradeDatabase"
   | "NetworkTopologyChange"
+  | "DsrUpdate"
+  | "DsrClear"
 >;
 
 /**

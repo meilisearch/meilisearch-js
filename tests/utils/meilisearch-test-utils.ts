@@ -1,4 +1,9 @@
-import { type Config, Meilisearch, Index } from "../../src/index.js";
+import {
+  type Config,
+  Meilisearch,
+  Index,
+  type EnqueuedTask,
+} from "../../src/index.js";
 
 // testing
 const MASTER_KEY = "masterKey";
@@ -90,6 +95,43 @@ const clearAllIndexes = async (config: Config): Promise<void> => {
       client.index(v.uid).delete().waitTask({ timeout: 60_000 }),
     ),
   );
+};
+
+const clearNetworkTopology = async (
+  client: Meilisearch = masterClient,
+): Promise<void> => {
+  await client.updateExperimentalFeatures({ network: true });
+
+  let network;
+  try {
+    network = await client.getNetwork();
+  } catch {
+    return;
+  }
+
+  const remotes = Object.fromEntries(
+    Object.keys(network.remotes ?? {}).map((name) => [name, null]),
+  );
+  const shards = Object.fromEntries(
+    Object.keys(network.shards ?? {}).map((name) => [
+      name,
+      { remotes: [] as string[] },
+    ]),
+  );
+
+  const enqueued = await client.httpRequest.patch<EnqueuedTask>({
+    path: "network",
+    body: {
+      leader: null,
+      self: null,
+      remotes,
+      shards,
+    },
+  });
+
+  if (enqueued?.taskUid != null) {
+    await client.tasks.waitForTask(enqueued, { timeout: 60_000 });
+  }
 };
 
 function decode64(buff: string) {
@@ -211,6 +253,7 @@ export * from "./assert.js";
 export * from "./object.js";
 export {
   clearAllIndexes,
+  clearNetworkTopology,
   config,
   masterClient,
   badHostClient,
