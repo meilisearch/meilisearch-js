@@ -24,6 +24,7 @@ import type {
   MultiSearchParams,
   FederatedMultiSearchParams,
   MultiSearchResponseOrSearchResponse,
+  EnqueuedTask,
   EnqueuedTaskPromise,
   ExtraRequestInit,
   Network,
@@ -506,6 +507,29 @@ export class Meilisearch {
    */
   async getNetwork(): Promise<Network> {
     return await this.httpRequest.get({ path: "network" });
+  }
+
+  /**
+   * Update the network configuration. Must be called on the leader instance
+   * when a leader is configured.
+   *
+   * When a leader is set, returns an enqueued `networkTopologyChange` task.
+   * When clearing the leader (or when no leader is set), returns the updated
+   * network object synchronously.
+   *
+   * {@link https://www.meilisearch.com/docs/reference/api/network#update-the-network-object}
+   *
+   * @param options - Network update options
+   * @returns Promise returning an enqueued task, or the updated network object
+   * @experimental
+   */
+  async updateNetwork(
+    options: UpdateNetworkOptions,
+  ): Promise<EnqueuedTask | Network> {
+    return await this.httpRequest.patch({
+      path: "network",
+      body: options,
+    });
   }
 
   /**

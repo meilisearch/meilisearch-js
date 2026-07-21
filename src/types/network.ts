@@ -47,8 +47,8 @@ export type ShardInitialization = {
 };
 
 export type UpdateNetworkOptions = {
-  self?: string;
+  self?: string | null;
   leader?: string | null;
-  remotes?: Record<string, Remote | null>;
-  shards?: Record<string, ShardUpdate>;
+  remotes?: Record<string, Remote | null> | null;
+  shards?: Record<string, ShardUpdate | null> | null;
 };
