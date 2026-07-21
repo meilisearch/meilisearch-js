@@ -14,6 +14,7 @@ import type {
   Stats,
   IndexSwap,
   InitializeNetworkOptions,
+  UpdateNetworkOptions,
 } from "../src/index.js";
 import { ErrorStatusCode, MeilisearchRequestError } from "../src/index.js";
 import { HttpRequests } from "../src/http-requests.js";
@@ -1158,6 +1159,97 @@ describe.each([{ permission: "Master" }])(
       } finally {
         patchSpy.mockRestore();
       }
+    });
+
+    test(`${permission} key: updateNetwork patches the network object`, async () => {
+      const client = await getClient(permission);
+      const options: UpdateNetworkOptions = {
+        self: null,
+        leader: null,
+        remotes: {
+          [instanceName]: null,
+        },
+        shards: {
+          default: null,
+        },
+      };
+      const patchSpy = vi
+        .spyOn(HttpRequests.prototype, "patch")
+        .mockResolvedValue({
+          taskUid: 5,
+          indexUid: null,
+          status: "enqueued",
+          type: "networkTopologyChange",
+          enqueuedAt: new Date().toISOString(),
+        });
+
+      try {
+        const task = await client.updateNetwork(options);
+
+        expect(patchSpy).toHaveBeenCalledWith({
+          path: "network",
+          body: options,
+        });
+
+        assert.isTrue("taskUid" in task);
+        if (!("taskUid" in task)) {
+          throw new Error("expected enqueued task");
+        }
+        assert.strictEqual(task.taskUid, 5);
+      } finally {
+        patchSpy.mockRestore();
+      }
+    });
+
+    test(`${permission} key: updateNetwork clears network topology`, async () => {
+      const client = await getClient(permission);
+      const adminKey = await getKey("Admin");
+      const searchKey = await getKey("Search");
+
+      const options: InitializeNetworkOptions = {
+        self: instanceName,
+        remotes: {
+          [instanceName]: {
+            url: HOST,
+            searchApiKey: searchKey,
+            writeApiKey: adminKey,
+          },
+        },
+        shards: {
+          default: {
+            remotes: [instanceName],
+          },
+        },
+      };
+
+      await client.initializeNetwork(options).waitTask();
+
+      const cleared = await client.updateNetwork({
+        self: null,
+        leader: null,
+        remotes: {
+          [instanceName]: null,
+        },
+        shards: {
+          default: null,
+        },
+      });
+
+      assert.isFalse("taskUid" in cleared);
+      if ("taskUid" in cleared) {
+        throw new Error("expected network object");
+      }
+      assert.isNull(cleared.self);
+      assert.isNull(cleared.leader);
+      assert.deepStrictEqual(cleared.remotes, {});
+      assert.deepStrictEqual(cleared.shards, {});
+
+      const response = await client.getNetwork();
+
+      assert.isNull(response.self);
+      assert.isNull(response.leader);
+      assert.deepStrictEqual(response.remotes, {});
+      assert.deepStrictEqual(response.shards, {});
     });
   },
 );

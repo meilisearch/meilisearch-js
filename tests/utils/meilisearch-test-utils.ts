@@ -1,9 +1,4 @@
-import {
-  type Config,
-  Meilisearch,
-  Index,
-  type EnqueuedTask,
-} from "../../src/index.js";
+import { type Config, Meilisearch, Index } from "../../src/index.js";
 
 // testing
 const MASTER_KEY = "masterKey";
@@ -113,24 +108,18 @@ const clearNetworkTopology = async (
     Object.keys(network.remotes ?? {}).map((name) => [name, null]),
   );
   const shards = Object.fromEntries(
-    Object.keys(network.shards ?? {}).map((name) => [
-      name,
-      { remotes: [] as string[] },
-    ]),
+    Object.keys(network.shards ?? {}).map((name) => [name, null]),
   );
 
-  const enqueued = await client.httpRequest.patch<EnqueuedTask>({
-    path: "network",
-    body: {
-      leader: null,
-      self: null,
-      remotes,
-      shards,
-    },
+  const result = await client.updateNetwork({
+    leader: null,
+    self: null,
+    remotes,
+    shards,
   });
 
-  if (enqueued?.taskUid != null) {
-    await client.tasks.waitForTask(enqueued, { timeout: 60_000 });
+  if ("taskUid" in result && result.taskUid != null) {
+    await client.tasks.waitForTask(result, { timeout: 60_000 });
   }
 };
 
