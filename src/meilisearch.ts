@@ -326,6 +326,8 @@ export class Meilisearch {
    *
    * @param parameters - Parameters to browse dynamic search rules
    * @returns Promise returning an object with dynamic search rules
+   * @experimental
+   * @see {@link https://www.meilisearch.com/docs/reference/api/search-rules/list-search-rules}
    */
   async getDynamicSearchRules(
     parameters?: SearchRuleListPayload,
@@ -341,6 +343,8 @@ export class Meilisearch {
    *
    * @param uid - Dynamic search rule UID
    * @returns Promise returning the dynamic search rule
+   * @experimental
+   * @see {@link https://www.meilisearch.com/docs/reference/api/search-rules/get-a-search-rule}
    */
   async getDynamicSearchRule(uid: string): Promise<SearchRule> {
     return await this.httpRequest.get({
@@ -354,6 +358,8 @@ export class Meilisearch {
    * @param uid - Dynamic search rule UID
    * @param rule - Dynamic search rule to update
    * @returns Promise returning an enqueued task
+   * @experimental
+   * @see {@link https://www.meilisearch.com/docs/reference/api/search-rules/create-or-update-a-search-rule}
    */
   updateDynamicSearchRule(
     uid: string,
@@ -370,6 +376,8 @@ export class Meilisearch {
    *
    * @param uid - Dynamic search rule UID
    * @returns Promise returning an enqueued task
+   * @experimental
+   * @see {@link https://www.meilisearch.com/docs/reference/api/search-rules/delete-a-search-rule}
    */
   deleteDynamicSearchRule(uid: string): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
@@ -381,6 +389,8 @@ export class Meilisearch {
    * Delete all dynamic search rules
    *
    * @returns Promise returning an enqueued task
+   * @experimental
+   * @see {@link https://www.meilisearch.com/docs/reference/api/search-rules/delete-a-search-rule}
    */
   deleteAllDynamicSearchRules(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
