@@ -271,9 +271,9 @@ update_typo_tolerance_1: |-
 reset_typo_tolerance_1: |-
   client.index('books').resetTypoTolerance()
 get_index_stats_1: |-
-  client.index('movies').getStats()
+  client.index('movies').getStats({ showInternalDatabaseSizes: true, sizeFormat: 'human' })
 get_indexes_stats_1: |-
-  client.getStats()
+  client.getStats({ showInternalDatabaseSizes: true, sizeFormat: 'human' })
 get_health_1: |-
   client.health()
 get_version_1: |-
