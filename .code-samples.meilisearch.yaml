@@ -621,6 +621,8 @@ webhooks_patch_1: |-
   })
 webhooks_delete_1: |-
   client.deleteWebhook(WEBHOOK_UUID)
+compact_index_1: |-
+  client.index('movies').compact()
 get_network_1: |-
   client.getNetwork()
 update_network_1: |-
