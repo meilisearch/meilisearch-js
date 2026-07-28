@@ -12,6 +12,12 @@ const SEARCH_RULE_PATCH: SearchRuleUpdatePayload = {
   active: true,
   conditions: {
     query: { words: "invoice" },
+    filter: {
+      values: {
+        color: "red",
+        category: "shirt",
+      },
+    },
   },
   actions: [
     {
@@ -77,6 +83,8 @@ describe("dynamic search rules", () => {
     expect(response).toHaveProperty("precedence", SEARCH_RULE_PATCH.precedence);
     expect(response).toHaveProperty("actions", SEARCH_RULE_PATCH.actions);
     expect(response.conditions).toMatchObject(SEARCH_RULE_PATCH.conditions!);
+    expect(response).toHaveProperty("lastUpdatedAt");
+    expect(Date.parse(response.lastUpdatedAt!)).not.toBeNaN();
   });
 
   it("can delete a dynamic search rule", async () => {
