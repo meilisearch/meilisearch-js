@@ -84,7 +84,11 @@ describe("dynamic search rules", () => {
     expect(response).toHaveProperty("actions", SEARCH_RULE_PATCH.actions);
     expect(response.conditions).toMatchObject(SEARCH_RULE_PATCH.conditions!);
     expect(response).toHaveProperty("lastUpdatedAt");
-    expect(Date.parse(response.lastUpdatedAt!)).not.toBeNaN();
+    expect(response.lastUpdatedAt).toBeTypeOf("string");
+    // Meilisearch date-time fields use RFC 3339 / ISO 8601 (OpenAPI format: date-time)
+    expect(response.lastUpdatedAt).toMatch(
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/,
+    );
   });
 
   it("can delete a dynamic search rule", async () => {
