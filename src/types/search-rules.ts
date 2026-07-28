@@ -34,16 +34,24 @@ export type SearchRuleTimeCondition = {
   end?: string | null;
 };
 
+/** Filter condition for a dynamic search rule */
+export type SearchRuleFilterCondition = {
+  /** Expected facet values for filter activation */
+  values: Record<string, string>;
+};
+
 /** Conditions that must match before the dynamic search rule applies. */
 export type SearchRuleConditions = {
   query?: SearchRuleQueryCondition | null;
   time?: SearchRuleTimeCondition | null;
+  filter?: SearchRuleFilterCondition | null;
 };
 
 /** Dynamic search rule object */
 export type SearchRule = {
   uid: string;
   description?: string | null;
+  lastUpdatedAt?: string | null;
   precedence?: number | null;
   active?: boolean;
   conditions?: SearchRuleConditions;
