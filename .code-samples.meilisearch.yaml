@@ -670,3 +670,62 @@ post_render_template_1: |-
       inline: { id: 'this document' }
     }
   })
+get_chat_settings_1: |-
+  client.index('INDEX_NAME').getChat()
+update_chat_settings_1: |-
+  client.index('INDEX_NAME').updateChat({
+    description: 'An index of movies.',
+    documentTemplate: "A movie titled '{{doc.title}}' released in {{ doc.release_date }}",
+    documentTemplateMaxBytes: 400
+  })
+list_chat_workspaces_1: |-
+  client.getChatWorkspaces()
+post_chat_completion_1: |-
+  client.chat('WORKSPACE_NAME').streamCompletion({
+    model: 'PROVIDER_MODEL_UID',
+    messages: [
+      {
+        role: 'user',
+        content: 'USER_PROMPT'
+      }
+    ],
+    stream: true,
+    tools: [
+      {
+        type: 'function',
+        function: {
+          name: '_meiliSearchProgress',
+          description: 'Reports real-time search progress to the user'
+        }
+      },
+      {
+        type: 'function',
+        function: {
+          name: '_meiliSearchSources',
+          description: 'Provides sources and references for the information'
+        }
+      }
+    ]
+  })
+chat_get_settings_1: |-
+  client.chat('WORKSPACE_NAME').get()
+chat_patch_settings_1: |-
+  client.chat('WORKSPACE_NAME').update({ apiKey: 'your-valid-api-key' })
+chat_patch_settings_prompts_1: |-
+  client.chat('WORKSPACE_NAME').update({
+    prompts: {
+      searchDescription: 'Search the outdoor gear catalog whenever the user asks about products, prices, availability, or specifications. Do not use it for generic small talk.',
+      searchQParam: 'A short natural-language query capturing the user intent. Rewrite long questions into 3 to 8 keywords. Preserve product names and brand names verbatim.',
+      searchIndexUidParam: 'Choose between: "products" for physical gear, accessories, and apparel; "guides" for how-to articles and buying guides; "reviews" for customer reviews and ratings. Use "products" by default.'
+    }
+  })
+reset_chat_workspace_settings_1: |-
+  client.chat('WORKSPACE_NAME').reset()
+chat_create_key_1: |-
+  client.createKey({
+    name: 'Chat API Key',
+    description: 'API key for chat completions',
+    actions: ['search', 'chatCompletions'],
+    indexes: ['*'],
+    expiresAt: null
+  })
