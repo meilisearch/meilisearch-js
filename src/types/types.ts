@@ -763,6 +763,8 @@ export type Health = {
 
 export type IndexStats = {
   numberOfDocuments: number;
+  indexSize: number;
+  usedIndexSize: number;
   isIndexing: boolean;
   fieldDistribution: FieldDistribution;
   numberOfEmbeddedDocuments: number;

@@ -638,11 +638,17 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       test(`${permission} key: get /stats information`, async () => {
         const client = await getClient(permission);
+        await client.createIndex(indexNoPk.uid).waitTask();
+
         const response: Stats = await client.getStats();
+        const indexStats = response.indexes[indexNoPk.uid];
+
         expect(response).toHaveProperty("databaseSize", expect.any(Number));
         expect(response).toHaveProperty("usedDatabaseSize", expect.any(Number));
         expect(response).toHaveProperty("lastUpdate");
         expect(response).toHaveProperty("indexes", expect.any(Object));
+        expect(indexStats).toHaveProperty("indexSize", expect.any(Number));
+        expect(indexStats).toHaveProperty("usedIndexSize", expect.any(Number));
       });
     });
   },
