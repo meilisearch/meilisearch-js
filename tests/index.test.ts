@@ -365,6 +365,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       const response = await client.index(indexNoPk.uid).getStats();
 
       expect(response).toHaveProperty("numberOfDocuments", 0);
+      expect(response).toHaveProperty("indexSize", expect.any(Number));
+      expect(response).toHaveProperty("usedIndexSize", expect.any(Number));
       expect(response).toHaveProperty("isIndexing", false);
       expect(response).toHaveProperty("fieldDistribution", {});
       expect(response).toHaveProperty("numberOfEmbeddedDocuments", 0);
