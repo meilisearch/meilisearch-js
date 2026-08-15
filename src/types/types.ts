@@ -769,6 +769,13 @@ export type IndexStats = {
   numberOfEmbeddings: number;
   rawDocumentDbSize: number;
   avgDocumentSize: number;
+  /** Size of the index database, in bytes. Added in Meilisearch v1.53.0. */
+  indexSize: number;
+  /**
+   * Size of the used pages of the index database, in bytes. Added in
+   * Meilisearch v1.53.0.
+   */
+  usedIndexSize: number;
 };
 
 export type Stats = {

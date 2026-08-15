@@ -371,6 +371,8 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(response).toHaveProperty("numberOfEmbeddings", 0);
       expect(response).toHaveProperty("rawDocumentDbSize", 0);
       expect(response).toHaveProperty("avgDocumentSize", 0);
+      expect(response).toHaveProperty("indexSize", 0);
+      expect(response).toHaveProperty("usedIndexSize", 0);
     });
 
     test(`${permission} key: Get updatedAt and createdAt through fetch info`, async () => {
