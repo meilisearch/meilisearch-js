@@ -25,6 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          token: ${{ secrets.MEILI_BOT_GH_PAT }}
           ref: ${{ env.BASE_BRANCH }}
           fetch-depth: 0
 
