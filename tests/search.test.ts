@@ -1504,24 +1504,10 @@ describe.each([
     expect(c).toHaveProperty("value.query", searchQuery);
   });
 
-  test(`${permission} key: search should be aborted when reaching timeout`, async () => {
-    const key = await getKey(permission);
-    const client = new Meilisearch({
-      ...config,
-      apiKey: key,
-      timeout: 1,
-    });
-
-    const error = await assert.rejects(
-      client.health(),
-      MeilisearchRequestError,
-    );
-
-    assert.strictEqual(
-      (error.cause as Error)?.message,
-      "request timed out after 1ms",
-    );
-  });
+  // The timeout-based abort is covered deterministically with a mocked `fetch`
+  // in `tests/errors.test.ts`. Asserting it against a real server here raced the
+  // event loop (`fetch` could resolve before the 1ms timeout aborted) and made
+  // the test flaky. See https://github.com/meilisearch/meilisearch-js/issues/1922.
 
   test(`${permission} key: search should be aborted on abort signal`, async () => {
     const key = await getKey(permission);
