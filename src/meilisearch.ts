@@ -46,6 +46,9 @@ import type {
   ShardInitialization,
   RenderTemplateParams,
   RenderTemplateResponse,
+  ChatWorkspaceView,
+  ChatWorkspacesQuery,
+  ChatWorkspacesResults,
 } from "./types/index.js";
 import { ErrorStatusCode } from "./types/index.js";
 import { HttpRequests } from "./http-requests.js";
@@ -307,13 +310,46 @@ export class Meilisearch {
   }
 
   /**
-   * Get all chat workspaces
+   * List the chat workspaces registered on the instance.
    *
-   * @returns Promise returning an array of chat workspaces UIDs
+   * @param parameters - Parameters to paginate the chat workspaces
+   * @returns Promise returning a paginated list of chat workspaces
+   * @experimental
+   * @see {@link https://www.meilisearch.com/docs/reference/api/chats#list-chat-workspaces}
    */
-  async getChatWorkspaces(): Promise<ResourceResults<{ uid: string }[]>> {
+  async getChatWorkspaces(
+    parameters?: ChatWorkspacesQuery,
+  ): Promise<ChatWorkspacesResults> {
     return await this.httpRequest.get({
       path: "chats",
+      params: parameters,
+    });
+  }
+
+  /**
+   * Get a single chat workspace by its UID.
+   *
+   * @param workspace - The chat workspace UID
+   * @returns Promise returning the chat workspace
+   * @experimental
+   * @see {@link https://www.meilisearch.com/docs/reference/api/chats#get-a-chat-workspace}
+   */
+  async getChatWorkspace(workspace: string): Promise<ChatWorkspaceView> {
+    return await this.httpRequest.get({
+      path: `chats/${workspace}`,
+    });
+  }
+
+  /**
+   * Delete a chat workspace and its settings.
+   *
+   * @param workspace - The chat workspace UID
+   * @experimental
+   * @see {@link https://www.meilisearch.com/docs/reference/api/chats#delete-a-chat-workspace}
+   */
+  async deleteChatWorkspace(workspace: string): Promise<void> {
+    await this.httpRequest.delete({
+      path: `chats/${workspace}`,
     });
   }
 
