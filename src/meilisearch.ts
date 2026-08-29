@@ -14,6 +14,7 @@ import type {
   Key,
   Health,
   Stats,
+  StatsParams,
   Version,
   KeyUpdate,
   IndexesQuery,
@@ -747,10 +748,12 @@ export class Meilisearch {
   /**
    * Get the stats of all the database
    *
+   * @param params - Optional parameters to control size formatting and
+   *   internal database size reporting
    * @returns Promise returning object of all the stats
    */
-  async getStats(): Promise<Stats> {
-    return await this.httpRequest.get<Stats>({ path: "stats" });
+  async getStats(params?: StatsParams): Promise<Stats> {
+    return await this.httpRequest.get<Stats>({ path: "stats", params });
   }
 
   ///
