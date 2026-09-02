@@ -1504,7 +1504,6 @@ describe.each([
     expect(c).toHaveProperty("value.query", searchQuery);
   });
 
-
   test(`${permission} key: search should be aborted on abort signal`, async () => {
     const key = await getKey(permission);
     const client = new Meilisearch({
