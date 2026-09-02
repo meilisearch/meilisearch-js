@@ -79,6 +79,7 @@ test("it can delete a workspace", async () => {
     "cause.code",
     "chat_not_found",
   );
+  await client.chat("myWorkspace").update(WORKSPACE_SETTINGS);
 });
 
 test("it can create a chat completion (streaming)", async () => {
