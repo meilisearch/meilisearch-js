@@ -786,6 +786,15 @@ export type Stats = {
  ** CHATS
  */
 
+/** A chat workspace registered on the instance. */
+export type ChatWorkspaceView = { uid: string };
+
+/** Parameters used to paginate the list of chat workspaces. */
+export type ChatWorkspacesQuery = ResourceQuery & {};
+
+/** Paginated list of chat workspaces. */
+export type ChatWorkspacesResults = ResourceResults<ChatWorkspaceView[]> & {};
+
 /** @see https://www.meilisearch.com/docs/reference/api/chats#settings-parameters */
 export type ChatWorkspaceSettings = {
   source: "openAi" | "azureOpenAi" | "mistral" | "gemini" | "vLlm";

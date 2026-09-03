@@ -56,12 +56,30 @@ test("it can list workspaces", async () => {
   expect(response.results).toEqual([{ uid: "myWorkspace" }]);
 });
 
+test("it can get a single workspace", async () => {
+  const client = await getClient("Admin");
+  await client.chat("myWorkspace").update(WORKSPACE_SETTINGS);
+  const response = await client.getChatWorkspace("myWorkspace");
+  expect(response).toEqual({ uid: "myWorkspace" });
+});
+
 test("it can delete a workspace settings", async () => {
   const client = await getClient("Admin");
   await client.chat("myWorkspace").update(WORKSPACE_SETTINGS);
   await client.chat("myWorkspace").reset();
   const response = await client.getChatWorkspaces();
   expect(response.results).toEqual([{ uid: "myWorkspace" }]);
+});
+
+test("it can delete a workspace", async () => {
+  const client = await getClient("Admin");
+  await client.chat("myWorkspace").update(WORKSPACE_SETTINGS);
+  await client.deleteChatWorkspace("myWorkspace");
+  await expect(client.getChatWorkspace("myWorkspace")).rejects.toHaveProperty(
+    "cause.code",
+    "chat_not_found",
+  );
+  await client.chat("myWorkspace").update(WORKSPACE_SETTINGS);
 });
 
 test("it can create a chat completion (streaming)", async () => {
