@@ -5,6 +5,11 @@ export class MeilisearchRequestTimeOutError extends MeilisearchError {
   override name = "MeilisearchRequestTimeOutError";
   override cause: { timeout: number; requestInit: RequestInit };
 
+  /**
+   * Builds a timeout error whose `cause` keeps the request details for
+   * debugging but with the `Authorization` header redacted, so the API key
+   * never leaks into logs or error trackers.
+   */
   constructor(timeout: number, requestInit: RequestInit) {
     super(`request timed out after ${timeout}ms`);
 

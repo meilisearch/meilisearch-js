@@ -5,6 +5,7 @@ import {
   MeilisearchRequestTimeOutError,
 } from "../src/errors/index.js";
 
+/** Mocks `fetch` with a request that hangs until aborted (like a real timeout). */
 function mockHangingFetch() {
   vi.spyOn(globalThis, "fetch").mockImplementation(
     (_url, init) =>
@@ -19,6 +20,7 @@ function mockHangingFetch() {
   );
 }
 
+/** Extracts the timeout `cause` payload from a request error. */
 function timeoutCauseOf(error: unknown): {
   timeout: number;
   requestInit: RequestInit;
