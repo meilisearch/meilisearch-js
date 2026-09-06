@@ -8,6 +8,14 @@ export class MeilisearchRequestTimeOutError extends MeilisearchError {
   constructor(timeout: number, requestInit: RequestInit) {
     super(`request timed out after ${timeout}ms`);
 
-    this.cause = { timeout, requestInit };
+    // Never expose credentials: the init headers carry the
+    // `Authorization: Bearer <apiKey>` header, which would otherwise leak
+    // into logs and error trackers via `error.cause`.
+    const headers = new Headers(requestInit.headers);
+    if (headers.has("Authorization")) {
+      headers.set("Authorization", "<redacted>");
+    }
+
+    this.cause = { timeout, requestInit: { ...requestInit, headers } };
   }
 }
