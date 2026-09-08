@@ -27,7 +27,16 @@ function isValidUUIDv4(uuid: string): boolean {
 function encodeToBase64(data: unknown): string {
   // TODO: instead of btoa use Uint8Array.prototype.toBase64() when it becomes available in supported runtime versions
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toBase64
-  return btoa(typeof data === "string" ? data : JSON.stringify(data));
+  // btoa only handles latin1: encode to UTF-8 bytes first so non-ASCII
+  // content (e.g. search rules in another language) does not throw
+  // `InvalidCharacterError`, then emit base64url as JWT requires.
+  const json = typeof data === "string" ? data : JSON.stringify(data);
+  const bytes = textEncoder.encode(json);
+  let binary = "";
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
+  }
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
 
 const textEncoder = new TextEncoder();
