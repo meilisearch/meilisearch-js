@@ -787,13 +787,13 @@ export type Stats = {
  */
 
 /** A chat workspace registered on the instance. */
-export type ChatWorkspaceView = { uid: string };
+export type ChatWorkspaceObject = { uid: string };
 
 /** Parameters used to paginate the list of chat workspaces. */
 export type ChatWorkspacesQuery = ResourceQuery & {};
 
 /** Paginated list of chat workspaces. */
-export type ChatWorkspacesResults = ResourceResults<ChatWorkspaceView[]> & {};
+export type ChatWorkspacesResults = ResourceResults<ChatWorkspaceObject[]> & {};
 
 /** @see https://www.meilisearch.com/docs/reference/api/chats#settings-parameters */
 export type ChatWorkspaceSettings = {

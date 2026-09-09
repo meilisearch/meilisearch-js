@@ -46,7 +46,7 @@ import type {
   ShardInitialization,
   RenderTemplateParams,
   RenderTemplateResponse,
-  ChatWorkspaceView,
+  ChatWorkspaceObject,
   ChatWorkspacesQuery,
   ChatWorkspacesResults,
 } from "./types/index.js";
@@ -334,7 +334,7 @@ export class Meilisearch {
    * @experimental
    * @see {@link https://www.meilisearch.com/docs/reference/api/chats/get-a-chat-workspace}
    */
-  async getChatWorkspace(workspace: string): Promise<ChatWorkspaceView> {
+  async getChatWorkspace(workspace: string): Promise<ChatWorkspaceObject> {
     return await this.httpRequest.get({
       path: `chats/${workspace}`,
     });
