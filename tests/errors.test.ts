@@ -59,3 +59,54 @@ describe("Test on updates", () => {
     assert.strictEqual(error.cause.cause.timeout, timeout);
   });
 });
+
+describe("MeilisearchRequestTimeOutError", () => {
+  test("timeout cause must NOT contain the raw api key", () => {
+    const SECRET = "MASTER_KEY_SUPER_SECRET_123";
+    const error = new MeilisearchRequestTimeOutError(50, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${SECRET}` },
+      body: JSON.stringify({ note: "not a secret" }),
+    });
+
+    const { requestInit } = error.cause;
+    const leaked: string[] = [];
+    new Headers(requestInit.headers).forEach((v) => {
+      if (v.includes(SECRET)) leaked.push(v);
+    });
+    if (
+      typeof requestInit.body === "string" &&
+      requestInit.body.includes(SECRET)
+    ) {
+      leaked.push(requestInit.body);
+    }
+    assert.deepEqual(leaked, []);
+  });
+
+  test("timeout cause redacts Authorization but keeps debug info", () => {
+    const error = new MeilisearchRequestTimeOutError(50, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer SOME_KEY",
+        "Content-Type": "application/json",
+      },
+    });
+
+    const { timeout, requestInit } = error.cause;
+    assert.strictEqual(timeout, 50);
+    assert.strictEqual(requestInit.method, "POST");
+    const headers = new Headers(requestInit.headers);
+    assert.strictEqual(headers.get("Authorization"), "<redacted>");
+    assert.strictEqual(headers.get("Content-Type"), "application/json");
+  });
+
+  test("timeout without apiKey still reports cause", () => {
+    const error = new MeilisearchRequestTimeOutError(50, {
+      method: "GET",
+    });
+
+    const { timeout, requestInit } = error.cause;
+    assert.strictEqual(timeout, 50);
+    assert.isFalse(new Headers(requestInit.headers).has("Authorization"));
+  });
+});
