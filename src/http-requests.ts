@@ -73,6 +73,21 @@ function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
 const TIMEOUT_ID = Symbol("<timeout>");
 
 /**
+ * Parses a response body as JSON, returning `undefined` when the body is empty
+ * or is not valid JSON (e.g. an HTML error page from a proxy).
+ */
+function parseResponseBody<T>(responseBody: string): T | undefined {
+  if (responseBody === "") {
+    return undefined;
+  }
+  try {
+    return JSON.parse(responseBody) as T;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
  * Attach a timeout signal to a {@link RequestInit}, while preserving original
  * signal functionality, if there is one.
  *
@@ -258,10 +273,9 @@ export class HttpRequests {
       stopTimeout?.();
     }
 
-    const parsedResponse =
-      responseBody === ""
-        ? undefined
-        : (JSON.parse(responseBody) as T | MeilisearchErrorResponse);
+    const parsedResponse = parseResponseBody<T | MeilisearchErrorResponse>(
+      responseBody,
+    );
 
     if (!response.ok) {
       throw new MeilisearchApiError(
@@ -353,9 +367,7 @@ export class HttpRequests {
       // For error responses, we still need to read the body to get error details
       const responseBody = await response.text();
       const parsedResponse =
-        responseBody === ""
-          ? undefined
-          : (JSON.parse(responseBody) as MeilisearchErrorResponse);
+        parseResponseBody<MeilisearchErrorResponse>(responseBody);
 
       throw new MeilisearchApiError(response, parsedResponse);
     }
