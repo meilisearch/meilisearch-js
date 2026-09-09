@@ -87,6 +87,60 @@ describe("HttpRequests", () => {
     ).rejects.toThrow(MeilisearchApiError);
   });
 
+  test("should throw MeilisearchApiError for error response with HTML body", async () => {
+    fetchSpy.mockResolvedValue(
+      new Response("<html><body>502 Bad Gateway</body></html>", {
+        status: 502,
+        statusText: "Bad Gateway",
+        headers: { "Content-Type": "text/html" },
+      }),
+    );
+
+    const config: Config = { host: "http://localhost:7700" };
+    const httpRequests = new HttpRequests(config);
+
+    const error = await httpRequests
+      .get({ path: "indexes" })
+      .catch((error: unknown) => error);
+    expect(error).toBeInstanceOf(MeilisearchApiError);
+    expect((error as MeilisearchApiError).message).toBe("502: Bad Gateway");
+    expect((error as MeilisearchApiError).cause).toBeUndefined();
+  });
+
+  test("should throw MeilisearchApiError for error response with plain text body", async () => {
+    fetchSpy.mockResolvedValue(
+      new Response("Service Unavailable", {
+        status: 503,
+        statusText: "Service Unavailable",
+        headers: { "Content-Type": "text/plain" },
+      }),
+    );
+
+    const config: Config = { host: "http://localhost:7700" };
+    const httpRequests = new HttpRequests(config);
+
+    await expect(httpRequests.get({ path: "indexes" })).rejects.toThrow(
+      MeilisearchApiError,
+    );
+  });
+
+  test("should throw MeilisearchApiError for stream error response with HTML body", async () => {
+    fetchSpy.mockResolvedValue(
+      new Response("<html><body>502 Bad Gateway</body></html>", {
+        status: 502,
+        statusText: "Bad Gateway",
+        headers: { "Content-Type": "text/html" },
+      }),
+    );
+
+    const config: Config = { host: "http://localhost:7700" };
+    const httpRequests = new HttpRequests(config);
+
+    await expect(
+      httpRequests.postStream({ path: "chat", body: {} }),
+    ).rejects.toThrow(MeilisearchApiError);
+  });
+
   test("should handle null response body for stream", async () => {
     fetchSpy.mockResolvedValue(
       new Response(null, {
