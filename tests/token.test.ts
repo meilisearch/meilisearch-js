@@ -78,6 +78,48 @@ test("Should throw error for non-server-side environment", async () => {
   );
 });
 
+describe("unicode search rules", () => {
+  const apiKeyUid = "599749c9-2d06-4d28-9c9c-8f3e0f1f2a3b";
+  const apiKey = "test-api-key-sup3r-secret";
+  const searchRules = { movies: { filter: "genre = کتاب" } };
+
+  test("does not crash on non-latin1 search rules", async () => {
+    const token = await generateTenantToken({
+      apiKey,
+      apiKeyUid,
+      searchRules,
+    });
+    expect(typeof token).toBe("string");
+  });
+
+  test("unicode payload round-trips through the token", async () => {
+    const token = await generateTenantToken({
+      apiKey,
+      apiKeyUid,
+      searchRules,
+    });
+    const [, payload64] = token.split(".");
+
+    expect(JSON.parse(decode64(payload64)) as TokenClaims).toMatchObject({
+      apiKeyUid,
+      searchRules,
+    });
+  });
+
+  test("signature verifies against the standard JWT HMAC input", async () => {
+    const token = await generateTenantToken({
+      apiKey,
+      apiKeyUid,
+      searchRules,
+    });
+    const [header, payload, signature] = token.split(".");
+    const expected = createHmac("sha256", apiKey)
+      .update(`${header}.${payload}`)
+      .digest("base64url");
+    expect(signature).toBe(expected);
+  });
+});
+
 describe.each([{ permission: "Admin" }])(
   "Tests on token generation",
   ({ permission }) => {
