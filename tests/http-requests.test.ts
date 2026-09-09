@@ -1,5 +1,6 @@
 import {
   afterAll,
+  assert,
   beforeEach,
   describe,
   expect,
@@ -106,5 +107,50 @@ describe("HttpRequests", () => {
     ).rejects.toThrow(
       "Response body is null - server did not return a readable stream",
     );
+  });
+
+  test("should let per-request extraRequestInit override client requestInit", async () => {
+    fetchSpy.mockResolvedValue(
+      new Response(JSON.stringify({ status: "available" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const config: Config = {
+      host: "http://localhost:7700",
+      requestInit: { credentials: "omit" },
+    };
+    const httpRequests = new HttpRequests(config);
+
+    await httpRequests.get({
+      path: "health",
+      extraRequestInit: { credentials: "include" },
+    });
+
+    assert.isDefined(fetchSpy.mock.lastCall);
+    const [, init] = fetchSpy.mock.lastCall as [URL, RequestInit];
+    expect(init.credentials).toBe("include");
+  });
+
+  test("should apply client requestInit as default without per-request override", async () => {
+    fetchSpy.mockResolvedValue(
+      new Response(JSON.stringify({ status: "available" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const config: Config = {
+      host: "http://localhost:7700",
+      requestInit: { credentials: "omit" },
+    };
+    const httpRequests = new HttpRequests(config);
+
+    await httpRequests.get({ path: "health" });
+
+    assert.isDefined(fetchSpy.mock.lastCall);
+    const [, init] = fetchSpy.mock.lastCall as [URL, RequestInit];
+    expect(init.credentials).toBe("omit");
   });
 });

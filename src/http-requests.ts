@@ -213,8 +213,8 @@ export class HttpRequests {
         contentType === undefined || typeof body !== "string"
           ? JSON.stringify(body)
           : body,
-      ...extraRequestInit,
       ...this.#requestInit,
+      ...extraRequestInit,
       headers: this.#getHeaders(extraRequestInit?.headers, contentType),
     };
 
