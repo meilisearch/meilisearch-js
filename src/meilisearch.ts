@@ -310,12 +310,12 @@ export class Meilisearch {
   }
 
   /**
-   * List the chat workspaces registered on the instance.
+   * List all chat workspaces
    *
    * @param parameters - Parameters to paginate the chat workspaces
    * @returns Promise returning a paginated list of chat workspaces
    * @experimental
-   * @see {@link https://www.meilisearch.com/docs/reference/api/chats#list-chat-workspaces}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/chats/list-chat-workspaces}
    */
   async getChatWorkspaces(
     parameters?: ChatWorkspacesQuery,
@@ -327,12 +327,12 @@ export class Meilisearch {
   }
 
   /**
-   * Get a single chat workspace by its UID.
+   * Get a chat workspace
    *
    * @param workspace - The chat workspace UID
    * @returns Promise returning the chat workspace
    * @experimental
-   * @see {@link https://www.meilisearch.com/docs/reference/api/chats#get-a-chat-workspace}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/chats/get-a-chat-workspace}
    */
   async getChatWorkspace(workspace: string): Promise<ChatWorkspaceView> {
     return await this.httpRequest.get({
@@ -341,11 +341,12 @@ export class Meilisearch {
   }
 
   /**
-   * Delete a chat workspace and its settings.
+   * Delete a chat workspace
    *
    * @param workspace - The chat workspace UID
+   * @returns Promise returning void
    * @experimental
-   * @see {@link https://www.meilisearch.com/docs/reference/api/chats#delete-a-chat-workspace}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/chats/delete-a-chat-workspace}
    */
   async deleteChatWorkspace(workspace: string): Promise<void> {
     await this.httpRequest.delete({

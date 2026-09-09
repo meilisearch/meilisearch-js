@@ -670,3 +670,9 @@ post_render_template_1: |-
       inline: { id: 'this document' }
     }
   })
+list_chat_workspaces_1: |-
+  client.getChatWorkspaces()
+get_chat_workspace_1: |-
+  client.getChatWorkspace('WORKSPACE_NAME')
+delete_chat_workspace_1: |-
+  client.deleteChatWorkspace('WORKSPACE_NAME')
