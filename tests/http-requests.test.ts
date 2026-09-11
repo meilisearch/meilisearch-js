@@ -8,6 +8,7 @@ import {
   type MockInstance,
 } from "vitest";
 import { HttpRequests } from "../src/http-requests.js";
+import { Meilisearch } from "../src/index.js";
 import type { Config } from "../src/types/index.js";
 import {
   MeilisearchError,
@@ -106,5 +107,49 @@ describe("HttpRequests", () => {
     ).rejects.toThrow(
       "Response body is null - server did not return a readable stream",
     );
+  });
+  describe("Index.getDocument fields parameter", () => {
+    const documentBody = { id: 1, title: "Alice In Wonderland" };
+
+    function getRequestedUrl(): string {
+      const [input] = fetchSpy.mock.lastCall as [URL];
+      return input.href;
+    }
+
+    test("sends a single string field instead of dropping it", async () => {
+      fetchSpy.mockResolvedValue(
+        new Response(JSON.stringify(documentBody), { status: 200 }),
+      );
+
+      const client = new Meilisearch({ host: "http://localhost:7700" });
+      const document = await client
+        .index("movies")
+        .getDocument(1, { fields: "title" });
+
+      expect(document).toEqual(documentBody);
+      expect(getRequestedUrl()).toContain("fields=title");
+    });
+
+    test("keeps joining an array of fields", async () => {
+      fetchSpy.mockResolvedValue(
+        new Response(JSON.stringify(documentBody), { status: 200 }),
+      );
+
+      const client = new Meilisearch({ host: "http://localhost:7700" });
+      await client.index("movies").getDocument(1, { fields: ["id", "title"] });
+
+      expect(getRequestedUrl()).toContain("fields=id%2Ctitle");
+    });
+
+    test("omits the fields parameter when not requested", async () => {
+      fetchSpy.mockResolvedValue(
+        new Response(JSON.stringify(documentBody), { status: 200 }),
+      );
+
+      const client = new Meilisearch({ host: "http://localhost:7700" });
+      await client.index("movies").getDocument(1);
+
+      expect(getRequestedUrl()).not.toContain("fields=");
+    });
   });
 });

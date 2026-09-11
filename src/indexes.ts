@@ -348,7 +348,7 @@ export class Index<T extends RecordAny = RecordAny> {
   ): Promise<D> {
     const fields = Array.isArray(parameters?.fields)
       ? parameters.fields.join()
-      : undefined;
+      : parameters?.fields;
 
     return await this.httpRequest.get<D>({
       path: `indexes/${this.uid}/documents/${documentId}`,
