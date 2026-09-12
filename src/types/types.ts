@@ -1297,6 +1297,58 @@ export const ErrorStatusCode = {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_similar_ranking_score_threshold */
   INVALID_SIMILAR_RANKING_SCORE_THRESHOLD:
     "invalid_similar_ranking_score_threshold",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#not_leader */
+  NOT_LEADER: "not_leader",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_network_leader */
+  INVALID_NETWORK_LEADER: "invalid_network_leader",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_network_remotes */
+  INVALID_NETWORK_REMOTES: "invalid_network_remotes",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_network_search_api_key */
+  INVALID_NETWORK_SEARCH_API_KEY: "invalid_network_search_api_key",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_network_self */
+  INVALID_NETWORK_SELF: "invalid_network_self",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_network_shards */
+  INVALID_NETWORK_SHARDS: "invalid_network_shards",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_network_url */
+  INVALID_NETWORK_URL: "invalid_network_url",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_network_write_api_key */
+  INVALID_NETWORK_WRITE_API_KEY: "invalid_network_write_api_key",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#network_version_mismatch */
+  NETWORK_VERSION_MISMATCH: "network_version_mismatch",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#network_version_too_old */
+  NETWORK_VERSION_TOO_OLD: "network_version_too_old",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#unknown_remote */
+  UNKNOWN_REMOTE: "unknown_remote",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#unprocessed_network_task */
+  UNPROCESSED_NETWORK_TASK: "unprocessed_network_task",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#unexpected_network_previous_remotes */
+  UNEXPECTED_NETWORK_PREVIOUS_REMOTES: "unexpected_network_previous_remotes",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#import_task_already_received */
+  IMPORT_TASK_ALREADY_RECEIVED: "import_task_already_received",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#import_task_unknown_remote */
+  IMPORT_TASK_UNKNOWN_REMOTE: "import_task_unknown_remote",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#import_task_without_network_task */
+  IMPORT_TASK_WITHOUT_NETWORK_TASK: "import_task_without_network_task",
+
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#receive_import_finished_unknown_remote */
+  RECEIVE_IMPORT_FINISHED_UNKNOWN_REMOTE:
+    "receive_import_finished_unknown_remote",
 };
 
 export type ErrorStatusCode =
