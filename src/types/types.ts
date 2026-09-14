@@ -1316,6 +1316,9 @@ export const ErrorStatusCode = {
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_network_shards */
   INVALID_NETWORK_SHARDS: "invalid_network_shards",
 
+  /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#missing_network_url */
+  MISSING_NETWORK_URL: "missing_network_url",
+
   /** @see https://www.meilisearch.com/docs/reference/errors/error_codes#invalid_network_url */
   INVALID_NETWORK_URL: "invalid_network_url",
 
