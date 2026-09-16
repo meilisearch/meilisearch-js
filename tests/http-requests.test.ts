@@ -125,6 +125,22 @@ describe("HttpRequests", () => {
     );
   });
 
+  test("should throw SyntaxError for 200 response with HTML body", async () => {
+    fetchSpy.mockResolvedValue(
+      new Response("<html>ok</html>", {
+        status: 200,
+        headers: { "Content-Type": "text/html" },
+      }),
+    );
+
+    const config: Config = { host: "http://localhost:7700" };
+    const httpRequests = new HttpRequests(config);
+
+    await expect(httpRequests.get({ path: "indexes" })).rejects.toThrow(
+      SyntaxError,
+    );
+  });
+
   test("should throw MeilisearchApiError for stream error response with HTML body", async () => {
     fetchSpy.mockResolvedValue(
       new Response("<html><body>502 Bad Gateway</body></html>", {
