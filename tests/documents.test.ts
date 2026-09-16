@@ -79,6 +79,18 @@ describe("Documents tests", () => {
         expect(document.id).toBeUndefined();
       });
 
+      test(`${permission} key: Get one document with string fields parameter`, async () => {
+        const client = await getClient(permission);
+        await client.index(indexNoPk.uid).addDocuments(dataset).waitTask();
+
+        const document = await client
+          .index(indexNoPk.uid)
+          .getDocument<Book>(1, { fields: "title" });
+
+        expect(document.title).toEqual("Alice In Wonderland");
+        expect(document.id).toBeUndefined();
+      });
+
       test(`${permission} key: Get multiple documents by IDs`, async () => {
         const client = await getClient(permission);
         await client.index(indexPk.uid).addDocuments(dataset).waitTask();
