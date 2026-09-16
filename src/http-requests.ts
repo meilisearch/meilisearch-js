@@ -72,19 +72,13 @@ function getHeaders(config: Config, headersInit?: HeadersInit): Headers {
 /** Used to identify whether an error is a timeout error after fetch request. */
 const TIMEOUT_ID = Symbol("<timeout>");
 
-/**
- * Parses a response body as JSON, returning `undefined` when the body is empty
- * or is not valid JSON (e.g. an HTML error page from a proxy).
- */
+/** Parses a response body as JSON, returning `undefined` when the body is empty. */
 function parseResponseBody<T>(responseBody: string): T | undefined {
   if (responseBody === "") {
     return undefined;
   }
-  try {
-    return JSON.parse(responseBody) as T;
-  } catch {
-    return undefined;
-  }
+
+  return JSON.parse(responseBody) as T;
 }
 
 /**
@@ -273,9 +267,18 @@ export class HttpRequests {
       stopTimeout?.();
     }
 
-    const parsedResponse = parseResponseBody<T | MeilisearchErrorResponse>(
-      responseBody,
-    );
+    let parsedResponse: T | MeilisearchErrorResponse | undefined;
+    try {
+      parsedResponse = parseResponseBody<T | MeilisearchErrorResponse>(
+        responseBody,
+      );
+    } catch (error) {
+      if (response.ok) {
+        throw error;
+      }
+
+      throw new MeilisearchApiError(response);
+    }
 
     if (!response.ok) {
       throw new MeilisearchApiError(
@@ -366,8 +369,13 @@ export class HttpRequests {
     if (!response.ok) {
       // For error responses, we still need to read the body to get error details
       const responseBody = await response.text();
-      const parsedResponse =
-        parseResponseBody<MeilisearchErrorResponse>(responseBody);
+      let parsedResponse: MeilisearchErrorResponse | undefined;
+      try {
+        parsedResponse =
+          parseResponseBody<MeilisearchErrorResponse>(responseBody);
+      } catch {
+        throw new MeilisearchApiError(response);
+      }
 
       throw new MeilisearchApiError(response, parsedResponse);
     }
