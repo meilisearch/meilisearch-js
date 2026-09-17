@@ -67,8 +67,8 @@ import {
 
 /**
  * A non-positive, non-finite, or fractional batch size either hangs the
- * `*InBatches` document helpers in an infinite loop (`0`, negative),
- * silently imports nothing (`NaN`, sending a single empty batch), or splits
+ * `*InBatches` document helpers in an infinite loop (`0`, negative), silently
+ * imports nothing (`NaN`, sending a single empty batch), or splits
  * unpredictably (fractions). Fail fast instead.
  */
 function assertValidBatchSize(batchSize: number): void {
