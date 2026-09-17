@@ -42,6 +42,22 @@ describe("add/updateDocumentsInBatches batchSize validation", () => {
     expect(globalThis.fetch).not.toHaveBeenCalled();
   });
 
+  test("addDocumentsInBatches throws on fractional batchSize without firing requests", () => {
+    const index = new Index({ host: "http://localhost:7700" }, "movies");
+    expect(() => index.addDocumentsInBatches([{ id: 1 }], 2.5)).toThrow(
+      MeilisearchError,
+    );
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+
+  test("updateDocumentsInBatches throws on fractional batchSize without firing requests", () => {
+    const index = new Index({ host: "http://localhost:7700" }, "movies");
+    expect(() => index.updateDocumentsInBatches([{ id: 1 }], 1.5)).toThrow(
+      MeilisearchError,
+    );
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+
   test("addDocumentsInBatches still splits valid batches", async () => {
     const index = new Index({ host: "http://localhost:7700" }, "movies");
     const batches = index.addDocumentsInBatches(
