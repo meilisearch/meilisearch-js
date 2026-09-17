@@ -65,6 +65,19 @@ import {
   type HttpRequestsWithEnqueuedTaskPromise,
 } from "./task.js";
 
+/**
+ * A non-positive or non-finite batch size either hangs the `*InBatches`
+ * document helpers in an infinite loop (`0`, negative) or silently imports
+ * nothing (`NaN`, sending a single empty batch). Fail fast instead.
+ */
+function assertValidBatchSize(batchSize: number): void {
+  if (!Number.isFinite(batchSize) || batchSize < 1) {
+    throw new MeilisearchError(
+      `batchSize must be a positive number, got ${batchSize}`,
+    );
+  }
+}
+
 export class Index<T extends RecordAny = RecordAny> {
   uid: string;
   primaryKey: string | undefined;
@@ -407,6 +420,7 @@ export class Index<T extends RecordAny = RecordAny> {
     batchSize = 1000,
     options?: DocumentOptions,
   ): EnqueuedTaskPromise[] {
+    assertValidBatchSize(batchSize);
     const updates: EnqueuedTaskPromise[] = [];
 
     for (let i = 0; i < documents.length; i += batchSize) {
@@ -449,6 +463,7 @@ export class Index<T extends RecordAny = RecordAny> {
     batchSize = 1000,
     options?: DocumentOptions,
   ): EnqueuedTaskPromise[] {
+    assertValidBatchSize(batchSize);
     const updates: EnqueuedTaskPromise[] = [];
 
     for (let i = 0; i < documents.length; i += batchSize) {
