@@ -510,6 +510,22 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         expect(task.status).toEqual("failed");
       });
 
+      test(`${permission} key: deleteIndexIfExists returns false when the index does not exist`, async () => {
+        const client = await getClient(permission);
+
+        expect(await client.deleteIndexIfExists(indexNoPk.uid)).toBe(false);
+      });
+
+      test(`${permission} key: deleteIndexIfExists returns true and deletes an existing index`, async () => {
+        const client = await getClient(permission);
+        await client.createIndex(indexNoPk.uid).waitTask();
+
+        expect(await client.deleteIndexIfExists(indexNoPk.uid)).toBe(true);
+
+        const { results } = await client.getIndexes();
+        expect(results.map((index) => index.uid)).not.toContain(indexNoPk.uid);
+      });
+
       test(`${permission} key: fetch deleted index should fail`, async () => {
         const client = await getClient(permission);
         const index = client.index(indexPk.uid);
