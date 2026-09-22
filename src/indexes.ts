@@ -140,9 +140,14 @@ export class Index<T extends RecordAny = RecordAny> {
       else return undefined;
     };
 
+    // `hybrid` is destructured out (and not spread) because `SearchRequestGET`
+    // has no `hybrid` field of its own: the GET endpoint expects it flattened
+    // into `hybridEmbedder`/`hybridSemanticRatio` query params instead.
+    const { hybrid, ...restOptions } = options ?? {};
+
     const getParams: SearchRequestGET = {
       q: query,
-      ...options,
+      ...restOptions,
       filter: parseFilter(options?.filter),
       sort: options?.sort?.join(","),
       facets: options?.facets?.join(","),
@@ -151,6 +156,8 @@ export class Index<T extends RecordAny = RecordAny> {
       attributesToHighlight: options?.attributesToHighlight?.join(","),
       vector: options?.vector?.join(","),
       attributesToSearchOn: options?.attributesToSearchOn?.join(","),
+      hybridEmbedder: hybrid?.embedder,
+      hybridSemanticRatio: hybrid?.semanticRatio,
     };
 
     return await this.httpRequest.get<SearchResponse<D, S>>({
