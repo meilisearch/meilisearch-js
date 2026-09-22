@@ -393,7 +393,7 @@ export class Meilisearch {
    * Update a dynamic search rule
    *
    * @param uid - Dynamic search rule UID
-   * @param rule - Dynamic search rule to update
+   * @param rule - Partial search rule with pin and scale actions
    * @returns Promise returning an enqueued task
    * @experimental
    * @see {@link https://www.meilisearch.com/docs/reference/api/search-rules/create-or-update-a-search-rule}
@@ -427,7 +427,7 @@ export class Meilisearch {
    *
    * @returns Promise returning an enqueued task
    * @experimental
-   * @see {@link https://www.meilisearch.com/docs/reference/api/search-rules/delete-a-search-rule}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/search-rules/delete-all-search-rules}
    */
   deleteAllDynamicSearchRules(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({

@@ -9,12 +9,18 @@ export type SearchRuleListPayload = {
   filter?: SearchRuleListFilterPayload | null;
 };
 
+/** Pin a document to a fixed result position */
 export type SearchRulePin = {
   id: string;
   position: number;
   indexUid?: string | null;
 };
 
+/**
+ * Scale selected documents' relevancy
+ *
+ * Weight `> 1` boosts, `< 1` demotes, and `0` hides.
+ */
 export type SearchRuleScale = {
   weight: number;
   ids?: string[];
@@ -22,6 +28,7 @@ export type SearchRuleScale = {
   indexUid?: string | null;
 };
 
+/** Actions applied when the rule matches */
 export type SearchRuleActions = {
   pin?: SearchRulePin[];
   scale?: SearchRuleScale[];
