@@ -59,7 +59,7 @@ import {
 } from "./task.js";
 import { BatchClient } from "./batch.js";
 import { ChatWorkspace } from "./chat-workspace.js";
-import type { MeilisearchApiError } from "./errors/index.js";
+import { MeilisearchError } from "./errors/index.js";
 
 export class Meilisearch {
   config: Config;
@@ -203,19 +203,22 @@ export class Meilisearch {
    *   successfully, otherwise false if it does not exist
    */
   async deleteIndexIfExists(uid: string): Promise<boolean> {
-    try {
-      await this.deleteIndex(uid);
-      return true;
-    } catch (e) {
-      if (
-        (e as MeilisearchApiError)?.cause?.code ===
-        ErrorStatusCode.INDEX_NOT_FOUND
-      ) {
-        return false;
-      }
+    // The HTTP API accepts the deletion of an index that does not exist and
+    // enqueues a task that fails with `index_not_found`, so the outcome is only
+    // known once that task has been processed.
+    const task = await this.deleteIndex(uid).waitTask();
 
-      throw e;
+    if (task.status === "succeeded") {
+      return true;
     }
+
+    if (task.error?.code === ErrorStatusCode.INDEX_NOT_FOUND) {
+      return false;
+    }
+
+    throw new MeilisearchError(
+      task.error?.message ?? `Failed to delete index \`${uid}\`.`,
+    );
   }
 
   /**
