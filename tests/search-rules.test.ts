@@ -160,4 +160,30 @@ describe("dynamic search rules", () => {
     expect(response).toHaveProperty("uid", "hide-movie");
     expect(response).toHaveProperty("actions", payload.actions);
   });
+
+  it("can create or update a dynamic search rule with a nested scale filter", async () => {
+    const payload: SearchRuleUpdatePayload = {
+      actions: {
+        scale: [
+          {
+            filter: [["series = batman", "series = superman"], "year > 2000"],
+            weight: 2.0,
+          },
+        ],
+      },
+    };
+
+    const task = await adminClient
+      .updateDynamicSearchRule("nested-scale-filter", payload)
+      .waitTask();
+
+    expect(task).toHaveProperty("type", "dsrUpdate");
+    expect(task).toHaveProperty("status", "succeeded");
+
+    const response = await adminClient.getDynamicSearchRule(
+      "nested-scale-filter",
+    );
+    expect(response).toHaveProperty("uid", "nested-scale-filter");
+    expect(response).toHaveProperty("actions", payload.actions);
+  });
 });

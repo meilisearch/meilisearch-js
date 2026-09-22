@@ -1,3 +1,5 @@
+import type { Filter } from "./types.js";
+
 export type SearchRuleListFilterPayload = {
   query?: string | null;
   active?: boolean | null;
@@ -24,7 +26,7 @@ export type SearchRulePin = {
 export type SearchRuleScale = {
   weight: number;
   ids?: string[];
-  filter?: string;
+  filter?: Filter;
   indexUid?: string | null;
 };
 
