@@ -9,19 +9,22 @@ export type SearchRuleListPayload = {
   filter?: SearchRuleListFilterPayload | null;
 };
 
-export type SearchRuleSelector = {
-  indexUid?: string | null;
+export type SearchRulePin = {
   id: string;
-};
-
-export type SearchRulePinAction = {
-  type: "pin";
   position: number;
+  indexUid?: string | null;
 };
 
-export type SearchRuleAction = {
-  selector: SearchRuleSelector;
-  action: SearchRulePinAction;
+export type SearchRuleScale = {
+  weight: number;
+  ids?: string[];
+  filter?: string;
+  indexUid?: string | null;
+};
+
+export type SearchRuleActions = {
+  pin?: SearchRulePin[];
+  scale?: SearchRuleScale[];
 };
 
 export type SearchRuleQueryCondition = {
@@ -55,7 +58,7 @@ export type SearchRule = {
   precedence?: number | null;
   active?: boolean;
   conditions?: SearchRuleConditions;
-  actions: SearchRuleAction[];
+  actions: SearchRuleActions;
 };
 
 /** Partial update payload for a dynamic search rule */
@@ -64,5 +67,5 @@ export type SearchRuleUpdatePayload = {
   precedence?: number | null;
   active?: boolean | null;
   conditions?: SearchRuleConditions | null;
-  actions?: SearchRuleAction[] | null;
+  actions?: SearchRuleActions | null;
 };
