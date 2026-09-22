@@ -650,10 +650,9 @@ patch_dynamic_search_rule_1: |-
     conditions: {
       query: { words: 'invoice' }
     },
-    actions: [{
-      selector: { indexUid: 'movies', id: '299537' },
-      action: { type: 'pin', position: 0 }
-    }]
+    actions: {
+      pin: [{ id: '299537', position: 0, indexUid: 'movies' }]
+    }
   })
 delete_dynamic_search_rule_1: |-
   client.deleteDynamicSearchRule('RULE_UID')
