@@ -9,6 +9,7 @@ import {
   type MockInstance,
 } from "vitest";
 import { HttpRequests } from "../src/http-requests.js";
+import { Meilisearch } from "../src/meilisearch.js";
 import type { Config } from "../src/types/index.js";
 import {
   MeilisearchError,
@@ -222,5 +223,28 @@ describe("HttpRequests", () => {
     assert.isDefined(fetchSpy.mock.lastCall);
     const [, init] = fetchSpy.mock.lastCall as [URL, RequestInit];
     expect(init.credentials).toBe("omit");
+  });
+
+  test("Index#searchGet translates a `hybrid` object into `hybridEmbedder`/`hybridSemanticRatio` query params", async () => {
+    fetchSpy.mockResolvedValue(
+      new Response(JSON.stringify({ hits: [] }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const client = new Meilisearch({ host: "http://localhost:7700" });
+
+    await client.index("movies").searchGet("prince", {
+      hybrid: { embedder: "default", semanticRatio: 0.5 },
+    });
+
+    assert.isDefined(fetchSpy.mock.lastCall);
+    const [url] = fetchSpy.mock.lastCall as [URL, RequestInit];
+
+    expect(url.searchParams.get("hybridEmbedder")).toBe("default");
+    expect(url.searchParams.get("hybridSemanticRatio")).toBe("0.5");
+    expect(url.searchParams.has("hybrid")).toBe(false);
+    expect(url.search).not.toContain("object+Object");
   });
 });
