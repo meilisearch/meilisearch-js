@@ -15,6 +15,7 @@ import type {
   IndexObject,
   IndexOptions,
   IndexStats,
+  StatsParams,
   DocumentsQuery,
   DocumentQuery,
   DocumentOptions,
@@ -287,11 +288,14 @@ export class Index<T extends RecordAny = RecordAny> {
   /**
    * Get stats of an index
    *
+   * @param params - Optional parameters to control size formatting and
+   *   internal database size reporting
    * @returns Promise containing object with stats of the index
    */
-  async getStats(): Promise<IndexStats> {
+  async getStats(params?: StatsParams): Promise<IndexStats> {
     return await this.httpRequest.get<IndexStats>({
       path: `indexes/${this.uid}/stats`,
+      params,
     });
   }
 
