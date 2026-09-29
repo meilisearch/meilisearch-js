@@ -106,9 +106,9 @@ async function* parseJsonEvents<T>(
         : decoder.decode(value, { stream: true });
 
       for (;;) {
-        const lineEnd = /\r\n|\r|\n/.exec(buffer);
+        const lineEnd = buffer.indexOf("\n");
 
-        if (lineEnd === null) {
+        if (lineEnd === -1) {
           if (buffer.length > MAX_SSE_LINE_LENGTH) {
             throw new MeilisearchError(
               `A line of the event stream exceeds ${MAX_SSE_LINE_LENGTH} characters`,
@@ -117,17 +117,10 @@ async function* parseJsonEvents<T>(
           break;
         }
 
-        // A trailing CR may be the first half of a CRLF split between chunks.
-        if (
-          lineEnd[0] === "\r" &&
-          lineEnd.index === buffer.length - 1 &&
-          !done
-        ) {
-          break;
-        }
-
-        const line = buffer.slice(0, lineEnd.index);
-        buffer = buffer.slice(lineEnd.index + lineEnd[0].length);
+        // Meilisearch ends its lines with LF; dropping a trailing CR also
+        // accepts CRLF, wherever a chunk boundary falls.
+        const line = buffer.slice(0, lineEnd).replace(/\r$/, "");
+        buffer = buffer.slice(lineEnd + 1);
 
         if (line === "") {
           if (data.length > 0) {

@@ -139,9 +139,9 @@ describe("Server-sent events reader", () => {
       expected: [{ uid: 3 }, { uid: 4 }],
     },
     {
-      name: "CRLF, CR alone, and a CRLF split between chunks",
-      chunks: ["data: 1\r\n\r\n", "data: 2\r\rdata: 3\r", "\n\r", "\n"],
-      expected: [1, 2, 3],
+      name: "CRLF endings, one of them split between chunks",
+      chunks: ["data: 1\r\n\r\ndata: 2\r", "\n\r\n"],
+      expected: [1, 2],
     },
     {
       name: "multi-line data joined with a newline",
