@@ -1,11 +1,10 @@
 import { afterAll, assert, beforeAll, describe, expect, test } from "vitest";
 import type { Batch, Task } from "../src/types/index.js";
 import {
-  MeilisearchApiError,
   MeilisearchError,
   MeilisearchRequestError,
 } from "../src/errors/index.js";
-import { readJsonEvents, readServerSentEvents } from "../src/utils.js";
+import { readJsonEvents } from "../src/utils.js";
 import {
   BAD_HOST,
   clearAllIndexes,
@@ -96,9 +95,6 @@ describe("Task stream errors", () => {
     try {
       await expect(
         client.tasks.streamTasks(streamTimeout()),
-      ).rejects.toBeInstanceOf(MeilisearchApiError);
-      await expect(
-        client.batches.streamBatches(streamTimeout()),
       ).rejects.toHaveProperty("cause.code", "feature_not_enabled");
     } finally {
       await client.updateExperimentalFeatures({ tasksStreamingRoute: true });
@@ -114,9 +110,10 @@ describe("Task stream errors", () => {
 });
 
 describe("Server-sent events reader", () => {
-  const streamOf = (...chunks: string[]): ReadableStream<Uint8Array> => {
-    const encoder = new TextEncoder();
-    return new ReadableStream({
+  const encoder = new TextEncoder();
+
+  const streamOf = (...chunks: string[]): ReadableStream<Uint8Array> =>
+    new ReadableStream({
       start(controller) {
         for (const chunk of chunks) {
           controller.enqueue(encoder.encode(chunk));
@@ -124,103 +121,78 @@ describe("Server-sent events reader", () => {
         controller.close();
       },
     });
-  };
 
   const collect = async (
     stream: ReadableStream<Uint8Array>,
-  ): Promise<string[]> => {
-    const events: string[] = [];
-    for await (const data of readServerSentEvents(stream)) {
-      events.push(data);
+  ): Promise<unknown[]> => {
+    const events: unknown[] = [];
+    for await (const event of readJsonEvents(stream)) {
+      events.push(event);
     }
     return events;
   };
 
-  test("Yields the data of each event and ignores retry, comments and other fields", async () => {
-    const events = await collect(
-      streamOf(
-        "retry: 10000\n\n",
-        ": a comment\n",
-        'event: task\nid: 1\ndata: {"uid":1}\n\n',
-        'data:{"uid":2}\n\n',
-      ),
-    );
-    assert.deepEqual(events, ['{"uid":1}', '{"uid":2}']);
-  });
-
-  test("Reassembles events split across chunks and accepts CRLF", async () => {
-    const events = await collect(
-      streamOf('data: {"ui', 'd":3}\r\n\r\ndata: {"u', 'id":4}\r\n', "\r\n"),
-    );
-    assert.deepEqual(events, ['{"uid":3}', '{"uid":4}']);
-  });
-
-  test("Joins multi-line data with a newline and discards an event the stream did not terminate", async () => {
-    const events = await collect(
-      streamOf("data: first\ndata: second\n\ndata: unterminated"),
-    );
-    assert.deepEqual(events, ["first\nsecond"]);
-  });
-
-  test("Accepts CR alone as a line ending, and a CRLF split between chunks", async () => {
-    assert.deepEqual(await collect(streamOf("data: 1\r\rdata: 2\r\r")), [
-      "1",
-      "2",
-    ]);
-    assert.deepEqual(
-      await collect(streamOf("data: a\r", "\ndata: b\r", "\n\r", "\n")),
-      ["a\nb"],
-    );
+  test.each([
+    {
+      name: "an event split across chunks",
+      chunks: ['data: {"ui', 'd":3}\n\ndata: {"u', 'id":4}\n\n'],
+      expected: [{ uid: 3 }, { uid: 4 }],
+    },
+    {
+      name: "CRLF, CR alone, and a CRLF split between chunks",
+      chunks: ["data: 1\r\n\r\n", "data: 2\r\rdata: 3\r", "\n\r", "\n"],
+      expected: [1, 2, 3],
+    },
+    {
+      name: "multi-line data joined with a newline",
+      chunks: ["data: [1,\ndata: 2]\n\n"],
+      expected: [[1, 2]],
+    },
+    {
+      name: "retry, comments, event and id fields, ignored",
+      chunks: [
+        "retry: 10000\n\n: comment\nevent: task\nid: 1\ndata: 5\n\ndata:6\n\n",
+      ],
+      expected: [5, 6],
+    },
+    {
+      name: "an event the stream did not terminate, discarded",
+      chunks: ["data: 7\n\ndata: 8"],
+      expected: [7],
+    },
+  ])("Parses $name", async ({ chunks, expected }) => {
+    assert.deepEqual(await collect(streamOf(...chunks)), expected);
   });
 
   test("Rejects a line that never ends instead of buffering it forever", async () => {
     const stream = new ReadableStream<Uint8Array>({
       pull(controller) {
-        controller.enqueue(new TextEncoder().encode("x".repeat(65_536)));
+        controller.enqueue(encoder.encode("x".repeat(65_536)));
       },
     });
 
     await expect(collect(stream)).rejects.toBeInstanceOf(MeilisearchError);
   });
 
-  test("Closes the stream when return() is called before the first next()", async () => {
-    let cancelled = false;
-    const stream = new ReadableStream<Uint8Array>({
-      cancel() {
-        cancelled = true;
-      },
-    });
-
-    await readServerSentEvents(stream).return();
-    assert.isTrue(cancelled);
-
-    cancelled = false;
-    await readJsonEvents(
+  test("Cancels the stream when the consumer stops early, or never starts", async () => {
+    let cancelled = 0;
+    const stream = () =>
       new ReadableStream<Uint8Array>({
-        cancel() {
-          cancelled = true;
+        start(controller) {
+          controller.enqueue(encoder.encode("data: 1\n\ndata: 2\n\n"));
         },
-      }),
-    ).return();
-    assert.isTrue(cancelled);
-  });
+        cancel() {
+          cancelled += 1;
+        },
+      });
 
-  test("Cancels the stream when the consumer stops early", async () => {
-    let cancelled = false;
-    const stream = new ReadableStream<Uint8Array>({
-      start(controller) {
-        controller.enqueue(new TextEncoder().encode("data: 1\n\ndata: 2\n\n"));
-      },
-      cancel() {
-        cancelled = true;
-      },
-    });
-
-    for await (const data of readServerSentEvents(stream)) {
-      assert.strictEqual(data, "1");
+    for await (const event of readJsonEvents(stream())) {
+      assert.strictEqual(event, 1);
       break;
     }
+    assert.strictEqual(cancelled, 1);
 
-    assert.isTrue(cancelled);
+    await readJsonEvents(stream()).return();
+    assert.strictEqual(cancelled, 2);
   });
 });

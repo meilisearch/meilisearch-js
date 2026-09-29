@@ -79,44 +79,20 @@ function parseTaskDocuments<D extends RecordAny = RecordAny>(
  */
 const MAX_SSE_LINE_LENGTH = 1_048_576;
 
-/** Cancels a reader once, and never lets the cancellation mask another error. */
-function cancelOnce(reader: ReadableStreamDefaultReader<Uint8Array>) {
-  let cancelled = false;
-  return async (): Promise<void> => {
-    if (cancelled) {
-      return;
-    }
-    cancelled = true;
-    try {
-      await reader.cancel();
-    } catch {
-      // The stream is already closed or errored: nothing left to cancel.
-    }
-  };
-}
-
-/**
- * Makes `return()` close the underlying stream even when the generator was
- * never started. A generator's `finally` only runs once its body has started,
- * so a caller that abandons the iterator before the first `next()` would
- * otherwise leave the connection open.
- */
-function closeOnReturn<T>(
-  generator: AsyncGenerator<T, void, undefined>,
-  close: () => Promise<void>,
-): AsyncGenerator<T, void, undefined> {
-  const originalReturn = generator.return.bind(generator);
-  generator.return = async (value?: void | PromiseLike<void>) => {
-    await close();
-    return await originalReturn(value);
-  };
-  return generator;
-}
-
-async function* parseServerSentEvents(
+/** Cancels a reader without masking the error that may have stopped the read. */
+async function cancelQuietly(
   reader: ReadableStreamDefaultReader<Uint8Array>,
-  cancel: () => Promise<void>,
-): AsyncGenerator<string, void, undefined> {
+): Promise<void> {
+  try {
+    await reader.cancel();
+  } catch {
+    // The stream is already closed or errored: nothing left to cancel.
+  }
+}
+
+async function* parseJsonEvents<T>(
+  reader: ReadableStreamDefaultReader<Uint8Array>,
+): AsyncGenerator<T, void, undefined> {
   const decoder = new TextDecoder();
   let buffer = "";
   let data: string[] = [];
@@ -130,11 +106,9 @@ async function* parseServerSentEvents(
         : decoder.decode(value, { stream: true });
 
       for (;;) {
-        const cr = buffer.indexOf("\r");
-        const lf = buffer.indexOf("\n");
-        const end = cr === -1 ? lf : lf === -1 ? cr : Math.min(cr, lf);
+        const lineEnd = /\r\n|\r|\n/.exec(buffer);
 
-        if (end === -1) {
+        if (lineEnd === null) {
           if (buffer.length > MAX_SSE_LINE_LENGTH) {
             throw new MeilisearchError(
               `A line of the event stream exceeds ${MAX_SSE_LINE_LENGTH} characters`,
@@ -144,36 +118,26 @@ async function* parseServerSentEvents(
         }
 
         // A trailing CR may be the first half of a CRLF split between chunks.
-        if (buffer[end] === "\r" && end === buffer.length - 1 && !done) {
+        if (
+          lineEnd[0] === "\r" &&
+          lineEnd.index === buffer.length - 1 &&
+          !done
+        ) {
           break;
         }
 
-        const line = buffer.slice(0, end);
-        const delimiterLength =
-          buffer[end] === "\r" && buffer[end + 1] === "\n" ? 2 : 1;
-        buffer = buffer.slice(end + delimiterLength);
+        const line = buffer.slice(0, lineEnd.index);
+        buffer = buffer.slice(lineEnd.index + lineEnd[0].length);
 
         if (line === "") {
           if (data.length > 0) {
-            yield data.join("\n");
+            yield JSON.parse(data.join("\n")) as T;
             data = [];
           }
-          continue;
+        } else if (line.startsWith("data:")) {
+          data.push(line.slice(line.startsWith("data: ") ? 6 : 5));
         }
-
-        if (line.startsWith(":")) {
-          continue;
-        }
-
-        const colon = line.indexOf(":");
-        const field = colon === -1 ? line : line.slice(0, colon);
-
-        if (field === "data") {
-          const fieldValue = colon === -1 ? "" : line.slice(colon + 1);
-          data.push(
-            fieldValue.startsWith(" ") ? fieldValue.slice(1) : fieldValue,
-          );
-        }
+        // Comments and the `event`, `id` and `retry` fields are ignored.
       }
 
       if (done) {
@@ -182,46 +146,34 @@ async function* parseServerSentEvents(
       }
     }
   } finally {
-    await cancel();
+    await cancelQuietly(reader);
   }
 }
 
 /**
- * Reads a `text/event-stream` body and yields the `data` of each event, as sent
- * by the `tasks/stream` and `batches/stream` routes.
+ * Reads a `text/event-stream` body and yields the `data` of each event parsed
+ * as JSON, as sent by the `tasks/stream` and `batches/stream` routes.
  *
  * @remarks
- * Multi-line `data` fields are joined with a newline, as the specification
- * requires. Comment lines and the `event`, `id` and `retry` fields are ignored,
- * and so is an event the stream ends in the middle of. Leaving the loop, or
- * calling `return()` on the generator, cancels the stream, which closes the
- * connection.
+ * Leaving the loop, or calling `return()` on the generator, cancels the stream,
+ * which closes the connection.
  * @see {@link https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation}
  */
-function readServerSentEvents(
-  stream: ReadableStream<Uint8Array>,
-): AsyncGenerator<string, void, undefined> {
-  const reader = stream.getReader();
-  const cancel = cancelOnce(reader);
-  return closeOnReturn(parseServerSentEvents(reader, cancel), cancel);
-}
-
-async function* mapJsonEvents<T>(
-  events: AsyncGenerator<string, void, undefined>,
-): AsyncGenerator<T, void, undefined> {
-  for await (const data of events) {
-    yield JSON.parse(data) as T;
-  }
-}
-
-/** Parses each event of a `text/event-stream` body as JSON. */
 function readJsonEvents<T>(
   stream: ReadableStream<Uint8Array>,
 ): AsyncGenerator<T, void, undefined> {
-  const events = readServerSentEvents(stream);
-  return closeOnReturn(mapJsonEvents<T>(events), async () => {
-    await events.return();
-  });
+  const reader = stream.getReader();
+  const events = parseJsonEvents<T>(reader);
+
+  // The generator's `finally` only runs once its body has started: a caller
+  // that abandons the iterator before the first `next()` must still close it.
+  const generatorReturn = events.return.bind(events);
+  events.return = async (value?: void | PromiseLike<void>) => {
+    await cancelQuietly(reader);
+    return await generatorReturn(value);
+  };
+
+  return events;
 }
 
 export {
@@ -230,6 +182,5 @@ export {
   addTrailingSlash,
   readStreamAsText,
   parseTaskDocuments,
-  readServerSentEvents,
   readJsonEvents,
 };
