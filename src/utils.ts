@@ -1,3 +1,4 @@
+import { MeilisearchError } from "./errors/index.js";
 import type { RecordAny } from "./types/index.js";
 
 async function sleep(ms: number): Promise<void> {
@@ -72,19 +73,50 @@ function parseTaskDocuments<D extends RecordAny = RecordAny>(
 }
 
 /**
- * Reads a `text/event-stream` body and yields the `data` of each event, as sent
- * by the `tasks/stream` and `batches/stream` routes.
- *
- * @remarks
- * Multi-line `data` fields are joined with a newline, as the specification
- * requires. Comment lines and the `event`, `id` and `retry` fields are ignored.
- * Leaving the loop cancels the stream, which closes the connection.
- * @see {@link https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation}
+ * Longest line accepted from a `text/event-stream` body. A task or batch event
+ * weighs a few kilobytes; a peer that never ends a line must not grow the
+ * buffer without bound.
  */
-async function* readServerSentEvents(
-  stream: ReadableStream<Uint8Array>,
+const MAX_SSE_LINE_LENGTH = 1_048_576;
+
+/** Cancels a reader once, and never lets the cancellation mask another error. */
+function cancelOnce(reader: ReadableStreamDefaultReader<Uint8Array>) {
+  let cancelled = false;
+  return async (): Promise<void> => {
+    if (cancelled) {
+      return;
+    }
+    cancelled = true;
+    try {
+      await reader.cancel();
+    } catch {
+      // The stream is already closed or errored: nothing left to cancel.
+    }
+  };
+}
+
+/**
+ * Makes `return()` close the underlying stream even when the generator was
+ * never started. A generator's `finally` only runs once its body has started,
+ * so a caller that abandons the iterator before the first `next()` would
+ * otherwise leave the connection open.
+ */
+function closeOnReturn<T>(
+  generator: AsyncGenerator<T, void, undefined>,
+  close: () => Promise<void>,
+): AsyncGenerator<T, void, undefined> {
+  const originalReturn = generator.return.bind(generator);
+  generator.return = async (value?: void | PromiseLike<void>) => {
+    await close();
+    return await originalReturn(value);
+  };
+  return generator;
+}
+
+async function* parseServerSentEvents(
+  reader: ReadableStreamDefaultReader<Uint8Array>,
+  cancel: () => Promise<void>,
 ): AsyncGenerator<string, void, undefined> {
-  const reader = stream.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
   let data: string[] = [];
@@ -97,18 +129,29 @@ async function* readServerSentEvents(
         ? decoder.decode()
         : decoder.decode(value, { stream: true });
 
-      // A last event without a trailing newline is still an event.
-      if (done && buffer !== "" && !buffer.endsWith("\n")) {
-        buffer += "\n";
-      }
+      for (;;) {
+        const cr = buffer.indexOf("\r");
+        const lf = buffer.indexOf("\n");
+        const end = cr === -1 ? lf : lf === -1 ? cr : Math.min(cr, lf);
 
-      for (
-        let newline = buffer.indexOf("\n");
-        newline !== -1;
-        newline = buffer.indexOf("\n")
-      ) {
-        const line = buffer.slice(0, newline).replace(/\r$/, "");
-        buffer = buffer.slice(newline + 1);
+        if (end === -1) {
+          if (buffer.length > MAX_SSE_LINE_LENGTH) {
+            throw new MeilisearchError(
+              `A line of the event stream exceeds ${MAX_SSE_LINE_LENGTH} characters`,
+            );
+          }
+          break;
+        }
+
+        // A trailing CR may be the first half of a CRLF split between chunks.
+        if (buffer[end] === "\r" && end === buffer.length - 1 && !done) {
+          break;
+        }
+
+        const line = buffer.slice(0, end);
+        const delimiterLength =
+          buffer[end] === "\r" && buffer[end + 1] === "\n" ? 2 : 1;
+        buffer = buffer.slice(end + delimiterLength);
 
         if (line === "") {
           if (data.length > 0) {
@@ -134,24 +177,51 @@ async function* readServerSentEvents(
       }
 
       if (done) {
-        if (data.length > 0) {
-          yield data.join("\n");
-        }
+        // The specification discards an event the stream did not terminate.
         return;
       }
     }
   } finally {
-    await reader.cancel();
+    await cancel();
+  }
+}
+
+/**
+ * Reads a `text/event-stream` body and yields the `data` of each event, as sent
+ * by the `tasks/stream` and `batches/stream` routes.
+ *
+ * @remarks
+ * Multi-line `data` fields are joined with a newline, as the specification
+ * requires. Comment lines and the `event`, `id` and `retry` fields are ignored,
+ * and so is an event the stream ends in the middle of. Leaving the loop, or
+ * calling `return()` on the generator, cancels the stream, which closes the
+ * connection.
+ * @see {@link https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation}
+ */
+function readServerSentEvents(
+  stream: ReadableStream<Uint8Array>,
+): AsyncGenerator<string, void, undefined> {
+  const reader = stream.getReader();
+  const cancel = cancelOnce(reader);
+  return closeOnReturn(parseServerSentEvents(reader, cancel), cancel);
+}
+
+async function* mapJsonEvents<T>(
+  events: AsyncGenerator<string, void, undefined>,
+): AsyncGenerator<T, void, undefined> {
+  for await (const data of events) {
+    yield JSON.parse(data) as T;
   }
 }
 
 /** Parses each event of a `text/event-stream` body as JSON. */
-async function* readJsonEvents<T>(
+function readJsonEvents<T>(
   stream: ReadableStream<Uint8Array>,
 ): AsyncGenerator<T, void, undefined> {
-  for await (const data of readServerSentEvents(stream)) {
-    yield JSON.parse(data) as T;
-  }
+  const events = readServerSentEvents(stream);
+  return closeOnReturn(mapJsonEvents<T>(events), async () => {
+    await events.return();
+  });
 }
 
 export {

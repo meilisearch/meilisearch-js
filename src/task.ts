@@ -113,9 +113,9 @@ export class TaskClient {
    * {@link Meilisearch.updateExperimentalFeatures}. The returned promise
    * resolves once the connection is open: only the changes that happen after
    * that point are streamed. To follow one task, open the stream before
-   * enqueuing the task, then filter the events on its `uid`. Leaving the loop
-   * closes the connection; an {@link AbortSignal} in `extraRequestInit` closes
-   * it from the outside.
+   * enqueuing the task, then filter the events on its `uid`. Leaving the loop,
+   * or calling `return()` on the generator, closes the connection; an
+   * {@link AbortSignal} in `extraRequestInit` closes it from the outside.
    * @see {@link https://github.com/orgs/meilisearch/discussions/889}
    */
   async streamTasks(

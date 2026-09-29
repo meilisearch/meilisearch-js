@@ -2,9 +2,10 @@ import { afterAll, assert, beforeAll, describe, expect, test } from "vitest";
 import type { Batch, Task } from "../src/types/index.js";
 import {
   MeilisearchApiError,
+  MeilisearchError,
   MeilisearchRequestError,
 } from "../src/errors/index.js";
-import { readServerSentEvents } from "../src/utils.js";
+import { readJsonEvents, readServerSentEvents } from "../src/utils.js";
 import {
   BAD_HOST,
   clearAllIndexes,
@@ -154,11 +155,54 @@ describe("Server-sent events reader", () => {
     assert.deepEqual(events, ['{"uid":3}', '{"uid":4}']);
   });
 
-  test("Joins multi-line data with a newline and flushes the last event without a blank line", async () => {
+  test("Joins multi-line data with a newline and discards an event the stream did not terminate", async () => {
     const events = await collect(
-      streamOf("data: first\ndata: second\n\ndata: last"),
+      streamOf("data: first\ndata: second\n\ndata: unterminated"),
     );
-    assert.deepEqual(events, ["first\nsecond", "last"]);
+    assert.deepEqual(events, ["first\nsecond"]);
+  });
+
+  test("Accepts CR alone as a line ending, and a CRLF split between chunks", async () => {
+    assert.deepEqual(await collect(streamOf("data: 1\r\rdata: 2\r\r")), [
+      "1",
+      "2",
+    ]);
+    assert.deepEqual(
+      await collect(streamOf("data: a\r", "\ndata: b\r", "\n\r", "\n")),
+      ["a\nb"],
+    );
+  });
+
+  test("Rejects a line that never ends instead of buffering it forever", async () => {
+    const stream = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        controller.enqueue(new TextEncoder().encode("x".repeat(65_536)));
+      },
+    });
+
+    await expect(collect(stream)).rejects.toBeInstanceOf(MeilisearchError);
+  });
+
+  test("Closes the stream when return() is called before the first next()", async () => {
+    let cancelled = false;
+    const stream = new ReadableStream<Uint8Array>({
+      cancel() {
+        cancelled = true;
+      },
+    });
+
+    await readServerSentEvents(stream).return();
+    assert.isTrue(cancelled);
+
+    cancelled = false;
+    await readJsonEvents(
+      new ReadableStream<Uint8Array>({
+        cancel() {
+          cancelled = true;
+        },
+      }),
+    ).return();
+    assert.isTrue(cancelled);
   });
 
   test("Cancels the stream when the consumer stops early", async () => {

@@ -37,9 +37,9 @@ export class BatchClient {
    * Requires the `tasksStreamingRoute` experimental feature, see
    * {@link Meilisearch.updateExperimentalFeatures}. The returned promise
    * resolves once the connection is open: only the changes that happen after
-   * that point are streamed. Leaving the `for await` loop closes the
-   * connection; an {@link AbortSignal} in `extraRequestInit` closes it from the
-   * outside.
+   * that point are streamed. Leaving the loop, or calling `return()` on the
+   * generator, closes the connection; an {@link AbortSignal} in
+   * `extraRequestInit` closes it from the outside.
    * @see {@link https://github.com/orgs/meilisearch/discussions/889}
    */
   async streamBatches(
