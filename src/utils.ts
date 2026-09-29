@@ -73,11 +73,12 @@ function parseTaskDocuments<D extends RecordAny = RecordAny>(
 }
 
 /**
- * Longest line accepted from a `text/event-stream` body. A task or batch event
- * weighs a few kilobytes; a peer that never ends a line must not grow the
- * buffer without bound.
+ * Longest event accepted from a `text/event-stream` body, counting the `data`
+ * lines already received and the line being read. A task or batch event weighs
+ * a few kilobytes; a peer that never ends a line, or never ends an event, must
+ * not grow the buffers without bound.
  */
-const MAX_SSE_LINE_LENGTH = 1_048_576;
+const MAX_SSE_EVENT_LENGTH = 1_048_576;
 
 /** Cancels a reader without masking the error that may have stopped the read. */
 async function cancelQuietly(
@@ -96,6 +97,7 @@ async function* parseJsonEvents<T>(
   const decoder = new TextDecoder();
   let buffer = "";
   let data: string[] = [];
+  let dataLength = 0;
 
   try {
     for (;;) {
@@ -107,13 +109,15 @@ async function* parseJsonEvents<T>(
 
       for (;;) {
         const lineEnd = buffer.indexOf("\n");
+        const lineLength = lineEnd === -1 ? buffer.length : lineEnd;
+
+        if (dataLength + lineLength > MAX_SSE_EVENT_LENGTH) {
+          throw new MeilisearchError(
+            `An event of the stream exceeds ${MAX_SSE_EVENT_LENGTH} characters`,
+          );
+        }
 
         if (lineEnd === -1) {
-          if (buffer.length > MAX_SSE_LINE_LENGTH) {
-            throw new MeilisearchError(
-              `A line of the event stream exceeds ${MAX_SSE_LINE_LENGTH} characters`,
-            );
-          }
           break;
         }
 
@@ -126,9 +130,12 @@ async function* parseJsonEvents<T>(
           if (data.length > 0) {
             yield JSON.parse(data.join("\n")) as T;
             data = [];
+            dataLength = 0;
           }
         } else if (line.startsWith("data:")) {
-          data.push(line.slice(line.startsWith("data: ") ? 6 : 5));
+          const value = line.slice(line.startsWith("data: ") ? 6 : 5);
+          data.push(value);
+          dataLength += value.length;
         }
         // Comments and the `event`, `id` and `retry` fields are ignored.
       }

@@ -164,10 +164,20 @@ describe("Server-sent events reader", () => {
     assert.deepEqual(await collect(streamOf(...chunks)), expected);
   });
 
-  test("Rejects a line that never ends instead of buffering it forever", async () => {
+  test.each([
+    { name: "a line that never ends", chunk: "x".repeat(65_536) },
+    {
+      name: "a complete line longer than the limit",
+      chunk: `data: "${"x".repeat(1_048_577)}"\n\n`,
+    },
+    {
+      name: "an event whose data lines never end",
+      chunk: `data: ${"x".repeat(65_536)}\n`,
+    },
+  ])("Rejects $name instead of buffering it forever", async ({ chunk }) => {
     const stream = new ReadableStream<Uint8Array>({
       pull(controller) {
-        controller.enqueue(encoder.encode("x".repeat(65_536)));
+        controller.enqueue(encoder.encode(chunk));
       },
     });
 
