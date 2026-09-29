@@ -40,7 +40,6 @@ export class BatchClient {
    * that point are streamed. Leaving the loop, or calling `return()` on the
    * generator, closes the connection; an {@link AbortSignal} in
    * `extraRequestInit` closes it from the outside.
-   * @see {@link https://github.com/orgs/meilisearch/discussions/889}
    */
   async streamBatches(
     extraRequestInit?: ExtraRequestInit,

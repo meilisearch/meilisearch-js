@@ -116,7 +116,6 @@ export class TaskClient {
    * enqueuing the task, then filter the events on its `uid`. Leaving the loop,
    * or calling `return()` on the generator, closes the connection; an
    * {@link AbortSignal} in `extraRequestInit` closes it from the outside.
-   * @see {@link https://github.com/orgs/meilisearch/discussions/889}
    */
   async streamTasks(
     extraRequestInit?: ExtraRequestInit,
