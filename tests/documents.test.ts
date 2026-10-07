@@ -1,5 +1,17 @@
-import { afterAll, expect, test, describe, beforeEach } from "vitest";
-import { ErrorStatusCode, type ResourceResults } from "../src/index.js";
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  test,
+  vi,
+} from "vitest";
+import {
+  ErrorStatusCode,
+  MeilisearchError,
+  type ResourceResults,
+} from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -1143,6 +1155,92 @@ describe("Documents tests", () => {
         "message",
         `Request to ${strippedHost}/${route} has failed`,
       );
+    });
+  });
+
+  describe("batchSize validation", () => {
+    beforeEach(() => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(() =>
+        Promise.resolve(
+          new Response(JSON.stringify({ taskUid: 1 }), {
+            status: 202,
+            headers: { "Content-Type": "application/json" },
+          }),
+        ),
+      );
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    describe("addDocumentsInBatches", () => {
+      test("throws on batchSize 0 without firing requests", () => {
+        const client = new Meilisearch({ host: "http://localhost:7700" });
+        expect(() =>
+          client
+            .index("movies")
+            .addDocumentsInBatches([{ id: 1 }, { id: 2 }], 0),
+        ).toThrow(MeilisearchError);
+        expect(globalThis.fetch).not.toHaveBeenCalled();
+      });
+
+      test("throws on NaN batchSize without firing requests", () => {
+        const client = new Meilisearch({ host: "http://localhost:7700" });
+        expect(() =>
+          client.index("movies").addDocumentsInBatches([{ id: 1 }], Number.NaN),
+        ).toThrow(MeilisearchError);
+        expect(globalThis.fetch).not.toHaveBeenCalled();
+      });
+
+      test("throws on fractional batchSize without firing requests", () => {
+        const client = new Meilisearch({ host: "http://localhost:7700" });
+        expect(() =>
+          client.index("movies").addDocumentsInBatches([{ id: 1 }], 2.5),
+        ).toThrow(MeilisearchError);
+        expect(globalThis.fetch).not.toHaveBeenCalled();
+      });
+
+      test("splits valid batches", async () => {
+        const client = new Meilisearch({ host: "http://localhost:7700" });
+        const batches = client
+          .index("movies")
+          .addDocumentsInBatches(
+            [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
+            2,
+          );
+        expect(batches).toHaveLength(3);
+        await Promise.all(batches);
+        expect(vi.mocked(globalThis.fetch)).toHaveBeenCalledTimes(3);
+      });
+    });
+
+    describe("updateDocumentsInBatches", () => {
+      test("throws on negative batchSize without firing requests", () => {
+        const client = new Meilisearch({ host: "http://localhost:7700" });
+        expect(() =>
+          client.index("movies").updateDocumentsInBatches([{ id: 1 }], -5),
+        ).toThrow(MeilisearchError);
+        expect(globalThis.fetch).not.toHaveBeenCalled();
+      });
+
+      test("throws on fractional batchSize without firing requests", () => {
+        const client = new Meilisearch({ host: "http://localhost:7700" });
+        expect(() =>
+          client.index("movies").updateDocumentsInBatches([{ id: 1 }], 1.5),
+        ).toThrow(MeilisearchError);
+        expect(globalThis.fetch).not.toHaveBeenCalled();
+      });
+
+      test("splits valid batches", async () => {
+        const client = new Meilisearch({ host: "http://localhost:7700" });
+        const batches = client
+          .index("movies")
+          .updateDocumentsInBatches([{ id: 1 }, { id: 2 }, { id: 3 }], 2);
+        expect(batches).toHaveLength(2);
+        await Promise.all(batches);
+        expect(vi.mocked(globalThis.fetch)).toHaveBeenCalledTimes(2);
+      });
     });
   });
 });
