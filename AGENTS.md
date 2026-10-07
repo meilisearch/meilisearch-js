@@ -2,7 +2,7 @@
 
 Use `pnpm`, not `npm`.
 
-This repository provides a `docker-compose.yml` that lets you develop and run tests without installing Meilisearch or Node.js locally. The `package` service keeps `node_modules` in a Docker volume, so a host install is not used inside the container. Run `pnpm install` in the container when that volume is empty or `pnpm-lock.yaml` changes.
+This repository provides a `docker-compose.yml` that lets you develop and run tests without installing Meilisearch or Node.js locally.
 
 ## Commmands
 
