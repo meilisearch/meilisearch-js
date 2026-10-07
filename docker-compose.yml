@@ -1,8 +1,8 @@
 services:
   package:
     build:
-      context: ./docker
-      dockerfile: node.Dockerfile
+      context: .
+      dockerfile: docker/node.Dockerfile
     image: meilisearch-js-dev
     tty: true
     stdin_open: true
@@ -10,8 +10,6 @@ services:
     environment:
       - MEILISEARCH_URL=http://meilisearch:7700
     depends_on:
-      - meilisearch
-    links:
       - meilisearch
     volumes:
       - ./:/home/package
