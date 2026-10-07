@@ -140,9 +140,14 @@ export class Index<T extends RecordAny = RecordAny> {
       else return undefined;
     };
 
+    // GET expects `hybridEmbedder` / `hybridSemanticRatio`, not a `hybrid`
+    // object. Only write those params when `hybrid` is present, so an absent
+    // object does not wipe flat query params passed directly.
+    const { hybrid, ...restOptions } = options ?? {};
+
     const getParams: SearchRequestGET = {
       q: query,
-      ...options,
+      ...restOptions,
       filter: parseFilter(options?.filter),
       sort: options?.sort?.join(","),
       facets: options?.facets?.join(","),
@@ -151,6 +156,14 @@ export class Index<T extends RecordAny = RecordAny> {
       attributesToHighlight: options?.attributesToHighlight?.join(","),
       vector: options?.vector?.join(","),
       attributesToSearchOn: options?.attributesToSearchOn?.join(","),
+      ...(hybrid != null
+        ? {
+            hybridEmbedder: hybrid.embedder,
+            ...(hybrid.semanticRatio != null
+              ? { hybridSemanticRatio: hybrid.semanticRatio }
+              : {}),
+          }
+        : {}),
     };
 
     return await this.httpRequest.get<SearchResponse<D, S>>({
