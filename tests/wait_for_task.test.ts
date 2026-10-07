@@ -97,120 +97,114 @@ describe("TaskClient#waitForTask", () => {
     vi.useRealTimers();
   });
 
-  describe("polling", () => {
-    test("resolves once the task leaves enqueued and processing", async () => {
-      const getTask = vi
-        .spyOn(taskClient, "getTask")
-        .mockResolvedValueOnce(task(1, "enqueued"))
-        .mockResolvedValueOnce(task(1, "processing"))
-        .mockResolvedValue(task(1, "succeeded"));
+  test("resolves once the task leaves enqueued and processing", async () => {
+    const getTask = vi
+      .spyOn(taskClient, "getTask")
+      .mockResolvedValueOnce(task(1, "enqueued"))
+      .mockResolvedValueOnce(task(1, "processing"))
+      .mockResolvedValue(task(1, "succeeded"));
+
+    const result = await taskClient.waitForTask(1, {
+      timeout: 0,
+      interval: 0,
+    });
+
+    expect(result.status).toBe("succeeded");
+    expect(getTask).toHaveBeenCalledTimes(3);
+  });
+
+  test.each(["failed", "canceled"] as const)(
+    "returns a %s task without throwing",
+    async (status) => {
+      vi.spyOn(taskClient, "getTask").mockResolvedValue(task(1, status));
 
       const result = await taskClient.waitForTask(1, {
         timeout: 0,
         interval: 0,
       });
 
-      expect(result.status).toBe("succeeded");
-      expect(getTask).toHaveBeenCalledTimes(3);
-    });
+      expect(result.status).toBe(status);
+    },
+  );
 
-    test.each(["failed", "canceled"] as const)(
-      "returns a %s task without throwing",
-      async (status) => {
-        vi.spyOn(taskClient, "getTask").mockResolvedValue(task(1, status));
-
-        const result = await taskClient.waitForTask(1, {
-          timeout: 0,
-          interval: 0,
-        });
-
-        expect(result.status).toBe(status);
-      },
+  test("throws MeilisearchTaskTimeOutError when the task does not finish", async () => {
+    vi.useFakeTimers();
+    vi.spyOn(taskClient, "getTask").mockImplementation((_uid, extra) =>
+      rejectedOnAbort(extra?.signal),
     );
-  });
 
-  describe("timeout", () => {
-    test("throws MeilisearchTaskTimeOutError when the task does not finish", async () => {
-      vi.useFakeTimers();
-      vi.spyOn(taskClient, "getTask").mockImplementation((_uid, extra) =>
-        rejectedOnAbort(extra?.signal),
-      );
+    const pending = taskClient.waitForTask(4, { timeout: 50, interval: 0 });
 
-      const pending = taskClient.waitForTask(4, { timeout: 50, interval: 0 });
-
-      await expect(
-        Promise.all([pending, vi.runAllTimersAsync()]),
-      ).rejects.toMatchObject({
-        name: "MeilisearchTaskTimeOutError",
-        cause: { taskUid: 4, timeout: 50 },
-      });
-    });
-
-    test("does not abort when timeout is less than 1", async () => {
-      const abortControllers = vi.spyOn(globalThis, "AbortController");
-      vi.spyOn(taskClient, "getTask")
-        .mockResolvedValueOnce(task(1, "enqueued"))
-        .mockResolvedValue(task(1, "succeeded"));
-
-      await taskClient.waitForTask(1, { timeout: 0, interval: 0 });
-
-      expect(abortControllers).not.toHaveBeenCalled();
+    await expect(
+      Promise.all([pending, vi.runAllTimersAsync()]),
+    ).rejects.toMatchObject({
+      name: "MeilisearchTaskTimeOutError",
+      cause: { taskUid: 4, timeout: 50 },
     });
   });
 
-  describe("interval", () => {
-    test("sleeps for the given interval between polls", async () => {
-      vi.useFakeTimers();
-      const setTimeoutSpy = vi.spyOn(globalThis, "setTimeout");
-      let polls = 0;
-      vi.spyOn(taskClient, "getTask").mockImplementation(() => {
-        polls += 1;
-        const status =
-          polls === 1 ? "enqueued" : polls === 2 ? "processing" : "succeeded";
+  test("does not abort when timeout is less than 1", async () => {
+    const abortControllers = vi.spyOn(globalThis, "AbortController");
+    vi.spyOn(taskClient, "getTask")
+      .mockResolvedValueOnce(task(1, "enqueued"))
+      .mockResolvedValue(task(1, "succeeded"));
 
-        return Promise.resolve(task(1, status));
-      });
+    await taskClient.waitForTask(1, { timeout: 0, interval: 0 });
 
-      const pending = taskClient.waitForTask(1, { timeout: 0, interval: 25 });
+    expect(abortControllers).not.toHaveBeenCalled();
+  });
 
-      await vi.advanceTimersByTimeAsync(0);
-      expect(polls).toBe(1);
+  test("sleeps for the given interval between polls", async () => {
+    vi.useFakeTimers();
+    const setTimeoutSpy = vi.spyOn(globalThis, "setTimeout");
+    let polls = 0;
+    vi.spyOn(taskClient, "getTask").mockImplementation(() => {
+      polls += 1;
+      const status =
+        polls === 1 ? "enqueued" : polls === 2 ? "processing" : "succeeded";
 
-      await vi.advanceTimersByTimeAsync(24);
-      expect(polls).toBe(1);
-
-      await vi.advanceTimersByTimeAsync(1);
-      expect(polls).toBe(2);
-
-      await vi.advanceTimersByTimeAsync(24);
-      expect(polls).toBe(2);
-
-      await vi.advanceTimersByTimeAsync(1);
-      expect(polls).toBe(3);
-
-      await expect(pending).resolves.toMatchObject({ status: "succeeded" });
-      expect(setTimeoutSpy.mock.calls.map(([, delay]) => delay)).toEqual([
-        25, 25,
-      ]);
+      return Promise.resolve(task(1, status));
     });
 
-    test("does not sleep between polls when interval is less than 1", async () => {
-      const setTimeoutSpy = vi.spyOn(globalThis, "setTimeout");
-      const getTask = vi
-        .spyOn(taskClient, "getTask")
-        .mockResolvedValueOnce(task(1, "enqueued"))
-        .mockResolvedValueOnce(task(1, "processing"))
-        .mockResolvedValue(task(1, "succeeded"));
+    const pending = taskClient.waitForTask(1, { timeout: 0, interval: 25 });
 
-      const result = await taskClient.waitForTask(1, {
-        timeout: 0,
-        interval: 0,
-      });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(polls).toBe(1);
 
-      expect(result.status).toBe("succeeded");
-      expect(getTask).toHaveBeenCalledTimes(3);
-      expect(setTimeoutSpy).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(24);
+    expect(polls).toBe(1);
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(polls).toBe(2);
+
+    await vi.advanceTimersByTimeAsync(24);
+    expect(polls).toBe(2);
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(polls).toBe(3);
+
+    await expect(pending).resolves.toMatchObject({ status: "succeeded" });
+    expect(setTimeoutSpy.mock.calls.map(([, delay]) => delay)).toEqual([
+      25, 25,
+    ]);
+  });
+
+  test("does not sleep between polls when interval is less than 1", async () => {
+    const setTimeoutSpy = vi.spyOn(globalThis, "setTimeout");
+    const getTask = vi
+      .spyOn(taskClient, "getTask")
+      .mockResolvedValueOnce(task(1, "enqueued"))
+      .mockResolvedValueOnce(task(1, "processing"))
+      .mockResolvedValue(task(1, "succeeded"));
+
+    const result = await taskClient.waitForTask(1, {
+      timeout: 0,
+      interval: 0,
     });
+
+    expect(result.status).toBe("succeeded");
+    expect(getTask).toHaveBeenCalledTimes(3);
+    expect(setTimeoutSpy).not.toHaveBeenCalled();
   });
 
   test("rethrows MeilisearchApiError from getTask", async () => {
@@ -229,6 +223,25 @@ describe("TaskClient#waitForTask", () => {
       taskClient.waitForTask(424242424242, { timeout: 0, interval: 0 }),
     ).rejects.toBe(apiError);
   });
+
+  describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+    "$permission key",
+    ({ permission }) => {
+      beforeEach(async () => {
+        vi.useRealTimers();
+        const client = await getClient("Master");
+        await client.createIndex(index.uid).waitTask();
+      });
+
+      test(`${permission} key: Tests to wait for task that doesn't exist`, async () => {
+        const client = await getClient(permission);
+
+        await expect(
+          client.tasks.waitForTask(424242424242),
+        ).rejects.toHaveProperty("name", "MeilisearchApiError");
+      });
+    },
+  );
 });
 
 describe("TaskClient#waitForTasks", () => {
@@ -297,6 +310,59 @@ describe("TaskClient#waitForTasks", () => {
         .filter((delay) => delay === 80),
     ).toHaveLength(2);
   });
+
+  describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+    "$permission key",
+    ({ permission }) => {
+      beforeEach(async () => {
+        vi.useRealTimers();
+        const client = await getClient("Master");
+        await client.createIndex(index.uid).waitTask();
+      });
+
+      test(`${permission} key: Tests wait for tasks in client until done and resolved`, async () => {
+        const client = await getClient(permission);
+        const task1 = await client.index(index.uid).addDocuments(dataset);
+        const task2 = await client.index(index.uid).addDocuments(dataset);
+
+        const tasks = await client.tasks.waitForTasks([task1, task2]);
+        const [update1, update2] = tasks;
+
+        assert.strictEqual(update1.status, "succeeded");
+        assert.strictEqual(update2.status, "succeeded");
+      });
+
+      test(`${permission} key: Tests wait for tasks in client with custom interval and timeout until done and resolved`, async () => {
+        const client = await getClient(permission);
+        const task1 = await client.index(index.uid).addDocuments(dataset);
+        const task2 = await client.index(index.uid).addDocuments(dataset);
+
+        const tasks = await client.tasks.waitForTasks([task1, task2], {
+          timeout: 6000,
+          interval: 100,
+        });
+        const [update1, update2] = tasks;
+
+        assert.strictEqual(update1.status, "succeeded");
+        assert.strictEqual(update2.status, "succeeded");
+      });
+
+      test(`${permission} key: Tests wait for tasks in client with custom timeout and interval at 0 done and resolved`, async () => {
+        const client = await getClient(permission);
+        const task1 = await client.index(index.uid).addDocuments(dataset);
+        const task2 = await client.index(index.uid).addDocuments(dataset);
+
+        const tasks = await client.tasks.waitForTasks([task1, task2], {
+          timeout: 6000,
+          interval: 0,
+        });
+        const [update1, update2] = tasks;
+
+        assert.strictEqual(update1.status, "succeeded");
+        assert.strictEqual(update2.status, "succeeded");
+      });
+    },
+  );
 });
 
 describe("EnqueuedTaskPromise#waitTask", () => {
@@ -328,118 +394,65 @@ describe("EnqueuedTaskPromise#waitTask", () => {
     expect(waitForTask).toHaveBeenCalledWith(enqueued, options);
     expect(result).toBe(succeeded);
   });
+
+  describe.each([{ permission: "Master" }, { permission: "Admin" }])(
+    "$permission key",
+    ({ permission }) => {
+      beforeEach(async () => {
+        vi.useRealTimers();
+        const client = await getClient("Master");
+        await client.createIndex(index.uid).waitTask();
+      });
+
+      test(`${permission} key: Tests wait for task in client until done and resolved`, async () => {
+        const client = await getClient(permission);
+        const update = await client
+          .index(index.uid)
+          .addDocuments(dataset)
+          .waitTask();
+
+        assert.strictEqual(update.status, "succeeded");
+      });
+
+      test(`${permission} key: Tests wait for task in client with custom interval and timeout until done and resolved`, async () => {
+        const client = await getClient(permission);
+        const update = await client
+          .index(index.uid)
+          .addDocuments(dataset)
+          .waitTask({
+            timeout: 6000,
+            interval: 100,
+          });
+
+        assert.strictEqual(update.status, "succeeded");
+      });
+
+      test(`${permission} key: Tests wait for task in client with custom timeout and interval at 0 done and resolved`, async () => {
+        const client = await getClient(permission);
+        const update = await client
+          .index(index.uid)
+          .addDocuments(dataset)
+          .waitTask({
+            timeout: 6000,
+            interval: 0,
+          });
+
+        assert.strictEqual(update.status, "succeeded");
+      });
+
+      test(`${permission} key: Tests wait for task with an index instance`, async () => {
+        const client = await getClient(permission);
+        const update = await client
+          .index(index.uid)
+          .addDocuments(dataset)
+          .waitTask();
+
+        assert.strictEqual(update.status, "succeeded");
+      });
+    },
+  );
 });
 
 afterAll(() => {
   return clearAllIndexes(config);
 });
-
-describe.each([{ permission: "Master" }, { permission: "Admin" }])(
-  "Test on wait for task",
-  ({ permission }) => {
-    beforeEach(async () => {
-      vi.useRealTimers();
-      const client = await getClient("Master");
-      await client.createIndex(index.uid).waitTask();
-    });
-
-    // Client Wait for task
-    test(`${permission} key: Tests wait for task in client until done and resolved`, async () => {
-      const client = await getClient(permission);
-      const update = await client
-        .index(index.uid)
-        .addDocuments(dataset)
-        .waitTask();
-
-      assert.strictEqual(update.status, "succeeded");
-    });
-
-    test(`${permission} key: Tests wait for task in client with custom interval and timeout until done and resolved`, async () => {
-      const client = await getClient(permission);
-      const update = await client
-        .index(index.uid)
-        .addDocuments(dataset)
-        .waitTask({
-          timeout: 6000,
-          interval: 100,
-        });
-
-      assert.strictEqual(update.status, "succeeded");
-    });
-
-    test(`${permission} key: Tests wait for task in client with custom timeout and interval at 0 done and resolved`, async () => {
-      const client = await getClient(permission);
-      const update = await client
-        .index(index.uid)
-        .addDocuments(dataset)
-        .waitTask({
-          timeout: 6000,
-          interval: 0,
-        });
-
-      assert.strictEqual(update.status, "succeeded");
-    });
-
-    // Index Wait for task
-    test(`${permission} key: Tests wait for task with an index instance`, async () => {
-      const client = await getClient(permission);
-      const update = await client
-        .index(index.uid)
-        .addDocuments(dataset)
-        .waitTask();
-
-      assert.strictEqual(update.status, "succeeded");
-    });
-
-    // Client Wait for tasks
-    test(`${permission} key: Tests wait for tasks in client until done and resolved`, async () => {
-      const client = await getClient(permission);
-      const task1 = await client.index(index.uid).addDocuments(dataset);
-      const task2 = await client.index(index.uid).addDocuments(dataset);
-
-      const tasks = await client.tasks.waitForTasks([task1, task2]);
-      const [update1, update2] = tasks;
-
-      assert.strictEqual(update1.status, "succeeded");
-      assert.strictEqual(update2.status, "succeeded");
-    });
-
-    test(`${permission} key: Tests wait for tasks in client with custom interval and timeout until done and resolved`, async () => {
-      const client = await getClient(permission);
-      const task1 = await client.index(index.uid).addDocuments(dataset);
-      const task2 = await client.index(index.uid).addDocuments(dataset);
-
-      const tasks = await client.tasks.waitForTasks([task1, task2], {
-        timeout: 6000,
-        interval: 100,
-      });
-      const [update1, update2] = tasks;
-
-      assert.strictEqual(update1.status, "succeeded");
-      assert.strictEqual(update2.status, "succeeded");
-    });
-
-    test(`${permission} key: Tests wait for tasks in client with custom timeout and interval at 0 done and resolved`, async () => {
-      const client = await getClient(permission);
-      const task1 = await client.index(index.uid).addDocuments(dataset);
-      const task2 = await client.index(index.uid).addDocuments(dataset);
-
-      const tasks = await client.tasks.waitForTasks([task1, task2], {
-        timeout: 6000,
-        interval: 0,
-      });
-      const [update1, update2] = tasks;
-
-      assert.strictEqual(update1.status, "succeeded");
-      assert.strictEqual(update2.status, "succeeded");
-    });
-
-    test(`${permission} key: Tests to wait for task that doesn't exist`, async () => {
-      const client = await getClient(permission);
-
-      await expect(
-        client.tasks.waitForTask(424242424242),
-      ).rejects.toHaveProperty("name", "MeilisearchApiError");
-    });
-  },
-);
