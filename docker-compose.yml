@@ -1,6 +1,9 @@
 services:
   package:
-    image: node:22
+    build:
+      context: ./docker
+      dockerfile: node.Dockerfile
+    image: meilisearch-js-dev
     tty: true
     stdin_open: true
     working_dir: /home/package
@@ -12,6 +15,8 @@ services:
       - meilisearch
     volumes:
       - ./:/home/package
+      # Hide the host node_modules. Native bindings stay in this volume.
+      - package_node_modules:/home/package/node_modules
 
   meilisearch:
     image: getmeili/meilisearch-enterprise:v1.54
@@ -21,3 +26,6 @@ services:
       - MEILI_MASTER_KEY=masterKey
       - MEILI_NO_ANALYTICS=true
       - MEILI_EXPERIMENTAL_ALLOWED_IP_NETWORKS=any
+
+volumes:
+  package_node_modules:
