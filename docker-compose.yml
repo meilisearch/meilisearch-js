@@ -17,7 +17,7 @@ services:
       - package_node_modules:/home/package/node_modules
 
   meilisearch:
-    image: getmeili/meilisearch-enterprise:v1.54
+    image: getmeili/meilisearch-enterprise:v1.55
     ports:
       - "7700:7700"
     environment:
