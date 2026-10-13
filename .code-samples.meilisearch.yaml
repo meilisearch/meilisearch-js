@@ -83,6 +83,20 @@ search_post_1: |-
   client.index('movies').search('American ninja')
 search_get_1: |-
   client.index('movies').searchGet('American ninja')
+search_inline_rule_1: |-
+  client.index('movies').search('super hero', {
+    inlineRule: {
+      uid: 'user-likes-batman',
+      actions: {
+        scale: [
+          {
+            filter: 'hero = batman AND release_time = fresh',
+            weight: 1.2
+          }
+        ]
+      }
+    }
+  })
 multi_search_1: |-
   client.multiSearch({ queries: [
     {
@@ -100,6 +114,33 @@ multi_search_1: |-
       q: 'us',
     },
   ]})
+multi_search_inline_rule_1: |-
+  client.multiSearch({ queries: [
+    {
+      indexUid: 'products',
+      q: 'fashion',
+      filter: 'color = blue AND category = shirt'
+    },
+    {
+      indexUid: 'products',
+      q: 'fashion',
+      filter: 'color = blue AND category = shirt',
+      inlineRule: {
+        uid: 'special-sales',
+        conditions: {
+          query: {
+            words: 'pants'
+          },
+          filter: {
+            values: {
+              color: 'yellow',
+              stock_intent: 'destock'
+            }
+          }
+        }
+      }
+    },
+  ]}, { includeMetadata: true })
 get_all_tasks_1: |-
   client.tasks.getTasks()
 get_task_1: |-
@@ -675,3 +716,5 @@ get_chat_workspace_1: |-
   client.getChatWorkspace('WORKSPACE_NAME')
 delete_chat_workspace_1: |-
   client.deleteChatWorkspace('WORKSPACE_NAME')
+
+---8<---
