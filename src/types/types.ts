@@ -4,6 +4,7 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^5.8.2
 
+import type { InlineRule, SearchMetadata } from "./search-rules.js";
 import type { WaitOptions } from "./task-and-batch.js";
 
 // oxlint-disable-next-line no-explicit-any
@@ -273,6 +274,14 @@ export type SearchParams = Query &
      * personalization feature enabled.
      */
     personalize?: Personalize;
+    /**
+     * Inline dynamic search rule applied only to this query
+     *
+     * @experimental
+     * @see {@link https://www.meilisearch.com/docs/reference/api/search/search-with-post}
+     * @see {@link https://github.com/meilisearch/meilisearch/releases/tag/v1.55.0}
+     */
+    inlineRule?: InlineRule | null;
   };
 
 // Search parameters for searches made with the GET method
@@ -406,6 +415,16 @@ export type SearchResponse<
   facetsByIndex?: FacetsByIndex;
   queryVector?: number[];
   performanceDetails?: RecordAny;
+  /**
+   * Query and index metadata
+   *
+   * Present when the request sends `Meili-Include-Metadata: true`.
+   *
+   * @experimental
+   * @see {@link https://www.meilisearch.com/docs/reference/api/search/search-with-post}
+   * @see {@link https://github.com/meilisearch/meilisearch/releases/tag/v1.55.0}
+   */
+  metadata?: SearchMetadata;
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
