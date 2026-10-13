@@ -27,4 +27,4 @@ Group cases with nested `describe` blocks that follow the implementation. The ou
 
 ## Cursor Cloud specific instructions
 
-Run the host checks in `.cursor/CLOUD.md`. Open it for Meilisearch startup and for the Node binary `pnpm lint` uses.
+Docker is not available in Cursor Cloud Agents. See instructions in `.cursor/CLOUD.md`.
