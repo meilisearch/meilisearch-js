@@ -279,7 +279,6 @@ export type SearchParams = Query &
      *
      * @experimental
      * @see {@link https://www.meilisearch.com/docs/reference/api/search/search-with-post}
-     * @see {@link https://github.com/meilisearch/meilisearch/releases/tag/v1.55.0}
      */
     inlineRule?: InlineRule | null;
   };
@@ -422,7 +421,6 @@ export type SearchResponse<
    *
    * @experimental
    * @see {@link https://www.meilisearch.com/docs/reference/api/search/search-with-post}
-   * @see {@link https://github.com/meilisearch/meilisearch/releases/tag/v1.55.0}
    */
   metadata?: SearchMetadata;
 } & (undefined extends S
