@@ -108,11 +108,11 @@ export type InlineRule = {
    *
    * Inactive rules never apply, but their conditions are still evaluated.
    */
-  active?: boolean | null;
+  active?: boolean;
   /** Conditions that must match before the rule applies */
-  conditions?: SearchRuleConditions | null;
+  conditions?: SearchRuleConditions;
   /** Actions applied when the rule matches */
-  actions?: SearchRuleActions | null;
+  actions?: SearchRuleActions;
 };
 
 /**

@@ -1579,108 +1579,130 @@ describe.each([
   });
 });
 
-describe("inlineRule", () => {
-  const indexUid = "inline_rule_preview";
-  const documents = [
-    {
-      id: "1",
-      title: "super hero",
-      hero: "superman",
-      color: "blue",
-      category: "shirt",
-      stock_intent: "keep",
-    },
-    {
-      id: "2",
-      title: "super hero",
-      hero: "batman",
-      color: "yellow",
-      category: "pants",
-      stock_intent: "destock",
-    },
-  ];
+const inlineRuleIndexUid = "inline_rule_preview";
 
-  beforeAll(async () => {
-    const client = await getClient("Master");
-    await client.updateExperimentalFeatures({ dynamicSearchRules: true });
-    await client.createIndex(indexUid, { primaryKey: "id" }).waitTask();
-    await client
-      .index(indexUid)
-      .updateSettings({
-        filterableAttributes: ["color", "category", "stock_intent", "hero"],
-      })
-      .waitTask();
-    await client.index(indexUid).addDocuments(documents).waitTask();
-  });
-
-  test("search with inlineRule pins a document and returns condition outcomes", async () => {
-    const client = await getClient("Master");
-    const response = await client.index(indexUid).search(
-      "super hero",
+async function prepareInlineRuleIndex(): Promise<void> {
+  const client = await getClient("Master");
+  await client.updateExperimentalFeatures({ dynamicSearchRules: true });
+  await client.createIndex(inlineRuleIndexUid, { primaryKey: "id" }).waitTask();
+  await client
+    .index(inlineRuleIndexUid)
+    .updateSettings({
+      filterableAttributes: ["color", "category", "stock_intent", "hero"],
+    })
+    .waitTask();
+  await client
+    .index(inlineRuleIndexUid)
+    .addDocuments([
       {
-        inlineRule: {
-          uid: "user-likes-batman",
-          conditions: { query: { words: "hero" } },
-          actions: { pin: [{ id: "2", position: 0 }] },
-        },
+        id: "1",
+        title: "super hero",
+        hero: "superman",
+        color: "blue",
+        category: "shirt",
+        stock_intent: "keep",
       },
-      { headers: { "Meili-Include-Metadata": "true" } },
-    );
+      {
+        id: "2",
+        title: "super hero",
+        hero: "batman",
+        color: "yellow",
+        category: "pants",
+        stock_intent: "destock",
+      },
+    ])
+    .waitTask();
+}
 
-    expect(response.hits[0]).toMatchObject({ id: "2" });
-    expect(response.metadata?.queryUid).toEqual(expect.any(String));
-    expect(response.metadata).toMatchObject({
-      indexUid,
-      primaryKey: "id",
+let inlineRuleIndexReady: Promise<void> | undefined;
+
+describe("index", () => {
+  describe("search", () => {
+    beforeAll(() => {
+      inlineRuleIndexReady ??= prepareInlineRuleIndex();
+      return inlineRuleIndexReady;
     });
-    expect(response.metadata?.inlineRuleConditionOutcomes).toEqual({
-      satisfiesActiveCondition: true,
-      satisfiesQueryWordsCondition: "satisfied",
+
+    test("pins a document and returns condition outcomes", async () => {
+      const client = await getClient("Master");
+      const response = await client.index(inlineRuleIndexUid).search(
+        "super hero",
+        {
+          inlineRule: {
+            uid: "user-likes-batman",
+            conditions: { query: { words: "hero" } },
+            actions: { pin: [{ id: "2", position: 0 }] },
+          },
+        },
+        { headers: { "Meili-Include-Metadata": "true" } },
+      );
+
+      expect(response.hits[0]).toMatchObject({ id: "2" });
+      expect(response.metadata?.queryUid).toEqual(expect.any(String));
+      expect(response.metadata).toMatchObject({
+        indexUid: inlineRuleIndexUid,
+        primaryKey: "id",
+      });
+      expect(response.metadata?.inlineRuleConditionOutcomes).toEqual({
+        satisfiesActiveCondition: true,
+        satisfiesQueryWordsCondition: "satisfied",
+      });
     });
   });
+});
 
-  test("multi-search with inlineRule returns condition outcomes in metadata", async () => {
-    const client = await getClient("Master");
-    const response = await client.multiSearch(
-      {
-        queries: [
-          {
-            indexUid,
-            q: "super hero",
-            filter: "color = blue AND category = shirt",
-          },
-          {
-            indexUid,
-            q: "super hero",
-            filter: "color = blue AND category = shirt",
-            inlineRule: {
-              uid: "special-sales",
-              conditions: {
-                query: { words: "pants" },
-                filter: {
-                  values: {
-                    color: "yellow",
-                    stock_intent: "destock",
+describe("meilisearch", () => {
+  describe("multiSearch", () => {
+    beforeAll(() => {
+      inlineRuleIndexReady ??= prepareInlineRuleIndex();
+      return inlineRuleIndexReady;
+    });
+
+    test("returns condition outcomes in metadata", async () => {
+      const client = await getClient("Master");
+      const response = await client.multiSearch(
+        {
+          queries: [
+            {
+              indexUid: inlineRuleIndexUid,
+              q: "super hero",
+              filter: "color = blue AND category = shirt",
+            },
+            {
+              indexUid: inlineRuleIndexUid,
+              q: "super hero",
+              filter: "color = blue AND category = shirt",
+              inlineRule: {
+                uid: "special-sales",
+                conditions: {
+                  query: { words: "pants" },
+                  filter: {
+                    values: {
+                      color: "yellow",
+                      stock_intent: "destock",
+                    },
                   },
                 },
               },
             },
-          },
-        ],
-      },
-      { headers: { "Meili-Include-Metadata": "true" } },
-    );
+          ],
+        },
+        { headers: { "Meili-Include-Metadata": "true" } },
+      );
 
-    expect(response.results[0].hits).toEqual(response.results[1].hits);
-    expect(
-      response.results[0].metadata?.inlineRuleConditionOutcomes,
-    ).toBeUndefined();
-    expect(response.results[1].metadata?.inlineRuleConditionOutcomes).toEqual({
-      satisfiesActiveCondition: true,
-      satisfiesQueryWordsCondition: { missingWord: { word: "pants" } },
-      satisfiesFilterCondition: {
-        unmetConstraintOnField: { field: "color" },
-      },
+      expect(response.results[0].hits).toEqual(response.results[1].hits);
+      expect(
+        response.results[0].metadata?.inlineRuleConditionOutcomes,
+      ).toBeUndefined();
+      expect(response.results[1].metadata?.inlineRuleConditionOutcomes).toEqual(
+        {
+          satisfiesActiveCondition: true,
+          satisfiesQueryWordsCondition: { missingWord: { word: "pants" } },
+          satisfiesFilterCondition: {
+            unmetConstraintOnField: { field: "color" },
+          },
+        },
+      );
     });
   });
 });
