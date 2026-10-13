@@ -93,7 +93,6 @@ export type SearchRuleUpdatePayload = {
  *
  * @experimental
  * @see {@link https://www.meilisearch.com/docs/reference/api/search/search-with-post}
- * @see {@link https://github.com/meilisearch/meilisearch/releases/tag/v1.55.0}
  */
 export type InlineRule = {
   /** Unique identifier of the rule */
@@ -168,7 +167,6 @@ export type FilterConditionOutcome =
  *
  * @experimental
  * @see {@link https://www.meilisearch.com/docs/reference/api/search/search-with-post}
- * @see {@link https://github.com/meilisearch/meilisearch/releases/tag/v1.55.0}
  */
 export type InlineRuleConditionOutcomes = {
   /** Whether the rule is active */
@@ -188,7 +186,6 @@ export type InlineRuleConditionOutcomes = {
  *
  * @experimental
  * @see {@link https://www.meilisearch.com/docs/reference/api/search/search-with-post}
- * @see {@link https://github.com/meilisearch/meilisearch/releases/tag/v1.55.0}
  */
 export type SearchMetadata = {
   /**
