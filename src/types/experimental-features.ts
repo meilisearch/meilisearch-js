@@ -16,4 +16,5 @@ export type RuntimeTogglableFeatures = {
   multimodal?: boolean | null;
   network?: boolean | null;
   renderRoute?: boolean | null;
+  tasksStreamingRoute?: boolean | null;
 };

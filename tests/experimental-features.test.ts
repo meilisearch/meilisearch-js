@@ -23,6 +23,7 @@ afterAll(async () => {
     multimodal: false,
     network: false,
     renderRoute: false,
+    tasksStreamingRoute: false,
   } satisfies { [TKey in keyof RuntimeTogglableFeatures]-?: false });
 });
 
@@ -40,6 +41,7 @@ test(`${ms.updateExperimentalFeatures.name} and ${ms.getExperimentalFeatures.nam
     multimodal: true,
     network: true,
     renderRoute: true,
+    tasksStreamingRoute: true,
   };
 
   const updateResponse = await ms.updateExperimentalFeatures(features);
