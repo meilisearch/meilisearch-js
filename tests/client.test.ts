@@ -666,6 +666,23 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         expect(indexStats).toHaveProperty("indexSize", expect.any(Number));
         expect(indexStats).toHaveProperty("usedIndexSize", expect.any(Number));
       });
+
+      test(`${permission} key: get /stats information with internal database sizes in human format`, async () => {
+        const client = await getClient(permission);
+        await client.createIndex(indexNoPk.uid).waitTask();
+
+        const response: Stats = await client.getStats({
+          showInternalDatabaseSizes: true,
+          sizeFormat: "human",
+        });
+        const indexStats = response.indexes[indexNoPk.uid];
+
+        expect(response).toHaveProperty("databaseSize", expect.any(String));
+        expect(indexStats).toHaveProperty(
+          "internalDatabaseSizes",
+          expect.any(Object),
+        );
+      });
     });
   },
 );
