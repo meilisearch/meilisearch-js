@@ -778,6 +778,16 @@ export type Health = {
  *** STATS
  */
 
+export type StatsQuery = {
+  /** Include the `internalDatabaseSizes` breakdown in each index's stats. */
+  showInternalDatabaseSizes?: boolean;
+  /**
+   * `human` returns sizes as strings with units, `raw` returns bytes. Defaults
+   * to `raw`.
+   */
+  sizeFormat?: "human" | "raw";
+};
+
 export type IndexStats = {
   numberOfDocuments: number;
   indexSize: number;
@@ -788,6 +798,8 @@ export type IndexStats = {
   numberOfEmbeddings: number;
   rawDocumentDbSize: number;
   avgDocumentSize: number;
+  /** Keys are subject to change, so this is intentionally untyped. */
+  internalDatabaseSizes?: RecordAny;
 };
 
 export type Stats = {

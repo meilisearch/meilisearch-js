@@ -375,6 +375,22 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(response).toHaveProperty("avgDocumentSize", 0);
     });
 
+    test(`${permission} key: get stats of an index with internal database sizes in human format`, async () => {
+      const client = await getClient(permission);
+      await client.createIndex(indexNoPk.uid).waitTask();
+
+      const response = await client.index(indexNoPk.uid).getStats({
+        showInternalDatabaseSizes: true,
+        sizeFormat: "human",
+      });
+
+      expect(response).toHaveProperty("indexSize", expect.any(String));
+      expect(response).toHaveProperty(
+        "internalDatabaseSizes",
+        expect.any(Object),
+      );
+    });
+
     test(`${permission} key: Get updatedAt and createdAt through fetch info`, async () => {
       const client = await getClient(permission);
       await client.createIndex(indexPk.uid).waitTask();
