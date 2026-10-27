@@ -13,6 +13,7 @@ import type {
   Health,
   Version,
   Stats,
+  IndexStats,
   StatsQuery,
   IndexSwap,
   InitializeNetworkOptions,
@@ -44,6 +45,10 @@ const indexPk = {
 const index = {
   uid: "movies_test",
 };
+
+/** One member asks for human sizes and the other omits `sizeFormat`. */
+type UnionStatsQuery =
+  { sizeFormat: "human" } | { showInternalDatabaseSizes: true };
 
 const index2 = {
   uid: "movies_test2",
@@ -669,6 +674,12 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         expectTypeOf<
           Stats<{ sizeFormat: "human" | "raw" }>["databaseSize"]
         >().toEqualTypeOf<string | number>();
+        expectTypeOf<Stats<UnionStatsQuery>["databaseSize"]>().toEqualTypeOf<
+          string | number
+        >();
+        expectTypeOf<IndexStats<UnionStatsQuery>["indexSize"]>().toEqualTypeOf<
+          string | number
+        >();
         expectTypeOf(indexStats.indexSize).toEqualTypeOf<number>();
         expectTypeOf(indexStats.usedIndexSize).toEqualTypeOf<number>();
         expectTypeOf(indexStats.rawDocumentDbSize).toEqualTypeOf<number>();

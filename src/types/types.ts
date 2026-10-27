@@ -805,13 +805,14 @@ export type StatsQuery = {
 /**
  * `sizeFormat` selected by a stats query
  *
- * Absent means the byte-count default.
+ * Each member of a union is checked on its own. A member with no `sizeFormat`
+ * keeps the byte-count default.
  */
-type StatsQuerySizeFormat<Q> = [Q] extends [undefined]
-  ? undefined
-  : "sizeFormat" extends keyof Q
+type StatsQuerySizeFormat<Q> = Q extends StatsQuery
+  ? "sizeFormat" extends keyof Q
     ? Q["sizeFormat"]
-    : undefined;
+    : undefined
+  : undefined;
 
 /**
  * Byte count or human-readable size selected by {@link StatsQuery.sizeFormat}
