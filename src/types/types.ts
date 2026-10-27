@@ -704,10 +704,12 @@ export type Embedder =
 
 export type Embedders = Record<string, Embedder> | null;
 
-export type FacetOrder = "alpha" | "count";
+/** @see {@link https://www.meilisearch.com/docs/reference/api/settings/update-faceting} */
+export type FacetOrder = "alpha" | "count" | "sampledCount";
 
 export type Faceting = {
   maxValuesPerFacet?: number | null;
+  /** Keys are facet attribute names, `"*"` is the fallback for all other facets */
   sortFacetValuesBy?: Record<string, FacetOrder> | null;
 };
 
