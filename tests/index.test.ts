@@ -1,5 +1,13 @@
-import { expect, test, describe, beforeEach, afterAll } from "vitest";
+import {
+  expect,
+  expectTypeOf,
+  test,
+  describe,
+  beforeEach,
+  afterAll,
+} from "vitest";
 import { ErrorStatusCode } from "../src/types/index.js";
+import type { IndexStats, StatsQuery } from "../src/types/index.js";
 import {
   clearAllIndexes,
   config,
@@ -364,6 +372,11 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
 
       const response = await client.index(indexNoPk.uid).getStats();
 
+      expectTypeOf(response).toEqualTypeOf<IndexStats>();
+      expectTypeOf(response.indexSize).toEqualTypeOf<number>();
+      expectTypeOf(response.usedIndexSize).toEqualTypeOf<number>();
+      expectTypeOf(response.rawDocumentDbSize).toEqualTypeOf<number>();
+      expectTypeOf(response.avgDocumentSize).toEqualTypeOf<number>();
       expect(response).toHaveProperty("numberOfDocuments", 0);
       expect(response).toHaveProperty("indexSize", expect.any(Number));
       expect(response).toHaveProperty("usedIndexSize", expect.any(Number));
@@ -373,6 +386,15 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(response).toHaveProperty("numberOfEmbeddings", 0);
       expect(response).toHaveProperty("rawDocumentDbSize", 0);
       expect(response).toHaveProperty("avgDocumentSize", 0);
+
+      const raw = await client.index(indexNoPk.uid).getStats({
+        sizeFormat: "raw",
+      });
+      expectTypeOf(raw.indexSize).toEqualTypeOf<number>();
+      expectTypeOf(raw.usedIndexSize).toEqualTypeOf<number>();
+      expectTypeOf(raw.rawDocumentDbSize).toEqualTypeOf<number>();
+      expectTypeOf(raw.avgDocumentSize).toEqualTypeOf<number>();
+      expect(raw).toHaveProperty("indexSize", expect.any(Number));
     });
 
     test(`${permission} key: get stats of an index with internal database sizes in human format`, async () => {
@@ -383,12 +405,40 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         showInternalDatabaseSizes: true,
         sizeFormat: "human",
       });
+      // @ts-expect-error sizeFormat "human" returns size fields as strings
+      const _numeric: IndexStats = response;
 
+      expectTypeOf(response.numberOfDocuments).toEqualTypeOf<number>();
+      expectTypeOf(response.indexSize).toEqualTypeOf<string>();
+      expectTypeOf(response.usedIndexSize).toEqualTypeOf<string>();
+      expectTypeOf(response.rawDocumentDbSize).toEqualTypeOf<string>();
+      expectTypeOf(response.avgDocumentSize).toEqualTypeOf<string>();
+      expectTypeOf(response.isIndexing).toEqualTypeOf<boolean>();
+      expectTypeOf(response.internalDatabaseSizes).toEqualTypeOf<
+        Record<string, string> | undefined
+      >();
+      expect(response).toHaveProperty("numberOfDocuments", 0);
       expect(response).toHaveProperty("indexSize", expect.any(String));
-      expect(response).toHaveProperty(
-        "internalDatabaseSizes",
-        expect.any(Object),
-      );
+      expect(response).toHaveProperty("usedIndexSize", expect.any(String));
+      expect(response).toHaveProperty("rawDocumentDbSize", expect.any(String));
+      expect(response).toHaveProperty("avgDocumentSize", expect.any(String));
+      expect(response).toHaveProperty("isIndexing", false);
+      const internalDatabaseSizes = response.internalDatabaseSizes ?? {};
+      expect(Object.keys(internalDatabaseSizes).length).toBeGreaterThan(0);
+      for (const size of Object.values(internalDatabaseSizes)) {
+        expect(size).toEqual(expect.any(String));
+      }
+
+      const query: StatsQuery = {
+        showInternalDatabaseSizes: true,
+        sizeFormat: "human",
+      };
+      const fromQuery = await client.index(indexNoPk.uid).getStats(query);
+      expectTypeOf(fromQuery.indexSize).toEqualTypeOf<string | number>();
+      expectTypeOf(fromQuery.internalDatabaseSizes).toEqualTypeOf<
+        Record<string, string | number> | undefined
+      >();
+      expect(typeof fromQuery.indexSize).toBe("string");
     });
 
     test(`${permission} key: Get updatedAt and createdAt through fetch info`, async () => {

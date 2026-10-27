@@ -786,14 +786,21 @@ export class Meilisearch {
   ///
 
   /**
-   * Get the stats of all the database
+   * Get stats of the instance and its indexes
    *
-   * @param params - Optional query: `showInternalDatabaseSizes` and
-   *   `sizeFormat`
-   * @returns Promise returning object of all the stats
+   * Size fields are numbers of bytes by default. `sizeFormat: "human"` returns
+   * them as strings with units, such as `"19.64 MiB"`.
+   * `showInternalDatabaseSizes` adds each index's internal database sizes.
+   *
+   * @typeParam Q - Stats query whose `sizeFormat` selects the size field type
+   * @param params - Internal database sizes and size formatting
+   * @returns Promise containing stats of the instance
+   * @see {@link https://www.meilisearch.com/docs/reference/api/stats/get-stats-of-all-indexes}
    */
-  async getStats(params?: StatsQuery): Promise<Stats> {
-    return await this.httpRequest.get<Stats>({ path: "stats", params });
+  async getStats<const Q extends StatsQuery | undefined = undefined>(
+    params?: Q,
+  ): Promise<Stats<Q>> {
+    return await this.httpRequest.get<Stats<Q>>({ path: "stats", params });
   }
 
   ///
