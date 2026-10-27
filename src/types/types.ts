@@ -802,23 +802,12 @@ export type StatsQuery = {
   sizeFormat?: "human" | "raw";
 };
 
-/**
- * `sizeFormat` selected by a stats query
- *
- * Each member of a union is checked on its own. A member with no `sizeFormat`
- * keeps the byte-count default.
- */
 type StatsQuerySizeFormat<Q> = Q extends StatsQuery
   ? "sizeFormat" extends keyof Q
     ? Q["sizeFormat"]
     : undefined
   : undefined;
 
-/**
- * Byte count or human-readable size selected by {@link StatsQuery.sizeFormat}
- *
- * A query that does not fix the format resolves to `string | number`.
- */
 type StatsFieldSize<Q> = [StatsQuerySizeFormat<Q>] extends ["human"]
   ? string
   : [StatsQuerySizeFormat<Q>] extends ["raw" | undefined]
@@ -827,11 +816,6 @@ type StatsFieldSize<Q> = [StatsQuerySizeFormat<Q>] extends ["human"]
 
 /**
  * Stats of one index
- *
- * Size fields are numbers of bytes when {@link StatsQuery.sizeFormat} is `"raw"`
- * or omitted. `"human"` types them as strings such as `"19.64 MiB"`. When
- * `sizeFormat` is left undecided, each size field is either a string or a
- * number.
  *
  * @typeParam Q - Stats query whose `sizeFormat` selects the size field type
  * @see {@link https://www.meilisearch.com/docs/reference/api/indexes/get-stats-of-index}
@@ -866,11 +850,6 @@ export type IndexStats<Q extends StatsQuery | undefined = undefined> = {
 
 /**
  * Stats of the instance and each index
- *
- * Size fields are numbers of bytes when {@link StatsQuery.sizeFormat} is `"raw"`
- * or omitted. `"human"` types them as strings such as `"19.64 MiB"`. When
- * `sizeFormat` is left undecided, each size field is either a string or a
- * number.
  *
  * @typeParam Q - Stats query whose `sizeFormat` selects the size field type
  * @see {@link https://www.meilisearch.com/docs/reference/api/stats/get-stats-of-all-indexes}
