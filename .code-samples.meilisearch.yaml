@@ -461,7 +461,8 @@ update_faceting_settings_1: |-
     maxValuesPerFacet: 2,
     sortFacetValuesBy: {
       '*': 'alpha',
-      genres: 'sampledCount'
+      genres: 'count',
+      language: 'sampledCount'
     }
   })
 reset_faceting_settings_1: |-
