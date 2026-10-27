@@ -1,6 +1,6 @@
 # Cloud Agent
 
-Node.js 22.22, pnpm, and Meilisearch Enterprise 1.54 are installed. Startup runs Meilisearch at `http://127.0.0.1:7700` with master key `masterKey`.
+Node.js 22.22, pnpm, and Meilisearch Enterprise 1.56 are installed. Startup runs Meilisearch at `http://127.0.0.1:7700` with master key `masterKey`.
 
 ## Checks
 
