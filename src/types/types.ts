@@ -778,36 +778,112 @@ export type Health = {
  *** STATS
  */
 
+/**
+ * Query parameters for instance and index stats
+ *
+ * @see {@link https://www.meilisearch.com/docs/reference/api/stats/get-stats-of-all-indexes}
+ * @see {@link https://www.meilisearch.com/docs/reference/api/indexes/get-stats-of-index}
+ */
 export type StatsQuery = {
-  /** Include the `internalDatabaseSizes` breakdown in each index's stats. */
+  /**
+   * Include {@link IndexStats.internalDatabaseSizes} on each index
+   *
+   * Database names can change between Meilisearch versions.
+   */
   showInternalDatabaseSizes?: boolean;
   /**
-   * `human` returns sizes as strings with units, `raw` returns bytes. Defaults
-   * to `raw`.
+   * Format of every size field in the response
+   *
+   * `"raw"` returns bytes as numbers. `"human"` returns strings with units,
+   * such as `"19.64 MiB"`.
+   *
+   * @defaultValue `raw`
    */
   sizeFormat?: "human" | "raw";
 };
 
-export type IndexStats = {
+/**
+ * `sizeFormat` selected by a stats query
+ *
+ * Absent means the byte-count default.
+ */
+type StatsQuerySizeFormat<Q> = [Q] extends [undefined]
+  ? undefined
+  : "sizeFormat" extends keyof Q
+    ? Q["sizeFormat"]
+    : undefined;
+
+/**
+ * Byte count or human-readable size selected by {@link StatsQuery.sizeFormat}
+ *
+ * A query that does not fix the format resolves to `string | number`.
+ */
+type StatsFieldSize<Q> = [StatsQuerySizeFormat<Q>] extends ["human"]
+  ? string
+  : [StatsQuerySizeFormat<Q>] extends ["raw" | undefined]
+    ? number
+    : string | number;
+
+/**
+ * Stats of one index
+ *
+ * Size fields are numbers of bytes when {@link StatsQuery.sizeFormat} is `"raw"`
+ * or omitted. `"human"` types them as strings such as `"19.64 MiB"`. When
+ * `sizeFormat` is left undecided, each size field is either a string or a
+ * number.
+ *
+ * @typeParam Q - Stats query whose `sizeFormat` selects the size field type
+ * @see {@link https://www.meilisearch.com/docs/reference/api/indexes/get-stats-of-index}
+ */
+export type IndexStats<Q extends StatsQuery | undefined = undefined> = {
+  /** Number of documents in the index */
   numberOfDocuments: number;
-  indexSize: number;
-  usedIndexSize: number;
+  /** Size of the index database */
+  indexSize: StatsFieldSize<Q>;
+  /** Size of the used pages of the index database */
+  usedIndexSize: StatsFieldSize<Q>;
+  /** Whether the index is currently indexing */
   isIndexing: boolean;
+  /** Number of documents containing each field */
   fieldDistribution: FieldDistribution;
+  /** Number of documents that contain embeddings */
   numberOfEmbeddedDocuments: number;
+  /** Number of embeddings in the index */
   numberOfEmbeddings: number;
-  rawDocumentDbSize: number;
-  avgDocumentSize: number;
-  /** Keys are subject to change, so this is intentionally untyped. */
-  internalDatabaseSizes?: RecordAny;
+  /** Size of the documents database */
+  rawDocumentDbSize: StatsFieldSize<Q>;
+  /** Average size of a document in the documents database */
+  avgDocumentSize: StatsFieldSize<Q>;
+  /**
+   * On-disk size of each internal database
+   *
+   * Present when {@link StatsQuery.showInternalDatabaseSizes} is `true`. Keys
+   * can change between Meilisearch versions. Values use `sizeFormat`.
+   */
+  internalDatabaseSizes?: Record<string, StatsFieldSize<Q>>;
 };
 
-export type Stats = {
-  databaseSize: number;
-  usedDatabaseSize: number;
+/**
+ * Stats of the instance and each index
+ *
+ * Size fields are numbers of bytes when {@link StatsQuery.sizeFormat} is `"raw"`
+ * or omitted. `"human"` types them as strings such as `"19.64 MiB"`. When
+ * `sizeFormat` is left undecided, each size field is either a string or a
+ * number.
+ *
+ * @typeParam Q - Stats query whose `sizeFormat` selects the size field type
+ * @see {@link https://www.meilisearch.com/docs/reference/api/stats/get-stats-of-all-indexes}
+ */
+export type Stats<Q extends StatsQuery | undefined = undefined> = {
+  /** Total disk space used by the database */
+  databaseSize: StatsFieldSize<Q>;
+  /** Actual size of the data in the database */
+  usedDatabaseSize: StatsFieldSize<Q>;
+  /** Date of the last update, in RFC 3339 */
   lastUpdate: string;
+  /** Stats for each index, keyed by index UID */
   indexes: {
-    [index: string]: IndexStats;
+    [index: string]: IndexStats<Q>;
   };
 };
 

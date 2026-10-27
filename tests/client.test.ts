@@ -1,6 +1,7 @@
 import {
   afterAll,
   expect,
+  expectTypeOf,
   test,
   describe,
   beforeEach,
@@ -12,6 +13,7 @@ import type {
   Health,
   Version,
   Stats,
+  StatsQuery,
   IndexSwap,
   InitializeNetworkOptions,
   UpdateNetworkOptions,
@@ -659,29 +661,88 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         const response: Stats = await client.getStats();
         const indexStats = response.indexes[indexNoPk.uid];
 
+        expectTypeOf(response.databaseSize).toEqualTypeOf<number>();
+        expectTypeOf(response.usedDatabaseSize).toEqualTypeOf<number>();
+        expectTypeOf<
+          Stats<{ showInternalDatabaseSizes: true }>["usedDatabaseSize"]
+        >().toEqualTypeOf<number>();
+        expectTypeOf<
+          Stats<{ sizeFormat: "human" | "raw" }>["databaseSize"]
+        >().toEqualTypeOf<string | number>();
+        expectTypeOf(indexStats.indexSize).toEqualTypeOf<number>();
+        expectTypeOf(indexStats.usedIndexSize).toEqualTypeOf<number>();
+        expectTypeOf(indexStats.rawDocumentDbSize).toEqualTypeOf<number>();
+        expectTypeOf(indexStats.avgDocumentSize).toEqualTypeOf<number>();
         expect(response).toHaveProperty("databaseSize", expect.any(Number));
         expect(response).toHaveProperty("usedDatabaseSize", expect.any(Number));
         expect(response).toHaveProperty("lastUpdate");
         expect(response).toHaveProperty("indexes", expect.any(Object));
         expect(indexStats).toHaveProperty("indexSize", expect.any(Number));
         expect(indexStats).toHaveProperty("usedIndexSize", expect.any(Number));
+
+        const raw = await client.getStats({ sizeFormat: "raw" });
+        expectTypeOf(raw.databaseSize).toEqualTypeOf<number>();
+        expectTypeOf(raw.usedDatabaseSize).toEqualTypeOf<number>();
+        expect(raw).toHaveProperty("databaseSize", expect.any(Number));
+        expect(raw).toHaveProperty("usedDatabaseSize", expect.any(Number));
       });
 
       test(`${permission} key: get /stats information with internal database sizes in human format`, async () => {
         const client = await getClient(permission);
         await client.createIndex(indexNoPk.uid).waitTask();
 
-        const response: Stats = await client.getStats({
+        const response = await client.getStats({
           showInternalDatabaseSizes: true,
           sizeFormat: "human",
         });
         const indexStats = response.indexes[indexNoPk.uid];
+        // @ts-expect-error sizeFormat "human" returns size fields as strings
+        const _numeric: Stats = response;
 
+        expectTypeOf(response.databaseSize).toEqualTypeOf<string>();
+        expectTypeOf(response.usedDatabaseSize).toEqualTypeOf<string>();
+        expectTypeOf(response.lastUpdate).toEqualTypeOf<string>();
+        expectTypeOf(indexStats.numberOfDocuments).toEqualTypeOf<number>();
+        expectTypeOf(indexStats.indexSize).toEqualTypeOf<string>();
+        expectTypeOf(indexStats.usedIndexSize).toEqualTypeOf<string>();
+        expectTypeOf(indexStats.rawDocumentDbSize).toEqualTypeOf<string>();
+        expectTypeOf(indexStats.avgDocumentSize).toEqualTypeOf<string>();
+        expectTypeOf(indexStats.isIndexing).toEqualTypeOf<boolean>();
+        expectTypeOf(indexStats.internalDatabaseSizes).toEqualTypeOf<
+          Record<string, string> | undefined
+        >();
         expect(response).toHaveProperty("databaseSize", expect.any(String));
+        expect(response).toHaveProperty("usedDatabaseSize", expect.any(String));
+        expect(indexStats).toHaveProperty("indexSize", expect.any(String));
+        expect(indexStats).toHaveProperty("usedIndexSize", expect.any(String));
         expect(indexStats).toHaveProperty(
-          "internalDatabaseSizes",
-          expect.any(Object),
+          "rawDocumentDbSize",
+          expect.any(String),
         );
+        expect(indexStats).toHaveProperty(
+          "avgDocumentSize",
+          expect.any(String),
+        );
+        expect(indexStats).toHaveProperty(
+          "numberOfDocuments",
+          expect.any(Number),
+        );
+        const internalDatabaseSizes = indexStats.internalDatabaseSizes ?? {};
+        expect(Object.keys(internalDatabaseSizes).length).toBeGreaterThan(0);
+        for (const size of Object.values(internalDatabaseSizes)) {
+          expect(size).toEqual(expect.any(String));
+        }
+
+        const query: StatsQuery = { sizeFormat: "human" };
+        const fromQuery = await client.getStats(query);
+        expectTypeOf(fromQuery.databaseSize).toEqualTypeOf<string | number>();
+        expectTypeOf(fromQuery.usedDatabaseSize).toEqualTypeOf<
+          string | number
+        >();
+        expectTypeOf(fromQuery.indexes[indexNoPk.uid].indexSize).toEqualTypeOf<
+          string | number
+        >();
+        expect(typeof fromQuery.databaseSize).toBe("string");
       });
     });
   },

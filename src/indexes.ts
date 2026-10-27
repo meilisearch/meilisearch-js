@@ -288,12 +288,19 @@ export class Index<T extends RecordAny = RecordAny> {
   /**
    * Get stats of an index
    *
-   * @param params - Optional query: `showInternalDatabaseSizes` and
-   *   `sizeFormat`
-   * @returns Promise containing object with stats of the index
+   * Size fields are numbers of bytes by default. `sizeFormat: "human"` returns
+   * them as strings with units, such as `"19.64 MiB"`.
+   * `showInternalDatabaseSizes` adds each internal database's size.
+   *
+   * @typeParam Q - Stats query whose `sizeFormat` selects the size field type
+   * @param params - Internal database sizes and size formatting
+   * @returns Promise containing stats of the index
+   * @see {@link https://www.meilisearch.com/docs/reference/api/indexes/get-stats-of-index}
    */
-  async getStats(params?: StatsQuery): Promise<IndexStats> {
-    return await this.httpRequest.get<IndexStats>({
+  async getStats<const Q extends StatsQuery | undefined = undefined>(
+    params?: Q,
+  ): Promise<IndexStats<Q>> {
+    return await this.httpRequest.get<IndexStats<Q>>({
       path: `indexes/${this.uid}/stats`,
       params,
     });
