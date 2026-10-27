@@ -46,7 +46,6 @@ const index = {
   uid: "movies_test",
 };
 
-/** One member asks for human sizes and the other omits `sizeFormat`. */
 type UnionStatsQuery =
   { sizeFormat: "human" } | { showInternalDatabaseSizes: true };
 
