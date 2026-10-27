@@ -56,6 +56,47 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
       expect(response).toMatchSnapshot();
     });
 
+    test(`${permission} key: Update faceting settings with sampledCount for all facets`, async () => {
+      const client = await getClient(permission);
+      const newFaceting: Faceting = {
+        sortFacetValuesBy: { "*": "sampledCount" },
+      };
+      await client.index(index.uid).updateFaceting(newFaceting).waitTask();
+
+      const response = await client.index(index.uid).getFaceting();
+
+      expect(response.sortFacetValuesBy).toEqual({ "*": "sampledCount" });
+    });
+
+    test(`${permission} key: Update faceting settings with sampledCount for an attribute`, async () => {
+      const client = await getClient(permission);
+      const newFaceting: Faceting = {
+        maxValuesPerFacet: 2,
+        sortFacetValuesBy: { "*": "alpha", genres: "sampledCount" },
+      };
+      await client.index(index.uid).updateFaceting(newFaceting).waitTask();
+
+      const response = await client.index(index.uid).getFaceting();
+
+      expect(response).toEqual(newFaceting);
+    });
+
+    test(`${permission} key: Reset faceting after sampledCount`, async () => {
+      const client = await getClient(permission);
+      await client
+        .index(index.uid)
+        .updateFaceting({ sortFacetValuesBy: { "*": "sampledCount" } })
+        .waitTask();
+
+      await client.index(index.uid).resetFaceting().waitTask();
+
+      const response = await client.index(index.uid).getFaceting();
+      expect(response).toEqual({
+        maxValuesPerFacet: 100,
+        sortFacetValuesBy: { "*": "alpha" },
+      });
+    });
+
     test(`${permission} key: Update faceting at null`, async () => {
       const client = await getClient(permission);
       await client

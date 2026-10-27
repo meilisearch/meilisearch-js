@@ -458,10 +458,10 @@ get_faceting_settings_1: |-
   client.index('books').getFaceting()
 update_faceting_settings_1: |-
   client.index('books').updateFaceting({
-    maxValuesPerFacet: 2
+    maxValuesPerFacet: 2,
     sortFacetValuesBy: {
       '*': 'alpha',
-      genres: 'count'
+      genres: 'sampledCount'
     }
   })
 reset_faceting_settings_1: |-
