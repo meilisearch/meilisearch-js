@@ -2,6 +2,7 @@ import { afterAll, expect, test, describe, beforeEach } from "vitest";
 import {
   ErrorStatusCode,
   MeilisearchApiError,
+  MeilisearchError,
   type ResourceResults,
 } from "../src/index.js";
 import {
@@ -1196,6 +1197,26 @@ describe("index", () => {
         "http://localhost:7700/indexes/..%2F..%2Fkeys/documents/1",
       ]);
     });
+
+    test.for(["", ".", ".."])(
+      "rejects the document id %j without sending a request",
+      async (documentId) => {
+        await expect(
+          client.index("movies").getDocument(documentId),
+        ).rejects.toThrow(MeilisearchError);
+        expect(requestedURLs).toEqual([]);
+      },
+    );
+
+    test.for(["", ".", ".."])(
+      "rejects the index uid %j without sending a request",
+      async (uid) => {
+        await expect(client.index(uid).getDocument(1)).rejects.toThrow(
+          MeilisearchError,
+        );
+        expect(requestedURLs).toEqual([]);
+      },
+    );
   });
 
   describe("deleteDocument", () => {
@@ -1206,5 +1227,15 @@ describe("index", () => {
         "http://localhost:7700/indexes/movies/documents/..%2F..%2Fother",
       ]);
     });
+
+    test.for(["", ".", ".."])(
+      "rejects the document id %j without sending a request",
+      async (documentId) => {
+        await expect(
+          client.index("movies").deleteDocument(documentId),
+        ).rejects.toThrow(MeilisearchError);
+        expect(requestedURLs).toEqual([]);
+      },
+    );
   });
 });
