@@ -76,7 +76,7 @@ export class TaskClient {
     extraRequestInit?: ExtraRequestInit,
   ): Promise<Task> {
     return await this.#httpRequest.get({
-      path: `tasks/${uid}`,
+      path: `tasks/${encodeURIComponent(uid)}`,
       extraRequestInit,
     });
   }
@@ -92,7 +92,7 @@ export class TaskClient {
     extraRequestInit?: ExtraRequestInit,
   ): Promise<D[]> {
     const stream = await this.#httpRequest.getStream({
-      path: `tasks/${uid}/documents`,
+      path: `tasks/${encodeURIComponent(uid)}/documents`,
       extraRequestInit,
     });
 

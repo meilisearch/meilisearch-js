@@ -2,6 +2,7 @@ import { afterAll, expect, test, describe, beforeEach } from "vitest";
 import {
   ErrorStatusCode,
   MeilisearchApiError,
+  MeilisearchError,
   type ResourceResults,
 } from "../src/index.js";
 import {
@@ -1163,5 +1164,78 @@ describe("Documents tests", () => {
         `Request to ${strippedHost}/${route} has failed`,
       );
     });
+  });
+});
+
+describe("index", () => {
+  const requestedURLs: string[] = [];
+  const client = new Meilisearch({
+    host: "http://localhost:7700",
+    httpClient: (input) => {
+      requestedURLs.push((input as URL).href);
+      return Promise.resolve({});
+    },
+  });
+
+  beforeEach(() => {
+    requestedURLs.length = 0;
+  });
+
+  describe("getDocument", () => {
+    test("encodes the document id as a single path segment", async () => {
+      await client.index("movies").getDocument("../../../keys?limit=1");
+
+      expect(requestedURLs).toEqual([
+        "http://localhost:7700/indexes/movies/documents/..%2F..%2F..%2Fkeys%3Flimit%3D1",
+      ]);
+    });
+
+    test("encodes the index uid as a single path segment", async () => {
+      await client.index("../../keys").getDocument(1);
+
+      expect(requestedURLs).toEqual([
+        "http://localhost:7700/indexes/..%2F..%2Fkeys/documents/1",
+      ]);
+    });
+
+    test.for(["", ".", ".."])(
+      "rejects the document id %j without sending a request",
+      async (documentId) => {
+        await expect(
+          client.index("movies").getDocument(documentId),
+        ).rejects.toThrow(MeilisearchError);
+        expect(requestedURLs).toEqual([]);
+      },
+    );
+
+    test.for(["", ".", ".."])(
+      "rejects the index uid %j without sending a request",
+      async (uid) => {
+        await expect(client.index(uid).getDocument(1)).rejects.toThrow(
+          MeilisearchError,
+        );
+        expect(requestedURLs).toEqual([]);
+      },
+    );
+  });
+
+  describe("deleteDocument", () => {
+    test("encodes the document id as a single path segment", async () => {
+      await client.index("movies").deleteDocument("../../other");
+
+      expect(requestedURLs).toEqual([
+        "http://localhost:7700/indexes/movies/documents/..%2F..%2Fother",
+      ]);
+    });
+
+    test.for(["", ".", ".."])(
+      "rejects the document id %j without sending a request",
+      async (documentId) => {
+        await expect(
+          client.index("movies").deleteDocument(documentId),
+        ).rejects.toThrow(MeilisearchError);
+        expect(requestedURLs).toEqual([]);
+      },
+    );
   });
 });

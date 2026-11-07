@@ -26,7 +26,7 @@ export class ChatWorkspace {
    */
   async get(): Promise<ChatWorkspaceSettings> {
     return await this.#httpRequest.get({
-      path: `chats/${this.#workspace}/settings`,
+      path: `chats/${encodeURIComponent(this.#workspace)}/settings`,
     });
   }
 
@@ -40,7 +40,7 @@ export class ChatWorkspace {
     settings: Partial<ChatWorkspaceSettings>,
   ): Promise<ChatWorkspaceSettings> {
     return await this.#httpRequest.patch({
-      path: `chats/${this.#workspace}/settings`,
+      path: `chats/${encodeURIComponent(this.#workspace)}/settings`,
       body: settings,
     });
   }
@@ -53,7 +53,7 @@ export class ChatWorkspace {
    */
   async reset(): Promise<void> {
     await this.#httpRequest.delete({
-      path: `chats/${this.#workspace}/settings`,
+      path: `chats/${encodeURIComponent(this.#workspace)}/settings`,
     });
   }
 
@@ -70,7 +70,7 @@ export class ChatWorkspace {
       throw new Error("The SDK only supports streaming");
     }
     return await this.#httpRequest.postStream({
-      path: `chats/${this.#workspace}/chat/completions`,
+      path: `chats/${encodeURIComponent(this.#workspace)}/chat/completions`,
       body: completion,
     });
   }
