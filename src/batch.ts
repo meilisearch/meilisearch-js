@@ -19,7 +19,9 @@ export class BatchClient {
 
   /** {@link https://www.meilisearch.com/docs/reference/api/batches#get-one-batch} */
   async getBatch(uid: number): Promise<Batch> {
-    return await this.#httpRequest.get({ path: `batches/${uid}` });
+    return await this.#httpRequest.get({
+      path: `batches/${encodeURIComponent(uid)}`,
+    });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/batches#get-batches} */
