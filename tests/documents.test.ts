@@ -1165,3 +1165,46 @@ describe("Documents tests", () => {
     });
   });
 });
+
+describe("index", () => {
+  const requestedURLs: string[] = [];
+  const client = new Meilisearch({
+    host: "http://localhost:7700",
+    httpClient: (input) => {
+      requestedURLs.push((input as URL).href);
+      return Promise.resolve({});
+    },
+  });
+
+  beforeEach(() => {
+    requestedURLs.length = 0;
+  });
+
+  describe("getDocument", () => {
+    test("encodes the document id as a single path segment", async () => {
+      await client.index("movies").getDocument("../../../keys?limit=1");
+
+      expect(requestedURLs).toEqual([
+        "http://localhost:7700/indexes/movies/documents/..%2F..%2F..%2Fkeys%3Flimit%3D1",
+      ]);
+    });
+
+    test("encodes the index uid as a single path segment", async () => {
+      await client.index("../../keys").getDocument(1);
+
+      expect(requestedURLs).toEqual([
+        "http://localhost:7700/indexes/..%2F..%2Fkeys/documents/1",
+      ]);
+    });
+  });
+
+  describe("deleteDocument", () => {
+    test("encodes the document id as a single path segment", async () => {
+      await client.index("movies").deleteDocument("../../other");
+
+      expect(requestedURLs).toEqual([
+        "http://localhost:7700/indexes/movies/documents/..%2F..%2Fother",
+      ]);
+    });
+  });
+});
