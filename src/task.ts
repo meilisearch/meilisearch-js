@@ -219,7 +219,6 @@ export class TaskClient {
         const task = await this.getTask(taskUid, extraRequestInit);
 
         if (task.status !== "enqueued" && task.status !== "processing") {
-          clearTimeout(toId);
           return task;
         }
 
@@ -232,6 +231,7 @@ export class TaskClient {
         ? new MeilisearchTaskTimeOutError(taskUid, timeout)
         : error;
     } finally {
+      clearTimeout(toId);
       dispose();
     }
   }
