@@ -51,26 +51,81 @@ const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask): number =>
     ? taskUidOrEnqueuedTask
     : taskUidOrEnqueuedTask.taskUid;
 
+type CombinedAbortSignal = {
+  signal: AbortSignal;
+  /** Remove listeners registered while combining; safe to call more than once. */
+  dispose: () => void;
+};
+
+/**
+ * Combine abort signals without {@link AbortSignal.any}, which is not yet widely
+ * enough supported in browsers targeted by this package.
+ *
+ * @see getTimeoutFn in http-requests.ts for the same rationale
+ */
+function combineAbortSignals(
+  timeoutSignal: AbortSignal,
+  callerSignal: AbortSignal,
+): CombinedAbortSignal {
+  if (callerSignal.aborted) {
+    return { signal: callerSignal, dispose: () => {} };
+  }
+  if (timeoutSignal.aborted) {
+    return { signal: timeoutSignal, dispose: () => {} };
+  }
+
+  const ac = new AbortController();
+  const onTimeoutAbort = () => {
+    ac.abort(timeoutSignal.reason);
+  };
+  const onCallerAbort = () => {
+    ac.abort(callerSignal.reason);
+  };
+
+  timeoutSignal.addEventListener("abort", onTimeoutAbort);
+  callerSignal.addEventListener("abort", onCallerAbort);
+
+  let disposed = false;
+  const dispose = () => {
+    if (disposed) {
+      return;
+    }
+    disposed = true;
+    timeoutSignal.removeEventListener("abort", onTimeoutAbort);
+    callerSignal.removeEventListener("abort", onCallerAbort);
+  };
+
+  ac.signal.addEventListener("abort", dispose, { once: true });
+
+  return { signal: ac.signal, dispose };
+}
+
 /** Merge wait-timeout abort with caller-provided per-request options. */
 function mergeWaitExtraRequestInit(
   timeoutSignal: AbortSignal | undefined,
   extraRequestInit: ExtraRequestInit | undefined,
-): ExtraRequestInit | undefined {
+): { extraRequestInit: ExtraRequestInit | undefined; dispose: () => void } {
   if (timeoutSignal === undefined) {
-    return extraRequestInit;
+    return { extraRequestInit, dispose: () => {} };
   }
 
   if (extraRequestInit === undefined) {
-    return { signal: timeoutSignal };
+    return { extraRequestInit: { signal: timeoutSignal }, dispose: () => {} };
   }
 
   const { signal: callerSignal, ...rest } = extraRequestInit;
-  const signal =
-    callerSignal == null
-      ? timeoutSignal
-      : AbortSignal.any([timeoutSignal, callerSignal]);
+  if (callerSignal == null) {
+    return {
+      extraRequestInit: { ...rest, signal: timeoutSignal },
+      dispose: () => {},
+    };
+  }
 
-  return { ...rest, signal };
+  const combined = combineAbortSignals(timeoutSignal, callerSignal);
+  return {
+    extraRequestInit: { ...rest, signal: combined.signal },
+    dispose: combined.dispose,
+  };
 }
 
 /**
@@ -154,12 +209,14 @@ export class TaskClient {
           }, timeout)
         : undefined;
 
+    const { extraRequestInit, dispose } = mergeWaitExtraRequestInit(
+      ac?.signal,
+      options?.extraRequestInit,
+    );
+
     try {
       for (;;) {
-        const task = await this.getTask(
-          taskUid,
-          mergeWaitExtraRequestInit(ac?.signal, options?.extraRequestInit),
-        );
+        const task = await this.getTask(taskUid, extraRequestInit);
 
         if (task.status !== "enqueued" && task.status !== "processing") {
           clearTimeout(toId);
@@ -174,6 +231,8 @@ export class TaskClient {
       throw Object.is((error as Error).cause, TIMEOUT_ID)
         ? new MeilisearchTaskTimeOutError(taskUid, timeout)
         : error;
+    } finally {
+      dispose();
     }
   }
 
