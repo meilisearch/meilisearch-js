@@ -51,6 +51,100 @@ const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask): number =>
     ? taskUidOrEnqueuedTask
     : taskUidOrEnqueuedTask.taskUid;
 
+/** Walk `error.cause` for the wait-timeout sentinel (including Symbol causes). */
+function errorCauseChainHasTimeoutId(error: unknown): boolean {
+  const seen = new Set<unknown>();
+  let current: unknown = error;
+  while (current !== null && current !== undefined && !seen.has(current)) {
+    if (Object.is(current, TIMEOUT_ID)) {
+      return true;
+    }
+    if (typeof current !== "object" && typeof current !== "function") {
+      return false;
+    }
+    seen.add(current);
+    current =
+      "cause" in current ? (current as { cause: unknown }).cause : undefined;
+  }
+  return false;
+}
+
+/**
+ * True when the failure looks like an abort (including wrapped fetch
+ * rejections).
+ */
+function isAbortShapedError(error: unknown): boolean {
+  const seen = new Set<unknown>();
+  let current: unknown = error;
+  while (
+    current !== null &&
+    current !== undefined &&
+    typeof current === "object" &&
+    !seen.has(current)
+  ) {
+    seen.add(current);
+    const name = "name" in current ? String((current as Error).name) : "";
+    const message =
+      "message" in current ? String((current as Error).message) : "";
+    if (
+      name === "AbortError" ||
+      name === "TimeoutError" ||
+      /aborted|abort/i.test(message)
+    ) {
+      return true;
+    }
+    current =
+      "cause" in current ? (current as { cause: unknown }).cause : undefined;
+  }
+  return false;
+}
+
+/**
+ * True when the wait-timeout AbortController fired for this failure.
+ *
+ * Prefers matching abort-shaped errors when the timer has fired so a late
+ * non-abort API/network error from a custom httpClient is not masked.
+ */
+function isTaskWaitTimeoutError(
+  error: unknown,
+  timeoutSignal: AbortSignal | undefined,
+): boolean {
+  if (errorCauseChainHasTimeoutId(error)) {
+    return true;
+  }
+
+  return (
+    timeoutSignal !== undefined &&
+    Object.is(timeoutSignal.reason, TIMEOUT_ID) &&
+    isAbortShapedError(error)
+  );
+}
+
+/** Sleep that rejects promptly when `signal` aborts (timeout or caller cancel). */
+function sleep(ms: number, signal?: AbortSignal): Promise<void> {
+  if (signal?.aborted) {
+    return Promise.reject(
+      new Error("The operation was aborted.", { cause: signal.reason }),
+    );
+  }
+
+  return new Promise((resolve, reject) => {
+    const to = setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+
+    const onAbort = () => {
+      clearTimeout(to);
+      reject(
+        new Error("The operation was aborted.", { cause: signal?.reason }),
+      );
+    };
+
+    signal?.addEventListener("abort", onAbort, { once: true });
+  });
+}
+
 type CombinedAbortSignal = {
   signal: AbortSignal;
   /** Remove listeners registered while combining; safe to call more than once. */
@@ -223,11 +317,11 @@ export class TaskClient {
         }
 
         if (interval > 0) {
-          await new Promise((resolve) => setTimeout(resolve, interval));
+          await sleep(interval, extraRequestInit?.signal ?? undefined);
         }
       }
     } catch (error) {
-      throw Object.is((error as Error).cause, TIMEOUT_ID)
+      throw isTaskWaitTimeoutError(error, ac?.signal)
         ? new MeilisearchTaskTimeOutError(taskUid, timeout)
         : error;
     } finally {

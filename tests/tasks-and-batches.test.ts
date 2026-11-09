@@ -296,6 +296,64 @@ describe("TaskClient", () => {
       });
     });
 
+    test("throws MeilisearchTaskTimeOutError when timeout fires during poll interval", async () => {
+      vi.useFakeTimers();
+      vi.spyOn(taskClient, "getTask").mockResolvedValue(
+        taskWithStatus(1, "enqueued"),
+      );
+
+      const pending = taskClient.waitForTask(1, { timeout: 40, interval: 100 });
+
+      await expect(
+        Promise.all([pending, vi.advanceTimersByTimeAsync(40)]),
+      ).rejects.toMatchObject({
+        name: "MeilisearchTaskTimeOutError",
+        cause: { taskUid: 1, timeout: 40 },
+      });
+    });
+
+    test("maps wrapped TIMEOUT_ID cause chain to MeilisearchTaskTimeOutError", async () => {
+      vi.useFakeTimers();
+      vi.spyOn(taskClient, "getTask").mockImplementation((_uid, extra) =>
+        rejectedOnAbort(extra?.signal).catch((error: unknown) => {
+          throw new Error("Request failed", {
+            cause: new Error("fetch aborted", { cause: error }),
+          });
+        }),
+      );
+
+      const pending = taskClient.waitForTask(7, { timeout: 30, interval: 0 });
+
+      await expect(
+        Promise.all([pending, vi.runAllTimersAsync()]),
+      ).rejects.toMatchObject({
+        name: "MeilisearchTaskTimeOutError",
+        cause: { taskUid: 7, timeout: 30 },
+      });
+    });
+
+    test("rejects promptly when caller aborts during poll interval", async () => {
+      vi.useFakeTimers();
+      vi.spyOn(taskClient, "getTask").mockResolvedValue(
+        taskWithStatus(1, "enqueued"),
+      );
+      const controller = new AbortController();
+
+      const pending = taskClient.waitForTask(1, {
+        timeout: 0,
+        interval: 1000,
+        extraRequestInit: { signal: controller.signal },
+      });
+
+      await vi.advanceTimersByTimeAsync(0);
+      controller.abort("caller-cancel");
+
+      await expect(pending).rejects.toMatchObject({
+        message: "The operation was aborted.",
+        cause: "caller-cancel",
+      });
+    });
+
     test("does not abort when timeout is less than 1", async () => {
       const abortControllers = vi.spyOn(globalThis, "AbortController");
       vi.spyOn(taskClient, "getTask")
