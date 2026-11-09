@@ -2,6 +2,7 @@ import type { HttpRequests } from "./http-requests.js";
 import type {
   ChatWorkspaceSettings,
   ChatCompletionRequest,
+  ExtraRequestInit,
 } from "./types/types.js";
 
 /**
@@ -24,9 +25,12 @@ export class ChatWorkspace {
    * @experimental
    * @see {@link https://www.meilisearch.com/docs/reference/api/chats#get-chat-workspace-settings}
    */
-  async get(): Promise<ChatWorkspaceSettings> {
+  async get(
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<ChatWorkspaceSettings> {
     return await this.#httpRequest.get({
       path: `chats/${this.#workspace}/settings`,
+      extraRequestInit,
     });
   }
 
@@ -38,10 +42,12 @@ export class ChatWorkspace {
    */
   async update(
     settings: Partial<ChatWorkspaceSettings>,
+    extraRequestInit?: ExtraRequestInit,
   ): Promise<ChatWorkspaceSettings> {
     return await this.#httpRequest.patch({
       path: `chats/${this.#workspace}/settings`,
       body: settings,
+      extraRequestInit,
     });
   }
 
@@ -51,9 +57,10 @@ export class ChatWorkspace {
    * @experimental
    * @see {@link https://www.meilisearch.com/docs/reference/api/chats#reset-chat-workspace-settings}
    */
-  async reset(): Promise<void> {
+  async reset(extraRequestInit?: ExtraRequestInit): Promise<void> {
     await this.#httpRequest.delete({
       path: `chats/${this.#workspace}/settings`,
+      extraRequestInit,
     });
   }
 
@@ -65,6 +72,7 @@ export class ChatWorkspace {
    */
   async streamCompletion(
     completion: ChatCompletionRequest,
+    extraRequestInit?: ExtraRequestInit,
   ): Promise<ReadableStream<Uint8Array>> {
     if (!completion.stream) {
       throw new Error("The SDK only supports streaming");
@@ -72,6 +80,7 @@ export class ChatWorkspace {
     return await this.#httpRequest.postStream({
       path: `chats/${this.#workspace}/chat/completions`,
       body: completion,
+      extraRequestInit,
     });
   }
 }

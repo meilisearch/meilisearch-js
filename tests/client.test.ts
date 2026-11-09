@@ -114,6 +114,37 @@ describe.each([
       assert.strictEqual(headers.get("Jane-Doe"), "John Doe");
     });
 
+    test(`${permission} key: per-method extraRequestInit aborts health`, async () => {
+      const key = await getKey(permission);
+      const client = new Meilisearch({
+        ...config,
+        apiKey: key,
+      });
+      const controller = new AbortController();
+      const healthPromise = client.health({ signal: controller.signal });
+      controller.abort();
+
+      await expect(healthPromise).rejects.toHaveProperty(
+        "cause.message",
+        "This operation was aborted",
+      );
+    });
+
+    test(`${permission} key: per-method extraRequestInit reaches health fetch`, async () => {
+      const key = await getKey(permission);
+      const client = new Meilisearch({
+        ...config,
+        apiKey: key,
+        requestInit: { credentials: "omit" },
+      });
+
+      await client.health({ credentials: "include" });
+
+      assert.isDefined(fetchSpy.mock.lastCall);
+      const [, requestInit] = fetchSpy.mock.lastCall as [URL, RequestInit];
+      expect(requestInit.credentials).toBe("include");
+    });
+
     test(`${permission} key: Create client with custom headers (array)`, async () => {
       const key = await getKey(permission);
       const client = new Meilisearch({

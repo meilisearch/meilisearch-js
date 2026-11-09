@@ -72,7 +72,6 @@ export class TaskClient {
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-one-task} */
   async getTask(
     uid: number,
-    // TODO: Need to do this for all other methods: https://github.com/meilisearch/meilisearch-js/issues/1476
     extraRequestInit?: ExtraRequestInit,
   ): Promise<Task> {
     return await this.#httpRequest.get({
@@ -82,8 +81,15 @@ export class TaskClient {
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#get-tasks} */
-  async getTasks(params?: TasksOrBatchesQuery): Promise<TasksResults> {
-    return await this.#httpRequest.get({ path: "tasks", params });
+  async getTasks(
+    params?: TasksOrBatchesQuery,
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<TasksResults> {
+    return await this.#httpRequest.get({
+      path: "tasks",
+      params,
+      extraRequestInit,
+    });
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/async-task-management/get-tasks-documents} */
@@ -177,16 +183,26 @@ export class TaskClient {
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#cancel-tasks} */
-  cancelTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
+  cancelTasks(
+    params: DeleteOrCancelTasksQuery,
+    extraRequestInit?: ExtraRequestInit,
+  ): EnqueuedTaskPromise {
     return this.#applyWaitTask(
-      this.#httpRequest.post({ path: "tasks/cancel", params }),
+      this.#httpRequest.post({
+        path: "tasks/cancel",
+        params,
+        extraRequestInit,
+      }),
     );
   }
 
   /** {@link https://www.meilisearch.com/docs/reference/api/tasks#delete-tasks} */
-  deleteTasks(params: DeleteOrCancelTasksQuery): EnqueuedTaskPromise {
+  deleteTasks(
+    params: DeleteOrCancelTasksQuery,
+    extraRequestInit?: ExtraRequestInit,
+  ): EnqueuedTaskPromise {
     return this.#applyWaitTask(
-      this.#httpRequest.delete({ path: "tasks", params }),
+      this.#httpRequest.delete({ path: "tasks", params, extraRequestInit }),
     );
   }
 }
