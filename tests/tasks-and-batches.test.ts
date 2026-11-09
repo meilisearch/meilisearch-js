@@ -246,6 +246,24 @@ describe("TaskClient", () => {
       expect(getTask).toHaveBeenCalledTimes(3);
     });
 
+    test("forwards WaitOptions.extraRequestInit to each getTask poll", async () => {
+      const getTask = vi
+        .spyOn(taskClient, "getTask")
+        .mockResolvedValue(taskWithStatus(1, "succeeded"));
+
+      await taskClient.waitForTask(1, {
+        timeout: 0,
+        interval: 0,
+        extraRequestInit: {
+          headers: { Authorization: "Bearer poll-token" },
+        },
+      });
+
+      expect(getTask).toHaveBeenCalledWith(1, {
+        headers: { Authorization: "Bearer poll-token" },
+      });
+    });
+
     test.each(["failed", "canceled"] as const)(
       "returns a %s task without throwing",
       async (status) => {

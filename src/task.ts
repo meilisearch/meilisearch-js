@@ -51,6 +51,28 @@ const getTaskUid = (taskUidOrEnqueuedTask: TaskUidOrEnqueuedTask): number =>
     ? taskUidOrEnqueuedTask
     : taskUidOrEnqueuedTask.taskUid;
 
+/** Merge wait-timeout abort with caller-provided per-request options. */
+function mergeWaitExtraRequestInit(
+  timeoutSignal: AbortSignal | undefined,
+  extraRequestInit: ExtraRequestInit | undefined,
+): ExtraRequestInit | undefined {
+  if (timeoutSignal === undefined) {
+    return extraRequestInit;
+  }
+
+  if (extraRequestInit === undefined) {
+    return { signal: timeoutSignal };
+  }
+
+  const { signal: callerSignal, ...rest } = extraRequestInit;
+  const signal =
+    callerSignal == null
+      ? timeoutSignal
+      : AbortSignal.any([timeoutSignal, callerSignal]);
+
+  return { ...rest, signal };
+}
+
 /**
  * Class for handling tasks.
  *
@@ -134,7 +156,10 @@ export class TaskClient {
 
     try {
       for (;;) {
-        const task = await this.getTask(taskUid, { signal: ac?.signal });
+        const task = await this.getTask(
+          taskUid,
+          mergeWaitExtraRequestInit(ac?.signal, options?.extraRequestInit),
+        );
 
         if (task.status !== "enqueued" && task.status !== "processing") {
           clearTimeout(toId);

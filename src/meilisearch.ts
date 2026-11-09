@@ -228,7 +228,9 @@ export class Meilisearch {
     // The HTTP API accepts the deletion of an index that does not exist and
     // enqueues a task that fails with `index_not_found`, so the outcome is only
     // known once that task has been processed.
-    const task = await this.deleteIndex(uid, extraRequestInit).waitTask();
+    const task = await this.deleteIndex(uid, extraRequestInit).waitTask(
+      extraRequestInit === undefined ? undefined : { extraRequestInit },
+    );
 
     if (task.status === "succeeded") {
       return true;

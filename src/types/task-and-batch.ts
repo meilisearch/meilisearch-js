@@ -1,4 +1,4 @@
-import type { RecordAny, Settings } from "./types.js";
+import type { ExtraRequestInit, RecordAny, Settings } from "./types.js";
 import type {
   PascalToCamelCase,
   SafeOmit,
@@ -23,6 +23,12 @@ export type WaitOptions = {
    * @defaultValue `50`
    */
   interval?: number;
+  /**
+   * Per-request options applied to each task poll (`GET /tasks/:uid`) while
+   * waiting. Useful when authorization or other fetch options were only
+   * provided on the enqueueing call.
+   */
+  extraRequestInit?: ExtraRequestInit;
 };
 
 /**

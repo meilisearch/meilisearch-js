@@ -740,9 +740,12 @@ export class Index<T extends RecordAny = RecordAny> {
    *
    * @returns Promise containing record of synonym mappings
    */
-  async getSynonyms(): Promise<Record<string, string[]>> {
+  async getSynonyms(
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<Record<string, string[]>> {
     return await this.httpRequest.get<Record<string, string[]>>({
       path: `indexes/${this.uid}/settings/synonyms`,
+      extraRequestInit,
     });
   }
 
