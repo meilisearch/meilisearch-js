@@ -98,6 +98,7 @@ function getTimeoutFn(
 ): () => (() => void) | void {
   const { signal } = requestInit;
   const ac = new AbortController();
+  requestInit.signal = ac.signal;
 
   if (signal != null) {
     let acSignalFn: (() => void) | null = null;
@@ -135,8 +136,6 @@ function getTimeoutFn(
       };
     };
   }
-
-  requestInit.signal = ac.signal;
 
   return () => {
     const to = setTimeout(() => ac.abort(TIMEOUT_ID), ms);
