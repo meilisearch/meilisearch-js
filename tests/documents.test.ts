@@ -1,5 +1,10 @@
 import { afterAll, expect, test, describe, beforeEach } from "vitest";
-import { ErrorStatusCode, type ResourceResults } from "../src/index.js";
+import {
+  ErrorStatusCode,
+  MeilisearchApiError,
+  MeilisearchError,
+  type ResourceResults,
+} from "../src/index.js";
 import {
   clearAllIndexes,
   config,
@@ -177,16 +182,21 @@ describe("Documents tests", () => {
         );
       });
 
-      test(`${permission} key: Get documents should trigger error with a hint on a MeilisearchApiError`, async () => {
+      test(`${permission} key: Get documents should reject an invalid filter with a MeilisearchApiError`, async () => {
         const apiKey = await getKey(permission);
         const client = new Meilisearch({ host: `${HOST}`, apiKey });
 
-        await assert.rejects(
+        const error = await assert.rejects(
           client.index(indexPk.uid).getDocuments({ filter: "id = 1" }),
-          Error,
-          `Attribute \`id\` is not filterable. This index does not have configured filterable attributes.
-1:3 id = 1`,
+          MeilisearchApiError,
         );
+
+        expect(error.cause?.code).toEqual(
+          ErrorStatusCode.INVALID_DOCUMENT_FILTER,
+        );
+        expect(error.cause?.type).toEqual("invalid_request");
+        expect(typeof error.cause?.message).toEqual("string");
+        expect(typeof error.cause?.link).toEqual("string");
       });
 
       test(`${permission} key: Get documents from index that has NO primary key`, async () => {
@@ -346,11 +356,15 @@ describe("Documents tests", () => {
 
         await client.index(indexPk.uid).addDocuments(dataset).waitTask();
 
-        await assert.rejects(
+        const error = await assert.rejects(
           client.index(indexPk.uid).getDocuments({ sort: ["title:asc"] }),
-          Error,
-          /Attribute `title` is not sortable/,
+          MeilisearchApiError,
         );
+
+        expect(error.cause?.code).toEqual("invalid_document_sort");
+        expect(error.cause?.type).toEqual("invalid_request");
+        expect(typeof error.cause?.message).toEqual("string");
+        expect(typeof error.cause?.link).toEqual("string");
       });
 
       test(`${permission} key: Replace documents from index that has NO primary key`, async () => {
@@ -652,15 +666,21 @@ describe("Documents tests", () => {
         expect(returnedIds).not.toContain(ids[1]);
       });
 
-      test(`${permission} key: Delete some documents should trigger error with a hint on a MeilisearchApiError`, async () => {
+      test(`${permission} key: Delete some documents should reject an invalid filter with a MeilisearchApiError`, async () => {
         const client = await getClient(permission);
         await client.createIndex(indexPk.uid).waitTask();
 
-        await assert.rejects(
+        const error = await assert.rejects(
           client.index(indexPk.uid).deleteDocuments({ filter: "" }),
-          Error,
-          "Sending an empty filter is forbidden.",
+          MeilisearchApiError,
         );
+
+        expect(error.cause?.code).toEqual(
+          ErrorStatusCode.INVALID_DOCUMENT_FILTER,
+        );
+        expect(error.cause?.type).toEqual("invalid_request");
+        expect(typeof error.cause?.message).toEqual("string");
+        expect(typeof error.cause?.link).toEqual("string");
       });
 
       test(`${permission} key: Delete some documents should trigger error with a hint on a MeilisearchRequestError`, async () => {
@@ -1144,5 +1164,78 @@ describe("Documents tests", () => {
         `Request to ${strippedHost}/${route} has failed`,
       );
     });
+  });
+});
+
+describe("index", () => {
+  const requestedURLs: string[] = [];
+  const client = new Meilisearch({
+    host: "http://localhost:7700",
+    httpClient: (input) => {
+      requestedURLs.push((input as URL).href);
+      return Promise.resolve({});
+    },
+  });
+
+  beforeEach(() => {
+    requestedURLs.length = 0;
+  });
+
+  describe("getDocument", () => {
+    test("encodes the document id as a single path segment", async () => {
+      await client.index("movies").getDocument("../../../keys?limit=1");
+
+      expect(requestedURLs).toEqual([
+        "http://localhost:7700/indexes/movies/documents/..%2F..%2F..%2Fkeys%3Flimit%3D1",
+      ]);
+    });
+
+    test("encodes the index uid as a single path segment", async () => {
+      await client.index("../../keys").getDocument(1);
+
+      expect(requestedURLs).toEqual([
+        "http://localhost:7700/indexes/..%2F..%2Fkeys/documents/1",
+      ]);
+    });
+
+    test.for(["", ".", ".."])(
+      "rejects the document id %j without sending a request",
+      async (documentId) => {
+        await expect(
+          client.index("movies").getDocument(documentId),
+        ).rejects.toThrow(MeilisearchError);
+        expect(requestedURLs).toEqual([]);
+      },
+    );
+
+    test.for(["", ".", ".."])(
+      "rejects the index uid %j without sending a request",
+      async (uid) => {
+        await expect(client.index(uid).getDocument(1)).rejects.toThrow(
+          MeilisearchError,
+        );
+        expect(requestedURLs).toEqual([]);
+      },
+    );
+  });
+
+  describe("deleteDocument", () => {
+    test("encodes the document id as a single path segment", async () => {
+      await client.index("movies").deleteDocument("../../other");
+
+      expect(requestedURLs).toEqual([
+        "http://localhost:7700/indexes/movies/documents/..%2F..%2Fother",
+      ]);
+    });
+
+    test.for(["", ".", ".."])(
+      "rejects the document id %j without sending a request",
+      async (documentId) => {
+        await expect(
+          client.index("movies").deleteDocument(documentId),
+        ).rejects.toThrow(MeilisearchError);
+        expect(requestedURLs).toEqual([]);
+      },
+    );
   });
 });
