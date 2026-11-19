@@ -1,4 +1,7 @@
-import { MeilisearchTaskTimeOutError } from "./errors/index.js";
+import {
+  MeilisearchRequestError,
+  MeilisearchTaskTimeOutError,
+} from "./errors/index.js";
 import type {
   WaitOptions,
   TasksOrBatchesQuery,
@@ -19,6 +22,18 @@ import { parseTaskDocuments, readStreamAsText } from "./utils.js";
  * {@link TaskClient.waitForTask}.
  */
 const TIMEOUT_ID = Symbol("<task timeout>");
+
+/**
+ * How many times a single task polling request is attempted before its
+ * transport error is rethrown.
+ */
+const POLL_REQUEST_ATTEMPTS = 3;
+
+/**
+ * Milliseconds multiplied by the attempt number to wait before retrying a
+ * failed polling request.
+ */
+const POLL_RETRY_DELAY = 100;
 
 /**
  * @returns A function which defines an extra function property on a
@@ -105,6 +120,11 @@ export class TaskClient {
    * with {@link TaskClient.getTask}.
    *
    * @remarks
+   * A failed polling request does not end the wait: it is retried a bounded
+   * number of times, since the task itself is unaffected and its answer is
+   * usually available on the next poll. The wait still never exceeds
+   * {@link WaitOptions.timeout}.
+   *
    * If an {@link EnqueuedTask} needs to be awaited instantly, it is recommended
    * to instead use {@link EnqueuedTaskPromise.waitTask}, which is available on
    * any method that returns an {@link EnqueuedTaskPromise}.
@@ -128,7 +148,7 @@ export class TaskClient {
 
     try {
       for (;;) {
-        const task = await this.getTask(taskUid, { signal: ac?.signal });
+        const task = await this.#getTaskOrRetry(taskUid, ac?.signal);
 
         if (task.status !== "enqueued" && task.status !== "processing") {
           clearTimeout(toId);
@@ -143,6 +163,35 @@ export class TaskClient {
       throw Object.is((error as Error).cause, TIMEOUT_ID)
         ? new MeilisearchTaskTimeOutError(taskUid, timeout)
         : error;
+    }
+  }
+
+  /**
+   * Polls a task once, retrying transport failures.
+   *
+   * @remarks
+   * Only {@link MeilisearchRequestError}s are retried, and never the abort
+   * raised by {@link TaskClient.waitForTask} when its timeout expires: that one
+   * has to reach the caller so it can be translated. Errors answered by the
+   * server are definitive and are rethrown immediately.
+   */
+  async #getTaskOrRetry(uid: number, signal?: AbortSignal): Promise<Task> {
+    for (let attempt = 1; ; attempt++) {
+      try {
+        return await this.getTask(uid, { signal });
+      } catch (error) {
+        const isRetryable =
+          error instanceof MeilisearchRequestError &&
+          !Object.is((error as Error).cause, TIMEOUT_ID);
+
+        if (!isRetryable || attempt >= POLL_REQUEST_ATTEMPTS) {
+          throw error;
+        }
+
+        await new Promise((resolve) =>
+          setTimeout(resolve, POLL_RETRY_DELAY * attempt),
+        );
+      }
     }
   }
 
