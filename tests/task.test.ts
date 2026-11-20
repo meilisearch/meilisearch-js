@@ -933,4 +933,31 @@ describe("Tests on waiting for a task through transport failures", () => {
     ).rejects.toBeInstanceOf(MeilisearchTaskTimeOutError);
     expect(calls).toBe(1);
   });
+
+  test("starts no retry delay once the wait has timed out", async () => {
+    const client = new Meilisearch({ host: BAD_HOST });
+    let calls = 0;
+
+    // The request fails at the same moment the wait times out, so the failure is
+    // retryable while the signal is already aborted when the delay would start.
+    client.tasks.getTask = (_uid, extraRequestInit) => {
+      calls += 1;
+
+      return new Promise((_resolve, reject) => {
+        extraRequestInit?.signal?.addEventListener("abort", () => {
+          reject(
+            new MeilisearchRequestError(
+              `${BAD_HOST}/tasks/1`,
+              new TypeError("fetch failed"),
+            ),
+          );
+        });
+      });
+    };
+
+    await expect(
+      client.tasks.waitForTask(1, { timeout: 20 }),
+    ).rejects.toBeInstanceOf(MeilisearchTaskTimeOutError);
+    expect(calls).toBe(1);
+  });
 });
