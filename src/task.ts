@@ -36,6 +36,39 @@ const POLL_REQUEST_ATTEMPTS = 3;
 const POLL_RETRY_DELAY = 100;
 
 /**
+ * Resolves after `delay` milliseconds, or rejects as soon as `signal` aborts.
+ *
+ * @remarks
+ * The rejection carries the signal's reason as its `cause`, so a timeout that
+ * expires while waiting between retries reaches the caller of
+ * {@link TaskClient.waitForTask} exactly like one that expires during a request,
+ * and is translated the same way.
+ */
+function sleepUntilAborted(delay: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const abortError = (): Error =>
+      new Error("The task wait was aborted", { cause: signal?.reason });
+
+    if (signal?.aborted === true) {
+      reject(abortError());
+      return;
+    }
+
+    const toId = setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve();
+    }, delay);
+
+    const onAbort = (): void => {
+      clearTimeout(toId);
+      reject(abortError());
+    };
+
+    signal?.addEventListener("abort", onAbort, { once: true });
+  });
+}
+
+/**
  * @returns A function which defines an extra function property on a
  *   {@link Promise}, which resolves to {@link EnqueuedTask}, which awaits it and
  *   resolves to a {@link Task}.
@@ -173,7 +206,9 @@ export class TaskClient {
    * Only {@link MeilisearchRequestError}s are retried, and never the abort
    * raised by {@link TaskClient.waitForTask} when its timeout expires: that one
    * has to reach the caller so it can be translated. Errors answered by the
-   * server are definitive and are rethrown immediately.
+   * server are definitive and are rethrown immediately. The delay between
+   * attempts is abortable, so a timeout that expires while waiting for it ends
+   * the wait instead of waiting the delay out.
    */
   async #getTaskOrRetry(uid: number, signal?: AbortSignal): Promise<Task> {
     for (let attempt = 1; ; attempt++) {
@@ -188,9 +223,7 @@ export class TaskClient {
           throw error;
         }
 
-        await new Promise((resolve) =>
-          setTimeout(resolve, POLL_RETRY_DELAY * attempt),
-        );
+        await sleepUntilAborted(POLL_RETRY_DELAY * attempt, signal);
       }
     }
   }

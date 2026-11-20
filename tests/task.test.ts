@@ -912,4 +912,25 @@ describe("Tests on waiting for a task through transport failures", () => {
     ).rejects.toBeInstanceOf(MeilisearchTaskTimeOutError);
     expect(calls).toBe(1);
   });
+
+  test("stops waiting when the timeout expires during the retry delay", async () => {
+    const client = new Meilisearch({ host: BAD_HOST });
+    let calls = 0;
+
+    client.tasks.getTask = () => {
+      calls += 1;
+
+      return Promise.reject(
+        new MeilisearchRequestError(
+          `${BAD_HOST}/tasks/1`,
+          new TypeError("fetch failed"),
+        ),
+      );
+    };
+
+    await expect(
+      client.tasks.waitForTask(1, { timeout: 20, interval: 1 }),
+    ).rejects.toBeInstanceOf(MeilisearchTaskTimeOutError);
+    expect(calls).toBe(1);
+  });
 });
