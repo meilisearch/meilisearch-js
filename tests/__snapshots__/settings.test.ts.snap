@@ -640,7 +640,7 @@ exports[`Test on settings > Admin key: Update settings 1`] = `
     },
   },
   "wordPosition": {
-    "enabled": true,
+    "enabled": false,
   },
 }
 `;
@@ -1394,7 +1394,7 @@ exports[`Test on settings > Master key: Update settings 1`] = `
     },
   },
   "wordPosition": {
-    "enabled": true,
+    "enabled": false,
   },
 }
 `;
