@@ -89,6 +89,7 @@ describe.each([{ permission: "Master" }, { permission: "Admin" }])(
         searchCutoffMs: 1000,
         facetSearch: true,
         prefixSearch: "indexingTime",
+        wordPosition: { enabled: false },
       };
       // Add the settings
       await client.index(index.uid).updateSettings(newSettings).waitTask();

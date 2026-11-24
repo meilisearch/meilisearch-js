@@ -588,6 +588,12 @@ update_prefix_search_settings_1: |-
   client.index('INDEX_NAME').updatePrefixSearch('disabled');
 reset_prefix_search_settings_1: |-
   client.index('INDEX_NAME').resetPrefixSearch();
+get_word_position_settings_1: |-
+  client.index('INDEX_NAME').getWordPosition();
+update_word_position_settings_1: |-
+  client.index('INDEX_NAME').updateWordPosition({ enabled: false });
+reset_word_position_settings_1: |-
+  client.index('INDEX_NAME').resetWordPosition();
 get_all_batches_1: |-
   client.batches.getBatches();
 get_batch_1: |-

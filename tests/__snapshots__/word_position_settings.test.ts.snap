@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Test on word position settings > Admin key: Get wordPosition settings on empty index 1`] = `
+{
+  "enabled": true,
+}
+`;
+
+exports[`Test on word position settings > Admin key: Reset wordPosition settings on an empty index 1`] = `
+{
+  "enabled": true,
+}
+`;
+
+exports[`Test on word position settings > Master key: Get wordPosition settings on empty index 1`] = `
+{
+  "enabled": true,
+}
+`;
+
+exports[`Test on word position settings > Master key: Reset wordPosition settings on an empty index 1`] = `
+{
+  "enabled": true,
+}
+`;

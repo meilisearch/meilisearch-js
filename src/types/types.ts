@@ -735,6 +735,15 @@ export type ForeignKeys = ForeignKey[] | null;
 
 export type PrefixSearch = "indexingTime" | "disabled";
 
+/**
+ * Whether word positions are computed at indexing time
+ *
+ * @see {@link https://www.meilisearch.com/docs/reference/api/settings/update-wordposition}
+ */
+export type WordPositionSettings = {
+  enabled?: boolean | null;
+};
+
 export type Settings = {
   filterableAttributes?: FilterableAttributes;
   distinctAttribute?: DistinctAttribute;
@@ -766,6 +775,12 @@ export type Settings = {
    * Meilisearch 1.12.0 or later)
    */
   prefixSearch?: "indexingTime" | "disabled";
+  /**
+   * Whether word positions are computed at indexing time
+   *
+   * @see {@link https://www.meilisearch.com/docs/reference/api/settings/update-wordposition}
+   */
+  wordPosition?: WordPositionSettings;
 };
 
 /*

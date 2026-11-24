@@ -52,6 +52,7 @@ import type {
   TaskEnqueueOptions,
   ExtraRequestInit,
   PrefixSearch,
+  WordPositionSettings,
   RecordAny,
   EnqueuedTaskPromise,
   ChatSettings,
@@ -1469,6 +1470,48 @@ export class Index<T extends RecordAny = RecordAny> {
   resetPrefixSearch(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
       path: `indexes/${this.#encodedUid}/settings/prefix-search`,
+    });
+  }
+
+  ///
+  /// WORD POSITION SETTINGS
+  ///
+
+  /**
+   * Get the word position settings
+   *
+   * @returns Promise containing object of word position settings
+   * @see {@link https://www.meilisearch.com/docs/reference/api/settings/get-wordposition}
+   */
+  async getWordPosition(): Promise<WordPositionSettings> {
+    return await this.httpRequest.get<WordPositionSettings>({
+      path: `indexes/${this.#encodedUid}/settings/word-position`,
+    });
+  }
+
+  /**
+   * Update the word position settings
+   *
+   * @param wordPosition - Object containing the word position settings
+   * @returns Promise containing an EnqueuedTask
+   * @see {@link https://www.meilisearch.com/docs/reference/api/settings/update-wordposition}
+   */
+  updateWordPosition(wordPosition: WordPositionSettings): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.patch({
+      path: `indexes/${this.#encodedUid}/settings/word-position`,
+      body: wordPosition,
+    });
+  }
+
+  /**
+   * Reset the word position settings
+   *
+   * @returns Promise containing an EnqueuedTask
+   * @see {@link https://www.meilisearch.com/docs/reference/api/settings/reset-wordposition}
+   */
+  resetWordPosition(): EnqueuedTaskPromise {
+    return this.#httpRequestsWithTask.delete({
+      path: `indexes/${this.#encodedUid}/settings/word-position`,
     });
   }
 
