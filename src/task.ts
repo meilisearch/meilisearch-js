@@ -131,7 +131,6 @@ export class TaskClient {
         const task = await this.getTask(taskUid, { signal: ac?.signal });
 
         if (task.status !== "enqueued" && task.status !== "processing") {
-          clearTimeout(toId);
           return task;
         }
 
@@ -143,6 +142,9 @@ export class TaskClient {
       throw Object.is((error as Error).cause, TIMEOUT_ID)
         ? new MeilisearchTaskTimeOutError(taskUid, timeout)
         : error;
+    } finally {
+      // also when `getTask` throws: a pending timer keeps the process alive
+      clearTimeout(toId);
     }
   }
 

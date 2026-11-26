@@ -278,6 +278,18 @@ describe("TaskClient", () => {
       });
     });
 
+    test("clears the timeout timer when polling throws", async () => {
+      vi.useFakeTimers();
+      const error = new Error("request failed");
+      vi.spyOn(taskClient, "getTask").mockRejectedValue(error);
+
+      await expect(
+        taskClient.waitForTask(1, { timeout: 60_000, interval: 0 }),
+      ).rejects.toBe(error);
+
+      expect(vi.getTimerCount()).toBe(0);
+    });
+
     test("does not abort when timeout is less than 1", async () => {
       const abortControllers = vi.spyOn(globalThis, "AbortController");
       vi.spyOn(taskClient, "getTask")
