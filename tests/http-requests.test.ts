@@ -14,6 +14,7 @@ import {
   MeilisearchError,
   MeilisearchRequestError,
   MeilisearchApiError,
+  MeilisearchRequestTimeOutError,
 } from "../src/errors/index.js";
 
 describe("HttpRequests", () => {
@@ -222,5 +223,72 @@ describe("HttpRequests", () => {
     assert.isDefined(fetchSpy.mock.lastCall);
     const [, init] = fetchSpy.mock.lastCall as [URL, RequestInit];
     expect(init.credentials).toBe("omit");
+  });
+
+  test("timeout aborts the request when the caller provides its own signal", async () => {
+    // A `fetch` that only settles once the signal it receives is aborted,
+    // like the real one.
+    fetchSpy.mockImplementation(
+      (_input, init) =>
+        new Promise((_resolve, reject) => {
+          init?.signal?.addEventListener(
+            "abort",
+            // oxlint-disable-next-line prefer-promise-reject-errors
+            () => reject(init.signal?.reason),
+            { once: true },
+          );
+        }),
+    );
+
+    const userController = new AbortController();
+    const httpRequests = new HttpRequests({
+      host: "http://localhost:7700",
+      timeout: 10,
+    });
+
+    const error = await httpRequests
+      .get({
+        path: "health",
+        extraRequestInit: { signal: userController.signal },
+      })
+      .catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(MeilisearchRequestError);
+    expect((error as MeilisearchRequestError).cause).toBeInstanceOf(
+      MeilisearchRequestTimeOutError,
+    );
+    expect(userController.signal.aborted).toBe(false);
+  }, 2000);
+
+  test("the caller's own signal still aborts the request when a timeout is set", async () => {
+    fetchSpy.mockImplementation(
+      (_input, init) =>
+        new Promise((_resolve, reject) => {
+          init?.signal?.addEventListener(
+            "abort",
+            // oxlint-disable-next-line prefer-promise-reject-errors
+            () => reject(init.signal?.reason),
+            { once: true },
+          );
+        }),
+    );
+
+    const userController = new AbortController();
+    const httpRequests = new HttpRequests({
+      host: "http://localhost:7700",
+      timeout: 60_000,
+    });
+
+    const pending = httpRequests
+      .get({
+        path: "health",
+        extraRequestInit: { signal: userController.signal },
+      })
+      .catch((e: unknown) => e);
+    userController.abort("stop");
+
+    const error = await pending;
+    expect(error).toBeInstanceOf(MeilisearchRequestError);
+    expect((error as MeilisearchRequestError).cause).toBe("stop");
   });
 });
