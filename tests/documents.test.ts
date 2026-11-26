@@ -1219,6 +1219,59 @@ describe("index", () => {
     );
   });
 
+  describe.each(["addDocumentsInBatches", "updateDocumentsInBatches"] as const)(
+    "%s",
+    (method) => {
+      test("sends a batch only once the previous one is enqueued", async () => {
+        const inFlightOnSend: number[] = [];
+        let inFlight = 0;
+        const client = new Meilisearch({
+          host: "http://localhost:7700",
+          httpClient: async () => {
+            inFlight += 1;
+            inFlightOnSend.push(inFlight);
+            await new Promise((resolve) => setTimeout(resolve));
+            inFlight -= 1;
+            return {};
+          },
+        });
+
+        const tasks = client
+          .index("movies")
+          [method]([{ id: 1 }, { id: 2 }, { id: 3 }], 1);
+        // the first batch is sent right away
+        expect(inFlightOnSend).toEqual([1]);
+        await Promise.all(tasks);
+
+        expect(inFlightOnSend).toEqual([1, 1, 1]);
+      });
+
+      test("still sends the next batches when one fails", async () => {
+        const sentBodies: unknown[] = [];
+        const client = new Meilisearch({
+          host: "http://localhost:7700",
+          httpClient: (_input, init) => {
+            sentBodies.push(init?.body);
+            return sentBodies.length === 2
+              ? Promise.reject(new Error("batch 2 failed"))
+              : Promise.resolve({});
+          },
+        });
+
+        const results = await Promise.allSettled(
+          client.index("movies")[method]([{ id: 1 }, { id: 2 }, { id: 3 }], 1),
+        );
+
+        expect(results.map(({ status }) => status)).toEqual([
+          "fulfilled",
+          "rejected",
+          "fulfilled",
+        ]);
+        expect(sentBodies).toEqual(['[{"id":1}]', '[{"id":2}]', '[{"id":3}]']);
+      });
+    },
+  );
+
   describe("deleteDocument", () => {
     test("encodes the document id as a single path segment", async () => {
       await client.index("movies").deleteDocument("../../other");

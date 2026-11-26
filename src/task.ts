@@ -25,7 +25,7 @@ const TIMEOUT_ID = Symbol("<task timeout>");
  *   {@link Promise}, which resolves to {@link EnqueuedTask}, which awaits it and
  *   resolves to a {@link Task}.
  */
-function getWaitTaskApplier(
+export function getWaitTaskApplier(
   taskClient: TaskClient,
 ): (enqueuedTaskPromise: Promise<EnqueuedTask>) => EnqueuedTaskPromise {
   return function (

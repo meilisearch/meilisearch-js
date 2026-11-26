@@ -63,6 +63,7 @@ import type {
 import { HttpRequests } from "./http-requests.js";
 import {
   getHttpRequestsWithEnqueuedTaskPromise,
+  getWaitTaskApplier,
   TaskClient,
   type HttpRequestsWithEnqueuedTaskPromise,
 } from "./task.js";
@@ -412,6 +413,37 @@ export class Index<T extends RecordAny = RecordAny> {
   }
 
   /**
+   * Send the batches one after the other, so that their tasks are enqueued in
+   * the same order as the documents
+   */
+  #sendInBatches<D>(
+    documents: D[],
+    batchSize: number,
+    send: (batch: D[]) => EnqueuedTaskPromise,
+  ): EnqueuedTaskPromise[] {
+    const applyWaitTask = getWaitTaskApplier(this.tasks);
+    const updates: EnqueuedTaskPromise[] = [];
+    let previous: Promise<unknown> | undefined;
+
+    for (let i = 0; i < documents.length; i += batchSize) {
+      const batch = documents.slice(i, i + batchSize);
+      const sendBatch = () => send(batch);
+      // The first batch is sent right away, and a failed batch does not
+      // prevent the next ones from being sent
+      const enqueued =
+        previous === undefined
+          ? sendBatch()
+          : previous.then(sendBatch, sendBatch);
+      previous = enqueued;
+      // A copy, so that a failed batch the caller ignores is still reported as
+      // an unhandled rejection
+      updates.push(applyWaitTask(enqueued.then((task) => task)));
+    }
+
+    return updates;
+  }
+
+  /**
    * Add or replace multiples documents to an index in batches
    *
    * @param documents - Array of Document objects to add/replace
@@ -424,15 +456,9 @@ export class Index<T extends RecordAny = RecordAny> {
     batchSize = 1000,
     options?: DocumentOptions,
   ): EnqueuedTaskPromise[] {
-    const updates: EnqueuedTaskPromise[] = [];
-
-    for (let i = 0; i < documents.length; i += batchSize) {
-      updates.push(
-        this.addDocuments(documents.slice(i, i + batchSize), options),
-      );
-    }
-
-    return updates;
+    return this.#sendInBatches(documents, batchSize, (batch) =>
+      this.addDocuments(batch, options),
+    );
   }
 
   /**
@@ -466,15 +492,9 @@ export class Index<T extends RecordAny = RecordAny> {
     batchSize = 1000,
     options?: DocumentOptions,
   ): EnqueuedTaskPromise[] {
-    const updates: EnqueuedTaskPromise[] = [];
-
-    for (let i = 0; i < documents.length; i += batchSize) {
-      updates.push(
-        this.updateDocuments(documents.slice(i, i + batchSize), options),
-      );
-    }
-
-    return updates;
+    return this.#sendInBatches(documents, batchSize, (batch) =>
+      this.updateDocuments(batch, options),
+    );
   }
 
   /**
