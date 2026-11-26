@@ -1,5 +1,11 @@
 import { afterAll, assert, beforeEach, describe, expect, test } from "vitest";
+import {
+  MeilisearchApiError,
+  MeilisearchRequestError,
+  MeilisearchTaskTimeOutError,
+} from "../src/errors/index.js";
 import { ErrorStatusCode } from "../src/types/index.js";
+import type { Task } from "../src/types/index.js";
 import { sleep } from "../src/utils.js";
 import {
   BAD_HOST,
@@ -810,5 +816,148 @@ describe.each([
       "message",
       `Request to ${strippedHost}/${route} has failed`,
     );
+  });
+});
+
+describe("Tests on waiting for a task through transport failures", () => {
+  const finishedTask = (uid: number) =>
+    ({ uid, status: "succeeded" }) as unknown as Task;
+
+  test("retries a failed polling request instead of ending the wait", async () => {
+    const client = new Meilisearch({ host: BAD_HOST });
+    const task = finishedTask(1);
+    let calls = 0;
+
+    client.tasks.getTask = () => {
+      calls += 1;
+
+      return calls === 1
+        ? Promise.reject(
+            new MeilisearchRequestError(
+              `${BAD_HOST}/tasks/1`,
+              new TypeError("fetch failed"),
+            ),
+          )
+        : Promise.resolve(task);
+    };
+
+    await expect(client.tasks.waitForTask(1, { interval: 1 })).resolves.toBe(
+      task,
+    );
+    expect(calls).toBe(2);
+  });
+
+  test("stops retrying once the bounded attempts are spent", async () => {
+    const client = new Meilisearch({ host: BAD_HOST });
+    let calls = 0;
+
+    client.tasks.getTask = () => {
+      calls += 1;
+
+      return Promise.reject(
+        new MeilisearchRequestError(
+          `${BAD_HOST}/tasks/1`,
+          new TypeError("fetch failed"),
+        ),
+      );
+    };
+
+    await expect(client.tasks.waitForTask(1)).rejects.toBeInstanceOf(
+      MeilisearchRequestError,
+    );
+    expect(calls).toBe(3);
+  });
+
+  test("does not retry an error answered by the server", async () => {
+    const client = new Meilisearch({ host: BAD_HOST });
+    let calls = 0;
+
+    client.tasks.getTask = () => {
+      calls += 1;
+
+      return Promise.reject(
+        new MeilisearchApiError(
+          new Response(null, { status: 404, statusText: "Not Found" }),
+        ),
+      );
+    };
+
+    await expect(client.tasks.waitForTask(1)).rejects.toBeInstanceOf(
+      MeilisearchApiError,
+    );
+    expect(calls).toBe(1);
+  });
+
+  test("does not retry the request the wait timed out on", async () => {
+    const client = new Meilisearch({ host: BAD_HOST });
+    let calls = 0;
+
+    client.tasks.getTask = (_uid, extraRequestInit) => {
+      calls += 1;
+
+      return new Promise((_resolve, reject) => {
+        extraRequestInit?.signal?.addEventListener("abort", () => {
+          reject(
+            new MeilisearchRequestError(
+              `${BAD_HOST}/tasks/1`,
+              extraRequestInit.signal?.reason,
+            ),
+          );
+        });
+      });
+    };
+
+    await expect(
+      client.tasks.waitForTask(1, { timeout: 20 }),
+    ).rejects.toBeInstanceOf(MeilisearchTaskTimeOutError);
+    expect(calls).toBe(1);
+  });
+
+  test("stops waiting when the timeout expires during the retry delay", async () => {
+    const client = new Meilisearch({ host: BAD_HOST });
+    let calls = 0;
+
+    client.tasks.getTask = () => {
+      calls += 1;
+
+      return Promise.reject(
+        new MeilisearchRequestError(
+          `${BAD_HOST}/tasks/1`,
+          new TypeError("fetch failed"),
+        ),
+      );
+    };
+
+    await expect(
+      client.tasks.waitForTask(1, { timeout: 20, interval: 1 }),
+    ).rejects.toBeInstanceOf(MeilisearchTaskTimeOutError);
+    expect(calls).toBe(1);
+  });
+
+  test("starts no retry delay once the wait has timed out", async () => {
+    const client = new Meilisearch({ host: BAD_HOST });
+    let calls = 0;
+
+    // The request fails at the same moment the wait times out, so the failure is
+    // retryable while the signal is already aborted when the delay would start.
+    client.tasks.getTask = (_uid, extraRequestInit) => {
+      calls += 1;
+
+      return new Promise((_resolve, reject) => {
+        extraRequestInit?.signal?.addEventListener("abort", () => {
+          reject(
+            new MeilisearchRequestError(
+              `${BAD_HOST}/tasks/1`,
+              new TypeError("fetch failed"),
+            ),
+          );
+        });
+      });
+    };
+
+    await expect(
+      client.tasks.waitForTask(1, { timeout: 20 }),
+    ).rejects.toBeInstanceOf(MeilisearchTaskTimeOutError);
+    expect(calls).toBe(1);
   });
 });
