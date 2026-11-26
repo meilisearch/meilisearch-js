@@ -77,4 +77,20 @@ describe("parseTaskDocuments", () => {
       { id: 2 },
     ]);
   });
+
+  test("keeps braces inside string values of concatenated JSON objects", () => {
+    const documents = [
+      { id: 1, formula: "\\frac{1}{2}" },
+      { id: 2, css: "a {} b {color:red}" },
+      { id: 3, quote: 'say "}{"', path: "C:\\" },
+    ];
+
+    expect(
+      parseTaskDocuments(documents.map((doc) => JSON.stringify(doc)).join("")),
+    ).toEqual(documents);
+  });
+
+  test("throws on a truncated concatenated payload", () => {
+    expect(() => parseTaskDocuments('{"id":1}{"id":2')).toThrow(SyntaxError);
+  });
 });
