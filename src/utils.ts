@@ -62,9 +62,41 @@ function parseTaskDocuments<D extends RecordAny = RecordAny>(
     const parsed = JSON.parse(payload) as D | D[];
     return Array.isArray(parsed) ? parsed : [parsed];
   } catch {
-    return payload
-      .split(/\r?\n/)
-      .flatMap((line) => line.split(/(?<=})\s*(?=\{)/))
+    // Cut after each top-level `}`, skipping braces inside JSON strings.
+    const chunks: string[] = [];
+    let depth = 0;
+    let start = 0;
+    let inString = false;
+    let escaped = false;
+
+    for (let i = 0; i < payload.length; i += 1) {
+      const char = payload[i];
+
+      if (inString) {
+        if (escaped) {
+          escaped = false;
+        } else if (char === "\\") {
+          escaped = true;
+        } else if (char === '"') {
+          inString = false;
+        }
+      } else if (char === '"') {
+        inString = true;
+      } else if (char === "{") {
+        depth += 1;
+      } else if (char === "}") {
+        depth -= 1;
+
+        if (depth === 0) {
+          chunks.push(payload.slice(start, i + 1));
+          start = i + 1;
+        }
+      }
+    }
+
+    chunks.push(payload.slice(start));
+
+    return chunks
       .map((chunk) => chunk.trim())
       .filter((chunk) => chunk.length > 0)
       .map((chunk) => JSON.parse(chunk) as D);
