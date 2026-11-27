@@ -4,6 +4,7 @@
 // Definitions: https://github.com/meilisearch/meilisearch-js
 // TypeScript Version: ^5.8.2
 
+import type { InlineRule, SearchMetadata } from "./search-rules.js";
 import type { WaitOptions } from "./task-and-batch.js";
 
 // oxlint-disable-next-line no-explicit-any
@@ -273,6 +274,13 @@ export type SearchParams = Query &
      * personalization feature enabled.
      */
     personalize?: Personalize;
+    /**
+     * Inline dynamic search rule applied only to this query
+     *
+     * @experimental
+     * @see {@link https://www.meilisearch.com/docs/reference/api/search/search-with-post}
+     */
+    inlineRule?: InlineRule | null;
   };
 
 // Search parameters for searches made with the GET method
@@ -406,6 +414,15 @@ export type SearchResponse<
   facetsByIndex?: FacetsByIndex;
   queryVector?: number[];
   performanceDetails?: RecordAny;
+  /**
+   * Query and index metadata
+   *
+   * Present when the request sends `Meili-Include-Metadata: true`.
+   *
+   * @experimental
+   * @see {@link https://www.meilisearch.com/docs/reference/api/search/search-with-post}
+   */
+  metadata?: SearchMetadata;
 } & (undefined extends S
   ? Partial<FinitePagination & InfinitePagination>
   : true extends IsFinitePagination<NonNullable<S>>
@@ -687,10 +704,12 @@ export type Embedder =
 
 export type Embedders = Record<string, Embedder> | null;
 
-export type FacetOrder = "alpha" | "count";
+/** @see {@link https://www.meilisearch.com/docs/reference/api/settings/update-faceting} */
+export type FacetOrder = "alpha" | "count" | "sampledCount";
 
 export type Faceting = {
   maxValuesPerFacet?: number | null;
+  /** Keys are facet attribute names, `"*"` is the fallback for all other facets */
   sortFacetValuesBy?: Record<string, FacetOrder> | null;
 };
 
@@ -715,6 +734,11 @@ export type ForeignKey = {
 export type ForeignKeys = ForeignKey[] | null;
 
 export type PrefixSearch = "indexingTime" | "disabled";
+
+/** Whether word positions are computed at indexing time */
+export type WordPositionSettings = {
+  enabled?: boolean | null;
+};
 
 export type Settings = {
   filterableAttributes?: FilterableAttributes;
@@ -747,6 +771,8 @@ export type Settings = {
    * Meilisearch 1.12.0 or later)
    */
   prefixSearch?: "indexingTime" | "disabled";
+  /** Whether word positions are computed at indexing time */
+  wordPosition?: WordPositionSettings;
 };
 
 /*
@@ -761,24 +787,92 @@ export type Health = {
  *** STATS
  */
 
-export type IndexStats = {
-  numberOfDocuments: number;
-  indexSize: number;
-  usedIndexSize: number;
-  isIndexing: boolean;
-  fieldDistribution: FieldDistribution;
-  numberOfEmbeddedDocuments: number;
-  numberOfEmbeddings: number;
-  rawDocumentDbSize: number;
-  avgDocumentSize: number;
+/**
+ * Query parameters for instance and index stats
+ *
+ * @see {@link https://www.meilisearch.com/docs/reference/api/stats/get-stats-of-all-indexes}
+ * @see {@link https://www.meilisearch.com/docs/reference/api/indexes/get-stats-of-index}
+ */
+export type StatsQuery = {
+  /**
+   * Include {@link IndexStats.internalDatabaseSizes} on each index
+   *
+   * Database names can change between Meilisearch versions.
+   */
+  showInternalDatabaseSizes?: boolean;
+  /**
+   * Format of every size field in the response
+   *
+   * `"raw"` returns bytes as numbers. `"human"` returns strings with units,
+   * such as `"19.64 MiB"`.
+   *
+   * @defaultValue `raw`
+   */
+  sizeFormat?: "human" | "raw";
 };
 
-export type Stats = {
-  databaseSize: number;
-  usedDatabaseSize: number;
+type StatsQuerySizeFormat<Q> = Q extends StatsQuery
+  ? "sizeFormat" extends keyof Q
+    ? Q["sizeFormat"]
+    : undefined
+  : undefined;
+
+type StatsFieldSize<Q> = [StatsQuerySizeFormat<Q>] extends ["human"]
+  ? string
+  : [StatsQuerySizeFormat<Q>] extends ["raw" | undefined]
+    ? number
+    : string | number;
+
+/**
+ * Stats of one index
+ *
+ * @typeParam Q - Stats query whose `sizeFormat` selects the size field type
+ * @see {@link https://www.meilisearch.com/docs/reference/api/indexes/get-stats-of-index}
+ */
+export type IndexStats<Q extends StatsQuery | undefined = undefined> = {
+  /** Number of documents in the index */
+  numberOfDocuments: number;
+  /** Size of the index database */
+  indexSize: StatsFieldSize<Q>;
+  /** Size of the used pages of the index database */
+  usedIndexSize: StatsFieldSize<Q>;
+  /** Whether the index is currently indexing */
+  isIndexing: boolean;
+  /** Number of documents containing each field */
+  fieldDistribution: FieldDistribution;
+  /** Number of documents that contain embeddings */
+  numberOfEmbeddedDocuments: number;
+  /** Number of embeddings in the index */
+  numberOfEmbeddings: number;
+  /** Size of the documents database */
+  rawDocumentDbSize: StatsFieldSize<Q>;
+  /** Average size of a document in the documents database */
+  avgDocumentSize: StatsFieldSize<Q>;
+  /**
+   * On-disk size of each internal database
+   *
+   * Present when {@link StatsQuery.showInternalDatabaseSizes} is `true`. Keys
+   * can change between Meilisearch versions. Values use `sizeFormat`.
+   */
+  internalDatabaseSizes?: Record<string, StatsFieldSize<Q>>;
+};
+
+/**
+ * Stats of the instance and each index
+ *
+ * @typeParam Q - Stats query whose `sizeFormat` selects the size field type
+ * @see {@link https://www.meilisearch.com/docs/reference/api/stats/get-stats-of-all-indexes}
+ */
+export type Stats<Q extends StatsQuery | undefined = undefined> = {
+  /** Total disk space used by the database */
+  databaseSize: StatsFieldSize<Q>;
+  /** Actual size of the data in the database */
+  usedDatabaseSize: StatsFieldSize<Q>;
+  /** Date of the last update, in RFC 3339 */
   lastUpdate: string;
+  /** Stats for each index, keyed by index UID */
   indexes: {
-    [index: string]: IndexStats;
+    [index: string]: IndexStats<Q>;
   };
 };
 

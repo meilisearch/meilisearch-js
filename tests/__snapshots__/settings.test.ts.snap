@@ -50,6 +50,9 @@ exports[`Test on settings > Admin key: Get default settings of an index 1`] = `
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -102,6 +105,9 @@ exports[`Test on settings > Admin key: Get default settings of empty index with 
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;
@@ -156,6 +162,9 @@ exports[`Test on settings > Admin key: Reset embedders settings  1`] = `
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -209,6 +218,9 @@ exports[`Test on settings > Admin key: Reset settings 1`] = `
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -261,6 +273,9 @@ exports[`Test on settings > Admin key: Reset settings of empty index 1`] = `
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;
@@ -324,6 +339,9 @@ exports[`Test on settings > Admin key: Update embedders settings  1`] = `
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -376,6 +394,9 @@ exports[`Test on settings > Admin key: Update facetSearch settings on empty inde
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;
@@ -430,6 +451,9 @@ exports[`Test on settings > Admin key: Update prefixSearch settings on an empty 
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -483,6 +507,9 @@ exports[`Test on settings > Admin key: Update searchableAttributes settings on e
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -535,6 +562,9 @@ exports[`Test on settings > Admin key: Update searchableAttributes settings on e
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;
@@ -609,6 +639,9 @@ exports[`Test on settings > Admin key: Update settings 1`] = `
       "twoTypos": 100,
     },
   },
+  "wordPosition": {
+    "enabled": false,
+  },
 }
 `;
 
@@ -658,6 +691,9 @@ exports[`Test on settings > Admin key: Update settings on empty index with prima
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;
@@ -712,6 +748,9 @@ exports[`Test on settings > Admin key: Update settings with all null values 1`] 
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -764,6 +803,9 @@ exports[`Test on settings > Master key: Get default settings of an index 1`] = `
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;
@@ -818,6 +860,9 @@ exports[`Test on settings > Master key: Get default settings of empty index with
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -870,6 +915,9 @@ exports[`Test on settings > Master key: Reset embedders settings  1`] = `
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;
@@ -924,6 +972,9 @@ exports[`Test on settings > Master key: Reset settings 1`] = `
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -976,6 +1027,9 @@ exports[`Test on settings > Master key: Reset settings of empty index 1`] = `
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;
@@ -1039,6 +1093,9 @@ exports[`Test on settings > Master key: Update embedders settings  1`] = `
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -1091,6 +1148,9 @@ exports[`Test on settings > Master key: Update facetSearch settings on empty ind
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;
@@ -1145,6 +1205,9 @@ exports[`Test on settings > Master key: Update prefixSearch settings on an empty
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -1198,6 +1261,9 @@ exports[`Test on settings > Master key: Update searchableAttributes settings on 
       "twoTypos": 9,
     },
   },
+  "wordPosition": {
+    "enabled": true,
+  },
 }
 `;
 
@@ -1250,6 +1316,9 @@ exports[`Test on settings > Master key: Update searchableAttributes settings on 
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;
@@ -1324,6 +1393,9 @@ exports[`Test on settings > Master key: Update settings 1`] = `
       "twoTypos": 100,
     },
   },
+  "wordPosition": {
+    "enabled": false,
+  },
 }
 `;
 
@@ -1373,6 +1445,9 @@ exports[`Test on settings > Master key: Update settings on empty index with prim
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;
@@ -1426,6 +1501,9 @@ exports[`Test on settings > Master key: Update settings with all null values 1`]
       "oneTypo": 5,
       "twoTypos": 9,
     },
+  },
+  "wordPosition": {
+    "enabled": true,
   },
 }
 `;

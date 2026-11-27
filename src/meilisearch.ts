@@ -14,6 +14,7 @@ import type {
   Key,
   Health,
   Stats,
+  StatsQuery,
   Version,
   KeyUpdate,
   IndexesQuery,
@@ -59,7 +60,7 @@ import {
 } from "./task.js";
 import { BatchClient } from "./batch.js";
 import { ChatWorkspace } from "./chat-workspace.js";
-import type { MeilisearchApiError } from "./errors/index.js";
+import { MeilisearchError } from "./errors/index.js";
 
 export class Meilisearch {
   config: Config;
@@ -203,19 +204,22 @@ export class Meilisearch {
    *   successfully, otherwise false if it does not exist
    */
   async deleteIndexIfExists(uid: string): Promise<boolean> {
-    try {
-      await this.deleteIndex(uid);
-      return true;
-    } catch (e) {
-      if (
-        (e as MeilisearchApiError)?.cause?.code ===
-        ErrorStatusCode.INDEX_NOT_FOUND
-      ) {
-        return false;
-      }
+    // The HTTP API accepts the deletion of an index that does not exist and
+    // enqueues a task that fails with `index_not_found`, so the outcome is only
+    // known once that task has been processed.
+    const task = await this.deleteIndex(uid).waitTask();
 
-      throw e;
+    if (task.status === "succeeded") {
+      return true;
     }
+
+    if (task.error?.code === ErrorStatusCode.INDEX_NOT_FOUND) {
+      return false;
+    }
+
+    throw new MeilisearchError(
+      task.error?.message ?? `Failed to delete index \`${uid}\`.`,
+    );
   }
 
   /**
@@ -336,7 +340,7 @@ export class Meilisearch {
    */
   async getChatWorkspace(workspace: string): Promise<ChatWorkspaceObject> {
     return await this.httpRequest.get({
-      path: `chats/${workspace}`,
+      path: `chats/${encodeURIComponent(workspace)}`,
     });
   }
 
@@ -350,7 +354,7 @@ export class Meilisearch {
    */
   async deleteChatWorkspace(workspace: string): Promise<void> {
     await this.httpRequest.delete({
-      path: `chats/${workspace}`,
+      path: `chats/${encodeURIComponent(workspace)}`,
     });
   }
 
@@ -385,7 +389,7 @@ export class Meilisearch {
    */
   async getDynamicSearchRule(uid: string): Promise<SearchRule> {
     return await this.httpRequest.get({
-      path: `dynamic-search-rules/${uid}`,
+      path: `dynamic-search-rules/${encodeURIComponent(uid)}`,
     });
   }
 
@@ -393,7 +397,7 @@ export class Meilisearch {
    * Update a dynamic search rule
    *
    * @param uid - Dynamic search rule UID
-   * @param rule - Dynamic search rule to update
+   * @param rule - Partial search rule with pin and scale actions
    * @returns Promise returning an enqueued task
    * @experimental
    * @see {@link https://www.meilisearch.com/docs/reference/api/search-rules/create-or-update-a-search-rule}
@@ -403,7 +407,7 @@ export class Meilisearch {
     rule: SearchRuleUpdatePayload,
   ): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.patch({
-      path: `dynamic-search-rules/${uid}`,
+      path: `dynamic-search-rules/${encodeURIComponent(uid)}`,
       body: rule,
     });
   }
@@ -418,7 +422,7 @@ export class Meilisearch {
    */
   deleteDynamicSearchRule(uid: string): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
-      path: `dynamic-search-rules/${uid}`,
+      path: `dynamic-search-rules/${encodeURIComponent(uid)}`,
     });
   }
 
@@ -427,7 +431,7 @@ export class Meilisearch {
    *
    * @returns Promise returning an enqueued task
    * @experimental
-   * @see {@link https://www.meilisearch.com/docs/reference/api/search-rules/delete-a-search-rule}
+   * @see {@link https://www.meilisearch.com/docs/reference/api/search-rules/delete-all-search-rules}
    */
   deleteAllDynamicSearchRules(): EnqueuedTaskPromise {
     return this.#httpRequestsWithTask.delete({
@@ -455,7 +459,9 @@ export class Meilisearch {
    * @returns Promise returning the webhook
    */
   async getWebhook(uuid: string): Promise<Webhook> {
-    return await this.httpRequest.get({ path: `webhooks/${uuid}` });
+    return await this.httpRequest.get({
+      path: `webhooks/${encodeURIComponent(uuid)}`,
+    });
   }
 
   /**
@@ -480,7 +486,7 @@ export class Meilisearch {
     webhook: WebhookUpdatePayload,
   ): Promise<Webhook> {
     return await this.httpRequest.patch({
-      path: `webhooks/${uuid}`,
+      path: `webhooks/${encodeURIComponent(uuid)}`,
       body: webhook,
     });
   }
@@ -492,7 +498,9 @@ export class Meilisearch {
    * @returns Promise returning void
    */
   async deleteWebhook(uuid: string): Promise<void> {
-    await this.httpRequest.delete({ path: `webhooks/${uuid}` });
+    await this.httpRequest.delete({
+      path: `webhooks/${encodeURIComponent(uuid)}`,
+    });
   }
 
   ///
@@ -709,7 +717,7 @@ export class Meilisearch {
    */
   async getKey(keyOrUid: string): Promise<Key> {
     return await this.httpRequest.get<Key>({
-      path: `keys/${keyOrUid}`,
+      path: `keys/${encodeURIComponent(keyOrUid)}`,
     });
   }
 
@@ -735,7 +743,7 @@ export class Meilisearch {
    */
   async updateKey(keyOrUid: string, options: KeyUpdate): Promise<Key> {
     return await this.httpRequest.patch<Key>({
-      path: `keys/${keyOrUid}`,
+      path: `keys/${encodeURIComponent(keyOrUid)}`,
       body: options,
     });
   }
@@ -747,7 +755,9 @@ export class Meilisearch {
    * @returns
    */
   async deleteKey(keyOrUid: string): Promise<void> {
-    await this.httpRequest.delete({ path: `keys/${keyOrUid}` });
+    await this.httpRequest.delete({
+      path: `keys/${encodeURIComponent(keyOrUid)}`,
+    });
   }
 
   ///
@@ -782,12 +792,21 @@ export class Meilisearch {
   ///
 
   /**
-   * Get the stats of all the database
+   * Get stats of the instance and its indexes
    *
-   * @returns Promise returning object of all the stats
+   * Size fields are numbers of bytes by default. `sizeFormat: "human"` returns
+   * them as strings with units, such as `"19.64 MiB"`.
+   * `showInternalDatabaseSizes` adds each index's internal database sizes.
+   *
+   * @typeParam Q - Stats query whose `sizeFormat` selects the size field type
+   * @param params - Internal database sizes and size formatting
+   * @returns Promise containing stats of the instance
+   * @see {@link https://www.meilisearch.com/docs/reference/api/stats/get-stats-of-all-indexes}
    */
-  async getStats(): Promise<Stats> {
-    return await this.httpRequest.get<Stats>({ path: "stats" });
+  async getStats<const Q extends StatsQuery | undefined = undefined>(
+    params?: Q,
+  ): Promise<Stats<Q>> {
+    return await this.httpRequest.get<Stats<Q>>({ path: "stats", params });
   }
 
   ///

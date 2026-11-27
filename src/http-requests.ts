@@ -211,6 +211,19 @@ export class HttpRequests {
     body,
     extraRequestInit,
   }: MainRequestOptions): { url: URL; init: RequestInit } {
+    // An empty, "." or ".." segment would resolve to another route
+    if (
+      path
+        .split("/")
+        .some(
+          (segment) => segment === "" || segment === "." || segment === "..",
+        )
+    ) {
+      throw new MeilisearchError(
+        `The request path "${path}" contains an empty, "." or ".." segment`,
+      );
+    }
+
     const url = new URL(path, this.#url);
     if (params !== undefined) {
       appendRecordToURLSearchParams(url.searchParams, params);

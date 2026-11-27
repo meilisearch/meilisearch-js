@@ -256,3 +256,24 @@ describe.each([{ permission: "No" }])(
     });
   },
 );
+
+describe("client", () => {
+  describe("getKey", () => {
+    test("encodes the key as a single path segment", async () => {
+      const requestedURLs: string[] = [];
+      const client = new Meilisearch({
+        host: "http://localhost:7700",
+        httpClient: (input) => {
+          requestedURLs.push((input as URL).href);
+          return Promise.resolve({});
+        },
+      });
+
+      await client.getKey("../indexes");
+
+      expect(requestedURLs).toEqual([
+        "http://localhost:7700/keys/..%2Findexes",
+      ]);
+    });
+  });
+});

@@ -19,18 +19,15 @@ const SEARCH_RULE_PATCH: SearchRuleUpdatePayload = {
       },
     },
   },
-  actions: [
-    {
-      selector: {
-        indexUid: "movies",
+  actions: {
+    pin: [
+      {
         id: "1",
-      },
-      action: {
-        type: "pin",
         position: 1,
+        indexUid: "movies",
       },
-    },
-  ],
+    ],
+  },
 };
 
 beforeAll(async () => {
@@ -124,5 +121,69 @@ describe("dynamic search rules", () => {
 
     const response = await adminClient.getDynamicSearchRules();
     expect(response.results).toHaveLength(0);
+  });
+
+  it("can create or update a dynamic search rule with a scale filter action", async () => {
+    const payload: SearchRuleUpdatePayload = {
+      actions: {
+        scale: [{ filter: "series = batman", weight: 4.0 }],
+      },
+    };
+
+    const task = await adminClient
+      .updateDynamicSearchRule("batman-festival", payload)
+      .waitTask();
+
+    expect(task).toHaveProperty("type", "dsrUpdate");
+    expect(task).toHaveProperty("status", "succeeded");
+
+    const response = await adminClient.getDynamicSearchRule("batman-festival");
+    expect(response).toHaveProperty("uid", "batman-festival");
+    expect(response).toHaveProperty("actions", payload.actions);
+  });
+
+  it("can create or update a dynamic search rule with a scale ids action", async () => {
+    const payload: SearchRuleUpdatePayload = {
+      actions: {
+        scale: [{ ids: ["1"], indexUid: "movies", weight: 0.0 }],
+      },
+    };
+
+    const task = await adminClient
+      .updateDynamicSearchRule("hide-movie", payload)
+      .waitTask();
+
+    expect(task).toHaveProperty("type", "dsrUpdate");
+    expect(task).toHaveProperty("status", "succeeded");
+
+    const response = await adminClient.getDynamicSearchRule("hide-movie");
+    expect(response).toHaveProperty("uid", "hide-movie");
+    expect(response).toHaveProperty("actions", payload.actions);
+  });
+
+  it("can create or update a dynamic search rule with a nested scale filter", async () => {
+    const payload: SearchRuleUpdatePayload = {
+      actions: {
+        scale: [
+          {
+            filter: [["series = batman", "series = superman"], "year > 2000"],
+            weight: 2.0,
+          },
+        ],
+      },
+    };
+
+    const task = await adminClient
+      .updateDynamicSearchRule("nested-scale-filter", payload)
+      .waitTask();
+
+    expect(task).toHaveProperty("type", "dsrUpdate");
+    expect(task).toHaveProperty("status", "succeeded");
+
+    const response = await adminClient.getDynamicSearchRule(
+      "nested-scale-filter",
+    );
+    expect(response).toHaveProperty("uid", "nested-scale-filter");
+    expect(response).toHaveProperty("actions", payload.actions);
   });
 });

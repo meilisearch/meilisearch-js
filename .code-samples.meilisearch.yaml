@@ -271,9 +271,9 @@ update_typo_tolerance_1: |-
 reset_typo_tolerance_1: |-
   client.index('books').resetTypoTolerance()
 get_index_stats_1: |-
-  client.index('movies').getStats()
+  client.index('movies').getStats({ showInternalDatabaseSizes: true, sizeFormat: 'human' })
 get_indexes_stats_1: |-
-  client.getStats()
+  client.getStats({ showInternalDatabaseSizes: true, sizeFormat: 'human' })
 get_health_1: |-
   client.health()
 get_version_1: |-
@@ -458,10 +458,11 @@ get_faceting_settings_1: |-
   client.index('books').getFaceting()
 update_faceting_settings_1: |-
   client.index('books').updateFaceting({
-    maxValuesPerFacet: 2
+    maxValuesPerFacet: 2,
     sortFacetValuesBy: {
       '*': 'alpha',
-      genres: 'count'
+      genres: 'count',
+      language: 'sampledCount'
     }
   })
 reset_faceting_settings_1: |-
@@ -587,6 +588,12 @@ update_prefix_search_settings_1: |-
   client.index('INDEX_NAME').updatePrefixSearch('disabled');
 reset_prefix_search_settings_1: |-
   client.index('INDEX_NAME').resetPrefixSearch();
+get_word_position_settings_1: |-
+  client.index('INDEX_NAME').getWordPosition();
+update_word_position_settings_1: |-
+  client.index('INDEX_NAME').updateWordPosition({ enabled: false });
+reset_word_position_settings_1: |-
+  client.index('INDEX_NAME').resetWordPosition();
 get_all_batches_1: |-
   client.batches.getBatches();
 get_batch_1: |-
@@ -650,10 +657,9 @@ patch_dynamic_search_rule_1: |-
     conditions: {
       query: { words: 'invoice' }
     },
-    actions: [{
-      selector: { indexUid: 'movies', id: '299537' },
-      action: { type: 'pin', position: 0 }
-    }]
+    actions: {
+      pin: [{ id: '299537', position: 0, indexUid: 'movies' }]
+    }
   })
 delete_dynamic_search_rule_1: |-
   client.deleteDynamicSearchRule('RULE_UID')
