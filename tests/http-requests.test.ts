@@ -9,6 +9,7 @@ import {
   type MockInstance,
 } from "vitest";
 import { HttpRequests } from "../src/http-requests.js";
+import { Meilisearch } from "../src/meilisearch.js";
 import type { Config } from "../src/types/index.js";
 import {
   MeilisearchError,
@@ -222,5 +223,64 @@ describe("HttpRequests", () => {
     assert.isDefined(fetchSpy.mock.lastCall);
     const [, init] = fetchSpy.mock.lastCall as [URL, RequestInit];
     expect(init.credentials).toBe("omit");
+  });
+
+  describe("Index#searchGet", () => {
+    let client: Meilisearch;
+
+    beforeEach(() => {
+      fetchSpy.mockResolvedValue(
+        new Response(JSON.stringify({ hits: [] }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+      client = new Meilisearch({ host: "http://localhost:7700" });
+    });
+
+    function lastRequestUrl(): URL {
+      assert.isDefined(fetchSpy.mock.lastCall);
+      const [url] = fetchSpy.mock.lastCall as [URL, RequestInit];
+      return url;
+    }
+
+    test("translates a hybrid object into hybridEmbedder and hybridSemanticRatio query params", async () => {
+      await client.index("movies").searchGet("prince", {
+        hybrid: { embedder: "default", semanticRatio: 0.5 },
+      });
+
+      const url = lastRequestUrl();
+
+      expect(url.searchParams.get("hybridEmbedder")).toBe("default");
+      expect(url.searchParams.get("hybridSemanticRatio")).toBe("0.5");
+      expect(url.searchParams.has("hybrid")).toBe(false);
+      expect(url.search).not.toContain("object+Object");
+    });
+
+    test("keeps a semanticRatio of 0", async () => {
+      await client.index("movies").searchGet("prince", {
+        hybrid: { embedder: "default", semanticRatio: 0 },
+      });
+
+      const url = lastRequestUrl();
+
+      expect(url.searchParams.get("hybridEmbedder")).toBe("default");
+      expect(url.searchParams.get("hybridSemanticRatio")).toBe("0");
+    });
+
+    test("keeps flat hybridEmbedder and hybridSemanticRatio query params", async () => {
+      await client.index("movies").searchGet("prince", {
+        vector: [1],
+        hybridEmbedder: "default",
+        hybridSemanticRatio: 1,
+      });
+
+      const url = lastRequestUrl();
+
+      expect(url.searchParams.get("vector")).toBe("1");
+      expect(url.searchParams.get("hybridEmbedder")).toBe("default");
+      expect(url.searchParams.get("hybridSemanticRatio")).toBe("1");
+      expect(url.searchParams.has("hybrid")).toBe(false);
+    });
   });
 });
