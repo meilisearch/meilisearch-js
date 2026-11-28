@@ -12,7 +12,11 @@ import type {
   RecordAny,
 } from "./types/index.js";
 import type { HttpRequests } from "./http-requests.js";
-import { parseTaskDocuments, readStreamAsText } from "./utils.js";
+import {
+  parseTaskDocuments,
+  readJsonEvents,
+  readStreamAsText,
+} from "./utils.js";
 
 /**
  * Used to identify whether an error is a timeout error in
@@ -98,6 +102,30 @@ export class TaskClient {
 
     const rawDocuments = await readStreamAsText(stream);
     return parseTaskDocuments<D>(rawDocuments);
+  }
+
+  /**
+   * Stream every change of every task, as it happens, through the experimental
+   * `GET /tasks/stream` route (Server-Sent Events).
+   *
+   * @remarks
+   * Requires the `tasksStreamingRoute` experimental feature, see
+   * {@link Meilisearch.updateExperimentalFeatures}. The returned promise
+   * resolves once the connection is open: only the changes that happen after
+   * that point are streamed. To follow one task, open the stream before
+   * enqueuing the task, then filter the events on its `uid`. Leaving the loop,
+   * or calling `return()` on the generator, closes the connection; an
+   * {@link AbortSignal} in `extraRequestInit` closes it from the outside.
+   */
+  async streamTasks(
+    extraRequestInit?: ExtraRequestInit,
+  ): Promise<AsyncGenerator<Task, void, undefined>> {
+    const stream = await this.#httpRequest.getStream({
+      path: "tasks/stream",
+      extraRequestInit,
+    });
+
+    return readJsonEvents<Task>(stream);
   }
 
   /**
